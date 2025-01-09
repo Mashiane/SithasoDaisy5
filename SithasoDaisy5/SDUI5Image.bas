@@ -1,0 +1,322 @@
+﻿B4J=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Class
+Version=10
+@EndOfDesignText@
+#IgnoreWarnings:12
+#DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Src, DisplayName: Src, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Src
+#DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: rounded, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
+#DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
+#DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
+#DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
+#DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
+#DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
+'global variables in this module
+Sub Class_Globals
+	Public UI As UIShared 'ignore
+	Public CustProps As Map 'ignore
+	Private mCallBack As Object 'ignore
+	Private mEventName As String 'ignore
+	Private mElement As BANanoElement 'ignore
+	Private mTarget As BANanoElement 'ignore
+	Private mName As String 'ignore
+	Private BANano As BANano   'ignore
+	Private sPosition As String = "t=?; b=?; r=?; l=?"
+	Private sPositionStyle As String = "none"
+	Private sRawClasses As String = ""
+	Private sRawStyles As String = ""
+	Private sRawAttributes As String = ""
+	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sParentID As String = ""
+	Private bVisible As Boolean = True	'ignore
+	Private bEnabled As Boolean = True	'ignore
+	Public Tag As Object
+	Private sAlt As String = "Image"
+	Private sHeight As String = "12"
+	Private sMask As String = "rounded"
+	Private sShadow As String = "none"
+	Private sSrc As String = "./assets/mashy.jpg"
+	Private sWidth As String = "12"
+	Private bRoundedBox As Boolean = False
+End Sub
+'initialize the custom view class
+Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	mEventName = SDUIShared.CleanID(EventName)
+	mName = SDUIShared.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize
+	UI.Initialize(Me)
+End Sub
+' returns the element id
+Public Sub getID() As String
+	Return mName
+End Sub
+'add this element to an existing parent element using current props
+Public Sub AddComponent
+	If sParentID = "" Then Return
+	mTarget = BANano.GetElement("#" & sParentID)
+	DesignerCreateView(mTarget, CustProps)
+End Sub
+'remove this element from the dom
+Public Sub Remove()
+	mElement.Remove
+	BANano.SetMeToNull
+End Sub
+'set the parent id
+Sub setParentID(s As String)
+	sParentID = s
+	CustProps.Put("ParentID", sParentID)
+End Sub
+'get the parent id
+Sub getParentID As String
+	Return sParentID
+End Sub
+'return the #ID of the element
+Public Sub getHere() As String
+	Return $"#${mName}"$
+End Sub
+'set Visible
+Sub setVisible(b As Boolean)
+	bVisible = b
+	CustProps.Put("Visible", b)
+	If mElement = Null Then Return
+	UI.SetVisible(mElement, b)
+End Sub
+'get Visible
+Sub getVisible As Boolean
+	bVisible = UI.GetVisible(mElement)
+	Return bVisible
+End Sub
+'set Enabled
+Sub setEnabled(b As Boolean)
+	bEnabled = b
+	CustProps.Put("Enabled", b)
+	If mElement = Null Then Return
+	UI.SetEnabled(mElement, b)
+End Sub
+'get Enabled
+Sub getEnabled As Boolean
+	bEnabled = UI.GetEnabled(mElement)
+	Return bEnabled
+End Sub
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+End Sub
+'set Position Style
+'options: static|relative|fixed|absolute|sticky|none
+Sub setPositionStyle(s As String)
+	sPositionStyle = s
+	CustProps.put("PositionStyle", s)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, "position", s)
+End Sub
+Sub getPositionStyle As String
+	Return sPositionStyle
+End Sub
+'set raw positions
+Sub setPosition(s As String)
+	sPosition = s
+	CustProps.Put("Position", sPosition)
+	If mElement = Null Then Return
+	UI.SetPosition(mElement, sPosition)
+End Sub
+Sub getPosition As String
+	Return sPosition
+End Sub
+Sub setAttributes(s As String)
+	sRawAttributes = s
+	CustProps.Put("RawAttributes", s)
+	If mElement = Null Then Return
+	UI.SetAttributes(mElement, sRawAttributes)
+End Sub
+'
+Sub setStyles(s As String)
+	sRawStyles = s
+	CustProps.Put("RawStyles", s)
+	If mElement = Null Then Return
+	UI.SetStyles(mElement, sRawStyles)
+End Sub
+'
+Sub setClasses(s As String)
+	sRawClasses = s
+	CustProps.put("RawClasses", s)
+	If mElement = Null Then Return
+	UI.SetClasses(mElement, sRawStyles)
+End Sub
+'
+Sub setPaddingAXYTBLR(s As String)
+	sPaddingAXYTBLR = s
+	CustProps.Put("PaddingAXYTBLR", s)
+	If mElement = Null Then Return
+	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+End Sub
+'
+Sub setMarginAXYTBLR(s As String)
+	sMarginAXYTBLR = s
+	CustProps.Put("MarginAXYTBLR", s)
+	If mElement = Null Then Return
+	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+End Sub
+'
+Sub getAttributes As String
+	Return sRawAttributes
+End Sub
+'
+Sub getStyles As String
+	Return sRawStyles
+End Sub
+'
+Sub getClasses As String
+	Return sRawClasses
+End Sub
+'
+Sub getPaddingAXYTBLR As String
+	Return sPaddingAXYTBLR
+End Sub
+'
+Sub getMarginAXYTBLR As String
+	Return sMarginAXYTBLR
+End Sub
+'code to design the view
+Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
+	mTarget = Target
+	If Props <> Null Then
+		CustProps = Props
+		UI.SetProps(Props)
+		'UI.ExcludeBackgroundColor = True
+		'UI.ExcludeTextColor = True
+		'UI.ExcludeVisible = True
+		'UI.ExcludeEnabled = True
+		sAlt = Props.GetDefault("Alt", "Image")
+		sAlt = SDUIShared.CStr(sAlt)
+		sHeight = Props.GetDefault("Height", "12")
+		sHeight = SDUIShared.CStr(sHeight)
+		sMask = Props.GetDefault("Mask", "rounded")
+		sMask = SDUIShared.CStr(sMask)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = SDUIShared.CStr(sShadow)
+		sSrc = Props.GetDefault("Src", "./assets/mashy.jpg")
+		sSrc = SDUIShared.CStr(sSrc)
+		sWidth = Props.GetDefault("Width", "12")
+		sWidth = SDUIShared.CStr(sWidth)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = SDUIShared.CBool(bRoundedBox)
+	End If
+	'
+	If bRoundedBox <> False Then UI.AddClassDT("rounded-box")
+	If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
+	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sMask <> "" Then UI.AddMaskDT(sMask)
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
+	If sSrc <> "" Then UI.AddAttrDT("src", sSrc)
+	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	Dim xattrs As String = UI.BuildExAttributes
+	Dim xstyles As String = UI.BuildExStyle
+	Dim xclasses As String = UI.BuildExClass
+	If sParentID <> "" Then
+		'does the parent exist
+		If BANano.Exists($"#${sParentID}"$) = False Then
+			BANano.Throw($"${mName}.DesignerCreateView: '${sParentID}' parent does not exist!"$)
+			Return
+		End If
+		mTarget.Initialize($"#${sParentID}"$)
+	End If
+	mElement = mTarget.Append($"[BANCLEAN]<img id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></img>"$).Get("#" & mName)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b <> False Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+
+'set Alt
+Sub setAlt(s As String)
+	sAlt = s
+	CustProps.put("Alt", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "alt", s)
+End Sub
+'set Height
+Sub setHeight(s As String)
+	sHeight = s
+	CustProps.put("Height", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+End Sub
+'set Mask
+'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
+Sub setMask(s As String)
+	sMask = s
+	CustProps.put("Mask", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMask(mElement, sMask)
+End Sub
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+'set Src
+Sub setSrc(s As String)
+	sSrc = s
+	CustProps.put("Src", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "src", s)
+End Sub
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+End Sub
+'get Alt
+Sub getAlt As String
+	Return sAlt
+End Sub
+'get Height
+Sub getHeight As String
+	Return sHeight
+End Sub
+'get Mask
+Sub getMask As String
+	Return sMask
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+'get Src
+Sub getSrc As String
+	Return sSrc
+End Sub
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub

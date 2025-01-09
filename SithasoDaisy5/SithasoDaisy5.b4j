@@ -1,0 +1,154 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=250x300.png
+File10=fileSaver.min.js
+File11=FONT AWESOME LICENSE.txt
+File12=loader-1.css
+File13=math.min.js
+File14=mdtoast.min.css
+File15=mdtoast.min.js
+File16=menu.svg
+File17=placeholderimg.jpg
+File18=roboto.min.css
+File19=Roboto100.ttf
+File2=600by600.jpg
+File20=Roboto300.ttf
+File21=Roboto400.ttf
+File22=Roboto500.ttf
+File23=Roboto700.ttf
+File24=Roboto900.ttf
+File25=sweetalert2.all.min.js
+File26=sweetalert2.min.css
+File27=tailwind.min.js
+File3=BANANO LICENSE.TXT
+File4=closemenu.svg
+File5=DAISYUI LICENSE.txt
+File6=daisyui.css
+File7=emojimart.js
+File8=emojimart.json
+File9=eruda.js
+FileGroup1=Default Group\IMAGES
+FileGroup10=Default Group\JAVASCRIPT
+FileGroup11=Default Group\LICENCES
+FileGroup12=Default Group\CSS
+FileGroup13=Default Group\JAVASCRIPT
+FileGroup14=Default Group\CSS
+FileGroup15=Default Group\JAVASCRIPT
+FileGroup16=Default Group\IMAGES
+FileGroup17=Default Group\IMAGES
+FileGroup18=Default Group\CSS
+FileGroup19=Default Group\FONTS
+FileGroup2=Default Group\IMAGES
+FileGroup20=Default Group\FONTS
+FileGroup21=Default Group\FONTS
+FileGroup22=Default Group\FONTS
+FileGroup23=Default Group\FONTS
+FileGroup24=Default Group\FONTS
+FileGroup25=Default Group\JAVASCRIPT
+FileGroup26=Default Group\CSS
+FileGroup27=Default Group\JAVASCRIPT
+FileGroup3=Default Group\LICENCES
+FileGroup4=Default Group\IMAGES
+FileGroup5=Default Group\LICENCES
+FileGroup6=Default Group\CSS
+FileGroup7=Default Group\JAVASCRIPT
+FileGroup8=Default Group\JSON
+FileGroup9=Default Group\JAVASCRIPT
+Group=Default Group
+Library1=banano
+Library2=jcore
+Library3=jfx
+Module1=|relative|..\..\shared\JSArray
+Module10=SDUI5Code
+Module11=SDUI5Component
+Module12=SDUI5Divider
+Module13=SDUI5Footer
+Module14=SDUI5FooterTitle
+Module15=SDUI5Image
+Module16=SDUI5Indicator
+Module17=SDUI5Link
+Module18=SDUI5Loading
+Module19=SDUI5MDToast
+Module2=modSithasoDaisy5
+Module20=SDUI5NavBar
+Module21=SDUI5Panel
+Module22=SDUI5Progress
+Module23=SDUI5RadialProgress
+Module24=SDUI5Stack
+Module25=SDUI5Status
+Module26=SDUI5Swal
+Module27=SDUI5Swap
+Module28=SDUI5Toast
+Module29=SDUI5ToolTip
+Module3=SDUI5Alert
+Module30=SDUI5Window
+Module31=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
+Module32=|relative|..\..\shared\SDUIMap
+Module33=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIPocketBase
+Module34=|relative|..\..\shared\SDUIShared
+Module35=SithasoDaisy5
+Module36=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+Module4=SDUI5App
+Module5=SDUI5Avatar
+Module6=SDUI5AvatarGroup
+Module7=SDUI5Badge
+Module8=SDUI5Browser
+Module9=SDUI5Button
+NumberOfFiles=27
+NumberOfLibraries=3
+NumberOfModules=36
+Version=10
+@EndOfDesignText@
+#Region Project Attributes 
+	#MainFormWidth: 600
+	#MainFormHeight: 600 
+	#IgnoreWarnings: 16, 10, 14, 15	
+	#LibraryAuthor: Anele Mbanga (Mashy)
+	#LibraryVersion: 5.01
+#End Region
+
+Sub Process_Globals
+	Private BANano As BANano 'ignore
+	Private LibVersion As String = "5.01"
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)	
+	' The name of your library. Strongly suggested to let it begin with BANano!
+	BANano.Initialize("BANano", "SithasoDaisy5", DateTime.Now)
+	BANano.TranspilerOptions.UseServiceWorker = False
+	BANano.TranspilerOptions.MinifyOnline = False
+	BANano.TranspilerOptions.RemoveDeadCode = False
+	BANano.TranspilerOptions.IgnoreWarningsOldBrowsers = True
+	BANano.TranspilerOptions.ShowWarningDeadCode = False
+	BANano.TranspilerOptions.MergeAllCSSFiles = False
+	BANano.TranspilerOptions.MergeAllJavascriptFiles = False
+	BANano.TranspilerOptions.EnableLiveCodeSwapping = False
+	BANano.TranspilerOptions.DisableShortenVariableNames = False
+	BANano.Header.AddCSSFile("loader-1.css")
+	BANano.Header.AddCSSFile("daisyui.css")
+	BANano.Header.AddJavascriptFile("tailwind.min.js")
+	'
+	BANano.Header.AddCSSFile("roboto.min.css")
+	BANano.Header.AddJavascriptFile("fileSaver.min.js")
+	BANano.header.AddCSSFile("sweetalert2.min.css")
+	BANano.Header.AddJavascriptFile("sweetalert2.all.min.js")
+	BANano.Header.AddCSSFile("mdtoast.min.css")
+	BANano.Header.AddJavascriptFile("mdtoast.min.js")
+	BANano.Header.AddJavascriptFileForLater("eruda.js")
+	BANano.Header.AddJavascriptFileForLater("math.min.js")
+	
+	' start the build
+	BANano.BuildAsB4Xlib(LibVersion) 'version
+	ExitApplication
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+' HERE STARTS YOUR APP
+' you can use the Main (only) to do some tests on your library
+Sub BANano_Ready()
+	
+End Sub

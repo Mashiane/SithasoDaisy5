@@ -1,0 +1,260 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=12.jpg
+File10=check.svg
+File11=close.svg
+File12=closemenu.svg
+File13=codeview.bjl
+File14=daisywoman1.jpg
+File15=daisywoman3.png
+File16=dividerview.bjl
+File17=footerview.bjl
+File18=googleheart.svg
+File19=hand-peace.svg
+File2=13.jpg
+File20=heart.svg
+File21=imageview.bjl
+File22=indicatorview.bjl
+File23=linkview.bjl
+File24=loadingview.bjl
+File25=mashy.jpg
+File26=menu.svg
+File27=navbarview.bjl
+File28=pig.svg
+File29=progressview.bjl
+File3=8.jpg
+File30=radialprogressview.bjl
+File31=SithasoDaisyLogo1.jpg
+File32=stackview.bjl
+File33=statusview.bjl
+File34=swapview.bjl
+File35=toastview.bjl
+File36=tooltipview.bjl
+File37=windowview.bjl
+File38=yyoff.svg
+File39=yyon.svg
+File4=addfolder.svg
+File5=alertview.bjl
+File6=avatarview.bjl
+File7=badgeview.bjl
+File8=browserview.bjl
+File9=buttonsview.bjl
+FileGroup1=Default Group\Images
+FileGroup10=Default Group\Images
+FileGroup11=Default Group\Images
+FileGroup12=Default Group\Images
+FileGroup13=Default Group\Views
+FileGroup14=Default Group\Images
+FileGroup15=Default Group\Images
+FileGroup16=Default Group\Views
+FileGroup17=Default Group\Views
+FileGroup18=Default Group\Images
+FileGroup19=Default Group\Images
+FileGroup2=Default Group\Images
+FileGroup20=Default Group\Images
+FileGroup21=Default Group\Views
+FileGroup22=Default Group\Views
+FileGroup23=Default Group\Views
+FileGroup24=Default Group\Views
+FileGroup25=Default Group\Images
+FileGroup26=Default Group\Images
+FileGroup27=Default Group\Views
+FileGroup28=Default Group\Images
+FileGroup29=Default Group\Views
+FileGroup3=Default Group\Images
+FileGroup30=Default Group\Views
+FileGroup31=Default Group\Images
+FileGroup32=Default Group\Views
+FileGroup33=Default Group\Views
+FileGroup34=Default Group\Views
+FileGroup35=Default Group\Views
+FileGroup36=Default Group\Views
+FileGroup37=Default Group\Views
+FileGroup38=Default Group\Images
+FileGroup39=Default Group\Images
+FileGroup4=Default Group\Images
+FileGroup5=Default Group\Views
+FileGroup6=Default Group\Views
+FileGroup7=Default Group\Views
+FileGroup8=Default Group\Views
+FileGroup9=Default Group\Views
+Group=Default Group
+Library1=banano
+Library2=jcore
+Library3=jfx
+Library4=json
+Library5=sithasodaisy5
+Module1=Blank5
+Module10=pgFooter
+Module11=pgImage
+Module12=pgIndex
+Module13=pgIndicator
+Module14=pgLink
+Module15=pgLoading
+Module16=pgNavBar
+Module17=pgProgress
+Module18=pgRadialProgress
+Module19=pgStack
+Module2=BlankLayout
+Module20=pgStatus
+Module21=pgSwap
+Module22=pgToast
+Module23=pgToolTip
+Module24=pgWindow
+Module3=pgAlert
+Module4=pgAvatar
+Module5=pgBadge
+Module6=pgBrowser
+Module7=pgButtons
+Module8=pgCode
+Module9=pgDivider
+NumberOfFiles=39
+NumberOfLibraries=5
+NumberOfModules=24
+Version=10
+@EndOfDesignText@
+#Region Project Attributes 
+	#MergeLibraries: True
+	#LibraryAuthor: Anele Mbanga (Mashy)
+	#IgnoreWarnings:32, 16
+#End Region
+
+#IgnoreWarnings:12, 15
+Sub Process_Globals
+	Public BANano As BANano 'ignore
+	'the name of the application &
+	'this is the folder on your development server.
+	Public AppName As String = "sd5demo"
+	Public AppTitle As String = "SithasoDaisy 5 Demo"
+	'whe the app should
+	Public Publish As String = "C:\laragon\www"
+	Public Version As String = "0.01"
+	Public ServerIP As String = "http://127.0.0.1"
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)
+	'change this according to your needs
+	'initialize banano for first use
+	'this is the web-app builder
+	BANano.Initialize("BANano", AppName, DateTime.now)
+	BANano.HTML_NAME = "index.html"
+	'BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
+	BANano.Header.Title = AppTitle
+	BANano.Header.AddFavicon("./assets/600by600.jpg", "16x16")
+	BANano.Header.AddAppleTouchIcon("./assets/600by600.jpg", "180x180")
+	BANano.Header.Author ="Anele Mbanga (Mashy)"
+	'BANano.Header.Charset = "iso-8859-1"
+	BANano.Header.Description = "SithasoDaisy 5 Demo"
+	'BANano.header.Expires = "Mon, 22 Jul 2002 11:12:01 GMT"
+	BANano.Header.Keywords = "banano,tailwindcss,app,sithasodaisy"
+	BANano.Header.Language = "en"
+	BANano.Header.AddMeta($"<meta name="copyright" content="&copy; 2025 SithasoDaisy 5">"$)
+	BANano.Header.AddMeta($"<meta name="robots" content="ALL">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Pragma" content="no-cache">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Expires" content="0">"$)
+	
+	'BANano.Header.AddMSTileIcon("mstile-150x150.png", "144x144")
+	'BANano.Header.SetMaskIcon("safari-pinned-tab.svg")
+	'BANano.Header.AddManifestIcon("android-chrome-192x192.png", "192x192")
+	'BANano.Header.AddManifestIcon("android-chrome-512x512.png", "512x512")
+	BANano.TranspilerOptions.MinifyOnline = False
+	BANano.TranspilerOptions.RemoveDeadCode = False
+	BANano.TranspilerOptions.IgnoreWarningsOldBrowsers = True
+	BANano.TranspilerOptions.ShowWarningDeadCode = False
+	BANano.TranspilerOptions.MergeAllCSSFiles = False
+	BANano.TranspilerOptions.MergeAllJavascriptFiles = False
+	BANano.TranspilerOptions.EnableLiveCodeSwapping = False
+	BANano.TranspilerOptions.DisableShortenVariableNames = False
+	'BANano.Header.OnDOMContentLoaded = SDUIShared.DOMContentLoaded
+	'BANano.TranspilerOptions.DoNotDeleteFolderOnCompilation($"C:\laragon\www\${AppName}\assets"$)
+	BANano.TranspilerOptions.ShowLogPosition = True
+	'
+	'BANano.Header.AddJavascriptFile("exceljs.min.js")
+	'
+	'BANano.Header.AddCSSFile("https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap")
+	'
+	' a PWA must have a service worker.  Will be build automatically caching everything used in your Web App
+	'BANano.SERVICEWORKER_NAME = "service-worker.js"
+	'BANano.TranspilerOptions.UseServiceWorker = False
+	' this line makes sure our Web App becomes a PWA
+	#if Release
+	'BANano.TranspilerOptions.UseServiceWorkerWithUpdateMessage(True, "#26AE60", "Update available", "Click here to update the app to the latest version")
+	#end if	
+	
+	' optional: if your WebApp is not in the root
+	'BANano.TranspilerOptions.SetPWAStartUrl($"${AppName}/index.html"$)
+	'BANano.Header.BackgroundColor = "#1e1e1e"
+
+	' additonal JavaScript and CSS files we want to include
+	' BANano.Header.AddJavascriptFile("jsstore.min.js")
+
+	' settings needed for the PWA app icons, splash screens, etc…
+	BANano.Header.AddMSTileIcon("mstile-150x150.png", "150x150")
+	BANano.Header.MSTileColor = "#ffc40d"
+	
+	BANano.Header.AddManifestIcon("android-chrome-192x192.png", "192x192")
+	BANano.Header.AddManifestIcon("android-chrome-512x512.png", "512x512")
+	BANano.Header.SetAndroidMaskIcon("maskable_icon.png", "731x731")
+	BANano.Header.MaskIconColor = "#1e1e1e"
+	
+	BANano.Header.AddAppleTouchIcon("apple-touch-icon.png", "")
+	BANano.Header.SetAppleMaskIcon("safari.png")
+	BANano.Header.AddAppleTouchStartupImage("iphone5_splash.png", "320px", "568px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphone6_splash.png", "375px", "667px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphoneplus_splash.png", "621px", "1104px", "3")
+	BANano.Header.AddAppleTouchStartupImage("iphonex_splash.png", "375px", "812px", "3")
+	BANano.Header.AddAppleTouchStartupImage("iphonexr_splash.png", "414px", "896px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphonexsmax_splash.png", "414px", "896px", "3")
+	BANano.Header.AddAppleTouchStartupImage("ipad_splash.png", "768px", "1024px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro1_splash.png", "834px", "1112px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro2_splash.png", "834px", "1194px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro3_splash.png", "1024px", "1366px", "2")
+		
+	BANano.Header.AddFavicon("favicon-16x16.png", "16x16")
+	BANano.Header.AddFavicon("favicon-32x32.png", "32x32")
+		
+	'set php settings
+'	BANano.PHP_NAME = $"${AppName}.php"$
+'	#if release
+'	'change to external host domain e.g http://www.google.com
+'	'exclude the port address
+'	#end if
+'	BANano.PHPHost = $"${ServerIP}/${AppName}/"$
+'	BANano.PHPAddHeader("Access-Control-Allow-Origin: *")
+	
+	'transpile the app to javascript
+	BANano.Build(Publish)
+	
+	'open the default browser and show the generated index.html file
+	Dim fx As JFX
+	Dim appPath As String = $"${ServerIP}/${AppName}/index.html"$
+	fx.ShowExternalDocument(appPath)
+	#if release
+	ExitApplication
+	#end if
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+Sub BANano_Ready
+'	'get the environment variables
+'	Dim credentials As Map = BANano.Await(BANano.GetFileAsJSON("./assets/env.json", Null))
+'	'get the instance
+'	GreenAPI_Instance = credentials.Get("instance")
+'	'get the token
+'	GreenAPI_Token = credentials.Get("token")
+'	'get the admin email
+'	AdminUser = credentials.Get("e")
+'	'get the admin password
+'	AdminPwd = credentials.Get("p")
+'	'get the server ip for public web server
+'	ServerIP = credentials.Get("ip")
+'	GreenAPI_ApiURL = credentials.Get("apiurl")
+	pgIndex.Initialize
+End Sub
+
+

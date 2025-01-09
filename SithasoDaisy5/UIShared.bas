@@ -1,0 +1,1156 @@
+﻿B4J=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Class
+Version=10
+@EndOfDesignText@
+#IgnoreWarnings:12
+Sub Class_Globals
+	Private BANano As BANano 'ignore
+	Private mSelf As Object
+	Private iAttributes As Map
+	Private iStyles As Map
+	Private iClasses As List
+	Public ExcludeTextColor As Boolean = False
+	Public ExcludeBackgroundColor As Boolean = False
+	Public ExcludeVisible As Boolean = False
+	Public ExcludeEnabled As Boolean = False
+	Public ExcludePosition As Boolean = False
+End Sub
+
+'Initializes the object. You can add parameters to this method if needed.
+Public Sub Initialize(self As Object)
+	mSelf = self
+	iAttributes.Initialize 
+	iStyles.Initialize 
+	iClasses.Initialize 
+	ExcludeTextColor = False
+	ExcludeBackgroundColor = False
+	ExcludeVisible = False
+	ExcludeEnabled = False
+	ExcludePosition = False
+End Sub
+
+' internal use
+public Sub Trigger(mElement As BANanoElement, event As String, params() As String)
+	If mElement = Null Then Return
+	mElement.Trigger(event, params)
+End Sub
+
+' internal use
+public Sub SetProps(props As Map)
+	Dim sParentID As String = props.GetDefault("ParentID", "")
+	sParentID = SDUIShared.CleanID(sParentID)
+	Dim sMarginAXYTBLR As String = props.GetDefault("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	sMarginAXYTBLR = SDUIShared.CStr(sMarginAXYTBLR)
+	Dim sPaddingAXYTBLR As String = props.GetDefault("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	sPaddingAXYTBLR = SDUIShared.CStr(sPaddingAXYTBLR)
+	Dim sRawClasses As String = props.GetDefault("RawClasses", "")
+	sRawClasses = SDUIShared.CStr(sRawClasses)	
+	Dim sRawStyles As String = props.GetDefault("RawStyles", "")
+	sRawStyles = SDUIShared.CStr(sRawStyles)	
+	Dim sRawAttributes As String = props.GetDefault("RawAttributes", "")
+	sRawAttributes = SDUIShared.CStr(sRawAttributes)	
+	Dim bVisible As Boolean = props.GetDefault("Visible", False)
+	bVisible = SDUIShared.CBool(bVisible)	
+	Dim bEnabled As Boolean = props.GetDefault("Enabled", False)
+	bEnabled = SDUIShared.CBool(bEnabled)	
+	Dim sPositionStyle As String = props.GetDefault("PositionStyle", "")
+	sPositionStyle = SDUIShared.CStr(sPositionStyle)	
+	Dim sPosition As String = props.GetDefault("Position", "t=?; b=?; r=?; l=?")
+	sPosition = SDUIShared.CStr(sPosition)	
+	Dim sText As String = props.GetDefault("Text", "")
+	sText = SDUIShared.CStr(sText)	
+	Dim sTextColor As String = props.GetDefault("TextColor", "")
+	sTextColor = SDUIShared.CStr(sTextColor)	
+	Dim sBackgroundColor As String = props.GetDefault("BackgroundColor", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	sBackgroundColor = SDUIShared.CStr(sBackgroundColor)	
+	Dim sRawBorderColor As String = props.GetDefault("RawBorderColor", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	sRawBorderColor = SDUIShared.CStr(sRawBorderColor)	
+	Dim sRawBorderStyle As String = props.GetDefault("RawBorderStyle", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	sRawBorderStyle = SDUIShared.CStr(sRawBorderStyle)	
+	Dim sRawBorderWidth As String = props.GetDefault("RawBorderWidth", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	sRawBorderWidth = SDUIShared.CStr(sRawBorderWidth)	
+	Dim sRawBorderRadius As String = props.GetDefault("RawBorderRadius", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	sRawBorderRadius = SDUIShared.CStr(sRawBorderRadius)
+	'
+	BANano.SetP(mSelf, "sParentID", sParentID)
+	BANano.SetP(mSelf, "sMarginAXYTBLR", sMarginAXYTBLR)
+	BANano.SetP(mSelf, "sPaddingAXYTBLR", sPaddingAXYTBLR)
+	BANano.SetP(mSelf, "sRawClasses", sRawClasses)
+	BANano.SetP(mSelf, "sRawStyles", sRawStyles)
+	BANano.SetP(mSelf, "sRawAttributes", sRawAttributes)
+	BANano.SetP(mSelf, "bVisible", bVisible)
+	BANano.SetP(mSelf, "bEnabled", bEnabled)
+	BANano.SetP(mSelf, "sPositionStyle", sPositionStyle)
+	BANano.SetP(mSelf, "sPosition", sPosition)
+	BANano.SetP(mSelf, "sText", sText)
+	BANano.SetP(mSelf, "sTextColor", sTextColor)
+	BANano.SetP(mSelf, "sBackgroundColor", sBackgroundColor)
+	BANano.SetP(mSelf, "sRawBorderColor", sRawBorderColor)
+	BANano.SetP(mSelf, "sRawBorderStyle", sRawBorderStyle)
+	BANano.SetP(mSelf, "sRawBorderWidth", sRawBorderWidth)
+	BANano.SetP(mSelf, "sRawBorderRadius", sRawBorderRadius)
+End Sub
+
+Private Sub GetVisibleDT() As String
+	Return BANano.GetP(mSelf, "bVisible")
+End Sub
+
+Private Sub GetEnabledDT() As Boolean
+	Return BANano.GetP(mSelf, "bEnabled")
+End Sub
+
+public Sub BuildExAttributes() As String
+	If ExcludeEnabled = False Then
+		Dim bEnabled As Boolean = SDUIShared.CBool(GetEnabledDT)
+		If bEnabled = False Then AddAttrDT("disabled", "disabled")
+	End If
+	Dim sRawAttributes As String = GetAttributes
+	Dim attrM As Map = GetKeyValues(sRawAttributes, False)
+	attrM = BANano.DeepMerge(attrM, iAttributes)
+	Dim xStyle As String = BuildAttributes(attrM)
+	Return xStyle
+End Sub
+
+private Sub BuildAttributes(o As Map) As String
+	Dim colStyle As StringBuilder
+	colStyle.Initialize
+	'
+	For Each k As String In o.Keys
+		Dim v As String = o.GetDefault(k, "")
+		v = SDUIShared.CStr(v)
+		k = SDUIShared.CStr(k)
+		k = k.trim
+		v = v.trim
+		If k <> "" Then
+			colStyle.Append($"${k}="${v}" "$)
+		End If
+	Next
+	Dim sout As String = colStyle.tostring
+	colStyle.Initialize
+	Return sout
+End Sub
+
+' internal use
+public Sub BuildExStyle() As String
+	Dim styleList As Map
+	styleList.Initialize 
+	If ExcludePosition = False Then
+		Dim sPositions As String = GetPosition
+		Dim sPositionsM As Map = GetPositionMap(sPositions)
+		Dim sPositionStyle As String = GetPositionStyle
+		If sPositionStyle = "none" Then sPositionStyle = ""
+		If sPositionStyle <> "" Then
+			styleList.Put("position", sPositionStyle)
+		End If
+		styleList = BANano.DeepMerge(styleList, sPositionsM)
+	End If
+	'
+	Dim sRawStyles As String = GetStyles
+	Dim styleM As Map = GetKeyValues(sRawStyles, True)
+	'
+	Dim sbc As String = GetBorderColor
+	Dim sbcm As Map = GetBordersMap("color", sbc)
+	'
+	Dim sbs As String = GetBorderStyle
+	Dim sbsm As Map = GetBordersMap("style", sbs)
+	'
+	Dim sbw As String = GetBorderWidth
+	Dim sbwm As Map = GetBordersMap("width", sbw)
+	
+	Dim sbr As String = GetBorderRadius
+	Dim sbrm As Map = GetBordersMap("radius", sbr)
+	
+	styleList = BANano.DeepMerge(styleList, styleM)
+	styleList = BANano.DeepMerge(styleList, iStyles)
+	styleList = BANano.DeepMerge(styleList, sbcm)
+	styleList = BANano.DeepMerge(styleList, sbsm)
+	styleList = BANano.DeepMerge(styleList, sbwm)
+	styleList = BANano.DeepMerge(styleList, sbrm)
+	
+	Dim xStyle As String = BuildStyles(styleList)
+	Return xStyle
+End Sub
+
+public Sub BuildExClass() As String
+	Dim classList As List
+	classList.Initialize 
+	If ExcludeTextColor = False Then
+		Dim xTextColor As String = GetTextColor
+		Dim tc As String = SDUIShared.FixColor("text", xTextColor)
+		If tc <> "" Then AddClassDT(tc)
+	End If
+	'
+	If ExcludeBackgroundColor = False Then
+		Dim xBgColor As String = GetBackgroundColor
+		Dim bc As String = SDUIShared.FixColor("bg", xBgColor)
+		If bc <> "" Then AddClassDT(bc)
+	End If
+	'
+	If ExcludeVisible = False Then
+		Dim bVisible As Boolean = SDUIShared.CBool(GetVisibleDT)
+		If bVisible = False Then AddClassDT("hidden")
+	End If
+	'
+	Dim sMarginAXYTBLR As String = GetMarginAXYTBLR
+	sMarginAXYTBLR = SDUIShared.CStr(sMarginAXYTBLR)
+	Dim marginsM As Map = GetMarginPaddingMap(sMarginAXYTBLR)
+	Dim margins As List = MarginPaddingToList("m", marginsM)
+	classList = BANano.DeepMerge(classList, margins)
+	'
+	Dim sPaddingAXYTBLR As String = GetPaddingAXYTBLR
+	sPaddingAXYTBLR = SDUIShared.CStr(sPaddingAXYTBLR)
+	Dim paddingM As Map = GetMarginPaddingMap(sPaddingAXYTBLR)
+	Dim padding As List = MarginPaddingToList("p", paddingM)
+	classList = BANano.DeepMerge(classList, padding)
+	classList = BANano.DeepMerge(classList, iClasses)
+	
+	Dim xStyle As String = SDUIShared.Join(" ", classList)
+	Return xStyle
+End Sub
+
+private Sub BuildStyles(o As Map) As String
+	Dim colStyle As StringBuilder
+	colStyle.Initialize
+	'
+	For Each k As String In o.Keys
+		Dim v As String = o.GetDefault(k, "")
+		v = SDUIShared.CStr(v)
+		k = SDUIShared.CStr(k)
+		k = k.trim
+		v = v.trim
+		If k <> "" And v <> "" Then
+			colStyle.Append($"${k}:${v};"$)
+		End If
+	Next
+	Dim sout As String = colStyle.ToString
+	colStyle.Initialize
+	Return sout
+End Sub
+
+public Sub SetParentID(s As String)
+	BANano.SetP(mSelf, "sParentID", s)
+End Sub
+
+public Sub GetParentID() As String
+	Return BANano.GetP(mSelf, "sParentID")
+End Sub
+
+public Sub SetBorderRadius(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawBorderRadius", s)
+	If mElement = Null Then Return
+	Dim bb As Map = GetBordersMap("radius", s)
+	AddStyleMap(mElement, bb)
+End Sub
+
+public Sub GetBorderRadius() As String
+	Return BANano.GetP(mSelf, "sRawBorderRadius")
+End Sub
+
+public Sub SetBorderWidth(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawBorderWidth", s)
+	If mElement = Null Then Return
+	Dim bb As Map = GetBordersMap("width", s)
+	AddStyleMap(mElement, bb)
+End Sub
+
+public Sub GetBorderWidth() As String
+	Return BANano.GetP(mSelf, "sRawBorderWidth")
+End Sub
+
+public Sub SetBorderStyle(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawBorderStyle", s)
+	If mElement = Null Then Return
+	Dim bb As Map = GetBordersMap("style", s)
+	AddStyleMap(mElement, bb)
+End Sub
+
+public Sub GetBorderStyle() As String
+	Return BANano.GetP(mSelf, "sRawBorderStyle")
+End Sub
+
+public Sub SetBorderColor(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawBorderColor", s)
+	If mElement = Null Then Return
+	Dim bb As Map = GetBordersMap("color", s)
+	AddStyleMap(mElement, bb)
+End Sub
+
+public Sub GetBorderColor() As String
+	Return BANano.GetP(mSelf, "sRawBorderColor")
+End Sub
+
+public Sub SetSize(mElement As BANanoElement, prefix As String, s As String)
+	BANano.SetP(mSelf, "sSize", s)
+	If mElement = Null Then Return
+	Dim s1 As String = SDUIShared.FixSize(prefix, s)
+	UpdateClass(mElement, "size", s1)
+End Sub
+
+public Sub SetSizeByID(sID As String, prefix As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetSize(mElement, prefix, s)
+End Sub
+
+public Sub SetColor(mElement As BANanoElement, prefix As String, s As String)
+	BANano.SetP(mSelf, "sColor", s)
+	If mElement = Null Then Return
+	Dim s1 As String = SDUIShared.FixColor(prefix, s)
+	UpdateClass(mElement, "color", s1)
+End Sub
+
+public Sub GetColor() As String
+	Return BANano.GetP(mSelf, "sColor")
+End Sub
+
+public Sub SetColorByID(sID As String, prefix As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetColor(mElement, prefix, s)
+End Sub
+
+public Sub SetBackgroundColor(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sBackgroundColor", s)
+	If mElement = Null Then Return
+	Dim s1 As String = SDUIShared.FixColor("bg", s)
+	UpdateClass(mElement, "bgcolor", s1)
+End Sub
+
+public Sub GetBackgroundColor() As String
+	Return BANano.GetP(mSelf, "sBackgroundColor")
+End Sub
+
+public Sub SetTextColor(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sTextColor", s)
+	If mElement = Null Then Return
+	Dim s1 As String = SDUIShared.FixColor("text", s)
+	UpdateClass(mElement, "textcolor", s1)
+End Sub
+
+public Sub UpdateClassByID(sID As String, k As String, v As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	UpdateClass(mElement, k, v)
+End Sub
+
+public Sub RemoveClassByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	RemoveClass(mElement, s)
+End Sub
+
+public Sub SetBackgroundColorByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetBackgroundColor(mElement, s)
+End Sub
+
+public Sub SetTextColorByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetTextColor(mElement, s)
+End Sub
+
+public Sub SetTextSizeByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetTextSize(mElement, s)
+End Sub
+
+public Sub SetMaskByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMask(mElement, s)
+End Sub
+
+public Sub SetRoundedByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRounded(mElement, s)
+End Sub
+
+public Sub SetRingColorByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRingColor(mElement, s)
+End Sub
+
+public Sub SetTextByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetText(mElement, s)
+End Sub
+
+public Sub SetRingColor(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim xcolor As String = SDUIShared.FixColor("ring", s)
+	UpdateClass(mElement, "ringcolor", xcolor)
+End Sub
+
+public Sub SetMask(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim xmask As String = SDUIShared.FixMask(s)
+	UpdateClass(mElement, "mask", xmask)
+End Sub
+
+public Sub SetRounded(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim xmask As String = SDUIShared.FixRounded(s)
+	UpdateClass(mElement, "rounded", xmask)
+End Sub
+
+public Sub SetShadow(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim xmask As String = SDUIShared.FixShadow(s)
+	UpdateClass(mElement, "shadow", xmask)
+End Sub
+
+Sub SetShadowByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetShadow(mElement, s)
+End Sub
+
+public Sub SetTextSize(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim s1 As String = SDUIShared.FixColor("text", s)
+	UpdateClass(mElement, "textsize", s1)
+End Sub
+
+public Sub GetTextColor() As String
+	Return BANano.GetP(mSelf, "sTextColor")
+End Sub
+
+Sub AddClassDT(clsName As String)
+	iClasses.Add(clsName)
+End Sub
+
+'add a class to an element
+Sub AddClass(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	s = SDUIShared.CStr(s)
+	s = s.Replace(" ", ";")
+	s = s.Replace(CRLF, ";")
+	s = s.Replace("<br/>", ";")
+	s = s.trim
+	If s = "" Then Return
+	Dim lst As List = SDUIShared.StrParseTrim(";", s)
+	For Each c As String In lst
+		If c = "" Then Continue
+		mElement.AddClass(c)
+	Next
+End Sub
+
+Sub AddClassList(mElement As BANanoElement, lst As List)
+	If mElement = Null Then Return
+	Dim sList As String = SDUIShared.Join(";", lst)
+	AddClass(mElement, sList)
+End Sub
+
+Sub AddStyleComputedMap(mElement As BANanoElement, ms As Map)
+	If mElement = Null Then Return
+	If ms.Size = 0 Then Return
+	For Each k As String In ms.Keys
+		Dim v As String = ms.Get(k)
+		AddStyleComputed(mElement, k, v)
+	Next
+End Sub
+
+Sub Clear(mElement As BANanoElement)
+	If mElement = Null Then Return
+	mElement.empty
+End Sub
+
+Sub Append(mElement As BANanoElement, sContent As String)
+	If mElement = Null Then Return
+	mElement.Append(BANano.SF(sContent))
+End Sub
+
+'append content to the specified element
+Sub AppendByID(sID As String, sContent As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	Append(mElement, sContent)
+End Sub
+
+Sub SetHTML(mElement As BANanoElement, sContent As String)
+	BANano.SetP(mSelf, "sHTML", sContent)
+	If mElement = Null Then Return
+	mElement.SetHTML(BANano.SF(sContent))
+End Sub
+
+Sub SetHTMLByID(sID As String, sContent As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetHTML(mElement, sContent)
+End Sub
+
+public Sub GetHTML() As String
+	Return BANano.GetP(mSelf, "sHTML")
+End Sub
+
+'add a style to an element using a map
+Sub AddStyleMap(mElement As BANanoElement, ms As Map)
+	If mElement = Null Then Return
+	If ms.Size = 0 Then Return
+	mElement.SetStyle(BANano.ToJson(ms))
+End Sub
+
+'set attributes that are delimited by :;
+public Sub SetAttributes(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawAttributes", s)
+	If mElement = Null Then Return
+	Dim mm As Map = GetKeyValues(s, False)
+	For Each k As String In mm.Keys
+		Dim v As String = mm.Get(k)
+		Select Case k
+		Case "class"
+			AddClass(mElement, v)
+		Case "style"
+			SetStyles(mElement, v)
+		Case Else			
+			AddAttr(mElement, k, v)
+		End Select
+	Next
+End Sub
+
+public Sub GetAttributes() As String
+	Return BANano.GetP(mSelf, "sRawAttributes")
+End Sub
+
+'get positions delimited by :;
+private Sub GetPositionMap(varStyles As String) As Map
+	varStyles = SDUIShared.CStr(varStyles)
+	Dim ms As Map = CreateMap()
+	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
+	varStyles = varStyles.Replace("=", ":")
+	varStyles = varStyles.Replace("'", "")
+	varStyles = varStyles.Replace(QUOTE, "")
+	varStyles = varStyles.Replace(",", "")
+	varStyles = varStyles.trim
+	Dim mxItems As List = SDUIShared.StrParse(";", varStyles)
+	mxItems = SDUIShared.ListRemoveDuplicates(mxItems)
+	For Each mtx As String In mxItems
+		mtx = mtx.Replace("?", "")
+		mtx = mtx.Trim
+		If mtx = "" Then Continue
+		Dim k As String = SDUIShared.MvField(mtx,1,":")
+		Dim v As String = SDUIShared.MvField(mtx,2,":")
+		v = SDUIShared.CStr(v)
+		k = SDUIShared.CStr(k)
+		k = k.trim
+		v = v.trim
+		If k <> "" And v <> "" Then
+			Select Case k
+				Case "t"
+					ms.Put("top", v)
+				Case "b"
+					ms.Put("bottom", v)
+				Case "r"
+					ms.Put("right", v)
+				Case "l"
+					ms.Put("left", v)
+				Case Else
+					ms.Put(k, v)
+			End Select
+		End If
+	Next
+	Return ms
+End Sub
+
+public Sub SetPosition(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sPosition", s)
+	If mElement = Null Then Return
+	Dim stylesx As Map = GetPositionMap(s)
+	AddStyleMap(mElement, stylesx)
+End Sub
+
+public Sub GetPosition() As String
+	Return BANano.GetP(mSelf, "sPosition")
+End Sub
+
+
+public Sub SetPaddingAXYTBLR(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sPaddingAXYTBLR", s)
+	If mElement = Null Then Return
+	Dim mm As Map = GetMarginPaddingMap(s)
+	Dim classList As List = MarginPaddingToList("p", mm)
+	AddClassList(mElement, classList)
+End Sub
+
+' internal use
+public Sub GetPaddingAXYTBLR() As String
+	Return BANano.GetP(mSelf, "sPaddingAXYTBLR")
+End Sub
+
+public Sub SetMarginAXYTBLR(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sMarginAXYTBLR", s)
+	If mElement = Null Then Return
+	Dim mm As Map = GetMarginPaddingMap(s)
+	Dim classList As List = MarginPaddingToList("m", mm)
+	AddClassList(mElement, classList)
+End Sub
+
+public Sub GetMarginAXYTBLR() As String
+	Return BANano.GetP(mSelf, "sMarginAXYTBLR")
+End Sub
+
+public Sub SetClasses(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawClasses", s)
+	If mElement = Null Then Return
+	AddClass(mElement, s)
+End Sub
+
+public Sub GetClasses() As String
+	Return BANano.GetP(mSelf, "sRawClasses")
+End Sub
+
+public Sub SetPositionStyle(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sPositionStyle", s)
+	If mElement = Null Then Return
+	AddStyle(mElement, "position", s)
+End Sub
+
+public Sub GetPositionStyle() As String
+	Return BANano.GetP(mSelf, "sPositionStyle")
+End Sub
+
+public Sub SetStyles(mElement As BANanoElement, s As String)
+	BANano.SetP(mSelf, "sRawStyles", s)
+	If mElement = Null Then Return
+	Dim ms As Map = GetKeyValues(s, True)
+	If ms.Size = 0 Then Return
+	mElement.SetStyle(BANano.ToJson(ms))
+End Sub
+
+public Sub GetStyles() As String
+	Return BANano.GetP(mSelf, "sRawStyles")
+End Sub
+
+public Sub SetVisible(mElement As BANanoElement, bVisible As Boolean)
+	BANano.SetP(mSelf, "bVisible", bVisible)
+	If mElement = Null Then Return
+	If bVisible Then
+		RemoveClass(mElement, "hidden")
+	Else
+		AddClass(mElement, "hidden")
+	End If
+End Sub
+
+Sub SetCursorPointer(mElement As BANanoElement)
+	If mElement = Null Then Return
+	AddClass(mElement, "cursor-pointer")
+End Sub
+
+Sub SetCursorPointerByID(sID As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetCursorPointer(mElement)
+End Sub
+
+Sub SetVisibleByID(sID As String, b As Boolean)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetVisible(mElement, b)
+End Sub
+
+Sub OnEventMethod(mElement As BANanoElement, event As String, Module As Object, MethodName As String)		'ignore
+	If mElement = Null Then Return
+	Dim e As BANanoEvent
+	Dim cb As BANanoObject = BANano.CallBack(Module, MethodName, Array(e))
+	mElement.RunMethod("on", Array(event, cb))
+End Sub
+
+'add event
+Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, MethodName As String)
+	If mElement = Null Then Return
+	event = event.Replace(":","")
+	event = event.Replace(".","")
+	event = event.Replace("-","")
+	If SubExists(CallBack, MethodName) Then
+		mElement.Off(event)
+		mElement.On(event, CallBack, MethodName)
+	End If
+End Sub
+
+' internal use
+public Sub GetVisible(mElement As BANanoElement) As Boolean
+	If mElement = Null Then Return False
+	Dim mVisible As Boolean = Not(mElement.HasClass("hidden"))
+	BANano.SetP(mSelf, "bVisible", mVisible)
+	Return mVisible
+End Sub
+
+' internal use
+public Sub SetEnabled(mElement As BANanoElement, bEnabled As Boolean)
+	BANano.SetP(mSelf, "bEnabled", bEnabled)
+	If mElement = Null Then Return
+	If bEnabled Then
+		RemoveAttr(mElement, "disabled")
+	Else
+		AddAttr(mElement, "disabled", True)
+	End If
+End Sub
+
+' internal use
+public Sub GetEnabled(mElement As BANanoElement) As Boolean
+	If mElement = Null Then Return False
+	Dim mEnabled As Boolean = Not(mElement.hasAttr("disabled"))
+	BANano.SetP(mSelf, "bEnabled", mEnabled)
+	Return mEnabled
+End Sub
+
+'set a data attribute
+Sub SetData(mElement As BANanoElement, k As String, v As String)
+	If mElement = Null Then Return
+	If k = "" Then Return
+	If v = "" Then
+		RemoveAttr(mElement, $"data-${k}"$)
+	Else	
+		AddAttr(mElement, $"data-${k}"$, v)
+	End If
+End Sub
+
+'get a data attribute
+Sub GetData(mElement As BANanoElement, k As String) As String
+	If mElement = Null Then Return ""
+	Dim ma As String = mElement.GetData(k)
+	ma = SDUIShared.CStr(ma)
+	ma = ma.trim
+	Return ma
+End Sub
+
+'remove an attribute from the element
+Sub RemoveAttr(mElement As BANanoElement, attr As String)
+	If mElement = Null Then Return
+	mElement.RemoveAttr(attr)
+End Sub
+
+'add a computed style to the element
+Sub AddStyleComputed(mElement As BANanoElement, attr As String, text As String)
+	If mElement = Null Then Return
+	attr = SDUIShared.DeCamelCase(attr)
+	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))
+End Sub
+
+'add a styles to the element
+Sub AddStyle(mElement As BANanoElement, k As String, v As String)
+	If mElement = Null Then Return
+	k = SDUIShared.DeCamelCase(k)
+	Dim ms As Map = CreateMap()
+	ms.Put(k, v)
+	mElement.SetStyle(BANano.ToJson(ms))
+End Sub
+
+Sub AddClassByID(sID As String, k As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	AddClass(mElement, k)
+End Sub
+
+Sub AddStyleByID(sID As String, k As String, v As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	AddStyle(mElement, k, v)
+End Sub
+
+Sub SetStyleComputedByID(sID As String, k As String, v As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	AddStyleComputed(mElement, k, v)
+End Sub
+
+Sub AddStyleDT(k As String, v As String)
+	iStyles.Put(k, v)
+End Sub
+
+'set an attribute to the element
+Sub AddAttr(mElement As BANanoElement, attr As String, text As String)
+	If mElement = Null Then Return
+	mElement.SetAttr(attr, text)
+End Sub
+
+Sub AddAttrByID(sID As String, k As String, v As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	AddAttr(mElement, k, v)
+End Sub
+
+Sub RemoveAttrByID(sID As String, k As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	RemoveAttr(mElement, k)
+End Sub
+
+Sub AddAttrDT(attr As String, text As Object)
+	iAttributes.Put(attr, text)
+End Sub
+
+Sub AddDataAttrDT(attr As String, text As String)
+	iAttributes.put($"data-${attr}"$, text)
+End Sub
+
+'set a data attribute to the element
+Sub AddDataAttr(mElement As BANanoElement, attr As String, text As String)
+	If mElement = Null Then Return
+	mElement.SetData(attr, text)
+End Sub
+
+Sub GetDataAttr(mElement As BANanoElement, k As String) As String
+	If mElement = Null Then Return ""
+	If k = "" Then Return ""
+	Dim xma As String = mElement.GetData(k)
+	xma = SDUIShared.CStr(xma)
+	xma = xma.trim
+	Return xma
+End Sub
+
+Sub GetAttr(mElement As BANanoElement, attr As String) As String
+	If mElement = Null Then Return ""
+	If attr = "" Then Return ""
+	Dim stext As String = mElement.GetAttr(attr)
+	stext = SDUIShared.CStr(stext)
+	stext = stext.trim
+	Return stext
+End Sub
+
+Sub AddAttrMap(mElement As BANanoElement, ms As Map)
+	If mElement = Null Then Return
+	If ms.Size = 0 Then Return
+	For Each k As String In ms.Keys
+		Dim v As String = ms.Get(k)
+		mElement.SetAttr(k,v)
+	Next
+End Sub
+
+Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
+	If mElement = Null Then Return
+	Dim mLast As String = GetData(mElement, xattr)
+	mLast = SDUIShared.CStr(mLast)
+	mLast = mLast.trim
+	If mLast <> "" Then 
+		RemoveClass(mElement, mLast)
+	End If
+End Sub
+
+'this is for dynamic classes
+Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
+	If mElement = Null Then Return
+	RemoveLastClass(mElement, rpClass)
+	SetData(mElement, rpClass, nv)
+	AddClass(mElement, nv)
+End Sub
+
+'remove a class from the element you can delimiter by ;
+Sub RemoveClass(mElement As BANanoElement, xtext As String)
+	If mElement = Null Then Return
+	xtext = SDUIShared.CStr(xtext)
+	xtext = xtext.Replace(" ", ";")
+	xtext = xtext.Replace(CRLF, ";")
+	xtext = xtext.Replace("<br/>", ";")
+	xtext = xtext.Trim
+	If xtext = "" Then Return
+	Dim lst As List = SDUIShared.StrParse(";", xtext)
+	For Each c As String In lst
+		c = c.trim
+		If c = "" Then Continue
+		mElement.RemoveClass(c)
+	Next
+End Sub
+
+private Sub ListRemoveItem(lst As List, item As String)
+	Dim cPos As Int = lst.IndexOf(item)
+	If cPos <> -1 Then lst.RemoveAt(cPos)
+End Sub
+
+private Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
+	varStyles = SDUIShared.CStr(varStyles)
+	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
+	varStyles = varStyles.Replace(":", "=")
+	varStyles = varStyles.Replace(",", ";")
+	varStyles = varStyles.Replace("'", "")
+	varStyles = varStyles.Replace(",", ";")
+	varStyles = varStyles.Replace(QUOTE, "")
+	varStyles = varStyles.trim
+	Dim mxItems As List = SDUIShared.StrParse(";", varStyles)
+	mxItems = SDUIShared.ListRemoveDuplicates(mxItems)
+	Dim ms As Map = CreateMap()
+	For Each mtx As String In mxItems
+		mtx = mtx.Trim
+		If mtx = "" Then Continue
+		Dim k As String = SDUIShared.MvField(mtx,1,"=")
+		Dim v As String = SDUIShared.MvField(mtx,2,"=")
+		v = SDUIShared.CStr(v)
+		k = SDUIShared.CStr(k)
+		k = k.trim
+		v = v.trim
+		If k <> "" And v <> "" Then
+			If deCamel Then k = SDUIShared.DeCamelCase(k)
+			ms.put(k, v)
+		End If
+	Next
+	Return ms
+End Sub
+
+'typeOf - width, style, color, radius
+private Sub GetBordersMap(typeof As String, varOffsets As String) As Map
+	Dim mm As Map = CreateMap("a":"", "t":"", "r":"", "b":"", "l":"", "tl":"", "tr":"", "bl":"", "br":"", "x":"", "y":"")
+	varOffsets = SDUIShared.CStr(varOffsets)
+	varOffsets = varOffsets.Replace(" ", ";")
+	varOffsets = varOffsets.Replace(CRLF, ";").Replace("<br/>", ";")
+	varOffsets = varOffsets.trim
+	If varOffsets = "" Then Return mm
+	varOffsets = varOffsets.Replace(",", ";")
+	varOffsets = varOffsets.Replace(":", "=")
+	varOffsets = varOffsets.replace("?","")
+	varOffsets = varOffsets.Replace("'", "")
+	varOffsets = varOffsets.Replace(QUOTE, "")
+	varOffsets = varOffsets.trim
+	'
+	Dim ss As List = SDUIShared.StrParse(";", varOffsets)
+	ss = SDUIShared.ListRemoveDuplicates(ss)
+	For Each item As String In ss
+		Dim k As String = SDUIShared.MvField(item,1,"=")
+		Dim v As String = SDUIShared.MvField(item,2,"=")
+		k = SDUIShared.CStr(k).trim
+		v = SDUIShared.CStr(v).trim
+		Dim nk As String = ""
+		Dim nk1 As String = ""
+		Select Case k
+		Case "a"
+			nk = $"border-${typeof}"$
+		Case "t"
+			nk = $"border-top-${typeof}"$
+		Case "r"
+			nk = $"border-right-${typeof}"$
+		Case "b"
+			nk = $"border-bottom-${typeof}"$
+		Case "l"
+			nk = $"border-left-${typeof}"$
+		Case "tl"
+			nk = $"border-top-left-${typeof}"$
+		Case "tr"
+			nk = $"border-top-right-${typeof}"$
+		Case "bl"
+			nk = $"border-bottom-left-${typeof}"$
+		Case "br"
+			nk = $"border-bottom-right-${typeof}"$
+		Case "x"
+			nk = $"border-bottom-left-${typeof}"$
+			nk1 = $"border-bottom-right-${typeof}"$
+		Case "y"
+			nk = $"border-bottom-top-${typeof}"$
+			nk1 = $"border-bottom-bottom-${typeof}"$
+		End Select
+		If nk <> "" And v <> "" Then 
+			mm.Put(nk, v)
+		End If
+		If nk1 <> "" And v <> "" Then
+			mm.Put(nk1, v)
+		End If
+	Next
+	Return mm
+End Sub
+
+private Sub GetMarginPaddingMap(varOffsets As String) As Map
+	Dim mm As Map = CreateMap("a":"", "x":"", "y":"", "t":"", "b":"", "l":"", "r":"")
+	varOffsets = SDUIShared.CStr(varOffsets)
+	varOffsets = varOffsets.Replace(" ", ";")
+	varOffsets = varOffsets.Replace(CRLF, ";").Replace("<br/>", ";")
+	varOffsets = varOffsets.trim
+	If varOffsets = "" Then Return mm
+	varOffsets = varOffsets.Replace(":", "=")
+	varOffsets = varOffsets.replace("-","|")
+	varOffsets = varOffsets.replace(",","|")
+	varOffsets = varOffsets.replace(";","|")
+	varOffsets = varOffsets.replace("|",",")
+	varOffsets = varOffsets.replace("?","")
+	varOffsets = varOffsets.Replace("'", "")
+	varOffsets = varOffsets.Replace(QUOTE, "")
+	varOffsets = varOffsets.trim
+	'
+	Dim ss As List = SDUIShared.StrParse(",", varOffsets)
+	For Each item As String In ss
+		Dim k As String = SDUIShared.MvField(item,1,"=")
+		Dim v As String = SDUIShared.MvField(item,2,"=")
+		k = SDUIShared.CStr(k).trim
+		v = SDUIShared.CStr(v).trim
+		mm.Put(k, v)
+	Next
+	Return mm
+End Sub
+
+'convert a map of marging/padding to a list
+private Sub MarginPaddingToList(prefix As String, mm As Map) As List
+	Dim l As List
+	l.Initialize 
+	For Each k As String In mm.Keys
+		Dim v As String = mm.Get(k)
+		If v <> "" Then
+			If v.StartsWith("n") Then
+				Dim nn As String = SDUIShared.StrMid(v,2)
+				Dim n As String = SDUIShared.RightSize(nn)
+				Dim classKey As String = $"-${prefix}${k}-${n}"$
+				If k = "a" Then
+					classKey = $"-${prefix}-${n}"$
+				End If
+				l.Add(classKey)
+			Else
+				v = SDUIShared.RightSize(v)
+				Dim classKey As String = $"${prefix}${k}-${v}"$
+				If k = "a" Then
+					classKey = $"${prefix}-${v}"$
+				End If
+				l.Add(classKey)
+			End If
+		End If
+	Next
+	Return l
+End Sub
+
+Sub OnChildEvent(child As String, event As String, Module As Object, methodName As String)		'ignore
+	child = SDUIShared.CleanID(child)
+	event = event.Replace(":","")
+	event = event.Replace(".","")
+	event = event.Replace("-","")
+	'
+	If SubExists(Module, methodName) = False Then Return
+	Dim el As BANanoElement = BANano.GetElement($"#${child}"$)
+	el.Off(event)
+	el.On(event, Module, methodName)
+End Sub
+
+Sub SetChecked(mElement As BANanoElement, v As Boolean)
+	If mElement = Null Then Return
+	mElement.SetChecked(v)
+End Sub
+
+Sub GetChecked(mElement As BANanoElement) As Boolean
+	If mElement = Null Then Return False
+	Return mElement.GetChecked
+End Sub
+
+Sub SetImage(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	AddAttr(mElement, "src", s)
+End Sub
+
+Sub SetHeight(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = SDUIShared.FixSize("h", s)
+	UpdateClass(mElement, "h", sw)
+End Sub
+
+Sub SetHeightByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetHeight(mElement, s)
+End Sub
+
+Sub SetWidth(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = SDUIShared.FixSize("w", s)
+	UpdateClass(mElement, "w", sw)
+End Sub
+
+Sub SetWidthByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetWidth(mElement, s)
+End Sub
+
+Sub SetImageByID(sID As String, s As String)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetImage(mElement, s)
+End Sub
+
+Sub GetCheckedByID(sID As String) As Boolean
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	Dim b As Boolean = GetChecked(mElement)
+	b = SDUIShared.CBool(b)
+	Return b
+End Sub
+
+Sub SetCheckedByID(sID As String, b As Boolean)
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetChecked(mElement, b)
+End Sub
+
+Sub SetText(mElement As BANanoElement, hx As String)
+	If mElement = Null Then Return
+	mElement.SetText(BANano.SF(hx))
+End Sub
+
+Sub GetText(mElement As BANanoElement) As String
+	If mElement = Null Then Return ""
+	Return mElement.gettext
+End Sub
+
+Sub GetTextByID(sID As String) As String
+	sID = SDUIShared.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	Return GetText(mElement)
+End Sub
+
+Sub GetValue(mElement As BANanoElement) As Object
+	If mElement = Null Then Return Null
+	Return mElement.GetValue
+End Sub
+
+Sub SetValue(mElement As BANanoElement, v As Object)
+	If mElement = Null Then Return
+	mElement.SetValue(v)
+End Sub
+
+Sub ResponsiveClass(mElement As BANanoElement, className As String, xs As Boolean, sm As Boolean, md As Boolean, lg As Boolean)
+	If mElement = Null Then Return
+	If xs Then AddClass(mElement, "xs:" & className)
+	If sm Then AddClass(mElement, "sm:" & className)
+	If md Then AddClass(mElement, "md:" & className)
+	If lg Then AddClass(mElement, "lg:" & className)
+End Sub
+
+Sub AddTextColorDT(tc As String)
+	Dim s As String = SDUIShared.FixColor("text", tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddBackgroundColorDT(tc As String)
+	Dim s As String = SDUIShared.FixColor("bg", tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddSizeDT(prefix As String, tc As String)
+	Dim s As String = SDUIShared.Fixsize(prefix, tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddColorDT(prefix As String, tc As String)
+	Dim s As String = SDUIShared.Fixsize(prefix, tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddMaskDT(tc As String)
+	Dim s As String = SDUIShared.FixMask(tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddRoundedDT(tc As String)
+	Dim s As String = SDUIShared.FixRounded(tc)
+	AddClassDT(s)
+End Sub
+
+Sub AddShadowDT(s As String)
+	Dim x As String = SDUIShared.FixShadow(s)
+	AddClassDT(x)
+End Sub
+
+Sub AddTextSizeDT(tc As String)
+	Dim s As String = SDUIShared.Fixsize("text", tc)
+	AddClassDT(s)
+End Sub
