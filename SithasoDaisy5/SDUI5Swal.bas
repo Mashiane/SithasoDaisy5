@@ -24,12 +24,12 @@ Sub buttonsStyling(b As Boolean) As SDUI5Swal
 End Sub
 
 Sub confirmButtonClass(s As String) As SDUI5Swal
-	SDUIShared.PutRecursive(options, "customClass.confirmButton", s)
+	modSD5.PutRecursive(options, "customClass.confirmButton", s)
 	Return Me
 End Sub
 
 Sub cancelButtonClass(s As String) As SDUI5Swal
-	SDUIShared.PutRecursive(options, "customClass.cancelButton", s)
+	modSD5.PutRecursive(options, "customClass.cancelButton", s)
 	Return Me
 End Sub
 

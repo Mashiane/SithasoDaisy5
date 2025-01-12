@@ -88,8 +88,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -111,6 +111,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -242,52 +243,46 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "primary")
-		sColor = SDUIShared.Cstr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = SDUIShared.CBool(bDash)
+		bDash = modSD5.CBool(bDash)
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = SDUIShared.CBool(bGhost)
+		bGhost = modSD5.CBool(bGhost)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
-		sLeftIcon = SDUIShared.CStr(sLeftIcon)
+		sLeftIcon = modSD5.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
-		sLeftIconColor = SDUIShared.CStr(sLeftIconColor)
+		sLeftIconColor = modSD5.CStr(sLeftIconColor)
 		sLeftIconSize = Props.GetDefault("LeftIconSize", "16px")
-		sLeftIconSize = SDUIShared.CStr(sLeftIconSize)
+		sLeftIconSize = modSD5.CStr(sLeftIconSize)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = SDUIShared.CBool(bOutline)
+		bOutline = modSD5.CBool(bOutline)
 		sRightIcon = Props.GetDefault("RightIcon", "")
-		sRightIcon = SDUIShared.CStr(sRightIcon)
+		sRightIcon = modSD5.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "")
-		sRightIconColor = SDUIShared.CStr(sRightIconColor)
+		sRightIconColor = modSD5.CStr(sRightIconColor)
 		sRightIconSize = Props.GetDefault("RightIconSize", "16px")
-		sRightIconSize = SDUIShared.CStr(sRightIconSize)
+		sRightIconSize = modSD5.CStr(sRightIconSize)
 		bRound = Props.GetDefault("Round", False)
-		bRound = SDUIShared.CBool(bRound)
+		bRound = modSD5.CBool(bRound)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = SDUIShared.CStr(sSize)
+		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = SDUIShared.CBool(bSoft)
-		sText = Props.GetDefault("Text", "Badge")
-		sText = SDUIShared.CStr(sText)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		bSoft = modSD5.CBool(bSoft)
 		sTextSize = Props.GetDefault("TextSize", "")
-		sTextSize = SDUIShared.CStr(sTextSize)
+		sTextSize = modSD5.CStr(sTextSize)
 		bUseSpan = Props.GetDefault("UseSpan", False)
-		bUseSpan = SDUIShared.CBool(bUseSpan)
+		bUseSpan = modSD5.CBool(bUseSpan)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-start")
-		sIndicatorPosition = SDUIShared.CStr(sIndicatorPosition)
+		sIndicatorPosition = modSD5.CStr(sIndicatorPosition)
 		bIndicatorItem = Props.GetDefault("IndicatorItem", False)
-		bIndicatorItem = SDUIShared.CBool(bIndicatorItem)
+		bIndicatorItem = modSD5.CBool(bIndicatorItem)
 	End If
 	'
 	If sParentID <> "" Then
@@ -298,7 +293,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("badge")
 	If sColor <> "" Then UI.AddColorDT("badge", sColor)
 	If bDash <> False Then UI.AddClassDT("badge-dash")
@@ -307,7 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bOutline <> False Then UI.AddClassDT("badge-outline")
 	If sSize <> "" Then UI.AddClassDT("badge-" & sSize)
 	If bSoft <> False Then UI.AddClassDT("badge-soft")
-	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
 	If bIndicatorItem Then
@@ -606,8 +601,8 @@ Sub setIndicatorPosition(s As String)
 	If mElement = Null Then Return
 	If bIndicatorItem = False Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = SDUIShared.MvField(s,1,"-")
-	Dim spart As String = SDUIShared.MvField(s,2,"-")
+	Dim fpart As String = modSD5.mvfield(s,1,"-")
+	Dim spart As String = modSD5.mvfield(s,2,"-")
 	UI.UpdateClass(mElement, "badgeposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Item

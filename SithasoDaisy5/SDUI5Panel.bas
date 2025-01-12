@@ -14,8 +14,8 @@ Version=10
 #DesignerProperty: Key: FlexShrink, DisplayName: Flex Shrink, FieldType: String, DefaultValue: none, Description: Flex Shrink, List: 0|1|none
 #DesignerProperty: Key: FlexWrap, DisplayName: Flex Wrap, FieldType: String, DefaultValue: none, Description: Whether The Flex Items Should Wrap Or Not, List: none|nowrap|wrap|wrap-reverse
 #DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
-#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
-#DesignerProperty: Key: TextCenter, DisplayName: Text Center, FieldType: Boolean, DefaultValue: False, Description: Text Center
+#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
+#DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: AlignContent, DisplayName: Align Content, FieldType: String, DefaultValue: none, Description: Align The Flex Lines, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
 #DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Vertical Align The Flex Items, List: baseline|center|end|none|start|stretch
 #DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: none, Description: Align Self, List: auto|baseline|center|end|none|start|stretch
@@ -117,120 +117,15 @@ Sub Class_Globals
 	Private bRoundedBox As Boolean = False
 	Private sRowSpan As String = ""
 	Private sShadow As String = "none"
-	Private bTextCenter As Boolean = False
 	Private sTextColor As String = ""
 	Private sWidth As String = ""
-	Public CONST ALIGNCONTENT_AROUND As String = "around"
-	Public CONST ALIGNCONTENT_BASELINE As String = "baseline"
-	Public CONST ALIGNCONTENT_BETWEEN As String = "between"
-	Public CONST ALIGNCONTENT_CENTER As String = "center"
-	Public CONST ALIGNCONTENT_END As String = "end"
-	Public CONST ALIGNCONTENT_EVENLY As String = "evenly"
-	Public CONST ALIGNCONTENT_NONE As String = "none"
-	Public CONST ALIGNCONTENT_NORMAL As String = "normal"
-	Public CONST ALIGNCONTENT_START As String = "start"
-	Public CONST ALIGNCONTENT_STRETCH As String = "stretch"
-	Public CONST ALIGNITEMS_BASELINE As String = "baseline"
-	Public CONST ALIGNITEMS_CENTER As String = "center"
-	Public CONST ALIGNITEMS_END As String = "end"
-	Public CONST ALIGNITEMS_NONE As String = "none"
-	Public CONST ALIGNITEMS_START As String = "start"
-	Public CONST ALIGNITEMS_STRETCH As String = "stretch"
-	Public CONST ALIGNSELF_AUTO As String = "auto"
-	Public CONST ALIGNSELF_BASELINE As String = "baseline"
-	Public CONST ALIGNSELF_CENTER As String = "center"
-	Public CONST ALIGNSELF_END As String = "end"
-	Public CONST ALIGNSELF_NONE As String = "none"
-	Public CONST ALIGNSELF_START As String = "start"
-	Public CONST ALIGNSELF_STRETCH As String = "stretch"
-	Public CONST FLEX_1 As String = "1"
-	Public CONST FLEX_AUTO As String = "auto"
-	Public CONST FLEX_INITIAL As String = "initial"
-	Public CONST FLEX_NONE As String = "none"
-	Public CONST FLEXDIRECTION_COL As String = "col"
-	Public CONST FLEXDIRECTION_COL_REVERSE As String = "col-reverse"
-	Public CONST FLEXDIRECTION_NONE As String = "none"
-	Public CONST FLEXDIRECTION_ROW As String = "row"
-	Public CONST FLEXDIRECTION_ROW_REVERSE As String = "row-reverse"
-	Public CONST FLEXGROW_0 As String = "0"
-	Public CONST FLEXGROW_1 As String = "1"
-	Public CONST FLEXGROW_NONE As String = "none"
-	Public CONST FLEXSHRINK_0 As String = "0"
-	Public CONST FLEXSHRINK_1 As String = "1"
-	Public CONST FLEXSHRINK_NONE As String = "none"
-	Public CONST FLEXWRAP_NONE As String = "none"
-	Public CONST FLEXWRAP_NOWRAP As String = "nowrap"
-	Public CONST FLEXWRAP_WRAP As String = "wrap"
-	Public CONST FLEXWRAP_WRAP_REVERSE As String = "wrap-reverse"
-	Public CONST GRIDFLOW_COL As String = "col"
-	Public CONST GRIDFLOW_COL_DENSE As String = "col-dense"
-	Public CONST GRIDFLOW_DENSE As String = "dense"
-	Public CONST GRIDFLOW_NONE As String = "none"
-	Public CONST GRIDFLOW_ROW As String = "row"
-	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
-	Public CONST JUSTIFYCONTENT_AROUND As String = "around"
-	Public CONST JUSTIFYCONTENT_BETWEEN As String = "between"
-	Public CONST JUSTIFYCONTENT_CENTER As String = "center"
-	Public CONST JUSTIFYCONTENT_END As String = "end"
-	Public CONST JUSTIFYCONTENT_EVENLY As String = "evenly"
-	Public CONST JUSTIFYCONTENT_NONE As String = "none"
-	Public CONST JUSTIFYCONTENT_NORMAL As String = "normal"
-	Public CONST JUSTIFYCONTENT_START As String = "start"
-	Public CONST JUSTIFYCONTENT_STRETCH As String = "stretch"
-	Public CONST JUSTIFYITEMS_CENTER As String = "center"
-	Public CONST JUSTIFYITEMS_END As String = "end"
-	Public CONST JUSTIFYITEMS_NONE As String = "none"
-	Public CONST JUSTIFYITEMS_START As String = "start"
-	Public CONST JUSTIFYITEMS_STRETCH As String = "stretch"
-	Public CONST JUSTIFYSELF_AUTO As String = "auto"
-	Public CONST JUSTIFYSELF_CENTER As String = "center"
-	Public CONST JUSTIFYSELF_END As String = "end"
-	Public CONST JUSTIFYSELF_NONE As String = "none"
-	Public CONST JUSTIFYSELF_START As String = "start"
-	Public CONST JUSTIFYSELF_STRETCH As String = "stretch"
-	Public CONST PLACECONTENT_AROUND As String = "around"
-	Public CONST PLACECONTENT_BASELINE As String = "baseline"
-	Public CONST PLACECONTENT_BETWEEN As String = "between"
-	Public CONST PLACECONTENT_CENTER As String = "center"
-	Public CONST PLACECONTENT_END As String = "end"
-	Public CONST PLACECONTENT_EVENLY As String = "evenly"
-	Public CONST PLACECONTENT_NONE As String = "none"
-	Public CONST PLACECONTENT_START As String = "start"
-	Public CONST PLACECONTENT_STRETCH As String = "stretch"
-	Public CONST PLACEITEMS_BASELINE As String = "baseline"
-	Public CONST PLACEITEMS_CENTER As String = "center"
-	Public CONST PLACEITEMS_END As String = "end"
-	Public CONST PLACEITEMS_NONE As String = "none"
-	Public CONST PLACEITEMS_START As String = "start"
-	Public CONST PLACEITEMS_STRETCH As String = "stretch"
-	Public CONST PLACESELF_AUTO As String = "auto"
-	Public CONST PLACESELF_CENTER As String = "center"
-	Public CONST PLACESELF_END As String = "end"
-	Public CONST PLACESELF_NONE As String = "none"
-	Public CONST PLACESELF_START As String = "start"
-	Public CONST PLACESELF_STRETCH As String = "stretch"
-	Public CONST ROUNDED_NONE As String = "none"
-	Public CONST ROUNDED_ROUNDED As String = "rounded"
-	Public CONST ROUNDED_ROUNDED_2XL As String = "rounded-2xl"
-	Public CONST ROUNDED_ROUNDED_3XL As String = "rounded-3xl"
-	Public CONST ROUNDED_ROUNDED_FULL As String = "rounded-full"
-	Public CONST ROUNDED_ROUNDED_LG As String = "rounded-lg"
-	Public CONST ROUNDED_ROUNDED_MD As String = "rounded-md"
-	Public CONST ROUNDED_ROUNDED_SM As String = "rounded-sm"
-	Public CONST ROUNDED_ROUNDED_XL As String = "rounded-xl"
-	Public CONST SHADOW_2XL As String = "2xl"
-	Public CONST SHADOW_INNER As String = "inner"
-	Public CONST SHADOW_LG As String = "lg"
-	Public CONST SHADOW_MD As String = "md"
-	Public CONST SHADOW_NONE As String = "none"
-	Public CONST SHADOW_SHADOW As String = "shadow"
-	Public CONST SHADOW_SM As String = "sm"
-	Public CONST SHADOW_XL As String = "xl"
+	Private sTextAlign As String = "none"
+	Private bCenterChildren As Boolean
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -252,6 +147,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -428,98 +324,100 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlignContent = Props.GetDefault("AlignContent", "none")
-		sAlignContent = SDUIShared.CStr(sAlignContent)
+		sAlignContent = modSD5.CStr(sAlignContent)
 		If sAlignContent = "none" Then sAlignContent = ""
 		sAlignItems = Props.GetDefault("AlignItems", "none")
-		sAlignItems = SDUIShared.CStr(sAlignItems)
+		sAlignItems = modSD5.CStr(sAlignItems)
 		If sAlignItems = "none" Then sAlignItems = ""
 		sAlignSelf = Props.GetDefault("AlignSelf", "none")
-		sAlignSelf = SDUIShared.CStr(sAlignSelf)
+		sAlignSelf = modSD5.CStr(sAlignSelf)
 		If sAlignSelf = "none" Then sAlignSelf = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
-		bCenterChildren = SDUIShared.CBool(bCenterChildren)
+		bCenterChildren = modSD5.CBool(bCenterChildren)
 		sColSpan = Props.GetDefault("ColSpan", "")
-		sColSpan = SDUIShared.CStr(sColSpan)
+		sColSpan = modSD5.CStr(sColSpan)
 		sColSpanLg = Props.GetDefault("ColSpanLg", "")
-		sColSpanLg = SDUIShared.CStr(sColSpanLg)
+		sColSpanLg = modSD5.CStr(sColSpanLg)
 		sColSpanMd = Props.GetDefault("ColSpanMd", "")
-		sColSpanMd = SDUIShared.CStr(sColSpanMd)
+		sColSpanMd = modSD5.CStr(sColSpanMd)
 		sColSpanSm = Props.GetDefault("ColSpanSm", "")
-		sColSpanSm = SDUIShared.CStr(sColSpanSm)
+		sColSpanSm = modSD5.CStr(sColSpanSm)
 		sColSpanXl = Props.GetDefault("ColSpanXl", "")
-		sColSpanXl = SDUIShared.CStr(sColSpanXl)
+		sColSpanXl = modSD5.CStr(sColSpanXl)
 		sColSpanXs = Props.GetDefault("ColSpanXs", "")
-		sColSpanXs = SDUIShared.CStr(sColSpanXs)
+		sColSpanXs = modSD5.CStr(sColSpanXs)
 		sFlex = Props.GetDefault("Flex", "none")
-		sFlex = SDUIShared.CStr(sFlex)
+		sFlex = modSD5.CStr(sFlex)
 		If sFlex = "none" Then sFlex = ""
 		sFlexBasis = Props.GetDefault("FlexBasis", "")
-		sFlexBasis = SDUIShared.CStr(sFlexBasis)
+		sFlexBasis = modSD5.CStr(sFlexBasis)
 		sFlexDirection = Props.GetDefault("FlexDirection", "none")
-		sFlexDirection = SDUIShared.CStr(sFlexDirection)
+		sFlexDirection = modSD5.CStr(sFlexDirection)
 		If sFlexDirection = "none" Then sFlexDirection = ""
 		sFlexGrow = Props.GetDefault("FlexGrow", "none")
-		sFlexGrow = SDUIShared.CStr(sFlexGrow)
+		sFlexGrow = modSD5.CStr(sFlexGrow)
 		If sFlexGrow = "none" Then sFlexGrow = ""
 		sFlexShrink = Props.GetDefault("FlexShrink", "none")
-		sFlexShrink = SDUIShared.CStr(sFlexShrink)
+		sFlexShrink = modSD5.CStr(sFlexShrink)
 		If sFlexShrink = "none" Then sFlexShrink = ""
 		sFlexWrap = Props.GetDefault("FlexWrap", "none")
-		sFlexWrap = SDUIShared.CStr(sFlexWrap)
+		sFlexWrap = modSD5.CStr(sFlexWrap)
 		If sFlexWrap = "none" Then sFlexWrap = ""
 		bFlexbox = Props.GetDefault("Flexbox", False)
-		bFlexbox = SDUIShared.CBool(bFlexbox)
+		bFlexbox = modSD5.CBool(bFlexbox)
 		sGap = Props.GetDefault("Gap", "")
-		sGap = SDUIShared.CStr(sGap)
+		sGap = modSD5.CStr(sGap)
 		bGrid = Props.GetDefault("Grid", False)
-		bGrid = SDUIShared.CBool(bGrid)
+		bGrid = modSD5.CBool(bGrid)
 		sGridCols = Props.GetDefault("GridCols", "")
-		sGridCols = SDUIShared.CStr(sGridCols)
+		sGridCols = modSD5.CStr(sGridCols)
 		sGridFlow = Props.GetDefault("GridFlow", "none")
-		sGridFlow = SDUIShared.CStr(sGridFlow)
+		sGridFlow = modSD5.CStr(sGridFlow)
 		If sGridFlow = "none" Then sGridFlow = ""
 		sGridRows = Props.GetDefault("GridRows", "")
-		sGridRows = SDUIShared.CStr(sGridRows)
+		sGridRows = modSD5.CStr(sGridRows)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sJustifyContent = Props.GetDefault("JustifyContent", "none")
-		sJustifyContent = SDUIShared.CStr(sJustifyContent)
+		sJustifyContent = modSD5.CStr(sJustifyContent)
 		If sJustifyContent = "none" Then sJustifyContent = ""
 		sJustifyItems = Props.GetDefault("JustifyItems", "")
-		sJustifyItems = SDUIShared.CStr(sJustifyItems)
+		sJustifyItems = modSD5.CStr(sJustifyItems)
 		sJustifySelf = Props.GetDefault("JustifySelf", "none")
-		sJustifySelf = SDUIShared.CStr(sJustifySelf)
+		sJustifySelf = modSD5.CStr(sJustifySelf)
 		If sJustifySelf = "none" Then sJustifySelf = ""
 		sPlaceContent = Props.GetDefault("PlaceContent", "none")
-		sPlaceContent = SDUIShared.CStr(sPlaceContent)
+		sPlaceContent = modSD5.CStr(sPlaceContent)
 		If sPlaceContent = "none" Then sPlaceContent = ""
 		sPlaceItems = Props.GetDefault("PlaceItems", "none")
-		sPlaceItems = SDUIShared.CStr(sPlaceItems)
+		sPlaceItems = modSD5.CStr(sPlaceItems)
 		If sPlaceItems = "none" Then sPlaceItems = ""
 		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
-		sPlaceSelf = SDUIShared.CStr(sPlaceSelf)
+		sPlaceSelf = modSD5.CStr(sPlaceSelf)
 		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = SDUIShared.CStr(sRounded)
+		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = SDUIShared.CBool(bRoundedBox)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
 		sRowSpan = Props.GetDefault("RowSpan", "")
-		sRowSpan = SDUIShared.CStr(sRowSpan)
+		sRowSpan = modSD5.CStr(sRowSpan)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = SDUIShared.CStr(sShadow)
+		sShadow = modSD5.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
-		bTextCenter = Props.GetDefault("TextCenter", False)
-		bTextCenter = SDUIShared.CBool(bTextCenter)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
+		sTextAlign = Props.GetDefault("TextAlign", "none")
+		sTextAlign = modSD5.CStr(sTextAlign)
+		If sTextAlign = "none" Then sTextAlign = ""
 	End If
 	'
+	If bCenterChildren Then UI.AddClassdt("flex justify-center items-center")
+	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
 	If sAlignItems <> "" Then UI.AddClassDT("items-" & sAlignItems)
 	If sAlignSelf <> "" Then UI.AddClassDT("self-" & sAlignSelf)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-'	If bCenterChildren <> False Then UI.AddClassDT("center-children")
 	If sColSpan <> "" Then UI.AddClassDT("col-span-" & sColSpan)
 	If sColSpanLg <> "" Then UI.AddClassDT("lg:col-span-" & sColSpanLg)
 	If sColSpanMd <> "" Then UI.AddClassDT("md:col-span-" & sColSpanMd)
@@ -559,8 +457,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bRoundedBox <> False Then UI.AddClassDT("rounded-box")
 	If sRowSpan <> "" Then UI.AddClassDT("row-span-" & sRowSpan)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If bTextCenter <> False Then UI.AddClassDT("text-center")
-'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -574,6 +471,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+End Sub
+
+
+Sub setCenterChildren(b As Boolean)
+	bCenterChildren = b
+	CustProps.Put("CenterChildren", b)
+	If mElement = Null Then Return
+	If b Then UI.AddClass(mElement, "flex justify-center items-center")
+End Sub
+
+Sub getCenterChildren As Boolean
+	Return bCenterChildren
 End Sub
 
 'set Align The Flex Lines
@@ -606,17 +515,6 @@ Sub setBackgroundColor(s As String)
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
-End Sub
-'set Center Children
-Sub setCenterChildren(b As Boolean)
-	bCenterChildren = b
-	CustProps.put("CenterChildren", b)
-	If mElement = Null Then Return
-'	If b <> False Then
-'		UI.AddClass(mElement, "center-children")
-'	Else
-'		UI.RemoveClass(mElement, "center-children")
-'	End If
 End Sub
 'set Col Span
 Sub setColSpan(s As String)
@@ -857,17 +755,6 @@ Sub setShadow(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
-'set Text Center
-Sub setTextCenter(b As Boolean)
-	bTextCenter = b
-	CustProps.put("TextCenter", b)
-	If mElement = Null Then Return
-	If b <> False Then
-		UI.AddClass(mElement, "text-center")
-	Else
-		UI.RemoveClass(mElement, "text-center")
-	End If
-End Sub
 'set Text Color
 Sub setTextColor(s As String)
 	sTextColor = s
@@ -897,10 +784,6 @@ End Sub
 'get Background Color
 Sub getBackgroundColor As String
 	Return sBackgroundColor
-End Sub
-'get Center Children
-Sub getCenterChildren As Boolean
-	Return bCenterChildren
 End Sub
 'get Col Span
 Sub getColSpan As String
@@ -1018,10 +901,7 @@ End Sub
 Sub getShadow As String
 	Return sShadow
 End Sub
-'get Text Center
-Sub getTextCenter As Boolean
-	Return bTextCenter
-End Sub
+
 'get Text Color
 Sub getTextColor As String
 	Return sTextColor
@@ -1029,4 +909,18 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+
+'set Text Align
+'options: left|right|center|justify|start|end|none
+Sub setTextAlign(s As String)
+	sTextAlign = s
+	CustProps.put("TextAlign", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddStyle(mElement, "text-align", s)
+End Sub
+'get Text Align
+Sub getTextAlign As String
+	Return sTextAlign
 End Sub

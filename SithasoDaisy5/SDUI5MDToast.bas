@@ -53,8 +53,8 @@ End Sub
 
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
@@ -63,6 +63,7 @@ End Sub
 
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -90,23 +91,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		sParentID = Props.GetDefault("ParentID", "")
-		sParentID = SDUIShared.CStr(sParentID)
+		sParentID = modSD5.CStr(sParentID)
 		sActionText = Props.GetDefault("ActionText", "OK")
-		sActionText = SDUIShared.CStr(sActionText)
+		sActionText = modSD5.CStr(sActionText)
 		iDuration = Props.GetDefault("Duration", 5000)
-		iDuration = SDUIShared.CInt(iDuration)
+		iDuration = modSD5.CInt(iDuration)
 		bInteraction = Props.GetDefault("Interaction", False)
-		bInteraction = SDUIShared.CBool(bInteraction)
+		bInteraction = modSD5.CBool(bInteraction)
 		sInteractionTimeout = Props.GetDefault("InteractionTimeout", "")
-		sInteractionTimeout = SDUIShared.CStr(sInteractionTimeout)
+		sInteractionTimeout = modSD5.CStr(sInteractionTimeout)
 		bModal = Props.GetDefault("Modal", False)
-		bModal = SDUIShared.CBool(bModal)
+		bModal = modSD5.CBool(bModal)
 		sPosition = Props.GetDefault("Position", "bottom_left")
-		sPosition = SDUIShared.CStr(sPosition)
-		sText = Props.GetDefault("Text", "")
-		sText = SDUIShared.CStr(sText)
+		sPosition = modSD5.CStr(sPosition)
 		sTypeOf = Props.GetDefault("TypeOf", "default")
-		sTypeOf = SDUIShared.CStr(sTypeOf)
+		sTypeOf = modSD5.CStr(sTypeOf)
 	End If
 	'
 	Options.put("actionText", sActionText)

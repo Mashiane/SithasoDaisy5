@@ -15,21 +15,16 @@ Version=10
 
 Private Sub Class_Globals
 	Private UI As UIShared
-	Public CustProps As Map 'ignore
 	Public mElement As BANanoElement 'ignore
-	'Private MasterModal As SDUIModal
 	Public Process As String
 	Private mback As Object				'ignore
 	Private Banano As BANano		'ignore
-	Private sGoogleMapKey As String = ""
-	Private sPageViewer As String = "#pageview"
-	Private bRtl As Boolean = False
-	Private sSwalPosition As String = "top-end"
-	Private iSwalTimer As Int = 3000
-	Private sTheme As String = "default"
-	Private iToastDuration As Int = 3000
-	Private sToastPosition As String = "top_right"
-	Private sBackgroundImage As String = ""
+	Public GoogleMapKey As String = ""
+	Public PageView As String = "#pageview"
+	Public SwalPosition As String = "top-end"
+	Public SwalTimer As Int = 3000
+	Public ToastDuration As Int = 3000
+	Public ToastPosition As String = "top_right"
 	'
 	Public CONST SIZE_LG As String = "lg"
 	Public CONST SIZE_MD As String = "md"
@@ -140,9 +135,6 @@ Private Sub Class_Globals
 	Public const INTENSITY_ACCENT4 As String = "accent-4"
 	
 	Public Themes As Map
-	'Public PageView As SDUIDiv
-	'Public Container As SDUIDiv
-	Private sStartPage As String = ""
 	'
 	Public const TEXT_UNDERLINE As String = "underline"
 	Public const TEXT_OVERLINE As String = "overline"
@@ -261,7 +253,7 @@ Private Sub Class_Globals
 	Public Tag As Object
 	Private validations As Map
 	Public MissingParents As Map
-	Public math As BANanoObject
+	
 	'
 	Public CONST MASK_CIRCLE As String = "circle"
 	Public CONST MASK_DECAGON As String = "decagon"
@@ -289,6 +281,126 @@ Private Sub Class_Globals
 	Public CONST ROUNDED_ROUNDED As String = "rounded"
 	Public CONST ROUNDED_SM As String = "sm"
 	Public CONST ROUNDED_XL As String = "xl"
+	'
+	Public CONST ALIGNITEMS_BASELINE As String = "baseline"
+	Public CONST ALIGNITEMS_CENTER As String = "center"
+	Public CONST ALIGNITEMS_END As String = "end"
+	Public CONST ALIGNITEMS_FLEX_END As String = "flex-end"
+	Public CONST ALIGNITEMS_FLEX_START As String = "flex-start"
+	Public CONST ALIGNITEMS_INHERIT As String = "inherit"
+	Public CONST ALIGNITEMS_INITIAL As String = "initial"
+	Public CONST ALIGNITEMS_NONE As String = "none"
+	Public CONST ALIGNITEMS_NORMAL As String = "normal"
+	Public CONST ALIGNITEMS_START As String = "start"
+	Public CONST ALIGNITEMS_STRETCH As String = "stretch"
+	Public CONST JUSTIFYCONTENT_CENTER As String = "center"
+	Public CONST JUSTIFYCONTENT_FLEX_END As String = "flex-end"
+	Public CONST JUSTIFYCONTENT_FLEX_START As String = "flex-start"
+	Public CONST JUSTIFYCONTENT_INHERIT As String = "inherit"
+	Public CONST JUSTIFYCONTENT_INITIAL As String = "initial"
+	Public CONST JUSTIFYCONTENT_NONE As String = "none"
+	Public CONST JUSTIFYCONTENT_SPACE_AROUND As String = "space-around"
+	Public CONST JUSTIFYCONTENT_SPACE_BETWEEN As String = "space-between"
+	Public CONST JUSTIFYCONTENT_SPACE_EVENLY As String = "space-evenly"
+	Public CONST TEXTALIGN_CENTER As String = "center"
+	Public CONST TEXTALIGN_END As String = "end"
+	Public CONST TEXTALIGN_JUSTIFY As String = "justify"
+	Public CONST TEXTALIGN_LEFT As String = "left"
+	Public CONST TEXTALIGN_NONE As String = "none"
+	Public CONST TEXTALIGN_RIGHT As String = "right"
+	Public CONST TEXTALIGN_START As String = "start"
+	'
+	Public CONST ALIGNCONTENT_AROUND As String = "around"
+	Public CONST ALIGNCONTENT_BASELINE As String = "baseline"
+	Public CONST ALIGNCONTENT_BETWEEN As String = "between"
+	Public CONST ALIGNCONTENT_CENTER As String = "center"
+	Public CONST ALIGNCONTENT_END As String = "end"
+	Public CONST ALIGNCONTENT_EVENLY As String = "evenly"
+	Public CONST ALIGNCONTENT_NONE As String = "none"
+	Public CONST ALIGNCONTENT_NORMAL As String = "normal"
+	Public CONST ALIGNCONTENT_START As String = "start"
+	Public CONST ALIGNCONTENT_STRETCH As String = "stretch"
+	Public CONST ALIGNITEMS_BASELINE As String = "baseline"
+	Public CONST ALIGNITEMS_CENTER As String = "center"
+	Public CONST ALIGNITEMS_END As String = "end"
+	Public CONST ALIGNITEMS_NONE As String = "none"
+	Public CONST ALIGNITEMS_START As String = "start"
+	Public CONST ALIGNITEMS_STRETCH As String = "stretch"
+	Public CONST ALIGNSELF_AUTO As String = "auto"
+	Public CONST ALIGNSELF_BASELINE As String = "baseline"
+	Public CONST ALIGNSELF_CENTER As String = "center"
+	Public CONST ALIGNSELF_END As String = "end"
+	Public CONST ALIGNSELF_NONE As String = "none"
+	Public CONST ALIGNSELF_START As String = "start"
+	Public CONST ALIGNSELF_STRETCH As String = "stretch"
+	'
+	
+	Public CONST FLEX_1 As String = "1"
+	Public CONST FLEX_AUTO As String = "auto"
+	Public CONST FLEX_INITIAL As String = "initial"
+	Public CONST FLEX_NONE As String = "none"
+	Public CONST FLEXDIRECTION_COL As String = "col"
+	Public CONST FLEXDIRECTION_COL_REVERSE As String = "col-reverse"
+	Public CONST FLEXDIRECTION_NONE As String = "none"
+	Public CONST FLEXDIRECTION_ROW As String = "row"
+	Public CONST FLEXDIRECTION_ROW_REVERSE As String = "row-reverse"
+	Public CONST FLEXGROW_0 As String = "0"
+	Public CONST FLEXGROW_1 As String = "1"
+	Public CONST FLEXGROW_NONE As String = "none"
+	Public CONST FLEXSHRINK_0 As String = "0"
+	Public CONST FLEXSHRINK_1 As String = "1"
+	Public CONST FLEXSHRINK_NONE As String = "none"
+	Public CONST FLEXWRAP_NONE As String = "none"
+	Public CONST FLEXWRAP_NOWRAP As String = "nowrap"
+	Public CONST FLEXWRAP_WRAP As String = "wrap"
+	Public CONST FLEXWRAP_WRAP_REVERSE As String = "wrap-reverse"
+	Public CONST GRIDFLOW_COL As String = "col"
+	Public CONST GRIDFLOW_COL_DENSE As String = "col-dense"
+	Public CONST GRIDFLOW_DENSE As String = "dense"
+	Public CONST GRIDFLOW_NONE As String = "none"
+	Public CONST GRIDFLOW_ROW As String = "row"
+	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
+	Public CONST JUSTIFYCONTENT_AROUND As String = "around"
+	Public CONST JUSTIFYCONTENT_BETWEEN As String = "between"
+	Public CONST JUSTIFYCONTENT_CENTER As String = "center"
+	Public CONST JUSTIFYCONTENT_END As String = "end"
+	Public CONST JUSTIFYCONTENT_EVENLY As String = "evenly"
+	Public CONST JUSTIFYCONTENT_NONE As String = "none"
+	Public CONST JUSTIFYCONTENT_NORMAL As String = "normal"
+	Public CONST JUSTIFYCONTENT_START As String = "start"
+	Public CONST JUSTIFYCONTENT_STRETCH As String = "stretch"
+	Public CONST JUSTIFYITEMS_CENTER As String = "center"
+	Public CONST JUSTIFYITEMS_END As String = "end"
+	Public CONST JUSTIFYITEMS_NONE As String = "none"
+	Public CONST JUSTIFYITEMS_START As String = "start"
+	Public CONST JUSTIFYITEMS_STRETCH As String = "stretch"
+	Public CONST JUSTIFYSELF_AUTO As String = "auto"
+	Public CONST JUSTIFYSELF_CENTER As String = "center"
+	Public CONST JUSTIFYSELF_END As String = "end"
+	Public CONST JUSTIFYSELF_NONE As String = "none"
+	Public CONST JUSTIFYSELF_START As String = "start"
+	Public CONST JUSTIFYSELF_STRETCH As String = "stretch"
+	Public CONST PLACECONTENT_AROUND As String = "around"
+	Public CONST PLACECONTENT_BASELINE As String = "baseline"
+	Public CONST PLACECONTENT_BETWEEN As String = "between"
+	Public CONST PLACECONTENT_CENTER As String = "center"
+	Public CONST PLACECONTENT_END As String = "end"
+	Public CONST PLACECONTENT_EVENLY As String = "evenly"
+	Public CONST PLACECONTENT_NONE As String = "none"
+	Public CONST PLACECONTENT_START As String = "start"
+	Public CONST PLACECONTENT_STRETCH As String = "stretch"
+	Public CONST PLACEITEMS_BASELINE As String = "baseline"
+	Public CONST PLACEITEMS_CENTER As String = "center"
+	Public CONST PLACEITEMS_END As String = "end"
+	Public CONST PLACEITEMS_NONE As String = "none"
+	Public CONST PLACEITEMS_START As String = "start"
+	Public CONST PLACEITEMS_STRETCH As String = "stretch"
+	Public CONST PLACESELF_AUTO As String = "auto"
+	Public CONST PLACESELF_CENTER As String = "center"
+	Public CONST PLACESELF_END As String = "end"
+	Public CONST PLACESELF_NONE As String = "none"
+	Public CONST PLACESELF_START As String = "start"
+	Public CONST PLACESELF_STRETCH As String = "stretch"
 End Sub
 
 #if css
@@ -312,7 +424,6 @@ End Sub
 Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
-	CustProps.Initialize
 	mElement.Initialize($"#body"$)
 	mElement.AddClass("h-screen")
 	mElement.AddClass("w-screen")
@@ -321,6 +432,7 @@ Public Sub Initialize (mCallback As Object)
 	'empty the body of the page
 	mElement.Empty
 	AddLoader
+	modSD5.InitColors  
 	Themes.Initialize
 	templates.Initialize
 	templateViews.Initialize
@@ -347,8 +459,8 @@ Public Sub Initialize (mCallback As Object)
 	'
 	AppToast.Initialize(mCallback, "apptoast", "apptoast")
 	AppToast.ParentID = "body"
-	AppToast.Duration = iToastDuration
-	AppToast.Position = sToastPosition
+	AppToast.Duration = ToastDuration
+	AppToast.Position = ToastPosition
 	AppToast.AddComponent
 End Sub
 
@@ -379,9 +491,7 @@ function generateUniqueId(len) {
 }
 #End If
 
-Sub setTheme(s As String)
-	sTheme = s
-	CustProps.put("Theme", s)
+Sub SetTheme(s As String)
 	Dim html As BANanoElement = Banano.GetElement("html")
 	html.SetData("theme", s)
 End Sub
@@ -423,23 +533,21 @@ End Sub
 '	border-bottom-left-radius: 0px !important
 '}
 '#End If
-
-Sub setRTL(b As Boolean)
-	bRtl = b
-	CustProps.put("Rtl", b)
-	Select Case b
-		Case True
-			Banano.GetElement("html").SetAttr("dir","rtl")
-		Case False
-			Banano.GetElement("html").SetAttr("dir", "ltr")
-	End Select
-End Sub
+'
+'Sub SetRTL(b As Boolean)
+'	Select Case b
+'	Case True
+'		Banano.GetElement("html").SetAttr("dir","rtl")
+'	Case False
+'		Banano.GetElement("html").SetAttr("dir", "ltr")
+'	End Select
+'End Sub
 
 ''shows the chosen page
 'Sub ShowPage(pgName As String) As Boolean
-'	Dim prefix As String = SDUIShared.MvField(pgName, 1, "_")
+'	Dim prefix As String = modSD5.mvfield(pgName, 1, "_")
 '	If prefix = "page" Then
-'		Dim pgNameX As String = SDUIShared.MvField(pgName, 2, "_")
+'		Dim pgNameX As String = modSD5.mvfield(pgName, 2, "_")
 '		If Pages.ContainsKey(pgNameX) = False Then Return False
 '		Dim mCallBack As BANanoObject = Pages.Get(pgNameX)
 '		mCallBack.RunMethod("show", Me)
@@ -451,7 +559,7 @@ End Sub
 
 ''shows the chosen page by name
 'Sub ShowPageByName(pgName As String) As Boolean
-'	pgName = SDUIShared.CleanID(pgName)
+'	pgName = modSD5.CleanID(pgName)
 '	If Pages.ContainsKey(pgName) = False Then Return False
 '	Dim mCallBack As BANanoObject = Pages.Get(pgName)
 '	mCallBack.RunMethod("show", Me)
@@ -460,9 +568,9 @@ End Sub
 
 ''shows the chosen page
 'Sub ShowServerPage(pgName As String) As Boolean
-'	Dim prefix As String = SDUIShared.MvField(pgName, 1, "_")
+'	Dim prefix As String = modSD5.mvfield(pgName, 1, "_")
 '	If prefix = "page" Then
-'		Dim pgNameX As String = SDUIShared.MvField(pgName, 2, "_")
+'		Dim pgNameX As String = modSD5.mvfield(pgName, 2, "_")
 '		If Pages.ContainsKey(pgNameX) = False Then Return False
 '		Dim mCallBack As BANanoObject = Pages.Get(pgNameX)
 '		mCallBack.RunMethod("show", Null)
@@ -476,7 +584,7 @@ End Sub
 'Sub ShowServerPage1(PageModule As Object)
 '	Dim pgX As BANanoObject = PageModule
 '	Dim pgName As String = pgX.RunMethod("getname", Null).Result
-'	pgName = SDUIShared.CStr(pgName)
+'	pgName = modSD5.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) = False Then Return
 '	pgX.RunMethod("show", Null)
@@ -487,7 +595,7 @@ End Sub
 'Sub ShowPage1(PageModule As Object)
 '	Dim pgX As BANanoObject = PageModule
 '	Dim pgName As String = pgX.RunMethod("getname", Null).Result
-'	pgName = SDUIShared.CStr(pgName)
+'	pgName = modSD5.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) = False Then Return
 '	pgX.RunMethod("show", Me)
@@ -526,7 +634,7 @@ End Sub
 'Sub AddPage(mCallBack As BANanoObject)
 '	Dim pgName As String = mCallBack.RunMethod("getname", Null).Result
 '	Dim pgTitle As String = mCallBack.RunMethod("gettitle", Null).Result
-'	pgName = SDUIShared.CStr(pgName)
+'	pgName = modSD5.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) Then Return
 '	Pages.Put(pgName, mCallBack)
@@ -595,27 +703,27 @@ End Sub
 'End Sub
 
 Sub ShowToast(msg As String)
-	AppToast.Duration = iToastDuration
+	AppToast.Duration = ToastDuration
 	AppToast.ShowInfo(msg)
 End Sub
 
 Sub ShowToastSuccess(msg As String)
-	AppToast.Duration = iToastDuration
+	AppToast.Duration = ToastDuration
 	AppToast.ShowSuccess(msg)
 End Sub
 
 Sub ShowToastError(msg As String)
-	AppToast.Duration = iToastDuration
+	AppToast.Duration = ToastDuration
 	AppToast.ShowError(msg)
 End Sub
 
 Sub ShowToastWarning(msg As String)
-	AppToast.Duration = iToastDuration
+	AppToast.Duration = ToastDuration
 	AppToast.ShowWarning(msg)
 End Sub
 
 Sub ShowToastInfo(msg As String)
-	AppToast.Duration = iToastDuration
+	AppToast.Duration = ToastDuration
 	AppToast.ShowInfo(msg)
 End Sub
 
@@ -623,7 +731,7 @@ End Sub
 Sub IsDarkMode As Boolean
 	Dim matchMedia As BANanoObject = Banano.Window.RunMethod("matchMedia", "(prefers-color-scheme: dark)")
 	Dim res As Boolean = matchMedia.GetField("matches").result
-	res = SDUIShared.CBool(res)
+	res = modSD5.CBool(res)
 	Return res
 End Sub
 
@@ -718,7 +826,7 @@ Sub ApplyTheme(themeName As String, items As List)
 	If Themes.ContainsKey(themeName) Then
 		themerec = Themes.Get(themeName)
 		oldclasses = themerec.Get("classes")
-		Dim sclasses As String = SDUIShared.Join(" ", oldclasses)
+		Dim sclasses As String = modSD5.Join(" ", oldclasses)
 		For Each item As String In items
 			Dim ikey As String = $"#${item}"$
 			Banano.GetElement(ikey).AddClass(sclasses)
@@ -733,18 +841,6 @@ End Sub
 'get the id of the component
 Sub getHere As String
 	Return $"#body"$
-End Sub
-
-'add event on document
-Sub On(event As String, mCallBack As Object, MethodName As String, args As List, useCapture As Boolean)		'ignore
-	event = event.Replace(":","")
-	event = event.Replace(".","")
-	event = event.Replace("-","")
-	If SubExists(mCallBack, MethodName) Then
-		Dim e As BANanoEvent
-		Dim cb As BANanoObject = Banano.CallBack(mCallBack, MethodName, Array(e))
-		Banano.Window.GetField("document").AddEventListener(event, cb, useCapture)  'ignore
-	End If
 End Sub
 '
 ''return the cell id
@@ -769,11 +865,6 @@ End Sub
 '	If url = "" Then Return
 '	Container.BackgroundImage(url)
 'End Sub
-
-'get Background Image
-Sub getBackgroundImage As String
-	Return sBackgroundImage
-End Sub
 
 'Sub BuildGrid
 '	Container.BuildGrid
@@ -857,7 +948,7 @@ Sub ShowSwalSuccessToast(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("success")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.toast(True)
@@ -870,7 +961,7 @@ Sub ShowSwalErrorToast(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("error")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.toast(True)
@@ -883,7 +974,7 @@ Sub ShowSwalWarningToast(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("warning")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.toast(True)
@@ -896,7 +987,7 @@ Sub ShowSwalInfoToast(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("info")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.toast(True)
@@ -909,7 +1000,7 @@ Sub ShowSwalSuccessNotification(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("success")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.fire
@@ -920,7 +1011,7 @@ Sub ShowSwalErrorNotification(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("error")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.fire
@@ -930,7 +1021,7 @@ Sub ShowSwalInfoNotification(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("info")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.fire
@@ -940,7 +1031,7 @@ Sub ShowSwalWarningNotification(message As String, time As Int)
 	swal.Initialize
 	swal.title(message)
 	swal.icon("warning")
-	swal.position(sSwalPosition)
+	swal.position(SwalPosition)
 	swal.showConfirmButton(False)
 	swal.timer(time)
 	swal.fire
@@ -1193,12 +1284,12 @@ End Sub
 Sub ParseTree(Rootx As Map)
 	'does this contains children
 	If Rootx.ContainsKey("children") Then
-		Dim rootID As String = SDUIShared.GetRecursive(Rootx, "attributes.id")
-		rootID = SDUIShared.CStr(rootID)
+		Dim rootID As String = modSD5.GetRecursive(Rootx, "attributes.id")
+		rootID = modSD5.CStr(rootID)
 		rootID = rootID.trim
 		If rootID = "" Then
-			rootID = SDUIShared.guidAlpha(15)
-			SDUIShared.PutRecursive(Rootx, "attributes.id", rootID)
+			rootID = guidAlphaApp(15)
+			modSD5.PutRecursive(Rootx, "attributes.id", rootID)
 		End If
 		'get the children
 		Dim children As List = Rootx.Get("children")
@@ -1207,17 +1298,17 @@ Sub ParseTree(Rootx As Map)
 		'loop through each child
 		For childCnt = 0 To childTot
 			Dim child As Map = children.Get(childCnt)
-			Dim childID As String = SDUIShared.GetRecursive(child, "attributes.id")
-			childID = SDUIShared.CStr(childID)
+			Dim childID As String = modSD5.GetRecursive(child, "attributes.id")
+			childID = modSD5.CStr(childID)
 			childID = childID.trim
 			If childID = "" Then
-				childID = SDUIShared.guidAlpha(15)
-				SDUIShared.PutRecursive(child, "attributes.id", childID)
+				childID = guidAlphaApp(15)
+				modSD5.PutRecursive(child, "attributes.id", childID)
 			End If
 			child.Put("treePosition", childCnt)
 			'get the parent id
-			Dim parentID As String = SDUIShared.GetRecursive(Rootx, "attributes.id")
-			parentID = SDUIShared.CStr(parentID)
+			Dim parentID As String = modSD5.GetRecursive(Rootx, "attributes.id")
+			parentID = modSD5.CStr(parentID)
 			'create a new record
 			Dim nitem As Map = CreateMap()
 			nitem.Put("parent", parentID)
@@ -1258,7 +1349,7 @@ End Sub
 
 'get the text of an element
 Sub GetIDText(id As String) As String
-	id = SDUIShared.CleanID(id)
+	id = modSD5.CleanID(id)
 	If Banano.Exists($"#${id}"$) Then
 		Dim res As String = Banano.GetElement($"#${id}"$).GetText
 		Return res
@@ -1289,50 +1380,6 @@ Sub LZDeCompressString(source As String) As Object
 	LZString.Initialize("LZString")
 	Dim str As String = LZString.RunMethod("decompress", source).result
 	Return str
-End Sub
-
-'save some html code for later use
-'give it the parend id name and then the id names of the children
-'updated content should be enclosed with {{ }}
-'use app.GetComponent
-'<code>
-'app.AddTemplateFromLayout("templateid", True, Array("child1", "child2", "child3"))
-'</code>
-Sub AddTemplateFromLayout(elid As String, hideIt As Boolean, children As List)
-	elid = SDUIShared.CleanID(elid)
-	Dim scode As String = SDUIShared.GetHTML(elid)
-	If scode <> "" Then
-		children.Add(elid)
-		For Each k As String In children
-			k = SDUIShared.CleanID(k)
-			Dim sclean As String = $"id="${k}""$
-			scode = scode.Replace(sclean, "")
-		Next
-		templates.Put(elid, scode)
-	End If
-	If hideIt Then
-		Banano.GetElement($"#${elid}"$).AddClass("hidden")
-	End If
-End Sub
-
-'get a template saved with AddComponentFromLayout
-Sub GetTemplate(elid As String) As String
-	elid = SDUIShared.CleanID(elid)
-	If templates.ContainsKey(elid) Then
-		Dim tmpl As String = templates.Get(elid)
-		Return tmpl
-	Else
-		Return ""
-	End If
-End Sub
-
-Sub ShowHide(elName As String, Status As Boolean)
-	elName = SDUIShared.CleanID(elName)
-	If Status Then
-		Banano.GetElement($"#${elName}"$).RemoveClass("hidden")
-	Else
-		Banano.GetElement($"#${elName}"$).AddClass("hidden")
-	End If
 End Sub
 
 'if seconds multiply by 1000
@@ -1531,24 +1578,6 @@ Sub AddDataModelFiles(TableName As String, FieldNames As List)
 	End If
 End Sub
 
-Sub SetValue(item As String, value As String)
-	item = SDUIShared.CleanID(item)
-	If Banano.Exists($"#${item}"$) Then
-		Banano.GetElement($"#${item}"$).SetValue(value)
-	End If
-End Sub
-
-Sub GetValue(item As String) As String
-	item = SDUIShared.CleanID(item)
-	If Banano.Exists($"#${item}"$) Then
-		Dim v As String = Banano.GetElement($"#${item}"$).GetValue
-		Return v
-	Else
-		Return ""
-	End If
-End Sub
-
-
 Sub UseGMap(GMapApiKey As String, mCallBack As Object, mapName As String)
 	mapName = mapName.ToLowerCase
 	Dim e As BANanoEvent
@@ -1563,18 +1592,6 @@ Sub UseGMap(GMapApiKey As String, mCallBack As Object, mapName As String)
 	Banano.Await(UsesGMaps)
 End Sub
 
-'insert a css rule
-Sub InsertCSSRule(selector As String, styles As Object)
-	Banano.RunJavascriptMethod("insertRule", Array(selector, styles))
-End Sub
-
-'remove a css rule 
-Sub RemoveCSSRule(selector As String)
-	Dim i As BANanoObject
-	i.Initialize("insertRule")
-	i.RunMethod("remove", selector)
-End Sub
-'
 ''close the drawer
 'Sub CloseDrawer(item As String)
 '	item = item.ToLowerCase
@@ -1587,90 +1604,22 @@ End Sub
 '	Banano.GetElement($"#${item}toggle"$).SetChecked(True)
 'End Sub
 
+'show loader
 Sub PagePause
-	SDUIShared.ShowLoader
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "block")
+	lEL.SetStyle(Banano.ToJson(mStyle))
 End Sub
 
+'hide loader
 Sub PageResume
-	SDUIShared.HideLoader
-End Sub
-
-Sub SetText(elName As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).SetText(text)
-End Sub
-
-Sub GetText(elName As String) As String
-	elName = SDUIShared.CleanID(elName)
-	Dim out As String = Banano.GetElement($"#${elName}"$).GetText
-	Return out
-End Sub
-
-Sub SetAttr(elName As String, attr As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).SetAttr(attr, text)
-End Sub
-
-Sub SetDataAttr(elName As String, attr As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).SetData(attr, text)
-End Sub
-
-Sub GetDataAttr(elName As String, attr As String) As String
-	elName = SDUIShared.CleanID(elName)
-	Dim text As String = Banano.GetElement($"#${elName}"$).GetData(attr)
-	text = SDUIShared.CStr(text)
-	text = text.trim
-	Return text
-End Sub
-
-Sub GetAttr(elName As String, attr As String) As String
-	elName = SDUIShared.CleanID(elName)
-	Dim text As String = Banano.GetElement($"#${elName}"$).GetAttr(attr)
-	Return text
-End Sub
-
-Sub AddClass(elName As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	text = text.trim
-	text = text.Replace(" ", ";")
-	text = text.Replace(CRLF, ";")
-	text = text.Replace("<br/>", ";")
-	Dim lst As List = SDUIShared.StrParse(";", text)
-	For Each c As String In lst
-		c = c.Trim
-		If c = "" Then Continue
-		Banano.GetElement($"#${elName}"$).AddClass(c)
-	Next
-End Sub
-
-Sub RemoveClass(elName As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	text = text.trim
-	text = text.Replace(" ",";")
-	text = text.Replace(CRLF, ";")
-	text = text.Replace("<br/>", ";")
-	Dim lst As List = SDUIShared.StrParse(";", text)
-	For Each c As String In lst
-		c = c.Trim
-		If c = "" Then Continue
-		Banano.GetElement($"#${elName}"$).RemoveClass(c)
-	Next
-End Sub
-
-Sub RemoveAttr(elName As String, attr As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).RemoveAttr(attr)
-End Sub
-
-Sub SetComputedValue(elName As String, text As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).GetField("style").RunMethod("setProperty", Array("--value", text))
-End Sub
-
-Sub RemoveStyle(elName As String)
-	elName = SDUIShared.CleanID(elName)
-	Banano.GetElement($"#${elName}"$).GetField("style").RunMethod("removeProperty", elName)
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "none")
+	lEL.SetStyle(Banano.ToJson(mStyle))
 End Sub
 
 Sub UsesGijgo
@@ -1747,7 +1696,7 @@ End Sub
 
 Sub UsesEmojiMart
 	Banano.Await(LoadAssetsOnDemand("SQLite", Array("emojimart.js")))
-	modSithasoDaisy5.EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
+	modSD5.EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
 End Sub
 
 Sub UsesSQLite
@@ -1756,7 +1705,6 @@ End Sub
 
 Sub UsesMath
 	Banano.Await(LoadAssetsOnDemand("MathIT", Array("math.min.js")))
-	math.Initialize("math")
 End Sub
 
 Sub UsesBarCodeReader
@@ -1765,23 +1713,6 @@ End Sub
 
 Sub UsesWebCam
 	Banano.Await(LoadAssetsOnDemand("WebCam", Array("webcam.min.js")))
-End Sub
-
-Sub ShowItem(elID As String)
-	elID = SDUIShared.CleanID(elID)
-	Banano.GetElement($"#${elID}"$).RemoveClass("hidden")
-End Sub
-
-Sub RemoveItem(elID As String)
-	elID = SDUIShared.CleanID(elID)
-	If Banano.Exists($"#${elID}"$) Then
-		Banano.GetElement($"#${elID}"$).Remove
-	End If
-End Sub
-
-Sub HideItem(elID As String)
-	elID = SDUIShared.CleanID(elID)
-	Banano.GetElement($"#${elID}"$).AddClass("hidden")
 End Sub
 
 Sub CopyToClipboard(txt As String)
@@ -1965,20 +1896,9 @@ End Sub
 Sub AddUses
 End Sub
 
-Sub GetFormData(frmName As String) As Map
-	frmName = SDUIShared.CleanID(frmName)
-	Dim data As Map = SDUIShared.FormToJSON(frmName)
-	Return data
-End Sub
-
-Sub SetFormData(frmName As String, dataJSON As Map)
-	frmName = SDUIShared.CleanID(frmName)
-	SDUIShared.FormFromJSON(frmName, dataJSON)
-End Sub
-
 ''add item as form
 'Sub AddAsForm(Module As Object, elID As String)
-'	elID = SDUIShared.CleanID(elID)
+'	elID = modSD5.CleanID(elID)
 '	Dim xform As SDUIForm
 '	xform.Initialize(Module, elID, elID)
 '	xform.LinkExisting
@@ -2023,7 +1943,7 @@ Sub AddMyLayoutFile(tempID As String, fileName As String)
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
 		Dim tid As String = hItem.GetDefault("id","")
-		tid = SDUIShared.CStr(tid)
+		tid = modSD5.CStr(tid)
 		tid = tid.trim
 		Select Case stype
 			Case "checkbox", "Element", "file", "radio", "text", "search", "hidden", "range", _
@@ -2064,7 +1984,7 @@ Sub AddMyLayout(tempID As String, tempHTML As String)
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
 		Dim tid As String = hItem.GetDefault("id","")
-		tid = SDUIShared.CStr(tid)
+		tid = modSD5.CStr(tid)
 		tid = tid.trim
 		Select Case stype
 			Case "checkbox", "Element", "file", "radio", "text", "search", "hidden", "range", _
@@ -2103,7 +2023,7 @@ End Sub
 'End Sub
 '</code>
 Sub LoadMyLayout(targetID As String, tempID As String, content As Map) As Int
-	targetID = SDUIShared.CleanID(targetID)
+	targetID = modSD5.CleanID(targetID)
 	If templates.ContainsKey(tempID) = False Then Return -1
 	'get the template HTML
 	Dim tmpHTML As String = templates.Get(tempID)
@@ -2153,7 +2073,7 @@ End Sub
 'End Sub
 '</code>
 Sub LoadMyLayoutPrepend(targetID As String, tempID As String, content As Map) As Int
-	targetID = SDUIShared.CleanID(targetID)
+	targetID = modSD5.CleanID(targetID)
 	If templates.ContainsKey(tempID) = False Then Return -1
 	'get the template HTML
 	Dim tmpHTML As String = templates.Get(tempID)
@@ -2234,7 +2154,7 @@ End Sub
 'get a tag from an element
 'this should be the record
 Sub GetMyTag(elID As String) As Object
-	elID = SDUIShared.CleanID(elID)
+	elID = modSD5.CleanID(elID)
 	Dim el As BANanoElement = Banano.GetElement($"#${elID}"$)
 	Dim xtag As Object = el.GetField("tag")
 	Return xtag
@@ -2242,7 +2162,7 @@ End Sub
 
 'get a tag from an element
 Sub GetMyPos(elID As String) As String
-	elID = SDUIShared.CleanID(elID)
+	elID = modSD5.CleanID(elID)
 	Dim spos As String = SDUIShared.MvLast("_", elID)
 	Return spos
 End Sub
@@ -2322,146 +2242,6 @@ private Sub TreeToList1(Rootx As Map)
 	End If
 End Sub
 
-'show a confirm dialog
-Sub Confirm(Module As Object, xProcess As String, Title As String, Message As String, YesLabel As String, NoLabel As String, sWidth As String)
-	Process = xProcess
-	SDUIShared.Remove("msgboxtoggle")
-	SDUIShared.Remove("msgbox")
-	SDUIShared.Remove("msgboxbox")
-	SDUIShared.Remove("msgboxclosable")
-	SDUIShared.Remove("msgboxtitle")
-	SDUIShared.Remove("msgboxcontent")
-	SDUIShared.Remove("msgboxform")
-	SDUIShared.Remove("msgboxcontent")
-	SDUIShared.Remove("msgboxyes")
-	SDUIShared.Remove("msgboxno")
-	SDUIShared.Remove("msgboxcancel")
-	'
-	
-'	MasterModal.Initialize(Module, "msgbox", "msgbox")
-'	MasterModal.AddModal(Module, "body", "msgbox", Message, YesLabel, NoLabel, "", sWidth)
-'	MasterModal.Confirm(Process, Title, Message, YesLabel, NoLabel)
-End Sub
-
-'Sub HideModal
-'	MasterModal.Hide
-'End Sub
-
-'show an alert dialog
-Sub Alert(Module As Object, xProcess As String, Title As String, Message As String, YesLabel As String, sWidth As String)
-	Process = xProcess
-	SDUIShared.Remove("msgboxtoggle")
-	SDUIShared.Remove("msgbox")
-	SDUIShared.Remove("msgboxbox")
-	SDUIShared.Remove("msgboxclosable")
-	SDUIShared.Remove("msgboxtitle")
-	SDUIShared.Remove("msgboxcontent")
-	SDUIShared.Remove("msgboxform")
-	SDUIShared.Remove("msgboxcontent")
-	SDUIShared.Remove("msgboxyes")
-	SDUIShared.Remove("msgboxno")
-	SDUIShared.Remove("msgboxcancel")
-'	'
-'	MasterModal.Initialize(Module, "msgbox", "msgbox")
-'	MasterModal.AddModal(Module, "body", "msgbox", Message, YesLabel, "", "", sWidth)
-'	MasterModal.Alert(Process, Title, Message, YesLabel)
-End Sub
-
-'empty the element and remove all children
-'Sub Clear
-'	Container.Clear
-'End Sub
-
-''append the specified html to the element
-'Sub Append(tmp As Object)
-'	Container.Append(tmp)
-'End Sub
-
-''clear and replace the html of this element
-'Sub SetHTML(sHTML As String)
-'	CustProps.Put("HTML", sHTML)
-'	Container.HTML = sHTML
-'End Sub
-
-'set Google Map Key
-Sub setGoogleMapKey(s As String)
-	sGoogleMapKey = s
-	CustProps.put("GoogleMapKey", s)
-End Sub
-
-'set Page Viewer
-Sub setPageViewer(s As String)
-	sPageViewer = s
-	CustProps.put("PageViewer", s)
-End Sub
-
-'set Swal Position
-'options: bottom|bottom-end|bottom-start|center|center-end|center-start|top|top-end|top-start
-Sub setSwalPosition(s As String)
-	sSwalPosition = s
-	CustProps.put("SwalPosition", s)
-End Sub
-'set Swal Timer
-Sub setSwalTimer(i As Int)
-	iSwalTimer = i
-	CustProps.put("SwalTimer", i)
-End Sub
-'set Toast Duration
-Sub setToastDuration(i As Int)
-	iToastDuration = i
-	CustProps.put("ToastDuration", i)
-End Sub
-'set Toast Position
-'options: bottom_center|bottom_left|bottom_right|top_center|top_left|top_right
-Sub setToastPosition(s As String)
-	sToastPosition = s
-	CustProps.put("ToastPosition", s)
-End Sub
-
-'get Page Viewer
-Sub getPageViewer As String
-	Return sPageViewer
-End Sub
-'get Rtl
-Sub getRTL As Boolean
-	Return bRtl
-End Sub
-'get Swal Position
-Sub getSwalPosition As String
-	Return sSwalPosition
-End Sub
-'get Swal Timer
-Sub getSwalTimer As Int
-	Return iSwalTimer
-End Sub
-'get Theme
-Sub getTheme As String
-	Return sTheme
-End Sub
-'get Toast Duration
-Sub getToastDuration As Int
-	Return iToastDuration
-End Sub
-'get Toast Position
-Sub getToastPosition As String
-	Return sToastPosition
-End Sub
-
-Sub GetInnerHTML(id As String) As String
-	id = SDUIShared.CleanID(id)
-	If Banano.Exists($"#${id}"$) Then
-		Dim tmp As String = Banano.GetElement($"#${id}"$).GetField("innerHTML").Result
-		Return tmp
-	Else
-		Return ""
-	End If
-End Sub
-
-Sub GetTextFile(fileName As String) As String
-	Dim fContents As String = Banano.Await(Banano.GetFileAsText($"${fileName}?${DateTime.now}"$, Null, "utf-8"))
-	Return fContents
-End Sub
-
 'reset the validations
 'validate an element
 '<code>
@@ -2518,53 +2298,7 @@ Sub IsValid As Boolean
 	Return True
 End Sub
 
-' Gets the current location of the user
-public Sub GetMyLocation As BANanoGeoPosition
-	Return Banano.Await(Banano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
-End Sub
-
-'percentage of x from y
-Sub Math_Percentage(x As String, y As String) As Int
-	Dim xperc As Int = math.RunMethod("evaluate", $"round((${x}/${y})*100)"$).result
-	Return xperc
-End Sub
-
-Sub Math_Expression(svalues As String) As Object
-	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
-	Return xperc
-End Sub
-
-Sub Math_ExpressionList(values As List) As Object
-	Dim svalues As String = SDUIShared.Join("", values)
-	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
-	Return xperc
-End Sub
-
-'sum x and y
-Sub Math_Sum(x As Int, y As Int) As Int
-	Dim values As List
-	values.Initialize
-	values.Add(x)
-	values.Add(y)
-	Dim svalues As String = SDUIShared.Join(",", values)
-	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
-	Return xperc
-End Sub
-
-Sub Math_SumList(values As List) As Int
-	Dim svalues As String = SDUIShared.Join(",", values)
-	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
-	Return xperc
-End Sub
-
-'subtract y from x
-Sub Math_Subtract(x As Int, y As Int) As Int
-	Dim xperc As Int = math.RunMethod("evaluate", $"subtract(${x},${y})"$).result
-	Return xperc
-End Sub
-
-'divide x by y
-Sub Math_Divide(x As Int, y As Int) As Int
-	Dim xperc As Int = math.RunMethod("evaluate", $"divide(${x},${y})"$).result
-	Return xperc
+Sub ClearPageView
+	Dim el As BANanoElement = Banano.GetElement($"#pageview"$)
+	el.empty
 End Sub

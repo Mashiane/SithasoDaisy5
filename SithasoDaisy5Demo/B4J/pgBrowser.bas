@@ -12,6 +12,6 @@ End Sub
 
 
 Sub Show(MainApp As SDUI5App)
-	BANano.LoadLayoutAppend($"#body"$, "browserview")
 	app = MainApp
+	BANano.LoadLayout(app.PageView, "browserview")
 End Sub

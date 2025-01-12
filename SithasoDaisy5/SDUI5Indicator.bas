@@ -46,8 +46,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -69,6 +69,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -135,21 +136,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		UI.ExcludePosition = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sIndicatorSize = Props.GetDefault("IndicatorSize", "none")
-		sIndicatorSize = SDUIShared.CStr(sIndicatorSize)
+		sIndicatorSize = modSD5.CStr(sIndicatorSize)
 		If sIndicatorSize = "none" Then sIndicatorSize = ""
 		sTypeOf = Props.GetDefault("TypeOf", "badge")
-		sTypeOf = SDUIShared.CStr(sTypeOf)
+		sTypeOf = modSD5.CStr(sTypeOf)
 		sPosition = Props.GetDefault("Position", "top-start")
-		sPosition = SDUIShared.CStr(sPosition)
+		sPosition = modSD5.CStr(sPosition)
 	End If
 	'
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("indicator")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -181,8 +180,8 @@ Sub setPosition(s As String)
 	CustProps.put("Position", s)
 	If mElement = Null Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = SDUIShared.MvField(s,1,"-")
-	Dim spart As String = SDUIShared.MvField(s,2,"-")
+	Dim fpart As String = modSD5.mvfield(s,1,"-")
+	Dim spart As String = modSD5.mvfield(s,2,"-")
 	UI.UpdateClassByID($"${mName}_text"$, "position", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 

@@ -59,8 +59,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -82,6 +82,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -202,31 +203,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		bCenter = Props.GetDefault("Center", False)
-		bCenter = SDUIShared.CBool(bCenter)
+		bCenter = modSD5.CBool(bCenter)
 		sDirection = Props.GetDefault("Direction", "none")
-		sDirection = SDUIShared.CStr(sDirection)
+		sDirection = modSD5.CStr(sDirection)
 		If sDirection = "none" Then sDirection = ""
 		sDirectionOnSmall = Props.GetDefault("DirectionOnSmall", "horizontal")
-		sDirectionOnSmall = SDUIShared.CStr(sDirectionOnSmall)
+		sDirectionOnSmall = modSD5.CStr(sDirectionOnSmall)
 		If sDirectionOnSmall = "none" Then sDirectionOnSmall = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If bCenter <> False Then UI.AddClassDT("footer-center")
 	If sDirection <> "" Then UI.AddClassDT("footer-" & sDirection)
 	If sDirectionOnSmall <> "" Then UI.AddClassDT("sm:footer-" & sDirectionOnSmall)
 	UI.AddClassDT("footer")
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

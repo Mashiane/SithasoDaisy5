@@ -8,7 +8,7 @@ Version=10
 #Event: TitleClick (e As BANanoEvent)
 #Event: BurgerClick (value As Boolean)
 '
-#DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left/_logo/_burger/_center/_right, Description: Read Me
+#DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left|_logo|_burger|_center|_right, Description: Child Items - _left|_logo|_burger|_center|_right
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: HasBurger, DisplayName: Has Burger, FieldType: Boolean, DefaultValue: True, Description: Has burger
 #DesignerProperty: Key: HasLogo, DisplayName: Has Logo, FieldType: Boolean, DefaultValue: False, Description: Has Logo
@@ -75,8 +75,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -98,6 +98,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -217,45 +218,41 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-100")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		bGlass = Props.GetDefault("Glass", False)
-		bGlass = SDUIShared.CBool(bGlass)
+		bGlass = modSD5.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = SDUIShared.CStr(sRounded)
+		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "sm")
-		sShadow = SDUIShared.CStr(sShadow)
+		sShadow = modSD5.CStr(sShadow)
 		sTitle = Props.GetDefault("Title", "NavBar")
-		sTitle = SDUIShared.CStr(sTitle)
+		sTitle = modSD5.CStr(sTitle)
 		sTitlePosition = Props.GetDefault("TitlePosition", "left")
-		sTitlePosition = SDUIShared.CStr(sTitlePosition)
+		sTitlePosition = modSD5.CStr(sTitlePosition)
 		bHasBurger = Props.GetDefault("HasBurger", True)
-		bHasBurger = SDUIShared.CBool(bHasBurger)
+		bHasBurger = modSD5.CBool(bHasBurger)
 		bHasLogo = Props.GetDefault("HasLogo", False)
-		bHasLogo = SDUIShared.CBool(bHasLogo)
+		bHasLogo = modSD5.CBool(bHasLogo)
 		sLogoHeight = Props.GetDefault("LogoHeight", "10")
-		sLogoHeight = SDUIShared.CStr(sLogoHeight)
+		sLogoHeight = modSD5.CStr(sLogoHeight)
 		sLogoImage = Props.GetDefault("LogoImage", "./assets/mashy.jpg")
-		sLogoImage = SDUIShared.CStr(sLogoImage)
+		sLogoImage = modSD5.CStr(sLogoImage)
 		sLogoMask = Props.GetDefault("LogoMask", "none")
-		sLogoMask = SDUIShared.CStr(sLogoMask)
+		sLogoMask = modSD5.CStr(sLogoMask)
 		If sLogoMask = "none" Then sLogoMask = ""
 		sLogoWidth = Props.GetDefault("LogoWidth", "10")
-		sLogoWidth = SDUIShared.CStr(sLogoWidth)
+		sLogoWidth = modSD5.CStr(sLogoWidth)
 	End If
 	'
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If bGlass <> False Then UI.AddClassDT("glass")
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	UI.AddClassDT("navbar")
-	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)

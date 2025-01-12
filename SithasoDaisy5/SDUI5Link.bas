@@ -57,8 +57,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -67,6 +67,19 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+
+'set Text Color
+Sub setTextColor(s As String)
+	sTextColor = s
+	CustProps.put("TextColor", s)
+	If mElement = Null Then Return
+	UI.SetTextColor(mElement, s)
+End Sub
+
+Sub getTextColor As String
+	Return sTextColor
+End Sub
+
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -80,6 +93,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -220,24 +234,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bHover = Props.GetDefault("Hover", False)
-		bHover = SDUIShared.CBool(bHover)
+		bHover = modSD5.CBool(bHover)
 		sHref = Props.GetDefault("Href", "#")
-		sHref = SDUIShared.CStr(sHref)
+		sHref = modSD5.CStr(sHref)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = SDUIShared.CStr(sIcon)
+		sIcon = modSD5.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
-		sIconColor = SDUIShared.CStr(sIconColor)
+		sIconColor = modSD5.CStr(sIconColor)
 		sIconSize = Props.GetDefault("IconSize", "24px")
-		sIconSize = SDUIShared.CStr(sIconSize)
+		sIconSize = modSD5.CStr(sIconSize)
 		sTarget = Props.GetDefault("Target", "none")
-		sTarget = SDUIShared.CStr(sTarget)
-		sText = Props.GetDefault("Text", "Link")
-		sText = SDUIShared.CStr(sText)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sTarget = modSD5.CStr(sTarget)
 	End If
 	'
 	UI.AddClassDT("link")
@@ -245,7 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHover <> False Then UI.AddClassDT("link-hover")
 	If sHref <> "" Then UI.AddAttrDT("href", sHref)
 	If sTarget <> "" Then UI.AddAttrDT("target", sTarget)
-	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

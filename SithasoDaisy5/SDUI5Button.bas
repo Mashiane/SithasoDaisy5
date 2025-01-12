@@ -21,6 +21,7 @@ Version=10
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
 #DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
+#DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
 #DesignerProperty: Key: ImageColor, DisplayName: Left Image Color, FieldType: String, DefaultValue: , Description: Left Image Color
 #DesignerProperty: Key: ImageHeight, DisplayName: Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
@@ -109,11 +110,12 @@ Sub Class_Globals
 	Private sBadgeSize As String = "sm"
 	Private sHeight As String = ""
 	Private sWidth As String = ""
+	Private bJoinItem As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -137,6 +139,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -269,74 +272,76 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		bActive = Props.GetDefault("Active", False)
-		bActive = SDUIShared.CBool(bActive)
+		bActive = modSD5.CBool(bActive)
 		bBlock = Props.GetDefault("Block", False)
-		bBlock = SDUIShared.CBool(bBlock)
+		bBlock = modSD5.CBool(bBlock)
 		bCircle = Props.GetDefault("Circle", False)
-		bCircle = SDUIShared.CBool(bCircle)
+		bCircle = modSD5.CBool(bCircle)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = SDUIShared.CBool(bDash)
+		bDash = modSD5.CBool(bDash)
 		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = SDUIShared.CBool(bDisabled)
+		bDisabled = modSD5.CBool(bDisabled)
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = SDUIShared.CBool(bGhost)
+		bGhost = modSD5.CBool(bGhost)
 		sImage = Props.GetDefault("Image", "")
-		sImage = SDUIShared.CStr(sImage)
+		sImage = modSD5.CStr(sImage)
 		sImageColor = Props.GetDefault("ImageColor", "")
-		sImageColor = SDUIShared.CStr(sImageColor)        
+		sImageColor = modSD5.CStr(sImageColor)        
 		sImageHeight = Props.GetDefault("ImageHeight", "32px")
-		sImageHeight = SDUIShared.CStr(sImageHeight)
+		sImageHeight = modSD5.CStr(sImageHeight)
 		sImageWidth = Props.GetDefault("ImageWidth", "32px")
-		sImageWidth = SDUIShared.CStr(sImageWidth)
+		sImageWidth = modSD5.CStr(sImageWidth)
 		bLink = Props.GetDefault("Link", False)
-		bLink = SDUIShared.CBool(bLink)
+		bLink = modSD5.CBool(bLink)
 		bLoading = Props.GetDefault("Loading", False)
-		bLoading = SDUIShared.CBool(bLoading)
+		bLoading = modSD5.CBool(bLoading)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = SDUIShared.CBool(bOutline)
+		bOutline = modSD5.CBool(bOutline)
 		sRightImage = Props.GetDefault("RightImage", "")
-		sRightImage = SDUIShared.CStr(sRightImage)
+		sRightImage = modSD5.CStr(sRightImage)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = SDUIShared.CStr(sSize)
+		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sSizeLarge = Props.GetDefault("SizeLarge", "none")
-		sSizeLarge = SDUIShared.CStr(sSizeLarge)
+		sSizeLarge = modSD5.CStr(sSizeLarge)
 		If sSizeLarge = "none" Then sSizeLarge = ""
 		sSizeMedium = Props.GetDefault("SizeMedium", "none")
-		sSizeMedium = SDUIShared.CStr(sSizeMedium)
+		sSizeMedium = modSD5.CStr(sSizeMedium)
 		If sSizeMedium = "none" Then sSizeMedium = ""
 		sSizeSmall = Props.GetDefault("SizeSmall", "none")
-		sSizeSmall = SDUIShared.CStr(sSizeSmall)
+		sSizeSmall = modSD5.CStr(sSizeSmall)
 		If sSizeSmall = "none" Then sSizeSmall = ""
 		sSizeXLarge = Props.GetDefault("SizeXLarge", "none")
-		sSizeXLarge = SDUIShared.CStr(sSizeXLarge)
+		sSizeXLarge = modSD5.CStr(sSizeXLarge)
 		If sSizeXLarge = "none" Then sSizeXLarge = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = SDUIShared.CBool(bSoft)
+		bSoft = modSD5.CBool(bSoft)
 		bSquare = Props.GetDefault("Square", False)
-		bSquare = SDUIShared.CBool(bSquare)
+		bSquare = modSD5.CBool(bSquare)
 		bWide = Props.GetDefault("Wide", False)
-		bWide = SDUIShared.CBool(bWide)
+		bWide = modSD5.CBool(bWide)
 		sRightImageColor = Props.GetDefault("RightImageColor", "")
-		sRightImageColor = SDUIShared.CStr(sRightImageColor)
+		sRightImageColor = modSD5.CStr(sRightImageColor)
 		sRightImageHeight = Props.GetDefault("RightImageHeight", "32px")
-		sRightImageHeight = SDUIShared.CStr(sRightImageHeight)
+		sRightImageHeight = modSD5.CStr(sRightImageHeight)
 		sRightImageWidth = Props.GetDefault("RightImageWidth", "32px")
-		sRightImageWidth = SDUIShared.CStr(sRightImageWidth)
+		sRightImageWidth = modSD5.CStr(sRightImageWidth)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = SDUIShared.CStr(sBadge)
+		sBadge = modSD5.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
-		sBadgeColor = SDUIShared.CStr(sBadgeColor)
+		sBadgeColor = modSD5.CStr(sBadgeColor)
 		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
-		sBadgeSize = SDUIShared.CStr(sBadgeSize)
+		sBadgeSize = modSD5.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
+		bJoinItem = Props.GetDefault("JoinItem", False)
+		bJoinItem = modSD5.CBool(bJoinItem)
 	End If
 	'
 	If sParentID <> "" Then
@@ -347,6 +352,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	If bJoinItem <> False Then UI.AddClassDT("join-item")
 	If bActive <> False Then UI.AddClassDT("btn-active")
 	'If sBackgroundColor <> "" Then UI.AddClassDT("background-color-" & sBackgroundColor)
 	If bBlock <> False Then UI.AddClassDT("btn-block")
@@ -884,4 +890,21 @@ End Sub
 
 public Sub getParentID() As String
 	Return sParentID
+End Sub
+
+'set Join Item
+Sub setJoinItem(b As Boolean)
+	bJoinItem = b
+	CustProps.put("JoinItem", b)
+	If mElement = Null Then Return
+	If b <> False Then
+		UI.AddClass(mElement, "join-item")
+	Else
+		UI.RemoveClass(mElement, "join-item")
+	End If
+End Sub
+
+'get Join Item
+Sub getJoinItem As Boolean
+	Return bJoinItem
 End Sub

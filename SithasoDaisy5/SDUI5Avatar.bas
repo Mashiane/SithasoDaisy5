@@ -101,8 +101,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -124,6 +124,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -237,48 +238,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sAvatarType = Props.GetDefault("AvatarType", "image")
-		sAvatarType = SDUIShared.CStr(sAvatarType)
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "primary")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
+		sAvatarType = modSD5.CStr(sAvatarType)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sImage = Props.GetDefault("Image", "./assets/600by600.jpg")
-		sImage = SDUIShared.CStr(sImage)
+		sImage = modSD5.CStr(sImage)
 		sMask = Props.GetDefault("Mask", "circle")
-		sMask = SDUIShared.CStr(sMask)
+		sMask = modSD5.CStr(sMask)
 		If sMask = "none" Then sMask = ""
 		bOnline = Props.GetDefault("Online", False)
-		bOnline = SDUIShared.CBool(bOnline)
+		bOnline = modSD5.CBool(bOnline)
 		sOnlineColor = Props.GetDefault("OnlineColor", "")
-		sOnlineColor = SDUIShared.CStr(sOnlineColor)
+		sOnlineColor = modSD5.CStr(sOnlineColor)
 		bOnlineStatus = Props.GetDefault("OnlineStatus", False)
-		bOnlineStatus = SDUIShared.CBool(bOnlineStatus)
+		bOnlineStatus = modSD5.CBool(bOnlineStatus)
 		sPlaceholder = Props.GetDefault("Placeholder", "S")
-		sPlaceholder = SDUIShared.CStr(sPlaceholder)
+		sPlaceholder = modSD5.CStr(sPlaceholder)
 		bRing = Props.GetDefault("Ring", False)
-		bRing = SDUIShared.CBool(bRing)
+		bRing = modSD5.CBool(bRing)
 		sRingColor = Props.GetDefault("RingColor", "primary")
-		sRingColor = SDUIShared.CStr(sRingColor)
+		sRingColor = modSD5.CStr(sRingColor)
 		sRingOffset = Props.GetDefault("RingOffset", "2")
-		sRingOffset = SDUIShared.CStr(sRingOffset)
+		sRingOffset = modSD5.CStr(sRingOffset)
 		sRingOffsetColor = Props.GetDefault("RingOffsetColor", "base-100")
-		sRingOffsetColor = SDUIShared.CStr(sRingOffsetColor)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sRingOffsetColor = modSD5.CStr(sRingOffsetColor)
 		sWidth = Props.GetDefault("Width", "12")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 		sTextSize = Props.GetDefault("TextSize", "")
-		sTextSize = SDUIShared.CStr(sTextSize)
+		sTextSize = modSD5.CStr(sTextSize)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = SDUIShared.CStr(sBadge)
+		sBadge = modSD5.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "secondary")
-		sBadgeColor = SDUIShared.CStr(sBadgeColor)
+		sBadgeColor = modSD5.CStr(sBadgeColor)
 		sBadgePosition = Props.GetDefault("BadgePosition", "top-end")
-		sBadgePosition = SDUIShared.CStr(sBadgePosition)
+		sBadgePosition = modSD5.CStr(sBadgePosition)
 		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
-		sBadgeSize = SDUIShared.CStr(sBadgeSize)
+		sBadgeSize = modSD5.CStr(sBadgeSize)
 		bBadgeVisible = Props.GetDefault("BadgeVisible", False)
-		bBadgeVisible = SDUIShared.CBool(bBadgeVisible)
+		bBadgeVisible = modSD5.CBool(bBadgeVisible)
 	End If
 	'
 	If sParentID <> "" Then
@@ -390,8 +387,8 @@ Sub setBadgePosition(s As String)
 	If mElement = Null Then Return
 	If sBadge = "" Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = SDUIShared.MvField(s,1,"-")
-	Dim spart As String = SDUIShared.MvField(s,2,"-")
+	Dim fpart As String = modSD5.mvfield(s,1,"-")
+	Dim spart As String = modSD5.mvfield(s,2,"-")
 	UI.UpdateClassByID($"${mName}_badge"$, "badgeposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'get Badge

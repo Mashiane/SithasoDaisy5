@@ -23,8 +23,83 @@ Sub Process_Globals
 	Type Address(suburb As String, name As String, city As String, country As String, countryCode As String, _
 	municipality As String, postcode As String, road As String, state As String, displayName As String, lat As String, lon As String)
 	Public MissingParents As Map
+	Private math As BANanoObject
 End Sub
 
+
+' Gets the current location of the user
+public Sub GetMyLocation As BANanoGeoPosition
+	Return BANano.Await(BANano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
+End Sub
+
+'percentage of x from y
+Sub Math_Percentage(x As String, y As String) As Int
+	math.Initialize("math")
+	Dim xperc As Int = math.RunMethod("evaluate", $"round((${x}/${y})*100)"$).result
+	Return xperc
+End Sub
+
+Sub Math_Expression(svalues As String) As Object
+	math.Initialize("math")
+	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
+	Return xperc
+End Sub
+
+Sub Math_ExpressionList(values As List) As Object
+	math.Initialize("math")
+	Dim svalues As String = modSD5.Join("", values)
+	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
+	Return xperc
+End Sub
+
+'sum x and y
+Sub Math_Sum(x As Int, y As Int) As Int
+	Dim values As List
+	values.Initialize
+	values.Add(x)
+	values.Add(y)
+	Dim svalues As String = modSD5.Join(",", values)
+	math.Initialize("math")
+	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
+	Return xperc
+End Sub
+
+Sub Math_SumList(values As List) As Int
+	Dim svalues As String = modSD5.Join(",", values)
+	math.Initialize("math")
+	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
+	Return xperc
+End Sub
+
+'subtract y from x
+Sub Math_Subtract(x As Int, y As Int) As Int
+	math.Initialize("math")
+	Dim xperc As Int = math.RunMethod("evaluate", $"subtract(${x},${y})"$).result
+	Return xperc
+End Sub
+
+'divide x by y
+Sub Math_Divide(x As Int, y As Int) As Int
+	math.Initialize("math")
+	Dim xperc As Int = math.RunMethod("evaluate", $"divide(${x},${y})"$).result
+	Return xperc
+End Sub
+
+
+Sub GetInnerHTML(id As String) As String
+	id = modSD5.CleanID(id)
+	If BANano.Exists($"#${id}"$) Then
+		Dim tmp As String = BANano.GetElement($"#${id}"$).GetField("innerHTML").Result
+		Return tmp
+	Else
+		Return ""
+	End If
+End Sub
+
+Sub GetTextFile(fileName As String) As String
+	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileName}?${DateTime.now}"$, Null, "utf-8"))
+	Return fContents
+End Sub
 
 'download a pdf from a path
 '<code>
@@ -2729,55 +2804,55 @@ Sub GetClientIPAddress As String
 		Dim resp As String = Response.GetDefault("ip","")
 		Return resp
 	Else
-		Return ""	
+		Return ""
 	End If
 End Sub
 
-Sub GetServerDateOld(pb As SDUIPocketBase) As String
-	'get the current server date
-	Dim checkIn As Map
-	Dim sservertime As String = ""
-	Dim sservertimeDate As String = ""
-	Dim sservertimeTime As String = ""
-	Dim j As SDUIFetch
-	j.Initialize("http://worldtimeapi.org/api/timezone/Africa/Johannesburg")
-	BANano.Await(J.GetWait)
-	'execute the post
-	If j.Success Then
-		Dim Response As Map = j.response
-		Dim sdatetime As String = Response.Get("datetime")
-		Dim alltime As String = MvField(sdatetime, 1, ".")
-		sservertimeDate = MvField(alltime, 1, "T")
-		sservertimeTime = MvField(alltime, 2, "T")
-		Dim shh As String = MvField(sservertimeTime,1,":")
-		Dim smm As String = MvField(sservertimeTime,2,":")
-		sservertimeTime = $"${shh}:${smm}"$
-		Return $"${sservertimeDate}.${sservertimeTime}"$
-	Else
-		checkIn = BANano.Await(pb.SERVER_DATE_TIME)
-		sservertime = checkIn.GetDefault("servertime", "")
-		sservertimeDate = MvField(sservertime, 1, " ")
-		sservertimeDate = sservertimeDate.trim
-		sservertimeTime = MvField(sservertime, 2, " ")
-		sservertimeTime = sservertimeTime.Trim
-		Return $"${sservertimeDate}.${sservertimeTime}"$
-	End If
-End Sub
+'Sub GetServerDateOld(pb As SDUIPocketBase) As String
+'	'get the current server date
+'	Dim checkIn As Map
+'	Dim sservertime As String = ""
+'	Dim sservertimeDate As String = ""
+'	Dim sservertimeTime As String = ""
+'	Dim j As SDUIFetch
+'	j.Initialize("http://worldtimeapi.org/api/timezone/Africa/Johannesburg")
+'	BANano.Await(J.GetWait)
+'	'execute the post
+'	If j.Success Then
+'		Dim Response As Map = j.response
+'		Dim sdatetime As String = Response.Get("datetime")
+'		Dim alltime As String = MvField(sdatetime, 1, ".")
+'		sservertimeDate = MvField(alltime, 1, "T")
+'		sservertimeTime = MvField(alltime, 2, "T")
+'		Dim shh As String = MvField(sservertimeTime,1,":")
+'		Dim smm As String = MvField(sservertimeTime,2,":")
+'		sservertimeTime = $"${shh}:${smm}"$
+'		Return $"${sservertimeDate}.${sservertimeTime}"$
+'	Else
+'		checkIn = BANano.Await(pb.SERVER_DATE_TIME)
+'		sservertime = checkIn.GetDefault("servertime", "")
+'		sservertimeDate = MvField(sservertime, 1, " ")
+'		sservertimeDate = sservertimeDate.trim
+'		sservertimeTime = MvField(sservertime, 2, " ")
+'		sservertimeTime = sservertimeTime.Trim
+'		Return $"${sservertimeDate}.${sservertimeTime}"$
+'	End If
+'End Sub
 
-Sub GetServerDate(pb As SDUIPocketBase) As String
-	'get the current server date
-	Dim checkIn As Map
-	Dim sservertime As String = ""
-	Dim sservertimeDate As String = ""
-	Dim sservertimeTime As String = ""
-	checkIn = BANano.Await(pb.SERVER_DATE_TIME)
-	sservertime = checkIn.GetDefault("servertime", "")
-	sservertimeDate = MvField(sservertime, 1, " ")
-	sservertimeDate = sservertimeDate.trim
-	sservertimeTime = MvField(sservertime, 2, " ")
-	sservertimeTime = sservertimeTime.Trim
-	Return $"${sservertimeDate}.${sservertimeTime}"$
-End Sub
+'Sub GetServerDate(pb As SDUIPocketBase) As String
+'	'get the current server date
+'	Dim checkIn As Map
+'	Dim sservertime As String = ""
+'	Dim sservertimeDate As String = ""
+'	Dim sservertimeTime As String = ""
+'	checkIn = BANano.Await(pb.SERVER_DATE_TIME)
+'	sservertime = checkIn.GetDefault("servertime", "")
+'	sservertimeDate = MvField(sservertime, 1, " ")
+'	sservertimeDate = sservertimeDate.trim
+'	sservertimeTime = MvField(sservertime, 2, " ")
+'	sservertimeTime = sservertimeTime.Trim
+'	Return $"${sservertimeDate}.${sservertimeTime}"$
+'End Sub
 
 'returns whether an OTP has expired or not
 Sub OTPExpired(oldDate As String, newDate As String) As Boolean

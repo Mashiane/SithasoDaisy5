@@ -59,7 +59,6 @@ Sub Class_Globals
 	Private sLeftIconColor As String = ""
 	Private sMaxValue As String = "100"
 	Private sMinValue As String = "0"
-	Private bProgress As Boolean = True
 	Private sRightIcon As String = ""
 	Private sRightIconColor As String = ""
 	Private sStepValue As String = "1"
@@ -69,8 +68,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -92,6 +91,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -216,35 +216,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
-		bIndeterminate = SDUIShared.CBool(bIndeterminate)
+		bIndeterminate = modSD5.CBool(bIndeterminate)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
-		sLeftIcon = SDUIShared.CStr(sLeftIcon)
+		sLeftIcon = modSD5.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
-		sLeftIconColor = SDUIShared.CStr(sLeftIconColor)
+		sLeftIconColor = modSD5.CStr(sLeftIconColor)
 		sMaxValue = Props.GetDefault("MaxValue", "100")
-		sMaxValue = SDUIShared.CStr(sMaxValue)
+		sMaxValue = modSD5.CStr(sMaxValue)
 		sMinValue = Props.GetDefault("MinValue", "0")
-		sMinValue = SDUIShared.CStr(sMinValue)
+		sMinValue = modSD5.CStr(sMinValue)
 		sRightIcon = Props.GetDefault("RightIcon", "")
-		sRightIcon = SDUIShared.CStr(sRightIcon)
+		sRightIcon = modSD5.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "")
-		sRightIconColor = SDUIShared.CStr(sRightIconColor)
+		sRightIconColor = modSD5.CStr(sRightIconColor)
 		sStepValue = Props.GetDefault("StepValue", "1")
-		sStepValue = SDUIShared.CStr(sStepValue)
+		sStepValue = modSD5.CStr(sStepValue)
 		sTicks = Props.GetDefault("Ticks", "")
-		sTicks = SDUIShared.CStr(sTicks)
+		sTicks = modSD5.CStr(sTicks)
 		sValue = Props.GetDefault("Value", "0")
-		sValue = SDUIShared.CStr(sValue)
+		sValue = modSD5.CStr(sValue)
 		sWidth = Props.GetDefault("Width", "56")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If sParentID <> "" Then
@@ -255,7 +253,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("progress", sColor)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If sMaxValue <> "" Then UI.AddAttrDT("max", sMaxValue)

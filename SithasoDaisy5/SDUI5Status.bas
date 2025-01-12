@@ -53,8 +53,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -76,6 +76,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -192,26 +193,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-start")
-		sIndicatorPosition = SDUIShared.CStr(sIndicatorPosition)
+		sIndicatorPosition = modSD5.CStr(sIndicatorPosition)
 		bIndicatorItem = Props.GetDefault("IndicatorItem", False)
-		bIndicatorItem = SDUIShared.CBool(bIndicatorItem)
+		bIndicatorItem = modSD5.CBool(bIndicatorItem)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = SDUIShared.CStr(sSize)
+		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	UI.AddClassDT("status")
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("status", sColor)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If bIndicatorItem Then
@@ -264,8 +263,8 @@ Sub setIndicatorPosition(s As String)
 	If mElement = Null Then Return
 	If bIndicatorItem = False Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = SDUIShared.MvField(s,1,"-")
-	Dim spart As String = SDUIShared.MvField(s,2,"-")
+	Dim fpart As String = modSD5.mvfield(s,1,"-")
+	Dim spart As String = modSD5.mvfield(s,2,"-")
 	UI.UpdateClass(mElement, "statusposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Item

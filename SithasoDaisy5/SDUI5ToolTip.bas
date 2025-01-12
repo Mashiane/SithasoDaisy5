@@ -5,7 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item '_content', Description: Child Item '_content'
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _content, Description: Child Item _content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Tip, DisplayName: Tip, FieldType: String, DefaultValue: Tooltip, Description: Tip
 #DesignerProperty: Key: HasContent, DisplayName: Has Content, FieldType: Boolean, DefaultValue: False, Description: Has Content
@@ -36,8 +36,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -59,6 +59,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -77,16 +78,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeVisible = True
 		UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bOpen = Props.GetDefault("Open", False)
-		bOpen = SDUIShared.CBool(bOpen)
+		bOpen = modSD5.CBool(bOpen)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "top")
-		sTooltipPosition = SDUIShared.CStr(sTooltipPosition)
+		sTooltipPosition = modSD5.CStr(sTooltipPosition)
 		sTip = Props.GetDefault("Tip", "Tooltip")
-		sTip = SDUIShared.CStr(sTip)
+		sTip = modSD5.CStr(sTip)
 		bHasContent = Props.GetDefault("HasContent", False)
-		bHasContent = SDUIShared.CBool(bHasContent)   
+		bHasContent = modSD5.CBool(bHasContent)   
 	End If
 	'
 	If sParentID <> "" Then

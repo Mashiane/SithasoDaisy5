@@ -46,8 +46,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -69,6 +69,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -185,13 +186,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sSize = Props.GetDefault("Size", "md")
-		sSize = SDUIShared.CStr(sSize)
+		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sTypeOf = Props.GetDefault("TypeOf", "spinner")
-		sTypeOf = SDUIShared.CStr(sTypeOf)
+		sTypeOf = modSD5.CStr(sTypeOf)
 	End If
 	'
 	If sParentID <> "" Then

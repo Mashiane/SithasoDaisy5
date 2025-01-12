@@ -13,8 +13,8 @@ End Sub
 
 
 Sub Show(MainApp As SDUI5App)
-	BANano.LoadLayoutAppend($"#body"$, "navbarview")
 	app = MainApp
+	BANano.LoadLayout(app.PageView, "navbarview")
 End Sub
 
 Private Sub navbar_TitleClick (e As BANanoEvent)

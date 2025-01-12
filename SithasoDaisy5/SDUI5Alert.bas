@@ -7,7 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #Event: Click (e As BANanoEvent)
 
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item '_actions', Description: Child Item '_actions'
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _actions, Description: Child Item _actions
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Alert Title, Description: Title Text
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Alert Text, Description: Text
@@ -78,8 +78,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -101,6 +101,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -236,38 +237,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		sAlignment = Props.GetDefault("Alignment", "")
-		sAlignment = SDUIShared.CStr(sAlignment)
+		sAlignment = modSD5.CStr(sAlignment)
 		If sAlignment = "none" Then sAlignment = ""
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = SDUIShared.CBool(bDash)
+		bDash = modSD5.CBool(bDash)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = SDUIShared.CStr(sIcon)
+		sIcon = modSD5.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
-		sIconColor = SDUIShared.CStr(sIconColor)
+		sIconColor = modSD5.CStr(sIconColor)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = SDUIShared.CBool(bOutline)
+		bOutline = modSD5.CBool(bOutline)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = SDUIShared.CStr(sSize)
+		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = SDUIShared.CBool(bSoft)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		bSoft = modSD5.CBool(bSoft)
 		sTitle = Props.GetDefault("Title", "")
-		sTitle = SDUIShared.CStr(sTitle)
+		sTitle = modSD5.CStr(sTitle)
 		sIconSize = Props.GetDefault("IconSize", "16px")
-		sIconSize = SDUIShared.CStr(sIconSize)
+		sIconSize = modSD5.CStr(sIconSize)
 		bHasActions = Props.GetDefault("HasActions", False)
-		bHasActions = SDUIShared.CBool(bHasActions)
+		bHasActions = modSD5.CBool(bHasActions)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "96")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If sParentID <> "" Then
@@ -281,13 +278,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.AddClassDT("alert")
 	UI.AddAttrDT("role", "alert")
 	If sAlignment <> "" Then UI.AddClassDT("alert-" & sAlignment)
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("alert", sColor)
 	If bDash <> False Then UI.AddClassDT("alert-dash")
 	If bOutline <> False Then UI.AddClassDT("alert-outline")
 	If sSize <> "" Then UI.AddSizeDT("alert", sSize)
 	If bSoft <> False Then UI.AddClassDT("alert-soft")
-	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
 	UI.AddAttrDT("aria-label", "status")

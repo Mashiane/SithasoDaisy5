@@ -57,8 +57,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -80,6 +80,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -206,23 +207,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = SDUIShared.CStr(sBackgroundColor)
 		sBorderColor = Props.GetDefault("BorderColor", "")
-		sBorderColor = SDUIShared.CStr(sBorderColor)
+		sBorderColor = modSD5.CStr(sBorderColor)
 		sBorderWidth = Props.GetDefault("BorderWidth", "")
-		sBorderWidth = SDUIShared.CStr(sBorderWidth)
+		sBorderWidth = modSD5.CStr(sBorderWidth)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = SDUIShared.CStr(sColor)
+		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sProgressSize = Props.GetDefault("ProgressSize", "")
-		sProgressSize = SDUIShared.CStr(sProgressSize)
+		sProgressSize = modSD5.CStr(sProgressSize)
 		sProgressThickness = Props.GetDefault("ProgressThickness", "")
-		sProgressThickness = SDUIShared.CStr(sProgressThickness)
-		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sProgressThickness = modSD5.CStr(sProgressThickness)
 		sValue = Props.GetDefault("Value", "")
-		sValue = SDUIShared.CStr(sValue)
+		sValue = modSD5.CStr(sValue)
 	End If
 	'
 	If sParentID <> "" Then
@@ -235,7 +232,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	UI.AddClassDT("radial-progress")
 	UI.AddAttrDT("role", "progressbar")
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	If sBorderWidth <> "" Then UI.AddSizeDT("border", sBorderWidth)
 	If sColor <> "" Then UI.AddTextColorDT(sColor)

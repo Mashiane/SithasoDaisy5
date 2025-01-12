@@ -44,8 +44,8 @@ Sub Process_Globals
 End Sub
 
 Sub Show(MainApp As SDUI5App)
-	BANano.LoadLayoutAppend($"#body"$, "buttonsview")
 	app = MainApp
+	BANano.LoadLayout(app.PageView, "buttonsview")
 End Sub
 
 

@@ -43,5 +43,5 @@ End Sub
 '
 ''start building the page
 'private Sub BuildPage
-''	banano.LoadLayout(app.PageViewer, "adblanklayout")
+''	banano.LoadLayout(app.PageView, "adblanklayout")
 'End Sub

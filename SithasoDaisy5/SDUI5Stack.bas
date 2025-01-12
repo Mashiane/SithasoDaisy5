@@ -49,8 +49,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -72,6 +72,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -196,11 +197,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlignment = Props.GetDefault("Alignment", "bottom")
-		sAlignment = SDUIShared.CStr(sAlignment)
+		sAlignment = modSD5.CStr(sAlignment)
 		sHeight = Props.GetDefault("Height", "48")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "48")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If sAlignment <> "" Then UI.AddClassDT("stack-" & sAlignment)

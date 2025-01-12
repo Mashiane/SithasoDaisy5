@@ -10,6 +10,10 @@ Version=10
 #DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
+#DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
+#DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
+#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: rounded, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
@@ -50,11 +54,15 @@ Sub Class_Globals
 	Private sSrc As String = "./assets/mashy.jpg"
 	Private sWidth As String = "12"
 	Private bRoundedBox As Boolean = False
+	Private sMaxHeight As String = ""
+	Private sMaxWidth As String = ""
+	Private sMinHeight As String = ""
+	Private sMinWidth As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
@@ -76,6 +84,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -200,21 +209,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlt = Props.GetDefault("Alt", "Image")
-		sAlt = SDUIShared.CStr(sAlt)
+		sAlt = modSD5.CStr(sAlt)
 		sHeight = Props.GetDefault("Height", "12")
-		sHeight = SDUIShared.CStr(sHeight)
+		sHeight = modSD5.CStr(sHeight)
 		sMask = Props.GetDefault("Mask", "rounded")
-		sMask = SDUIShared.CStr(sMask)
+		sMask = modSD5.CStr(sMask)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = SDUIShared.CStr(sShadow)
+		sShadow = modSD5.CStr(sShadow)
 		sSrc = Props.GetDefault("Src", "./assets/mashy.jpg")
-		sSrc = SDUIShared.CStr(sSrc)
+		sSrc = modSD5.CStr(sSrc)
 		sWidth = Props.GetDefault("Width", "12")
-		sWidth = SDUIShared.CStr(sWidth)
+		sWidth = modSD5.CStr(sWidth)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = SDUIShared.CBool(bRoundedBox)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sMaxHeight = Props.GetDefault("MaxHeight", "")
+		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxWidth = Props.GetDefault("MaxWidth", "")
+		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMinHeight = Props.GetDefault("MinHeight", "")
+		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinWidth = Props.GetDefault("MinWidth", "")
+		sMinWidth = modSD5.CStr(sMinWidth)
 	End If
 	'
+	If sMaxHeight <> "" Then UI.AddSizeDT("max-h", sMaxHeight)
+	If sMaxWidth <> "" Then UI.AddSizeDT("max-w", sMaxWidth)
+	If sMinHeight <> "" Then UI.AddSizeDT("min-h", sMinHeight)
+	If sMinWidth <> "" Then UI.AddSizeDT("min-w", sMinWidth)
 	If bRoundedBox <> False Then UI.AddClassDT("rounded-box")
 	If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
@@ -319,4 +340,50 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+
+'set Max Height
+Sub setMaxHeight(s As String)
+	sMaxHeight = s
+	CustProps.put("MaxHeight", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "max-h", s)
+End Sub
+'set Max Width
+Sub setMaxWidth(s As String)
+	sMaxWidth = s
+	CustProps.put("MaxWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "max-w", s)
+End Sub
+'set Min Height
+Sub setMinHeight(s As String)
+	sMinHeight = s
+	CustProps.put("MinHeight", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "min-h", s)
+End Sub
+'set Min Width
+Sub setMinWidth(s As String)
+	sMinWidth = s
+	CustProps.put("MinWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "min-w", s)
+End Sub
+'get Max Height
+Sub getMaxHeight As String
+	Return sMaxHeight
+End Sub
+'get Max Width
+Sub getMaxWidth As String
+	Return sMaxWidth
+End Sub
+'get Min Height
+Sub getMinHeight As String
+	Return sMinHeight
+End Sub
+'get Min Width
+Sub getMinWidth As String
+	Return sMinWidth
 End Sub

@@ -14,8 +14,8 @@ End Sub
 
 
 Sub Show(MainApp As SDUI5App)
-	BANano.LoadLayoutAppend($"#body"$, "swapview")
 	app = MainApp
+	BANano.LoadLayout(app.PageView, "swapview")
 End Sub
 
 Private Sub SDUI5Swap2_Change (value As Boolean)

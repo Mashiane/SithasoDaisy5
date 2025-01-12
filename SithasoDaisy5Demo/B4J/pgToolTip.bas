@@ -12,6 +12,6 @@ End Sub
 
 
 Sub Show(MainApp As SDUI5App)
-	BANano.LoadLayoutAppend($"#body"$, "tooltipview")
 	app = MainApp
+	BANano.LoadLayout(app.PageView, "tooltipview")
 End Sub
