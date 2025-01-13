@@ -40,7 +40,7 @@ Version=10
 #DesignerProperty: Key: PlaceContent, DisplayName: Place Content, FieldType: String, DefaultValue: none, Description: Place Content, List: around|baseline|between|center|end|evenly|none|start|stretch
 #DesignerProperty: Key: PlaceItems, DisplayName: Place Items, FieldType: String, DefaultValue: none, Description: Place Items, List: baseline|center|end|none|start|stretch
 #DesignerProperty: Key: PlaceSelf, DisplayName: Place Self, FieldType: String, DefaultValue: none, Description: Place Self, List: auto|center|end|none|start|stretch
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|rounded-2xl|rounded-3xl|rounded-full|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: RowSpan, DisplayName: Row Span, FieldType: String, DefaultValue: , Description: Row Span
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -440,9 +440,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.AddClassDT("shrink-" & sFlexShrink)
 	End Select
 	If sFlexWrap <> "" Then UI.AddClassDT("flex-" & sFlexWrap)
-	If bFlexbox <> False Then UI.AddClassDT("flex")
+	If bFlexbox = True Then UI.AddClassDT("flex")
 	If sGap <> "" Then UI.AddClassDT("gap-" & sGap)
-	If bGrid <> False Then UI.AddClassDT("grid")
+	If bGrid = True Then UI.AddClassDT("grid")
 	If sGridCols <> "" Then UI.AddClassDT("grid-cols-" & sGridCols)
 	If sGridFlow <> "" Then UI.AddClassDT("grid-flow-" & sGridFlow)
 	If sGridRows <> "" Then UI.AddClassDT("grid-rows-" & sGridRows)
@@ -454,7 +454,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sPlaceItems <> "" Then UI.AddClassDT("place-items-" & sPlaceItems)
 	If sPlaceSelf <> "" Then UI.AddClassDT("place-self-" & sPlaceSelf)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
-	If bRoundedBox <> False Then UI.AddClassDT("rounded-box")
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sRowSpan <> "" Then UI.AddClassDT("row-span-" & sRowSpan)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -620,7 +620,7 @@ Sub setFlexbox(b As Boolean)
 	bFlexbox = b
 	CustProps.put("Flexbox", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "flex")
 	Else
 		UI.RemoveClass(mElement, "flex")
@@ -638,7 +638,7 @@ Sub setGrid(b As Boolean)
 	bGrid = b
 	CustProps.put("Grid", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "grid")
 	Else
 		UI.RemoveClass(mElement, "grid")
@@ -734,7 +734,7 @@ Sub setRoundexBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "rounded-box")
 	Else
 		UI.RemoveClass(mElement, "rounded-box")

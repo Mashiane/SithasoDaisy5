@@ -8,6 +8,7 @@ Version=10
 #Event: Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: DockItem, DisplayName: Dock Item, FieldType: Boolean, DefaultValue: False, Description: Dock Item
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Button, Description: Text
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -111,6 +112,7 @@ Sub Class_Globals
 	Private sHeight As String = ""
 	Private sWidth As String = ""
 	Private bJoinItem As Boolean = False
+	Private bDockItem As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -342,6 +344,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 		bJoinItem = Props.GetDefault("JoinItem", False)
 		bJoinItem = modSD5.CBool(bJoinItem)
+		bDockItem = Props.GetDefault("DockItem", False)
+		bDockItem = modSD5.CBool(bDockItem)        
 	End If
 	'
 	If sParentID <> "" Then
@@ -352,37 +356,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bJoinItem <> False Then UI.AddClassDT("join-item")
-	If bActive <> False Then UI.AddClassDT("btn-active")
-	'If sBackgroundColor <> "" Then UI.AddClassDT("background-color-" & sBackgroundColor)
-	If bBlock <> False Then UI.AddClassDT("btn-block")
-	UI.AddClassDT(sBtn)
-	If bCircle <> False Then UI.AddClassDT("btn-circle")
-	If sColor <> "" Then UI.AddClassDT("btn-" & sColor)
-	If bDash <> False Then UI.AddClassDT("btn-dash")
-	If bDisabled <> False Then UI.AddAttrDT("disabled", bDisabled)
-	If bGhost <> False Then UI.AddClassDT("btn-ghost")
-	If bLink <> False Then UI.AddClassDT("btn-link")
-	If bOutline <> False Then UI.AddClassDT("btn-outline")
-	If sSize <> "" Then UI.AddClassDT("btn-" & sSize)
-	If sSizeLarge <> "" Then UI.AddClassDT("lg:btn-" & sSizeLarge)
-	If sSizeMedium <> "" Then UI.AddClassDT("md:btn-" & sSizeMedium)
-	If sSizeSmall <> "" Then UI.AddClassDT("sm:btn-" & sSizeSmall)
-	If sSizeXLarge <> "" Then UI.AddClassDT("xl:btn-" & sSizeXLarge)
-	If bSoft <> False Then UI.AddClassDT("btn-soft")
-	If bSquare <> False Then UI.AddClassDT("btn-square")
-	If bWide <> False Then UI.AddClassDT("btn-wide")
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If bJoinItem = True Then UI.AddClassDT("join-item")
+	If bActive = True Then 
+		If bDockItem Then
+			UI.AddClassDT("dock-active")
+		Else	
+			UI.AddClassDT("btn-active")
+		End If
+	End If
+	If bDockItem = False Then
+		'If sBackgroundColor <> "" Then UI.AddClassDT("background-color-" & sBackgroundColor)
+		If bBlock = True Then UI.AddClassDT("btn-block")
+		UI.AddClassDT(sBtn)
+		If bCircle = True Then UI.AddClassDT("btn-circle")
+		If sColor <> "" Then UI.AddClassDT("btn-" & sColor)
+		If bDash = True Then UI.AddClassDT("btn-dash")
+		If bDisabled = True Then UI.AddAttrDT("disabled", bDisabled)
+		If bGhost = True Then UI.AddClassDT("btn-ghost")
+		If bLink = True Then UI.AddClassDT("btn-link")
+		If bOutline = True Then UI.AddClassDT("btn-outline")
+		If sSize <> "" Then UI.AddClassDT("btn-" & sSize)
+		If sSizeLarge <> "" Then UI.AddClassDT("lg:btn-" & sSizeLarge)
+		If sSizeMedium <> "" Then UI.AddClassDT("md:btn-" & sSizeMedium)
+		If sSizeSmall <> "" Then UI.AddClassDT("sm:btn-" & sSizeSmall)
+		If sSizeXLarge <> "" Then UI.AddClassDT("xl:btn-" & sSizeXLarge)
+		If bSoft = True Then UI.AddClassDT("btn-soft")
+		If bSquare = True Then UI.AddClassDT("btn-square")
+		If bWide = True Then UI.AddClassDT("btn-wide")
+		If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+		If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	End If
+	UI.AddClassDT("inline-flex items-center")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
-	mElement = mTarget.Append($"[BANCLEAN]<button id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-	<span id="${mName}_loading" class="loading-spinner hidden"></span>
-	<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden"></img>
-	<span id="${mName}_text"></span>
-	<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
-	<div id="${mName}_badge" class="badge hidden"></div>
+	mElement = mTarget.Append($"[BANCLEAN]
+	<button id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<span id="${mName}_loading" class="loading-spinner hidden"></span>
+		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden"></img>
+		<span id="${mName}_text"></span>
+		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
+		<div id="${mName}_badge" class="badge hidden"></div>
 	</button>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 	setText(sText)
@@ -399,6 +413,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadge(sBadge)
 	setBadgeColor(sBadgeColor)
 	setBadgeSize(sBadgeSize)
+	setDockItem(bDockItem)
 End Sub
 
 'get Size
@@ -420,10 +435,18 @@ Sub setActive(b As Boolean)
 	bActive = b
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
-	If b <> False Then
-		UI.AddClass(mElement, "btn-active")
+	If bDockItem Then
+		If b = True Then
+			UI.AddClass(mElement, "dock-active")
+		Else
+			UI.RemoveClass(mElement, "dock-active")
+		End If
 	Else
-		UI.RemoveClass(mElement, "btn-active")
+		If b = True Then
+			UI.AddClass(mElement, "btn-active")
+		Else
+			UI.RemoveClass(mElement, "btn-active")
+		End If
 	End If
 End Sub
 'set Background Color
@@ -438,7 +461,7 @@ Sub setBlock(b As Boolean)
 	bBlock = b
 	CustProps.put("Block", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-block")
 	Else
 		UI.RemoveClass(mElement, "btn-block")
@@ -449,7 +472,7 @@ Sub setCircle(b As Boolean)
 	bCircle = b
 	CustProps.put("Circle", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-circle")
 	Else
 		UI.RemoveClass(mElement, "btn-circle")
@@ -468,7 +491,7 @@ Sub setDash(b As Boolean)
 	bDash = b
 	CustProps.put("Dash", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-dash")
 	Else
 		UI.RemoveClass(mElement, "btn-dash")
@@ -479,7 +502,7 @@ Sub setDisabled(b As Boolean)
 	bDisabled = b
 	CustProps.put("Disabled", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddAttr(mElement, "disabled", b)
 	Else
 		UI.RemoveAttr(mElement, "disabled")
@@ -490,7 +513,7 @@ Sub setGhost(b As Boolean)
 	bGhost = b
 	CustProps.put("Ghost", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-ghost")
 	Else
 		UI.RemoveClass(mElement, "btn-ghost")
@@ -530,7 +553,7 @@ Sub setLink(b As Boolean)
 	bLink = b
 	CustProps.put("Link", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-link")
 	Else
 		UI.RemoveClass(mElement, "btn-link")
@@ -567,7 +590,7 @@ Sub setOutline(b As Boolean)
 	bOutline = b
 	CustProps.put("Outline", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-outline")
 	Else
 		UI.RemoveClass(mElement, "btn-outline")
@@ -631,7 +654,7 @@ Sub setSoft(b As Boolean)
 	bSoft = b
 	CustProps.put("Soft", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-soft")
 	Else
 		UI.RemoveClass(mElement, "btn-soft")
@@ -642,7 +665,7 @@ Sub setSquare(b As Boolean)
 	bSquare = b
 	CustProps.put("Square", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-square")
 	Else
 		UI.RemoveClass(mElement, "btn-square")
@@ -660,7 +683,7 @@ Sub setWide(b As Boolean)
 	bWide = b
 	CustProps.put("Wide", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "btn-wide")
 	Else
 		UI.RemoveClass(mElement, "btn-wide")
@@ -897,7 +920,7 @@ Sub setJoinItem(b As Boolean)
 	bJoinItem = b
 	CustProps.put("JoinItem", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "join-item")
 	Else
 		UI.RemoveClass(mElement, "join-item")
@@ -907,4 +930,20 @@ End Sub
 'get Join Item
 Sub getJoinItem As Boolean
 	Return bJoinItem
+End Sub
+
+'set Dock Item
+Sub setDockItem(b As Boolean)
+	bDockItem = b
+	CustProps.put("DockItem", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_text"$, "dock-label")
+	Else
+		UI.RemoveClassByID($"${mName}_text"$, "dock-label")
+	End If
+End Sub
+'get Dock Item
+Sub getDockItem As Boolean
+	Return bDockItem
 End Sub

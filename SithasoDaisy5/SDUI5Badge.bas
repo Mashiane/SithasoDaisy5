@@ -296,12 +296,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("badge")
 	If sColor <> "" Then UI.AddColorDT("badge", sColor)
-	If bDash <> False Then UI.AddClassDT("badge-dash")
-	If bGhost <> False Then UI.AddClassDT("badge-ghost")
+	If bDash = True Then UI.AddClassDT("badge-dash")
+	If bGhost = True Then UI.AddClassDT("badge-ghost")
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If bOutline <> False Then UI.AddClassDT("badge-outline")
+	If bOutline = True Then UI.AddClassDT("badge-outline")
 	If sSize <> "" Then UI.AddClassDT("badge-" & sSize)
-	If bSoft <> False Then UI.AddClassDT("badge-soft")
+	If bSoft = True Then UI.AddClassDT("badge-soft")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
@@ -361,7 +361,7 @@ Sub setDash(b As Boolean)
 	bDash = b
 	CustProps.put("Dash", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "badge-dash")
 	Else
 		UI.RemoveClass(mElement, "badge-dash")
@@ -372,7 +372,7 @@ Sub setGhost(b As Boolean)
 	bGhost = b
 	CustProps.put("Ghost", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "badge-ghost")
 	Else
 		UI.RemoveClass(mElement, "badge-ghost")
@@ -420,7 +420,7 @@ Sub setOutline(b As Boolean)
 	bOutline = b
 	CustProps.put("Outline", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "badge-outline")
 	Else
 		UI.RemoveClass(mElement, "badge-outline")
@@ -462,7 +462,7 @@ Sub setRound(b As Boolean)
 	bRound = b
 	CustProps.put("Round", b)
 	If mElement = Null Then Return
-	'If b <> False Then
+	'If b = True Then
 	'	UI.AddClass(mElement, "round-Round")
 	'Else
 	'	UI.RemoveClass(mElement, "round-Round")
@@ -481,7 +481,7 @@ Sub setSoft(b As Boolean)
 	bSoft = b
 	CustProps.put("Soft", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "badge-Soft")
 	Else
 		UI.RemoveClass(mElement, "badge-Soft")
@@ -610,7 +610,7 @@ Sub setIndicatorItem(b As Boolean)
 	bIndicatorItem = b
 	CustProps.put("IndicatorItem", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "indicator-item")
 	Else
 		UI.RemoveClass(mElement, "indicator-item")

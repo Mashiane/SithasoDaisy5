@@ -218,7 +218,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If bCenter <> False Then UI.AddClassDT("footer-center")
+	If bCenter = True Then UI.AddClassDT("footer-center")
 	If sDirection <> "" Then UI.AddClassDT("footer-" & sDirection)
 	If sDirectionOnSmall <> "" Then UI.AddClassDT("sm:footer-" & sDirectionOnSmall)
 	UI.AddClassDT("footer")
@@ -251,7 +251,7 @@ Sub setCenter(b As Boolean)
 	bCenter = b
 	CustProps.put("Center", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "footer-center")
 	Else
 		UI.RemoveClass(mElement, "footer-center")

@@ -196,7 +196,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("footer-title")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sTextSize <> "none" Then UI.AddTextSizeDT(sTextSize)
+	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -224,7 +224,7 @@ Sub setTextSize(s As String)
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
-	If s <> "none" Then UI.SetTextSize(mElement, sTextSize)
+	If s <> "" Then UI.SetTextSize(mElement, sTextSize)
 End Sub
 'get Text Color
 Sub getTextColor As String

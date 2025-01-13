@@ -16,7 +16,7 @@ Version=10
 #DesignerProperty: Key: ContainerSm, DisplayName: Container SM, FieldType: Boolean, DefaultValue: False, Description: Container Sm
 #DesignerProperty: Key: ContainerXl, DisplayName: Container XL, FieldType: Boolean, DefaultValue: False, Description: Container Xl
 #DesignerProperty: Key: ContainerXxl, DisplayName: Container XXL, FieldType: Boolean, DefaultValue: False, Description: Container Xxl
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|rounded-2xl|rounded-3xl|rounded-full|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
@@ -313,12 +313,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If bContainerFluid <> False Then UI.AddClassDT("container-fluid")
-	If bContainerLg <> False Then UI.AddClassDT("container-lg")
-	If bContainerMd <> False Then UI.AddClassDT("container-md")
-	If bContainerSm <> False Then UI.AddClassDT("container-sm")
-	If bContainerXl <> False Then UI.AddClassDT("container-xl")
-	If bContainerXxl <> False Then UI.AddClassDT("container-xxl")
+	If bContainerFluid = True Then UI.AddClassDT("container-fluid")
+	If bContainerLg = True Then UI.AddClassDT("container-lg")
+	If bContainerMd = True Then UI.AddClassDT("container-md")
+	If bContainerSm = True Then UI.AddClassDT("container-sm")
+	If bContainerXl = True Then UI.AddClassDT("container-xl")
+	If bContainerXxl = True Then UI.AddClassDT("container-xxl")
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
@@ -360,7 +360,7 @@ Sub setContainerFluid(b As Boolean)
 	bContainerFluid = b
 	CustProps.put("ContainerFluid", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-fluid")
 	Else
 		UI.RemoveClass(mElement, "container-fluid")
@@ -371,7 +371,7 @@ Sub setContainerLg(b As Boolean)
 	bContainerLg = b
 	CustProps.put("ContainerLg", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-lg")
 	Else
 		UI.RemoveClass(mElement, "container-lg")
@@ -382,7 +382,7 @@ Sub setContainerMd(b As Boolean)
 	bContainerMd = b
 	CustProps.put("ContainerMd", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-md")
 	Else
 		UI.RemoveClass(mElement, "container-md")
@@ -393,7 +393,7 @@ Sub setContainerSm(b As Boolean)
 	bContainerSm = b
 	CustProps.put("ContainerSm", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-sm")
 	Else
 		UI.RemoveClass(mElement, "container-sm")
@@ -404,7 +404,7 @@ Sub setContainerXl(b As Boolean)
 	bContainerXl = b
 	CustProps.put("ContainerXl", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-xl")
 	Else
 		UI.RemoveClass(mElement, "container-xl")
@@ -415,7 +415,7 @@ Sub setContainerXxl(b As Boolean)
 	bContainerXxl = b
 	CustProps.put("ContainerXxl", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "container-xxl")
 	Else
 		UI.RemoveClass(mElement, "container-xxl")

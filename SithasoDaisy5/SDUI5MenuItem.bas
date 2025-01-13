@@ -299,9 +299,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bOpen = modSD5.CBool(bOpen)            
 	End If
 	'
-	If bActive <> False Then UI.AddClassDT("menu-active")
-	If bDisabled <> False Then UI.AddClassDT("menu-disabled")
-	If bFocus <> False Then UI.AddClassDT("menu-focus")
+	If bActive = True Then UI.AddClassDT("menu-active")
+	If bDisabled = True Then UI.AddClassDT("menu-disabled")
+	If bFocus = True Then UI.AddClassDT("menu-focus")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

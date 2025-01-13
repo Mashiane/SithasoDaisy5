@@ -272,7 +272,7 @@ Sub setIndicatorItem(b As Boolean)
 	bIndicatorItem = b
 	CustProps.put("IndicatorItem", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "indicator-item")
 	Else
 		UI.RemoveClass(mElement, "indicator-item")

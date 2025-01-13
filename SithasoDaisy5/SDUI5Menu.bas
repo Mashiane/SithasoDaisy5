@@ -13,7 +13,7 @@ Version=10
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|rounded-2xl|rounded-3xl|rounded-full|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: lg, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
 #DesignerProperty: Key: RoundedItems, DisplayName: Rounded Items, FieldType: Boolean, DefaultValue: True, Description: Rounded Items
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -65,7 +65,7 @@ Sub Class_Globals
 	Private sMdDirection As String = "none"
 	Private sMinHeight As String = "full"
 	Private sMinWidth As String = ""
-	Private sRounded As String = "none"
+	Private sRounded As String = "lg"
 	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
 	Private sSize As String = "none"
@@ -249,8 +249,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		sDirection = Props.GetDefault("Direction", "vertical")
 		sDirection = modSD5.CStr(sDirection)
 		If sDirection = "" Then sDirection = ""
@@ -270,7 +270,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinHeight = modSD5.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
 		sMinWidth = modSD5.CStr(sMinWidth)
-		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = Props.GetDefault("Rounded", "lg")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
@@ -297,7 +297,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("menu")
 	If bRoundedItems = False Then UI.AddClassDT("[&_li>*]:rounded-none")
-	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	'If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sDirection <> "" Then UI.AddClassDT("menu-" & sDirection)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If sLgDirection <> "" Then UI.AddClassDT("lg:menu-" & sLgDirection)

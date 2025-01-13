@@ -482,6 +482,13 @@ Sub AddStyleComputedMap(mElement As BANanoElement, ms As Map)
 	Next
 End Sub
 
+Sub ClearByID(sID As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	Clear(mElement)
+End Sub
+
 Sub Clear(mElement As BANanoElement)
 	If mElement = Null Then Return
 	mElement.empty
@@ -716,6 +723,12 @@ Sub OnEventMethod(mElement As BANanoElement, event As String, Module As Object, 
 	mElement.RunMethod("on", Array(event, cb))
 End Sub
 
+Sub OnEventByID(sID As String, event As String, CallBack As Object, MethodName As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	OnEvent(mElement, event, CallBack, MethodName)
+End Sub
+
 'add event
 Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, MethodName As String)
 	If mElement = Null Then Return
@@ -825,6 +838,17 @@ Sub AddAttr(mElement As BANanoElement, attr As String, text As String)
 	mElement.SetAttr(attr, text)
 End Sub
 
+Sub SetAttr(mElement As BANanoElement, attr As String, text As String)
+	If mElement = Null Then Return
+	mElement.SetAttr(attr, text)
+End Sub
+
+Sub SetAttrByID(sID As String, k As String, v As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	AddAttr(mElement, k, v)
+End Sub
+
 Sub AddAttrByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -918,11 +942,10 @@ private Sub ListRemoveItem(lst As List, item As String)
 	If cPos <> -1 Then lst.RemoveAt(cPos)
 End Sub
 
-private Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
+Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
 	varStyles = modSD5.CStr(varStyles)
 	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
 	varStyles = varStyles.Replace(":", "=")
-	varStyles = varStyles.Replace(",", ";")
 	varStyles = varStyles.Replace("'", "")
 	varStyles = varStyles.Replace(",", ";")
 	varStyles = varStyles.Replace(QUOTE, "")

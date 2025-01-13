@@ -495,7 +495,7 @@ Sub setRing(b As Boolean)
 	bRing = b
 	CustProps.put("Ring", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClassByID($"${mName}_host"$, "ring")
 	Else
 		UI.RemoveClassByID($"${mName}_host"$, "ring")

@@ -426,11 +426,13 @@ End Sub
 
 Sub FixRounded(s As String) As String
 	Select Case s
-		Case "rounded"
-			Return s
-		Case Else
-			Dim x As String = "rounded-" & s
-			Return x
+	Case "rounded"
+		Return s
+	Case "0"
+		Return "rounded-none"	
+	Case Else
+		Dim x As String = "rounded-" & s
+		Return x
 	End Select
 End Sub
 

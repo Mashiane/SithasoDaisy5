@@ -145,7 +145,7 @@ Sub setOpen(b As Boolean)
 	bOpen = b
 	CustProps.put("Open", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "tooltip-open")
 	Else
 		UI.RemoveClass(mElement, "tooltip-open")

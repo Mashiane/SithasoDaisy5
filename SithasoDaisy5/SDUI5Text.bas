@@ -6,7 +6,9 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u
+#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
 #DesignerProperty: Key: ApplyDefaults, DisplayName: Apply Defaults, FieldType: Boolean, DefaultValue: True, Description: Apply Defaults
 #DesignerProperty: Key: Decoration, DisplayName: Decoration, FieldType: String, DefaultValue: none, Description: Decoration, List: line-through|no-underline|none|underline
@@ -136,6 +138,8 @@ Sub Class_Globals
 	Public CONST WORDBREAK_NONE As String = "none"
 	Public CONST WORDBREAK_NORMAL As String = "normal"
 	Public CONST WORDBREAK_WORDS As String = "words"
+	Private sIcon As String = ""
+	Private sIconSize As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -281,11 +285,16 @@ Sub setText(text As String)
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
-	UI.SetText(mElement, text)
+	UI.SetTextByID($"${mName}_text"$, text)
+	If text = "" Then
+		UI.SetVisibleByID($"${mName}_text"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_text"$, True)
+	End If
 End Sub
 'get text
 Sub getText As String
-	sText = UI.GetText(mElement)
+	sText = UI.GetTextByID($"${mName}_text"$)
 	Return sText
 End Sub
 'code to design the view
@@ -330,6 +339,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWordBreak = Props.GetDefault("WordBreak", "none")
 		sWordBreak = modSD5.CStr(sWordBreak)
 		If sWordBreak = "none" Then sWordBreak = ""
+		sIcon = Props.GetDefault("Icon", "")
+		sIcon = modSD5.CStr(sIcon)
+		sIconSize = Props.GetDefault("IconSize", "")
+		sIconSize = modSD5.CStr(sIconSize)
 	End If
 	'
 	If bApplyDefaults Then
@@ -358,7 +371,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sFontWeight <> "" Then UI.AddClassDT("font-" & sFontWeight)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sDecoration <> "" Then UI.AddClassDT("decoration-" & sDecoration)
-	If bItalic <> False Then UI.AddClassDT("italic")
+	If bItalic = True Then UI.AddClassDT("italic")
 	If sOverflow <> "" Then UI.AddClassDT("overflow-" & sOverflow)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -376,7 +389,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</${sTextTag}>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]
+	<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<img id="${mName}_icon" class="hidden mr-2"></img>
+		<span id="${mName}_text"></span>
+	</${sTextTag}>"$).Get("#" & mName)
+	setText(sText)
+	setIcon(sIcon)
+	setIconSize(sIconSize)
 End Sub
 
 'set Apply Defaults
@@ -405,7 +425,7 @@ Sub setItalic(b As Boolean)
 	bItalic = b
 	CustProps.put("Italic", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "italic")
 	Else
 		UI.RemoveClass(mElement, "italic")
@@ -519,4 +539,40 @@ End Sub
 'get Word Break
 Sub getWordBreak As String
 	Return sWordBreak
+End Sub
+
+'set Icon
+Sub setIcon(s As String)
+	sIcon = s
+	CustProps.put("Icon", s)
+	If mElement = Null Then Return
+	If sIcon = "" Then
+		UI.SetVisibleByID($"${mName}_icon"$, False)
+		UI.RemoveClass(mElement, "inline-flex items-center")
+	Else
+		UI.SetVisibleByID($"${mName}_icon"$, True)
+		UI.AddClass(mElement, "inline-flex items-center")
+		UI.SetImageByID($"${mName}_icon"$, sIcon)
+	End If	
+End Sub
+
+'set Icon Size
+'options: xs|none|sm|md|lg|xl
+Sub setIconSize(s As String)
+	sIconSize = s
+	CustProps.put("IconSize", s)
+	If mElement = Null Then Return
+	If sIcon = "" Then Return
+	UI.SetWidthByID($"${mName}_icon"$, s)
+	UI.SetHeightByID($"${mName}_icon"$, s)
+End Sub
+
+'get Icon
+Sub getIcon As String
+	Return sIcon
+End Sub
+
+'get Icon Size
+Sub getIconSize As String
+	Return sIconSize
 End Sub

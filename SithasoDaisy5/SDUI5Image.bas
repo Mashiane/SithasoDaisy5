@@ -236,7 +236,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sMaxWidth <> "" Then UI.AddSizeDT("max-w", sMaxWidth)
 	If sMinHeight <> "" Then UI.AddSizeDT("min-h", sMinHeight)
 	If sMinWidth <> "" Then UI.AddSizeDT("min-w", sMinWidth)
-	If bRoundedBox <> False Then UI.AddClassDT("rounded-box")
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If sMask <> "" Then UI.AddMaskDT(sMask)
@@ -262,7 +262,7 @@ Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "rounded-box")
 	Else
 		UI.RemoveClass(mElement, "rounded-box")

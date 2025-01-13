@@ -43,6 +43,7 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
+	drawermenu.AddMenuItem("pg-typography", "Typography", False)
 	Dim components As SDUI5MenuItem = drawermenu.AddMenuItemParent("components", "", "Components")
 	components.Open = True
 	
@@ -57,8 +58,6 @@ Sub CreateDrawerMenu
 	drawermenu.SetItemBadge("pg-modal", "", "error")
 		
 	Dim display As SDUI5MenuItem = components.AddMenuItemParent("display", "", "Data Display")
-	display.AddMenuItemChild("pg-grid", "", "Grid")
-	display.AddMenuItemChild("pg-gridcode", "", "Grid Code")
 	display.AddMenuItemChild("pg-accordion", "", "Accordion")
 	display.AddMenuItemChild("pg-avatar", "", "Avatar")
 	display.AddMenuItemChild("pg-badge", "", "Badge")
@@ -91,7 +90,11 @@ Sub CreateDrawerMenu
 	
 	Dim navigation As SDUI5MenuItem = components.AddMenuItemParent("navigation", "", "Navigation")
 	navigation.AddMenuItemChild("pg-breadcrumbs", "", "Breadcrumbs")
-	navigation.AddMenuItemChild("pg-dock", "", "Dock")
+	Dim docks As SDUI5MenuItem = navigation.AddMenuItemParent("docks", "", "Dock")
+	docks.AddMenuItemChild("pg-dock", "", "Dock")
+	docks.AddMenuItemChild("pg-dockxs", "", "Dock (XS)")
+	docks.AddMenuItemChild("pg-dockcolor", "", "Dock (Color)")
+	
 	navigation.AddMenuItemChild("pg-link", "", "Link")
 	navigation.AddMenuItemChild("pg-menu", "", "Menu")
 	navigation.AddMenuItemChild("pg-menu1", "", "Menu (More)")
@@ -99,12 +102,6 @@ Sub CreateDrawerMenu
 	navigation.AddMenuItemChild("pg-pagination", "", "Pagination")
 	navigation.AddMenuItemChild("pg-steps", "", "Steps")
 	navigation.AddMenuItemChild("pg-tab", "", "Tab")
-	'
-	drawermenu.SetItemBadge("pg-breadcrumbs", "", "error")
-	drawermenu.SetItemBadge("pg-dock", "", "error")
-	drawermenu.SetItemBadge("pg-steps", "", "error")
-	drawermenu.SetItemBadge("pg-tab", "", "error")
-	drawermenu.SetItemBadge("pg-pagination", "", "error")
 	
 	Dim feedback As SDUI5MenuItem = components.AddMenuItemParent("feedback", "", "Feedback")
 	feedback.AddMenuItemChild("pg-alert", "", "Alert")
@@ -114,8 +111,6 @@ Sub CreateDrawerMenu
 	feedback.AddMenuItemChild("pg-skeleton", "", "Skeleton")
 	feedback.AddMenuItemChild("pg-toast", "", "Toast")
 	feedback.AddMenuItemChild("pg-tooltip", "", "Tooltip")
-	'
-	drawermenu.SetItemBadge("pg-skeleton", "", "error")
 	
 	'
 '	Dim dinput As SDUI5MenuItem = components.AddMenuItemParent("dinput", "", "Data Input")
@@ -151,6 +146,8 @@ Sub CreateDrawerMenu
 	
 	'
 	Dim layout As SDUI5MenuItem = components.AddMenuItemParent("layout", "", "Layout")
+	layout.AddMenuItemChild("pg-grid", "", "Grid")
+	layout.AddMenuItemChild("pg-gridcode", "", "Grid Code")
 	layout.AddMenuItemChild("pg-divider", "", "Divider")
 	layout.AddMenuItemChild("pg-drawer", "", "Drawer")
 	layout.AddMenuItemChild("pg-footer", "", "Footer")
@@ -183,6 +180,8 @@ Private Sub drawermenu_ItemClick (item As String)
 	Case "pg"
 		'actions
 		Select Case ssuffix
+		Case "typography"
+			pgTypography.Show(App)
 		Case "buttons"
 			pgButtons.Show(App)
 		Case "dropdown"
@@ -216,21 +215,30 @@ Private Sub drawermenu_ItemClick (item As String)
 		Case "timeline"
 			End Select
 			'
-			Select Case ssuffix
-			Case "breadcrumbs"
-				Case "dock"
-				Case "link"
-					pgLink.Show(App)
-				Case "menu"
-					pgMenu.Show(App)
-				Case "menu1"
-					pgMenu1.Show(App)	
-				Case "navbar"
-					pgNavBar.Show(App)
-				Case "pagination"
-				Case "steps"
-				Case "tab"
-	End Select
+		Select Case ssuffix
+		Case "breadcrumbs"
+			pgBreadCrumbs.Show(App)
+		Case "dock"
+			pgDock.Show(App)
+		Case "dockxs"
+			pgDockXS.Show(App)
+		Case "dockcolor"
+			pgDockColor.Show(App)
+		Case "link"
+		pgLink.Show(App)
+		Case "menu"
+		pgMenu.Show(App)
+		Case "menu1"
+		pgMenu1.Show(App)	
+		Case "navbar"
+		pgNavBar.Show(App)
+		Case "pagination"
+			pgPagination.Show(App)
+		Case "steps"
+			pgSteps.Show(App)
+		Case "tab"
+		pgTabs.Show(App)
+		End Select
 	'
 			Select Case ssuffix
 				Case "alert"
@@ -242,6 +250,7 @@ Private Sub drawermenu_ItemClick (item As String)
 				Case "radialprogress"
 					pgRadialProgress.Show(App)
 				Case "skeleton"
+					pgSkeleton.Show(App)
 				Case "toast"
 					pgToast.Show(App)
 				Case "tooltip"

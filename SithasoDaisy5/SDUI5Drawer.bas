@@ -251,7 +251,7 @@ Sub setLgOpen(b As Boolean)
 	bLgOpen = b
 	CustProps.put("LgOpen", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "lg:drawer-open")
 	Else
 		UI.RemoveClass(mElement, "lg:drawer-open")
@@ -262,7 +262,7 @@ Sub setMdOpen(b As Boolean)
 	bMdOpen = b
 	CustProps.put("MdOpen", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "md:drawer-open")
 	Else
 		UI.RemoveClass(mElement, "md:drawer-open")
@@ -273,7 +273,7 @@ Sub setOpen(b As Boolean)
 	bOpen = b
 	CustProps.put("Open", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "drawer-open")
 	Else
 		UI.RemoveClass(mElement, "drawer-open")
@@ -295,7 +295,7 @@ Sub setRightSide(b As Boolean)
 	bRightSide = b
 	CustProps.put("RightSide", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "drawer-end")
 	Else
 		UI.RemoveClass(mElement, "drawer-end")
@@ -306,7 +306,7 @@ Sub setSmOpen(b As Boolean)
 	bSmOpen = b
 	CustProps.put("SmOpen", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "sm:drawer-open")
 	Else
 		UI.RemoveClass(mElement, "sm:drawer-open")
@@ -317,7 +317,7 @@ Sub setXlOpen(b As Boolean)
 	bXlOpen = b
 	CustProps.put("XlOpen", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "xl:drawer-open")
 	Else
 		UI.RemoveClass(mElement, "xl:drawer-open")

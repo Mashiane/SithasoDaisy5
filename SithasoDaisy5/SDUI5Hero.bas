@@ -11,6 +11,8 @@ Version=10
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: Overlay, DisplayName: Overlay, FieldType: Boolean, DefaultValue: False, Description: Overlay
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ContentTextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: , Description: Content Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: ContentFlexDirection, DisplayName: Flex Direction, FieldType: String, DefaultValue: flex-col, Description: Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
 #DesignerProperty: Key: SmContentFlexDirection, DisplayName: SM Flex Direction, FieldType: String, DefaultValue: none, Description: Sm Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
@@ -73,6 +75,8 @@ Sub Class_Globals
 	Private sWidth As String = ""
 	Private sXlContentFlexDirection As String = "none"
 	Private sXxlContentFlexDirection As String = "none"
+	Private sRounded As String = "none"
+	Private sShadow As String = "none"        
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -224,8 +228,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = Props.GetDefault("BackgroundColor", "")
+		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
 		sBackgroundImage = modSD5.CStr(sBackgroundImage)
 		sContentFlexDirection = Props.GetDefault("ContentFlexDirection", "flex-col")
@@ -266,10 +270,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sXxlContentFlexDirection = Props.GetDefault("XxlContentFlexDirection", "none")
 		sXxlContentFlexDirection = modSD5.CStr(sXxlContentFlexDirection)
 		If sXxlContentFlexDirection = "none" Then sXxlContentFlexDirection = ""
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = modSD5.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""        
 	End If
 	'
 	'If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("hero")
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)        
 	If sBackgroundImage <> "" Then
 		UI.AddBackgroundImageDT(sBackgroundImage)
 	End If
@@ -509,4 +521,32 @@ End Sub
 'get Xxl Content Flex Direction
 Sub getXxlContentFlexDirection As String
 	Return sXxlContentFlexDirection
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub

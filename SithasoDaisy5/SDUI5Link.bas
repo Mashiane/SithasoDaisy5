@@ -14,6 +14,7 @@ Version=10
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 24px, Description: Icon Size
+#DesignerProperty: Key: ListItem, DisplayName: List Item, FieldType: Boolean, DefaultValue: False, Description: List Item
 #DesignerProperty: Key: Target, DisplayName: Target, FieldType: String, DefaultValue: none, Description: Target, List: _blank|_parent|_self|_top|none
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -54,6 +55,7 @@ Sub Class_Globals
 	Private sIconSize As String = "24px"
 	Private sTarget As String = "none"
 	Private sTextColor As String = ""
+	Private bListItem As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -106,7 +108,11 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	If bListItem Then
+		UI.SetVisibleByID($"${mName}_li"$, b)
+	Else
+		UI.SetVisible(mElement, b)
+	End If
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -248,11 +254,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIconSize = modSD5.CStr(sIconSize)
 		sTarget = Props.GetDefault("Target", "none")
 		sTarget = modSD5.CStr(sTarget)
+		bListItem = Props.GetDefault("ListItem", False)
+		bListItem = modSD5.CBool(bListItem)
 	End If
 	'
 	UI.AddClassDT("link")
 	If sColor <> "" Then UI.AddColorDT("link", sColor)
-	If bHover <> False Then UI.AddClassDT("link-hover")
+	If bHover = True Then UI.AddClassDT("link-hover")
 	If sHref <> "" Then UI.AddAttrDT("href", sHref)
 	If sTarget <> "" Then UI.AddAttrDT("target", sTarget)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -268,22 +276,46 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	'we dont have an icon
-	If sIcon = "" Then
-		mElement = mTarget.Append($"[BANCLEAN]
-			<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<span id="${mName}_text"></span>
-			</a>"$).Get("#" & mName)
-	Else	
-		mElement = mTarget.Append($"[BANCLEAN]
-			<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<div id="${mName}_host" class="flex items-center">
-					<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden"></img>
+	If bListItem Then
+		If sIcon = "" Then
+			mElement = mTarget.Append($"[BANCLEAN]
+			<li id="${mName}_li">
+				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<span id="${mName}_text"></span>
-				</div>	
-			</a>"$).Get("#" & mName)
-		setIcon(sIcon)
-		setIconColor(sIconColor)
-		setIconSize(sIconSize)
+				</a>
+			</li>"$).Get("#" & mName)
+		Else	
+			mElement = mTarget.Append($"[BANCLEAN]
+			<li id="${mName}_li">
+				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+					<div id="${mName}_host" class="inline-flex items-center">
+						<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden mr-2"></img>
+						<span id="${mName}_text"></span>
+					</div>	
+				</a>
+			</li>"$).Get("#" & mName)
+			setIcon(sIcon)
+			setIconColor(sIconColor)
+			setIconSize(sIconSize)
+		End If
+	Else
+		If sIcon = "" Then
+			mElement = mTarget.Append($"[BANCLEAN]
+				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+					<span id="${mName}_text"></span>
+				</a>"$).Get("#" & mName)
+		Else	
+			mElement = mTarget.Append($"[BANCLEAN]
+				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+					<div id="${mName}_host" class="inline-flex items-center">
+						<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden mr-2"></img>
+						<span id="${mName}_text"></span>
+					</div>	
+				</a>"$).Get("#" & mName)
+			setIcon(sIcon)
+			setIconColor(sIconColor)
+			setIconSize(sIconSize)
+		End If	
 	End If
 	setText(sText)
 End Sub
@@ -301,7 +333,7 @@ Sub setHover(b As Boolean)
 	bHover = b
 	CustProps.put("Hover", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "link-hover")
 	Else
 		UI.RemoveClass(mElement, "link-hover")
@@ -320,7 +352,7 @@ Sub setIcon(s As String)
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_icon"$, False)
+		UI.RemoveElementByID($"${mName}_icon"$)
 	Else	
 		UI.SetImageByID($"${mName}_icon"$, s)
 		UI.SetVisibleByID($"${mName}_icon"$, True)
@@ -331,6 +363,7 @@ Sub setIconColor(s As String)
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
+	If sIcon = "" Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_icon"$, s)
 End Sub
 'set Icon Size
@@ -338,6 +371,7 @@ Sub setIconSize(s As String)
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
+	If sIcon = "" Then Return
 	If s <> "" Then 
 		UI.SetWidthByID($"${mName}_icon"$, s)
 		UI.SetHeightByID($"${mName}_icon"$, s)

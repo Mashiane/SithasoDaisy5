@@ -6,6 +6,8 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
+#DesignerProperty: Key: GridCols, DisplayName: Grid Cols, FieldType: String, DefaultValue: , Description: Grid Cols
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: none, Description: Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: DirectionOnSm, DisplayName: Direction On Sm, FieldType: String, DefaultValue: none, Description: Direction On Sm, List: horizontal|none|vertical
 #DesignerProperty: Key: DirectionOnLg, DisplayName: Direction On Lg, FieldType: String, DefaultValue: none, Description: Direction On Lg, List: horizontal|none|vertical
@@ -37,6 +39,8 @@ Sub Class_Globals
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_NONE As String = "none"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
+	Private bGrid As Boolean = False
+	Private sGridCols As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -124,15 +128,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sDirectionOnXxl = Props.GetDefault("DirectionOnXxl", "none")
 		sDirectionOnXxl = modSD5.CStr(sDirectionOnXxl)
 		If sDirectionOnXxl = "none" Then sDirectionOnXxl = ""
+		bGrid = Props.GetDefault("Grid", False)
+		bGrid = modSD5.CBool(bGrid)
+		sGridCols = Props.GetDefault("GridCols", "")
+		sGridCols = modSD5.CStr(sGridCols)        
 	End If
 	'
-	UI.AddClassDT("join") 
-	If sDirection <> "none" Then UI.AddClassDT("join-" & sDirection)
-	If sDirectionOnLg <> "none" Then UI.AddClassDT("lg:join-" & sDirectionOnLg)
-	If sDirectionOnMd <> "none" Then UI.AddClassDT("md:join-" & sDirectionOnMd)
-	If sDirectionOnSm <> "none" Then UI.AddClassDT("sm:join-" & sDirectionOnSm)
-	If sDirectionOnXl <> "none" Then UI.AddClassDT("xl:join-" & sDirectionOnXl)
-	If sDirectionOnXxl <> "none" Then UI.AddClassDT("xxl:join-" & sDirectionOnXxl)
+	UI.AddClassDT("join")
+	If bGrid = True Then UI.AddClassDT("grid")
+	If sGridCols <> "" Then UI.AddClassDT("grid-cols-" & sGridCols)
+	If sDirection <> "" Then UI.AddClassDT("join-" & sDirection)
+	If sDirectionOnLg <> "" Then UI.AddClassDT("lg:join-" & sDirectionOnLg)
+	If sDirectionOnMd <> "" Then UI.AddClassDT("md:join-" & sDirectionOnMd)
+	If sDirectionOnSm <> "" Then UI.AddClassDT("sm:join-" & sDirectionOnSm)
+	If sDirectionOnXl <> "" Then UI.AddClassDT("xl:join-" & sDirectionOnXl)
+	If sDirectionOnXxl <> "" Then UI.AddClassDT("xxl:join-" & sDirectionOnXxl)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -218,4 +228,32 @@ End Sub
 'get Direction On Xxl
 Sub getDirectionOnXxl As String
 	Return sDirectionOnXxl
+End Sub
+
+
+'set Grid
+Sub setGrid(b As Boolean)
+	bGrid = b
+	CustProps.put("Grid", b)
+	If mElement = Null Then Return
+	If b <> False Then
+		UI.AddClass(mElement, "grid")
+	Else
+		UI.RemoveClass(mElement, "grid")
+	End If
+End Sub
+'set Grid Cols
+Sub setGridCols(s As String)
+	sGridCols = s
+	CustProps.put("GridCols", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "grid-cols-" & s)
+End Sub
+'get Grid
+Sub getGrid As Boolean
+	Return bGrid
+End Sub
+'get Grid Cols
+Sub getGridCols As String
+	Return sGridCols
 End Sub

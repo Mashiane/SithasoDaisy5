@@ -280,10 +280,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sAlignment <> "" Then UI.AddClassDT("alert-" & sAlignment)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("alert", sColor)
-	If bDash <> False Then UI.AddClassDT("alert-dash")
-	If bOutline <> False Then UI.AddClassDT("alert-outline")
+	If bDash = True Then UI.AddClassDT("alert-dash")
+	If bOutline = True Then UI.AddClassDT("alert-outline")
 	If sSize <> "" Then UI.AddSizeDT("alert", sSize)
-	If bSoft <> False Then UI.AddClassDT("alert-soft")
+	If bSoft = True Then UI.AddClassDT("alert-soft")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
 	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
@@ -406,7 +406,7 @@ Sub setDash(b As Boolean)
 	bDash = b
 	CustProps.put("Dash", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "alert-dash")
 	Else
 		UI.RemoveClass(mElement, "alert-dash")
@@ -436,7 +436,7 @@ Sub setOutline(b As Boolean)
 	bOutline = b
 	CustProps.put("Outline", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "alert-outline")
 	Else
 		UI.RemoveClass(mElement, "alert-outline")
@@ -455,7 +455,7 @@ Sub setSoft(b As Boolean)
 	bSoft = b
 	CustProps.put("Soft", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b = True Then
 		UI.AddClass(mElement, "alert-soft")
 	Else
 		UI.RemoveClass(mElement, "alert-soft")
