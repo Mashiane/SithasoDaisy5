@@ -9,6 +9,8 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: AvatarType, DisplayName: Avatar Type, FieldType: String, DefaultValue: image, Description: Avatar Type, List: image|placeholder
+#DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
+#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: S, Description: Placeholder
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
@@ -20,8 +22,6 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: primary, Description: Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
-#DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
-#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 #DesignerProperty: Key: OnlineStatus, DisplayName: Online Status, FieldType: Boolean, DefaultValue: False, Description: Online Status
 #DesignerProperty: Key: Online, DisplayName: Online, FieldType: Boolean, DefaultValue: False, Description: Online
 #DesignerProperty: Key: OnlineColor, DisplayName: Online Color, FieldType: String, DefaultValue: , Description: Online Color
@@ -29,6 +29,8 @@ Version=10
 #DesignerProperty: Key: RingColor, DisplayName: Ring Color, FieldType: String, DefaultValue: primary, Description: Ring Color
 #DesignerProperty: Key: RingOffset, DisplayName: Ring Offset, FieldType: String, DefaultValue: 2, Description: Ring Offset
 #DesignerProperty: Key: RingOffsetColor, DisplayName: Ring Offset Color, FieldType: String, DefaultValue: base-100, Description: Ring Offset Color
+#DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
+#DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -98,6 +100,8 @@ Sub Class_Globals
 	Public CONST BADGESIZE_SM As String = "sm"
 	Public CONST BADGESIZE_XL As String = "xl"
 	Public CONST BADGESIZE_XS As String = "xs"
+	Private bActivator As Boolean = False
+	Private bRoundedField As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -276,6 +280,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadgeSize = modSD5.CStr(sBadgeSize)
 		bBadgeVisible = Props.GetDefault("BadgeVisible", False)
 		bBadgeVisible = modSD5.CBool(bBadgeVisible)
+		bActivator = Props.GetDefault("Activator", False)
+		bActivator = modSD5.CBool(bActivator)
+		bRoundedField = Props.GetDefault("RoundedField", False)
+		bRoundedField = modSD5.CBool(bRoundedField)
 	End If
 	'
 	If sParentID <> "" Then
@@ -287,6 +295,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	UI.AddClassDT("avatar")
+	If bActivator Then
+		UI.AddAttrDT("tabindex", "0")
+		UI.AddAttrDT("role", "button")
+	End If
+	If bRoundedField = True Then UI.AddClassDT("rounded-field")
 	If bOnline Then 
 		If bOnlineStatus Then UI.AddClassDT("avatar-online")
 	Else
@@ -605,4 +618,30 @@ End Sub
 
 public Sub getParentID() As String
 	Return sParentID
+End Sub
+
+'set Activator
+Sub setActivator(b As Boolean)
+	bActivator = b
+	CustProps.put("Activator", b)
+End Sub
+
+'set Rounded Field
+Sub setRoundedField(b As Boolean)
+	bRoundedField = b
+	CustProps.put("RoundedField", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-field")
+	Else
+		UI.RemoveClass(mElement, "rounded-field")
+	End If
+End Sub
+'get Activator
+Sub getActivator As Boolean
+	Return bActivator
+End Sub
+'get Rounded Field
+Sub getRoundedField As Boolean
+	Return bRoundedField
 End Sub

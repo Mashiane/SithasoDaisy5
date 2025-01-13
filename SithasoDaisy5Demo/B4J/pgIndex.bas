@@ -52,10 +52,6 @@ Sub CreateDrawerMenu
 	actions.AddMenuItemChild("pg-dropdown", "", "Dropdown")
 	actions.AddMenuItemChild("pg-modal", "", "Modal")
 	actions.AddMenuItemChild("pg-swap", "", "Swap")
-	
-	'not done
-	drawermenu.SetItemBadge("pg-dropdown", "", "error")
-	drawermenu.SetItemBadge("pg-modal", "", "error")
 		
 	Dim display As SDUI5MenuItem = components.AddMenuItemParent("display", "", "Data Display")
 	display.AddMenuItemChild("pg-accordion", "", "Accordion")
@@ -185,7 +181,9 @@ Private Sub drawermenu_ItemClick (item As String)
 		Case "buttons"
 			pgButtons.Show(App)
 		Case "dropdown"
+			pgDropDown.Show(App)
 		Case "modal"
+			pgModal.Show(App)
 		Case "swap"
 			pgSwap.Show(App)
 		End Select

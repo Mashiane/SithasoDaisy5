@@ -1242,3 +1242,33 @@ Sub SetBackgroundImage(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	AddStyle(mElement, "background-image", $"url('${s}')"$)
 End Sub
+
+Sub AddPlacementDT(sprefix As String, sPlacement As String)
+	Dim hashPos As Int = sPlacement.IndexOf("-")
+	If hashPos = -1 Then
+		AddClassDT($"${sprefix}-${sPlacement}"$)
+	Else	
+		Dim fpart As String = modSD5.mvfield(sPlacement,1,"-")
+		Dim spart As String = modSD5.mvfield(sPlacement,2,"-")
+		AddClassDT($"${sprefix}-${fpart}"$)
+		AddClassDT($"${sprefix}-${spart}"$)
+	End If	
+End Sub
+
+Sub SetPlacement(mElement As BANanoElement, sprefix As String, sPlacement As String)
+	If mElement = Null Then Return
+	Dim hashPos As Int = sPlacement.IndexOf("-")
+	If hashPos = -1 Then
+		AddClass(mElement, $"${sprefix}-${sPlacement}"$)
+	Else
+		Dim fpart As String = modSD5.mvfield(sPlacement,1,"-")
+		Dim spart As String = modSD5.mvfield(sPlacement,2,"-")
+		AddClass(mElement, $"${sprefix}-${fpart} ${sprefix}-${spart}"$)
+	End If
+End Sub
+
+Sub SetPlacementByID(sID As String, sprefix As String, splacement As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetPlacement(mElement, sprefix, splacement)
+End Sub

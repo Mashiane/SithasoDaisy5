@@ -9,11 +9,12 @@ Version=10
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: lg, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
 #DesignerProperty: Key: RoundedItems, DisplayName: Rounded Items, FieldType: Boolean, DefaultValue: True, Description: Rounded Items
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -21,11 +22,12 @@ Version=10
 #DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
 #DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: full, Description: Min Height
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
-#DesignerProperty: Key: SmDirection, DisplayName: Sm Direction, FieldType: String, DefaultValue: none, Description: Sm Direction, List: horizontal|none|vertical
-#DesignerProperty: Key: MdDirection, DisplayName: Md Direction, FieldType: String, DefaultValue: none, Description: Md Direction, List: horizontal|none|vertical
-#DesignerProperty: Key: LgDirection, DisplayName: Lg Direction, FieldType: String, DefaultValue: none, Description: Lg Direction, List: horizontal|none|vertical
-#DesignerProperty: Key: XlDirection, DisplayName: Xl Direction, FieldType: String, DefaultValue: none, Description: Xl Direction, List: horizontal|none|vertical
-#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: SmDirection, DisplayName: SM Direction, FieldType: String, DefaultValue: none, Description: Sm Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: MdDirection, DisplayName: MD Direction, FieldType: String, DefaultValue: none, Description: Md Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: LgDirection, DisplayName: LG Direction, FieldType: String, DefaultValue: none, Description: Lg Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: XlDirection, DisplayName: XL Direction, FieldType: String, DefaultValue: none, Description: Xl Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: Dropdown, DisplayName: Dropdown, FieldType: Boolean, DefaultValue: False, Description: Dropdown
+#DesignerProperty: Key: DropdownContent, DisplayName: Dropdown Content, FieldType: Boolean, DefaultValue: False, Description: Dropdown Content
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -65,7 +67,7 @@ Sub Class_Globals
 	Private sMdDirection As String = "none"
 	Private sMinHeight As String = "full"
 	Private sMinWidth As String = ""
-	Private sRounded As String = "lg"
+	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
 	Private sSize As String = "none"
@@ -99,6 +101,8 @@ Sub Class_Globals
 	Public CONST SIZE_XL As String = "xl"
 	Public CONST SIZE_XS As String = "xs"
 	Private bRoundedItems As Boolean = True
+	Private bDropdown As Boolean = False
+	Private bDropdownContent As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -270,7 +274,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinHeight = modSD5.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
 		sMinWidth = modSD5.CStr(sMinWidth)
-		sRounded = Props.GetDefault("Rounded", "lg")
+		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
@@ -292,10 +296,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sXlDirection = modSD5.CStr(sXlDirection)
 		If sXlDirection = "none" Then sXlDirection = ""
 		bRoundedItems = Props.GetDefault("RoundedItems", True)
-		bRoundedItems = modSD5.CBool(bRoundedItems)        
+		bRoundedItems = modSD5.CBool(bRoundedItems)
+		bDropdown = Props.GetDefault("Dropdown", False)
+		bDropdown = modSD5.CBool(bDropdown)
+		bDropdownContent = Props.GetDefault("DropdownContent", False)
+		bDropdownContent = modSD5.CBool(bDropdownContent)    
 	End If
 	'
 	UI.AddClassDT("menu")
+	If bDropdown = True Then 
+		UI.AddClassDT("dropdown")
+	End If
+	If bDropdownContent = True Then 
+		UI.AddClassDT("dropdown-content")
+		UI.AddClassDT("z-1")
+		UI.AddAttrDT("tabindex", "0")
+		sDirection = ""
+		sLgDirection = ""
+		sMdDirection = ""
+		sSmDirection = ""
+		sXlDirection = ""
+	End If
 	If bRoundedItems = False Then UI.AddClassDT("[&_li>*]:rounded-none")
 	'If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sDirection <> "" Then UI.AddClassDT("menu-" & sDirection)
@@ -643,4 +664,31 @@ End Sub
 
 Sub SetItemVisible(item As String, b As Boolean)
 	UI.SetVisibleByID(item, b)
+End Sub
+
+'set Dropdown
+Sub setDropdown(b As Boolean)
+	bDropdown = b
+	CustProps.put("Dropdown", b)
+End Sub
+'set Dropdown Content
+Sub setDropdownContent(b As Boolean)
+	bDropdownContent = b
+	CustProps.put("DropdownContent", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "dropdown-content z-1")
+		UI.AddAttr(mElement, "tabindex", "0")
+	Else
+		UI.RemoveClass(mElement, "dropdown-content z-1")
+		UI.RemoveAttr(mElement, "tabindex")
+	End If
+End Sub
+'get Dropdown
+Sub getDropdown As Boolean
+	Return bDropdown
+End Sub
+'get Dropdown Content
+Sub getDropdownContent As Boolean
+	Return bDropdownContent
 End Sub

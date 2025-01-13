@@ -23,6 +23,8 @@ Version=10
 #DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
+#DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
+#DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
 #DesignerProperty: Key: ImageColor, DisplayName: Left Image Color, FieldType: String, DefaultValue: , Description: Left Image Color
 #DesignerProperty: Key: ImageHeight, DisplayName: Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
@@ -113,6 +115,9 @@ Sub Class_Globals
 	Private sWidth As String = ""
 	Private bJoinItem As Boolean = False
 	Private bDockItem As Boolean = False
+	Private bActivator As Boolean = False
+	Private bRoundedField As Boolean = False
+	Private sTag As String = "button"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -345,7 +350,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bJoinItem = Props.GetDefault("JoinItem", False)
 		bJoinItem = modSD5.CBool(bJoinItem)
 		bDockItem = Props.GetDefault("DockItem", False)
-		bDockItem = modSD5.CBool(bDockItem)        
+		bDockItem = modSD5.CBool(bDockItem)
+		bActivator = Props.GetDefault("Activator", False)
+		bActivator = modSD5.CBool(bActivator)
+		bRoundedField = Props.GetDefault("RoundedField", False)
+		bRoundedField = modSD5.CBool(bRoundedField)
 	End If
 	'
 	If sParentID <> "" Then
@@ -356,6 +365,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	If bActivator Then
+		UI.AddAttrDT("tabindex", "0")
+		UI.AddAttrDT("role", "button")
+		sTag = "div"
+	End If
+	
 	If bJoinItem = True Then UI.AddClassDT("join-item")
 	If bActive = True Then 
 		If bDockItem Then
@@ -366,6 +381,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bDockItem = False Then
 		'If sBackgroundColor <> "" Then UI.AddClassDT("background-color-" & sBackgroundColor)
+		If bRoundedField = True Then UI.AddClassDT("rounded-field")
 		If bBlock = True Then UI.AddClassDT("btn-block")
 		UI.AddClassDT(sBtn)
 		If bCircle = True Then UI.AddClassDT("btn-circle")
@@ -391,13 +407,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
-	<button id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden"></img>
 		<span id="${mName}_text"></span>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
 		<div id="${mName}_badge" class="badge hidden"></div>
-	</button>"$).Get("#" & mName)
+	</${sTag}>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 	setText(sText)
 	setTextColor(sTextColor)
@@ -946,4 +962,30 @@ End Sub
 'get Dock Item
 Sub getDockItem As Boolean
 	Return bDockItem
+End Sub
+
+'set Activator
+Sub setActivator(b As Boolean)
+	bActivator = b
+	CustProps.put("Activator", b)
+End Sub
+
+'set Rounded Field
+Sub setRoundedField(b As Boolean)
+	bRoundedField = b
+	CustProps.put("RoundedField", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-field")
+	Else
+		UI.RemoveClass(mElement, "rounded-field")
+	End If
+End Sub
+'get Activator
+Sub getActivator As Boolean
+	Return bActivator
+End Sub
+'get Rounded Field
+Sub getRoundedField As Boolean
+	Return bRoundedField
 End Sub
