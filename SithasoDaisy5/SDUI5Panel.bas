@@ -192,7 +192,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -730,7 +730,7 @@ Sub setRounded(s As String)
 	If s <> "" Then UI.SetRounded(mElement, sRounded)
 End Sub
 'set Rounded Box
-Sub setRoundexBox(b As Boolean)
+Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return

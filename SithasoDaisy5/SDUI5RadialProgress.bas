@@ -116,7 +116,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -269,7 +269,7 @@ Sub setBorderWidth(s As String)
    sBorderWidth = s
     CustProps.put("BorderWidth", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "borderwidth", "border", s)
+	if s <> "" then UI.SetSize(mElement, "borderwidth", "border", s)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none

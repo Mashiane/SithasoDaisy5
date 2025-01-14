@@ -182,7 +182,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -443,7 +443,7 @@ Sub setBadgeSize(s As String)
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	UI.SetSizebyid($"${mName}_badge"$, "size", "badge", s)
+	If s <> "" Then UI.SetSizebyid($"${mName}_badge"$, "size", "badge", s)
 End Sub
 
 'set Active

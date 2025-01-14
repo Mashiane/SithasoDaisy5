@@ -222,7 +222,7 @@ Sub AddGuttersDT(s As String)
 	Dim gutM As Map = GetMarginPaddingMap(s)
 	Dim gutList As List = MarginPaddingToList("g", gutM)
 	Dim sClass As String = modSD5.Join(";", gutList)
-	AddAttrDT("gutter", s)
+	AddAttrDT("data-gutter", sClass)
 	AddClassDT(sClass)
 End Sub
 
@@ -1247,13 +1247,13 @@ End Sub
 
 Sub AddTextColorDT(tc As String)
 	Dim s As String = modSD5.FixColor("text", tc)
-	AddAttrDT("textcolor", s)
+	AddAttrDT("data-textcolor", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddBackgroundColorDT(tc As String)
 	Dim s As String = modSD5.FixColor("bg", tc)
-	AddAttrDT("color", s)
+	AddAttrDT("data-color", s)
 	AddClassDT(s)
 End Sub
 
@@ -1304,31 +1304,31 @@ End Sub
 
 Sub AddColorDT(prefix As String, tc As String)
 	Dim s As String = modSD5.FixSize(prefix, tc)
-	AddAttrDT("color", s)
+	AddAttrDT("data-color", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddMaskDT(tc As String)
 	Dim s As String = modSD5.FixMask(tc)
-	AddAttrDT("mask", s)
+	AddAttrDT("data-mask", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddRoundedDT(tc As String)
 	Dim s As String = modSD5.FixRounded(tc)
-	AddAttrDT("rounded", s)
+	AddAttrDT("data-rounded", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddShadowDT(s As String)
 	Dim x As String = modSD5.FixShadow(s)
-	AddAttrDT("shadow", s)
+	AddAttrDT("data-shadow", s)
 	AddClassDT(x)
 End Sub
 
 Sub AddTextSizeDT(tc As String)
 	Dim s As String = modSD5.FixSize("text", tc)
-	AddAttrDT("textsize", s)
+	AddAttrDT("data-textsize", s)
 	AddClassDT(s)
 End Sub
 
@@ -1341,7 +1341,12 @@ End Sub
 
 Sub SetBackgroundImage(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
-	AddStyle(mElement, "background-image", $"url('${s}')"$)
+	Dim m As Map = CreateMap()
+	m.Put("background-image", $"url('${s}')"$)
+	m.put("background-size", "cover")
+	m.Put("width", "100%")
+	m.Put("height", "100%")
+	AddStyleMap(mElement, m)
 End Sub
 
 Sub AddPlacementDT(sprefix As String, sPlacement As String)

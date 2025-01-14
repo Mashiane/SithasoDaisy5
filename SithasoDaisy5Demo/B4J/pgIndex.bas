@@ -70,9 +70,6 @@ Sub CreateDrawerMenu
 	display.AddMenuItemChild("pg-table", "", "Table")
 	display.AddMenuItemChild("pg-timeline", "", "Timeline")
 	'
-	drawermenu.SetItemBadge("pg-card", "", "error")
-	drawermenu.SetItemBadge("pg-carousel", "", "error")
-	drawermenu.SetItemBadge("pg-chatbubble", "", "error")
 	drawermenu.SetItemBadge("pg-list", "", "error")
 	drawermenu.SetItemBadge("pg-stat", "", "error")
 	drawermenu.SetItemBadge("pg-table", "", "error")
@@ -195,8 +192,11 @@ Private Sub drawermenu_ItemClick (item As String)
 		Case "badge"
 			pgBadge.Show(App)
 		Case "card"
+			pgCard.Show(App)
 		Case "carousel"
+			pgCarousel.Show(App)
 		Case "chatbubble"
+			pgChatBubble.Show(App)
 		Case "collapse"
 			pgCollapse.Show(App)
 		Case "countdown"

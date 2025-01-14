@@ -221,11 +221,11 @@ Sub setIndicatorSize(s As String)
 	If mElement = Null Then Return
 	Select Case sTypeOf
 	Case "badge"
-		UI.SetSizeByID($"${mName}_text"$, "size", "badge", s)
+		If s <> "" Then UI.SetSizeByID($"${mName}_text"$, "size", "badge", s)
 	Case "status"
-		UI.SetSizeByID($"${mName}_text"$, "size", "status", s)
+		If s <> "" Then UI.SetSizeByID($"${mName}_text"$, "size", "status", s)
 	Case "text"
-		UI.SetSizeByID($"${mName}_text"$, "size", "text", s)
+		If s <> "" Then UI.SetSizeByID($"${mName}_text"$, "size", "text", s)
 	End Select
 End Sub
 'set Type Of

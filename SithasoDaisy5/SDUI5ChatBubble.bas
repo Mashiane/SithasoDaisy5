@@ -6,11 +6,19 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: , Description: Content
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Placement, DisplayName: Placement, FieldType: String, DefaultValue: start, Description: Placement, List: end|start
+#DesignerProperty: Key: MessageFrom, DisplayName: Message From, FieldType: String, DefaultValue: Mashy, Description: Message From
+#DesignerProperty: Key: MessageTime, DisplayName: Message Time, FieldType: String, DefaultValue: 17:20, Description: Message Time
+#DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
+#DesignerProperty: Key: ImageSize, DisplayName: Image Size, FieldType: String, DefaultValue: 10, Description: Image Size
+#DesignerProperty: Key: Message, DisplayName: Message, FieldType: String, DefaultValue: Welcome to SithasoDaisy5, Description: Message
+#DesignerProperty: Key: Footer, DisplayName: Footer, FieldType: String, DefaultValue: Delivered, Description: Footer
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: HeaderVisible, DisplayName: Header Visible, FieldType: Boolean, DefaultValue: True, Description: Header Visible
+#DesignerProperty: Key: ImageVisible, DisplayName: Image Visible, FieldType: Boolean, DefaultValue: True, Description: Image Visible
+#DesignerProperty: Key: FooterVisible, DisplayName: Footer Visible, FieldType: Boolean, DefaultValue: True, Description: Footer Visible
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -42,10 +50,20 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sBackgroundColor As String = ""
-	Private sContent As String = ""
-	Private sHeight As String = ""
+	Private sColor As String = "none"
+	Private sFooter As String = "Delivered"
+	Private bFooterVisible As Boolean = True
+	Private bHeaderVisible As Boolean = True
+	Private sImage As String = "./assets/mashy.jpg"
+	Private sImageSize As String = "10"
+	Private bImageVisible As Boolean = True
+	Private sMessage As String = "Welcome to SithasoDaisy5"
+	Private sMessageFrom As String = "Mashy"
+	Private sMessageTime As String = "17:20"
+	Private sPlacement As String = "start"
 	Private sTextColor As String = ""
-	Private sWidth As String = "full"
+	Public CONST PLACEMENT_END As String = "end"
+	Public CONST PLACEMENT_START As String = "start"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -62,6 +80,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -117,7 +136,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -186,6 +205,7 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
+
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -196,19 +216,37 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sContent = Props.GetDefault("RawContent", "")
-		sContent = modSD5.CStr(sContent)
-		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
-		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sColor = Props.GetDefault("Color", "none")
+		sColor = modSD5.CStr(sColor)
+		If sColor = "none" Then sColor = ""
+		sFooter = Props.GetDefault("Footer", "Delivered")
+		sFooter = modSD5.CStr(sFooter)
+		bFooterVisible = Props.GetDefault("FooterVisible", True)
+		bFooterVisible = modSD5.CBool(bFooterVisible)
+		bHeaderVisible = Props.GetDefault("HeaderVisible", True)
+		bHeaderVisible = modSD5.CBool(bHeaderVisible)
+		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
+		sImage = modSD5.CStr(sImage)
+		sImageSize = Props.GetDefault("ImageSize", "10")
+		sImageSize = modSD5.CStr(sImageSize)
+		bImageVisible = Props.GetDefault("ImageVisible", True)
+		bImageVisible = modSD5.CBool(bImageVisible)
+		sMessage = Props.GetDefault("Message", "Welcome to SithasoDaisy5")
+		sMessage = modSD5.CStr(sMessage)
+		sMessageFrom = Props.GetDefault("MessageFrom", "Mashy")
+		sMessageFrom = modSD5.CStr(sMessageFrom)
+		sMessageTime = Props.GetDefault("MessageTime", "17:20")
+		sMessageTime = modSD5.CStr(sMessageTime)
+		sPlacement = Props.GetDefault("Placement", "start")
+		sPlacement = modSD5.CStr(sPlacement)
+		sTextColor = Props.GetDefault("TextColor", "")
+		sTextColor = modSD5.CStr(sTextColor)
 	End If
 	'
-	UI.AddClassDT("mockup-code")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "full" Then UI.AddWidthDT( sWidth)
+	UI.AddClassDT("chat")
+	If sPlacement <> "" Then UI.UpdateClassDT("placement", "chat-" & sPlacement)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -220,12 +258,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	Dim imgW As String = modSD5.FixSize("w", sImageSize)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<pre id="${mName}_pre">
-			<code id="${mName}_code">${sContent}</code>
-		</pre>
+  		<div id="${mName}_avatar" class="chat-image avatar">
+			<div id="${mName}_avatar_host" class="${imgW} rounded-full">
+    			<img id="${mName}_avatar_image" src="${sImage}" alt=""></img>
+  			</div>
+		</div>		
+  		<div id="${mName}_header" class="chat-header">
+			<span id="${mName}_sender">${sMessageFrom}</span>
+    		<time id="${mName}_sendertime" class="text-xs opacity-50">${sMessageTime}</time>
+  		</div>
+  		<div id="${mName}_bubble" class="chat-bubble">
+			<span id="${mName}_message">${sMessage}</span>
+		</div>
+  		<div id="${mName}_footer" class="chat-footer opacity-50">${sFooter}</div>
 	</div>"$).Get("#" & mName)
+	'
+	setColor(sColor)
+	setBackgroundColor(sBackgroundColor)
+	setHeaderVisible(bHeaderVisible)
+	setFooterVisible(bFooterVisible)
+	setImageSize(sImageSize)
+	setImageVisible(bImageVisible)
+	setTextColor(sTextColor)
 End Sub
 
 'set Background Color
@@ -233,53 +290,143 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_bubble"$, sBackgroundColor)
 End Sub
-'set Content
-Sub setContent(s As String)
-	sContent = s
-	CustProps.put("Content", s)
+'set Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setColor(s As String)
+	sColor = s
+	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_code"$, sContent)
+	If s <> "" Then UI.SetColorByID($"${mName}_bubble"$, "color", "chat-bubble", sColor)
 End Sub
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
+'set Footer
+Sub setFooter(s As String)
+	sFooter = s
+	CustProps.put("Footer", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
+	UI.SetTextByID($"${mName}_footer"$, s)
+End Sub
+'set Footer Visible
+Sub setFooterVisible(b As Boolean)
+	bFooterVisible = b
+	CustProps.put("FooterVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_footer"$, b)
+End Sub
+'set Header Visible
+Sub setHeaderVisible(b As Boolean)
+	bHeaderVisible = b
+	CustProps.put("HeaderVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_header"$, b)
+End Sub
+'set Image
+Sub setImage(s As String)
+	sImage = s
+	CustProps.put("Image", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetImageByID($"${mName}_avatar_image"$, s)
+End Sub
+'set Image Size
+Sub setImageSize(s As String)
+	sImageSize = s
+	CustProps.put("ImageSize", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidthByID($"${mName}_avatar_host"$, s)
+End Sub
+'set Image Visible
+Sub setImageVisible(b As Boolean)
+	bImageVisible = b
+	CustProps.put("ImageVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_avatar"$, b)
+End Sub
+'set Message
+Sub setMessage(s As String)
+	sMessage = s
+	CustProps.put("Message", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_message"$, s)
+End Sub
+'set Message From
+Sub setMessageFrom(s As String)
+	sMessageFrom = s
+	CustProps.put("MessageFrom", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_sender"$, s)
+End Sub
+'set Message Time
+Sub setMessageTime(s As String)
+	sMessageTime = s
+	CustProps.put("MessageTime", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_sendertime"$, s)
+End Sub
+'set Placement
+'options: end|start
+Sub setPlacement(s As String)
+	sPlacement = s
+	CustProps.put("Placement", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.UpdateClass(mElement, "placement", s)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
-End Sub
-'set Width
-Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then Ui.SetWidth(mElement, sWidth)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_bubble"$, sTextColor)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
-'get Content
-Sub getContent As String
-	Return sContent
+'get Color
+Sub getColor As String
+	Return sColor
 End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
+'get Footer
+Sub getFooter As String
+	Return sFooter
+End Sub
+'get Footer Visible
+Sub getFooterVisible As Boolean
+	Return bFooterVisible
+End Sub
+'get Header Visible
+Sub getHeaderVisible As Boolean
+	Return bHeaderVisible
+End Sub
+'get Image
+Sub getImage As String
+	Return sImage
+End Sub
+'get Image Size
+Sub getImageSize As String
+	Return sImageSize
+End Sub
+'get Image Visible
+Sub getImageVisible As Boolean
+	Return bImageVisible
+End Sub
+'get Message
+Sub getMessage As String
+	Return sMessage
+End Sub
+'get Message From
+Sub getMessageFrom As String
+	Return sMessageFrom
+End Sub
+'get Message Time
+Sub getMessageTime As String
+	Return sMessageTime
+End Sub
+'get Placement
+Sub getPlacement As String
+	Return sPlacement
 End Sub
 'get Text Color
 Sub getTextColor As String
 	Return sTextColor
-End Sub
-'get Width
-Sub getWidth As String
-	Return sWidth
 End Sub

@@ -10,8 +10,13 @@ Version=10
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
 #DesignerProperty: Key: ItemPosition, DisplayName: Item Position, FieldType: String, DefaultValue: , Description: Position
 #DesignerProperty: Key: Relative, DisplayName: Relative, FieldType: Boolean, DefaultValue: False, Description: Relative
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: full, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 80, Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 80, Description: Width
+#DesignerProperty: Key: ImageHeight, DisplayName: Image Height, FieldType: String, DefaultValue: 80, Description: Image Height
+#DesignerProperty: Key: ImageWidth, DisplayName: Image Width, FieldType: String, DefaultValue: 80, Description: Image Width
+#DesignerProperty: Key: ImageRounded, DisplayName: Image Rounded, FieldType: String, DefaultValue: none, Description: Image Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: ImageRoundedBox, DisplayName: Image Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Image Rounded Box
+#DesignerProperty: Key: ImageShadow, DisplayName: Image Shadow, FieldType: String, DefaultValue: none, Description: Image Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
 #DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
 #DesignerProperty: Key: RefreshCarousel, DisplayName: Refresh Carousel, FieldType: Boolean, DefaultValue: False, Description: Refresh Carousel
@@ -45,7 +50,7 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sHeight As String = "full"
+	Private sHeight As String = "80"
 	Private sImage As String = "./assets/mashy.jpg"
 	Private bIndicatorButtons As Boolean = False
 	Private bNavigationButtons As Boolean = False
@@ -53,9 +58,14 @@ Sub Class_Globals
 	Private bRefreshCarousel As Boolean = False
 	Private bRelative As Boolean = False
 	Private sTypeOf As String = "image"
-	Private sWidth As String = "full"
+	Private sWidth As String = "80"
 	Public CONST TYPEOF_CUSTOM As String = "custom"
 	Public CONST TYPEOF_IMAGE As String = "image"
+	Private sImageHeight As String = "80"
+	Private sImageWidth As String = "80"
+	Private sImageRounded As String = "none"
+	Private bImageRoundedBox As Boolean = False
+	Private sImageShadow As String = "none"        
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -128,7 +138,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -207,7 +217,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sHeight = Props.GetDefault("Height", "full")
+		sHeight = Props.GetDefault("Height", "80")
 		sHeight = modSD5.CStr(sHeight)
 		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
 		sImage = modSD5.CStr(sImage)
@@ -223,8 +233,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRelative = modSD5.CBool(bRelative)
 		sTypeOf = Props.GetDefault("TypeOf", "image")
 		sTypeOf = modSD5.CStr(sTypeOf)
-		sWidth = Props.GetDefault("Width", "full")
+		sWidth = Props.GetDefault("Width", "80")
 		sWidth = modSD5.CStr(sWidth)
+		sImageHeight = Props.GetDefault("ImageHeight", "80")
+		sImageHeight = modSD5.CStr(sImageHeight)
+		sImageWidth = Props.GetDefault("ImageWidth", "80")
+		sImageWidth = modSD5.CStr(sImageWidth)
+		sImageRounded = Props.GetDefault("ImageRounded", "none")
+		sImageRounded = modSD5.CStr(sImageRounded)
+		If sImageRounded = "none" Then sImageRounded = ""
+		bImageRoundedBox = Props.GetDefault("ImageRoundedBox", False)
+		bImageRoundedBox = modSD5.CBool(bImageRoundedBox)
+		sImageShadow = Props.GetDefault("ImageShadow", "none")
+		sImageShadow = modSD5.CStr(sImageShadow)
+		If sImageShadow = "none" Then sImageShadow = ""
 	End If
 	'
 	If sTypeOf = "custom" Then sImage = ""
@@ -248,6 +270,82 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<img id="${mName}_image" src="${sImage}" alt=""></img>
 	</div>"$).Get("#" & mName)
 	setImage(sImage)
+	setWidth(sWidth)
+	setHeight(sHeight)
+	setImageWidth(sImageWidth)
+	setImageHeight(sImageHeight)
+	setImageRounded(sImageRounded)
+	setImageRoundedBox(bImageRoundedBox)
+	setImageShadow(sImageShadow)
+End Sub
+
+'set Image Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setImageRounded(s As String)
+	sImageRounded = s
+	CustProps.put("ImageRounded", s)
+	If mElement = Null Then Return
+	If sImage = "" Then Return
+	If s <> "" Then UI.SetRoundedByID($"${mName}_image"$, s)
+End Sub
+'set Image Rounded Box
+Sub setImageRoundedBox(b As Boolean)
+	bImageRoundedBox = b
+	CustProps.put("ImageRoundedBox", b)
+	If mElement = Null Then Return
+	If sImage = "" Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_image"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "rounded-box")
+	End If
+End Sub
+'set Image Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setImageShadow(s As String)
+	sImageShadow = s
+	CustProps.put("ImageShadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "image-shadow-" & s)
+End Sub
+'get Image Rounded
+Sub getImageRounded As String
+	Return sImageRounded
+End Sub
+'get Image Rounded Box
+Sub getImageRoundedBox As Boolean
+	Return bImageRoundedBox
+End Sub
+'get Image Shadow
+Sub getImageShadow As String
+	Return sImageShadow
+End Sub
+
+
+
+'set Image Height
+Sub setImageHeight(s As String)
+	sImageHeight = s
+	CustProps.put("ImageHeight", s)
+	If mElement = Null Then Return
+	If sImage = "" Then Return
+	If s <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
+End Sub
+'set Image Width
+Sub setImageWidth(s As String)
+	sImageWidth = s
+	CustProps.put("ImageWidth", s)
+	If mElement = Null Then Return
+	If sImage = "" Then Return
+	If s <> "" Then UI.SetWidthByID($"${mName}_image"$, s)
+End Sub
+'get Image Height
+Sub getImageHeight As String
+	Return sImageHeight
+End Sub
+'get Image Width
+Sub getImageWidth As String
+	Return sImageWidth
 End Sub
 
 'set Height
@@ -255,10 +353,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.SetHeight(mElement, sHeight)
-		If sImage <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
-	End If
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Image
 Sub setImage(s As String)
@@ -318,7 +413,6 @@ Sub setWidth(s As String)
         If mElement = Null Then Return
         If s = "" Then Return
 		UI.SetWidth(mElement, sWidth)
-		If sImage <> "" Then UI.SetWidthByID($"${mName}_image"$, s)
 End Sub
 'get Height
 Sub getHeight As String

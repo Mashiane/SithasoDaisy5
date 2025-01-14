@@ -11,12 +11,16 @@ Version=10
 #DesignerProperty: Key: SpaceX, DisplayName: Space X, FieldType: String, DefaultValue: 4, Description: Space X
 #DesignerProperty: Key: SpaceY, DisplayName: Space Y, FieldType: String, DefaultValue: , Description: Space Y
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: neutral, Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 56, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
+#DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
+#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
 #DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
 #DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
-#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -50,22 +54,27 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sBackgroundColor As String = "neutral"
 	Private sDirection As String = "horizontal"
-	Private sHeight As String = "56"
+	Private sHeight As String = ""
 	Private bIndicatorButtons As Boolean = False
 	Private bNavigationButtons As Boolean = False
 	Private sRounded As String = "none"
-	Private bRoundedBox As Boolean = False
+	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
 	Private sSnapItems As String = "start"
 	Private sSpaceX As String = "4"
 	Private sSpaceY As String = ""
-	Private sWidth As String = "56"
+	Private sWidth As String = "full"
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_NONE As String = "none"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
 	Public CONST SNAPITEMS_CENTER As String = "center"
 	Public CONST SNAPITEMS_END As String = "end"
 	Public CONST SNAPITEMS_START As String = "start"
+	Private sMaxHeight As String = ""
+	Private sMaxWidth As String = ""
+	Private sMinHeight As String = ""
+	Private sMinWidth As String = ""
+
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -138,7 +147,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -221,7 +230,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		sDirection = Props.GetDefault("Direction", "horizontal")
 		sDirection = modSD5.CStr(sDirection)
-		sHeight = Props.GetDefault("Height", "56")
+		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
 		bIndicatorButtons = Props.GetDefault("IndicatorButtons", False)
 		bIndicatorButtons = modSD5.CBool(bIndicatorButtons)
@@ -230,7 +239,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
-		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = Props.GetDefault("RoundedBox", True)
 		bRoundedBox = modSD5.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = modSD5.CStr(sShadow)
@@ -241,12 +250,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSpaceX = modSD5.CStr(sSpaceX)
 		sSpaceY = Props.GetDefault("SpaceY", "")
 		sSpaceY = modSD5.CStr(sSpaceY)
-		sWidth = Props.GetDefault("Width", "56")
+		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		sMaxHeight = Props.GetDefault("MaxHeight", "")
+		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxWidth = Props.GetDefault("MaxWidth", "")
+		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMinHeight = Props.GetDefault("MinHeight", "")
+		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinWidth = Props.GetDefault("MinWidth", "")
+		sMinWidth = modSD5.CStr(sMinWidth)        
 	End If
 	'
 	'If sBackgroundColor <> "neutral" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("carousel")
+	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
+	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
+	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
+	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)        
 	If sDirection <> "" Then UI.AddClassDT("carousel-" & sDirection)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
@@ -357,7 +378,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then Ui.SetWidth(mElement, sWidth)
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
@@ -406,4 +427,49 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+'set Max Height
+Sub setMaxHeight(s As String)
+	sMaxHeight = s
+	CustProps.put("MaxHeight", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMaxHeight(mElement, s)
+End Sub
+'set Max Width
+Sub setMaxWidth(s As String)
+	sMaxWidth = s
+	CustProps.put("MaxWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMaxWidth(mElement, s)
+End Sub
+'set Min Height
+Sub setMinHeight(s As String)
+	sMinHeight = s
+	CustProps.put("MinHeight", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMinHeight(mElement, s)
+End Sub
+'set Min Width
+Sub setMinWidth(s As String)
+	sMinWidth = s
+	CustProps.put("MinWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMinWidth(mElement, s)
+End Sub
+'get Max Height
+Sub getMaxHeight As String
+	Return sMaxHeight
+End Sub
+'get Max Width
+Sub getMaxWidth As String
+	Return sMaxWidth
+End Sub
+'get Min Height
+Sub getMinHeight As String
+	Return sMinHeight
+End Sub
+'get Min Width
+Sub getMinWidth As String
+	Return sMinWidth
 End Sub

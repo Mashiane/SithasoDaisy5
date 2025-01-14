@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: AvatarType, DisplayName: Avatar Type, FieldType: String, DefaultValue: image, Description: Avatar Type, List: image|placeholder
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: ChatImage, DisplayName: Chat Image, FieldType: Boolean, DefaultValue: ./assets/mashy.jpg, Description: Chat Image
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: S, Description: Placeholder
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
@@ -102,6 +103,7 @@ Sub Class_Globals
 	Public CONST BADGESIZE_XS As String = "xs"
 	Private bActivator As Boolean = False
 	Private bRoundedField As Boolean = False
+	Private bChatImage As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -164,7 +166,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -284,6 +286,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bActivator = modSD5.CBool(bActivator)
 		bRoundedField = Props.GetDefault("RoundedField", False)
 		bRoundedField = modSD5.CBool(bRoundedField)
+		bChatImage = Props.GetDefault("ChatImage", False)
+		bChatImage = modSD5.CBool(bChatImage)
 	End If
 	'
 	If sParentID <> "" Then
@@ -298,6 +302,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bActivator Then
 		UI.AddAttrDT("tabindex", "0")
 		UI.AddAttrDT("role", "button")
+	End If
+	If bChatImage Then
+		UI.AddClassDT("chat-image")
 	End If
 	If bRoundedField = True Then UI.AddClassDT("rounded-field")
 	If bOnline Then 
@@ -351,9 +358,7 @@ Sub setBadgeSize(s As String)
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
-	End If
+	If s <> "" Then UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 End Sub
 'set Badge Visible
 Sub setBadgeVisible(b As Boolean)
@@ -644,4 +649,21 @@ End Sub
 'get Rounded Field
 Sub getRoundedField As Boolean
 	Return bRoundedField
+End Sub
+
+'set Chat Image
+Sub setChatImage(b As Boolean)
+	bChatImage = b
+	CustProps.put("ChatImage", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "chat-image")
+	Else
+		UI.RemoveClass(mElement, "chat-image")
+	End If
+End Sub
+
+'get Chat Image
+Sub getChatImage As Boolean
+	Return bChatImage
 End Sub

@@ -147,7 +147,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -474,7 +474,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "size", "badge", s)
+	if s <> "" then UI.SetSize(mElement, "size", "badge", s)
 End Sub
 'set Soft
 Sub setSoft(b As Boolean)

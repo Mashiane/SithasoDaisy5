@@ -85,7 +85,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	UI.AddStyle(mElement, "position", s)
+	if s <> "" then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -236,7 +236,7 @@ Sub setGrid(b As Boolean)
 	bGrid = b
 	CustProps.put("Grid", b)
 	If mElement = Null Then Return
-	If b <> False Then
+	If b Then
 		UI.AddClass(mElement, "grid")
 	Else
 		UI.RemoveClass(mElement, "grid")
