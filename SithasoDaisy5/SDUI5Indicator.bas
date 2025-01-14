@@ -206,9 +206,9 @@ Sub setColor(s As String)
 	If mElement = Null Then Return
 	Select Case sTypeOf
 	Case "badge"
-		UI.SetColorByID($"${mName}_text"$, "badge", s)
+		UI.SetColorByID($"${mName}_text"$, "color", "badge", s)
 	Case "status"
-		UI.SetColorByID($"${mName}_text"$, "status", s)
+		UI.SetColorByID($"${mName}_text"$, "color", "status", s)
 	Case "text"
 		UI.SetTextColorByID($"${mName}_text"$, s)		
 	End Select
@@ -221,11 +221,11 @@ Sub setIndicatorSize(s As String)
 	If mElement = Null Then Return
 	Select Case sTypeOf
 	Case "badge"
-		UI.SetSizeByID($"${mName}_text"$, "badge", s)
+		UI.SetSizeByID($"${mName}_text"$, "size", "badge", s)
 	Case "status"
-		UI.SetSizeByID($"${mName}_text"$, "status", s)
+		UI.SetSizeByID($"${mName}_text"$, "size", "status", s)
 	Case "text"
-		UI.SetSizeByID($"${mName}_text"$, "text", s)
+		UI.SetSizeByID($"${mName}_text"$, "size", "text", s)
 	End Select
 End Sub
 'set Type Of

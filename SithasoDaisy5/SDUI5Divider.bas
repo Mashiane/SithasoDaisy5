@@ -222,8 +222,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)     
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)     
 	If sColor <> "" Then UI.AddColorDT("divider", sColor)
 	If sDirection <> "" Then UI.AddClassDT("divider-" & sDirection)
 	UI.AddClassDT("divider")
@@ -248,7 +248,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "divider", s)
+	If s <> "" Then UI.SetColor(mElement, "color", "divider", s)
 End Sub
 'set Direction
 'options: horizontal|vertical

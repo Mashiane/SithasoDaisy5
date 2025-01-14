@@ -222,6 +222,7 @@ Sub AddGuttersDT(s As String)
 	Dim gutM As Map = GetMarginPaddingMap(s)
 	Dim gutList As List = MarginPaddingToList("g", gutM)
 	Dim sClass As String = modSD5.Join(";", gutList)
+	AddAttrDT("gutter", s)
 	AddClassDT(sClass)
 End Sub
 
@@ -305,41 +306,41 @@ public Sub GetBorderColor() As String
 	Return BANano.GetP(mSelf, "sRawBorderColor")
 End Sub
 
-public Sub SetSize(mElement As BANanoElement, prefix As String, s As String)
+public Sub SetSize(mElement As BANanoElement, sizeName As String, prefix As String, s As String)
 	BANano.SetP(mSelf, "sSize", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixSize(prefix, s)
-	UpdateClass(mElement, "size", s1)
+	UpdateClass(mElement, sizeName, s1)
 End Sub
 
-public Sub SetSizeByID(sID As String, prefix As String, s As String)
+public Sub SetSizeByID(sID As String, sizeName As String, prefix As String, s As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetSize(mElement, prefix, s)
+	SetSize(mElement, sizeName, prefix, s)
 End Sub
 
-public Sub SetColor(mElement As BANanoElement, prefix As String, s As String)
+public Sub SetColor(mElement As BANanoElement, colorName As String, prefix As String, s As String)
 	BANano.SetP(mSelf, "sColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor(prefix, s)
-	UpdateClass(mElement, "color", s1)
+	UpdateClass(mElement, colorName, s1)
 End Sub
 
 public Sub GetColor() As String
 	Return BANano.GetP(mSelf, "sColor")
 End Sub
 
-public Sub SetColorByID(sID As String, prefix As String, s As String)
+public Sub SetColorByID(sID As String, colorName As String, prefix As String, s As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetColor(mElement, prefix, s)
+	SetColor(mElement, colorName, prefix, s)
 End Sub
 
 public Sub SetBackgroundColor(mElement As BANanoElement, s As String)
 	BANano.SetP(mSelf, "sBackgroundColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor("bg", s)
-	UpdateClass(mElement, "bgcolor", s1)
+	UpdateClass(mElement, "color", s1)
 End Sub
 
 public Sub GetBackgroundColor() As String
@@ -449,6 +450,11 @@ End Sub
 
 Sub AddClassDT(clsName As String)
 	iClasses.Add(clsName)
+End Sub
+
+Sub UpdateClassDT(className As String, clsName As String)
+	iClasses.Add(clsName)
+	iAttributes.Put($"data-${className}"$, clsName)
 End Sub
 
 'add a class to an element
@@ -1116,7 +1122,7 @@ End Sub
 Sub SetHeight(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim sw As String = modSD5.FixSize("h", s)
-	UpdateClass(mElement, "h", sw)
+	UpdateClass(mElement, "height", sw)
 End Sub
 
 Sub SetHeightByID(sID As String, s As String)
@@ -1128,7 +1134,55 @@ End Sub
 Sub SetWidth(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim sw As String = modSD5.FixSize("w", s)
-	UpdateClass(mElement, "w", sw)
+	UpdateClass(mElement, "width", sw)
+End Sub
+
+Sub SetMaxHeight(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("max-h", s)
+	UpdateClass(mElement, "maxheight", sw)
+End Sub
+
+Sub SetMinHeight(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("min-h", s)
+	UpdateClass(mElement, "minheight", sw)
+End Sub
+
+Sub SetMaxWidth(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("max-w", s)
+	UpdateClass(mElement, "maxwidth", sw)
+End Sub
+
+Sub SetMinWidth(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("min-w", s)
+	UpdateClass(mElement, "minwidth", sw)
+End Sub
+
+Sub SetMaxWidthByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMaxWidth(mElement, s)
+End Sub
+
+Sub SetMaxHeightByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMaxHeight(mElement, s)
+End Sub
+
+Sub SetMinHeightByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMinHeight(mElement, s)
+End Sub
+
+Sub SetMinWidthByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMinWidth(mElement, s)
 End Sub
 
 Sub SetWidthByID(sID As String, s As String)
@@ -1193,41 +1247,88 @@ End Sub
 
 Sub AddTextColorDT(tc As String)
 	Dim s As String = modSD5.FixColor("text", tc)
+	AddAttrDT("textcolor", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddBackgroundColorDT(tc As String)
 	Dim s As String = modSD5.FixColor("bg", tc)
+	AddAttrDT("color", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddSizeDT(prefix As String, tc As String)
 	Dim s As String = modSD5.FixSize(prefix, tc)
+	Select Case prefix
+	Case "w"
+		AddAttrDT("data-width", s)
+	Case "h"
+		AddAttrDT("data-height", s)
+	Case "max-h"
+		AddAttrDT("data-maxheight", S)
+	Case "min-h"
+		AddAttrDT("data-minheight", s)
+	Case "max-w"
+		AddAttrDT("data-maxwidth", S)
+	Case "min-w"
+		AddAttrDT("data-minwidth", S)
+	Case Else
+		AddAttrDT("data-size", S)
+	End Select
 	AddClassDT(s)
+End Sub
+
+Sub AddWidthDT(s As String)
+	AddSizeDT("w", s)
+End Sub
+
+Sub AddMinWidthDT(s As String)
+	AddSizeDT("min-w", s)
+End Sub
+
+Sub AddMaxWidthDT(s As String)
+	AddSizeDT("max-w", s)
+End Sub
+
+Sub AddHeightDT(s As String)
+	AddSizeDT("h", s)
+End Sub
+
+Sub AddMaxHeightDT(s As String)
+	AddSizeDT("max-h", s)
+End Sub
+
+Sub AddMinHeightDT(s As String)
+	AddSizeDT("min-h", s)
 End Sub
 
 Sub AddColorDT(prefix As String, tc As String)
 	Dim s As String = modSD5.FixSize(prefix, tc)
+	AddAttrDT("color", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddMaskDT(tc As String)
 	Dim s As String = modSD5.FixMask(tc)
+	AddAttrDT("mask", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddRoundedDT(tc As String)
 	Dim s As String = modSD5.FixRounded(tc)
+	AddAttrDT("rounded", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddShadowDT(s As String)
 	Dim x As String = modSD5.FixShadow(s)
+	AddAttrDT("shadow", s)
 	AddClassDT(x)
 End Sub
 
 Sub AddTextSizeDT(tc As String)
 	Dim s As String = modSD5.FixSize("text", tc)
+	AddAttrDT("textsize", s)
 	AddClassDT(s)
 End Sub
 

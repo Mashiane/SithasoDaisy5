@@ -202,8 +202,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("mockup-window border-base-300 border")
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -230,14 +230,14 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String

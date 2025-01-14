@@ -205,8 +205,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	UI.AddAttrDT("role", "tablist")
 	UI.AddClassDT("tabs")
 	UI.AddClassDT("tabs-box")
@@ -239,7 +239,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 
 'get Height
@@ -252,7 +252,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 
 Sub Clear
@@ -307,7 +307,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "tabs", s)
+	If s <> "" Then UI.SetSize(mElement, "size", "tabs", s)
 End Sub
 
 'get Size

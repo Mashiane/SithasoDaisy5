@@ -298,13 +298,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sColor <> "" Then UI.AddColorDT("badge", sColor)
 	If bDash = True Then UI.AddClassDT("badge-dash")
 	If bGhost = True Then UI.AddClassDT("badge-ghost")
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If bOutline = True Then UI.AddClassDT("badge-outline")
 	If sSize <> "" Then UI.AddClassDT("badge-" & sSize)
 	If bSoft = True Then UI.AddClassDT("badge-soft")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	If bIndicatorItem Then
 		UI.AddClassDT("indicator-item")
 	End If	  
@@ -354,7 +354,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	UI.SetColor(mElement, "badge", s)
+	UI.SetColor(mElement, "color", "badge", s)
 End Sub
 'set Dash
 Sub setDash(b As Boolean)
@@ -412,8 +412,8 @@ Sub setLeftIconSize(s As String)
 	sLeftIconSize = s
 	CustProps.put("LeftIconSize", s)
 	If mElement = Null Then Return
-	UI.SetSizeByID($"${mName}_lefticon"$, "w", s)
-	UI.SetSizeByID($"${mName}_lefticon"$, "h", s)
+	UI.SetWidthByID($"${mName}_lefticon"$, s)
+	UI.SetHeightByID($"${mName}_lefticon"$, s)
 End Sub
 'set Outline
 Sub setOutline(b As Boolean)
@@ -454,8 +454,8 @@ Sub setRightIconSize(s As String)
 	sRightIconSize = s
 	CustProps.put("RightIconSize", s)
 	If mElement = Null Then Return
-	UI.SetSizeByID($"${mName}_righticon"$, "w", s)
-	UI.SetSizeByID($"${mName}_righticon"$, "h", s)
+	UI.SetHeightByID($"${mName}_righticon"$, s)
+	UI.SetWidthByID($"${mName}_righticon"$, s)
 End Sub
 'set Round
 Sub setRound(b As Boolean)
@@ -474,7 +474,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "badge", s)
+	UI.SetSize(mElement, "size", "badge", s)
 End Sub
 'set Soft
 Sub setSoft(b As Boolean)
@@ -513,7 +513,7 @@ Sub setWidth(s As String)
     sWidth = s
     CustProps.put("Width", s)
 	If mElement = Null Then Return
-	UI.SetWidth(mElement, s)
+	if s <> "" then UI.SetWidth(mElement, s)
 End Sub
 
 'get Background Color

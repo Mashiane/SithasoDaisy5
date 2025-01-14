@@ -270,20 +270,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGroupName = modSD5.CStr(sGroupName)        
 	End If
 	'
-	'If sBackgroundColor <> "base-100" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	UI.AddClassDT("collapse")
-	'If sContentBackgroundColor <> "base-100" Then UI.AddClassDT("bg-" & sContentBackgroundColor)
-	'If sContentTextColor <> "" Then UI.AddClassDT(sContentTextColor)
 	If bJoinItem = True Then UI.AddClassDT("join-item")
-	If sOpenClose <> "" Then UI.AddClassDT("collapse-" & sOpenClose)
-	'If sRawContent <> "" Then UI.AddClassDT(sRawContent)
-	If sRightIcon <> "" Then UI.AddClassDT("collapse-" & sRightIcon)
-	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	'If sTitle <> "" Then UI.AddClassDT(sTitle)
-	'If sTitleBackgroundColor <> "" Then UI.AddClassDT("title-background-color-" & sTitleBackgroundColor)
-	'If sTitleTextColor <> "" Then UI.AddClassDT("title-text-color-" & sTitleTextColor)
+	If sOpenClose <> "" Then UI.UpdateClassDT("openclose", "collapse-" & sOpenClose)
+	If sRightIcon <> "" Then UI.UpdateClassDT("righticon", "collapse-" & sRightIcon)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -350,7 +342,7 @@ Sub setBorderColor(s As String)
 	sBorderColor = s
 	CustProps.put("BorderColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "border", s)
+	If s <> "" Then UI.SetColor(mElement, "bordercolor", "border", s)
 End Sub
 'set Content Background Color
 Sub setContentBackgroundColor(s As String)

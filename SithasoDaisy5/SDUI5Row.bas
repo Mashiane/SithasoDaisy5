@@ -286,7 +286,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sGutter <> "" Then UI.AddGuttersDT(sGutter)
 	If sAlignItems <> "" Then UI.AddStyleDT("align-items", sAlignItems)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sJustifyContent <> "" Then UI.AddStyleDT("justify-content", sJustifyContent)
 	UI.AddClassDT("row")
 	If sRowCols <> "" Then UI.AddClassDT("row-cols-" & sRowCols)
@@ -296,7 +296,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRowColsXl <> "" Then UI.AddClassDT("row-cols-xl-" & sRowColsXl)
 	If sRowColsXxl <> "" Then UI.AddClassDT("row-cols-xxl-" & sRowColsXxl)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -349,7 +349,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Justify Content
 'options: flex-start|flex-end|center|space-between|space-around|space-evenly|initial|inherit|none
@@ -413,7 +413,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Align Items
 Sub getAlignItems As String

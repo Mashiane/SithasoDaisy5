@@ -447,7 +447,7 @@ Sub setBadgeSize(s As String)
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	UI.SetSizeByID($"${mName}_badge"$, "badge", s)
+	UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 End Sub
 'set Disabled
 Sub setDisabled(b As Boolean)
@@ -610,8 +610,8 @@ Sub setIconSize(s As String)
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If sIconSize = "" Then Return
-	UI.SetSizeByID($"${mName}_icon"$, "h", s)
-	UI.SetSizeByID($"${mName}_icon"$, "w", s)
+	UI.SetHeightByID($"${mName}_icon"$, s)
+	UI.SetWidthByID($"${mName}_icon"$, s)
 End Sub
 'get Icon Size
 Sub getIconSize As String

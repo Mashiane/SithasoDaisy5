@@ -227,7 +227,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "loading", s)
+	UI.SetSize(mElement, "size", "loading", s)
 End Sub
 'set Type Of
 'options: ball|bars|dots|infinity|ring|spinner

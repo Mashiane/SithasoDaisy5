@@ -523,28 +523,28 @@ Sub setMaxHeight(s As String)
 	sMaxHeight = s
 	CustProps.put("MaxHeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizeByID($"${mName}_box"$, "max-h", s)
+	If s <> "" Then UI.SetMaxHeightByID($"${mName}_box"$, s)
 End Sub
 'set Max Width
 Sub setMaxWidth(s As String)
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizeByID($"${mName}_box"$, "max-w", s)
+	If s <> "" Then UI.SetMaxWidthByID($"${mName}_box"$, s)
 End Sub
 'set Min Height
 Sub setMinHeight(s As String)
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizeByID($"${mName}_box"$, "min-h", s)
+	If s <> "" Then UI.SetMinHeightByID($"${mName}_box"$, s)
 End Sub
 'set Min Width
 Sub setMinWidth(s As String)
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizeByID($"${mName}_box"$, "max-w", s)
+	If s <> "" Then UI.SetMinWidthByID($"${mName}_box"$, s)
 End Sub
 'set Move From
 'options: bottom|end|middle|start|top
@@ -585,7 +585,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizeByID($"${mName}_box"$, "w", sWidth)
+	If s <> "" Then UI.SetWidthByID($"${mName}_box"$, sWidth)
 End Sub
 'set X l Move From
 'options: bottom|end|middle|none|start|top

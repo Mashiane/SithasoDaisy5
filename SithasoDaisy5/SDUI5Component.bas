@@ -281,8 +281,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
@@ -342,7 +342,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	UI.SetWidth(mElement, s)
+	if s <> "" then UI.SetWidth(mElement, s)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String

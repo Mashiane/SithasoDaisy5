@@ -73,9 +73,6 @@ Sub CreateDrawerMenu
 	drawermenu.SetItemBadge("pg-card", "", "error")
 	drawermenu.SetItemBadge("pg-carousel", "", "error")
 	drawermenu.SetItemBadge("pg-chatbubble", "", "error")
-	drawermenu.SetItemBadge("pg-countdown", "", "error")
-	drawermenu.SetItemBadge("pg-diff", "", "error")
-	drawermenu.SetItemBadge("pg-kbd", "", "error")
 	drawermenu.SetItemBadge("pg-list", "", "error")
 	drawermenu.SetItemBadge("pg-stat", "", "error")
 	drawermenu.SetItemBadge("pg-table", "", "error")
@@ -203,8 +200,11 @@ Private Sub drawermenu_ItemClick (item As String)
 		Case "collapse"
 			pgCollapse.Show(App)
 		Case "countdown"
+			pgCountdown.Show(App)
 		Case "diff"
+			pgDiff.Show(App)
 		Case "kbd"
+			pgKbd.Show(App)
 		Case "list"
 		Case "stat"
 		Case "status"

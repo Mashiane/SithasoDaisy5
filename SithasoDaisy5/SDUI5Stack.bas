@@ -205,9 +205,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	If sAlignment <> "" Then UI.AddClassDT("stack-" & sAlignment)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	UI.AddClassDT("stack")
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -235,14 +235,14 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Alignment
 Sub getAlignment As String

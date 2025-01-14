@@ -301,9 +301,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bRoundedField = True Then UI.AddClassDT("rounded-field")
 	If bOnline Then 
-		If bOnlineStatus Then UI.AddClassDT("avatar-online")
+		If bOnlineStatus Then UI.UpdateClassDT("online", "avatar-online")
 	Else
-		If bOnlineStatus Then UI.AddClassDT("avatar-offline")
+		If bOnlineStatus Then UI.UpdateClassDT("online", "avatar-offline")
 	End If
 	If sAvatarType = "placeholder" Then UI.AddClassDT("avatar-placeholder")
 	Dim xattrs As String = UI.BuildExAttributes
@@ -352,7 +352,7 @@ Sub setBadgeSize(s As String)
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetSizeByID($"${mName}_badge"$, "badge", s)
+		UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 	End If
 End Sub
 'set Badge Visible
@@ -390,7 +390,7 @@ Sub setBadgeColor(s As String)
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
 	If sBadge = "" Then Return
-	UI.SetColorByID($"${mName}_badge"$, "badge", sBadgeColor)
+	UI.SetColorByID($"${mName}_badge"$, "color", "badge", sBadgeColor)
 End Sub
 'set Badge Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start

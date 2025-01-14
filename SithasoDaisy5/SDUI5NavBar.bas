@@ -250,10 +250,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If bGlass = True Then UI.AddClassDT("glass")
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	UI.AddClassDT("navbar")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -402,7 +402,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)
@@ -416,7 +416,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String

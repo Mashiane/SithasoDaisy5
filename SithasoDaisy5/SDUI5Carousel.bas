@@ -6,10 +6,18 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: URL, DisplayName: URL, FieldType: String, DefaultValue: https://b4x.com, Description: URL Link
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: horizontal, Description: Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: SnapItems, DisplayName: Snap Items, FieldType: String, DefaultValue: start, Description: Snap Items, List: center|end|start
+#DesignerProperty: Key: SpaceX, DisplayName: Space X, FieldType: String, DefaultValue: 4, Description: Space X
+#DesignerProperty: Key: SpaceY, DisplayName: Space Y, FieldType: String, DefaultValue: , Description: Space Y
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: neutral, Description: Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 56, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
+#DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
+#DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -39,11 +47,25 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sURL As String = "https://www.b4x.com"
 	Public Tag As Object
-	Private sBackgroundColor As String = ""
+	Private sBackgroundColor As String = "neutral"
+	Private sDirection As String = "horizontal"
 	Private sHeight As String = "56"
-	Private sWidth As String = "full"
+	Private bIndicatorButtons As Boolean = False
+	Private bNavigationButtons As Boolean = False
+	Private sRounded As String = "none"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
+	Private sSnapItems As String = "start"
+	Private sSpaceX As String = "4"
+	Private sSpaceY As String = ""
+	Private sWidth As String = "56"
+	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
+	Public CONST DIRECTION_NONE As String = "none"
+	Public CONST DIRECTION_VERTICAL As String = "vertical"
+	Public CONST SNAPITEMS_CENTER As String = "center"
+	Public CONST SNAPITEMS_END As String = "end"
+	Public CONST SNAPITEMS_START As String = "start"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -60,6 +82,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -184,17 +207,6 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
-'set text
-Sub setURL(text As String)
-	sURL = text
-	CustProps.Put("URL", text)
-	If mElement = Null Then Return
-	UI.SetTextbyid($"${mName}_url"$, text)
-End Sub
-'get text
-Sub getURL As String
-	Return sURL
-End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -205,17 +217,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "neutral")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sDirection = Props.GetDefault("Direction", "horizontal")
+		sDirection = modSD5.CStr(sDirection)
 		sHeight = Props.GetDefault("Height", "56")
 		sHeight = modSD5.CStr(sHeight)
-		If sHeight = "56" Then sHeight = ""
-		sWidth = Props.GetDefault("Width", "full")
+		bIndicatorButtons = Props.GetDefault("IndicatorButtons", False)
+		bIndicatorButtons = modSD5.CBool(bIndicatorButtons)
+		bNavigationButtons = Props.GetDefault("NavigationButtons", False)
+		bNavigationButtons = modSD5.CBool(bNavigationButtons)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = modSD5.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		sSnapItems = Props.GetDefault("SnapItems", "start")
+		sSnapItems = modSD5.CStr(sSnapItems)
+		sSpaceX = Props.GetDefault("SpaceX", "4")
+		sSpaceX = modSD5.CStr(sSpaceX)
+		sSpaceY = Props.GetDefault("SpaceY", "")
+		sSpaceY = modSD5.CStr(sSpaceY)
+		sWidth = Props.GetDefault("Width", "56")
 		sWidth = modSD5.CStr(sWidth)
-		If sWidth = "full" Then sWidth = ""
 	End If
 	'
-	UI.AddClassDT("mockup-browser border-base-300 border")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	'If sBackgroundColor <> "neutral" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	UI.AddClassDT("carousel")
+	If sDirection <> "" Then UI.AddClassDT("carousel-" & sDirection)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
+	If sSnapItems <> "" Then UI.AddClassDT("carousel-" & sSnapItems)
+	If sSpaceX <> "" Then UI.AddClassDT("space-x-" & sSpaceX)
+	If sSpaceY <> "" Then UI.AddClassDT("space-y-" & sSpaceY)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -228,11 +267,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_tbar" class="mockup-browser-toolbar">
-    		<div id="${mName}_url" class="input">${sURL}</div>
-  		</div>
-	</div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 End Sub
 
 'set Background Color
@@ -242,6 +277,14 @@ Sub setBackgroundColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
 End Sub
+'set Direction
+'options: horizontal|none|vertical
+Sub setDirection(s As String)
+	sDirection = s
+	CustProps.put("Direction", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "carousel-" & s)
+End Sub
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
@@ -249,20 +292,116 @@ Sub setHeight(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
+'set Indicator Buttons
+Sub setIndicatorButtons(b As Boolean)
+	bIndicatorButtons = b
+	CustProps.put("IndicatorButtons", b)
+End Sub
+'set Navigation Buttons
+Sub setNavigationButtons(b As Boolean)
+	bNavigationButtons = b
+	CustProps.put("NavigationButtons", b)
+	If mElement = Null Then Return
+End Sub
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+'set Snap Items
+'options: center|end|start
+Sub setSnapItems(s As String)
+	sSnapItems = s
+	CustProps.put("SnapItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "carousel-" & s)
+End Sub
+'set Space X
+Sub setSpaceX(s As String)
+	sSpaceX = s
+	CustProps.put("SpaceX", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "space-x-" & s)
+End Sub
+'set Space Y
+Sub setSpaceY(s As String)
+	sSpaceY = s
+	CustProps.put("SpaceY", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "space-y-" & s)
+End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
+'get Direction
+Sub getDirection As String
+	Return sDirection
+End Sub
 'get Height
 Sub getHeight As String
 	Return sHeight
+End Sub
+'get Indicator Buttons
+Sub getIndicatorButtons As Boolean
+	Return bIndicatorButtons
+End Sub
+'get Navigation Buttons
+Sub getNavigationButtons As Boolean
+	Return bNavigationButtons
+End Sub
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+'get Snap Items
+Sub getSnapItems As String
+	Return sSnapItems
+End Sub
+'get Space X
+Sub getSpaceX As String
+	Return sSpaceX
+End Sub
+'get Space Y
+Sub getSpaceY As String
+	Return sSpaceY
 End Sub
 'get Width
 Sub getWidth As String

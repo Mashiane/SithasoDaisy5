@@ -302,7 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("col")
 	If sSize <> "" Then UI.AddSizeDT("col", sSize)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sOffsetLg <> "" Then UI.AddClassDT("offset-lg-" & sOffsetLg)
 	If sOffsetMd <> "" Then UI.AddClassDT("offset-md-" & sOffsetMd)
 	If sOffsetSm <> "" Then UI.AddClassDT("offset-sm-" & sOffsetSm)
@@ -314,7 +314,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sSizeXl <> "" Then UI.AddClassDT("col-xl-" & sSizeXl)
 	If sSizeXxl <> "" Then UI.AddClassDT("col-xxl-" & sSizeXxl)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -360,7 +360,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Offset Lg
 Sub setOffsetLg(s As String)
@@ -403,7 +403,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "col", sSize)
+	If s <> "" Then UI.SetSize(mElement, "size", "col", sSize)
 End Sub
 'set Size Lg
 Sub setSizeLg(s As String)
@@ -452,7 +452,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Align Self
 Sub getAlignSelf As String

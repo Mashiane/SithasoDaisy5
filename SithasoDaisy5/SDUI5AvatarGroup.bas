@@ -188,7 +188,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	UI.AddClassDT($"avatar-group -space-x-${sSpace}"$)
+	UI.AddClassDT($"avatar-group"$)
+	UI.UpdateClassDT("space", $"-space-x-${sSpace}"$)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

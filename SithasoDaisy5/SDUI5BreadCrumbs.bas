@@ -200,7 +200,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	UI.AddClassDT("breadcrumbs")
-	If sMaxWidth <> "" Then UI.AddClassDT("max-w-" & sMaxWidth)
+	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -228,7 +228,7 @@ Sub setMaxWidth(s As String)
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "max-w-" & s)
+	If s <> "" Then UI.SetMaxWidth(mElement, s)
 End Sub
 'set Text Size
 'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl

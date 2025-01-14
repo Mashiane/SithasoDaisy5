@@ -285,8 +285,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sSize <> "" Then UI.AddSizeDT("alert", sSize)
 	If bSoft = True Then UI.AddClassDT("alert-soft")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	UI.AddAttrDT("aria-label", "status")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -319,14 +319,14 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "h", s)
+	UI.SetHeight(mElement, s)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "w", s)
+	If s <> "" Then UI.SetWidth(mElement, s)
 End Sub
 'get Height
 Sub getHeight As String
@@ -353,8 +353,8 @@ Sub setIconSize(s As String)
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
-	UI.SetSizebyid($"#${mName}_icon"$, "h", s)
-	UI.SetSizebyid($"#${mName}_icon"$, "w", s)
+	UI.SetHeightByID($"#${mName}_icon"$, s)
+	UI.SetWidthByID($"#${mName}_icon"$, s)
 End Sub
 'get Icon Size
 Sub getIconSize As String
@@ -399,7 +399,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "alert", s)
+	If s <> "" Then UI.SetColor(mElement, "color", "alert", s)
 End Sub
 'set Dash
 Sub setDash(b As Boolean)
@@ -448,7 +448,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "alert", s)
+	If s <> "" Then UI.SetSize(mElement, "size", "alert", s)
 End Sub
 'set Soft
 Sub setSoft(b As Boolean)

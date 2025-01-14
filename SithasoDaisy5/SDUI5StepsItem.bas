@@ -244,7 +244,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "step", s)
+	If s <> "" Then UI.SetColor(mElement, "color", "step", s)
 End Sub
 'set Data Content
 Sub setDataContent(s As String)

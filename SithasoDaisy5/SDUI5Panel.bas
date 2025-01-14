@@ -446,7 +446,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sGridCols <> "" Then UI.AddClassDT("grid-cols-" & sGridCols)
 	If sGridFlow <> "" Then UI.AddClassDT("grid-flow-" & sGridFlow)
 	If sGridRows <> "" Then UI.AddClassDT("grid-rows-" & sGridRows)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sJustifyContent <> "" Then UI.AddClassDT("justify-" & sJustifyContent)
 	If sJustifyItems <> "" Then UI.AddClassDT("justify-items-" & sJustifyItems)
 	If sJustifySelf <> "" Then UI.AddClassDT("justify-self-" & sJustifySelf)
@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRowSpan <> "" Then UI.AddClassDT("row-span-" & sRowSpan)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -671,7 +671,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Horizontal Align The Flex Items
 'options: around|between|center|end|evenly|none|normal|start|stretch
@@ -767,7 +767,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Align The Flex Lines
 Sub getAlignContent As String

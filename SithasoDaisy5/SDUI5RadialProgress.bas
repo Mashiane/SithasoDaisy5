@@ -262,14 +262,14 @@ Sub setBorderColor(s As String)
     sBorderColor = s
     CustProps.put("BorderColor", s)
 	If mElement = Null Then Return
-	UI.SetColor(mElement, "border", s)
+	UI.SetColor(mElement, "bordercolor", "border", s)
 End Sub
 'set Border Width
 Sub setBorderWidth(s As String)
    sBorderWidth = s
     CustProps.put("BorderWidth", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "border", s)
+	UI.SetSize(mElement, "borderwidth", "border", s)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none

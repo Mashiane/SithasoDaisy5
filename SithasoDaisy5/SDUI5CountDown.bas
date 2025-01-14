@@ -6,12 +6,10 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: URL, DisplayName: URL, FieldType: String, DefaultValue: https://b4x.com, Description: URL Link
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 56, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 5, Description: Value
+#DesignerProperty: Key: Font, DisplayName: Font, FieldType: String, DefaultValue: mono, Description: Font
+#DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: none, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
-#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
@@ -39,11 +37,10 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sURL As String = "https://www.b4x.com"
 	Public Tag As Object
-	Private sBackgroundColor As String = ""
-	Private sHeight As String = "56"
-	Private sWidth As String = "full"
+	Private sValue As String = "5"
+	Private sFont As String = "mono"
+	Private sTextSize As String = "none"        
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -60,6 +57,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -184,16 +182,18 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
-'set text
-Sub setURL(text As String)
-	sURL = text
-	CustProps.Put("URL", text)
+'set value
+Sub setValue(text As String)
+	sValue = text
+	CustProps.Put("Value", text)
 	If mElement = Null Then Return
-	UI.SetTextbyid($"${mName}_url"$, text)
+	UI.SetTextByID($"${mName}_text"$, text)
+	UI.SetStyleComputedByID($"${mName}_text"$, "--value", text)
 End Sub
-'get text
-Sub getURL As String
-	Return sURL
+'get value
+Sub getValue As String
+	sValue = UI.GetTextByID($"${mName}_text"$)
+	Return sValue
 End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -205,19 +205,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sHeight = Props.GetDefault("Height", "56")
-		sHeight = modSD5.CStr(sHeight)
-		If sHeight = "56" Then sHeight = ""
-		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
-		If sWidth = "full" Then sWidth = ""
+		sValue = Props.GetDefault("Value", "5")
+		sValue = modSD5.CStr(sValue)
+		sFont = Props.GetDefault("Font", "mono")
+		sFont = modSD5.CStr(sFont)
+		sTextSize = Props.GetDefault("TextSize", "none")
+		sTextSize = modSD5.CStr(sTextSize)
+		If sTextSize = "none" Then sTextSize = ""    
 	End If
 	'
-	UI.AddClassDT("mockup-browser border-base-300 border")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
-	Dim xattrs As String = UI.BuildExAttributes
+	UI.AddClassDT("countdown")
+	If sFont <> "" Then UI.AddClassDT("font-" & sFont)
+	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
+    Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	If sParentID <> "" Then
@@ -228,43 +228,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_tbar" class="mockup-browser-toolbar">
-    		<div id="${mName}_url" class="input">${sURL}</div>
-  		</div>
-	</div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]
+	<span id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<span id="${mName}_text"></span>
+	</span>"$).Get("#" & mName)
+	setValue(sValue)
 End Sub
 
-'set Background Color
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
+'set Font
+Sub setFont(s As String)
+	sFont = s
+	CustProps.put("Font", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then UI.AddClass(mElement, "font-" & s)
 End Sub
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
+'set Text Size
+'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl
+Sub setTextSize(s As String)
+	sTextSize = s
+	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
+	If s <> "" Then UI.SetTextSize(mElement, sTextSize)
 End Sub
-'set Width
-Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
+'get Font
+Sub getFont As String
+	Return sFont
 End Sub
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
-End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
-End Sub
-'get Width
-Sub getWidth As String
-	Return sWidth
+'get Text Size
+Sub getTextSize As String
+	Return sTextSize
 End Sub

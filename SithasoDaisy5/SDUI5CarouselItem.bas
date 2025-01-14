@@ -6,10 +6,15 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: URL, DisplayName: URL, FieldType: String, DefaultValue: https://b4x.com, Description: URL Link
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 56, Description: Height
+#DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: image, Description: Type Of, List: custom|image
+#DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
+#DesignerProperty: Key: ItemPosition, DisplayName: Item Position, FieldType: String, DefaultValue: , Description: Position
+#DesignerProperty: Key: Relative, DisplayName: Relative, FieldType: Boolean, DefaultValue: False, Description: Relative
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: full, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
+#DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
+#DesignerProperty: Key: RefreshCarousel, DisplayName: Refresh Carousel, FieldType: Boolean, DefaultValue: False, Description: Refresh Carousel
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -39,11 +44,18 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sURL As String = "https://www.b4x.com"
 	Public Tag As Object
-	Private sBackgroundColor As String = ""
-	Private sHeight As String = "56"
+	Private sHeight As String = "full"
+	Private sImage As String = "./assets/mashy.jpg"
+	Private bIndicatorButtons As Boolean = False
+	Private bNavigationButtons As Boolean = False
+	Private sItemPosition As String = ""
+	Private bRefreshCarousel As Boolean = False
+	Private bRelative As Boolean = False
+	Private sTypeOf As String = "image"
 	Private sWidth As String = "full"
+	Public CONST TYPEOF_CUSTOM As String = "custom"
+	Public CONST TYPEOF_IMAGE As String = "image"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -60,6 +72,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -184,17 +197,6 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
-'set text
-Sub setURL(text As String)
-	sURL = text
-	CustProps.Put("URL", text)
-	If mElement = Null Then Return
-	UI.SetTextbyid($"${mName}_url"$, text)
-End Sub
-'get text
-Sub getURL As String
-	Return sURL
-End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -205,17 +207,30 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sHeight = Props.GetDefault("Height", "56")
+		sHeight = Props.GetDefault("Height", "full")
 		sHeight = modSD5.CStr(sHeight)
-		If sHeight = "56" Then sHeight = ""
+		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
+		sImage = modSD5.CStr(sImage)
+		bIndicatorButtons = Props.GetDefault("IndicatorButtons", False)
+		bIndicatorButtons = modSD5.CBool(bIndicatorButtons)
+		bNavigationButtons = Props.GetDefault("NavigationButtons", False)
+		bNavigationButtons = modSD5.CBool(bNavigationButtons)
+		sItemPosition = Props.GetDefault("ItemPosition", "")
+		sItemPosition = modSD5.CStr(sItemPosition)
+		bRefreshCarousel = Props.GetDefault("RefreshCarousel", False)
+		bRefreshCarousel = modSD5.CBool(bRefreshCarousel)
+		bRelative = Props.GetDefault("Relative", False)
+		bRelative = modSD5.CBool(bRelative)
+		sTypeOf = Props.GetDefault("TypeOf", "image")
+		sTypeOf = modSD5.CStr(sTypeOf)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
-		If sWidth = "full" Then sWidth = ""
 	End If
 	'
-	UI.AddClassDT("mockup-browser border-base-300 border")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	If sTypeOf = "custom" Then sImage = ""
+	UI.AddClassDT("carousel-item")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If bRelative = True Then UI.AddClassDT("relative")
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -228,43 +243,116 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_tbar" class="mockup-browser-toolbar">
-    		<div id="${mName}_url" class="input">${sURL}</div>
-  		</div>
+	mElement = mTarget.Append($"[BANCLEAN]
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<img id="${mName}_image" src="${sImage}" alt=""></img>
 	</div>"$).Get("#" & mName)
+	setImage(sImage)
 End Sub
 
-'set Background Color
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
-End Sub
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
+	If s <> "" Then 
+		UI.SetHeight(mElement, sHeight)
+		If sImage <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
+	End If
+End Sub
+'set Image
+Sub setImage(s As String)
+	sImage = s
+	CustProps.put("Image", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.SetImageByID($"${mName}_image"$, s)
+	Else
+		UI.RemoveElementByID($"${mName}_image"$)	
+	End If
+End Sub
+'set Indicator Buttons
+Sub setIndicatorButtons(b As Boolean)
+	bIndicatorButtons = b
+	CustProps.put("IndicatorButtons", b)
+End Sub
+'set Navigation Buttons
+Sub setNavigationButtons(b As Boolean)
+	bNavigationButtons = b
+	CustProps.put("NavigationButtons", b)
+End Sub
+'set Position
+Sub setItemPosition(s As String)
+	sItemPosition = s
+	CustProps.put("ItemPosition", s)
+    If mElement = Null Then Return
+    If s <> "" Then UI.AddDataAttr(mElement, "position", s)
+End Sub
+'set Refresh Carousel
+Sub setRefreshCarousel(b As Boolean)
+  	bRefreshCarousel = b
+    CustProps.put("RefreshCarousel", b)
+    If mElement = Null Then Return
+End Sub
+'set Relative
+Sub setRelative(b As Boolean)
+        bRelative = b
+        CustProps.put("Relative", b)
+        If mElement = Null Then Return
+        If b = True Then
+            UI.AddClass(mElement, "relative")
+        Else
+            UI.RemoveClass(mElement, "relative")
+        End If
+End Sub
+'set Type Of
+'options: custom|image
+Sub setTypeOf(s As String)
+        sTypeOf = s
+        CustProps.put("TypeOf", s)
 End Sub
 'set Width
 Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
-End Sub
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
+        sWidth = s
+        CustProps.put("Width", s)
+        If mElement = Null Then Return
+        If s = "" Then Return
+		UI.SetWidth(mElement, sWidth)
+		If sImage <> "" Then UI.SetWidthByID($"${mName}_image"$, s)
 End Sub
 'get Height
 Sub getHeight As String
-	Return sHeight
+        Return sHeight
+End Sub
+'get Image
+Sub getImage As String
+        Return sImage
+End Sub
+'get Indicator Buttons
+Sub getIndicatorButtons As Boolean
+        Return bIndicatorButtons
+End Sub
+'get Navigation Buttons
+Sub getNavigationButtons As Boolean
+        Return bNavigationButtons
+End Sub
+'get Item Position
+Sub getItemPosition As String
+        Return sItemPosition
+End Sub
+'get Refresh Carousel
+Sub getRefreshCarousel As Boolean
+        Return bRefreshCarousel
+End Sub
+'get Relative
+Sub getRelative As Boolean
+        Return bRelative
+End Sub
+'get Type Of
+Sub getTypeOf As String
+        Return sTypeOf
 End Sub
 'get Width
 Sub getWidth As String
-	Return sWidth
+        Return sWidth
 End Sub

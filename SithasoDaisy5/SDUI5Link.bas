@@ -326,7 +326,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "link", sColor)
+	If s <> "" Then UI.SetColor(mElement, "color", "link", sColor)
 End Sub
 'set Hover
 Sub setHover(b As Boolean)

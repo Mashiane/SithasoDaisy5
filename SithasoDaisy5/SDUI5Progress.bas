@@ -255,13 +255,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("progress", sColor)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sMaxValue <> "" Then UI.AddAttrDT("max", sMaxValue)
 	If sMinValue <> "" Then UI.AddAttrDT("min", sMinValue)
 	UI.AddClassDT("progress")
 	If sStepValue <> "" Then UI.AddAttrDT("step", sStepValue)
 	If sValue <> "" Then UI.AddAttrDT("value", sValue)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -282,7 +282,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	UI.SetColor(mElement, "progress", s)
+	UI.SetColor(mElement, "color", "progress", s)
 End Sub
 'set Height
 Sub setHeight(s As String)

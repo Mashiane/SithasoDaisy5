@@ -212,12 +212,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.AddClassDT("status")
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColor <> "" Then UI.AddColorDT("status", sColor)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If bIndicatorItem Then
 		UI.AddClassDT("indicator-item")
 	End If
 	If sSize <> "" Then UI.AddSizeDT("status", sSize)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -246,14 +246,14 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "status", sColor)
+	If s <> "" Then UI.SetColor(mElement, "color", "status", sColor)
 End Sub
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Indicator Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
@@ -284,14 +284,14 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "status", sSize)
+	If s <> "" Then UI.SetSize(mElement, "size", "status", sSize)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String

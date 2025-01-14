@@ -232,17 +232,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinWidth = modSD5.CStr(sMinWidth)
 	End If
 	'
-	If sMaxHeight <> "" Then UI.AddSizeDT("max-h", sMaxHeight)
-	If sMaxWidth <> "" Then UI.AddSizeDT("max-w", sMaxWidth)
-	If sMinHeight <> "" Then UI.AddSizeDT("min-h", sMinHeight)
-	If sMinWidth <> "" Then UI.AddSizeDT("min-w", sMinWidth)
+	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
+	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
+	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
+	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sMask <> "" Then UI.AddMaskDT(sMask)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sSrc <> "" Then UI.AddAttrDT("src", sSrc)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -285,7 +285,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Mask
 'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
@@ -315,7 +315,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'get Alt
 Sub getAlt As String
@@ -348,28 +348,28 @@ Sub setMaxHeight(s As String)
 	sMaxHeight = s
 	CustProps.put("MaxHeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "max-h", s)
+	If s <> "" Then UI.SetMaxHeight(mElement, s)
 End Sub
 'set Max Width
 Sub setMaxWidth(s As String)
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "max-w", s)
+	If s <> "" Then UI.SetMaxWidth(mElement, s)
 End Sub
 'set Min Height
 Sub setMinHeight(s As String)
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "min-h", s)
+	If s <> "" Then UI.SetMinHeight(mElement, s)
 End Sub
 'set Min Width
 Sub setMinWidth(s As String)
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "min-w", s)
+	If s <> "" Then UI.SetMinWidth(mElement, s)
 End Sub
 'get Max Height
 Sub getMaxHeight As String

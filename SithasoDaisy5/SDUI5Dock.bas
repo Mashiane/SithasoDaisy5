@@ -243,7 +243,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "dock", sSize)
+	If s <> "" Then UI.SetSize(mElement, "size", "dock", sSize)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)

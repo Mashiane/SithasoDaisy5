@@ -285,10 +285,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sBackgroundImage <> "" Then
 		UI.AddBackgroundImageDT(sBackgroundImage)
 	End If
-	If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-	If sMinHeight <> "" Then UI.AddSizeDT("min-h", sMinHeight)
-	If sMinWidth <> "" Then UI.AddSizeDT("min-w", sMinWidth)
-	If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
+	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -352,7 +352,7 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "h", sHeight)
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Lg Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
@@ -375,14 +375,14 @@ Sub setMinHeight(s As String)
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "min-h-", s)
+	If s <> "" Then UI.SetMinHeight(mElement, s)
 End Sub
 'set Min Width
 Sub setMinWidth(s As String)
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "min-w-", s)
+	If s <> "" Then UI.SetMinWidth(mElement, s)
 End Sub
 'set Overlay
 Sub setOverlay(b As Boolean)
@@ -432,7 +432,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "w", sWidth)
+	If s <> "" Then Ui.SetWidth(mElement, sWidth)
 End Sub
 'set Xl Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse

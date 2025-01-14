@@ -6,10 +6,8 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: URL, DisplayName: URL, FieldType: String, DefaultValue: https://b4x.com, Description: URL Link
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 56, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: A, Description: Text
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -39,11 +37,15 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sURL As String = "https://www.b4x.com"
+	Private sText As String = "A"
 	Public Tag As Object
-	Private sBackgroundColor As String = ""
-	Private sHeight As String = "56"
-	Private sWidth As String = "full"
+	Private sSize As String = "none"
+	Public CONST SIZE_LG As String = "lg"
+	Public CONST SIZE_MD As String = "md"
+	Public CONST SIZE_NONE As String = "none"
+	Public CONST SIZE_SM As String = "sm"
+	Public CONST SIZE_XL As String = "xl"
+	Public CONST SIZE_XS As String = "xs"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -60,6 +62,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -185,15 +188,16 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 'set text
-Sub setURL(text As String)
-	sURL = text
-	CustProps.Put("URL", text)
+Sub setText(text As String)
+	sText = text
+	CustProps.Put("Text", text)
 	If mElement = Null Then Return
-	UI.SetTextbyid($"${mName}_url"$, text)
+	UI.SetText(mElement, text)
 End Sub
 'get text
-Sub getURL As String
-	Return sURL
+Sub getText As String
+	sText = UI.GetText(mElement)
+	Return sText
 End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -205,18 +209,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sHeight = Props.GetDefault("Height", "56")
-		sHeight = modSD5.CStr(sHeight)
-		If sHeight = "56" Then sHeight = ""
-		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
-		If sWidth = "full" Then sWidth = ""
+		sSize = Props.GetDefault("Size", "none")
+		sSize = modSD5.CStr(sSize)
+		If sSize = "none" Then sSize = ""
 	End If
 	'
-	UI.AddClassDT("mockup-browser border-base-300 border")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	UI.AddClassDT("kbd")
+	If sSize <> "" Then UI.AddSizeDT("kbd", sSize)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -228,43 +227,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_tbar" class="mockup-browser-toolbar">
-    		<div id="${mName}_url" class="input">${sURL}</div>
-  		</div>
-	</div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<kbd id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</kbd>"$).Get("#" & mName)
 End Sub
 
-'set Background Color
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
+'set Size
+'options: xs|none|sm|md|lg|xl
+Sub setSize(s As String)
+	sSize = s
+	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then UI.SetSize(mElement, "size", "kbd", sSize)
 End Sub
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
-End Sub
-'set Width
-Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
-End Sub
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
-End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
-End Sub
-'get Width
-Sub getWidth As String
-	Return sWidth
+'get Size
+Sub getSize As String
+	Return sSize
 End Sub

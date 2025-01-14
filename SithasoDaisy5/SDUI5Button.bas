@@ -399,8 +399,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If bSoft = True Then UI.AddClassDT("btn-soft")
 		If bSquare = True Then UI.AddClassDT("btn-square")
 		If bWide = True Then UI.AddClassDT("btn-wide")
-		If sHeight <> "" Then UI.AddSizeDT("h", sHeight)
-		If sWidth <> "" Then UI.AddSizeDT("w", sWidth)
+		If sHeight <> "" Then UI.AddHeightDT( sHeight)
+		If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	End If
 	UI.AddClassDT("inline-flex items-center")
 	Dim xattrs As String = UI.BuildExAttributes
@@ -443,7 +443,7 @@ Sub setBadgeSize(s As String)
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	UI.SetSizebyid($"${mName}_badge"$, "badge", s)
+	UI.SetSizebyid($"${mName}_badge"$, "size", "badge", s)
 End Sub
 
 'set Active
@@ -881,7 +881,7 @@ Sub setBadgeColor(s As String)
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
-	UI.SetColorByID($"${mName}_badge"$, "badge", s)
+	UI.SetColorByID($"${mName}_badge"$, "color", "badge", s)
 End Sub
 'set Badge Visible
 Sub setBadgeVisible(b As Boolean)
@@ -909,14 +909,14 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "h", s)
+	UI.SetHeight(mElement, s)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	UI.SetSize(mElement, "w", s)
+	if s <> "" then Ui.SetWidth(mElement, s)
 End Sub
 'get Height
 Sub getHeight As String
