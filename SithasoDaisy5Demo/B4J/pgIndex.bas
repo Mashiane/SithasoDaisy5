@@ -71,9 +71,7 @@ Sub CreateDrawerMenu
 	display.AddMenuItemChild("pg-timeline", "", "Timeline")
 	'
 	drawermenu.SetItemBadge("pg-list", "", "error")
-	drawermenu.SetItemBadge("pg-stat", "", "error")
 	drawermenu.SetItemBadge("pg-table", "", "error")
-	drawermenu.SetItemBadge("pg-timeline", "", "error")
 	
 	
 	Dim navigation As SDUI5MenuItem = components.AddMenuItemParent("navigation", "", "Navigation")
@@ -207,11 +205,13 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgKbd.Show(App)
 		Case "list"
 		Case "stat"
+			pgStat.Show(App)
 		Case "status"
 			pgStatus.Show(App)
 		Case "table"
 		Case "timeline"
-			End Select
+			pgTimeline.Show(App)
+		End Select
 			'
 		Select Case ssuffix
 		Case "breadcrumbs"
