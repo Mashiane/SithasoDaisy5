@@ -103,6 +103,7 @@ Sub Class_Globals
 	Private bRoundedItems As Boolean = True
 	Private bDropdown As Boolean = False
 	Private bDropdownContent As Boolean = False
+	Private Items As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -111,6 +112,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	Items.Initialize
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -174,7 +176,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -470,7 +472,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then Ui.SetWidth(mElement, sWidth)
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 'set Xl Direction
 'options: horizontal|none|vertical
@@ -567,6 +569,8 @@ End Sub
 
 'add a title
 Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.ParentID = mName
@@ -579,6 +583,8 @@ End Sub
 
 'add a normal item
 Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.ParentID = mName
@@ -592,6 +598,8 @@ End Sub
 
 'add an icon
 Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -605,6 +613,8 @@ End Sub
 
 'add a icon text
 Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -618,6 +628,8 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 End Sub
 
 Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -630,7 +642,58 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	Return item
 End Sub
 
+'add an item to the menu that will be a parent
+'this can have child items
+Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
+	parentID = modSD5.CleanID(parentID)
+	itemKey = modSD5.CleanID(itemKey)
+	Dim item As SDUI5MenuItem
+	If parentID <> "" Then
+		item.Initialize(mCallBack, itemKey, itemKey)
+		item.Icon = itemIcon
+		item.ParentID = parentID & "_items"
+		item.Text = itemText
+		item.ItemType = "collapse-item"
+		item.Parent = True
+		item.MenuName = mName
+		item.AddComponent
+		Return item
+	End If
+	'there is no parent specified, add here
+	item = AddMenuItemParent(itemKey, itemIcon, itemText)
+	Return item
+End Sub
+
+'add an item to the menu that will be a child
+'this cannot have child items
+Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
+	parentID = modSD5.CleanID(parentID)
+	itemKey = modSD5.CleanID(itemKey)
+	Dim item As SDUI5MenuItem
+	If parentID <> "" Then
+		item.Initialize(mCallBack, itemKey, itemKey)
+		item.Icon = itemIcon
+		item.ParentID = parentID & "_items"
+		item.Text = itemText
+		item.ItemType = "item-text"
+		item.Parent = False
+		item.MenuName = mName
+		item.AddComponent
+		Return item
+	End If
+	'there is no parent specified, add here
+	item = AddMenuItemChild(itemKey, itemIcon, itemText)
+	Return item
+End Sub
+
+
 Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -664,6 +727,25 @@ End Sub
 
 Sub SetItemVisible(item As String, b As Boolean)
 	UI.SetVisibleByID(item, b)
+End Sub
+
+'clear menu & child items
+Sub Clear
+	Items.Initialize
+	UI.Clear(mElement)
+End Sub
+
+'set a single item
+Sub SetItemActive(itemKey As String)
+	itemKey = modSD5.CleanID(itemKey)
+	If Items.ContainsKey(itemKey) = False Then Return
+	For Each k As String In Items.Keys
+		If k = itemKey Then
+			UI.AddClassByID($"${k}_anchor"$, "menu-active")
+		Else
+			UI.RemoveClassByID($"${k}_anchor"$, "menu-active")
+		End If
+	Next
 End Sub
 
 'set Dropdown

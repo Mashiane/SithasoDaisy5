@@ -89,6 +89,7 @@ Sub Class_Globals
 	Private sMenuName As String = ""
 	Private sIconSize As String = "5"
 	Private bOpen As Boolean = False
+	Private Items As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -97,7 +98,14 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	Items.Initialize 
 End Sub
+
+Sub LinkExisting
+	mElement.Initialize($"#${mName}"$)
+	mTarget = BANano.ToElement(mElement.GetField("parentNode"))
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -160,7 +168,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -468,7 +476,7 @@ Sub setFocus(b As Boolean)
 	If b Then
 		UI.AddClassByID($"${mName}_anchor"$, "menu-focus")
 	Else
-		UI.RemoveClass(mElement, "menu-focus")
+		UI.RemoveClassByID($"${mName}_anchor"$, "menu-focus")
 	End If
 End Sub
 'set Href
@@ -651,6 +659,8 @@ End Sub
 
 'add a title
 Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.ParentID = mName & "_items"
@@ -663,6 +673,8 @@ End Sub
 
 'add a normal item
 Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.ParentID = mName  & "_items"
@@ -675,7 +687,9 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 End Sub
 
 'add an icon
-Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) As SDUI5MenuItem 
+Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -689,6 +703,8 @@ End Sub
 
 'add a icon text
 Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem 
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -702,6 +718,8 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 End Sub
 
 Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem 
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -715,6 +733,8 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 End Sub
 
 Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
+	itemKey = modSD5.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
 	item.Icon = itemIcon
@@ -725,4 +745,23 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.MenuName = sMenuName
 	item.AddComponent
 	Return item
+End Sub
+
+'clear menu & child items
+Sub Clear
+	Items.Initialize 
+	UI.ClearByID($"${mName}_items"$)
+End Sub
+
+'set a single item
+Sub SetItemActive(itemKey As String)
+	itemKey = modSD5.CleanID(itemKey)
+	If Items.ContainsKey(itemKey) = False Then Return
+	For Each k As String In Items.Keys
+		If k = itemKey Then
+			UI.AddClassByID($"${k}_anchor"$, "menu-active")
+		Else
+			UI.RemoveClassByID($"${k}_anchor"$, "menu-active")				
+		End If
+	Next
 End Sub
