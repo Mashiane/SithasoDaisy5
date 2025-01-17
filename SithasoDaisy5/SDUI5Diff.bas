@@ -376,7 +376,7 @@ Sub setText1(s As String)
 	sText1 = s
 	CustProps.put("Text1", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextByID($"${mName}_text1"$, s)
+	UI.SetTextByID($"${mName}_text1"$, s)
 End Sub
 'set Text1 Background Color
 Sub setText1BackgroundColor(s As String)
@@ -397,7 +397,7 @@ Sub setText2(s As String)
 	sText2 = s
 	CustProps.put("Text2", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextByID($"${mName}_text2"$, s)
+	UI.SetTextByID($"${mName}_text2"$, s)
 End Sub
 'set Text2 Background Color
 Sub setText2BackgroundColor(s As String)

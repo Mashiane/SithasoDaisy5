@@ -239,7 +239,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then Ui.SetWidth(mElement, sWidth)
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 
 'get Height

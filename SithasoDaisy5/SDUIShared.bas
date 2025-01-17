@@ -23,7 +23,6 @@ Sub Process_Globals
 	Type Address(suburb As String, name As String, city As String, country As String, countryCode As String, _
 	municipality As String, postcode As String, road As String, state As String, displayName As String, lat As String, lon As String)
 	Public MissingParents As Map
-	Private math As BANanoObject
 End Sub
 
 
@@ -34,38 +33,43 @@ End Sub
 
 'percentage of x from y
 Sub Math_Percentage(x As String, y As String) As Int
+	Private math As BANanoObject
 	math.Initialize("math")
 	Dim xperc As Int = math.RunMethod("evaluate", $"round((${x}/${y})*100)"$).result
 	Return xperc
 End Sub
 
 Sub Math_Expression(svalues As String) As Object
+	Private math As BANanoObject
 	math.Initialize("math")
 	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
 	Return xperc
 End Sub
 
 Sub Math_ExpressionList(values As List) As Object
+	Private math As BANanoObject
 	math.Initialize("math")
-	Dim svalues As String = modSD5.Join("", values)
+	Dim svalues As String = Join("", values)
 	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
 	Return xperc
 End Sub
 
 'sum x and y
 Sub Math_Sum(x As Int, y As Int) As Int
+	Private math As BANanoObject
 	Dim values As List
 	values.Initialize
 	values.Add(x)
 	values.Add(y)
-	Dim svalues As String = modSD5.Join(",", values)
+	Dim svalues As String = Join(",", values)
 	math.Initialize("math")
 	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
 	Return xperc
 End Sub
 
 Sub Math_SumList(values As List) As Int
-	Dim svalues As String = modSD5.Join(",", values)
+	Private math As BANanoObject
+	Dim svalues As String = Join(",", values)
 	math.Initialize("math")
 	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
 	Return xperc
@@ -73,6 +77,7 @@ End Sub
 
 'subtract y from x
 Sub Math_Subtract(x As Int, y As Int) As Int
+	Private math As BANanoObject
 	math.Initialize("math")
 	Dim xperc As Int = math.RunMethod("evaluate", $"subtract(${x},${y})"$).result
 	Return xperc
@@ -80,6 +85,7 @@ End Sub
 
 'divide x by y
 Sub Math_Divide(x As Int, y As Int) As Int
+	Private math As BANanoObject
 	math.Initialize("math")
 	Dim xperc As Int = math.RunMethod("evaluate", $"divide(${x},${y})"$).result
 	Return xperc
@@ -87,7 +93,7 @@ End Sub
 
 
 Sub GetInnerHTML(id As String) As String
-	id = modSD5.CleanID(id)
+	id = CleanID(id)
 	If BANano.Exists($"#${id}"$) Then
 		Dim tmp As String = BANano.GetElement($"#${id}"$).GetField("innerHTML").Result
 		Return tmp
@@ -1904,6 +1910,12 @@ Sub CleanID(s As String) As String
 	s = s.tolowercase
 	s = s.Replace("#", "")
 	s = s.Replace(" ", "")
+	s = s.Replace("{", "")
+	s = s.Replace("]", "")
+	s = s.Replace("[", "")
+	s = s.Replace("}", "")
+	s = s.Replace("(", "")
+	s = s.Replace(")", "")	
 	s = s.Trim
 	Return s
 End Sub

@@ -132,7 +132,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle

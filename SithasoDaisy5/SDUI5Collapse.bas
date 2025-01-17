@@ -390,7 +390,7 @@ Sub setContent(s As String)
 	sRawContent = s
 	CustProps.put("RawContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextByID($"${mName}_content"$, s)
+	UI.SetTextByID($"${mName}_content"$, s)
 End Sub
 'set Right Icon
 'options: arrow|plus
@@ -428,7 +428,7 @@ Sub setTitle(s As String)
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextByID($"${mName}_title"$, s)
+	UI.SetTextByID($"${mName}_title"$, s)
 End Sub
 'set Title Background Color
 Sub setTitleBackgroundColor(s As String)

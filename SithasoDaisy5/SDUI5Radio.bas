@@ -1,0 +1,513 @@
+﻿B4J=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=Class
+Version=10
+@EndOfDesignText@
+#IgnoreWarnings:12
+#DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio, Description: Label
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: AriaLabel, DisplayName: Aria Label, FieldType: String, DefaultValue: , Description: Aria Label
+#DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: Btn, DisplayName: Btn, FieldType: Boolean, DefaultValue: False, Description: Btn
+#DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
+#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
+#DesignerProperty: Key: FilterReset, DisplayName: Filter Reset, FieldType: Boolean, DefaultValue: False, Description: Filter Reset
+#DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
+#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: none, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
+#DesignerProperty: Key: RatingHidden, DisplayName: Rating Hidden, FieldType: Boolean, DefaultValue: False, Description: Rating Hidden
+#DesignerProperty: Key: Square, DisplayName: Square, FieldType: Boolean, DefaultValue: False, Description: Square
+#DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
+#DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
+#DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
+#DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
+#DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
+#DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
+'global variables in this module
+Sub Class_Globals
+	Public UI As UIShared 'ignore
+	Public CustProps As Map 'ignore
+	Private mCallBack As Object 'ignore
+	Private mEventName As String 'ignore
+	Private mElement As BANanoElement 'ignore
+	Private mTarget As BANanoElement 'ignore
+	Private mName As String 'ignore
+	Private BANano As BANano   'ignore
+	Private sPosition As String = "t=?; b=?; r=?; l=?"
+	Private sPositionStyle As String = "none"
+	Private sRawClasses As String = ""
+	Private sRawStyles As String = ""
+	Private sRawAttributes As String = ""
+	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sParentID As String = ""
+	Private bVisible As Boolean = True	'ignore
+	Private bEnabled As Boolean = True	'ignore
+	Public Tag As Object
+	Private sAriaLabel As String = ""
+	Private sBackgroundColor As String = ""
+	Private bBtn As Boolean = False
+	Private bChecked As Boolean = False
+	Private sCheckedColor As String = ""
+	Private sColor As String = "none"
+	Private bDisabled As Boolean = False
+	Private bFilterReset As Boolean = False
+	Private sGroupName As String = ""
+	Private bHasLabel As Boolean = False
+	Private sHint As String = ""
+	Private sLabel As String = "Label"
+	Private sMask As String = "none"
+	Private bRatingHidden As Boolean = False
+	Private sSize As String = "none"
+	Private bSquare As Boolean = False
+	Private sValue As String = ""
+End Sub
+'initialize the custom view class
+Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize
+	UI.Initialize(Me)
+End Sub
+' returns the element id
+Public Sub getID() As String
+	Return mName
+End Sub
+'add this element to an existing parent element using current props
+Public Sub AddComponent
+	If sParentID = "" Then Return
+	sParentID = modSD5.CleanID(sParentID)
+	mTarget = BANano.GetElement("#" & sParentID)
+	DesignerCreateView(mTarget, CustProps)
+End Sub
+'remove this element from the dom
+Public Sub Remove()
+	mElement.Remove
+	BANano.SetMeToNull
+End Sub
+'set the parent id
+Sub setParentID(s As String)
+	s = modSD5.CleanID(s)
+	sParentID = s
+	CustProps.Put("ParentID", sParentID)
+End Sub
+'get the parent id
+Sub getParentID As String
+	Return sParentID
+End Sub
+'return the #ID of the element
+Public Sub getHere() As String
+	Return $"#${mName}"$
+End Sub
+'set Visible
+Sub setVisible(b As Boolean)
+	bVisible = b
+	CustProps.Put("Visible", b)
+	If mElement = Null Then Return
+	UI.SetVisible(mElement, b)
+End Sub
+'get Visible
+Sub getVisible As Boolean
+	bVisible = UI.GetVisible(mElement)
+	Return bVisible
+End Sub
+'set Enabled
+Sub setEnabled(b As Boolean)
+	bEnabled = b
+	CustProps.Put("Enabled", b)
+	If mElement = Null Then Return
+	UI.SetEnabled(mElement, b)
+End Sub
+'get Enabled
+Sub getEnabled As Boolean
+	bEnabled = UI.GetEnabled(mElement)
+	Return bEnabled
+End Sub
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+End Sub
+'set Position Style
+'options: static|relative|fixed|absolute|sticky|none
+Sub setPositionStyle(s As String)
+	sPositionStyle = s
+	CustProps.put("PositionStyle", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
+End Sub
+Sub getPositionStyle As String
+	Return sPositionStyle
+End Sub
+'set raw positions
+Sub setPosition(s As String)
+	sPosition = s
+	CustProps.Put("Position", sPosition)
+	If mElement = Null Then Return
+	UI.SetPosition(mElement, sPosition)
+End Sub
+Sub getPosition As String
+	Return sPosition
+End Sub
+Sub setAttributes(s As String)
+	sRawAttributes = s
+	CustProps.Put("RawAttributes", s)
+	If mElement = Null Then Return
+	UI.SetAttributes(mElement, sRawAttributes)
+End Sub
+'
+Sub setStyles(s As String)
+	sRawStyles = s
+	CustProps.Put("RawStyles", s)
+	If mElement = Null Then Return
+	UI.SetStyles(mElement, sRawStyles)
+End Sub
+'
+Sub setClasses(s As String)
+	sRawClasses = s
+	CustProps.put("RawClasses", s)
+	If mElement = Null Then Return
+	UI.SetClasses(mElement, sRawStyles)
+End Sub
+'
+Sub setPaddingAXYTBLR(s As String)
+	sPaddingAXYTBLR = s
+	CustProps.Put("PaddingAXYTBLR", s)
+	If mElement = Null Then Return
+	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+End Sub
+'
+Sub setMarginAXYTBLR(s As String)
+	sMarginAXYTBLR = s
+	CustProps.Put("MarginAXYTBLR", s)
+	If mElement = Null Then Return
+	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+End Sub
+'
+Sub getAttributes As String
+	Return sRawAttributes
+End Sub
+'
+Sub getStyles As String
+	Return sRawStyles
+End Sub
+'
+Sub getClasses As String
+	Return sRawClasses
+End Sub
+'
+Sub getPaddingAXYTBLR As String
+	Return sPaddingAXYTBLR
+End Sub
+'
+Sub getMarginAXYTBLR As String
+	Return sMarginAXYTBLR
+End Sub
+
+'code to design the view
+Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
+	mTarget = Target
+	If Props <> Null Then
+		CustProps = Props
+		UI.SetProps(Props)
+		'UI.ExcludeBackgroundColor = True
+		'UI.ExcludeTextColor = True
+		'UI.ExcludeVisible = True
+		'UI.ExcludeEnabled = True
+		sAriaLabel = Props.GetDefault("AriaLabel", "")
+		sAriaLabel = modSD5.CStr(sAriaLabel)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBtn = Props.GetDefault("Btn", False)
+		bBtn = modSD5.CBool(bBtn)
+		bChecked = Props.GetDefault("Checked", False)
+		bChecked = modSD5.CBool(bChecked)
+		sCheckedColor = Props.GetDefault("CheckedColor", "")
+		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sColor = Props.GetDefault("Color", "none")
+		sColor = modSD5.CStr(sColor)
+		If sColor = "none" Then sColor = ""
+		bDisabled = Props.GetDefault("Disabled", False)
+		bDisabled = modSD5.CBool(bDisabled)
+		bFilterReset = Props.GetDefault("FilterReset", False)
+		bFilterReset = modSD5.CBool(bFilterReset)
+		sGroupName = Props.GetDefault("GroupName", "")
+		sGroupName = modSD5.CStr(sGroupName)
+		bHasLabel = Props.GetDefault("HasLabel", False)
+		bHasLabel = modSD5.CBool(bHasLabel)
+		sHint = Props.GetDefault("Hint", "")
+		sHint = modSD5.CStr(sHint)
+		sLabel = Props.GetDefault("Label", "Label")
+		sLabel = modSD5.CStr(sLabel)
+		sMask = Props.GetDefault("Mask", "none")
+		sMask = modSD5.CStr(sMask)
+		If sMask = "none" Then sMask = ""
+		bRatingHidden = Props.GetDefault("RatingHidden", False)
+		bRatingHidden = modSD5.CBool(bRatingHidden)
+		sSize = Props.GetDefault("Size", "none")
+		sSize = modSD5.CStr(sSize)
+		If sSize = "none" Then sSize = ""
+		bSquare = Props.GetDefault("Square", False)
+		bSquare = modSD5.CBool(bSquare)
+		sValue = Props.GetDefault("Value", "")
+		sValue = modSD5.CStr(sValue)
+	End If
+
+	Dim xattrs As String = UI.BuildExAttributes
+	Dim xstyles As String = UI.BuildExStyle
+	Dim xclasses As String = UI.BuildExClass
+	If sParentID <> "" Then
+		'does the parent exist
+		If BANano.Exists($"#${sParentID}"$) = False Then
+			BANano.Throw($"${mName}.DesignerCreateView: '${sParentID}' parent does not exist!"$)
+			Return
+		End If
+		mTarget.Initialize($"#${sParentID}"$)
+	End If
+	If bHasLabel Then
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<label id="${mName}_label" class="label" for="${mName}">${sLabel}</label>
+  				<input id="${mName}" type="radio"></input>
+				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+			</fieldset>"$).Get("#" & mName)
+	Else
+		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+	End If
+	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
+	UI.AddClass(mElement, "radio")
+	setColor(sColor)
+	setDisabled(bDisabled)
+	setSize(sSize)
+	UI.AddAttr(mElement, "type", "radio")
+	setChecked(bChecked)
+	setAriaLabel(sAriaLabel)
+	setBackgroundColor(sBackgroundColor)
+	setBtn(bBtn)
+	setChecked(bChecked)
+	setFilterReset(bFilterReset)
+	setGroupName(sGroupName)
+	setMask(sMask)
+	setRatingHidden(bRatingHidden)
+	setSquare(bSquare)
+	setValue(sValue)
+End Sub
+
+'set Aria Label
+Sub setAriaLabel(s As String)
+	sAriaLabel = s
+	CustProps.put("AriaLabel", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "aria-label", s)
+End Sub
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+End Sub
+'set Btn
+Sub setBtn(b As Boolean)
+	bBtn = b
+	CustProps.put("Btn", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "btn")
+	Else
+		UI.RemoveClass(mElement, "btn")
+	End If
+End Sub
+'set Checked
+Sub setChecked(b As Boolean)
+	bChecked = b
+	CustProps.put("Checked", b)
+	If mElement = Null Then Return
+	mElement.SetChecked(bChecked)
+End Sub
+'set Checked Color
+Sub setCheckedColor(s As String)
+	sCheckedColor = s
+	CustProps.put("CheckedColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "checked:bg-" & s)
+End Sub
+'set Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setColor(s As String)
+	sColor = s
+	CustProps.put("Color", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetColor(mElement, "color", "radio", sColor)
+End Sub
+'set Disabled
+Sub setDisabled(b As Boolean)
+	bDisabled = b
+	CustProps.put("Disabled", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "disabled", b)
+	Else
+		UI.RemoveAttr(mElement, "disabled")
+	End If
+End Sub
+'set Filter Reset
+Sub setFilterReset(b As Boolean)
+	bFilterReset = b
+	CustProps.put("FilterReset", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "filter-reset")
+	Else
+		UI.RemoveClass(mElement, "filter-reset")
+	End If
+End Sub
+'set Group Name
+Sub setGroupName(s As String)
+	sGroupName = s
+	CustProps.put("GroupName", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "name", s)
+End Sub
+'set Has Label
+Sub setHasLabel(b As Boolean)
+	bHasLabel = b
+	CustProps.put("HasLabel", b)
+End Sub
+'set Hint
+Sub setHint(s As String)
+	sHint = s
+	CustProps.put("Hint", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+End Sub
+'set Label
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.put("Label", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+'set Mask
+'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
+Sub setMask(s As String)
+	sMask = s
+	CustProps.put("Mask", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMask(mElement, sMask)
+End Sub
+'set Rating Hidden
+Sub setRatingHidden(b As Boolean)
+	bRatingHidden = b
+	CustProps.put("RatingHidden", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rating-hidden")
+	Else
+		UI.RemoveClass(mElement, "rating-hidden")
+	End If
+End Sub
+'set Size
+'options: xs|none|sm|md|lg|xl
+Sub setSize(s As String)
+	sSize = s
+	CustProps.put("Size", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetSize(mElement, "size", "radio", sSize)
+End Sub
+'set Square
+Sub setSquare(b As Boolean)
+	bSquare = b
+	CustProps.put("Square", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "btn-square")
+	Else
+		UI.RemoveClass(mElement, "btn-square")
+	End If
+End Sub
+'set Value
+Sub setValue(s As String)
+	sValue = s
+	CustProps.put("Value", s)
+	If mElement = Null Then Return
+	mElement.SetValue(s)
+End Sub
+'get Aria Label
+Sub getAriaLabel As String
+	Return sAriaLabel
+End Sub
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Btn
+Sub getBtn As Boolean
+	Return bBtn
+End Sub
+'get Checked
+Sub getChecked As Boolean
+	Return bChecked
+End Sub
+'get Checked Color
+Sub getCheckedColor As String
+	Return sCheckedColor
+End Sub
+'get Color
+Sub getColor As String
+	Return sColor
+End Sub
+'get Disabled
+Sub getDisabled As Boolean
+	Return bDisabled
+End Sub
+'get Filter Reset
+Sub getFilterReset As Boolean
+	Return bFilterReset
+End Sub
+'get Group Name
+Sub getGroupName As String
+	Return sGroupName
+End Sub
+'get Has Label
+Sub getHasLabel As Boolean
+	Return bHasLabel
+End Sub
+'get Hint
+Sub getHint As String
+	Return sHint
+End Sub
+'get Label
+Sub getLabel As String
+	Return sLabel
+End Sub
+'get Mask
+Sub getMask As String
+	Return sMask
+End Sub
+'get Rating Hidden
+Sub getRatingHidden As Boolean
+	Return bRatingHidden
+End Sub
+'get Size
+Sub getSize As String
+	Return sSize
+End Sub
+'get Square
+Sub getSquare As Boolean
+	Return bSquare
+End Sub
+'get Value
+Sub getValue As String
+	sValue = mElement.getvalue
+	Return sValue
+End Sub

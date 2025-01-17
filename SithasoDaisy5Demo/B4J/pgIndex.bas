@@ -99,36 +99,25 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("feedback", "pg-toast", "", "Toast")
 	drawermenu.AddItemChild("feedback", "pg-tooltip", "", "Tooltip")
 	'
-'	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
-'	drawermenu.AddItemChild("dinput", "pg-calendar", "", "Calendar")
-'	drawermenu.AddItemChild("dinput", "pg-checkbox", "", "Checkbox")
-'	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
-'	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
-'	drawermenu.AddItemChild("dinput", "pg-filter", "", "Filter")
-'	drawermenu.AddItemChild("dinput", "pg-label", "", "Label")
-'	drawermenu.AddItemChild("dinput", "pg-radio", "", "Radio")
-'	drawermenu.AddItemChild("dinput", "pg-range", "", "Range")
-'	drawermenu.AddItemChild("dinput", "pg-rating", "", "Rating")
-'	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
-'	drawermenu.AddItemChild("dinput", "pg-inputfield", "", "Input Field")
-'	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
-'	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
-'	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validator")
-'	'
-'	drawermenu.SetItemBadge("pg-calendar", "", "error")
-'	drawermenu.SetItemBadge("pg-checkbox", "", "error")
-'	drawermenu.SetItemBadge("pg-fieldset", "", "error")
-'	drawermenu.SetItemBadge("pg-fileinput", "", "error")
-'	drawermenu.SetItemBadge("pg-filter", "", "error")
-'	drawermenu.SetItemBadge("pg-label", "", "error")
-'	drawermenu.SetItemBadge("pg-radio", "", "error")
-'	drawermenu.SetItemBadge("pg-range", "", "error")
-'	drawermenu.SetItemBadge("pg-rating", "", "error")
-'	drawermenu.SetItemBadge("pg-select", "", "error")
-'	drawermenu.SetItemBadge("pg-inputfield", "", "error")
-'	drawermenu.SetItemBadge("pg-textarea", "", "error")
-'	drawermenu.SetItemBadge("pg-toggle", "", "error")
-'	drawermenu.SetItemBadge("pg-validator", "", "error")
+	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
+	drawermenu.AddItemChild("dinput", "pg-calendar", "", "Calendar")
+	drawermenu.AddItemChild("dinput", "pg-checkbox", "", "Checkbox")
+	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
+	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
+	drawermenu.AddItemChild("dinput", "pg-filter", "", "Filter")
+	drawermenu.AddItemChild("dinput", "pg-label", "", "Label")
+	drawermenu.AddItemChild("dinput", "pg-radio", "", "Radio")
+	drawermenu.AddItemChild("dinput", "pg-range", "", "Range")
+	drawermenu.AddItemChild("dinput", "pg-rating", "", "Rating")
+	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
+	drawermenu.AddItemChild("dinput", "pg-inputfield", "", "Input Field")
+	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
+	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
+	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validator")
+	'
+	drawermenu.SetItemBadge("pg-calendar", "", "error")
+	drawermenu.SetItemBadge("pg-inputfield", "", "error")
+	drawermenu.SetItemBadge("pg-validator", "", "error")
 	'
 	drawermenu.AddItemParent("components", "layout", "", "Layout")
 	drawermenu.AddItemChild("layout", "pg-grid", "", "Grid")
@@ -165,6 +154,34 @@ Private Sub drawermenu_ItemClick (item As String)
 	Case "pg"
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive($"pg-${ssuffix}"$))
+		
+			Select Case ssuffix
+			Case "calendar"
+			Case "checkbox"
+				pgCheckBox.Show(App)
+			Case "fieldset"
+				pgFieldSet.Show(App)
+			Case "fileinput"
+				pgFileInput.Show(App)
+			Case "filter"
+				pgFilter.Show(App)
+			Case "label"
+				pgLabel.show(App)
+			Case "radio"
+				pgRadio.Show(App)
+			Case "range"
+				pgRange.Show(App)
+			Case "rating"
+				pgRating.Show(App)
+			Case "select"
+				pgSelect.Show(App)
+			Case "inputfield"
+			Case "textarea"
+				pgTextArea.Show(App)
+			Case "toggle"
+				pgToggle.Show(App)
+			Case "validator"
+		End Select
 		
 		'actions
 		Select Case ssuffix

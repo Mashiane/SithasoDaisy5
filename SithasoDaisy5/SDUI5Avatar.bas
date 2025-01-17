@@ -11,7 +11,7 @@ Version=10
 #DesignerProperty: Key: AvatarType, DisplayName: Avatar Type, FieldType: String, DefaultValue: image, Description: Avatar Type, List: image|placeholder
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
-#DesignerProperty: Key: ChatImage, DisplayName: Chat Image, FieldType: Boolean, DefaultValue: ./assets/mashy.jpg, Description: Chat Image
+#DesignerProperty: Key: ChatImage, DisplayName: Chat Image, FieldType: Boolean, DefaultValue: False, Description: Chat Image
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: S, Description: Placeholder
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs

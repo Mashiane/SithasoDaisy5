@@ -492,7 +492,7 @@ Sub ClearByID(sID As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	Clear(mElement)
+	mElement.empty
 End Sub
 
 Sub Clear(mElement As BANanoElement)
@@ -502,14 +502,14 @@ End Sub
 
 Sub Append(mElement As BANanoElement, sContent As String)
 	If mElement = Null Then Return
-	mElement.Append(BANano.SF(sContent))
+	mElement.Append(sContent)
 End Sub
 
 'append content to the specified element
 Sub AppendByID(sID As String, sContent As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	Append(mElement, sContent)
+	mElement.Append(sContent)
 End Sub
 
 Sub SetHTML(mElement As BANanoElement, sContent As String)
@@ -521,7 +521,7 @@ End Sub
 Sub SetHTMLByID(sID As String, sContent As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetHTML(mElement, sContent)
+	mElement.SetHTML(BANano.SF(sContent))
 End Sub
 
 public Sub GetHTML() As String
@@ -948,6 +948,7 @@ private Sub ListRemoveItem(lst As List, item As String)
 	If cPos <> -1 Then lst.RemoveAt(cPos)
 End Sub
 
+'convert a MV string to a map
 Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
 	varStyles = modSD5.CStr(varStyles)
 	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
@@ -1200,7 +1201,7 @@ End Sub
 Sub GetCheckedByID(sID As String) As Boolean
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	Dim b As Boolean = GetChecked(mElement)
+	Dim b As Boolean = mElement.GetChecked
 	b = modSD5.CBool(b)
 	Return b
 End Sub
@@ -1208,12 +1209,12 @@ End Sub
 Sub SetCheckedByID(sID As String, b As Boolean)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetChecked(mElement, b)
+	mElement.SetChecked(b)
 End Sub
 
 Sub SetText(mElement As BANanoElement, hx As String)
 	If mElement = Null Then Return
-	mElement.SetText(BANano.SF(hx))
+	mElement.SetText(hx)
 End Sub
 
 Sub GetText(mElement As BANanoElement) As String

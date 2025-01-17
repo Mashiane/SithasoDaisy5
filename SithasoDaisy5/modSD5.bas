@@ -457,6 +457,12 @@ Sub CleanID(s As String) As String
 	s = s.tolowercase
 	s = s.Replace("#", "")
 	s = s.Replace(" ", "")
+	s = s.Replace("{", "")
+	s = s.Replace("]", "")
+	s = s.Replace("[", "")
+	s = s.Replace("}", "")
+	s = s.Replace("(", "")
+	s = s.Replace(")", "")
 	s = s.Trim
 	Return s
 End Sub
