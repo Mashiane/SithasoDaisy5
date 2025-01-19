@@ -11,9 +11,9 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: fit , Description: Width
 #DesignerProperty: Key: RawKeyValues, DisplayName: Key Values (JSON), FieldType: String, DefaultValue: btn1:Button 1; btn2:Button 2; btn3:Button 3, Description: Key Values
-#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: , Description: Active Item
+#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -48,7 +48,7 @@ Sub Class_Globals
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sHeight As String = ""
-	Private sWidth As String = ""
+	Private sWidth As String = "fit"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -69,7 +69,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -190,7 +190,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sActive = Props.GetDefault("Active", "")
+		sActive = Props.GetDefault("Active", "btn1")
 		sActive = modSD5.Cstr(sActive)
 		sRawKeyValues = Props.GetDefault("RawKeyValues", "btn1:Button 1; btn2:Button 2; btn3:Button 3")
 		sRawKeyValues = modSD5.CStr(sRawKeyValues)
@@ -201,7 +201,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSize = "none" Then sSize = ""
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
-		sWidth = Props.GetDefault("Width", "")
+		sWidth = Props.GetDefault("Width", "fit")
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
@@ -226,7 +226,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 		
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-	setKeyValues(sRawKeyValues)
+	BANano.Await(setKeyValues(sRawKeyValues))
+	setActive(sActive)
 End Sub
 
 'get Width
@@ -268,7 +269,7 @@ Sub setKeyValues(s As String)
 	Dim m As Map = UI.GetKeyValues(s, False)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		AddButton(k, v)
+		BANano.Await(AddButton(k, v))
 	Next
 End Sub
 
@@ -286,7 +287,7 @@ End Sub
 
 Sub AddButton(sKey As String, sText As String)
 	sKey = SDUIShared.CleanID(sKey)
-	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" role="tab" class="tab" aria-label="${sText}"></input>"$
+	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab" aria-label="${sText}"></input>"$
 	mElement.Append(sTag)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
 End Sub

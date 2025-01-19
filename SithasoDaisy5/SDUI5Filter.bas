@@ -212,13 +212,13 @@ End Sub
 Sub Clear
 	If mElement = Null Then Return
 	mElement.empty
-	mElement.Append($"<input id="reset_${mName}" class="btn filter-reset" type="radio" name="${mName}" aria-label="All"></input>"$)
+	mElement.Append($"<input id="reset_${mName}" class="btn filter-reset" value="reset" type="radio" name="${mName}" aria-label="All"></input>"$)
 End Sub
 
 Sub AddOption(sKey As String, sValue As String)
 	If mElement = Null Then Return
 	sKey = modSD5.CleanID(sKey)
-	mElement.Append($"<input id="${sKey}_${mName}" class="btn" type="radio" name="${mName}" aria-label="${sValue}"></input>"$)
+	mElement.Append($"<input id="${sKey}_${mName}" class="btn" type="radio" value="${sKey}" name="${mName}" aria-label="${sValue}"></input>"$)
 End Sub
 
 'set Raw Options
@@ -233,7 +233,7 @@ Sub setOptions(s As String)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = modSD5.CleanID(k)
-		sb.Append($"<input id="${sk}_${mName}" class="btn" type="radio" name="${mName}" aria-label="${v}"></input>"$)
+		sb.Append($"<input id="${sk}_${mName}" class="btn" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
 	Next
 	mElement.Append(sb.ToString)
 End Sub
