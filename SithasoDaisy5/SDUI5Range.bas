@@ -19,7 +19,6 @@ Version=10
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: ThumbColor, DisplayName: Thumb Color, FieldType: String, DefaultValue: , Description: Thumb Color
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -63,7 +62,6 @@ Sub Class_Globals
 	Private sTextColor As String = ""
 	Private sThumbColor As String = ""
 	Private sValue As String = "10"
-	Private bDisabled As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -243,8 +241,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sThumbColor = modSD5.CStr(sThumbColor)
 		sValue = Props.GetDefault("Value", "10")
 		sValue = modSD5.CStr(sValue)
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 	End If
 	'
 '	'If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
@@ -285,7 +281,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "range")
 	setColor(sColor)
-	setDisabled(bDisabled)
+	setEnabled(bEnabled)
 	setSize(sSize)
 	UI.AddAttr(mElement, "type", "range")
 	setBackgroundColor(sBackgroundColor)
@@ -293,22 +289,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setMinValue(sMinValue)
 	setStepValue(sStepValue)
 	setValue(sValue)
-End Sub
-
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 
 'set Background Color

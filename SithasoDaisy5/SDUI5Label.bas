@@ -6,7 +6,7 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: input, Description: Input Type, List: none|select|input|email|password|toggle|range|checkbox|textarea|tel|url|number
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: input, Description: Input Type, List: select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Label, Description: Caption
 #DesignerProperty: Key: LabelWidth, DisplayName: Label Width, FieldType: String, DefaultValue: , Description: Label Width
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
@@ -245,7 +245,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bFloatingLabel = modSD5.CBool(bFloatingLabel)
 		sInputType = Props.GetDefault("InputType", "input")
 		sInputType = modSD5.CStr(sInputType)
-		If sInputType = "none" Then sInputType = ""
 		sPlaceholder = Props.GetDefault("Placeholder", "")
 		sPlaceholder = modSD5.CStr(sPlaceholder)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
@@ -280,26 +279,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	If bFloatingLabel = True Then UI.AddClassDT("floating-label")
-	'
+	'select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
 	Dim sTag As String = sInputType
 	Select Case sInputType
-	Case "email"
-		sTag = "input"
-	Case "password"
-		sTag = "input"
-	Case "toggle"
-		sTag = "input"
-	Case "range" 
-		sTag = "input"
-	Case "checkbox"
+	Case "email", "password", "toggle", "range", "checkbox", "radio", "tel", "url", "number", "input"
 		sTag = "input"
 	Case "textarea"
 		sTag = "textarea"
-	Case "tel", "url", "number"
-		sTag = "input"		
+	Case "select" 
+		sTag = "select"	
 	End Select
-	
 	UI.AddClassDT(sTag)
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -320,6 +311,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</label>
 		<div id="${mName}_validatorhint" class="validator-hint">${sValidatorHint}</div>"$).Get("#" & mName)
 	'
+	''select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
 	Select Case sInputType
 	Case "input"
 		UI.SetAttrByID($"${mName}_input"$, "type", "text")
@@ -328,11 +320,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "password"
 		UI.SetAttrByID($"${mName}_input"$, "type", "password")
 	Case "toggle"
+		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "fieldset-label")
+		UI.SetVisibleByID($"${mName}_prefix"$, False)
 		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
 		UI.AddClassByID($"${mName}_input"$, "toggle")
+		UI.SetTextByID($"${mName}_suffix"$, sLabel)
+		UI.SetVisibleByID($"${mName}_suffix"$, True)
+	Case "radio"
+		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "fieldset-label")
+		UI.SetVisibleByID($"${mName}_prefix"$, False)
+		UI.SetAttrByID($"${mName}_input"$, "type", "radio")
+		UI.AddClassByID($"${mName}_input"$, "radio")
+		UI.SetTextByID($"${mName}_suffix"$, sLabel)
+		UI.SetVisibleByID($"${mName}_suffix"$, True)
 	Case "checkbox"
+		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "fieldset-label")
+		UI.SetVisibleByID($"${mName}_prefix"$, False)
 		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
 		UI.AddClassByID($"${mName}_input"$, "checkbox")
+		UI.SetTextByID($"${mName}_suffix"$, sLabel)
+		UI.SetVisibleByID($"${mName}_suffix"$, True)
 	Case "range"
 		UI.SetAttrByID($"${mName}_input"$, "type", "range")
 		UI.AddClassByID($"${mName}_input"$, "range")
@@ -347,12 +357,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetAttrByID($"${mName}_input"$, "type", "number")
 	End Select
 	'
+	Select Case sInputType
+	Case "radio", "checkbox", "toggle"
+	Case Else
+		setSuffix(sSuffix)
+		setLabel(sLabel)
+	End Select
+	
 	BANano.Await(setColor(sColor))
 	BANano.Await(setSize(sSize))
 	BANano.Await(setOptions(sRawOptions))
 	setPlaceholder(sPlaceholder)
-	setSuffix(sSuffix)
-	setLabel(sLabel)
 	setValidator(bValidator)
 	setLabelWidth(sLabelWidth)
 	setMaxLength(sMaxLength)
@@ -539,14 +554,12 @@ End Sub
 'load the items from a list
 Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
-	Clear
-	Dim sb As StringBuilder
-	sb.Initialize
+	Dim nm As Map = CreateMap()
 	For Each k As String In m
 		Dim sk As String = modSD5.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${sk}">${k}</option>"$)
+		nm.Put(sk, k)
 	Next
-	UI.AppendByID($"${mName}_input)"$, sb.ToString)
+	SetOptionsFromMap(nm)
 End Sub
 
 'get Raw Options

@@ -13,7 +13,6 @@ Version=10
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Grow, DisplayName: Grow, FieldType: Boolean, DefaultValue: False, Description: Grow
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
@@ -51,7 +50,6 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sColor As String = "none"
-	Private bDisabled As Boolean = False
 	Private bGhost As Boolean = False
 	Private bGrow As Boolean = False
 	Private bHasLabel As Boolean = False
@@ -219,8 +217,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bGhost = Props.GetDefault("Ghost", False)
 		bGhost = modSD5.CBool(bGhost)
 		bGrow = Props.GetDefault("Grow", False)
@@ -278,7 +274,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.AddClass(mElement, "select")
 	setPlaceholder(sPlaceholder)
 	setColor(sColor)
-	setDisabled(bDisabled)
 	setRequired(bRequired)
 	setSize(sSize)
 	setGhost(bGhost)
@@ -314,14 +309,12 @@ End Sub
 'load the items from a list
 Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
-	Clear
-	Dim sb As StringBuilder
-	sb.Initialize
+	Dim nm As Map = CreateMap()
 	For Each k As String In m
 		Dim sk As String = modSD5.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${sk}">${k}</option>"$)
+		nm.Put(sk, k)
 	Next
-	mElement.Append(sb.ToString)
+	SetOptionsFromMap(nm)
 End Sub
 
 'get Raw Options
@@ -351,17 +344,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "select", sColor)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
 End Sub
 'set Ghost
 Sub setGhost(b As Boolean)
@@ -458,10 +440,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Ghost
 Sub getGhost As Boolean

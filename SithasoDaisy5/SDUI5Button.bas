@@ -17,10 +17,10 @@ Version=10
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: none, Description: Shape, List: square|circle|none
 #DesignerProperty: Key: Block, DisplayName: Block, FieldType: Boolean, DefaultValue: False, Description: Block
-#DesignerProperty: Key: Circle, DisplayName: Circle, FieldType: Boolean, DefaultValue: False, Description: Circle
+#DesignerProperty: Key: Wide, DisplayName: Wide, FieldType: Boolean, DefaultValue: False, Description: Wide
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
@@ -42,8 +42,6 @@ Version=10
 #DesignerProperty: Key: SizeSmall, DisplayName: Size Small, FieldType: String, DefaultValue: none, Description: Size Small, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: SizeXLarge, DisplayName: Size X Large, FieldType: String, DefaultValue: none, Description: Size X Large, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
-#DesignerProperty: Key: Square, DisplayName: Square, FieldType: Boolean, DefaultValue: False, Description: Square
-#DesignerProperty: Key: Wide, DisplayName: Wide, FieldType: Boolean, DefaultValue: False, Description: Wide
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -82,10 +80,8 @@ Sub Class_Globals
 	Private sBackgroundColor As String = ""
 	Private bBlock As Boolean = False
 	Private sBtn As String = "btn"
-	Private bCircle As Boolean = False
 	Private sColor As String = "none"
 	Private bDash As Boolean = False
-	Private bDisabled As Boolean = False
 	Private bGhost As Boolean = False
 	Private sImage As String = ""
 	Private sImageHeight As String = "32px"
@@ -100,7 +96,6 @@ Sub Class_Globals
 	Private sSizeSmall As String = "none"
 	Private sSizeXLarge As String = "none"
 	Private bSoft As Boolean = False
-	Private bSquare As Boolean = False
 	Private sTextColor As String = ""
 	Private bWide As Boolean = False
 	Private sImageColor As String = ""
@@ -118,6 +113,7 @@ Sub Class_Globals
 	Private bActivator As Boolean = False
 	Private bRoundedField As Boolean = False
 	Private sTag As String = "button"
+	Private sShape As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -182,7 +178,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -282,15 +278,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bActive = modSD5.CBool(bActive)
 		bBlock = Props.GetDefault("Block", False)
 		bBlock = modSD5.CBool(bBlock)
-		bCircle = Props.GetDefault("Circle", False)
-		bCircle = modSD5.CBool(bCircle)
+		sShape = Props.GetDefault("Shape", "none")
+		sShape = modSD5.CStr(sShape)
+		If sShape = "none" Then sShape = ""
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
 		bDash = modSD5.CBool(bDash)
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bGhost = Props.GetDefault("Ghost", False)
 		bGhost = modSD5.CBool(bGhost)
 		sImage = Props.GetDefault("Image", "")
@@ -326,8 +321,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSizeXLarge = "none" Then sSizeXLarge = ""
 		bSoft = Props.GetDefault("Soft", False)
 		bSoft = modSD5.CBool(bSoft)
-		bSquare = Props.GetDefault("Square", False)
-		bSquare = modSD5.CBool(bSquare)
 		bWide = Props.GetDefault("Wide", False)
 		bWide = modSD5.CBool(bWide)
 		sRightImageColor = Props.GetDefault("RightImageColor", "")
@@ -384,10 +377,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If bRoundedField = True Then UI.AddClassDT("rounded-field")
 		If bBlock = True Then UI.AddClassDT("btn-block")
 		UI.AddClassDT(sBtn)
-		If bCircle = True Then UI.AddClassDT("btn-circle")
+		Select Case sShape
+		Case "square"
+			UI.AddClassDT("btn-square")
+		Case "circle"	
+			UI.AddClassDT("btn-circle")
+		End Select
 		If sColor <> "" Then UI.AddClassDT("btn-" & sColor)
 		If bDash = True Then UI.AddClassDT("btn-dash")
-		If bDisabled = True Then UI.AddAttrDT("disabled", bDisabled)
 		If bGhost = True Then UI.AddClassDT("btn-ghost")
 		If bLink = True Then UI.AddClassDT("btn-link")
 		If bOutline = True Then UI.AddClassDT("btn-outline")
@@ -397,7 +394,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSizeSmall <> "" Then UI.AddClassDT("sm:btn-" & sSizeSmall)
 		If sSizeXLarge <> "" Then UI.AddClassDT("xl:btn-" & sSizeXLarge)
 		If bSoft = True Then UI.AddClassDT("btn-soft")
-		If bSquare = True Then UI.AddClassDT("btn-square")
 		If bWide = True Then UI.AddClassDT("btn-wide")
 		If sHeight <> "" Then UI.AddHeightDT( sHeight)
 		If sWidth <> "" Then UI.AddWidthDT( sWidth)
@@ -483,17 +479,24 @@ Sub setBlock(b As Boolean)
 		UI.RemoveClass(mElement, "btn-block")
 	End If
 End Sub
+
 'set Circle
-Sub setCircle(b As Boolean)
-	bCircle = b
-	CustProps.put("Circle", b)
+Sub setShape(s As String)
+	sShape = s
+	CustProps.put("Shape", S)
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "btn-circle")
-	Else
-		UI.RemoveClass(mElement, "btn-circle")
-	End If
+	Select Case sShape
+	Case "square"
+		UI.UpdateClass(mElement, "shape", "btn-square")
+	Case "circle"
+		UI.UpdateClass(mElement, "shape", "btn-circle")
+	End Select
 End Sub
+
+Sub getShape As String
+	Return sShape
+End Sub
+
 'set Color
 'options: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
 Sub setColor(s As String)
@@ -511,17 +514,6 @@ Sub setDash(b As Boolean)
 		UI.AddClass(mElement, "btn-dash")
 	Else
 		UI.RemoveClass(mElement, "btn-dash")
-	End If
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
 	End If
 End Sub
 'set Ghost
@@ -676,17 +668,6 @@ Sub setSoft(b As Boolean)
 		UI.RemoveClass(mElement, "btn-soft")
 	End If
 End Sub
-'set Square
-Sub setSquare(b As Boolean)
-	bSquare = b
-	CustProps.put("Square", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "btn-square")
-	Else
-		UI.RemoveClass(mElement, "btn-square")
-	End If
-End Sub
 'set Text Color
 Sub setTextColor(s As String)
 	sTextColor = s
@@ -717,10 +698,6 @@ End Sub
 Sub getBlock As Boolean
 	Return bBlock
 End Sub
-'get Circle
-Sub getCircle As Boolean
-	Return bCircle
-End Sub
 'get Color
 Sub getColor As String
 	Return sColor
@@ -728,10 +705,6 @@ End Sub
 'get Dash
 Sub getDash As Boolean
 	Return bDash
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Ghost
 Sub getGhost As Boolean
@@ -788,10 +761,6 @@ End Sub
 'get Soft
 Sub getSoft As Boolean
 	Return bSoft
-End Sub
-'get Square
-Sub getSquare As Boolean
-	Return bSquare
 End Sub
 'get Text Color
 Sub getTextColor As String
@@ -916,7 +885,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	if s <> "" then Ui.SetWidth(mElement, s)
+	If s <> "" Then UI.SetWidth(mElement, s)
 End Sub
 'get Height
 Sub getHeight As String

@@ -14,8 +14,8 @@ Version=10
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: RawKeyValues, DisplayName: Key Values (JSON), FieldType: String, DefaultValue: btn1:Button 1; btn2:Button 2; btn3:Button 3, Description: Key Values
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: , Description: Active Item
-#DesignerProperty: Key: Disabled, DisplayName: Disabled Items(s) (;), FieldType: String, DefaultValue: , Description: Disabled Items
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R

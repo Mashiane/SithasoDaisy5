@@ -19,7 +19,6 @@ Version=10
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: secondary, Description: Badge Color
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: xs, Description: Badge Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BadgeVisible, DisplayName: Badge Visible, FieldType: Boolean, DefaultValue: False, Description: Badge Visible
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Focus, DisplayName: Focus, FieldType: Boolean, DefaultValue: False, Description: Focus
 #DesignerProperty: Key: Href, DisplayName: Href, FieldType: String, DefaultValue: , Description: Href
 #DesignerProperty: Key: Target, DisplayName: Target, FieldType: String, DefaultValue: none, Description: Target, List: _blank|_parent|_self|_top|none
@@ -60,7 +59,6 @@ Sub Class_Globals
 	Private sBadge As String = ""
 	Private sBadgeColor As String = "secondary"
 	Private sBadgeSize As String = "xs"
-	Private bDisabled As Boolean = False
 	Private bFocus As Boolean = False
 	Private sHref As String = ""
 	Private sIcon As String = ""
@@ -152,11 +150,14 @@ Sub setEnabled(b As Boolean)
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
-	UI.SetEnabled(mElement, b)
+	If b Then
+		UI.RemoveClassByID($"${mName}_anchor"$, "menu-disabled")
+	Else	
+		UI.AddClassByID($"${mName}_anchor"$, "menu-disabled")
+	End If
 End Sub
 'get Enabled
 Sub getEnabled As Boolean
-	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
 Sub OnEvent(event As String, methodName As String)
@@ -274,8 +275,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadgeSize = Props.GetDefault("BadgeSize", "xs")
 		sBadgeSize = modSD5.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bFocus = Props.GetDefault("Focus", False)
 		bFocus = modSD5.CBool(bFocus)
 		sHref = Props.GetDefault("Href", "")
@@ -308,7 +307,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
-	If bDisabled = True Then UI.AddClassDT("menu-disabled")
 	If bFocus = True Then UI.AddClassDT("menu-focus")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -384,7 +382,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setHref(sHref)
 		setTarget(sTarget)
 		setActive(bActive)
-		setDisabled(bDisabled)
+		setEnabled(bEnabled)
 		setFocus(bFocus)
 		setTooltip(sTooltip)
 		setTooltipPosition(sTooltipPosition)
@@ -456,17 +454,6 @@ Sub setBadgeSize(s As String)
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b Then
-		UI.AddClassByID($"${mName}_anchor"$, "menu-disabled")
-	Else
-		UI.RemoveClassByID($"${mName}_anchor"$, "menu-disabled")
-	End If
 End Sub
 'set Focus
 Sub setFocus(b As Boolean)
@@ -569,10 +556,6 @@ End Sub
 'get Badge Size
 Sub getBadgeSize As String
 	Return sBadgeSize
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Focus
 Sub getFocus As Boolean

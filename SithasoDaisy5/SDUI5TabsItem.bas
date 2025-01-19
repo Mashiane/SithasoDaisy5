@@ -18,6 +18,7 @@ Version=10
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
@@ -48,8 +49,8 @@ Sub Class_Globals
 	Private sBadgeColor As String = ""
 	Private sBadgeSize As String = "none"
 	Private sBorderColor As String = ""
-	Private bDisabled As Boolean = False
 	Private sTextColor As String = ""
+	Private bEnabled As Boolean = True
 	Public CONST BADGESIZE_LG As String = "lg"
 	Public CONST BADGESIZE_MD As String = "md"
 	Public CONST BADGESIZE_NONE As String = "none"
@@ -187,8 +188,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sBorderColor = Props.GetDefault("BorderColor", "")
 		sBorderColor = modSD5.CStr(sBorderColor)
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
+		bEnabled = Props.GetDefault("Enabled", True)
+		bEnabled = modSD5.CBool(bEnabled)
 		'sTextColor = Props.GetDefault("TextColor", "")
 		'sTextColor = modSD5.CStr(sTextColor)
 	End If
@@ -198,7 +199,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'If sBadge <> "" Then UI.AddClassDT("badge-" & sBadge)
 	'If sBadgeColor <> "" Then UI.AddClassDT("badge-" & sBadgeColor)
 	'If sBorderColor <> "" Then UI.AddClassDT("border-color-" & sBorderColor)
-	If bDisabled = True Then UI.AddClassDT("tab-disabled")
 	UI.AddAttrDT("role", "tab")
 	UI.AddClassDT("tab")
 	UI.AddAttrDT("type", "radio")
@@ -221,6 +221,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   	<div id="${mName}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
 	'
 	setActive(bActive)
+	setEnabled(bEnabled)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
 
@@ -286,14 +287,14 @@ Sub setBorderColor(s As String)
 '	If s <> "" Then UI.AddClass(mElement, "border-color-" & s)
 End Sub
 'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
+Sub setEnabled(b As Boolean)
+	bEnabled = b
+	CustProps.put("Enabled", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddClass(mElement, "tab-disabled")
-	Else
 		UI.RemoveClass(mElement, "tab-disabled")
+	Else
+		UI.AddClass(mElement, "tab-disabled")
 	End If
 End Sub
 'set Text Color
@@ -303,6 +304,11 @@ Sub setTextColor(s As String)
 	If mElement = Null Then Return
 '	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
 End Sub
+
+Sub getEnabled As Boolean
+	Return bEnabled
+End Sub
+
 'get Active
 Sub getActive As Boolean
 	Return bActive
@@ -326,10 +332,6 @@ End Sub
 'get Border Color
 Sub getBorderColor As String
 	Return sBorderColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Text Color
 Sub getTextColor As String

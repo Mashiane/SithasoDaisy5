@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio, Description: Label
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -14,15 +15,10 @@ Version=10
 #DesignerProperty: Key: AriaLabel, DisplayName: Aria Label, FieldType: String, DefaultValue: , Description: Aria Label
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Btn, DisplayName: Btn, FieldType: Boolean, DefaultValue: False, Description: Btn
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
-#DesignerProperty: Key: FilterReset, DisplayName: Filter Reset, FieldType: Boolean, DefaultValue: False, Description: Filter Reset
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: none, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
-#DesignerProperty: Key: RatingHidden, DisplayName: Rating Hidden, FieldType: Boolean, DefaultValue: False, Description: Rating Hidden
-#DesignerProperty: Key: Square, DisplayName: Square, FieldType: Boolean, DefaultValue: False, Description: Square
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -55,21 +51,17 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sAriaLabel As String = ""
 	Private sBackgroundColor As String = ""
-	Private bBtn As Boolean = False
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bDisabled As Boolean = False
-	Private bFilterReset As Boolean = False
 	Private sGroupName As String = ""
 	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private sLabel As String = "Label"
 	Private sMask As String = "none"
-	Private bRatingHidden As Boolean = False
 	Private sSize As String = "none"
-	Private bSquare As Boolean = False
 	Private sValue As String = ""
+	Private sLegend As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -226,8 +218,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAriaLabel = modSD5.CStr(sAriaLabel)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
 		sBackgroundColor = modSD5.CStr(sBackgroundColor)
-		bBtn = Props.GetDefault("Btn", False)
-		bBtn = modSD5.CBool(bBtn)
 		bChecked = Props.GetDefault("Checked", False)
 		bChecked = modSD5.CBool(bChecked)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
@@ -235,10 +225,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
-		bFilterReset = Props.GetDefault("FilterReset", False)
-		bFilterReset = modSD5.CBool(bFilterReset)
 		sGroupName = Props.GetDefault("GroupName", "")
 		sGroupName = modSD5.CStr(sGroupName)
 		bHasLabel = Props.GetDefault("HasLabel", False)
@@ -250,15 +236,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMask = Props.GetDefault("Mask", "none")
 		sMask = modSD5.CStr(sMask)
 		If sMask = "none" Then sMask = ""
-		bRatingHidden = Props.GetDefault("RatingHidden", False)
-		bRatingHidden = modSD5.CBool(bRatingHidden)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		bSquare = Props.GetDefault("Square", False)
-		bSquare = modSD5.CBool(bSquare)
 		sValue = Props.GetDefault("Value", "")
 		sValue = modSD5.CStr(sValue)
+		sLegend = Props.GetDefault("Legend", "")
+		sLegend = modSD5.CStr(sLegend)
 	End If
 
 	Dim xattrs As String = UI.BuildExAttributes
@@ -275,10 +259,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then
 		mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-				<label id="${mName}_label" class="label" for="${mName}">${sLabel}</label>
-  				<input id="${mName}" type="radio"></input>
-				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+  				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
+				<label id="${mName}_labelhost" class="fieldset-label">
+					<input id="${mName}" type="radio"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>	
 			</fieldset>"$).Get("#" & mName)
 	Else
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
@@ -286,20 +271,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "radio")
 	setColor(sColor)
-	setDisabled(bDisabled)
+	setEnabled(bEnabled)
 	setSize(sSize)
 	UI.AddAttr(mElement, "type", "radio")
 	setChecked(bChecked)
 	setAriaLabel(sAriaLabel)
 	setBackgroundColor(sBackgroundColor)
-	setBtn(bBtn)
 	setChecked(bChecked)
-	setFilterReset(bFilterReset)
 	setGroupName(sGroupName)
 	setMask(sMask)
-	setRatingHidden(bRatingHidden)
-	setSquare(bSquare)
 	setValue(sValue)
+End Sub
+
+'set Legend
+Sub setLegend(s As String)
+	sLegend = s
+	CustProps.put("Legend", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLegend As String
+	Return sLegend
 End Sub
 
 'set Aria Label
@@ -315,17 +308,6 @@ Sub setBackgroundColor(s As String)
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
-End Sub
-'set Btn
-Sub setBtn(b As Boolean)
-	bBtn = b
-	CustProps.put("Btn", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "btn")
-	Else
-		UI.RemoveClass(mElement, "btn")
-	End If
 End Sub
 'set Checked
 Sub setChecked(b As Boolean)
@@ -348,28 +330,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "radio", sColor)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
-End Sub
-'set Filter Reset
-Sub setFilterReset(b As Boolean)
-	bFilterReset = b
-	CustProps.put("FilterReset", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "filter-reset")
-	Else
-		UI.RemoveClass(mElement, "filter-reset")
-	End If
 End Sub
 'set Group Name
 Sub setGroupName(s As String)
@@ -405,17 +365,6 @@ Sub setMask(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMask(mElement, sMask)
 End Sub
-'set Rating Hidden
-Sub setRatingHidden(b As Boolean)
-	bRatingHidden = b
-	CustProps.put("RatingHidden", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "rating-hidden")
-	Else
-		UI.RemoveClass(mElement, "rating-hidden")
-	End If
-End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
 Sub setSize(s As String)
@@ -423,17 +372,6 @@ Sub setSize(s As String)
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetSize(mElement, "size", "radio", sSize)
-End Sub
-'set Square
-Sub setSquare(b As Boolean)
-	bSquare = b
-	CustProps.put("Square", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "btn-square")
-	Else
-		UI.RemoveClass(mElement, "btn-square")
-	End If
 End Sub
 'set Value
 Sub setValue(s As String)
@@ -451,9 +389,6 @@ Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
 'get Btn
-Sub getBtn As Boolean
-	Return bBtn
-End Sub
 'get Checked
 Sub getChecked As Boolean
 	Return bChecked
@@ -465,14 +400,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
-End Sub
-'get Filter Reset
-Sub getFilterReset As Boolean
-	Return bFilterReset
 End Sub
 'get Group Name
 Sub getGroupName As String
@@ -493,18 +420,6 @@ End Sub
 'get Mask
 Sub getMask As String
 	Return sMask
-End Sub
-'get Rating Hidden
-Sub getRatingHidden As Boolean
-	Return bRatingHidden
-End Sub
-'get Size
-Sub getSize As String
-	Return sSize
-End Sub
-'get Square
-Sub getSquare As Boolean
-	Return bSquare
 End Sub
 'get Value
 Sub getValue As String

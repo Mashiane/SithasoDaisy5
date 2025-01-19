@@ -110,13 +110,12 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-range", "", "Range")
 	drawermenu.AddItemChild("dinput", "pg-rating", "", "Rating")
 	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
-	drawermenu.AddItemChild("dinput", "pg-inputfield", "", "Input Field")
+	drawermenu.AddItemChild("dinput", "pg-input", "", "Text Box")
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
 	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
 	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validator")
 	'
 	drawermenu.SetItemBadge("pg-calendar", "", "error")
-	drawermenu.SetItemBadge("pg-inputfield", "", "error")
 	drawermenu.SetItemBadge("pg-validator", "", "error")
 	'
 	drawermenu.AddItemParent("components", "layout", "", "Layout")
@@ -175,7 +174,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgRating.Show(App)
 			Case "select"
 				pgSelect.Show(App)
-			Case "inputfield"
+			Case "input"
+				pgInput.Show(App)
 			Case "textarea"
 				pgTextArea.Show(App)
 			Case "toggle"

@@ -14,7 +14,6 @@ Version=10
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: UncheckedColor, DisplayName: Unchecked Color, FieldType: String, DefaultValue: , Description: Unchecked Color
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
@@ -53,7 +52,6 @@ Sub Class_Globals
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bDisabled As Boolean = False
 	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private bIndeterminate As Boolean = False
@@ -224,8 +222,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bHasLabel = Props.GetDefault("HasLabel", False)
 		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
@@ -266,9 +262,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_label" class="label" for="${mName}">${sLabel}</label>
-  				<input id="${mName}" type="checkbox"></input>
-				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+				<label id="${mName}_labelhost" class="fieldset-label">
+					<input id="${mName}" type="checkbox"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>	
 			</fieldset>"$).Get("#" & mName)
 	Else
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
@@ -276,7 +273,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "checkbox")
 	setColor(sColor)
-	setDisabled(bDisabled)
 	setRequired(bRequired)
 	setSize(sSize)
 	UI.AddAttr(mElement, "type", "checkbox")
@@ -305,17 +301,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "checkbox", sColor)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
 End Sub
 'set Has Label
 Sub setHasLabel(b As Boolean)
@@ -417,10 +402,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Has Label
 Sub getHasLabel As Boolean

@@ -17,7 +17,6 @@ Version=10
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: 2, Description: Gap
 #DesignerProperty: Key: Half, DisplayName: Half, FieldType: Boolean, DefaultValue: False, Description: Half
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: ReadOnly, DisplayName: Read Only, FieldType: Boolean, DefaultValue: False, Description: Read Only
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -62,7 +61,6 @@ Sub Class_Globals
 	Private bReadOnly As Boolean = False
 	Private sSize As String = "md"
 	Private sValue As String = "2"
-	Private bDisabled As Boolean = False
 	Private bRequired As Boolean = False
 End Sub
 'initialize the custom view class
@@ -240,8 +238,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = modSD5.CStr(sSize)
 		sValue = Props.GetDefault("Value", "2")
 		sValue = modSD5.CStr(sValue)
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bRequired = Props.GetDefault("Required", False)
 		bRequired = modSD5.CBool(bRequired)
 	End If
@@ -285,16 +281,6 @@ End Sub
 'get Required
 Sub getRequired As Boolean
 	Return bRequired
-End Sub
-
-'set Disabled, , needs Refresh
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 
 Sub Clear
@@ -343,7 +329,7 @@ Sub Refresh
 			nradio.Size = sSize
 			If fCount = 1 Then
 				If bFirstHidden Then 
-					nradio.RatingHidden = True
+					nradio.UI.AddClassDT("rating-hidden")
 					nradio.AriaLabel = "Clear"
 				End If
 			End If

@@ -7,12 +7,11 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
-#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
 #DesignerProperty: Key: OffIcon, DisplayName: Off Icon, FieldType: String, DefaultValue: , Description: Off Icon
@@ -56,7 +55,6 @@ Sub Class_Globals
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bDisabled As Boolean = False
 	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private bIndeterminate As Boolean = False
@@ -228,8 +226,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bHasLabel = Props.GetDefault("HasLabel", False)
 		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
@@ -272,11 +268,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bHasLabel Then
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}"">
+			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_label" class="label" for="${mName}">${sLabel}</label>
-  				<input id="${mName}" type="checkbox"></input>
-				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+				<label id="${mName}_labelhost" class="fieldset-label">
+					<input id="${mName}" type="checkbox"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>	
 			</fieldset>"$).Get("#" & mName)
 	Else
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
@@ -284,7 +281,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "toggle")
 	setColor(sColor)
-	setDisabled(bDisabled)
+	setEnabled(bEnabled)
 	setRequired(bRequired)
 	setSize(sSize)
 	UI.AddAttr(mElement, "type", "checkbox")
@@ -313,17 +310,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "toggle", sColor)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
 End Sub
 'set Has Label
 Sub setHasLabel(b As Boolean)
@@ -439,10 +425,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Has Label
 Sub getHasLabel As Boolean

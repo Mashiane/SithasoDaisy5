@@ -10,7 +10,6 @@ Version=10
 #DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
 '#DesignerProperty: Key: FloatingLabel, DisplayName: Floating Label, FieldType: Boolean, DefaultValue: False, Description: Floating Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
@@ -48,7 +47,6 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sColor As String = "none"
-	Private bDisabled As Boolean = False
 	Private bFloatingLabel As Boolean = False
 	Private bGhost As Boolean = False
 	Private bHasLabel As Boolean = False
@@ -212,8 +210,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bDisabled = Props.GetDefault("Disabled", False)
-		bDisabled = modSD5.CBool(bDisabled)
 		bFloatingLabel = Props.GetDefault("FloatingLabel", False)
 		bFloatingLabel = modSD5.CBool(bFloatingLabel)
 		bGhost = Props.GetDefault("Ghost", False)
@@ -272,7 +268,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "file-input")
 	setColor(sColor)
-	setDisabled(bDisabled)
 	setGhost(bGhost)
 	setRequired(bRequired)
 	setSize(sSize)
@@ -287,17 +282,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "file-input", sColor)
-End Sub
-'set Disabled
-Sub setDisabled(b As Boolean)
-	bDisabled = b
-	CustProps.put("Disabled", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "disabled", b)
-	Else
-		UI.RemoveAttr(mElement, "disabled")
-	End If
 End Sub
 'set Floating Label
 Sub setFloatingLabel(b As Boolean)
@@ -381,10 +365,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Disabled
-Sub getDisabled As Boolean
-	Return bDisabled
 End Sub
 'get Floating Label
 Sub getFloatingLabel As Boolean

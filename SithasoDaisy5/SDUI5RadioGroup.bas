@@ -6,18 +6,18 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
-#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Text Area, Description: Label
-#DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio Group, Description: Label
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
+#DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Raw Options
+#DesignerProperty: Key: FitContents, DisplayName: Fit Contents, FieldType: Boolean, DefaultValue: True, Description: Fit Contents
+#DesignerProperty: Key: ColumnView, DisplayName: Column View, FieldType: Boolean, DefaultValue: False, Description: Column View
+#DesignerProperty: Key: LabelPosition, DisplayName: Label Position, FieldType: String, DefaultValue: right, Description: Label Position, List: left|right
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
-#DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
-#DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
-#DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -48,18 +48,20 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
+	Private sBackgroundColor As String = ""
+	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bGhost As Boolean = False
-	Private bHasLabel As Boolean = False
-	Private sHeight As String = "12"
+	Private sGroupName As String = ""
 	Private sHint As String = ""
-	Private sLabel As String = "Text Area"
-	Private sPlaceholder As String = ""
-	Private bRequired As Boolean = False
+	Private sLabel As String = "Radio Group"
 	Private sSize As String = "none"
-	Private bValidator As Boolean = False
-	Private sValidatorHint As String = ""
 	Private sValue As String = ""
+	Private sRawOptions As String = "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r"
+	Private bFitContents As Boolean = True
+	Private bColumnView As Boolean = False
+	Private sLabelPosition As String = "right"
+	Public CONST LABELPOSITION_LEFT As String = "left"
+	Public CONST LABELPOSITION_RIGHT As String = "right"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -201,6 +203,7 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
+
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -211,34 +214,35 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		bFitContents = Props.GetDefault("FitContents", True)
+		bFitContents = modSD5.CBool(bFitContents)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sCheckedColor = Props.GetDefault("CheckedColor", "")
+		sCheckedColor = modSD5.CStr(sCheckedColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = modSD5.CBool(bGhost)
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
-		sHeight = Props.GetDefault("Height", "12")
-		sHeight = modSD5.CStr(sHeight)
+		sGroupName = Props.GetDefault("GroupName", "")
+		sGroupName = modSD5.CStr(sGroupName)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
-		sLabel = Props.GetDefault("Label", "Text Area")
+		sLabel = Props.GetDefault("Label", "Label")
 		sLabel = modSD5.CStr(sLabel)
-		sPlaceholder = Props.GetDefault("Placeholder", "")
-		sPlaceholder = modSD5.CStr(sPlaceholder)
-		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
-		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
 		sValue = Props.GetDefault("Value", "")
 		sValue = modSD5.CStr(sValue)
+		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
+		sRawOptions = modSD5.CStr(sRawOptions)
+		bColumnView = Props.GetDefault("ColumnView", False)
+		bColumnView = modSD5.CBool(bColumnView)
+		sLabelPosition = Props.GetDefault("LabelPosition", "right")
+		sLabelPosition = modSD5.CStr(sLabelPosition)
 	End If
-	'
+	UI.AddClassDT("fieldset border border-base-300 p-4 rounded-box")
+	If bFitContents Then UI.AddClassDT("w-fit")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -250,58 +254,168 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
+	Select Case bColumnView
+	Case True
 		mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-				<textarea id="${mName}"></textarea>
-				<div id="${mName}_hint" class="fieldset-label">${sHint}</div>
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<div id="${mName}_options"></div>
+	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "textarea")
-	setPlaceholder(sPlaceholder)
-	setColor(sColor)
-	setEnabled(bEnabled)
-	setRequired(bRequired)
-	setSize(sSize)
-	setGhost(bGhost)
-	setHeight(sHeight)
-	setValue(sValue)
+	Case Else		
+		'row view
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<div id="${mName}_options" class="grid grid-cols-3 gap-4 w-fit"></div>
+	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+			</fieldset>"$).Get("#" & mName)
+		UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
+	End Select
+	setOptions(sRawOptions)
 End Sub
 
+
+'set Column View
+Sub setColumnView(b As Boolean)
+	bColumnView = b
+	CustProps.put("ColumnView", b)
+End Sub
+'set Label Position
+'options: left|right
+Sub setLabelPosition(s As String)
+	sLabelPosition = s
+	CustProps.put("LabelPosition", s)
+End Sub
+
+'get Column View
+Sub getColumnView As Boolean
+	Return bColumnView
+End Sub
+
+'get Label Position
+Sub getLabelPosition As String
+	Return sLabelPosition
+End Sub
+
+Sub setFitContents(b As Boolean)
+	bFitContents = b
+	CustProps.Put("FitContents", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "w-fit")
+	Else
+		UI.RemoveClass(mElement, "w-fit")	
+	End If
+End Sub
+
+Sub getFitContents As Boolean
+	Return bFitContents
+End Sub
+
+Sub Clear
+	If mElement = Null Then Return
+	UI.ClearByID($"${mName}_options"$)
+End Sub
+
+'set Options from a MV field
+'b4j:b4j; b4i:b4i; b4r:b4r
+Sub setOptions(s As String)
+	sRawOptions = s
+	CustProps.put("RawOptions", s)
+	If mElement = Null Then Return
+	Dim m As Map = UI.GetKeyValues(s, False)
+	SetOptionsFromMap(m)
+End Sub
+
+'load the items from a map
+Sub SetOptionsFromMap(m As Map)
+	If mElement = Null Then Return
+	Clear
+	If bColumnView = False Then
+		Dim iSize As Int = m.Size
+		UI.UpdateClassByID($"${mName}_options"$, "cols", $"grid-cols-${iSize}"$)
+	End If
+	'
+	Dim rSize As String = modSD5.FixSize("radio", sSize)
+	Dim rColor As String = modSD5.FixColor("radio", sColor)
+	Dim sb As StringBuilder
+	sb.Initialize 
+	If bColumnView Then
+		Select Case sLabelPosition
+		Case "left"
+			For Each k As String In m.Keys
+				Dim v As String = m.Get(k)
+				Dim sk As String = modSD5.CleanID(k)
+				sb.Append($"[BANCLEAN]
+					<label id="${sk}_${mName}_host" class="fieldset-label place-content-between mb-2">
+						<span id="${sk}_${mName}_label">${v}</span>
+						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize}"/>
+					</label>"$)
+			Next
+		Case "right"
+			For Each k As String In m.Keys
+				Dim v As String = m.Get(k)
+				Dim sk As String = modSD5.CleanID(k)
+				sb.Append($"[BANCLEAN]
+				<label id="${sk}_${mName}_host" class="fieldset-label mb-2">
+					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize}"/>
+					<span id="${sk}_${mName}_label">${v}</span>
+				</label>"$)
+			Next
+		End Select
+	Else	
+		For Each k As String In m.Keys
+			Dim v As String = m.Get(k)
+			Dim sk As String = modSD5.CleanID(k)
+			sb.Append($"[BANCLEAN]
+				<div id="${sk}_${mName}_host" class="flex gap-3 items-center">
+              		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize}"/>
+              		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
+            	</div>"$)
+		Next
+	End If	
+	UI.AppendByID($"${mName}_options"$, sb.ToString)
+End Sub
+
+'load the items from a list
+Sub SetOptionsFromList(m As List)
+	If mElement = Null Then Return
+	Dim nm As Map = CreateMap()
+	For Each k As String In m
+		Dim sk As String = modSD5.CleanID(k)
+		nm.Put(sk, k)
+	Next
+	SetOptionsFromMap(nm)
+End Sub
+
+'get Raw Options
+Sub getOptions As String
+	Return sRawOptions
+End Sub
+'set Aria Label
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	'If mElement = Null Then Return
+	'If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+End Sub
+'set Checked Color
+Sub setCheckedColor(s As String)
+	sCheckedColor = s
+	CustProps.put("CheckedColor", s)
+End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
 Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "color", "textarea", sColor)
 End Sub
-'set Ghost
-Sub setGhost(b As Boolean)
-	bGhost = b
-	CustProps.put("Ghost", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "textarea-ghost")
-	Else
-		UI.RemoveClass(mElement, "textarea-ghost")
-	End If
-End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
-End Sub
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
+'set Group Name
+Sub setGroupName(s As String)
+	sGroupName = s
+	CustProps.put("GroupName", s)
 End Sub
 'set Hint
 Sub setHint(s As String)
@@ -317,72 +431,35 @@ Sub setLabel(s As String)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
-'set Placeholder
-Sub setPlaceholder(s As String)
-	sPlaceholder = s
-	CustProps.put("Placeholder", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "placeholder", s)
-End Sub
-'set Required
-Sub setRequired(b As Boolean)
-	bRequired = b
-	CustProps.put("Required", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "required", b)
-	Else
-		UI.RemoveAttr(mElement, "required")
-	End If
-End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
 Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "textarea", sSize)
-End Sub
-'set Validator
-Sub setValidator(b As Boolean)
-	bValidator = b
-	CustProps.put("Validator", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "validator", b)
-	Else
-		UI.RemoveAttr(mElement, "validator")
-	End If
-End Sub
-'set Validator Hint
-Sub setValidatorHint(s As String)
-	sValidatorHint = s
-	CustProps.put("ValidatorHint", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "validator-hint", s)
 End Sub
 'set Value
 Sub setValue(s As String)
 	sValue = s
 	CustProps.put("Value", s)
-	If mElement = Null Then Return
-	mElement.SetValue(sValue)
+	'If mElement = Null Then Return
+	'mElement.SetValue(s)
+End Sub
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Btn
+'get Checked Color
+Sub getCheckedColor As String
+	Return sCheckedColor
 End Sub
 'get Color
 Sub getColor As String
 	Return sColor
 End Sub
-'get Ghost
-Sub getGhost As Boolean
-	Return bGhost
-End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
-End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
+'get Group Name
+Sub getGroupName As String
+	Return sGroupName
 End Sub
 'get Hint
 Sub getHint As String
@@ -392,28 +469,8 @@ End Sub
 Sub getLabel As String
 	Return sLabel
 End Sub
-'get Placeholder
-Sub getPlaceholder As String
-	Return sPlaceholder
-End Sub
-'get Required
-Sub getRequired As Boolean
-	Return bRequired
-End Sub
-'get Size
-Sub getSize As String
-	Return sSize
-End Sub
-'get Validator
-Sub getValidator As Boolean
-	Return bValidator
-End Sub
-'get Validator Hint
-Sub getValidatorHint As String
-	Return sValidatorHint
-End Sub
 'get Value
 Sub getValue As String
-	sValue = mElement.getvalue
+	'sValue = mElement.getvalue
 	Return sValue
 End Sub

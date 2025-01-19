@@ -380,14 +380,27 @@ Private Sub fetchit(method As String)
 	prom.NewStart
 	bf.Initialize(xbaseURL, bfo)
 	bf.Then(bfr)
-	OK = bfr.OK
-	Success = OK
-	Status = bfr.Status
-	StatusText = bfr.StatusText
-	BANano.ReturnThen(bfr.Json)
+		Status = bfr.status
+		StatusText = bfr.StatusText
+		OK = bfr.ok
+		Success = bfr.OK
+		If bfr.Status = 200 Then
+			BANano.ReturnThen(bfr.Json)
+		Else
+			Dim m As Map = CreateMap()
+			If StatusText.StartsWith("{") Then
+				m = BANano.FromJson(bfr.StatusText)
+			else if StatusText.StartsWith("[") Then
+				m = BANano.FromJson(bfr.StatusText)
+			Else
+				m.Put("status", StatusText)
+			End If
+			BANano.ReturnThen(m)
+		End If
 	bf.Else(bfe)
-	mError = bfe
-	BANano.ReturnElse(bfe)
+		'network errors
+		mError = bfe
+		BANano.ReturnElse(bfe)
 	bf.End
 	prom.NewEnd
 	'
@@ -412,7 +425,7 @@ End Sub
 
 'set the content type
 Sub SetContentType(value As String)
-	AddHeader("Content-type", value)
+	AddHeader("Content-Type", value)
 End Sub
 
 'set content type application json
