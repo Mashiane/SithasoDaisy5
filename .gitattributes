@@ -1,6 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+*.b4lib linguist-language=B4X
+*.b4xtemplate linguist-language=B4X
 *.b4a linguist-language=B4X
 *.b4i linguist-language=B4X
 *.b4j linguist-language=B4X
@@ -9,3 +11,5 @@
 *.b4i linguist-detectable=true
 *.b4j linguist-detectable=true
 *.bas linguist-detectable=true
+*.b4xlib linguist-detectable=true
+*.b4xtemplate linguist-detectable=true
