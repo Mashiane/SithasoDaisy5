@@ -377,7 +377,7 @@ Sub setThumbColor(s As String)
 	sThumbColor = s
 	CustProps.put("ThumbColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "thumb-color-" & s)
+'	If s <> "" Then UI.AddClass(mElement, "thumb-color-" & s)
 End Sub
 'set Value
 Sub setValue(s As String)

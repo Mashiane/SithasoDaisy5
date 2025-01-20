@@ -289,7 +289,7 @@ Sub setBorderColor(s As String)
 	sBorderColor = s
 	CustProps.put("BorderColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "border-" & s)
+	If s <> "" Then UI.SetColor(mElement, "bordercolor", "border", s)
 End Sub
 'set Height
 Sub setHeight(s As String)

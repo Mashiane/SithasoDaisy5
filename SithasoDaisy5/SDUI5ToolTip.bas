@@ -138,7 +138,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetColor(mElement, "color", "tooltip", s)
+	If s <> "" Then UI.SetColor(mElement, "color", "tooltip", s)
 End Sub
 'set Open
 Sub setOpen(b As Boolean)

@@ -371,7 +371,7 @@ Sub setUncheckedColor(s As String)
 	sUncheckedColor = s
 	CustProps.put("UncheckedColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "unchecked-color", s)
+'	If s <> "" Then UI.AddAttr(mElement, "unchecked-color", s)
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

@@ -383,7 +383,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "circle"	
 			UI.AddClassDT("btn-circle")
 		End Select
-		If sColor <> "" Then UI.AddClassDT("btn-" & sColor)
+		If sColor <> "" Then UI.AddColorDT("btn", sColor)
 		If bDash = True Then UI.AddClassDT("btn-dash")
 		If bGhost = True Then UI.AddClassDT("btn-ghost")
 		If bLink = True Then UI.AddClassDT("btn-link")
@@ -503,7 +503,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "btn-" & s)
+	If s <> "" Then UI.SetColor(mElement, "color", "btn", s)
 End Sub
 'set Dash
 Sub setDash(b As Boolean)

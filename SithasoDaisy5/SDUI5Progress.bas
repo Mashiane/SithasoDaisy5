@@ -282,7 +282,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetColor(mElement, "color", "progress", s)
+	If s <> "" Then UI.SetColor(mElement, "color", "progress", s)
 End Sub
 'set Height
 Sub setHeight(s As String)
