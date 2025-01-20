@@ -6,10 +6,14 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li
+#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|ul|ol
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
+#DesignerProperty: Key: LoremIpsum, DisplayName: Lorem Ipsum, FieldType: Boolean, DefaultValue: False, Description: Is Lorem Ipsum
+#DesignerProperty: Key: Opacity, DisplayName: Opacity, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Opacity
+#DesignerProperty: Key: ListCol, DisplayName: List Col, FieldType: String, DefaultValue: none, Description: List Col, List: grow|none|wrap
+#DesignerProperty: Key: FontVariant, DisplayName: Font Variant, FieldType: String, DefaultValue: none, Description: Font Variant, List: diagonal-fractions|lining-nums|none|normal-nums|oldstyle-nums|ordinal|proportional-nums|slashed-zero|stacked-fractions|tabular-nums
 #DesignerProperty: Key: ApplyDefaults, DisplayName: Apply Defaults, FieldType: Boolean, DefaultValue: True, Description: Apply Defaults
 #DesignerProperty: Key: Decoration, DisplayName: Decoration, FieldType: String, DefaultValue: none, Description: Decoration, List: line-through|no-underline|none|underline
 #DesignerProperty: Key: FontWeight, DisplayName: Font Weight, FieldType: String, DefaultValue: none, Description: Font Weight, List: black|bold|extrabold|extralight|light|medium|none|normal|semibold|thin
@@ -64,6 +68,7 @@ Sub Class_Globals
 	Private sTransform As String = "none"
 	Private sVerticalAlign As String = "none"
 	Private sWordBreak As String = "none"
+	Private bLoremIpsum As Boolean = False
 	Public CONST DECORATION_LINE_THROUGH As String = "line-through"
 	Public CONST DECORATION_NO_UNDERLINE As String = "no-underline"
 	Public CONST DECORATION_NONE As String = "none"
@@ -89,39 +94,6 @@ Sub Class_Globals
 	Public CONST TEXTALIGN_NONE As String = "none"
 	Public CONST TEXTALIGN_RIGHT As String = "right"
 	Public CONST TEXTALIGN_START As String = "start"
-	Public CONST TEXTSIZE_2XL As String = "2xl"
-	Public CONST TEXTSIZE_3XL As String = "3xl"
-	Public CONST TEXTSIZE_4XL As String = "4xl"
-	Public CONST TEXTSIZE_5XL As String = "5xl"
-	Public CONST TEXTSIZE_6XL As String = "6xl"
-	Public CONST TEXTSIZE_7XL As String = "7xl"
-	Public CONST TEXTSIZE_8XL As String = "8xl"
-	Public CONST TEXTSIZE_9XL As String = "9xl"
-	Public CONST TEXTSIZE_BASE As String = "base"
-	Public CONST TEXTSIZE_LG As String = "lg"
-	Public CONST TEXTSIZE_MD As String = "md"
-	Public CONST TEXTSIZE_NONE As String = "none"
-	Public CONST TEXTSIZE_SM As String = "sm"
-	Public CONST TEXTSIZE_XL As String = "xl"
-	Public CONST TEXTSIZE_XS As String = "xs"
-	Public CONST TEXTTAG_ABBR As String = "abbr"
-	Public CONST TEXTTAG_BLOCKQUOTE As String = "blockquote"
-	Public CONST TEXTTAG_DEL As String = "del"
-	Public CONST TEXTTAG_EM As String = "em"
-	Public CONST TEXTTAG_H1 As String = "h1"
-	Public CONST TEXTTAG_H2 As String = "h2"
-	Public CONST TEXTTAG_H3 As String = "h3"
-	Public CONST TEXTTAG_H4 As String = "h4"
-	Public CONST TEXTTAG_H5 As String = "h5"
-	Public CONST TEXTTAG_H6 As String = "h6"
-	Public CONST TEXTTAG_INS As String = "ins"
-	Public CONST TEXTTAG_MARK As String = "mark"
-	Public CONST TEXTTAG_P As String = "p"
-	Public CONST TEXTTAG_S As String = "s"
-	Public CONST TEXTTAG_SMALL As String = "small"
-	Public CONST TEXTTAG_SPAN As String = "span"
-	Public CONST TEXTTAG_STRONG As String = "strong"
-	Public CONST TEXTTAG_U As String = "u"
 	Public CONST TRANSFORM_CAPITALIZE As String = "capitalize"
 	Public CONST TRANSFORM_LOWERCASE As String = "lowercase"
 	Public CONST TRANSFORM_NONE As String = "none"
@@ -140,6 +112,22 @@ Sub Class_Globals
 	Public CONST WORDBREAK_WORDS As String = "words"
 	Private sIcon As String = ""
 	Private sIconSize As String = ""
+	Private iOpacity As Int = 100
+	Private sListCol As String = "none"
+	Public CONST LISTCOL_GROW As String = "grow"
+	Public CONST LISTCOL_NONE As String = "none"
+	Public CONST LISTCOL_WRAP As String = "wrap"
+	Private sFontVariant As String = "none"
+	Public CONST FONTVARIANT_DIAGONAL_FRACTIONS As String = "diagonal-fractions"
+	Public CONST FONTVARIANT_LINING_NUMS As String = "lining-nums"
+	Public CONST FONTVARIANT_NONE As String = "none"
+	Public CONST FONTVARIANT_NORMAL_NUMS As String = "normal-nums"
+	Public CONST FONTVARIANT_OLDSTYLE_NUMS As String = "oldstyle-nums"
+	Public CONST FONTVARIANT_ORDINAL As String = "ordinal"
+	Public CONST FONTVARIANT_PROPORTIONAL_NUMS As String = "proportional-nums"
+	Public CONST FONTVARIANT_SLASHED_ZERO As String = "slashed-zero"
+	Public CONST FONTVARIANT_STACKED_FRACTIONS As String = "stacked-fractions"
+	Public CONST FONTVARIANT_TABULAR_NUMS As String = "tabular-nums"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -203,7 +191,7 @@ Sub getEnabled As Boolean
 	Return bEnabled
 End Sub
 Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -211,7 +199,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -221,7 +209,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -230,35 +218,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -304,7 +292,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bApplyDefaults = Props.GetDefault("ApplyDefaults", True)
@@ -343,6 +331,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = modSD5.CStr(sIcon)
 		sIconSize = Props.GetDefault("IconSize", "")
 		sIconSize = modSD5.CStr(sIconSize)
+		bLoremIpsum = Props.GetDefault("LoremIpsum", False)
+		bLoremIpsum = modSD5.CBool(bLoremIpsum)
+		iOpacity = Props.GetDefault("Opacity", 100)
+		iOpacity = modSD5.CInt(iOpacity)
+		sListCol = Props.GetDefault("ListCol", "none")
+		sListCol = modSD5.CStr(sListCol)
+		If sListCol = "none" Then sListCol = ""
+		sFontVariant = Props.GetDefault("FontVariant", "none")
+		sFontVariant = modSD5.CStr(sFontVariant)
+		If sFontVariant = "none" Then sFontVariant = ""
 	End If
 	'
 	If bApplyDefaults Then
@@ -368,16 +366,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End Select
 	End If
 	'
-	If sFontWeight <> "" Then UI.AddClassDT("font-" & sFontWeight)
-	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
-	If sDecoration <> "" Then UI.AddClassDT("decoration-" & sDecoration)
-	If bItalic = True Then UI.AddClassDT("italic")
-	If sOverflow <> "" Then UI.AddClassDT("overflow-" & sOverflow)
+	If sFontVariant <> "" Then UI.AddClassDT(sFontVariant)
+	If sListCol <> "" Then UI.AddClassDT("list-col-" & sListCol)
+	If bLoremIpsum Then sText = modSD5.LoremIpsum(1)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
-	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sTransform <> "" Then UI.AddClassDT("transform-" & sTransform)
 	If sVerticalAlign <> "" Then UI.AddClassDT("align-" & sVerticalAlign)
-	If sWordBreak <> "" Then UI.AddClassDT("break-" & sWordBreak)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -394,9 +387,60 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<img id="${mName}_icon" class="hidden mr-2"></img>
 		<span id="${mName}_text"></span>
 	</${sTextTag}>"$).Get("#" & mName)
+	setFontWeight(sFontWeight)
+	setDecoration(sDecoration)
+	setItalic(bItalic)
+	setTextSize(sTextSize)
 	setText(sText)
 	setIcon(sIcon)
 	setIconSize(sIconSize)
+	setTransform(sTransform)
+	setWordBreak(sWordBreak)
+	setTextColor(sTextColor)
+	setOverflow(sOverflow)
+	setOpacity(iOpacity)
+	setFontVariant(sFontVariant)
+End Sub
+
+
+'set Font Variant
+'options: diagonal-fractions|lining-nums|none|normal-nums|oldstyle-nums|ordinal|proportional-nums|slashed-zero|stacked-fractions|tabular-nums
+Sub setFontVariant(s As String)
+	sFontVariant = s
+	CustProps.put("FontVariant", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, s)
+End Sub
+'get Font Variant
+Sub getFontVariant As String
+	Return sFontVariant
+End Sub
+
+'set List Col
+'options: grow|none|wrap
+Sub setListCol(s As String)
+	sListCol = s
+	CustProps.put("ListCol", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "list-col-" & s)
+End Sub
+
+'get List Col
+Sub getListCol As String
+	Return sListCol
+End Sub
+
+'set Opacity
+Sub setOpacity(i As Int)
+	iOpacity = i
+	CustProps.put("Opacity", i)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, "opacity-" & i)
+End Sub
+
+'get Opacity
+Sub getOpacity As Int
+	Return iOpacity
 End Sub
 
 'set Apply Defaults
@@ -410,7 +454,7 @@ Sub setDecoration(s As String)
 	sDecoration = s
 	CustProps.put("Decoration", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "decoration-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, "decoration-" & s)
 End Sub
 'set Font Weight
 'options: black|bold|extrabold|extralight|light|medium|none|normal|semibold|thin
@@ -418,7 +462,7 @@ Sub setFontWeight(s As String)
 	sFontWeight = s
 	CustProps.put("FontWeight", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "font-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, "font-" & s)
 End Sub
 'set Italic
 Sub setItalic(b As Boolean)
@@ -426,9 +470,9 @@ Sub setItalic(b As Boolean)
 	CustProps.put("Italic", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddClass(mElement, "italic")
+		UI.AddClassByID($"${mName}_text"$, "italic")
 	Else
-		UI.RemoveClass(mElement, "italic")
+		UI.RemoveClassByID($"${mName}_text"$, "italic")
 	End If
 End Sub
 'set Overflow
@@ -437,7 +481,7 @@ Sub setOverflow(s As String)
 	sOverflow = s
 	CustProps.put("Overflow", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "overflow-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, "overflow-" & s)
 End Sub
 'set Text Align
 'options: center|end|justify|left|none|right|start
@@ -452,7 +496,7 @@ Sub setTextColor(s As String)
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	If s <> "" Then UI.SetTextColorBYID($"${mName}_text"$, sTextColor)
 End Sub
 'set Text Size
 'options: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
@@ -460,7 +504,7 @@ Sub setTextSize(s As String)
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextSize(mElement, sTextSize)
+	If s <> "" Then UI.SetTextSizeByID($"${mName}_text"$, sTextSize)
 End Sub
 'set Text Tag
 'options: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u
@@ -474,7 +518,7 @@ Sub setTransform(s As String)
 	sTransform = s
 	CustProps.put("Transform", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "transform-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, s)
 End Sub
 'set Vertical Align
 'options: baseline|bottom|middle|none|text-bottom|text-top|top
@@ -490,7 +534,7 @@ Sub setWordBreak(s As String)
 	sWordBreak = s
 	CustProps.put("WordBreak", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "break-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_text"$, "break-" & s)
 End Sub
 'get Apply Defaults
 Sub getApplyDefaults As Boolean

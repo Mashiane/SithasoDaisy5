@@ -106,7 +106,7 @@ Sub getEnabled As Boolean
 	Return bEnabled
 End Sub
 Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 
 'set text
@@ -196,7 +196,7 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	UI.SetBackgroundColorByID($"${mName}_text"$, s)
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_text"$, s)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -204,6 +204,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	Select Case sTypeOf
 	Case "badge"
 		UI.SetColorByID($"${mName}_text"$, "color", "badge", s)

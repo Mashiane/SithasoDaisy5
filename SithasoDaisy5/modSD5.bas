@@ -342,6 +342,47 @@ Sub InitColors
 	ColorMap.put("pink", "pink")
 End Sub
 
+'get the number of specified words
+Sub LoremIpsumWords(count As Int) As String
+	Dim para1 As String = LoremIpsum(1)
+	Dim words As List = StrParse(" ", para1)
+	Dim nwords As List = ShuffleList(words)
+	Dim nl As List
+	nl.Initialize
+	Dim wcnt As Int
+	For wcnt = 0 To count - 1
+		Dim w As String = nwords.Get(wcnt)
+		If wcnt = 0 Then w = ProperCase(w)
+		nl.Add(w)
+	Next
+	Dim out As String = Join(" ", nl)
+	Return out & "."
+End Sub
+
+Sub ShuffleList(pl As List) As List
+	For i = pl.Size - 1 To 0 Step -1
+		Dim j As Int
+		Dim k As Object
+		j = Rnd(0, i + 1)
+		k = pl.Get(j)
+		pl.Set(j,pl.Get(i))
+		pl.Set(i,k)
+	Next
+	Return pl
+End Sub
+
+Sub LoremIpsum(count As Int) As String
+	Dim str As String = $"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."$
+	Dim sb As StringBuilder
+	sb.Initialize
+	For i = 1 To count
+		sb.Append(str).Append(CRLF)
+	Next
+	Dim sout As String = sb.ToString
+	sb.Initialize
+	Return sout
+End Sub
+
 Sub FixSize(prefix As String, v As String) As String
 	prefix = CStr(prefix)
 	v = CStr(v)
@@ -929,4 +970,97 @@ End Sub
 
 Sub InStr(sText As String, sFind As String) As Int
 	Return sText.tolowercase.IndexOf(sFind.tolowercase)
+End Sub
+
+'beautify source code
+Public Sub BeautifyB4X(sc As String) As Boolean
+	Dim lines As List = StrParse(CRLF, sc)
+	Dim nIndent As Int
+	Dim nLine As Int
+	Dim strNewLine As String
+	For nLine = 0 To lines.Size - 1
+		strNewLine = lines.get(nLine)
+		If IsBlockEnd(strNewLine) Then nIndent = nIndent - 1
+		If nIndent < 0 Then nIndent = 0
+		' Put back new line.
+		Dim xLine As String = Space1(nIndent * 4) & strNewLine
+		lines.Set(nLine, xLine)
+		If IsBlockStart(strNewLine) Then nIndent = nIndent + 1
+	Next
+	Dim sout As String = Join(CRLF, lines)
+	Return sout
+End Sub
+
+Sub Space1(HM As Int) As String
+	Dim RS As String = ""
+	Do While Len1(RS) < HM
+		RS = RS & " "
+	Loop
+	Return RS
+End Sub
+
+'is block start
+Sub IsBlockStart(strLine As String) As Boolean
+	Dim bOK As Boolean
+	Dim nPos As Int
+	Dim strTemp As String
+	nPos = InStr1(strLine, " ") - 1
+	If nPos < 0 Then nPos = Len1(strLine)
+	strTemp = Left1(strLine, nPos)
+	strTemp = strTemp.tolowercase
+	Select Case strTemp
+		Case "for", "do", "while", "select", "case", "else", "#else", "try", "#region", "sub", "catch"
+			bOK = True
+		Case "if", "#if", "else", "#else"
+			'find the posiiton of then
+			Dim p1 As Int = Len1(strLine)
+			p1 = BANano.parseInt(p1)
+			Dim p2 As Int = InStr1(strLine.tolowercase, " then")
+			p2 = BANano.parseInt(p2)
+			Dim p3 As Int = p2 + 4
+			p3 = BANano.parseInt(p3)
+			bOK = (p1 = p3)
+		Case "private", "public"
+			If strLine.ToLowerCase.StartsWith("private sub ") Then bOK = True
+			If strLine.ToLowerCase.StartsWith("public sub ") Then bOK = True
+	End Select
+	Return bOK
+End Sub
+
+'is block end
+Sub IsBlockEnd(strLine As String) As Boolean
+	Dim bOK As Boolean
+	Dim nPos As Int
+	Dim strTemp As String
+	nPos = InStr1(strLine, " ") - 1
+	If nPos < 0 Then nPos = Len1(strLine)
+	nPos = BANano.parseInt(nPos)
+	'
+	strTemp = Left1(strLine, nPos)
+	strTemp = strTemp.ToLowerCase
+	Select Case strTemp
+		Case "next", "loop", "case", "else", "#else", "#end", "catch"
+			bOK = True
+		Case "end"
+			Dim p1 As Int = Len1(strLine)
+			p1 = BANano.parseInt(p1)
+			bOK = (p1 > 3)
+	End Select
+	Return bOK
+End Sub
+
+'return the position of a string found in a string
+Sub InStr1(Text As String, sFind As String) As Int
+	Return Text.tolowercase.IndexOf(sFind.tolowercase) + 1
+End Sub
+
+' return length of a string
+Sub Len1(Text As String) As Long
+	Return Text.Length
+End Sub
+
+'return the left part of a string
+Sub Left1(Text As String, xLength As Long) As String
+	If xLength>Text.Length Then xLength=Text.Length
+	Return Text.SubString2(0, xLength)
 End Sub

@@ -136,7 +136,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -146,7 +146,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -155,35 +155,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -312,7 +312,7 @@ Sub setIndeterminateIcon(s As String)
 	sIndeterminateIcon = s
 	CustProps.put("IndeterminateIcon", s)
 	If mElement = Null Then Return
-	UI.SetImageByID($"${mName}_indeterminate"$, s)
+	If s <> "" Then UI.SetImageByID($"${mName}_indeterminate"$, s)
 End Sub
 'set Indeterminate Text
 Sub setIndeterminateText(s As String)
@@ -326,14 +326,14 @@ Sub setIndeterminateTextColor(s As String)
 	sIndeterminateTextColor = s
 	CustProps.put("IndeterminateTextColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_indeterminate"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_indeterminate"$, s)
 End Sub
 'set Off Icon
 Sub setOffIcon(s As String)
 	sOffIcon = s
 	CustProps.put("OffIcon", s)
 	If mElement = Null Then Return
-	UI.SetImageByID($"${mName}_officon"$, sOffIcon)
+	If s <> "" Then UI.SetImageByID($"${mName}_officon"$, sOffIcon)
 End Sub
 'set Off Text
 Sub setOffText(s As String)
@@ -347,14 +347,14 @@ Sub setOffTextColor(s As String)
 	sOffTextColor = s
 	CustProps.put("OffTextColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_off"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_off"$, s)
 End Sub
 'set On Icon
 Sub setOnIcon(s As String)
 	sOnIcon = s
 	CustProps.put("OnIcon", s)
 	If mElement = Null Then Return
-	UI.SetImageByID($"${mName}_onicon"$, s)
+	If s <> "" Then UI.SetImageByID($"${mName}_onicon"$, s)
 End Sub
 'set On Text
 Sub setOnText(s As String)
@@ -368,7 +368,7 @@ Sub setOnTextColor(s As String)
 	sOnTextColor = s
 	CustProps.put("OnTextColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_on"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_on"$, s)
 End Sub
 'set Swap Type
 'options: icon|text

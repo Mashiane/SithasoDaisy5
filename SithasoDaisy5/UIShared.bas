@@ -354,6 +354,12 @@ public Sub SetTextColor(mElement As BANanoElement, s As String)
 	UpdateClass(mElement, "textcolor", s1)
 End Sub
 
+public Sub SetCheckedTextColor(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim s1 As String = modSD5.FixColor("checked:text", s)
+	UpdateClass(mElement, "checkedtextcolor", s1)
+End Sub
+
 public Sub UpdateClassByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -1279,6 +1285,10 @@ Sub AddSizeDT(prefix As String, tc As String)
 	AddClassDT(s)
 End Sub
 
+Sub AddCenterChildrenDT
+	AddClassDT("flex justify-center items-center")
+End Sub
+
 Sub AddWidthDT(s As String)
 	AddSizeDT("w", s)
 End Sub
@@ -1378,4 +1388,13 @@ Sub SetPlacementByID(sID As String, sprefix As String, splacement As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	SetPlacement(mElement, sprefix, splacement)
+End Sub
+
+Sub SetCenterChildren(mElement As BANanoElement, b As Boolean)
+	If mElement = Null Then Return
+	If b Then
+		AddClass(mElement, "flex justify-center items-center")
+	Else
+		RemoveClass(mElement, "flex justify-center items-center")
+	End If
 End Sub

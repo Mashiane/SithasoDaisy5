@@ -2093,11 +2093,12 @@ End Sub
 Sub LoremIpsumWords(count As Int) As String
 	Dim para1 As String = LoremIpsum(1)
 	Dim words As List = StrParse(" ", para1)
+	Dim nwords As List = ShuffleList(words)
 	Dim nl As List
 	nl.Initialize 
 	Dim wcnt As Int
 	For wcnt = 0 To count - 1
-		Dim w As String = words.Get(wcnt)
+		Dim w As String = nwords.Get(wcnt)
 		If wcnt = 0 Then w = ProperCase(w)
 		nl.Add(w)
 	Next

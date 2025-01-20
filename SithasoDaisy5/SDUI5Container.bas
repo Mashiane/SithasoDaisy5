@@ -165,7 +165,7 @@ Sub getEnabled As Boolean
 	Return bEnabled
 End Sub
 Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -173,7 +173,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -183,7 +183,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	if s <> "" then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -192,35 +192,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -308,7 +308,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
 	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
 	If bContainer Then UI.AddClassDT("container")
-	If bCenterChildren Then UI.AddClassdt("flex justify-center items-center")
+	If bCenterChildren Then UI.AddCenterChildrenDT
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
@@ -341,7 +341,7 @@ Sub setCenterChildren(b As Boolean)
 	bCenterChildren = b
 	CustProps.Put("CenterChildren", b)
 	If mElement = Null Then Return
-	If b Then UI.AddClass(mElement, "flex justify-center items-center")
+	If b Then UI.SetCenterChildren(mElement, True)
 End Sub
 
 Sub getCenterChildren As Boolean

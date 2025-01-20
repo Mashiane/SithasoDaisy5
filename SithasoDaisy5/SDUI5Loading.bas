@@ -105,7 +105,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -115,7 +115,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	if s <> "" then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -124,35 +124,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -219,7 +219,7 @@ Sub setColor(s As String)
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	UI.SetTextColor(mElement, s)
+	If s <> "" Then UI.SetTextColor(mElement, s)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
@@ -227,7 +227,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetSize(mElement, "size", "loading", s)
+	If s <> "" Then UI.SetSize(mElement, "size", "loading", s)
 End Sub
 'set Type Of
 'options: ball|bars|dots|infinity|ring|spinner

@@ -126,7 +126,7 @@ Sub getEnabled As Boolean
 	Return bEnabled
 End Sub
 Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, $"${mEventName}_${methodName}"$)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -144,7 +144,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	if s <> "" then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -153,35 +153,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -339,6 +339,7 @@ Sub SetOptionsFromMap(m As Map)
 	'
 	Dim rSize As String = modSD5.FixSize("radio", sSize)
 	Dim rColor As String = modSD5.FixColor("radio", sColor)
+	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
 	Dim sb As StringBuilder
 	sb.Initialize 
 	If bColumnView Then
@@ -348,9 +349,9 @@ Sub SetOptionsFromMap(m As Map)
 				Dim v As String = m.Get(k)
 				Dim sk As String = modSD5.CleanID(k)
 				sb.Append($"[BANCLEAN]
-					<label id="${sk}_${mName}_host" class="fieldset-label place-content-between mb-2">
+					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
 						<span id="${sk}_${mName}_label">${v}</span>
-						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize}"/>
+						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
 					</label>"$)
 			Next
 		Case "right"
@@ -358,8 +359,8 @@ Sub SetOptionsFromMap(m As Map)
 				Dim v As String = m.Get(k)
 				Dim sk As String = modSD5.CleanID(k)
 				sb.Append($"[BANCLEAN]
-				<label id="${sk}_${mName}_host" class="fieldset-label mb-2">
-					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize}"/>
+				<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
+					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
 					<span id="${sk}_${mName}_label">${v}</span>
 				</label>"$)
 			Next
@@ -369,8 +370,8 @@ Sub SetOptionsFromMap(m As Map)
 			Dim v As String = m.Get(k)
 			Dim sk As String = modSD5.CleanID(k)
 			sb.Append($"[BANCLEAN]
-				<div id="${sk}_${mName}_host" class="flex gap-3 items-center">
-              		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize}"/>
+				<div id="${sk}_${mName}_host" class="flex gap-3 items-center items-center">
+              		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
 		Next

@@ -166,7 +166,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -176,7 +176,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -185,35 +185,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 Sub getAttributes As String
 	Return sRawAttributes
@@ -395,7 +395,7 @@ Sub setBadgeColor(s As String)
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
 	If sBadge = "" Then Return
-	UI.SetColorByID($"${mName}_badge"$, "color", "badge", sBadgeColor)
+	If s <> "" Then UI.SetColorByID($"${mName}_badge"$, "color", "badge", sBadgeColor)
 End Sub
 'set Badge Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
@@ -427,7 +427,7 @@ Sub setTextSize(s As String)
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
-	UI.SetTextSizeByID($"${mName}_text"$, s)
+	If s <> "" Then UI.SetTextSizeByID($"${mName}_text"$, s)
 End Sub
 
 'get Text Size
@@ -446,21 +446,21 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	UI.SetBackgroundColorByID($"${mName}_host"$, s)
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_host"$, s)
 End Sub
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	UI.SetHeightByID($"${mName}_host"$, s)
+	If s <> "" Then UI.SetHeightByID($"${mName}_host"$, s)
 End Sub
 'set Image
 Sub setImage(s As String)
 	sImage = s
 	CustProps.put("Image", s)
 	If mElement = Null Then Return
-	UI.SetImageByID($"${mName}_image"$, s)
+	If s <> "" Then UI.SetImageByID($"${mName}_image"$, s)
 End Sub
 'set Mask
 'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
@@ -525,7 +525,7 @@ Sub setRingColor(s As String)
 	CustProps.put("RingColor", s)
 	If mElement = Null Then Return
 	If bRing = False Then Return
-	UI.SetRingColorByID($"${mName}_host"$,  s)
+	If s <> "" Then UI.SetRingColorByID($"${mName}_host"$,  s)
 End Sub
 'set Ring Offset
 Sub setRingOffset(s As String)
@@ -534,7 +534,7 @@ Sub setRingOffset(s As String)
 	If mElement = Null Then Return
 	If bRing = False Then Return
 	Dim xoffset As String = $"ring-offset-${s}"$
-	UI.UpdateClassByID($"${mName}_host"$, "ringoffset", xoffset)
+	If s <> "" Then UI.UpdateClassByID($"${mName}_host"$, "ringoffset", xoffset)
 End Sub
 'set Ring Offset Color
 Sub setRingOffsetColor(s As String)
@@ -543,7 +543,7 @@ Sub setRingOffsetColor(s As String)
 	If mElement = Null Then Return
 	If bRing = False Then Return
 	Dim xoffset As String = $"ring-offset-${s}"$
-	UI.UpdateClassByID($"${mName}_host"$, "ringoffsetcolor", xoffset)
+	If s <> "" Then UI.UpdateClassByID($"${mName}_host"$, "ringoffsetcolor", xoffset)
 End Sub
 
 'set Text Color
@@ -551,14 +551,14 @@ Sub setTextColor(s As String)
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_host"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_host"$, s)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	UI.SetWidthByID($"${mName}_host"$, s)
+	If s <> "" Then UI.SetWidthByID($"${mName}_host"$, s)
 End Sub
 'get Avatar Type
 Sub getAvatarType As String

@@ -2302,3 +2302,9 @@ Sub ClearPageView
 	Dim el As BANanoElement = Banano.GetElement($"#pageview"$)
 	el.empty
 End Sub
+
+'get an item index from eID
+Sub IndexFromEventID(eID As String) As String
+	Dim pos As String = modSD5.MvField(eID, 2, "_")
+	Return pos
+End Sub

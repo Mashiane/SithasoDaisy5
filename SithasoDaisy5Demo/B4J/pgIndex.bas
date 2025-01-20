@@ -66,12 +66,12 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-diff", "", "Diff")
 	drawermenu.AddItemChild("display", "pg-kbd", "", "Kbd")
 	drawermenu.AddItemChild("display", "pg-list", "", "List")
+	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat List")
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
 	drawermenu.AddItemChild("display", "pg-table", "", "Table")
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
 	'
-	drawermenu.SetItemBadge("pg-list", "", "error")
 	drawermenu.SetItemBadge("pg-table", "", "error")
 	
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
@@ -131,6 +131,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("layout", "pg-stack", "", "Stack")
 	'
 	drawermenu.AddItemParent("components", "mockup", "", "Mockup")
+	drawermenu.AddItemChild("mockup", "pg-phone", "", "Phone")
 	drawermenu.AddItemChild("mockup", "pg-browser", "", "Browser")
 	drawermenu.AddItemChild("mockup", "pg-code", "", "Code")
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
@@ -222,7 +223,10 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgDiff.Show(App)
 		Case "kbd"
 			pgKbd.Show(App)
+		Case "chatlist"
+			pgChatList.Show(App)			
 		Case "list"
+			pgList.Show(App)
 		Case "stat"
 			pgStat.Show(App)
 		Case "status"
@@ -300,6 +304,8 @@ End Select
 					pgCode.Show(App)
 				Case "window"
 					pgWindow.Show(App)
+				Case "phone"
+					pgPhone.Show(App)
 		End Select
 		
 	End Select

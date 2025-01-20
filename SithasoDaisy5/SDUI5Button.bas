@@ -27,8 +27,8 @@ Version=10
 #DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
 #DesignerProperty: Key: ImageColor, DisplayName: Left Image Color, FieldType: String, DefaultValue: , Description: Left Image Color
-#DesignerProperty: Key: ImageHeight, DisplayName: Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
-#DesignerProperty: Key: ImageWidth, DisplayName: Image Width, FieldType: String, DefaultValue: 32px, Description: Left Image Width
+#DesignerProperty: Key: ImageHeight, DisplayName: Left Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
+#DesignerProperty: Key: ImageWidth, DisplayName: Left Image Width, FieldType: String, DefaultValue: 32px, Description: Left Image Width
 #DesignerProperty: Key: Link, DisplayName: Link, FieldType: Boolean, DefaultValue: False, Description: Link
 #DesignerProperty: Key: Loading, DisplayName: Loading, FieldType: Boolean, DefaultValue: False, Description: Loading
 #DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
@@ -188,7 +188,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -197,35 +197,35 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
 	sRawClasses = s
 	CustProps.put("RawClasses", s)
 	If mElement = Null Then Return
-	UI.SetClasses(mElement, sRawStyles)
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
 End Sub
 '
 Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
 	sMarginAXYTBLR = s
 	CustProps.Put("MarginAXYTBLR", s)
 	If mElement = Null Then Return
-	UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
 Sub getAttributes As String
@@ -410,7 +410,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
 		<div id="${mName}_badge" class="badge hidden"></div>
 	</${sTag}>"$).Get("#" & mName)
-	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
+	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	setText(sText)
 	setTextColor(sTextColor)
 	setLeftImage(sImage)
@@ -466,7 +466,7 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
 End Sub
 'set Block
 Sub setBlock(b As Boolean)
@@ -533,6 +533,7 @@ Sub setLeftImage(s As String)
 	sImage = s
 	CustProps.put("Image", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	Dim img As BANanoElement = BANano.GetElement($"#${mName}_leftimage"$)
 	UI.SetImage(img, sImage)
 	If sImage = "" Then
@@ -546,14 +547,18 @@ Sub setLeftImageHeight(s As String)
 	sImageHeight = s
 	CustProps.put("ImageHeight", s)
 	If mElement = Null Then Return
-	UI.SetStyleComputedByID($"#${mName}_leftimage"$, "height", sImageHeight)
+	If s = "" Then Return
+	If sImage = "" Then Return
+	UI.SetHeightByID($"${mName}_leftimage"$, sImageHeight)
 End Sub
 'set Image Width
 Sub setLeftImageWidth(s As String)
 	sImageWidth = s
 	CustProps.put("ImageWidth", s)
 	If mElement = Null Then Return
-	UI.SetStyleComputedByID($"#${mName}_leftimage"$, "width", sImageHeight)
+	If sImage = "" Then Return
+	If s = "" Then Return
+	UI.SetWidthByID($"${mName}_leftimage"$, sImageWidth)
 End Sub
 
 'set Link
@@ -609,6 +614,7 @@ Sub setRightImage(s As String)
 	sRightImage = s
 	CustProps.put("RightImage", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	Dim img As BANanoElement = BANano.GetElement($"#${mName}_rightimage"$)
 	UI.SetImage(img, sRightImage)
 	If sRightImage = "" Then
@@ -623,6 +629,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.UpdateClass(mElement, "size", "btn-" & s)
 End Sub
 'set Size Large
@@ -673,7 +680,7 @@ Sub setTextColor(s As String)
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColor(mElement, s)
+	If s <> "" Then UI.SetTextColor(mElement, s)
 End Sub
 'set Wide
 Sub setWide(b As Boolean)
@@ -776,7 +783,7 @@ Sub setLeftImageColor(s As String)
 	sImageColor = s
 	CustProps.put("ImageColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_leftimage"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_leftimage"$, s)
 End Sub
 
 'get Image Color
@@ -788,12 +795,14 @@ End Sub
 Sub setLeftImageVisible(b As Boolean)
 	CustProps.put("ImageVisible", b)
 	If mElement = Null Then Return
+	If sImage = "" Then Return
 	UI.SetVisibleByID($"${mName}_leftimage"$, b)
 End Sub
 
 Sub setRightImageVisible(b As Boolean)
 	CustProps.put("RightImageVisible", b)
 	If mElement = Null Then Return
+	If sRightImage = "" Then Return
 	UI.SetVisibleByID($"${mName}_rightimage"$, b)
 End Sub
 
@@ -802,20 +811,24 @@ Sub setRightImageColor(s As String)
 	sRightImageColor = s
 	CustProps.put("RightImageColor", s)
 	If mElement = Null Then Return
-	UI.SetTextColorByID($"${mName}_rightimage"$, s)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_rightimage"$, s)
 End Sub
 'set Right Image Height
 Sub setRightImageHeight(s As String)
 	sRightImageHeight = s
 	CustProps.put("RightImageHeight", s)
 	If mElement = Null Then Return
-	UI.SetHeightByID($"${mName}_rightimage"$, s)
+	If s = "" Then Return
+	If sRightImage = "" Then Return
+	UI.SetHeightByID($"${mName}_rightimage"$, sRightImageHeight)
 End Sub
 'set Right Image Width
 Sub setRightImageWidth(s As String)
 	sRightImageWidth = s
 	CustProps.put("RightImageWidth", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
+	If sRightImage = "" Then Return
 	UI.SetWidthByID($"${mName}_rightimage"$, s)
 End Sub
 
@@ -850,7 +863,7 @@ Sub setBadgeColor(s As String)
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
-	UI.SetColorByID($"${mName}_badge"$, "color", "badge", s)
+	If s <> "" Then UI.SetColorByID($"${mName}_badge"$, "color", "badge", s)
 End Sub
 'set Badge Visible
 Sub setBadgeVisible(b As Boolean)
@@ -878,13 +891,14 @@ Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	UI.SetHeight(mElement, s)
+	If s <> "" Then UI.SetHeight(mElement, s)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	If s <> "" Then UI.SetWidth(mElement, s)
 End Sub
 'get Height
@@ -957,4 +971,8 @@ End Sub
 'get Rounded Field
 Sub getRoundedField As Boolean
 	Return bRoundedField
+End Sub
+
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
