@@ -144,7 +144,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -153,14 +153,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -174,7 +174,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -306,36 +306,42 @@ Sub Refresh
 	Clear
 	Dim tCount As Int = modSD5.CInt(sCount)
 	Dim fCount As Int = 0
+	Dim maskName As String = modSD5.FixMask(sMask)
+	Dim colorName As String = modSD5.FixColor("bg", sColor)
+	Dim sb As StringBuilder
+	sb.Initialize		
 	Select Case bReadOnly
 	Case True
-		Dim maskName As String = modSD5.FixMask(sMask)
-		Dim colorName As String = modSD5.FixColor("bg", sColor)
-		Dim sb As StringBuilder
-		sb.Initialize 
 		For fCount = 1 To tCount
 			sb.Append($"<div id="${mName}_${fCount}" class="${maskName} ${colorName}" aria-label="${fCount} star"></div>"$)
 		Next
 		mElement.Append(sb.ToString)
-	Case False		
+	Case False
+		If bFirstHidden Then
+			sb.Append($"<input id="${mName}_0" type="radio" name="${mName}" class="rating-hidden" aria-label="Clear"></input>"$)
+		End If		
+		Dim itemClasses As List
 		For fCount = 1 To tCount
-			Dim rKey As String = $"${mName}_${fCount}"$
-			Dim nradio As SDUI5Radio
-			nradio.Initialize(mCallBack, rKey, rKey)
-			nradio.GroupName = mName
-			nradio.Mask = sMask
-			nradio.AriaLabel = $"${fCount} star"$
-			nradio.BackgroundColor = sColor
-			nradio.ParentID = mName
-			nradio.Size = sSize
-			If fCount = 1 Then
-				If bFirstHidden Then 
-					nradio.UI.AddClassDT("rating-hidden")
-					nradio.AriaLabel = "Clear"
-				End If
+			itemClasses.Initialize
+			itemClasses.Add(maskName)
+			itemClasses.Add(colorName)
+			Dim posD As Double = fCount
+			If bHalf Then 
+				posD = fCount - 0.5
+				itemClasses.add("mask-half-1")
 			End If
-			If bHalf Then nradio.UI.AddClassDT("mask-half-1")
-			nradio.AddComponent
+			Dim sclasses As String = modSD5.Join(" ", itemClasses)
+			sb.Append($"<input id="${mName}_${fCount}" type="radio" name="${mName}" class="${sclasses}" aria-label="${posD} star"></input>"$)
+			If bHalf Then
+				itemClasses.Initialize
+				itemClasses.Add(maskName)
+				itemClasses.Add(colorName)
+				itemClasses.add("mask-half-2")
+				Dim sclasses As String = modSD5.Join(" ", itemClasses)
+				sb.Append($"<input id="${mName}_${fCount}_2" type="radio" name="${mName}" class="${sclasses}" aria-label="${fCount} star"></input>"$)
+			End If
 		Next
+		mElement.Append(sb.ToString)
 	End Select
 End Sub
 
@@ -350,6 +356,7 @@ Sub setGap(s As String)
 	sGap = s
 	CustProps.put("Gap", s)
 	If mElement = Null Then Return
+	If bHalf Then Return
 	If s <> "" Then UI.AddClass(mElement, "gap-" & s)
 End Sub
 
@@ -400,7 +407,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "rating", s)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "rating", s)
 End Sub
 'set Value
 Sub setValue(s As String)

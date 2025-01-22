@@ -231,19 +231,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValidatorHint = modSD5.CStr(sValidatorHint)
 	End If
 	'
-'	If sColor <> "" Then UI.AddColorDT("file-input", sColor)
-'	If bDisabled = True Then UI.AddAttrDT("disabled", bDisabled)
-'	UI.AddClassDT("file-input")
-'	'If bFloatingLabel = True Then UI.AddAttrDT("floating-label", bFloatingLabel)
-'	If bGhost = True Then UI.AddClassDT("file-input-ghost")
-'	'If bHasLabel = True Then UI.AddAttrDT("has-label", bHasLabel)
-'	'If sHint <> "" Then UI.AddAttrDT("hint", sHint)
-'	'If sLabel <> "Please select a file" Then UI.AddAttrDT("label", sLabel)
-'	If bRequired = True Then UI.AddAttrDT("required", bRequired)
-'	If sSize <> "" Then UI.AddSizeDT("file-input", sSize)
-'	UI.AddAttrDT("type", "file")
-	'If bValidator = True Then UI.AddClassDT("validator")
-	'If sValidatorHint <> "" Then UI.AddAttrDT("validator-hint", sValidatorHint)
+	If bHasLabel = False Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -257,13 +245,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bHasLabel Then
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_label" class="fieldset-legend">${sLabel}</legend>
-  				<input id="${mName}"></input>
-  				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
-			</fieldset>"$).Get("#" & mName)
+				<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+	        		<div class="join">
+	          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"/>
+	          			<div id="${mName}_required" class="indicator join-item hidden">
+	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+	          			</div>
+	          		</div>          
+	        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
+	      		</fieldset>"$).Get("#" & mName)
 	Else
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		mElement = mTarget.Append($"[BANCLEAN]
+				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"></input>
+          			<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+          			</div>
+        		</div>"$).Get("#" & mName)
 	End If
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "file-input")
@@ -332,8 +331,12 @@ Sub setRequired(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
 		UI.AddAttr(mElement, "required", b)
+		UI.SetVisibleByID($"${mName}_required"$, True)
+		UI.SetVisibleByID($"${mName}_badge"$, True)
 	Else
 		UI.RemoveAttr(mElement, "required")
+		UI.SetVisibleByID($"${mName}_required"$, False)
+		UI.SetVisibleByID($"${mName}_badge"$, False)
 	End If
 End Sub
 'set Size
@@ -342,7 +345,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "file-input", sSize)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "file-input", sSize)
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

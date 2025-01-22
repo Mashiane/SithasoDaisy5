@@ -650,7 +650,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "card", sSize)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "card", sSize)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)

@@ -236,7 +236,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "kbd", sSize)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "kbd", sSize)
 End Sub
 'get Size
 Sub getSize As String

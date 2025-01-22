@@ -163,8 +163,38 @@ Sub HideItem(elID As String)
 End Sub
 
 Sub CopyToClipboard(txt As String)
-	BANano.Await(BANano.Navigator.GetField("clipboard").RunMethod("writeText", txt))
+	'BANano.Await(BANano.Navigator.GetField("clipboard").RunMethod("writeText", txt))
+	BANano.Await(BANano.RunJavascriptMethod("copyToClipboard", Array(txt)))
 End Sub
+
+#if javascript
+async function copyToClipboard(textToCopy) {
+    // Navigator clipboard api needs a secure context (https)
+    if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(textToCopy);
+    } else {
+        // Use the 'out of viewport hidden text area' trick
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+            
+        // Move textarea out of the viewport so it's not visible
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+            
+        document.body.prepend(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+        } catch (error) {
+            console.error(error);
+        } finally {
+            textArea.remove();
+        }
+    }
+}
+#End If
+
 
 Sub CopyFromClipBoard As String
 	Dim clipText As Object = BANano.Await(BANano.Navigator.GetField("clipboard").RunMethod("readText", Null))
@@ -522,7 +552,7 @@ Sub JoinMap(delimiter As String, itemDelimiter As String,  theMap As Map) As Str
 End Sub
 
 Sub SetVisible(cID As String, b As Boolean)
-	cID = CStr(cID)
+	cID = CleanID(cID)
 	If BANano.Exists($"#${cID}"$) = False Then Return
 	If b Then
 		BANano.GetElement($"#${cID}"$).RemoveClass("hidden")
@@ -532,7 +562,7 @@ Sub SetVisible(cID As String, b As Boolean)
 End Sub
 
 Sub RemoveLastClass(cID As String, xattr As String)
-	cID = CStr(cID)
+	cID = CleanID(cID)
 	If BANano.Exists($"#${cID}"$) = False Then Return
 	Dim mLast As String = GetData(cID, xattr)
 	mLast = CStr(mLast)
@@ -555,7 +585,7 @@ Sub BlurActiveElement
 End Sub
 
 Sub AddEvent(cid As String, event As String, CallBackModule As Object, methodName As String)
-	cid = CStr(cid)
+	cid = CleanID(cid)
 	If BANano.Exists($"#${cid}"$) = False Then Return
 	event = event.Replace(":","")
 	event = event.Replace(".","")
@@ -565,7 +595,7 @@ Sub AddEvent(cid As String, event As String, CallBackModule As Object, methodNam
 End Sub
 
 Sub AddEventBANanoObject(cid As String, event As String, CallBackMethod As BANanoObject)
-	cid = CStr(cid)
+	cid = CleanID(cid)
 	If BANano.Exists($"#${cid}"$) = False Then Return
 	event = event.Replace(":","")
 	event = event.Replace(".","")

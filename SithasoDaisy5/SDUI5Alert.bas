@@ -450,7 +450,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "alert", s)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "alert", s)
 End Sub
 'set Soft
 Sub setSoft(b As Boolean)

@@ -12,13 +12,17 @@ Version=10
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options (JSON)
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Grow, DisplayName: Grow, FieldType: Boolean, DefaultValue: False, Description: Grow
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: PrependIcon, DisplayName: Prepend Icon, FieldType: String, DefaultValue: , Description: Prepend Icon
+#DesignerProperty: Key: PrependVisible, DisplayName: Prepend Visible, FieldType: Boolean, DefaultValue: False, Description: Prepend Visible
+#DesignerProperty: Key: AppendIcon, DisplayName: Append Icon, FieldType: String, DefaultValue: , Description: Append Icon
+#DesignerProperty: Key: AppendVisible, DisplayName: Append Visible, FieldType: Boolean, DefaultValue: False, Description: Append Visible
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -57,11 +61,15 @@ Sub Class_Globals
 	Private sLabel As String = "Select"
 	Private sPlaceholder As String = "Select an element"
 	Private bRequired As Boolean = False
-	Private sSize As String = "none"
+	Private sSize As String = "md"
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sValue As String = ""
 	Private sRawOptions As String = "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r"
+	Private sAppendIcon As String = ""
+	Private bAppendVisible As Boolean = False
+	Private sPrependIcon As String = ""
+	Private bPrependVisible As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -144,7 +152,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -153,14 +161,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -174,7 +182,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -231,7 +239,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPlaceholder = modSD5.CStr(sPlaceholder)
 		bRequired = Props.GetDefault("Required", False)
 		bRequired = modSD5.CBool(bRequired)
-		sSize = Props.GetDefault("Size", "none")
+		sSize = Props.GetDefault("Size", "md")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bValidator = Props.GetDefault("Validator", False)
@@ -242,8 +250,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValue = modSD5.CStr(sValue)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
 		sRawOptions = modSD5.CStr(sRawOptions)
+		sAppendIcon = Props.GetDefault("AppendIcon", "")
+		sAppendIcon = modSD5.CStr(sAppendIcon)
+		bAppendVisible = Props.GetDefault("AppendVisible", False)
+		bAppendVisible = modSD5.CBool(bAppendVisible)
+		sPrependIcon = Props.GetDefault("PrependIcon", "")
+		sPrependIcon = modSD5.CStr(sPrependIcon)
+		bPrependVisible = Props.GetDefault("PrependVisible", False)
+		bPrependVisible = modSD5.CBool(bPrependVisible)
 	End If
 	'
+	If bHasLabel = False Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -257,30 +274,122 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bHasLabel Then
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-				<select id="${mName}">
-					<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
-				</select>
-				<div id="${mName}_hint" class="fieldset-label">${sHint}</div>
-			</fieldset>"$).Get("#" & mName)
+		<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+        		<div class="join">
+          			<button id="${mName}_prepend" class="btn join-item hidden">
+						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+					</button>
+          			<select id="${mName}" class="join-item tlradius trradius blradius brradius">
+						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
+					</select>
+          			<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+          			</div>
+          			<button id="${mName}_append" class="btn join-item hidden">
+						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+					</button>
+        		</div>          
+        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
+      		</fieldset>"$).Get("#" & mName)
 	Else
 		mElement = mTarget.Append($"[BANCLEAN]
-		<select id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-			<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
-		</select>"$).Get("#" & mName)
+		<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+          			<button id="${mName}_prepend" class="btn join-item hidden">
+						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+					</button>
+          			<select id="${mName}" class="join-item tlradius trradius blradius brradius">
+						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
+					</select>
+          			<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+          			</div>
+          			<button id="${mName}_append" class="btn join-item hidden">
+						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+					</button>
+        		</div>"$).Get("#" & mName)
 	End If
 	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
 	UI.AddClass(mElement, "select")
 	setPlaceholder(sPlaceholder)
 	setColor(sColor)
 	setRequired(bRequired)
-	setSize(sSize)
+	banano.Await(setSize(sSize))
 	setGhost(bGhost)
 	setValue(sValue)
 	setGrow(bGrow)
 	setOptions(sRawOptions)
+	setAppendIcon(sAppendIcon)
+	setAppendVisible(bAppendVisible)
+	setPrependIcon(sPrependIcon)
+	setPrependVisible(bPrependVisible)
 End Sub
+
+
+
+'set Prepend Visible
+Sub setPrependVisible(b As Boolean)
+	bPrependVisible = b
+	CustProps.put("PrependVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_prepend"$, b)
+End Sub
+
+'set Prepend Icon
+Sub setPrependIcon(s As String)
+	sPrependIcon = s
+	CustProps.put("PrependIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_prepend"$, False)
+	Else
+		UI.RemoveClass(mElement, "tlradius")
+		UI.RemoveClass(mElement, "blradius")
+		UI.SetVisibleByID($"${mName}_prepend"$, True)
+		UI.SetImageByID($"${mName}_prependimage"$, sPrependIcon)
+	End If
+End Sub
+
+'set Append Visible
+Sub setAppendVisible(b As Boolean)
+	bAppendVisible = b
+	CustProps.put("AppendVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_append"$, b)
+End Sub
+
+Sub setAppendIcon(s As String)
+	sAppendIcon = s
+	CustProps.put("AppendIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_append"$, False)
+	Else
+		UI.RemoveClass(mElement, "trradius")
+		UI.RemoveClass(mElement, "brradius")
+		UI.SetVisibleByID($"${mName}_append"$, True)
+		UI.SetImageByID($"${mName}_appendimage"$, s)
+	End If
+End Sub
+
+'get Append Icon
+Sub getAppendIcon As String
+	Return sAppendIcon
+End Sub
+'get Append Visible
+Sub getAppendVisible As Boolean
+	Return bAppendVisible
+End Sub
+'get Prepend Icon
+Sub getPrependIcon As String
+	Return sPrependIcon
+End Sub
+'get Prepend Visible
+Sub getPrependVisible As Boolean
+	Return bPrependVisible
+End Sub
+
+
 
 'set Options from a MV field
 'b4j:b4j; b4i:b4i; b4r:b4r
@@ -400,8 +509,12 @@ Sub setRequired(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
 		UI.AddAttr(mElement, "required", b)
+		UI.SetVisibleByID($"${mName}_required"$, True)
+		UI.SetVisibleByID($"${mName}_badge"$, True)
 	Else
 		UI.RemoveAttr(mElement, "required")
+		UI.SetVisibleByID($"${mName}_required"$, False)
+		UI.SetVisibleByID($"${mName}_badge"$, False)
 	End If
 End Sub
 'set Size
@@ -410,7 +523,12 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "select", sSize)
+	If s = "" Then sSize = "md"
+	BANano.Await(UI.SetSize(mElement, "size", "select", sSize))
+	BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
+	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
+	BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
+	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

@@ -116,7 +116,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-radio", "", "Radio")
 	drawermenu.AddItemChild("dinput", "pg-range", "", "Range")
 	drawermenu.AddItemChild("dinput", "pg-rating", "", "Rating")
-	drawermenu.SetItemBadge("pg-rating", "bugs", "primary")
 	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
 	drawermenu.AddItemChild("dinput", "pg-input", "", "Text Box")
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")

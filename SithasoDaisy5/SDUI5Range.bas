@@ -8,8 +8,8 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 10, Description: Value
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: 0, Description: Min Value
@@ -209,7 +209,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -296,7 +296,9 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then 
+		UI.AddStyleComputed(mElement, "--range-shdw", s)
+	End If
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -356,7 +358,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "range", sSize)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "range", sSize)
 End Sub
 'set Step Value
 Sub setStepValue(s As String)

@@ -629,7 +629,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s = "" Then Return
+	If s = "" Then sSize = "md"
 	UI.UpdateClass(mElement, "size", "btn-" & s)
 End Sub
 'set Size Large

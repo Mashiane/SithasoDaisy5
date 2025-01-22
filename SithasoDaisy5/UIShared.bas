@@ -234,6 +234,9 @@ Sub SetGutter(mElement As BANanoElement, s As String)
 	AddClass(mElement, sClass)	
 End Sub
 
+
+
+
 private Sub BuildStyles(o As Map) As String
 	Dim colStyle As StringBuilder
 	colStyle.Initialize
@@ -307,7 +310,6 @@ public Sub GetBorderColor() As String
 End Sub
 
 public Sub SetSize(mElement As BANanoElement, sizeName As String, prefix As String, s As String)
-	BANano.SetP(mSelf, "sSize", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixSize(prefix, s)
 	UpdateClass(mElement, sizeName, s1)
@@ -320,7 +322,6 @@ public Sub SetSizeByID(sID As String, sizeName As String, prefix As String, s As
 End Sub
 
 public Sub SetColor(mElement As BANanoElement, colorName As String, prefix As String, s As String)
-	BANano.SetP(mSelf, "sColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor(prefix, s)
 	UpdateClass(mElement, colorName, s1)
@@ -354,10 +355,30 @@ public Sub SetTextColor(mElement As BANanoElement, s As String)
 	UpdateClass(mElement, "textcolor", s1)
 End Sub
 
+public Sub SetCheckedColor(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim s1 As String = modSD5.FixColor("checked:bg", s)
+	UpdateClass(mElement, "checkedbgcolor", s1)
+End Sub
+
+public Sub SetCheckedColorByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	SetCheckedColor(mElement, s)
+End Sub
+
 public Sub SetCheckedTextColor(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor("checked:text", s)
 	UpdateClass(mElement, "checkedtextcolor", s1)
+End Sub
+
+public Sub SetCheckedTextColorByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	SetCheckedTextColor(mElement, s)
 End Sub
 
 public Sub UpdateClassByID(sID As String, k As String, v As String)
@@ -383,6 +404,35 @@ public Sub SetTextColorByID(sID As String, s As String)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	SetTextColor(mElement, s)
 End Sub
+
+'set Image Size
+Sub SetButtonImageSize(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	If s = "" Then s = "md"
+	Select Case s
+	Case "xs"
+		S = "16px"   '"24px"
+	Case "sm"
+		S = "24px"  ' "32px"
+	Case "md"
+		S = "32px" ' "40px"
+	Case "lg"
+		S =  "40px" ' "48px"
+	Case "xl"
+		S = "48px" ' "56px"
+	End Select
+	SetSize(mElement, "width", "w", s)
+	SetSize(mElement, "height", "h", s)
+End Sub
+
+'get icon size insize button
+Sub SetButtonImageSizeByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetButtonImageSize(mElement, s)
+End Sub
+
+
 
 public Sub SetTextSizeByID(sID As String, s As String)
 	sID = modSD5.CleanID(sID)
@@ -808,6 +858,12 @@ End Sub
 
 'add a computed style to the element
 Sub AddStyleComputed(mElement As BANanoElement, attr As String, text As String)
+	If mElement = Null Then Return
+	attr = modSD5.DeCamelCase(attr)
+	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))
+End Sub
+
+Sub SetStyleComputed(mElement As BANanoElement, attr As String, text As String)
 	If mElement = Null Then Return
 	attr = modSD5.DeCamelCase(attr)
 	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))

@@ -397,6 +397,7 @@ Sub setLeftIcon(s As String)
 		UI.SetVisible(icon, False)
 	Else
 		'show
+		UI.UpdateClass(mElement, "gap", "gap-2")
 		UI.SetVisible(icon, True)
 	End If
 End Sub
@@ -440,6 +441,7 @@ Sub setRightIcon(s As String)
 		UI.SetVisible(icon, False)
 	Else
 		'show
+		UI.UpdateClass(mElement, "gap", "gap-2")
 		UI.SetVisible(icon, True)
 	End If
 End Sub
@@ -476,7 +478,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "badge", s)
+	If s = "" Then sSize = "sm"
+	UI.SetSize(mElement, "size", "badge", s)
 End Sub
 'set Soft
 Sub setSoft(b As Boolean)

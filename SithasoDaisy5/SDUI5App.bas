@@ -403,6 +403,22 @@ Private Sub Class_Globals
 	Public CONST PLACESELF_STRETCH As String = "stretch"
 End Sub
 
+
+#if css
+	.tlradius {
+		border-top-left-radius:var(--radius-field,.25rem) !important;
+	}
+	.blradius {
+		border-bottom-left-radius:var(--radius-field,.25rem) !important;
+	}
+	.trradius {
+		border-top-right-radius:var(--radius-field,.25rem) !important;
+	}
+	.brradius {
+		border-bottom-right-radius:var(--radius-field,.25rem) !important;
+	}
+#End If
+
 #if css
 	input[type=search] {-webkit-appearance: searchfield !important;} input[type=search]::-webkit-search-cancel-	button {-webkit-appearance: searchfield-cancel-button !important;}
 #End If
@@ -505,22 +521,6 @@ End Sub
     -ms-user-select: none;
     user-select: none;
 }
-#End If
-
-
-#if css
-	.tlradius {
-		border-top-left-radius:var(--rounded-btn,.5rem) !important;
-	}
-	.blradius {
-		border-bottom-left-radius:var(--rounded-btn,.5rem) !important;
-	}
-	.trradius {
-		border-top-right-radius:var(--rounded-btn,.5rem) !important;
-	}
-	.brradius {
-		border-bottom-right-radius:var(--rounded-btn,.5rem) !important;
-	}
 #End If
 
 '#if css

@@ -12,6 +12,8 @@ Version=10
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
+#DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
 #DesignerProperty: Key: MinLength, DisplayName: Min Length, FieldType: String, DefaultValue: , Description: Min Length
 #DesignerProperty: Key: MaxLength, DisplayName: Max Length, FieldType: String, DefaultValue: , Description: Max Length
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: , Description: Min Value
@@ -85,6 +87,8 @@ Sub Class_Globals
 	Private bRequired As Boolean = False
 	Private sStepValue As String = ""
 	Private sValue As String = ""
+	Private sCheckedColor As String = ""
+	Private sGroupName As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -276,6 +280,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sStepValue = modSD5.CStr(sStepValue)
 		sValue = Props.GetDefault("Value", "")
 		sValue = modSD5.CStr(sValue)
+		sCheckedColor = Props.GetDefault("CheckedColor", "")
+		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sGroupName = Props.GetDefault("GroupName", "")
+		sGroupName = modSD5.CStr(sGroupName)
 	End If
 	'
 	If bFloatingLabel = True Then UI.AddClassDT("floating-label")
@@ -377,7 +385,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setMinValue(sMinValue)
 	setRequired(bRequired)
 	setStepValue(sStepValue)
+	setGroupName(sGroupName)
+	setCheckedColor(sCheckedColor)
 End Sub
+
+'set Group Name
+Sub setGroupName(s As String)
+	sGroupName = s
+	CustProps.put("GroupName", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttrByID($"${mName}_input"$, "name", s)
+End Sub
+
+Sub getGroupName As String
+	Return sGroupName
+End Sub
+
+'set Checked Color
+Sub setCheckedColor(s As String)
+	sCheckedColor = s
+	CustProps.put("CheckedColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetCheckedTextColorByID($"${mName}_input"$, s)
+End Sub
+
+Sub getCheckedColor As String
+	Return sCheckedColor
+End Sub
+
 
 'set Label Width
 Sub setLabelWidth(s As String)

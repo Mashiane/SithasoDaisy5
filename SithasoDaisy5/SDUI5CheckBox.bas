@@ -13,6 +13,7 @@ Version=10
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
+#DesignerProperty: Key: CheckedMarkColor, DisplayName: Checked Mark Color, FieldType: String, DefaultValue: , Description: Checked Mark Color
 #DesignerProperty: Key: UncheckedColor, DisplayName: Unchecked Color, FieldType: String, DefaultValue: , Description: Unchecked Color
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
@@ -63,6 +64,7 @@ Sub Class_Globals
 	Private sUncheckedColor As String = ""
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
+	Private sCheckedMarkColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -245,6 +247,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
 		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sCheckedMarkColor = Props.GetDefault("CheckedMarkColor", "")
+		sCheckedMarkColor = modSD5.CStr(sCheckedMarkColor)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -279,6 +283,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setChecked(bChecked)
 	setIndeterminate(bIndeterminate)
 	setCheckedColor(sCheckedColor)
+	setCheckedMarkColor(sCheckedMarkColor)
+End Sub
+
+'set Checked Mark Color
+Sub setCheckedMarkColor(s As String)
+	sCheckedMarkColor = s
+	CustProps.put("CheckedMarkColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetCheckedTextColor(mElement, s)
+End Sub
+
+Sub getCheckedMarkColor As String
+	Return sCheckedMarkColor
 End Sub
 
 'set Checked
@@ -293,7 +310,7 @@ Sub setCheckedColor(s As String)
 	sCheckedColor = s
 	CustProps.put("CheckedColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetCheckedTextColor(mElement, s)
+	If s <> "" Then UI.SetCheckedColor(mElement, s)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -357,7 +374,8 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "checkbox", sSize)
+	If s = "" Then sSize = "md"
+	UI.SetSize(mElement, "size", "checkbox", sSize)
 End Sub
 'set Title
 Sub setTitle(s As String)
