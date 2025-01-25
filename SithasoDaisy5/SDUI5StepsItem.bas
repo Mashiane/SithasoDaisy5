@@ -116,7 +116,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -236,6 +236,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<span id="${mName}_text">${sText}</span>
 	</li>"$).Get("#" & mName)
 	setIcon(sIcon)
+'	setVisible(bVisible)
 End Sub
 
 'set Color
@@ -251,7 +252,7 @@ Sub setDataContent(s As String)
 	sDataContent = s
 	CustProps.put("DataContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "data-content", s)
+	If s <> "" Then UI.SetAttr(mElement, "data-content", s)
 End Sub
 'set Icon
 Sub setIcon(s As String)

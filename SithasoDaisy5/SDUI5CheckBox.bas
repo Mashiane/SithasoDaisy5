@@ -5,8 +5,10 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value As Boolean)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: CheckBoxType, DisplayName: CheckBox Type, FieldType: String, DefaultValue: normal, Description: CheckBox Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Options , Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox , Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -53,18 +55,17 @@ Sub Class_Globals
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private bIndeterminate As Boolean = False
 	Private sLabel As String = "CheckBox"
 	Private sLegend As String = "Options"
 	Private bRequired As Boolean = False
 	Private sSize As String = "none"
-	Private sTitle As String = ""
 	Private sUncheckedColor As String = ""
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sCheckedMarkColor As String = ""
+	Private sCheckBoxType As String = "normal"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -109,7 +110,7 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	UI.SetVisibleByID($"${mName}_control"$, b)
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -137,7 +138,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -156,14 +157,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -177,7 +178,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -224,8 +225,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
@@ -239,8 +238,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		sTitle = Props.GetDefault("Title", "")
-		sTitle = modSD5.CStr(sTitle)
 		sUncheckedColor = Props.GetDefault("UncheckedColor", "")
 		sUncheckedColor = modSD5.CStr(sUncheckedColor)
 		bValidator = Props.GetDefault("Validator", False)
@@ -249,6 +246,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValidatorHint = modSD5.CStr(sValidatorHint)
 		sCheckedMarkColor = Props.GetDefault("CheckedMarkColor", "")
 		sCheckedMarkColor = modSD5.CStr(sCheckedMarkColor)
+		sCheckBoxType = Props.GetDefault("CheckBoxType", "normal")
+		sCheckBoxType = modSD5.CStr(sCheckBoxType)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -262,28 +261,63 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
-		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_labelhost" class="fieldset-label">
-					<input id="${mName}" type="checkbox"></input>
-					<span id="${mName}_label">${sLabel}</span>
-				</label>	
+	'
+	Select Case sCheckBoxType
+		Case "legend"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
+				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
+  					<input id="${mName}" type="checkbox" class="checkbox"></input>
+  					<span id="${mName}_label">${sLabel}</span>
+				</label>
 			</fieldset>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "checkbox")
+		Case "normal"
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} checkbox" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		Case "left-label"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex items-center justify-between gap-2" ${xattrs} style="${xstyles}">
+  				<label id="${mName}_labelhost" class="cursor-pointer select-none">
+    				<span id="${mName}_label">${sLabel}</span>
+  				</label>
+    			<input id="${mName}" type="checkbox" class="checkbox">
+			</div>"$).Get("#" & mName)
+		Case "right-label"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
+				<label id="${mName}_labelhost" class="flex gap-2 items-center cursor-pointer">
+			 		<input id="${mName}" type="checkbox" class="checkbox"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>
+			</div>"$).Get("#" & mName)
+	End Select
+	'
+	setEnabled(bEnabled)
 	setColor(sColor)
 	setRequired(bRequired)
 	setSize(sSize)
-	UI.AddAttr(mElement, "type", "checkbox")
 	setChecked(bChecked)
 	setIndeterminate(bIndeterminate)
 	setCheckedColor(sCheckedColor)
 	setCheckedMarkColor(sCheckedMarkColor)
+'	setVisible(bVisible)
+	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault
+	Dim xChecked As Boolean = mElement.GetChecked
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+End Sub
+
+'legend|normal|left-label|right-label
+Sub setCheckBoxType(s As String)
+	sCheckBoxType = s
+	CustProps.Put("CheckBoxType", s)
+End Sub
+
+Sub getCheckBoxType As String
+	Return sCheckBoxType
 End Sub
 
 'set Checked Mark Color
@@ -320,11 +354,7 @@ Sub setColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "checkbox", sColor)
 End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
-End Sub
+
 'set Hint
 Sub setHint(s As String)
 	sHint = s
@@ -363,7 +393,7 @@ Sub setRequired(b As Boolean)
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddAttr(mElement, "required", b)
+		UI.SetAttr(mElement, "required", b)
 	Else
 		UI.RemoveAttr(mElement, "required")
 	End If
@@ -377,19 +407,13 @@ Sub setSize(s As String)
 	If s = "" Then sSize = "md"
 	UI.SetSize(mElement, "size", "checkbox", sSize)
 End Sub
-'set Title
-Sub setTitle(s As String)
-	sTitle = s
-	CustProps.put("Title", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "title", s)
-End Sub
+
 'set Unchecked Color
 Sub setUncheckedColor(s As String)
 	sUncheckedColor = s
 	CustProps.put("UncheckedColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.AddAttr(mElement, "unchecked-color", s)
+'	If s <> "" Then UI.SetAttr(mElement, "unchecked-color", s)
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)
@@ -407,7 +431,7 @@ Sub setValidatorHint(s As String)
 	sValidatorHint = s
 	CustProps.put("ValidatorHint", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "validator-hint", s)
+	If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'get Checked
 Sub getChecked As Boolean
@@ -422,10 +446,7 @@ End Sub
 Sub getColor As String
 	Return sColor
 End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
-End Sub
+
 'get Hint
 Sub getHint As String
 	Return sHint
@@ -450,10 +471,7 @@ End Sub
 Sub getSize As String
 	Return sSize
 End Sub
-'get Title
-Sub getTitle As String
-	Return sTitle
-End Sub
+
 'get Unchecked Color
 Sub getUncheckedColor As String
 	Return sUncheckedColor

@@ -116,7 +116,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -191,7 +191,7 @@ Sub setValue(text As String)
 	sText = $"${sValue}%"$
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
-	UI.AddAttr(mElement, "aria-valuenow", sValue)
+	UI.SetAttr(mElement, "aria-valuenow", sValue)
 	UI.AddStyleComputed(mElement, "--value", sValue)
 	UI.SetText(mElement, sText)
 End Sub
@@ -248,6 +248,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 'set Background Color

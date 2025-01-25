@@ -176,7 +176,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -349,6 +349,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 'set Background Color
@@ -709,7 +710,7 @@ End Sub
 
 Sub SetItemOpen(item As String, b As Boolean)
 	If b Then
-		UI.AddAttrByID($"${item}_details"$, "open", "open") 
+		UI.SetAttrByID($"${item}_details"$, "open", "open") 
 	Else
 		UI.RemoveAttrByID($"${item}_details"$, "open")
 	End If
@@ -761,7 +762,7 @@ Sub setDropdownContent(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
 		UI.AddClass(mElement, "dropdown-content z-1")
-		UI.AddAttr(mElement, "tabindex", "0")
+		UI.SetAttr(mElement, "tabindex", "0")
 	Else
 		UI.RemoveClass(mElement, "dropdown-content z-1")
 		UI.RemoveAttr(mElement, "tabindex")

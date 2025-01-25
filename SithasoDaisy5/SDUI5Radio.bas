@@ -5,8 +5,10 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: RadioType, DisplayName: Radio Type, FieldType: String, DefaultValue: normal, Description: Toggle Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio, Description: Label
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -18,7 +20,6 @@ Version=10
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
-#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: none, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -55,13 +56,12 @@ Sub Class_Globals
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
 	Private sGroupName As String = ""
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private sLabel As String = "Label"
-	Private sMask As String = "none"
 	Private sSize As String = "none"
 	Private sValue As String = ""
 	Private sLegend As String = ""
+	Private sRadioType As String = "normal"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -106,7 +106,7 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	UI.SetVisibleByID($"${mName}_control"$, b)
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -134,7 +134,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -144,7 +144,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -153,14 +153,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -174,7 +174,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -227,15 +227,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sColor = "none" Then sColor = ""
 		sGroupName = Props.GetDefault("GroupName", "")
 		sGroupName = modSD5.CStr(sGroupName)
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Label")
 		sLabel = modSD5.CStr(sLabel)
-		sMask = Props.GetDefault("Mask", "none")
-		sMask = modSD5.CStr(sMask)
-		If sMask = "none" Then sMask = ""
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
@@ -243,6 +238,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValue = modSD5.CStr(sValue)
 		sLegend = Props.GetDefault("Legend", "")
 		sLegend = modSD5.CStr(sLegend)
+		sRadioType = Props.GetDefault("RadioType", "normal")
+		sRadioType = modSD5.CStr(sRadioType)
 	End If
 
 	Dim xattrs As String = UI.BuildExAttributes
@@ -256,33 +253,66 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
-		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_labelhost" class="fieldset-label">
-					<input id="${mName}" type="radio"></input>
-					<span id="${mName}_label">${sLabel}</span>
-				</label>	
+	Select Case sRadioType
+		Case "legend"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
+				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
+  					<input id="${mName}" type="radio" class="radio"></input>
+  					<span id="${mName}_label">${sLabel}</span>
+				</label>
 			</fieldset>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "radio")
+		Case "normal"
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="radio" class="${xclasses} radio" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		Case "left-label"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex items-center justify-between gap-2" ${xattrs} style="${xstyles}">
+  				<label id="${mName}_labelhost" class="cursor-pointer select-none">
+    				<span id="${mName}_label">${sLabel}</span>
+  				</label>
+    			<input id="${mName}" type="radio" class="radio">
+			</div>"$).Get("#" & mName)
+		Case "right-label"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
+				<label id="${mName}_labelhost" class="flex gap-2 items-center cursor-pointer">
+			 		<input id="${mName}" type="radio" class="radio"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>
+			</div>"$).Get("#" & mName)
+	End Select
+		
 	setColor(sColor)
 	setEnabled(bEnabled)
 	setSize(sSize)
-	UI.AddAttr(mElement, "type", "radio")
 	setChecked(bChecked)
 	setAriaLabel(sAriaLabel)
 	setBackgroundColor(sBackgroundColor)
 	setChecked(bChecked)
 	setGroupName(sGroupName)
-	setMask(sMask)
 	setValue(sValue)
 	setCheckedColor(sCheckedColor)
+'	setVisible(bVisible)
+	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault
+	Dim xChecked As String = mElement.GetValue
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+End Sub
+
+'legend|normal|left-label|right-label
+Sub setRadioType(s As String)
+	sRadioType = s
+	CustProps.Put("RadioType", s)
+End Sub
+
+Sub getRadioType As String
+	Return sRadioType
+End Sub
+
 
 'set Legend
 Sub setLegend(s As String)
@@ -301,7 +331,7 @@ Sub setAriaLabel(s As String)
 	sAriaLabel = s
 	CustProps.put("AriaLabel", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "aria-label", s)
+	If s <> "" Then UI.SetAttr(mElement, "aria-label", s)
 End Sub
 'set Background Color
 Sub setBackgroundColor(s As String)
@@ -337,13 +367,9 @@ Sub setGroupName(s As String)
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "name", s)
+	If s <> "" Then UI.SetAttr(mElement, "name", s)
 End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
-End Sub
+
 'set Hint
 Sub setHint(s As String)
 	sHint = s
@@ -358,14 +384,7 @@ Sub setLabel(s As String)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
-'set Mask
-'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
-Sub setMask(s As String)
-	sMask = s
-	CustProps.put("Mask", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMask(mElement, sMask)
-End Sub
+
 'set Size
 'options: xs|none|sm|md|lg|xl
 Sub setSize(s As String)
@@ -407,10 +426,7 @@ End Sub
 Sub getGroupName As String
 	Return sGroupName
 End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
-End Sub
+
 'get Hint
 Sub getHint As String
 	Return sHint
@@ -419,10 +435,7 @@ End Sub
 Sub getLabel As String
 	Return sLabel
 End Sub
-'get Mask
-Sub getMask As String
-	Return sMask
-End Sub
+
 'get Value
 Sub getValue As String
 	sValue = mElement.getvalue

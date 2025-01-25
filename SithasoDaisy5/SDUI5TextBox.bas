@@ -5,9 +5,14 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Append (e As BANanoEvent)
+#Event: Prepend (e As BANanoEvent)
+#Event: Change (Value As String)
+#Event: Input (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: date|datetime-local|email|month|number|password|search|tel|text|time|url|week
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -63,7 +68,6 @@ Sub Class_Globals
 	Private sColor As String = "none"
 	Private bGhost As Boolean = False
 	Private bGrow As Boolean = False
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private sLabel As String = ""
 	Private sMaxLength As String = ""
@@ -96,6 +100,7 @@ Sub Class_Globals
 	Private bAppendVisible As Boolean = False
 	Private sPrependIcon As String = ""
 	Private bPrependVisible As Boolean = False
+	Private sInputType As String = "normal"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -144,7 +149,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -231,8 +236,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             bGhost = modSD5.CBool(bGhost)
             bGrow = Props.GetDefault("Grow", False)
             bGrow = modSD5.CBool(bGrow)
-            bHasLabel = Props.GetDefault("HasLabel", False)
-            bHasLabel = modSD5.CBool(bHasLabel)
             sHint = Props.GetDefault("Hint", "")
             sHint = modSD5.CStr(sHint)
             sLabel = Props.GetDefault("Label", "")
@@ -272,9 +275,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			sPrependIcon = modSD5.CStr(sPrependIcon)
 			bPrependVisible = Props.GetDefault("PrependVisible", False)
 			bPrependVisible = modSD5.CBool(bPrependVisible)
+			sInputType = Props.GetDefault("InputType", "normal")
+			sInputType = modSD5.CStr(sInputType)
         End If
         '
-		If bHasLabel = False Then UI.AddClassDT("join")
+		If sInputType = "buttons" Then UI.AddClassDT("join")
         Dim xattrs As String = UI.BuildExAttributes
         Dim xstyles As String = UI.BuildExStyle
         Dim xclasses As String = UI.BuildExClass
@@ -286,15 +291,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             End If
 			mTarget.Initialize($"#${sParentID}"$)
 		End If
-		If bHasLabel Then
+		Select Case sInputType
+		Case "legend"	
 			mElement = mTarget.Append($"[BANCLEAN]
-				<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden">
 							<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 						</button>
-	          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"/>
+	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
 	          			</div>
@@ -302,21 +308,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
-		Else
+			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+		Case "buttons"
 			mElement = mTarget.Append($"[BANCLEAN]			
 				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 					</button>
-          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"></input>
+          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden"><img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img></button>
         		</div>"$).Get("#" & mName)
-		End If
-		If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-		UI.AddClass(mElement, "input")
+			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+		Case "normal"
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		End Select
 		setColor(sColor)
 		setGhost(bGhost)
 		setGrow(bGrow)
@@ -328,7 +338,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setPattern(sPattern)
 		setPlaceholder(sPlaceholder)
 		setRequired(bRequired)
-		banano.Await(setSize(sSize))
+		BANano.Await(setSize(sSize))
 	setStepValue(sStepValue)
 	setTypeOf(sTypeOf)
 	setEnabled(bEnabled)
@@ -336,6 +346,32 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setAppendVisible(bAppendVisible)
 	setPrependIcon(sPrependIcon)
 	setPrependVisible(bPrependVisible)
+'	setVisible(bVisible)
+	UI.OnEvent(mElement, "change", Me, "changed")
+	UI.OnEvent(mElement, "input", Me, "changed1")
+End Sub
+
+
+private Sub changed1(e As BANanoEvent)			'ignore
+	Dim cvalue As String = mElement.GetValue
+	BANano.CallSub(mCallBack, $"${mName}_input"$, Array(cvalue))
+End Sub
+
+private Sub changed(e As BANanoEvent)			'ignore
+	Dim cvalue As String = mElement.GetValue
+	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(cvalue))
+End Sub
+
+
+
+'legend|normal|buttons
+Sub setInputType(s As String)
+	sInputType = s
+	CustProps.Put("InputType", s)
+End Sub
+
+Sub getInputType As String
+	Return sInputType
 End Sub
 
 Sub setAppendIcon(s As String)
@@ -470,11 +506,6 @@ Sub setGrow(b As Boolean)
             UI.RemoveClass(mElement, "grow")
         End If
 End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-        bHasLabel = b
-        CustProps.put("HasLabel", b)
-End Sub
 'set Hint
 Sub setHint(s As String)
         sHint = s
@@ -494,42 +525,42 @@ Sub setMaxLength(s As String)
         sMaxLength = s
         CustProps.put("MaxLength", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "maxlength", s)
+        If s <> "" Then UI.SetAttr(mElement, "maxlength", s)
 End Sub
 'set Max Value
 Sub setMaxValue(s As String)
         sMaxValue = s
         CustProps.put("MaxValue", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "max", s)
+        If s <> "" Then UI.SetAttr(mElement, "max", s)
 End Sub
 'set Min Length
 Sub setMinLength(s As String)
         sMinLength = s
         CustProps.put("MinLength", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "minlength", s)
+        If s <> "" Then UI.SetAttr(mElement, "minlength", s)
 End Sub
 'set Min Value
 Sub setMinValue(s As String)
         sMinValue = s
         CustProps.put("MinValue", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "min", s)
+        If s <> "" Then UI.SetAttr(mElement, "min", s)
 End Sub
 'set Pattern
 Sub setPattern(s As String)
         sPattern = s
         CustProps.put("Pattern", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "pattern", s)
+        If s <> "" Then UI.SetAttr(mElement, "pattern", s)
 End Sub
 'set Placeholder
 Sub setPlaceholder(s As String)
         sPlaceholder = s
         CustProps.put("Placeholder", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "placeholder", s)
+        If s <> "" Then UI.SetAttr(mElement, "placeholder", s)
 End Sub
 'set Required
 Sub setRequired(b As Boolean)
@@ -537,7 +568,7 @@ Sub setRequired(b As Boolean)
         CustProps.put("Required", b)
         If mElement = Null Then Return
         If b = True Then
-            UI.AddAttr(mElement, "required", b)
+            UI.SetAttr(mElement, "required", b)
 			UI.SetVisibleByID($"${mName}_required"$, True)
 			UI.SetVisibleByID($"${mName}_badge"$, True)
 		Else
@@ -564,7 +595,7 @@ Sub setStepValue(s As String)
         sStepValue = s
         CustProps.put("StepValue", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "step", s)
+        If s <> "" Then UI.SetAttr(mElement, "step", s)
 End Sub
 'set Type Of
 'options: date|datetime-local|email|input|month|number|password|search|tel|text|time|url|week
@@ -572,7 +603,7 @@ Sub setTypeOf(s As String)
     sTypeOf = s
     CustProps.put("TypeOf", s)
     If mElement = Null Then Return
-    If s <> "text" Then UI.AddAttr(mElement, "type", s)
+    If s <> "text" Then UI.SetAttr(mElement, "type", s)
 	If sTypeOf = "tel" Then UI.AddClass(mElement, "tabular-nums")
 End Sub
 
@@ -592,7 +623,7 @@ Sub setValidatorHint(s As String)
         sValidatorHint = s
         CustProps.put("ValidatorHint", s)
         If mElement = Null Then Return
-        If s <> "" Then UI.AddAttr(mElement, "validator-hint", s)
+        If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'get Color
 Sub getColor As String
@@ -605,10 +636,6 @@ End Sub
 'get Grow
 Sub getGrow As Boolean
         Return bGrow
-End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-        Return bHasLabel
 End Sub
 'get Hint
 Sub getHint As String

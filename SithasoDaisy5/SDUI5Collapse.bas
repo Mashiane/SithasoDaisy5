@@ -149,7 +149,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -302,6 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setTitleTextColor(sTitleTextColor)
 	setActive(bActive)
 	setGroupName(sGroupName)
+'	setVisible(bVisible)
 End Sub
 
 'set Group Name
@@ -309,7 +310,7 @@ Sub setGroupName(s As String)
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttrByID($"${mName}_check"$, "name", s)
+	If s <> "" Then UI.SetAttrByID($"${mName}_check"$, "name", s)
 End Sub
 
 'get Group Name

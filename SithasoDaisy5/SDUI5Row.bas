@@ -151,7 +151,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -309,6 +309,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 Sub setCenterChildren(b As Boolean)
@@ -328,7 +329,7 @@ Sub setAlignItems(s As String)
 	sAlignItems = s
 	CustProps.put("AlignItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "align-items", s)
+	If s <> "" Then UI.SetStyle(mElement, "align-items", s)
 End Sub
 'set Background Color
 Sub setBackgroundColor(s As String)
@@ -357,7 +358,7 @@ Sub setJustifyContent(s As String)
 	sJustifyContent = s
 	CustProps.put("JustifyContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "justify-content", s)
+	If s <> "" Then UI.SetStyle(mElement, "justify-content", s)
 End Sub
 'set Row Cols
 Sub setRowCols(s As String)
@@ -541,7 +542,7 @@ Sub setTextAlign(s As String)
 	sTextAlign = s
 	CustProps.put("TextAlign", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "text-align", s)
+	If s <> "" Then UI.SetStyle(mElement, "text-align", s)
 End Sub
 'get Text Align
 Sub getTextAlign As String

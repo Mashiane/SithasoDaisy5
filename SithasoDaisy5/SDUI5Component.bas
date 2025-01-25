@@ -109,7 +109,7 @@ Public Sub getHere() As String
 End Sub
 'set an attribute to the element
 Sub AddAttr(attr As String, text As String)
-	UI.AddAttr(mElement, attr, text)
+	UI.SetAttr(mElement, attr, text)
 End Sub
 'set a data attribute to the element
 Sub AddDataAttr(attr As String, text As String)
@@ -148,7 +148,7 @@ Sub AddStyleMap(ms As Map)
 End Sub
 'add a styles to the element
 Sub AddStyle(k As String, v As String)
-	UI.AddStyle(mElement, k,v)
+	UI.SetStyle(mElement, k,v)
 End Sub
 'set Visible
 Sub setVisible(b As Boolean)
@@ -182,7 +182,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -291,6 +291,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]<${sTagName} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</${sTagName}>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 Sub setTagName(s As String)

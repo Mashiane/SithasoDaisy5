@@ -5,6 +5,8 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -110,7 +112,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -120,7 +122,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -129,14 +131,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -150,7 +152,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -206,6 +208,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+'	setVisible(bVisible)
 	BANano.Await(setOptions(sRawOptions))
 End Sub
 
@@ -230,12 +233,24 @@ Sub setOptions(s As String)
 	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
 	sb.Initialize 
+	Dim items As List
+	items.Initialize 
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = modSD5.CleanID(k)
 		sb.Append($"<input id="${sk}_${mName}" class="btn" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
+		items.Add($"${sk}_${mName}"$)
 	Next
-	mElement.Append(sb.ToString)
+	BANano.Await(mElement.Append(sb.ToString))
+	For Each item As String In items
+		UI.OnEventByID(item, "change", Me, "changed")
+	Next
+End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault
+	Dim xChecked As String = UI.GetValueByID(e.ID)
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
 End Sub
 
 'get Raw Options

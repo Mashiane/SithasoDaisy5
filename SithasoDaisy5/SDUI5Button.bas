@@ -16,6 +16,10 @@ Version=10
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color, List: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
+#DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
+#DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: TooltipOpen, DisplayName: Tooltip Open, FieldType: Boolean, DefaultValue: False, Description: Tooltip Open
+#DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|right|top|none
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: none, Description: Shape, List: square|circle|none
 #DesignerProperty: Key: Block, DisplayName: Block, FieldType: Boolean, DefaultValue: False, Description: Block
@@ -37,10 +41,10 @@ Version=10
 #DesignerProperty: Key: RightImageHeight, DisplayName: Right Image Height, FieldType: String, DefaultValue: 32px, Description: Right Image Height
 #DesignerProperty: Key: RightImageWidth, DisplayName: Right Image Width, FieldType: String, DefaultValue: 32px, Description: Right Image Width
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeLarge, DisplayName: Size Large, FieldType: String, DefaultValue: none, Description: Size Large, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeMedium, DisplayName: Size Medium, FieldType: String, DefaultValue: none, Description: Size Medium, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeSmall, DisplayName: Size Small, FieldType: String, DefaultValue: none, Description: Size Small, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeXLarge, DisplayName: Size X Large, FieldType: String, DefaultValue: none, Description: Size X Large, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: SizeLarge, DisplayName: LG Size, FieldType: String, DefaultValue: none, Description: Size Large, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: SizeMedium, DisplayName: MD Size, FieldType: String, DefaultValue: none, Description: Size Medium, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: SizeSmall, DisplayName: SM Size, FieldType: String, DefaultValue: none, Description: Size Small, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: SizeXLarge, DisplayName: XL Size, FieldType: String, DefaultValue: none, Description: Size X Large, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
@@ -114,6 +118,14 @@ Sub Class_Globals
 	Private bRoundedField As Boolean = False
 	Private sTag As String = "button"
 	Private sShape As String = "none"
+	Private sTooltip As String = ""
+	Private sTooltipColor As String = "none"
+	Private bTooltipOpen As Boolean = False
+	Private sTooltipPosition As String = "none"
+	Public CONST TOOLTIPPOSITION_BOTTOM As String = "bottom"
+	Public CONST TOOLTIPPOSITION_LEFT As String = "left"
+	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
+	Public CONST TOOLTIPPOSITION_TOP As String = "top"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -178,7 +190,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -348,6 +360,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bActivator = modSD5.CBool(bActivator)
 		bRoundedField = Props.GetDefault("RoundedField", False)
 		bRoundedField = modSD5.CBool(bRoundedField)
+		sTooltip = Props.GetDefault("Tooltip", "")
+		sTooltip = modSD5.CStr(sTooltip)
+		sTooltipColor = Props.GetDefault("TooltipColor", "none")
+		sTooltipColor = modSD5.CStr(sTooltipColor)
+		If sTooltipColor = "none" Then sTooltipColor = ""
+		bTooltipOpen = Props.GetDefault("TooltipOpen", False)
+		bTooltipOpen = modSD5.CBool(bTooltipOpen)
+		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
+		sTooltipPosition = modSD5.CStr(sTooltipPosition)
+		If sTooltipPosition = "none" Then sTooltipPosition = ""
 	End If
 	'
 	If sParentID <> "" Then
@@ -426,7 +448,68 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadgeColor(sBadgeColor)
 	setBadgeSize(sBadgeSize)
 	setDockItem(bDockItem)
+	setTooltip(sTooltip)
+	setTooltipColor(sTooltipColor)
+	setTooltipOpen(bTooltipOpen)
+	setTooltipPosition(sTooltipPosition)
+'	setVisible(bVisible)
 End Sub
+
+
+'set Tooltip
+Sub setTooltip(s As String)
+	sTooltip = s
+	CustProps.put("Tooltip", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.AddClass(mElement, "tooltip")
+	End If
+End Sub
+'set Tooltip Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setTooltipColor(s As String)
+	sTooltipColor = s
+	CustProps.put("TooltipColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetColor(mElement, "tooltipcolor", "tooltip", s)
+End Sub
+'set Tooltip Open
+Sub setTooltipOpen(b As Boolean)
+	bTooltipOpen = b
+	CustProps.put("TooltipOpen", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "tooltip-open")
+	Else
+		UI.RemoveClass(mElement, "tooltip-open")
+	End If
+End Sub
+'set Tooltip Position
+'options: bottom|left|right|top
+Sub setTooltipPosition(s As String)
+	sTooltipPosition = s
+	CustProps.put("TooltipPosition", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "tooltip-" & s)
+End Sub
+'get Tooltip
+Sub getTooltip As String
+	Return sTooltip
+End Sub
+'get Tooltip Color
+Sub getTooltipColor As String
+	Return sTooltipColor
+End Sub
+'get Tooltip Open
+Sub getTooltipOpen As Boolean
+	Return bTooltipOpen
+End Sub
+'get Tooltip Position
+Sub getTooltipPosition As String
+	return sTooltipPosition
+End Sub
+
+
 
 'get Size
 Sub getBadgeSize As String

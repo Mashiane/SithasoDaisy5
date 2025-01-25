@@ -171,6 +171,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndicatorSize(sIndicatorSize)
 	setPosition(sPosition)
 	setText(sText)
+'	setVisible(bVisible)
 End Sub
 
 'set Indicator Position

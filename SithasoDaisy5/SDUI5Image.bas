@@ -129,7 +129,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -255,6 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<img id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></img>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 'set Rounded Box
@@ -278,7 +279,7 @@ Sub setAlt(s As String)
 	sAlt = s
 	CustProps.put("Alt", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "alt", s)
+	If s <> "" Then UI.SetAttr(mElement, "alt", s)
 End Sub
 'set Height
 Sub setHeight(s As String)
@@ -308,7 +309,7 @@ Sub setSrc(s As String)
 	sSrc = s
 	CustProps.put("Src", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "src", s)
+	If s <> "" Then UI.SetAttr(mElement, "src", s)
 End Sub
 'set Width
 Sub setWidth(s As String)

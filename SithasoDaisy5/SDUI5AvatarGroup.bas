@@ -101,7 +101,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -194,6 +194,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 'set Space
@@ -201,7 +202,7 @@ Sub setSpace(s As String)
 	sSpace = s
 	CustProps.put("Space", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.UpdateClass(mElement, "space", $"-space-x-${s}"$)
+	If s <> "" Then UI.UpdateClass(mElement, "space", $"-space-x-${s}"$)
 End Sub
 
 'get Space

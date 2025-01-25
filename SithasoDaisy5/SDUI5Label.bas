@@ -161,7 +161,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -187,7 +187,7 @@ Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -201,7 +201,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -387,6 +387,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setStepValue(sStepValue)
 	setGroupName(sGroupName)
 	setCheckedColor(sCheckedColor)
+'	setVisible(bVisible)
 End Sub
 
 'set Group Name
@@ -394,7 +395,7 @@ Sub setGroupName(s As String)
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttrByID($"${mName}_input"$, "name", s)
+	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "name", s)
 End Sub
 
 Sub getGroupName As String

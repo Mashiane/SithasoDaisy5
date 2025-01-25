@@ -101,7 +101,7 @@ public Sub SetProps(props As Map)
 	BANano.SetP(mSelf, "sRawBorderRadius", sRawBorderRadius)
 End Sub
 
-Private Sub GetVisibleDT() As String
+Private Sub GetVisibleDT() As Boolean
 	Return BANano.GetP(mSelf, "bVisible")
 End Sub
 
@@ -504,6 +504,10 @@ public Sub GetTextColor() As String
 	Return BANano.GetP(mSelf, "sTextColor")
 End Sub
 
+Sub AddVisibleDT(b As Boolean)
+	If b = False Then AddClassDT("hidden")
+End Sub
+
 Sub AddClassDT(clsName As String)
 	iClasses.Add(clsName)
 End Sub
@@ -604,7 +608,7 @@ public Sub SetAttributes(mElement As BANanoElement, s As String)
 		Case "style"
 			SetStyles(mElement, v)
 		Case Else			
-			AddAttr(mElement, k, v)
+			SetAttr(mElement, k, v)
 		End Select
 	Next
 End Sub
@@ -616,7 +620,7 @@ public Sub SetAttributesByID(sID As String, s As String)
 	Dim mm As Map = GetKeyValues(s, False)
 	For Each k As String In mm.Keys
 		Dim v As String = mm.Get(k)
-		AddAttr(mElement, k, v)
+		SetAttr(mElement, k, v)
 	Next
 End Sub
 
@@ -818,7 +822,7 @@ public Sub SetEnabled(mElement As BANanoElement, bEnabled As Boolean)
 	If bEnabled Then
 		RemoveAttr(mElement, "disabled")
 	Else
-		AddAttr(mElement, "disabled", True)
+		SetAttr(mElement, "disabled", True)
 	End If
 End Sub
 
@@ -837,7 +841,7 @@ Sub SetData(mElement As BANanoElement, k As String, v As String)
 	If v = "" Then
 		RemoveAttr(mElement, $"data-${k}"$)
 	Else	
-		AddAttr(mElement, $"data-${k}"$, v)
+		SetAttr(mElement, $"data-${k}"$, v)
 	End If
 End Sub
 
@@ -867,6 +871,21 @@ Sub SetStyleComputed(mElement As BANanoElement, attr As String, text As String)
 	If mElement = Null Then Return
 	attr = modSD5.DeCamelCase(attr)
 	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))
+End Sub
+
+'add a styles to the element
+Sub SetStyle(mElement As BANanoElement, k As String, v As String)
+	If mElement = Null Then Return
+	k = modSD5.DeCamelCase(k)
+	Dim ms As Map = CreateMap()
+	ms.Put(k, v)
+	mElement.SetStyle(BANano.ToJson(ms))
+End Sub
+
+Sub SetStyleByID(sID As String, k As String, v As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetStyle(mElement, k, v)
 End Sub
 
 'add a styles to the element
@@ -900,12 +919,6 @@ Sub AddStyleDT(k As String, v As String)
 	iStyles.Put(k, v)
 End Sub
 
-'set an attribute to the element
-Sub AddAttr(mElement As BANanoElement, attr As String, text As String)
-	If mElement = Null Then Return
-	mElement.SetAttr(attr, text)
-End Sub
-
 Sub SetAttr(mElement As BANanoElement, attr As String, text As String)
 	If mElement = Null Then Return
 	mElement.SetAttr(attr, text)
@@ -914,13 +927,7 @@ End Sub
 Sub SetAttrByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	AddAttr(mElement, k, v)
-End Sub
-
-Sub AddAttrByID(sID As String, k As String, v As String)
-	sID = modSD5.CleanID(sID)
-	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	AddAttr(mElement, k, v)
+	SetAttr(mElement, k, v)
 End Sub
 
 Sub RemoveAttrByID(sID As String, k As String)
@@ -1179,7 +1186,7 @@ End Sub
 
 Sub SetImage(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
-	AddAttr(mElement, "src", s)
+	SetAttr(mElement, "src", s)
 End Sub
 
 Sub SetHeight(mElement As BANanoElement, s As String)
@@ -1293,6 +1300,14 @@ End Sub
 Sub GetValue(mElement As BANanoElement) As Object
 	If mElement = Null Then Return Null
 	Return mElement.GetValue
+End Sub
+
+Sub GetValueByID(sID As String) As String
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return ""
+	Dim svalue As String = mElement.GetValue
+	Return svalue
 End Sub
 
 Sub SetValue(mElement As BANanoElement, v As Object)

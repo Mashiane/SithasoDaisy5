@@ -222,6 +222,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	setActive(bActive)
 	setEnabled(bEnabled)
+'	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
 
@@ -236,7 +237,7 @@ Sub setText(text As String)
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
-	UI.AddAttrByID($"${mName}_${sParentID}"$, "aria-label", sText)
+	UI.SetAttrByID($"${mName}_${sParentID}"$, "aria-label", sText)
 End Sub
 
 'get text

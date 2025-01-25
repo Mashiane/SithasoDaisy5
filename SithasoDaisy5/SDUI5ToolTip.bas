@@ -164,7 +164,7 @@ Sub setTip(s As String)
     sTip = s
     CustProps.put("Tip", s)
 	If mElement = Null Then Return
-    If s <> "" Then UI.AddAttr(mElement, "data-tip", s)
+    If s <> "" Then UI.SetAttr(mElement, "data-tip", s)
 End Sub
 'get Color
 Sub getColor As String

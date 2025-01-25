@@ -349,3 +349,8 @@ End Sub
 Sub UpdateUserAvatar(s As String)
 '	userAvatar.Src = s
 End Sub
+
+Private Sub appnavbar_TitleClick (e As BANanoEvent)
+	e.PreventDefault
+	App.ShowToastSuccess("Title Click!")
+End Sub

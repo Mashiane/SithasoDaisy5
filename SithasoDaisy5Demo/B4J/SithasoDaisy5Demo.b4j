@@ -172,7 +172,7 @@ FileGroup70=Default Group\Views
 FileGroup71=Default Group\Views
 FileGroup72=Default Group\Views
 FileGroup73=Default Group\Images
-FileGroup74=Default Group
+FileGroup74=Default Group\Images
 FileGroup75=Default Group\Views
 FileGroup76=Default Group\Views
 FileGroup77=Default Group\Views
@@ -180,7 +180,7 @@ FileGroup78=Default Group\Views
 FileGroup79=Default Group\Views
 FileGroup8=Default Group\Views
 FileGroup80=Default Group\Images
-FileGroup81=Default Group
+FileGroup81=Default Group\Images
 FileGroup82=Default Group\Views
 FileGroup83=Default Group\Images
 FileGroup84=Default Group\Views
@@ -303,7 +303,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	'this is the web-app builder
 	BANano.Initialize("BANano", AppName, DateTime.now)
 	BANano.HTML_NAME = "index.html"
-	'BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
+	BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
 	BANano.Header.Title = AppTitle
 	BANano.Header.AddFavicon("./assets/600by600.jpg", "16x16")
 	BANano.Header.AddAppleTouchIcon("./assets/600by600.jpg", "180x180")

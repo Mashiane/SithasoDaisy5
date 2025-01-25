@@ -69,7 +69,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -88,14 +88,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -109,7 +109,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -209,7 +209,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	UI.AddAttrDT("role", "tablist")
 	UI.AddClassDT("tabs")
-	UI.AddClassDT("tabs-box")
+	UI.AddClassDT("tabs-box inline-flex flex-nowrap")
 	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -228,6 +228,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 	BANano.Await(setKeyValues(sRawKeyValues))
 	setActive(sActive)
+'	setVisible(bVisible)
 End Sub
 
 'get Width
@@ -267,9 +268,13 @@ Sub setKeyValues(s As String)
 	If mElement = Null Then Return
 	Clear
 	Dim m As Map = UI.GetKeyValues(s, False)
+	Dim tItems As Int = m.size
+	Dim cItems As Int = 0
 	For Each k As String In m.Keys
+		cItems = BANano.parseInt(cItems) + 1
 		Dim v As String = m.Get(k)
 		BANano.Await(AddButton(k, v))
+		BANano.Await(UI.SetWidthByID($"${k}_${mName}"$, $"${cItems}/${tItems}"$))
 	Next
 End Sub
 

@@ -5,10 +5,11 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
-'#DesignerProperty: Key: FloatingLabel, DisplayName: Floating Label, FieldType: Boolean, DefaultValue: False, Description: Floating Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
@@ -47,15 +48,14 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sColor As String = "none"
-	Private bFloatingLabel As Boolean = False
 	Private bGhost As Boolean = False
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private sLabel As String = "Please select a file"
 	Private bRequired As Boolean = False
 	Private sSize As String = "none"
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
+	Private sInputType As String = "normal"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -100,7 +100,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sInputType
+	Case "normal"		
+		UI.SetVisible(mElement, b)
+	Case Else
+		UI.SetVisibleByID($"${mName}_control"$, b)
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -128,7 +133,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -138,7 +143,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -147,14 +152,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -168,7 +173,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -210,12 +215,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bFloatingLabel = Props.GetDefault("FloatingLabel", False)
-		bFloatingLabel = modSD5.CBool(bFloatingLabel)
 		bGhost = Props.GetDefault("Ghost", False)
 		bGhost = modSD5.CBool(bGhost)
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Please select a file")
@@ -229,9 +230,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
 		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sInputType = Props.GetDefault("InputType", "normal")
+		sInputType = modSD5.CStr(sInputType)
+		bVisible = Props.GetDefault("Visible", True)
+		bVisible = modSD5.CBool(bVisible)
 	End If
 	'
-	If bHasLabel = False Then UI.AddClassDT("join")
+	If sInputType = "buttons" Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -243,36 +248,49 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
+	Select Case sInputType
+	Case "legend"
 		mElement = mTarget.Append($"[BANCLEAN]
-				<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<fieldset id="${mName}_control" class="fieldset ${xclasses}" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div class="join">
-	          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"/>
+	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
 	          			</div>
 	          		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
-	Else
+	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-          			<input id="${mName}" class="join-item tlradius trradius blradius brradius"></input>
+          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
           			</div>
         		</div>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "file-input")
+	Case "normal"
+		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+	End Select
 	setColor(sColor)
 	setGhost(bGhost)
 	setRequired(bRequired)
 	setSize(sSize)
-	UI.AddAttr(mElement, "type", "file")
-'	setFloatingLabel(bFloatingLabel)
+	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
+'	setVisible(bVisible)
 End Sub
+
+
+'legend|normal
+Sub setInputType(s As String)
+	sInputType = s
+	CustProps.Put("InputType", s)
+End Sub
+
+Sub getInputType As String
+	Return sInputType
+End Sub
+
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -281,18 +299,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "file-input", sColor)
-End Sub
-'set Floating Label
-Sub setFloatingLabel(b As Boolean)
-	bFloatingLabel = b
-	CustProps.put("FloatingLabel", b)
-	If mElement = Null Then Return
-	If bHasLabel = False Then Return
-	If b = True Then
-		UI.AddClassByID($"${mName}_control"$, "floating-label")
-	Else
-		UI.RemoveClassByID($"${mName}_control"$, "floating-label")
-	End If
 End Sub
 'set Ghost
 Sub setGhost(b As Boolean)
@@ -304,11 +310,6 @@ Sub setGhost(b As Boolean)
 	Else
 		UI.RemoveClass(mElement, "file-input-ghost")
 	End If
-End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
 End Sub
 'set Hint
 Sub setHint(s As String)
@@ -322,7 +323,7 @@ Sub setLabel(s As String)
 	sLabel = s
 	CustProps.put("Label", s)
 	If mElement = Null Then Return
-	UI.AddAttr(mElement, "label", s)
+	UI.SetAttr(mElement, "label", s)
 End Sub
 'set Required
 Sub setRequired(b As Boolean)
@@ -330,7 +331,7 @@ Sub setRequired(b As Boolean)
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddAttr(mElement, "required", b)
+		UI.SetAttr(mElement, "required", b)
 		UI.SetVisibleByID($"${mName}_required"$, True)
 		UI.SetVisibleByID($"${mName}_badge"$, True)
 	Else
@@ -364,23 +365,15 @@ Sub setValidatorHint(s As String)
 	sValidatorHint = s
 	CustProps.put("ValidatorHint", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "validator-hint", s)
+	If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'get Color
 Sub getColor As String
 	Return sColor
 End Sub
-'get Floating Label
-Sub getFloatingLabel As Boolean
-	Return bFloatingLabel
-End Sub
 'get Ghost
 Sub getGhost As Boolean
 	Return bGhost
-End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
 End Sub
 'get Hint
 Sub getHint As String
@@ -405,4 +398,119 @@ End Sub
 'get Validator Hint
 Sub getValidatorHint As String
 	Return sValidatorHint
+End Sub
+
+'<code>
+'Sub fi1_change(e As BANanoEvent)
+''has the file been specified
+'Dim fileObj As Map = fi1.GetFile
+'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
+''get file details
+'Dim fileDet As FileObject
+'fileDet = SDUIShared.GetFileDetails(fileObj)
+''get the file name
+'Dim fn As String = fileDet.FileName
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''**** UPLOAD
+''fileDet = SDUIShared.UploadFileWait(fileObj)
+''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+''Dim fn As String = fileDet.FileName
+''get the status of the upload
+''Dim sstatus As String = fileDet.Status
+''Select Case sstatus
+''Case "error"
+''Case "success"
+''End Select
+''the the full upload path of the file
+''Dim fp As String = fileDet.FullPath
+''**** UPLOAD
+''Dim fJSON As Map = BANano.Await(SDUIShared.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(SDUIShared.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(SDUIShared.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(SDUIShared.readAsDataURLWait(fileObj))
+''update state of some element like an image
+''for vfield use SetValue
+''vimage.src = fText
+''clear the file input
+''fil1.Value = ""
+'End Sub
+'</code>
+Sub ChangeSingle
+End Sub
+'<code>
+''****for multiple files
+'Sub fi1_change(e As BANanoEvent)
+''has the files been selected
+'Dim fileList As List = fi1.GetFiles
+'If banano.IsNull(fileList) Or banano.IsUndefined(fileList) Then Return
+''will store list of uploaded file
+'Dim uploads As List
+'uploads.Initialize
+''loop through each selected file
+'for each fileObj As Map in fileList
+''get file details
+'Dim fileDet As FileObject
+'fileDet = SDUIShared.GetFileDetails(fileObj)
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''start uploading the file
+'fileDet = SDUIShared.UploadFileWait(fileObj)
+''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+'Dim fn As String = fileDet.FileName
+''get the status of the upload
+'Dim sstatus As String = fileDet.Status
+'Select Case sstatus
+'Case "error"
+'Case "success"
+'End Select
+''the the full upload path of the file
+'Dim fp As String = fileDet.FullPath
+''update the lists of uploaded file with the path
+''uploads.Add(fp)
+'next
+''clear the file input
+'fil1.Value = ""
+'End Sub
+'</code>
+Sub ChangeMultiple
+End Sub
+
+'get the list of selected files
+Sub GetFiles As List
+	'get the selected files, if any
+	If mElement.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim files As Object = mElement.GetField("files").Result
+		Dim res As List = files.As(List)
+		Return res
+	End If
+End Sub
+
+'get selected file
+Sub GetFile As Map
+	If mElement.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim obj() As BANanoObject = mElement.GetField("files").Result
+		Return obj(0)
+	End If
+End Sub
+
+'ensure we can select the same file again
+Sub Nullify
+	mElement.SetValue(Null)
 End Sub

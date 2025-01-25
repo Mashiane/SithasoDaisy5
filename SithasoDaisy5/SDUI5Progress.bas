@@ -6,20 +6,23 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: ProgressType, DisplayName: Progress Type, FieldType: String, DefaultValue: normal, Description: Progress Type, List: legend|normal|tooltip
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
-#DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: 0, Description: Min Value
-#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 0, Description: Value
-#DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: String, DefaultValue: 100, Description: Max Value
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Value
+#DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Min Value
+#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: Int, DefaultValue: 1, MinRange: 0, MaxRange: 100, Description: Step Value
+#DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Max Value
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
-#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: String, DefaultValue: 1, Description: Step Value
 #DesignerProperty: Key: Ticks, DisplayName: Ticks, FieldType: String, DefaultValue: , Description: Ticks
+#DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -32,7 +35,7 @@ Version=10
 'global variables in this module
 Sub Class_Globals
 	Public UI As UIShared 'ignore
-	Public CustProps As Map 'ignore
+	Public CustProps As Map 'ignorew
 	Private mCallBack As Object 'ignore
 	Private mEventName As String 'ignore
 	Private mElement As BANanoElement 'ignore
@@ -57,14 +60,17 @@ Sub Class_Globals
 	Private bIndeterminate As Boolean = False
 	Private sLeftIcon As String = ""
 	Private sLeftIconColor As String = ""
-	Private sMaxValue As String = "100"
-	Private sMinValue As String = "0"
+	Private iMaxValue As Int = 100
+	Private iMinValue As Int = 0
 	Private sRightIcon As String = ""
 	Private sRightIconColor As String = ""
-	Private sStepValue As String = "1"
+	Private iStepValue As Int = 1
 	Private sTicks As String = ""
-	Private sValue As String = "0"
-	Private sWidth As String = "56"
+	Private iValue As Int = 0
+	Private sWidth As String = "full"
+	Private sProgressType As String = "normal"
+	Private sLabel As String = ""
+	Private sHint As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -104,7 +110,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sProgressType
+	Case "normal"
+		UI.SetVisible(mElement, b)
+	Case Else
+		UI.SetVisibleByID($"${mName}_control"$, b)
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -127,7 +138,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -146,14 +157,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -167,7 +178,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -198,15 +209,25 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 'set value
-Sub setValue(text As String)
-	sValue = text
-	CustProps.Put("Value", text)
+Sub setValue(i As Int)
+	iValue = i
+	CustProps.Put("Value", i)
 	If mElement = Null Then Return
-	UI.SetValue(mElement, text)
+	mElement.SetValue(i)
+	Select Case sProgressType
+	Case "legend"
+		UI.SetTextByID($"${mName}_endlabel"$, iValue)
+	Case "tooltip"
+		UI.SetStyleComputedByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
+		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
+	Case "normal"
+	End Select
 End Sub
 'get value
-Sub getValue As String
-	Return UI.GetValue(mElement)
+Sub getValue As Int
+	If mElement = Null Then Return 0
+	iValue = modSD5.CInt(mElement.getvalue)
+	Return iValue
 End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -214,7 +235,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
@@ -227,22 +248,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sLeftIcon = modSD5.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
 		sLeftIconColor = modSD5.CStr(sLeftIconColor)
-		sMaxValue = Props.GetDefault("MaxValue", "100")
-		sMaxValue = modSD5.CStr(sMaxValue)
-		sMinValue = Props.GetDefault("MinValue", "0")
-		sMinValue = modSD5.CStr(sMinValue)
+		iMaxValue = Props.GetDefault("MaxValue", 100)
+		iMaxValue = modSD5.CInt(iMaxValue)
+		iMinValue = Props.GetDefault("MinValue", 0)
+		iMinValue = modSD5.Cint(iMinValue)
 		sRightIcon = Props.GetDefault("RightIcon", "")
 		sRightIcon = modSD5.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "")
 		sRightIconColor = modSD5.CStr(sRightIconColor)
-		sStepValue = Props.GetDefault("StepValue", "1")
-		sStepValue = modSD5.CStr(sStepValue)
+		iStepValue = Props.GetDefault("StepValue", 1)
+		iStepValue = modSD5.Cint(iStepValue)
 		sTicks = Props.GetDefault("Ticks", "")
 		sTicks = modSD5.CStr(sTicks)
-		sValue = Props.GetDefault("Value", "0")
-		sValue = modSD5.CStr(sValue)
-		sWidth = Props.GetDefault("Width", "56")
+		iValue = Props.GetDefault("Value", 0)
+		iValue = modSD5.Cint(iValue)
+		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		sLabel = Props.GetDefault("Label", "")
+		sLabel = modSD5.CStr(sLabel)
+		sProgressType = Props.GetDefault("ProgressType", "normal")
+		sProgressType = modSD5.CStr(sProgressType)
+		sHint = Props.GetDefault("Hint", "")
+		sHint = modSD5.CStr(sHint)
 	End If
 	'
 	If sParentID <> "" Then
@@ -253,20 +280,128 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sColor <> "" Then UI.AddColorDT("progress", sColor)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sMaxValue <> "" Then UI.AddAttrDT("max", sMaxValue)
-	If sMinValue <> "" Then UI.AddAttrDT("min", sMinValue)
-	UI.AddClassDT("progress")
-	If sStepValue <> "" Then UI.AddAttrDT("step", sStepValue)
-	If sValue <> "" Then UI.AddAttrDT("value", sValue)
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	'
+	Select Case sProgressType
+	Case "legend"
+		If sWidth <> "" Then UI.AddClassDT(sWidth)
+	Case "tooltip"
+		If sWidth <> "" Then UI.AddClassDT(sWidth)
+	Case "normal"
+		If sWidth <> "" Then UI.AddClassDT(sWidth)
+	End Select
+	
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
-	mElement = mTarget.Append($"[BANCLEAN]<progress id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></progress>"$).Get("#" & mName)
+	'
+	Select Case sProgressType
+		Case "legend"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
+  					<span id="${mName}_startlabel"></span>
+					<span id="${mName}_endlabel">${iValue}</span>
+				</div>
+  				<progress id="${mName}" class="progress relative" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
+  					<span id="${mName}_start">${iMinValue}</span>
+					<span id="${mName}_end">${iMaxValue}</span>
+				</div>
+				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+			</fieldset>"$).Get("#" & mName)
+		Case "tooltip"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+        		<div class="relative mt-6">
+            		<div id="${mName}_tooltip" class="absolute tooltip top-2 tooltip-open before:text-xs" style="inset-inline-start:${iValue}%" data-tip="${iValue}"></div>
+					<progress id="${mName}" class="progress" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+        		</div>
+        		<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
+					<span id="${mName}_start">${iMinValue}</span>
+					<span id="${mName}_end">${iMaxValue}</span>
+				</div>
+    		</div>"$).Get("#" & mName)
+		Case "normal"
+			mElement = mTarget.Append($"[BANCLEAN]<progress id="${mName}" class="${xclasses} progress" ${xattrs} style="${xstyles}"></progress>"$).Get("#" & mName)
+	End Select
+	If sBackgroundColor <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If sColor <> "" Then UI.SetColor(mElement, "color", "progress", sColor)
+	If sHeight <> "" Then UI.SetHeight(mElement, sHeight)
+	UI.SetAttr(mElement, "max", iMaxValue)
+	UI.SetAttr(mElement, "min", iMinValue)
+	UI.SetAttr(mElement, "step", iStepValue)
+	UI.AddAttrDT("value", iValue)
+	If sWidth <> "" Then UI.SetWidth(mElement, sWidth)
+	setValue(iValue)
 	setIndeterminate(bIndeterminate)
+'	setVisible(bVisible)
+End Sub
+
+'set Hint
+Sub setHint(s As String)
+	sHint = s
+	CustProps.put("Hint", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+End Sub
+
+Sub getHint As String
+	Return sHint
+End Sub
+
+'set Label
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.put("Label", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabel As String
+	Return sLabel
+End Sub
+
+'legend|normal|tooltip
+Sub setProgressType(s As String)
+	sProgressType = s
+	CustProps.Put("ProgressType", s)
+End Sub
+
+Sub getProgressType As String
+	Return sProgressType
+End Sub
+
+'set End Value
+Sub SetEndValue(s As String)
+	CustProps.put("EndValue", s)
+	If mElement = Null Then Return
+	UI.SetTextByid($"${mName}_end"$, s)
+End Sub
+
+'set Show Start End
+Sub SetShowStartEnd(b As Boolean)
+	CustProps.put("ShowStartEnd", b)
+	UI.SetVisibleByID($"${mName}_startend"$, b)
+End Sub
+'set Start Value
+Sub SetStartValue(s As String)
+	CustProps.put("StartValue", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_start"$, s)
+End Sub
+'set Tooltip
+Sub SetTooltip(s As String)
+	CustProps.put("Tooltip", s)
+	If mElement = Null Then Return
+	UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", s)
+End Sub
+'set Tooltip Visible
+Sub SetTooltipVisible(b As Boolean)
+	CustProps.put("TooltipVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_tooltip"$, b)
 End Sub
 
 'set Background Color
@@ -300,10 +435,12 @@ Sub setIndeterminate(b As Boolean)
 		UI.RemoveAttr(mElement, "max")
 		UI.RemoveAttr(mElement, "value")
 		UI.RemoveAttr(mElement, "min")
+		UI.RemoveAttr(mElement, "step")
 	Else
-		UI.AddAttr(mElement, "max", sMaxValue)
-		UI.AddAttr(mElement, "value", sValue)
-		UI.AddAttr(mElement, "min", sMinValue)
+		UI.SetAttr(mElement, "step", iStepValue)
+		UI.SetAttr(mElement, "max", iMaxValue)
+		UI.SetAttr(mElement, "value", iValue)
+		UI.SetAttr(mElement, "min", iMinValue)
 	End If
 End Sub
 'set Left Icon
@@ -311,56 +448,56 @@ Sub setLeftIcon(s As String)
 	sLeftIcon = s
 	CustProps.put("LeftIcon", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddAttr(mElement, "left-icon", s)
+	'If s <> "" Then UI.SetAttr(mElement, "left-icon", s)
 End Sub
 'set Left Icon Color
 Sub setLeftIconColor(s As String)
 	sLeftIconColor = s
 	CustProps.put("LeftIconColor", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddAttr(mElement, "left-icon-color", s)
+	'If s <> "" Then UI.SetAttr(mElement, "left-icon-color", s)
 End Sub
 'set Max Value
-Sub setMaxValue(s As String)
-	sMaxValue = s
-	CustProps.put("MaxValue", s)
+Sub setMaxValue(i As Int)
+	iMaxValue = i
+	CustProps.put("MaxValue", i)
 	If mElement = Null Then Return
-	UI.AddAttr(mElement, "max", s)
+	UI.SetAttr(mElement, "max", i)
 End Sub
 'set Min Value
-Sub setMinValue(s As String)
-	sMinValue = s
-	CustProps.put("MinValue", s)
+Sub setMinValue(i As Int)
+	iMinValue = i
+	CustProps.put("MinValue", i)
 	If mElement = Null Then Return
-	UI.AddAttr(mElement, "min", s)
+	UI.SetAttr(mElement, "min", i)
 End Sub
 'set Right Icon
 Sub setRightIcon(s As String)
 	sRightIcon = s
 	CustProps.put("RightIcon", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddAttr(mElement, "right-icon", s)
+	'If s <> "" Then UI.SetAttr(mElement, "right-icon", s)
 End Sub
 'set Right Icon Color
 Sub setRightIconColor(s As String)
 	sRightIconColor = s
 	CustProps.put("RightIconColor", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddAttr(mElement, "right-icon-color", s)
+	'If s <> "" Then UI.SetAttr(mElement, "right-icon-color", s)
 End Sub
 'set Step Value
-Sub setStepValue(s As String)
-	sStepValue = s
-	CustProps.put("StepValue", s)
+Sub setStepValue(i As Int)
+	iStepValue = i
+	CustProps.put("StepValue", i)
 	If mElement = Null Then Return
-	UI.AddAttr(mElement, "step", s)
+	UI.SetAttr(mElement, "step", i)
 End Sub
 'set Ticks
 Sub setTicks(s As String)
 	sTicks = s
 	CustProps.put("Ticks", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddAttr(mElement, "ticks", s)
+	'If s <> "" Then UI.SetAttr(mElement, "ticks", s)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
@@ -387,12 +524,12 @@ Sub getLeftIconColor As String
 	Return sLeftIconColor
 End Sub
 'get Max Value
-Sub getMaxValue As String
-	Return sMaxValue
+Sub getMaxValue As Int
+	Return iMaxValue
 End Sub
 'get Min Value
-Sub getMinValue As String
-	Return sMinValue
+Sub getMinValue As Int
+	Return iMinValue
 End Sub
 'get Right Icon
 Sub getRightIcon As String
@@ -403,8 +540,8 @@ Sub getRightIconColor As String
 	Return sRightIconColor
 End Sub
 'get Step Value
-Sub getStepValue As String
-	Return sStepValue
+Sub getStepValue As Int
+	Return iStepValue
 End Sub
 'get Ticks
 Sub getTicks As String

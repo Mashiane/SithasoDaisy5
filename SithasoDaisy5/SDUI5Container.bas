@@ -173,7 +173,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -334,6 +334,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+'	setVisible(bVisible)
 End Sub
 
 
@@ -558,7 +559,7 @@ Sub setTextAlign(s As String)
 	sTextAlign = s
 	CustProps.put("TextAlign", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "text-align", s)
+	If s <> "" Then UI.SetStyle(mElement, "text-align", s)
 End Sub
 'get Text Align
 Sub getTextAlign As String

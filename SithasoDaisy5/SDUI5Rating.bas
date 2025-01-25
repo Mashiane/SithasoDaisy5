@@ -5,13 +5,17 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+
+#Event: Change (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Rating, Description: Label
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: star, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
-#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color, List: accent|error|info|neutral|primary|secondary|success|warning
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color, List: accent|error|info|neutral|primary|secondary|success|warning|none
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|sm|xl|xs
-#DesignerProperty: Key: Count, DisplayName: Count, FieldType: String, DefaultValue: 5, Description: Count
+#DesignerProperty: Key: Count, DisplayName: Count, FieldType: Int, DefaultValue: 5, MinRange: 0, MaxRange: 10, Description: Count of ratings
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 2, Description: Value
 #DesignerProperty: Key: FirstHidden, DisplayName: First Hidden, FieldType: Boolean, DefaultValue: False, Description: First Hidden
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: 2, Description: Gap
@@ -50,11 +54,10 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sColor As String = "primary"
-	Private sCount As String = "5"
+	Private iCount As Int = 5
 	Private bFirstHidden As Boolean = False
 	Private sGap As String = "2"
 	Private bHalf As Boolean = False
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private sLabel As String = "Rating"
 	Private sMask As String = "star"
@@ -62,6 +65,8 @@ Sub Class_Globals
 	Private sSize As String = "md"
 	Private sValue As String = "2"
 	Private bRequired As Boolean = False
+	Private sInputType As String = "normal"
+	Private sBackgroundColor As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -106,7 +111,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sInputType
+	Case "normal"
+		UI.SetVisible(mElement, b)
+	Case Else
+		UI.SetVisibleByID($"${mName}_control"$, b)
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -134,7 +144,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -210,22 +220,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "primary")
 		sColor = modSD5.CStr(sColor)
-		sCount = Props.GetDefault("Count", "5")
-		sCount = modSD5.CStr(sCount)
+		If sColor = "none" Then sColor = ""
+		iCount = Props.GetDefault("Count", 5)
+		iCount = modSD5.Cint(iCount)
 		bFirstHidden = Props.GetDefault("FirstHidden", False)
 		bFirstHidden = modSD5.CBool(bFirstHidden)
 		sGap = Props.GetDefault("Gap", "2")
 		sGap = modSD5.CStr(sGap)
 		bHalf = Props.GetDefault("Half", False)
 		bHalf = modSD5.CBool(bHalf)
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Rating")
@@ -240,6 +249,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValue = modSD5.CStr(sValue)
 		bRequired = Props.GetDefault("Required", False)
 		bRequired = modSD5.CBool(bRequired)
+		sInputType = Props.GetDefault("InputType", "normal")
+		sInputType = modSD5.CStr(sInputType)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -253,23 +264,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
+	Select Case sInputType
+	Case "legend"	
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-				<div id="${mName}"></div>
+				<div id="${mName}" class="rating"></div>
 				<div id="${mName}_hint" class="fieldset-label">${sHint}</div>
 			</fieldset>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "rating")
+	Case "normal"
+		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses} rating" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	End Select
 	setSize(sSize)
 	setGap(sGap)
 	setHalf(bHalf)
 	BANano.Await(Refresh)
 	setValue(sValue)
+'	setVisible(bVisible)
+End Sub
+
+'legend|normal
+Sub setInputType(s As String)
+	sInputType = s
+	CustProps.Put("InputType", s)
+End Sub
+
+Sub getInputType As String
+	Return sInputType
 End Sub
 
 'set Required, needs Refresh
@@ -295,8 +316,8 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 End Sub
 'set Count
-Sub setCount(s As String)
-	sCount = s
+Sub setCount(s As Int)
+	iCount = s
 	CustProps.put("Count", s)
 End Sub
 
@@ -304,21 +325,26 @@ End Sub
 Sub Refresh
 	If mElement = Null Then Return
 	Clear
-	Dim tCount As Int = modSD5.CInt(sCount)
+	Dim tCount As Int = modSD5.CInt(iCount)
 	Dim fCount As Int = 0
 	Dim maskName As String = modSD5.FixMask(sMask)
 	Dim colorName As String = modSD5.FixColor("bg", sColor)
+	If sBackgroundColor <> "" Then
+		colorName = modSD5.FixColor("bg", sBackgroundColor)
+	End If
 	Dim sb As StringBuilder
-	sb.Initialize		
+	sb.Initialize
+	Dim items As List
+	items.Initialize 		
 	Select Case bReadOnly
 	Case True
 		For fCount = 1 To tCount
-			sb.Append($"<div id="${mName}_${fCount}" class="${maskName} ${colorName}" aria-label="${fCount} star"></div>"$)
+			sb.Append($"<div id="${mName}_${fCount}" value="${fCount}" class="${maskName} ${colorName}" aria-label="${fCount} star"></div>"$)
 		Next
 		mElement.Append(sb.ToString)
 	Case False
 		If bFirstHidden Then
-			sb.Append($"<input id="${mName}_0" type="radio" name="${mName}" class="rating-hidden" aria-label="Clear"></input>"$)
+			sb.Append($"<input id="${mName}_0" type="radio" value="0" name="${mName}" class="rating-hidden" aria-label="Clear"></input>"$)
 		End If		
 		Dim itemClasses As List
 		For fCount = 1 To tCount
@@ -331,19 +357,43 @@ Sub Refresh
 				itemClasses.add("mask-half-1")
 			End If
 			Dim sclasses As String = modSD5.Join(" ", itemClasses)
-			sb.Append($"<input id="${mName}_${fCount}" type="radio" name="${mName}" class="${sclasses}" aria-label="${posD} star"></input>"$)
+				sb.Append($"<input id="${mName}_${fCount}" type="radio" value="${posD}" name="${mName}" class="${sclasses}" aria-label="${posD} star"></input>"$)
+			items.Add($"${mName}_${fCount}"$)
 			If bHalf Then
 				itemClasses.Initialize
 				itemClasses.Add(maskName)
 				itemClasses.Add(colorName)
 				itemClasses.add("mask-half-2")
 				Dim sclasses As String = modSD5.Join(" ", itemClasses)
-				sb.Append($"<input id="${mName}_${fCount}_2" type="radio" name="${mName}" class="${sclasses}" aria-label="${fCount} star"></input>"$)
+				sb.Append($"<input id="${mName}_${fCount}_2" type="radio" value="${fCount}" name="${mName}" class="${sclasses}" aria-label="${fCount} star"></input>"$)
+				items.Add($"${mName}_${fCount}_2"$)
 			End If
 		Next
-		mElement.Append(sb.ToString)
+		BANano.Await(mElement.Append(sb.ToString))
+		For Each k As String In items
+			UI.OnChildEvent(k, "change", Me, "changed")
+		Next
 	End Select
 End Sub
+
+'set Background Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault
+	Dim xChecked As String = UI.GetValueByID(e.ID)
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+End Sub
+
 
 'set First Hidden, needs Refresh
 Sub setFirstHidden(b As Boolean)
@@ -370,11 +420,6 @@ Sub setHalf(b As Boolean)
 	Else
 		UI.RemoveClass(mElement, "rating-half")
 	End If
-End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
 End Sub
 'set Hint
 Sub setHint(s As String)
@@ -426,8 +471,8 @@ Sub getColor As String
 	Return sColor
 End Sub
 'get Count
-Sub getCount As String
-	Return sCount
+Sub getCount As Int
+	Return iCount
 End Sub
 'get First Hidden
 Sub getFirstHidden As Boolean
@@ -440,10 +485,6 @@ End Sub
 'get Half
 Sub getHalf As Boolean
 	Return bHalf
-End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
 End Sub
 'get Hint
 Sub getHint As String

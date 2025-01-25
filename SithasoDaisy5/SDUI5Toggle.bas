@@ -5,8 +5,10 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value As Boolean)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: HasLabel, DisplayName: Has Label, FieldType: Boolean, DefaultValue: False, Description: Has Label
+#DesignerProperty: Key: ToggleType, DisplayName: Toggle Type, FieldType: String, DefaultValue: normal, Description: Toggle Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
@@ -17,7 +19,6 @@ Version=10
 #DesignerProperty: Key: OffIcon, DisplayName: Off Icon, FieldType: String, DefaultValue: , Description: Off Icon
 #DesignerProperty: Key: OnIcon, DisplayName: On Icon, FieldType: String, DefaultValue: , Description: On Icon
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
-#DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: , Description: Title
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: UncheckedColor, DisplayName: Unchecked Color, FieldType: String, DefaultValue: , Description: Unchecked Color
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
@@ -55,7 +56,6 @@ Sub Class_Globals
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
-	Private bHasLabel As Boolean = False
 	Private sHint As String = ""
 	Private bIndeterminate As Boolean = False
 	Private sLabel As String = "Turn On"
@@ -64,10 +64,10 @@ Sub Class_Globals
 	Private sOnIcon As String = ""
 	Private bRequired As Boolean = False
 	Private sSize As String = "none"
-	Private sTitle As String = ""
 	Private sUncheckedColor As String = ""
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
+	Private sToggleType As String = "normal"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -112,7 +112,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sToggleType
+	Case "normal"
+		UI.SetVisible(mElement, b)
+	Case Else
+		UI.SetVisibleByID($"${mName}_control"$, b)		
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -140,7 +145,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -150,7 +155,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -159,14 +164,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -180,7 +185,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -226,8 +231,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
-		bHasLabel = Props.GetDefault("HasLabel", False)
-		bHasLabel = modSD5.CBool(bHasLabel)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
@@ -245,19 +248,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		sTitle = Props.GetDefault("Title", "")
-		sTitle = modSD5.CStr(sTitle)
 		sUncheckedColor = Props.GetDefault("UncheckedColor", "")
 		sUncheckedColor = modSD5.CStr(sUncheckedColor)
 		bValidator = Props.GetDefault("Validator", False)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
 		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sToggleType = Props.GetDefault("ToggleType", "normal")
+		sToggleType = modSD5.CStr(sToggleType)
 	End If
 	'
-	Dim xattrs As String = UI.BuildExAttributes
-	Dim xstyles As String = UI.BuildExStyle
-	Dim xclasses As String = UI.BuildExClass
+	
 	If sParentID <> "" Then
 		'does the parent exist
 		If BANano.Exists($"#${sParentID}"$) = False Then
@@ -266,28 +267,66 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If bHasLabel Then
+	'
+	
+	Dim xattrs As String = UI.BuildExAttributes
+	Dim xstyles As String = UI.BuildExStyle
+	Dim xclasses As String = UI.BuildExClass
+	
+	Select Case sToggleType
+	Case "legend"
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_labelhost" class="fieldset-label">
-					<input id="${mName}" type="checkbox"></input>
-					<span id="${mName}_label">${sLabel}</span>
-				</label>	
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
+				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
+  					<input id="${mName}" type="checkbox" class="toggle"></input>
+  					<span id="${mName}_label">${sLabel}</span>
+				</label>
 			</fieldset>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
-	End If
-	If bHasLabel Then UI.AddClassByID($"${mName}_control"$, "fieldset")
-	UI.AddClass(mElement, "toggle")
+	Case "normal"
+		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} toggle" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+	Case "left-label"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex items-center justify-between gap-2" ${xattrs} style="${xstyles}">
+  				<label id="${mName}_labelhost" class="cursor-pointer select-none">
+    				<span id="${mName}_label">${sLabel}</span>
+  				</label>
+    			<input id="${mName}" type="checkbox" class="toggle">
+			</div>"$).Get("#" & mName)
+	Case "right-label"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
+				<label id="${mName}_labelhost" class="flex gap-2 items-center cursor-pointer">
+			 		<input id="${mName}" type="checkbox" class="toggle"></input>
+					<span id="${mName}_label">${sLabel}</span>
+				</label>
+			</div>"$).Get("#" & mName)
+	End Select
 	setColor(sColor)
 	setEnabled(bEnabled)
 	setRequired(bRequired)
 	setSize(sSize)
-	UI.AddAttr(mElement, "type", "checkbox")
 	setChecked(bChecked)
 	setIndeterminate(bIndeterminate)
 	setCheckedColor(sCheckedColor)
+'	setVisible(bVisible)
+	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault 
+	Dim xChecked As Boolean = mElement.GetChecked 
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+End Sub
+
+'legend|normal|left-label|right-label
+Sub setToggleType(s As String)
+	sToggleType = s
+	CustProps.Put("ToggleType", s)
+End Sub
+
+Sub getToggleType As String
+	Return sToggleType
 End Sub
 
 'set Checked
@@ -311,11 +350,6 @@ Sub setColor(s As String)
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "toggle", sColor)
-End Sub
-'set Has Label
-Sub setHasLabel(b As Boolean)
-	bHasLabel = b
-	CustProps.put("HasLabel", b)
 End Sub
 'set Hint
 Sub setHint(s As String)
@@ -354,14 +388,14 @@ Sub setOffIcon(s As String)
 	sOffIcon = s
 	CustProps.put("OffIcon", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "off-icon", s)
+'	If s <> "" Then UI.SetAttr(mElement, "off-icon", s)
 End Sub
 'set On Icon
 Sub setOnIcon(s As String)
 	sOnIcon = s
 	CustProps.put("OnIcon", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "on-icon", s)
+'	If s <> "" Then UI.SetAttr(mElement, "on-icon", s)
 End Sub
 'set Required
 Sub setRequired(b As Boolean)
@@ -369,7 +403,7 @@ Sub setRequired(b As Boolean)
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddAttr(mElement, "required", b)
+		UI.SetAttr(mElement, "required", b)
 	Else
 		UI.RemoveAttr(mElement, "required")
 	End If
@@ -383,19 +417,12 @@ Sub setSize(s As String)
 	If s = "" Then sSize = "md"
 	UI.SetSize(mElement, "size", "toggle", sSize)
 End Sub
-'set Title
-Sub setTitle(s As String)
-	sTitle = s
-	CustProps.put("Title", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "title", s)
-End Sub
 'set Unchecked Color
 Sub setUncheckedColor(s As String)
 	sUncheckedColor = s
 	CustProps.put("UncheckedColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.AddAttr(mElement, "unchecked-color", s)
+'	If s <> "" Then UI.SetAttr(mElement, "unchecked-color", s)
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)
@@ -403,7 +430,7 @@ Sub setValidator(b As Boolean)
 	CustProps.put("Validator", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddAttr(mElement, "validator", b)
+		UI.SetAttr(mElement, "validator", b)
 	Else
 		UI.RemoveAttr(mElement, "validator")
 	End If
@@ -413,7 +440,7 @@ Sub setValidatorHint(s As String)
 	sValidatorHint = s
 	CustProps.put("ValidatorHint", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "validator-hint", s)
+	If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'get Checked
 Sub getChecked As Boolean
@@ -427,10 +454,6 @@ End Sub
 'get Color
 Sub getColor As String
 	Return sColor
-End Sub
-'get Has Label
-Sub getHasLabel As Boolean
-	Return bHasLabel
 End Sub
 'get Hint
 Sub getHint As String
@@ -463,10 +486,6 @@ End Sub
 'get Size
 Sub getSize As String
 	Return sSize
-End Sub
-'get Title
-Sub getTitle As String
-	Return sTitle
 End Sub
 'get Unchecked Color
 Sub getUncheckedColor As String

@@ -5,6 +5,8 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio Group, Description: Label
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -134,7 +136,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -144,7 +146,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -153,14 +155,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -174,7 +176,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -273,6 +275,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
 	setOptions(sRawOptions)
+'	setVisible(bVisible)
 End Sub
 
 
@@ -341,28 +344,44 @@ Sub SetOptionsFromMap(m As Map)
 	Dim rColor As String = modSD5.FixColor("radio", sColor)
 	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
 	Dim sb As StringBuilder
-	sb.Initialize 
+	sb.Initialize
+	Dim items As List
+	items.Initialize  
 	If bColumnView Then
 		Select Case sLabelPosition
 		Case "left"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
 				Dim sk As String = modSD5.CleanID(k)
-				sb.Append($"[BANCLEAN]
-					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
-						<span id="${sk}_${mName}_label">${v}</span>
-						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
-					</label>"$)
+'				sb.Append($"[BANCLEAN]
+'					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
+'						<span id="${sk}_${mName}_label">${v}</span>
+'						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
+'					</label>"$)
+					
+				sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
+			      <label class="cursor-pointer select-none">
+			        <span id="${sk}_${mName}_label">${v}</span>
+			      </label>
+			      <input id="${sk}_${mName}" name="${sGroupName}" value="${sk}" type="radio" class="radio ${rColor} ${rSize} ${cColor}"/>
+			    </div>"$)
+				items.Add($"${sk}_${mName}"$)
 			Next
 		Case "right"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
 				Dim sk As String = modSD5.CleanID(k)
-				sb.Append($"[BANCLEAN]
-				<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
-					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
-					<span id="${sk}_${mName}_label">${v}</span>
-				</label>"$)
+'				sb.Append($"[BANCLEAN]
+'					<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
+'					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
+'					<span id="${sk}_${mName}_label">${v}</span>
+'				</label>"$)
+				'
+					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+      					<input id="${sk}_${mName}" type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
+      					<span id="${sk}_${mName}_label">${v}</span>
+    				</label>"$)
+					items.Add($"${sk}_${mName}"$)
 			Next
 		End Select
 	Else	
@@ -370,14 +389,25 @@ Sub SetOptionsFromMap(m As Map)
 			Dim v As String = m.Get(k)
 			Dim sk As String = modSD5.CleanID(k)
 			sb.Append($"[BANCLEAN]
-				<div id="${sk}_${mName}_host" class="flex gap-3 items-center items-center">
+				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
               		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
+			items.Add($"${sk}_${mName}"$)
 		Next
 	End If	
-	UI.AppendByID($"${mName}_options"$, sb.ToString)
+	BANano.Await(UI.AppendByID($"${mName}_options"$, sb.ToString))
+	For Each item As String In items
+		UI.OnEventByID(item, "change", Me, "changed")
+	Next
 End Sub
+
+private Sub changed(e As BANanoEvent)
+	e.PreventDefault
+	Dim xChecked As String = UI.GetValueByID(e.ID)
+	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+End Sub
+
 
 'load the items from a list
 Sub SetOptionsFromList(m As List)

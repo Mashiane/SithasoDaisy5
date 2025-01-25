@@ -169,7 +169,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -394,6 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 	setParent(bParent)
 	setText(sText)
+'	setVisible(bVisible)
 	'
 	If sItemType = "collapse-item" Then Return
 	If sItemType = "title" Then Return
@@ -467,7 +468,7 @@ Sub setHref(s As String)
 	sHref = s
 	CustProps.put("Href", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttrByID($"${mName}_anchor"$, "href", s)
+	If s <> "" Then UI.SetAttrByID($"${mName}_anchor"$, "href", s)
 End Sub
 'set Icon
 Sub setIcon(s As String)
@@ -510,7 +511,7 @@ Sub setTarget(s As String)
 	sTarget = s
 	CustProps.put("Target", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttrByID($"${mName}_anchor"$, "target", s)
+	If s <> "" Then UI.SetAttrByID($"${mName}_anchor"$, "target", s)
 End Sub
 'set Tooltip
 Sub setTooltip(s As String)
@@ -519,7 +520,7 @@ Sub setTooltip(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.AddClassByID($"${mName}_anchor"$, "tooltip")
-		UI.AddAttrByID($"${mName}_anchor"$, "data-tip", s)
+		UI.SetAttrByID($"${mName}_anchor"$, "data-tip", s)
 	Else
 		UI.RemoveClassByID($"${mName}_anchor"$, "tooltip")
 		UI.RemoveAttrByID($"${mName}_anchor"$, "data-tip")
@@ -625,7 +626,7 @@ Sub setOpen(b As Boolean)
 	CustProps.put("Open", b)
 	If mElement = Null Then Return
 	If b Then
-		UI.AddAttrByID($"${mName}_details"$, "open", "open")
+		UI.SetAttrByID($"${mName}_details"$, "open", "open")
 	Else
 		UI.RemoveAttrByID($"${mName}_details"$, "open")
 	End If

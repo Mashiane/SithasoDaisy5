@@ -8,10 +8,20 @@ Version=10
 Sub Process_Globals
 	Private BANano As BANano		'ignore
 	Private app As SDUI5App			'ignore
+	Private dd1menu As SDUI5Menu
+	Private dd2menu As SDUI5Menu
 End Sub
 
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "dropdownview")
+End Sub
+
+Private Sub dd2menu_ItemClick (item As String)
+	app.ShowToastSuccess(item)
+End Sub
+
+Private Sub dd1menu_ItemClick (item As String)
+	app.ShowToastSuccess(item)
 End Sub
