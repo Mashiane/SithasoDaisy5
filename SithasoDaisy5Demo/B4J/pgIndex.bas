@@ -20,6 +20,7 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
+	BANano.Await(App.UsesFlatPickDateTime)
 	
 	'set the font of the app
 	'app.Font = "font-sans"
@@ -76,8 +77,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-table", "", "Table")
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
 	'
-	drawermenu.SetItemBadge("pg-table", "", "error")
-	
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
 	drawermenu.AddItemChild("navigation", "pg-breadcrumbs", "", "Breadcrumbs")
 	'
@@ -107,6 +106,7 @@ Sub CreateDrawerMenu
 	'
 	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
 	drawermenu.AddItemChild("dinput", "pg-calendar", "", "Calendar")
+	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Date Time Line")
 	drawermenu.AddItemChild("dinput", "pg-checkbox", "", "Checkbox")
 	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
 	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
@@ -167,6 +167,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		
 			Select Case ssuffix
 			Case "calendar"
+			Case "datetimeline"
+				pgdatetimeline.Show(App)
 			Case "checkbox"
 				pgCheckBox.Show(App)
 			Case "fieldset"
@@ -242,6 +244,7 @@ Private Sub drawermenu_ItemClick (item As String)
 		Case "status"
 			pgStatus.Show(App)
 		Case "table"
+			pgTable.Show(App)
 		Case "timeline"
 			pgTimeline.Show(App)
 		End Select

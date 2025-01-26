@@ -460,7 +460,7 @@ Public Sub Initialize (mCallback As Object)
 	SDUIShared.InitLanguages
 	SDUIShared.InitCountries
 	UserProfile.Initialize
-	SDUIShared.InitMonths
+	modSD5.InitMonths
 	SDUIShared.InitDays
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
@@ -1778,7 +1778,7 @@ End Sub
 '	Banano.Await(LoadAssetsOnDemand("SignaturePad", Array("signature_pad.umd.min.js")))
 'End Sub
 
-Sub UsesCSV
+Sub UsesCSVParser
 	Banano.Await(LoadAssetsOnDemand("CSV", Array("papaparse.min.js")))
 End Sub
 

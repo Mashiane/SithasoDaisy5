@@ -31,6 +31,13 @@ Public Sub Initialize(self As Object)
 	ExcludePosition = False
 End Sub
 
+Sub EnsureVisible(sID As String)
+	sID = modSD5.CleanID(sID)
+	If BANano.Exists($"#${sID}"$) = False Then Return
+	Dim opt As Map = CreateMap("behavior": "smooth")
+	BANano.GetElement($"#${sID}"$).RunMethod("scrollIntoView", opt)
+End Sub
+
 ' internal use
 public Sub Trigger(mElement As BANanoElement, event As String, params() As String)
 	If mElement = Null Then Return
@@ -342,6 +349,21 @@ public Sub SetBackgroundColor(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor("bg", s)
 	UpdateClass(mElement, "color", s1)
+End Sub
+
+public Sub RemoveBackgroundColor(mElement As BANanoElement)
+	If mElement = Null Then Return
+	Dim lastColor As String = mElement.GetData("color")
+	lastColor = modSD5.CStr(lastColor)
+	If lastColor <> "" Then mElement.RemoveClass(lastColor)
+End Sub
+
+Sub RemoveBackgroundColorByID(sID As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	Dim lastColor As String = mElement.GetData("color")
+	lastColor = modSD5.CStr(lastColor)
+	If lastColor <> "" Then mElement.RemoveClass(lastColor)
 End Sub
 
 public Sub GetBackgroundColor() As String
@@ -776,6 +798,14 @@ Sub SetCursorPointerByID(sID As String)
 	SetCursorPointer(mElement)
 End Sub
 
+Sub Show(sID As String)
+	SetVisibleByID(sID, True)
+End Sub
+
+Sub Hide(sID As String)
+	SetVisibleByID(sID, False)
+End Sub
+
 Sub SetVisibleByID(sID As String, b As Boolean)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -950,6 +980,13 @@ Sub AddDataAttr(mElement As BANanoElement, attr As String, text As String)
 	mElement.SetData(attr, text)
 End Sub
 
+Sub SetDataAttrByID(sID As String, k As String, v As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.SetData(k, v)
+End Sub
+
 Sub GetDataAttr(mElement As BANanoElement, k As String) As String
 	If mElement = Null Then Return ""
 	If k = "" Then Return ""
@@ -963,6 +1000,26 @@ Sub GetAttr(mElement As BANanoElement, attr As String) As String
 	If mElement = Null Then Return ""
 	If attr = "" Then Return ""
 	Dim stext As String = mElement.GetAttr(attr)
+	stext = modSD5.CStr(stext)
+	stext = stext.trim
+	Return stext
+End Sub
+
+Sub GetDataAttrByID(sID As String, attr As String) As String
+	sID = modSD5.CleanID(sID)
+	Dim melement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If melement = Null Then Return ""
+	Dim stext As String = melement.GetData(attr)
+	stext = modSD5.CStr(stext)
+	stext = stext.trim
+	Return stext
+End Sub
+
+Sub GetAttrByID(sID As String, attr As String) As String
+	sID = modSD5.CleanID(sID)
+	Dim melement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If melement = Null Then Return ""
+	Dim stext As String = melement.GetAttr(attr)
 	stext = modSD5.CStr(stext)
 	stext = stext.trim
 	Return stext
@@ -1311,6 +1368,13 @@ Sub GetValueByID(sID As String) As String
 End Sub
 
 Sub SetValue(mElement As BANanoElement, v As Object)
+	If mElement = Null Then Return
+	mElement.SetValue(v)
+End Sub
+
+Sub SetValueByID(sID As String, v As Object)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	mElement.SetValue(v)
 End Sub

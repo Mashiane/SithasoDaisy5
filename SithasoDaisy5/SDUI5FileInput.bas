@@ -15,6 +15,7 @@ Version=10
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -56,6 +57,7 @@ Sub Class_Globals
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sInputType As String = "normal"
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -234,6 +236,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sInputType = modSD5.CStr(sInputType)
 		bVisible = Props.GetDefault("Visible", True)
 		bVisible = modSD5.CBool(bVisible)
+		sWidth = Props.GetDefault("Width", "full")
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If sInputType = "buttons" Then UI.AddClassDT("join")
@@ -253,8 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 				<fieldset id="${mName}_control" class="fieldset ${xclasses}" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-	        		<div class="join">
-	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius"/>
+	        		<div id="${mName}_join" class="join">
+	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
 	          			</div>
@@ -264,7 +268,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius"></input>
+          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
           			</div>
@@ -276,10 +280,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setGhost(bGhost)
 	setRequired(bRequired)
 	setSize(sSize)
+	setWidth(sWidth)
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 '	setVisible(bVisible)
 End Sub
 
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	Select Case sInputType
+		Case "legend"
+			UI.SetWidthByID($"${mName}_join"$, s)
+		Case "buttons"
+			UI.SetWidthByID($"${mName}_control"$, s)
+		Case "normal"
+			If s <> "" Then UI.SetWidth(mElement, sWidth)
+	End Select
+End Sub
+
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub
 
 'legend|normal
 Sub setInputType(s As String)

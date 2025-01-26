@@ -17,6 +17,7 @@ Version=10
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Grow, DisplayName: Grow, FieldType: Boolean, DefaultValue: False, Description: Grow
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
@@ -74,6 +75,7 @@ Sub Class_Globals
 	Private sPrependIcon As String = ""
 	Private bPrependVisible As Boolean = False
 	Private sInputType As String = "normal"
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -267,6 +269,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bPrependVisible = modSD5.CBool(bPrependVisible)
 		sInputType = Props.GetDefault("InputType", "normal")
 		sInputType = modSD5.CStr(sInputType)
+		sWidth = Props.GetDefault("Width", "full")
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If sInputType = "buttons" Then UI.AddClassDT("join")
@@ -286,11 +290,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-        		<div class="join">
+        		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 					</button>
-          			<select id="${mName}" class="select join-item tlradius trradius blradius brradius">
+          			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
 					</select>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -310,7 +314,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 					</button>
-          			<select id="${mName}" class="select join-item tlradius trradius blradius brradius">
+          			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
 					</select>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -337,9 +341,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setAppendVisible(bAppendVisible)
 	setPrependIcon(sPrependIcon)
 	setPrependVisible(bPrependVisible)
+	setWidth(sWidth)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
+
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	Select Case sInputType
+		Case "legend"
+			UI.SetWidthByID($"${mName}_join"$, s)
+		Case "buttons"
+			UI.SetWidthByID($"${mName}_control"$, s)
+		Case "normal"
+			If s <> "" Then UI.SetWidth(mElement, sWidth)
+	End Select
+End Sub
+
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub
+
+
 
 private Sub changed(e As BANanoEvent)
 	e.PreventDefault 

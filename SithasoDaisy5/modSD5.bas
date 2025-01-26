@@ -14,6 +14,8 @@ Sub Process_Globals
 	Private BANano As BANano		'ignore
 	Public ColorMap As Map
 	Private math As BANanoObject	'ignore
+	Type Paginate1(previousPage As Int, nextPage As Int, totalPages As Int, items As List)
+	Private Months As Map
 End Sub
 
 Sub InitColors
@@ -1063,4 +1065,404 @@ End Sub
 Sub Left1(Text As String, xLength As Long) As String
 	If xLength>Text.Length Then xLength=Text.Length
 	Return Text.SubString2(0, xLength)
+End Sub
+
+
+'convert multi value string to options
+Sub OptionsToMap(opt As String) As Map
+	opt = opt.replace("|", ";")
+	Dim litems As List = StrParse(";", opt)
+	litems = ListTrimItems(litems)
+	Dim m As Map = CreateMap()
+	For Each item As String In litems
+		item = item.Trim
+		If item = "" Then Continue
+		Dim hascolon As Int = item.IndexOf(":")
+		If hascolon = -1 Then
+			m.Put(item, item)
+		Else
+			Dim fpart As String = MvField(item, 1, ":")
+			fpart = fpart.Trim
+			Dim spart As String = MvField(item, 2, ":")
+			spart = spart.Trim
+			m.Put(fpart, spart)
+		End If
+	Next
+	Return m
+End Sub
+
+'get a page from a list
+Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate1
+	Dim xx As Paginate1
+	xx.initialize
+	Try
+		If lst.Size = 0 Then
+			xx.previousPage = 0
+			xx.nextPage = 0
+			xx.totalPages = 0
+			xx.items.Initialize
+			Return xx
+		End If
+		Dim res As Map = BANano.RunJavascriptMethod("paginator", Array(lst, pageNumber, pageSize))
+		xx.previousPage = res.Get("previousPage")
+		xx.nextPage = res.Get("nextPage")
+		xx.totalPages = res.Get("totalPages")
+		xx.items = res.Get("items")
+		Return xx
+	Catch
+		Log($"ListPaginate: ${LastException}"$)
+		Return xx
+	End Try
+End Sub
+
+#if javascript
+var paginator = function paginate(items) {
+  var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
+  var perPage = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+  var offset = perPage * (page - 1);
+  var totalPages = Math.ceil(items.length / perPage);
+  var paginatedItems = items.slice(offset, perPage * page);
+  return {
+    previousPage: page - 1 ? page - 1 : 0,
+    nextPage: totalPages > page ? page + 1 : 0,
+    total: items.length,
+    totalPages: totalPages,
+    items: paginatedItems
+  };
+};
+#End If
+
+'convert the items in a list to a map
+Sub ListToSelectOptions(lst As List) As Map
+	Dim m As Map = CreateMap()
+	For Each item As String In lst
+		m.Put(item, item)
+	Next
+	Return m
+End Sub
+
+Sub ListToSelectOptionsSort(lst As List) As Map
+	lst.Sort(True)
+	Dim m As Map = CreateMap()
+	For Each item As String In lst
+		m.Put(item, item)
+	Next
+	Return m
+End Sub
+
+'insert a css rule
+Sub InsertCSSRule(selector As String, styles As Object)
+	BANano.RunJavascriptMethod("insertRule", Array(selector, styles))
+End Sub
+
+'remove a css rule 
+Sub RemoveCSSRule(selector As String)
+	Dim i As BANanoObject
+	i.Initialize("insertRule")
+	i.RunMethod("remove", selector)
+End Sub
+
+Sub TimeAgo(dt As String) As String
+	dt = CStr(dt).trim
+	If dt = "" Then Return ""
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("moment", Array(dt, "YYYY-MM-DD HH:mm"))
+	Dim res As String = bo.RunMethod("fromNow", Null).result
+	Return res
+End Sub
+
+'format date to meet your needs
+Sub FormatDisplayDate(item As String, sFormat As String) As String			'ignoredeadcode
+	Try
+		item = "" & item
+		If item = "" Then Return ""
+		If BANano.isnull(item) Or BANano.IsUndefined(item) Then Return ""
+		Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(item))
+		Dim sDate As String = bo.RunMethod("format", Array(sFormat)).Result
+		If sDate = "Invalid Date" Then Return ""
+		'For Each k As String In DateTranslations.Keys
+		'	Dim v As String = DateTranslations.Get(k)
+		'	sDate = sDate.Replace(k, v)
+		'Next
+		Return sDate
+	Catch
+		Return ""
+	End Try
+End Sub
+'format numeric display
+Sub FormatDisplayNumber(item As String, sFormat As String) As String			'ignoredeadcode
+	Try
+		item = "" & item
+		If item = "" Then Return ""
+		If BANano.isnull(item) Or BANano.IsUndefined(item) Then Return ""
+		item = Val(item)
+		item = BANano.parseFloat(item)
+		Dim bo As BANanoObject = BANano.RunJavascriptMethod("numeral", Array(item))
+		Dim sDate As String = bo.RunMethod("format", Array(sFormat)).Result
+		Return sDate
+	Catch
+		Return ""
+	End Try
+End Sub
+Sub FormatFileSize(Bytes As Float) As String					'ignoredeadcode
+	If BANano.IsNull(Bytes) Or BANano.IsUndefined(Bytes) Then
+		Bytes = 0
+	End If
+	Bytes = BANano.parsefloat(Bytes)
+	Try
+		Private Unit() As String = Array As String(" Byte", " KB", " MB", " GB", " TB", " PB", " EB", " ZB", " YB")
+		If Bytes = 0 Then
+			Return "0 Bytes"
+		Else
+			Private Po, Si As Double
+			Private I As Int
+			Bytes = Abs(Bytes)
+			I = Floor(Logarithm(Bytes, 1024))
+			Po = Power(1024, I)
+			Si = Bytes / Po
+			Return NumberFormat(Si, 1, 3) & Unit(I)
+		End If
+	Catch
+		Return "0 Bytes"
+	End Try
+End Sub
+
+'make the keys of the maps to lowercase
+Sub ListOfMapsKeysToLowerCase(lst As List)
+	Dim recTot As Int = lst.Size - 1
+	Dim recCnt As Int
+	For recCnt = 0 To recTot
+		Dim m As Map = lst.Get(recCnt)
+		m = MapMakeLowerCaseKeys(m)
+		lst.Set(recCnt, m)
+	Next
+End Sub
+
+'make lowercase
+Sub MapMakeLowerCaseKeys(m As Map) As Map
+	Dim nm As Map = CreateMap()
+	For Each k As String In m.Keys
+		Dim nk As String = k.tolowercase
+		If nk = k Then Continue
+		Dim v As Object = m.Get(k)
+		nm.Put(nk, v)
+		nm.Remove(k)
+	Next
+	Return nm
+End Sub
+
+
+'double
+Sub CDbl(o As String) As Double
+	o = Val(o)
+	Dim out As Double = NumberFormat2Fix(o,0,2,2,False)
+	Dim nvalue As String = CStr(out)
+	nvalue = nvalue.replace(",", ".")
+	nvalue = Val(nvalue)
+	Dim nout As Double = BANano.parseFloat(nvalue)
+	Return nout
+End Sub
+
+Sub MakeMoney(sValue As String) As String
+	Try
+		If BANano.IsNull(sValue) Or BANano.IsUndefined(sValue) Then Return "0.00"
+		If sValue.Length = 0 Then Return "0.00"
+		If sValue.IndexOf(",") Then sValue = sValue.Replace(",","")
+		sValue = Val(sValue)
+		If sValue = "0" Then sValue = "000"
+		sValue = Round2(sValue,2)
+		Return NumberFormat2Fix(sValue, 1, 2, 2, True)
+	Catch
+		Return sValue
+	End Try
+End Sub
+
+'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
+public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
+	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
+End Sub
+#if JavaScript
+function BANano_r2fFIX(number, decimals, minf) {
+var decimals2=minf;
+if (decimals2<decimals) {decimals2=decimals}
+if (decimals2>decimals) {decimals=decimals2}
+let v = +(Math.round(number + "e+" + decimals) + "e-" + decimals2);
+var s = +v.toFixed(decimals2);
+if (s.countDecimals()<=minf) {
+return v.toFixed(minf);
+} else {
+return v.toFixed(decimals2);
+}
+};
+Number.prototype.countDecimals = function () {
+if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
+var str = this.toString();
+if (str.indexOf(".") !== -1 && str.indexOf("-") !== -1) {
+return str.split("-")[1] || 0;
+} else if (str.indexOf(".") !== -1) {
+return str.split(".")[1].length || 0;
+}
+return str.split("-")[1] || 0;
+};
+function NumberFormat2(number, minimumIntegers, maximumFractions, minimumFractions,groupingUsed) {
+return BANano_nf2(BANano_r2fFIX(number,maximumFractions,minimumFractions),minimumIntegers,groupingUsed);
+}
+#End If
+
+'<code>
+''parse a list of records from data-table to make csv
+'Dim csvData As String = ListOfMapsToCSV(records, ",", true)
+'</code>
+Sub ListOfMapsToCSV(content As List, quotes As Boolean, delimiter As String, hasHeader As Boolean) As String
+	Dim config As Map = CreateMap()
+	config.Put("quotes", quotes)
+	config.Put("delimiter", delimiter)
+	config.Put("header", hasHeader)
+	config.put("skipEmptyLines", True)
+	'
+	Dim Papa As BANanoObject
+	Papa.Initialize("Papa")
+	Dim res As String = Papa.RunMethod("unparse", Array(content, config)).Result
+	Return res
+End Sub
+
+Sub GetAlphaColor(a As String) As String
+	Dim fp As String = a.Trim
+	fp = fp.ToUpperCase
+	Dim fp1 As String = Left1(fp, 1)
+	Dim col As String = ColorMap.GetDefault(fp1, "#ab6210")
+	Return col
+End Sub
+
+'get full name initials
+Sub Initials(FullName As String) As String
+	Dim parts As List = StrParse(" ", FullName)
+	If parts.Size = 1 Then
+		Dim fn As String = parts.Get(0)
+		Dim xfn As String = Left1(fn, 1)
+		xfn = xfn.ToUpperCase
+		Return xfn
+	Else
+		Dim fn1 As String = parts.Get(0)
+		Dim fn2 As String = MvField(FullName, -1, " ")
+		Dim xfn1 As String = Left1(fn1, 1)
+		Dim xfn2 As String = Left1(fn2, 1)
+		Dim afn As String = $"${xfn1}${xfn2}"$
+		afn = afn.ToUpperCase
+		Return afn
+	End If
+End Sub
+
+
+Sub ListIndexOf(lst As List, prop As String, value As String) As Int
+	value = CStr(value)
+	Dim lstCnt As Int = 0
+	Dim lstTot As Int = lst.Size - 1
+	Dim rec As Map = CreateMap()
+	Dim pos As Int = -1
+	For lstCnt = 0 To lstTot
+		rec = lst.Get(lstCnt)
+		If rec.ContainsKey(prop) Then
+			Dim v As String = rec.get(prop)
+			v = CStr(v)
+			If v.EqualsIgnoreCase(value) Then
+				pos = lstCnt
+				Exit
+			End If
+		End If
+	Next
+	Return pos
+End Sub
+
+
+'get alphabets only
+Sub Alpha(value As String) As String
+	value = CStr(value)
+	Try
+		value = value.Trim
+		If value = "" Then value = ""
+		Dim sout As String = ""
+		Dim mout As String = ""
+		Dim slen As Int = value.Length
+		Dim i As Int = 0
+		For i = 0 To slen - 1
+			mout = value.CharAt(i)
+			If InStr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", mout) <> -1 Then
+				sout = sout & mout
+			End If
+		Next
+		Return sout
+	Catch
+		Return value
+	End Try
+End Sub
+
+Sub ShowLoader
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "block")
+	lEL.SetStyle(BANano.ToJson(mStyle))
+End Sub
+
+Sub HideLoader
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "none")
+	lEL.SetStyle(BANano.ToJson(mStyle))
+End Sub
+
+Sub DateAdd(mDate As String, HowManyDays As Int) As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	HowManyDays = CInt(HowManyDays)
+	Dim ConvertDate, NewDateDay As Long
+	ConvertDate = DateTime.DateParse(mDate)
+	NewDateDay = DateTime.Add(ConvertDate, 0, 0, HowManyDays)
+	Return DateTime.Date(NewDateDay)
+End Sub
+
+Sub GetDatesBetween(startDate As String, endDate As String) As List
+	DateTime.DateFormat = "yyyy-MM-dd"
+	' Initialize the list to hold working dates
+	Dim workingDates As List
+	workingDates.Initialize
+
+	' Parse the start and end dates
+	Dim sd As Long = DateTime.DateParse(startDate)
+	Dim ed As Long = DateTime.DateParse(endDate)
+
+	' Loop through all dates from start to end
+	For i = sd To ed Step DateTime.TicksPerDay
+		' Add the date to the list
+		workingDates.Add(DateTime.Date(i))
+	Next
+
+	Return workingDates
+End Sub
+
+
+Sub InitMonths
+	Months.Initialize
+	Months.Put("01", "January")
+	Months.Put("02", "February")
+	Months.Put("03", "March")
+	Months.Put("04", "April")
+	Months.Put("05", "May")
+	Months.Put("06", "June")
+	Months.Put("07", "July")
+	Months.Put("08", "August")
+	Months.Put("09", "September")
+	Months.Put("10", "October")
+	Months.Put("11", "November")
+	Months.Put("12", "December")
+End Sub
+
+Sub GetMonthName3(sMonth As String) As String
+	If Months.ContainsKey(sMonth) Then
+		Dim xn As String = Months.Get(sMonth)
+		Dim nn As String = Left1(xn, 3)
+		Return nn
+	Else
+		Return ""	
+	End If
 End Sub
