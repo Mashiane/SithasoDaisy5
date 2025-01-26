@@ -306,6 +306,7 @@ Sub setHasBurger(b As Boolean)
 	Hamburger.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
 	Hamburger.AddComponent
 	UI.OnChildEvent($"${mName}burger"$, "change", Me, "swapchange")
+	Hamburger.UI.AddClassByID($"${mName}_burger"$, "shrink-0")
 End Sub
 
 
@@ -327,6 +328,7 @@ Sub setHasLogo(b As Boolean)
 	Logo.Enabled = True
 	Logo.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
 	Logo.AddComponent
+	Logo.UI.AddClassByID($"${mName}_logo"$, "shrink-0")
 End Sub
 
 'get Has Logo
