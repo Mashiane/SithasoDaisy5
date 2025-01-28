@@ -31,10 +31,20 @@ Public Sub Initialize(self As Object)
 	ExcludePosition = False
 End Sub
 
+Sub GetElementByID(sID As String) As BANanoElement
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return Null
+	Return mElement
+End Sub
+
 Sub EnsureVisible(sID As String)
 	sID = modSD5.CleanID(sID)
 	If BANano.Exists($"#${sID}"$) = False Then Return
-	Dim opt As Map = CreateMap("behavior": "smooth")
+	Dim opt As Map = CreateMap()
+	opt.Put("behavior", "smooth")
+	opt.Put("block", "nearest")
+	opt.Put("inline", "nearest")
 	BANano.GetElement($"#${sID}"$).RunMethod("scrollIntoView", opt)
 End Sub
 
@@ -363,7 +373,10 @@ Sub RemoveBackgroundColorByID(sID As String)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	Dim lastColor As String = mElement.GetData("color")
 	lastColor = modSD5.CStr(lastColor)
-	If lastColor <> "" Then mElement.RemoveClass(lastColor)
+	If lastColor <> "" Then 
+		mElement.RemoveClass(lastColor)
+		mElement.RemoveAttr("data-color")
+	End If
 End Sub
 
 public Sub GetBackgroundColor() As String
@@ -652,40 +665,22 @@ End Sub
 
 'get positions delimited by :;
 private Sub GetPositionMap(varStyles As String) As Map
-	varStyles = modSD5.CStr(varStyles)
 	Dim ms As Map = CreateMap()
-	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
-	varStyles = varStyles.Replace("=", ":")
-	varStyles = varStyles.Replace("'", "")
-	varStyles = varStyles.Replace(QUOTE, "")
-	varStyles = varStyles.Replace(",", "")
-	varStyles = varStyles.trim
-	Dim mxItems As List = modSD5.StrParse(";", varStyles)
-	mxItems = modSD5.ListRemoveDuplicates(mxItems)
-	For Each mtx As String In mxItems
-		mtx = mtx.Replace("?", "")
-		mtx = mtx.Trim
-		If mtx = "" Then Continue
-		Dim k As String = modSD5.mvfield(mtx,1,":")
-		Dim v As String = modSD5.mvfield(mtx,2,":")
-		v = modSD5.CStr(v)
-		k = modSD5.CStr(k)
-		k = k.trim
-		v = v.trim
-		If k <> "" And v <> "" Then
-			Select Case k
-				Case "t"
-					ms.Put("top", v)
-				Case "b"
-					ms.Put("bottom", v)
-				Case "r"
-					ms.Put("right", v)
-				Case "l"
-					ms.Put("left", v)
-				Case Else
-					ms.Put(k, v)
-			End Select
-		End If
+	Dim oldm As Map = GetKeyValues(varStyles, False)
+	For Each k As String In oldm.Keys
+		Dim v As String = oldm.Get(k)
+		Select Case k
+		Case "t"
+			ms.Put("top", v)
+		Case "b"
+			ms.Put("bottom", v)
+		Case "r"
+			ms.Put("right", v)
+		Case "l"
+			ms.Put("left", v)
+		Case Else
+			ms.Put(k, v)
+		End Select
 	Next
 	Return ms
 End Sub
@@ -849,6 +844,16 @@ End Sub
 public Sub SetEnabled(mElement As BANanoElement, bEnabled As Boolean)
 	BANano.SetP(mSelf, "bEnabled", bEnabled)
 	If mElement = Null Then Return
+	If bEnabled Then
+		RemoveAttr(mElement, "disabled")
+	Else
+		SetAttr(mElement, "disabled", True)
+	End If
+End Sub
+
+Sub SetEnabledByID(sID As String, bEnabled As Boolean)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If bEnabled Then
 		RemoveAttr(mElement, "disabled")
 	Else
@@ -1078,13 +1083,14 @@ End Sub
 Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
 	varStyles = modSD5.CStr(varStyles)
 	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
-	varStyles = varStyles.Replace(":", "=")
+	varStyles = varStyles.Replace(":", "=").Replace("|", ";")
 	varStyles = varStyles.Replace("'", "")
 	varStyles = varStyles.Replace(",", ";")
 	varStyles = varStyles.Replace(QUOTE, "")
+	varStyles = varStyles.replace("?","")
 	varStyles = varStyles.trim
 	Dim mxItems As List = modSD5.StrParse(";", varStyles)
-	mxItems = modSD5.ListRemoveDuplicates(mxItems)
+	mxItems = modSD5.ListRemoveDuplicates(mxItems, False)
 	Dim ms As Map = CreateMap()
 	For Each mtx As String In mxItems
 		mtx = mtx.Trim
@@ -1106,25 +1112,9 @@ End Sub
 'typeOf - width, style, color, radius
 private Sub GetBordersMap(typeof As String, varOffsets As String) As Map
 	Dim mm As Map = CreateMap("a":"", "t":"", "r":"", "b":"", "l":"", "tl":"", "tr":"", "bl":"", "br":"", "x":"", "y":"")
-	varOffsets = modSD5.CStr(varOffsets)
-	varOffsets = varOffsets.Replace(" ", ";")
-	varOffsets = varOffsets.Replace(CRLF, ";").Replace("<br/>", ";")
-	varOffsets = varOffsets.trim
-	If varOffsets = "" Then Return mm
-	varOffsets = varOffsets.Replace(",", ";")
-	varOffsets = varOffsets.Replace(":", "=")
-	varOffsets = varOffsets.replace("?","")
-	varOffsets = varOffsets.Replace("'", "")
-	varOffsets = varOffsets.Replace(QUOTE, "")
-	varOffsets = varOffsets.trim
-	'
-	Dim ss As List = modSD5.StrParse(";", varOffsets)
-	ss = modSD5.ListRemoveDuplicates(ss)
-	For Each item As String In ss
-		Dim k As String = modSD5.mvfield(item,1,"=")
-		Dim v As String = modSD5.mvfield(item,2,"=")
-		k = modSD5.CStr(k).trim
-		v = modSD5.CStr(v).trim
+	Dim om As Map = GetKeyValues(varOffsets, False)
+	For Each k As String In om.Keys
+		Dim v As String = om.Get(k)
 		Dim nk As String = ""
 		Dim nk1 As String = ""
 		Select Case k
@@ -1165,27 +1155,9 @@ End Sub
 
 private Sub GetMarginPaddingMap(varOffsets As String) As Map
 	Dim mm As Map = CreateMap("a":"", "x":"", "y":"", "t":"", "b":"", "l":"", "r":"")
-	varOffsets = modSD5.CStr(varOffsets)
-	varOffsets = varOffsets.Replace(" ", ";")
-	varOffsets = varOffsets.Replace(CRLF, ";").Replace("<br/>", ";")
-	varOffsets = varOffsets.trim
-	If varOffsets = "" Then Return mm
-	varOffsets = varOffsets.Replace(":", "=")
-	varOffsets = varOffsets.replace("-","|")
-	varOffsets = varOffsets.replace(",","|")
-	varOffsets = varOffsets.replace(";","|")
-	varOffsets = varOffsets.replace("|",",")
-	varOffsets = varOffsets.replace("?","")
-	varOffsets = varOffsets.Replace("'", "")
-	varOffsets = varOffsets.Replace(QUOTE, "")
-	varOffsets = varOffsets.trim
-	'
-	Dim ss As List = modSD5.StrParse(",", varOffsets)
-	For Each item As String In ss
-		Dim k As String = modSD5.mvfield(item,1,"=")
-		Dim v As String = modSD5.mvfield(item,2,"=")
-		k = modSD5.CStr(k).trim
-		v = modSD5.CStr(v).trim
+	dim om as map = GetKeyValues(varOffsets, false)
+	For Each k As String In om.Keys
+		dim v as string = om.Get(k)
 		mm.Put(k, v)
 	Next
 	Return mm

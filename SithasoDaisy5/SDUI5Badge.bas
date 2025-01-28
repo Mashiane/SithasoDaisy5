@@ -305,6 +305,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	If bRound Then UI.AddClassDT("aspect-square")
 	If bIndicatorItem Then
 		UI.AddClassDT("indicator-item")
 	End If	  
@@ -467,11 +468,11 @@ Sub setRound(b As Boolean)
 	bRound = b
 	CustProps.put("Round", b)
 	If mElement = Null Then Return
-	'If b = True Then
-	'	UI.AddClass(mElement, "round-Round")
-	'Else
-	'	UI.RemoveClass(mElement, "round-Round")
-	'End If
+	If b = True Then
+		UI.AddClass(mElement, "rounded-full aspect-square")
+	Else
+		UI.RemoveClass(mElement, "rounded-full aspect-square")
+	End If
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl

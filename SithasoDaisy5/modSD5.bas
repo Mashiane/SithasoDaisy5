@@ -724,17 +724,15 @@ Sub StrMid(Text As String, Start As Int) As String
 	Return Text.SubString(Start-1)
 End Sub
 
-Sub ListRemoveDuplicates(lst As List) As List
-	Dim nd As Map = CreateMap()
-	For Each k As String In lst
-		nd.Put(k, k)
-	Next
+Sub ListRemoveDuplicates(lst As List, bSort As Boolean) As List
 	Dim nl As List
-	nl.Initialize
-	For Each k As String In nd.Keys
-		nl.Add(k)
+	nl.Initialize 
+	For Each item As String In lst
+		If nl.IndexOf(item) = -1 Then 
+			nl.Add(item)
+		End If
 	Next
-	nl.Sort(True)
+	If bSort Then nl.Sort(True)
 	Return nl
 End Sub
 
@@ -1068,28 +1066,6 @@ Sub Left1(Text As String, xLength As Long) As String
 End Sub
 
 
-'convert multi value string to options
-Sub OptionsToMap(opt As String) As Map
-	opt = opt.replace("|", ";")
-	Dim litems As List = StrParse(";", opt)
-	litems = ListTrimItems(litems)
-	Dim m As Map = CreateMap()
-	For Each item As String In litems
-		item = item.Trim
-		If item = "" Then Continue
-		Dim hascolon As Int = item.IndexOf(":")
-		If hascolon = -1 Then
-			m.Put(item, item)
-		Else
-			Dim fpart As String = MvField(item, 1, ":")
-			fpart = fpart.Trim
-			Dim spart As String = MvField(item, 2, ":")
-			spart = spart.Trim
-			m.Put(fpart, spart)
-		End If
-	Next
-	Return m
-End Sub
 
 'get a page from a list
 Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate1

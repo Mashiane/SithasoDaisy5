@@ -57,15 +57,12 @@ Sub CreateDrawerMenu
 		
 	drawermenu.AddItemParent("components", "display", "", "Data Display")
 	drawermenu.AddItemChild("display", "pg-accordion", "", "Accordion")
-	drawermenu.SetItemBadge("pg-accordion", "bugs", "primary")
 	drawermenu.AddItemChild("display", "pg-avatar", "", "Avatar")
 	drawermenu.AddItemChild("display", "pg-badge", "", "Badge")
 	drawermenu.AddItemChild("display", "pg-card", "", "Card")
 	drawermenu.AddItemChild("display", "pg-carousel", "", "Carousel")
 	drawermenu.AddItemChild("display", "pg-chatbubble", "", "Chat Bubble")
-	drawermenu.SetItemBadge("pg-chatbubble", "bugs", "primary")
 	drawermenu.AddItemChild("display", "pg-collapse", "", "Collapse")
-	drawermenu.SetItemBadge("pg-collapse", "bugs", "primary")
 	drawermenu.AddItemChild("display", "pg-countdown", "", "Countdown")
 	drawermenu.SetItemBadge("pg-countdown", "wip", "secondary")
 	drawermenu.AddItemChild("display", "pg-diff", "", "Diff")
@@ -84,7 +81,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("docks", "pg-dock", "", "Dock")
 	drawermenu.AddItemChild("docks", "pg-dockxs", "", "Dock (XS)")
 	drawermenu.AddItemChild("docks", "pg-dockcolor", "", "Dock (Color)")
-	
+	drawermenu.AddItemChild("navigation", "pg-bottomdrawer", "", "Bottom Drawer")
 	drawermenu.AddItemChild("navigation", "pg-link", "", "Link")
 	drawermenu.SetItemBadge("pg-link", "wip", "secondary")
 	drawermenu.AddItemChild("navigation", "pg-menu", "", "Menu")
@@ -250,6 +247,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		End Select
 			'
 		Select Case ssuffix
+		Case "bottomdrawer"
+			pgBottomDrawer.Show(App)
 		Case "breadcrumbs"
 			pgBreadCrumbs.Show(App)
 		Case "dock"

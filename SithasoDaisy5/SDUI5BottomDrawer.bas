@@ -5,14 +5,13 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#Event: Change (Item As String)
-
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: Placement, DisplayName: Placement, FieldType: String, DefaultValue: top, Description: Placement, List: bottom|top
-#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Style, DisplayName: Style, FieldType: String, DefaultValue: lift, Description: Style, List: border|box|lift
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
+#DesignerProperty: Key: IndicatorColor, DisplayName: Indicator Color, FieldType: String, DefaultValue: white, Description: Indicator Color
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Duration, DisplayName: Duration, FieldType: String, DefaultValue: 500, Description: Duration
+#DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
+#DesignerProperty: Key: Offset, DisplayName: Offset, FieldType: Int, DefaultValue: 50, MinRange: 0, MaxRange: 80, Description: Offset
+#DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: This is my bottom drawer content, Description: Content
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -43,22 +42,12 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sHeight As String = ""
-	Private sPlacement As String = "top"
-	Private sSize As String = "none"
-	Private sStyle As String = "lift"
-	Private sWidth As String = ""
-	Public CONST PLACEMENT_BOTTOM As String = "bottom"
-	Public CONST PLACEMENT_TOP As String = "top"
-	Public CONST SIZE_LG As String = "lg"
-	Public CONST SIZE_MD As String = "md"
-	Public CONST SIZE_NONE As String = "none"
-	Public CONST SIZE_SM As String = "sm"
-	Public CONST SIZE_XL As String = "xl"
-	Public CONST SIZE_XS As String = "xs"
-	Public CONST STYLE_BORDER As String = "border"
-	Public CONST STYLE_BOX As String = "box"
-	Public CONST STYLE_LIFT As String = "lift"
+	Private sBackgroundColor As String = "base-200"
+	Private sDuration As String = "500"
+	Private sIndicatorColor As String = "white"
+	Private bOpen As Boolean = False
+	Private iOffset As Int = 50
+	Private sRawContent As String = "This is my bottom drawer content"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -122,6 +111,7 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
+'use to add an event to the element
 Sub OnEvent(event As String, methodName As String)
 	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
@@ -131,7 +121,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -197,12 +187,6 @@ Sub getPaddingAXYTBLR As String
 	Return sPaddingAXYTBLR
 End Sub
 '
-
-Sub Clear
-	UI.Clear(mElement)
-End Sub
-
-
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
@@ -212,31 +196,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
-		sPlacement = Props.GetDefault("Placement", "top")
-		sPlacement = modSD5.CStr(sPlacement)
-		sPlacement = sPlacement.ToLowerCase
-		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
-		If sSize = "none" Then sSize = ""
-		sStyle = Props.GetDefault("Style", "lift")
-		sStyle = modSD5.CStr(sStyle)
-		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sDuration = Props.GetDefault("Duration", "500")
+		sDuration = modSD5.CStr(sDuration)
+		sIndicatorColor = Props.GetDefault("IndicatorColor", "white")
+		sIndicatorColor = modSD5.CStr(sIndicatorColor)
+		bOpen = Props.GetDefault("Open", False)
+		bOpen = modSD5.CBool(bOpen)
+		iOffset = Props.GetDefault("Offset", 50)
+		iOffset = modSD5.CInt(iOffset)
+		sRawContent = Props.GetDefault("RawContent", "This is my bottom drawer content")
+		sRawContent = modSD5.CStr(sRawContent)
 	End If
 	'
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sPlacement <> "" Then UI.AddClassDT("tabs-" & sPlacement)
-	If sStyle <> "" Then UI.AddClassDT("tabs-" & sStyle)
-	UI.AddClassDT("tabs flex-nowrap whitespace-nowrap")
-	UI.AddAttrDT("role", "tablist")
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
-	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
+	UI.AddClassDT("fixed top-[calc(100vh-2rem)] rounded-box h-full w-full")
+	UI.AddClassDT($"transition-[top] has-[input:checked]:top-[${iOffset}vh]"$)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -248,81 +227,87 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-'	setVisible(bVisible)
+	mElement = mTarget.Append($"[BANCLEAN]
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+  		<label id="${mName}_box" class="relative block rounded-box w-full pt-3 flex align-center justify-center">
+    		<div id="${mName}_indicator" class="h-2 bg-white w-[200px] rounded-box mx-auto"></div>
+    		<input id="${mName}_chooser" type="checkbox" class="border-none absolute inset-0 cursor-pointer appearance-none" />
+  		</label>
+  		<div id="${mName}_content" class="pt-5 pl-10 pr-10">${sRawContent}</div>
+	</div>"$).Get("#" & mName)
+	setOpen(bOpen)
+	setBackgroundColor(sBackgroundColor)
+	setDuration(sDuration)
+	setIndicatorColor(sIndicatorColor)
 End Sub
 
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
+Sub setOpen(b As Boolean)
+	bOpen = b
+	CustProps.put("Open", b)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
-End Sub
-'set Placement
-'options: bottom|top
-Sub setPlacement(s As String)
-	s = s.ToLowerCase
-	sPlacement = s
-	CustProps.put("Placement", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "tabs-" & s)
-End Sub
-'set Size
-'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
-	s = s.ToLowerCase
-	sSize = s
-	CustProps.put("Size", s)
-	If mElement = Null Then Return
-	If s = "" Then sSize = "md"
-	UI.SetSize(mElement, "size", "tabs", s)
-End Sub
-'set Style
-'options: border|box|lift
-Sub setStyle(s As String)
-	s = s.ToLowerCase
-	sStyle = s
-	CustProps.put("Style", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "tabs-" & s)
-End Sub
-'set Width
-Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
-End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
-End Sub
-'get Placement
-Sub getPlacement As String
-	Return sPlacement
-End Sub
-'get Size
-Sub getSize As String
-	Return sSize
-End Sub
-'get Style
-Sub getStyle As String
-	Return sStyle
-End Sub
-'get Width
-Sub getWidth As String
-	Return sWidth
+	UI.SetCheckedByID($"${mName}_chooser"$, b)
 End Sub
 
-'set button text
-Sub SetTabItemText(btnID As String, text As String)
-	btnID = modSD5.CleanID(btnID)
-	UI.SetAttrByID($"${btnID}_${mName}"$, "aria-label", text)
+Sub getOpen As Boolean
+	Return bOpen
 End Sub
 
-'set a button active
-Sub SetTabItemActive(btnID As String, b As Boolean)
-	btnID = modSD5.CleanID(btnID)
-	UI.SetCheckedByID($"${btnID}_${mName}"$, b)
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.SetBackgroundColor(mElement, sBackgroundColor)
+		UI.SetBackgroundColorByID($"${mName}_box"$, sBackgroundColor)
+	End If
+End Sub
+'set Duration
+Sub setDuration(s As String)
+	sDuration = s
+	CustProps.put("Duration", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.UpdateClass(mElement, "duration", "duration-" & s)
+End Sub
+'set Indicator Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setIndicatorColor(s As String)
+	sIndicatorColor = s
+	CustProps.put("IndicatorColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_indicator"$, sIndicatorColor)
+End Sub
+'set Offset
+Sub setOffset(i As Int)
+    iOffset = i
+    CustProps.put("Offset", i)
+    If mElement = Null Then Return
+	UI.UpdateClass(mElement, "offset", $"has-[input:checked]:top-[${iOffset}vh]"$)
+End Sub
+'set Content
+Sub setContent(s As String)
+	sRawContent = s
+	CustProps.put("RawContent", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_content"$, sRawContent)
+End Sub
+'get Background Color
+Sub getBackgroundColor As String
+    Return sBackgroundColor
+End Sub
+'get Duration
+Sub getDuration As String
+        Return sDuration
+End Sub
+'get Indicator Color
+Sub getIndicatorColor As String
+        Return sIndicatorColor
+End Sub
+'get Offset
+Sub getOffset As Int
+        Return iOffset
+End Sub
+'get Raw Content
+Sub getContent As String
+        Return sRawContent
 End Sub

@@ -609,10 +609,13 @@ Sub setSize(s As String)
     If mElement = Null Then Return
 	If s = "" Then sSize = "md"
 	BANano.Await(UI.SetSize(mElement, "size", "input", sSize))
-	BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
-	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
-	BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
-	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
+	Select Case sInputType
+	Case "buttons", "legend"
+		BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
+		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
+		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
+		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
+	End Select
 End Sub
 'set Step Value
 Sub setStepValue(s As String)

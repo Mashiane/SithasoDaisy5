@@ -18,10 +18,15 @@ Version=10
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
+#DesignerProperty: Key: AutoSizeToContent, DisplayName: Auto Size To Content, FieldType: Boolean, DefaultValue: False, Description: Auto Size To Content
+#DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
+#DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
+#DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
@@ -76,6 +81,11 @@ Sub Class_Globals
 	Private bPrependVisible As Boolean = False
 	Private sInputType As String = "normal"
 	Private sWidth As String = "full"
+	Private bAutoSizeToContent As Boolean = False
+	Private sMaxHeight As String = ""
+	Private sMaxWidth As String = ""
+	Private sMinHeight As String = ""
+	Private sMinWidth As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -268,6 +278,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sInputType = modSD5.CStr(sInputType)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		bAutoSizeToContent = Props.GetDefault("AutoSizeToContent", False)
+		bAutoSizeToContent = modSD5.CBool(bAutoSizeToContent)
+		sMaxHeight = Props.GetDefault("MaxHeight", "")
+		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxWidth = Props.GetDefault("MaxWidth", "")
+		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMinHeight = Props.GetDefault("MinHeight", "")
+		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinWidth = Props.GetDefault("MinWidth", "")
+		sMinWidth = modSD5.CStr(sMinWidth)
 	End If
 	'
 	If sInputType = "buttons" Then UI.AddClassDT("join")
@@ -326,29 +346,129 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setGhost(bGhost)
 	setHeight(sHeight)
 	setValue(sValue)
-	setAppendIcon(sAppendIcon)
-	setAppendVisible(bAppendVisible)
-	setPrependIcon(sPrependIcon)
-	setPrependVisible(bPrependVisible)
+	Select Case sInputType
+	Case "legend", "buttons"	
+		setAppendIcon(sAppendIcon)
+		setAppendVisible(bAppendVisible)
+		setPrependIcon(sPrependIcon)
+		setPrependVisible(bPrependVisible)
+	End Select
 	setWidth(sWidth)
+	setAutoSizeToContent(bAutoSizeToContent)
+	setMaxWidth(sMaxWidth)
+	setMaxHeight(sMaxHeight)
+	setMinWidth(sMinWidth)
+	setMinHeight(sMinHeight)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 	UI.OnEvent(mElement, "input", Me, "changed1")
 End Sub
 
+'set Auto Size To Content
+Sub setAutoSizeToContent(b As Boolean)
+	bAutoSizeToContent = b
+	CustProps.put("AutoSizeToContent", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "[field-sizing:content]")
+	Else
+		UI.RemoveClass(mElement, "[field-sizing:content]")
+	End If
+End Sub
+'set Max Height
+Sub setMaxHeight(s As String)
+	sMaxHeight = s
+	CustProps.put("MaxHeight", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sInputType
+	Case "legend"
+		UI.SetMaxHeightByID($"${mName}_join"$, s)
+	Case "buttons"
+		UI.SetMaxHeightByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetMaxHeight(mElement, s)
+	End Select
+End Sub
+'set Max Width
+Sub setMaxWidth(s As String)
+	sMaxWidth = s
+	CustProps.put("MaxWidth", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sInputType
+	Case "legend"
+		UI.SetMaxWidthByID($"${mName}_join"$, s)
+	Case "buttons"
+		UI.SetMaxWidthByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetMaxWidth(mElement, s)
+	End Select
+End Sub
+'set Min Height
+Sub setMinHeight(s As String)
+	sMinHeight = s
+	CustProps.put("MinHeight", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sInputType
+	Case "legend"
+		UI.SetMinHeightByID($"${mName}_join"$, s)
+	Case "buttons"
+		UI.SetMinHeightByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetMinHeight(mElement, s)
+	End Select
+End Sub
+'set Min Width
+Sub setMinWidth(s As String)
+	sMinWidth = s
+	CustProps.put("MinWidth", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sInputType
+	Case "legend"
+		UI.SetMinWidthByID($"${mName}_join"$, s)
+	Case "buttons"
+		UI.SetMinWidthByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetMinWidth(mElement, s)
+	End Select
+End Sub
+'get Auto Size To Content
+Sub getAutoSizeToContent As Boolean
+	Return bAutoSizeToContent
+End Sub
+'get Max Height
+Sub getMaxHeight As String
+	Return sMaxHeight
+End Sub
+'get Max Width
+Sub getMaxWidth As String
+	Return sMaxWidth
+End Sub
+'get Min Height
+Sub getMinHeight As String
+	Return sMinHeight
+End Sub
+'get Min Width
+Sub getMinWidth As String
+	Return sMinWidth
+End Sub
 
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	Select Case sInputType
-		Case "legend"
-			UI.SetWidthByID($"${mName}_join"$, s)
-		Case "buttons"
-			UI.SetWidthByID($"${mName}_control"$, s)
-		Case "normal"
-			If s <> "" Then UI.SetWidth(mElement, sWidth)
+	Case "legend"
+		UI.SetWidthByID($"${mName}_join"$, s)
+	Case "buttons"
+		UI.SetWidthByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetWidth(mElement, sWidth)
 	End Select
 End Sub
 
@@ -510,10 +630,13 @@ Sub setSize(s As String)
 	If mElement = Null Then Return
 	If s = "" Then sSize = "md"
 	BANano.Await(UI.SetSize(mElement, "size", "textarea", sSize))
-	BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
-	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
-	BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
-	BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
+	Select Case sInputType
+	Case "legend", "buttons"	
+		BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
+		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
+		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
+		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
+	End Select
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

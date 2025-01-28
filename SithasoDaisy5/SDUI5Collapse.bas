@@ -159,7 +159,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -168,14 +168,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -189,7 +189,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -291,7 +291,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<input id="${mName}_check" type="checkbox"></input>
+		<input id="${mName}_check" type="radio"></input>
 		<div id="${mName}_title" class="collapse-title font-semibold">${sTitle}</div>
 		<div id="${mName}_content" class="collapse-content">${sRawContent}</div>
 	</div>"$).Get("#" & mName)
@@ -302,6 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setTitleTextColor(sTitleTextColor)
 	setActive(bActive)
 	setGroupName(sGroupName)
+	setJoinItem(bJoinItem)
 '	setVisible(bVisible)
 End Sub
 
@@ -474,7 +475,7 @@ Sub getOpenClose As String
 	Return sOpenClose
 End Sub
 'get Raw Content
-Sub getRawContent As String
+Sub getContent As String
 	Return sRawContent
 End Sub
 'get Right Icon

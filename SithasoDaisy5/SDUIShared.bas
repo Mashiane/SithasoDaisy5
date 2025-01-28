@@ -3693,22 +3693,20 @@ End Sub
 
 Sub MvRemoveDuplicates(delim As String, value As String) As String
 	Dim items As List = StrParse(delim, value)
-	Dim nitems As List = ListRemoveDuplicates(items)
+	Dim nitems As List = ListRemoveDuplicates(items, True)
 	Dim out As String = Join(delim, nitems)
 	Return out
 End Sub
 
-Sub ListRemoveDuplicates(lst As List) As List
-	Dim nd As Map = CreateMap()
-	For Each k As String In lst
-		nd.Put(k, k)
-	Next
+Sub ListRemoveDuplicates(lst As List, bSort As Boolean) As List
 	Dim nl As List
 	nl.Initialize
-	For Each k As String In nd.Keys
-		nl.Add(k)
+	For Each item As String In lst
+		If nl.IndexOf(item) = -1 Then
+			nl.Add(item)
+		End If
 	Next
-	nl.Sort(True)
+	If bSort Then nl.Sort(True)
 	Return nl
 End Sub
 
@@ -5517,7 +5515,7 @@ Sub GetRawStyles(varStyles As String) As Map
 	varStyles = varStyles.Replace("'", "")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, True)
 	Dim ms As Map = CreateMap()
 	For Each mtx As String In mxItems
 		mtx = mtx.Trim
@@ -5568,7 +5566,7 @@ Sub GetRawMargins(varStyles As String) As Map
 	varStyles = varStyles.Replace("=", ":")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, true)
 	For Each mtx As String In mxItems
 		mtx = mtx.Replace("?", "")
 		mtx = mtx.Trim
@@ -5614,7 +5612,7 @@ Sub GetRawPadding(varStyles As String) As Map
 	varStyles = varStyles.Replace("=", ":")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, True)
 	For Each mtx As String In mxItems
 		mtx = mtx.Replace("?", "")
 		mtx = mtx.Trim
@@ -5657,7 +5655,7 @@ Sub GetRawClasses(varStyles As String) As List
 	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, True)
 	Return mxItems
 End Sub
 
@@ -5668,7 +5666,7 @@ Sub GetRawAttributes(varStyles As String) As Map
 	varStyles = varStyles.Replace("=", ":")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, True)
 	Dim ms As Map = CreateMap()
 	For Each mtx As String In mxItems
 		mtx = mtx.Trim
@@ -6061,7 +6059,7 @@ public Sub GetRawBorders(typeof As String, varOffsets As String) As Map
 	varOffsets = varOffsets.trim
 	'
 	Dim ss As List = StrParse(";", varOffsets)
-	ss = ListRemoveDuplicates(ss)
+	ss = ListRemoveDuplicates(ss, True)
 	For Each item As String In ss
 		Dim k As String = MvField(item,1,"=")
 		Dim v As String = MvField(item,2,"=")
@@ -6103,7 +6101,7 @@ Sub GetRawPositions(varStyles As String) As Map
 	varStyles = varStyles.Replace("=", ":")
 	varStyles = varStyles.trim
 	Dim mxItems As List = StrParse(";", varStyles)
-	mxItems = ListRemoveDuplicates(mxItems)
+	mxItems = ListRemoveDuplicates(mxItems, True)
 	For Each mtx As String In mxItems
 		mtx = mtx.Replace("?", "")
 		mtx = mtx.Trim

@@ -5,6 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+'https://play.tailwindcss.com/ZiXUaQMFGW
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
@@ -437,9 +438,9 @@ private Sub MarkSelected(selectedDate As String)
 End Sub
 
 private Sub dateselected(e As BANanoEvent)
-	e.PreventDefault 
-	UI.EnsureVisible(e.ID)
+	e.PreventDefault
 	Dim xitem As String = modSD5.MvField(e.ID, 2, "_")
+	BANano.Await(UI.EnsureVisible($"item_${xitem}"$))
 	BANano.Await(MarkSelected(xitem))
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(xitem))
 End Sub

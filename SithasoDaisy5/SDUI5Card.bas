@@ -758,7 +758,7 @@ Sub getMDSide As Boolean
 	Return bMDSide
 End Sub
 'get Raw Content
-Sub getRawContent As String
+Sub getContent As String
 	Return sRawContent
 End Sub
 'get Rounded

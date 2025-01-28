@@ -12,6 +12,7 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
+#DesignerProperty: Key: HideSelectorButton, DisplayName: Hide Selector Button, FieldType: Boolean, DefaultValue: False, Description: Hide Selector Button
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -58,6 +59,7 @@ Sub Class_Globals
 	Private sValidatorHint As String = ""
 	Private sInputType As String = "normal"
 	Private sWidth As String = "full"
+	Private bHideSelectorButton As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -238,6 +240,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bVisible = modSD5.CBool(bVisible)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		bHideSelectorButton = Props.GetDefault("HideSelectorButton", False)
+		bHideSelectorButton = modSD5.CBool(bHideSelectorButton)
 	End If
 	'
 	If sInputType = "buttons" Then UI.AddClassDT("join")
@@ -281,10 +285,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setRequired(bRequired)
 	setSize(sSize)
 	setWidth(sWidth)
+	setHideSelectorButton(bHideSelectorButton)
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 '	setVisible(bVisible)
 End Sub
 
+'set Hide Selector Button
+Sub setHideSelectorButton(b As Boolean)
+	bHideSelectorButton = b
+	CustProps.put("HideSelectorButton", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "[&::file-selector-button]:hidden p-2.5")
+	Else
+		UI.RemoveClass(mElement, "[&::file-selector-button]:hidden p-2.5")
+	End If
+End Sub
+
+'get Hide Selector Button
+Sub getHideSelectorButton As Boolean
+	Return bHideSelectorButton
+End Sub
 
 'set Width
 Sub setWidth(s As String)

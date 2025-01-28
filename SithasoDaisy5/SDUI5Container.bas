@@ -11,11 +11,11 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Container, DisplayName: Container, FieldType: Boolean, DefaultValue: True, Description: Container
 #DesignerProperty: Key: ContainerFluid, DisplayName: Container Fluid, FieldType: Boolean, DefaultValue: False, Description: Container Fluid
-#DesignerProperty: Key: ContainerLg, DisplayName: Container LG, FieldType: Boolean, DefaultValue: False, Description: Container Lg
-#DesignerProperty: Key: ContainerMd, DisplayName: Container MF, FieldType: Boolean, DefaultValue: False, Description: Container Md
-#DesignerProperty: Key: ContainerSm, DisplayName: Container SM, FieldType: Boolean, DefaultValue: False, Description: Container Sm
-#DesignerProperty: Key: ContainerXl, DisplayName: Container XL, FieldType: Boolean, DefaultValue: False, Description: Container Xl
-#DesignerProperty: Key: ContainerXxl, DisplayName: Container XXL, FieldType: Boolean, DefaultValue: False, Description: Container Xxl
+#DesignerProperty: Key: ContainerLg, DisplayName: LG Container, FieldType: Boolean, DefaultValue: False, Description: Container Lg
+#DesignerProperty: Key: ContainerMd, DisplayName: MD Container, FieldType: Boolean, DefaultValue: False, Description: Container Md
+#DesignerProperty: Key: ContainerSm, DisplayName: SM Container, FieldType: Boolean, DefaultValue: False, Description: Container Sm
+#DesignerProperty: Key: ContainerXl, DisplayName: XL Container, FieldType: Boolean, DefaultValue: False, Description: Container Xl
+#DesignerProperty: Key: ContainerXxl, DisplayName: XXL Container, FieldType: Boolean, DefaultValue: False, Description: Container Xxl
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
@@ -307,18 +307,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
 	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
-	If bContainer Then UI.AddClassDT("container")
+	If bContainer Then UI.AddClassDT("container1")
 	If bCenterChildren Then UI.AddCenterChildrenDT
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If bContainerFluid = True Then UI.AddClassDT("container-fluid")
-	If bContainerLg = True Then UI.AddClassDT("container-lg")
-	If bContainerMd = True Then UI.AddClassDT("container-md")
-	If bContainerSm = True Then UI.AddClassDT("container-sm")
-	If bContainerXl = True Then UI.AddClassDT("container-xl")
-	If bContainerXxl = True Then UI.AddClassDT("container-xxl")
+	If bContainerFluid = True Then UI.AddClassDT("container1-fluid")
+	If bContainerLg = True Then UI.AddClassDT("container1-lg")
+	If bContainerMd = True Then UI.AddClassDT("container1-md")
+	If bContainerSm = True Then UI.AddClassDT("container1-sm")
+	If bContainerXl = True Then UI.AddClassDT("container1-xl")
+	If bContainerXxl = True Then UI.AddClassDT("container1-xxl")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)

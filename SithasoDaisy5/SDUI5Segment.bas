@@ -12,7 +12,7 @@ Version=10
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: fit , Description: Width
-#DesignerProperty: Key: RawKeyValues, DisplayName: Key Values (JSON), FieldType: String, DefaultValue: btn1:Button 1; btn2:Button 2; btn3:Button 3, Description: Key Values
+#DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -35,7 +35,7 @@ Sub Class_Globals
 	Private BANano As BANano   'ignore
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
-	Private sRawKeyValues As String = "btn1:Button 1; btn2:Button 2; btn3:Button 3"
+	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Public Tag As Object
 	Private sActive As String = ""
 	Private sDisabled As String = ""
@@ -192,8 +192,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		sActive = Props.GetDefault("Active", "btn1")
 		sActive = modSD5.Cstr(sActive)
-		sRawKeyValues = Props.GetDefault("RawKeyValues", "btn1:Button 1; btn2:Button 2; btn3:Button 3")
-		sRawKeyValues = modSD5.CStr(sRawKeyValues)
+		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
+		sRawOptions = modSD5.CStr(sRawOptions)
 		sDisabled = Props.GetDefault("Disabled", "")
 		sDisabled = modSD5.Cstr(sDisabled)
 		sSize = Props.GetDefault("Size", "md")
@@ -208,8 +208,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	UI.AddAttrDT("role", "tablist")
-	UI.AddClassDT("tabs")
-	UI.AddClassDT("tabs-box inline-flex flex-nowrap")
+	UI.AddClassDT("tabs tabs-box inline-flex flex-nowrap whitespace-nowrap")
 	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -226,7 +225,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 		
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-	BANano.Await(setKeyValues(sRawKeyValues))
+	BANano.Await(setOptions(sRawOptions))
 	setActive(sActive)
 '	setVisible(bVisible)
 End Sub
@@ -262,9 +261,9 @@ Sub Clear
 	UI.Clear(mElement)
 End Sub
 
-Sub setKeyValues(s As String)
-	sRawKeyValues = s
-	CustProps.Put("RawKeyValues", s)
+Sub setOptions(s As String)
+	sRawOptions = s
+	CustProps.Put("RawOptions", s)
 	If mElement = Null Then Return
 	Clear
 	Dim m As Map = UI.GetKeyValues(s, False)
@@ -303,8 +302,8 @@ private Sub itemchange(e As BANanoEvent)
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(sprefix))
 End Sub
 
-Sub getKeyValues As String
-	Return sRawKeyValues
+Sub getOptions As String
+	Return sRawOptions
 End Sub
 
 'set Size
@@ -324,8 +323,10 @@ End Sub
 
 'set Active
 Sub setActive(item As String)
+	item = modSD5.CleanID(item)
 	CustProps.put("Active", item)
 	If mElement = Null Then Return
+	If item <> "" Then UI.SetCheckedByID($"${item}_${mName}"$, True)
 End Sub
 
 'set Disabled
@@ -333,6 +334,11 @@ Sub setDisabled(items As String)
 	sDisabled = items
 	CustProps.put("Disabled", items)
 	If mElement = Null Then Return
+	If items = "" Then Return
+	Dim itemsM As Map = UI.GetKeyValues(items, False)
+	For Each k As String In itemsM.Keys
+		UI.SetEnabledByID($"${k}_${mName}"$, False)
+	Next
 End Sub
 'get Active
 Sub getActive As String
