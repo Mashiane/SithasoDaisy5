@@ -130,11 +130,9 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("layout", "pg-footer", "", "Footer")
 	drawermenu.AddItemChild("layout", "pg-hero", "", "Hero")
 	drawermenu.AddItemChild("layout", "pg-indicator", "", "Indicator")
-	drawermenu.SetItemBadge("pg-indicator", "bugs", "primary")
 	drawermenu.AddItemChild("layout", "pg-join", "", "Join (group items)")
 	drawermenu.AddItemChild("layout", "pg-mask", "", "Mask")
 	drawermenu.AddItemChild("layout", "pg-stack", "", "Stack")
-	drawermenu.SetItemBadge("pg-stack", "bugs", "primary")
 	'
 	drawermenu.AddItemParent("components", "mockup", "", "Mockup")
 	drawermenu.AddItemChild("mockup", "pg-phone", "", "Phone")
@@ -142,6 +140,10 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("mockup", "pg-browser", "", "Browser")
 	drawermenu.AddItemChild("mockup", "pg-code", "", "Code")
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
+	'
+	drawermenu.AddItemParent("", "plugins", "", "Plugins")
+	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
+	drawermenu.AddItemChild("plugins", "pg-groupselect", "", "Group Select")
 End Sub
 
 
@@ -161,6 +163,13 @@ Private Sub drawermenu_ItemClick (item As String)
 	Case "pg"
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive($"pg-${ssuffix}"$))
+			Select Case ssuffix
+			Case "infobox"
+				pgInfoBox.Show(App)
+			Case "groupselect"
+				pgGroupSelect.Show(App)
+			End Select	
+		
 		
 			Select Case ssuffix
 			Case "calendar"

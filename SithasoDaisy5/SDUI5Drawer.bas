@@ -132,7 +132,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -141,14 +141,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -162,7 +162,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -218,7 +218,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bXlOpen = modSD5.CBool(bXlOpen)
 	End If
 	'
-	UI.AddClassDT("drawer")
+	UI.AddClassDT("drawer bg-base-100 max-w-[100rem]")
 	If bLgOpen Then UI.AddClassDT("lg:drawer-open")
 	If bMdOpen Then UI.AddClassDT("md:drawer-open")
 	If bOpen Then UI.AddClassDT("drawer-open")
@@ -237,10 +237,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle hidden"></input>
+		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
 		<div id="${mName}_content" class="drawer-content flex flex-col"></div>
-		<div id="${mName}_side" class="drawer-side border">
-			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay hidden"></label>
+		<div id="${mName}_side" class="drawer-side border z-50">
+			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 		</div>
 	</div>"$).Get("#" & mName)
 	setOverlay(bOverlay)

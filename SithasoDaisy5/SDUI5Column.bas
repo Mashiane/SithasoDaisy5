@@ -7,16 +7,16 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: 12, Description: Size
-#DesignerProperty: Key: SizeSm, DisplayName: Size SM, FieldType: String, DefaultValue: , Description: Size Sm
-#DesignerProperty: Key: SizeMd, DisplayName: Size MD, FieldType: String, DefaultValue: , Description: Size Md
-#DesignerProperty: Key: SizeLg, DisplayName: Size LG, FieldType: String, DefaultValue: , Description: Size Lg
-#DesignerProperty: Key: SizeXl, DisplayName: Size XL, FieldType: String, DefaultValue: , Description: Size Xl
-#DesignerProperty: Key: SizeXxl, DisplayName: Size XXL, FieldType: String, DefaultValue: , Description: Size Xxl
-#DesignerProperty: Key: OffsetSm, DisplayName: Offset SM, FieldType: String, DefaultValue: , Description: Offset Sm
-#DesignerProperty: Key: OffsetMd, DisplayName: Offset MD, FieldType: String, DefaultValue: , Description: Offset Md
-#DesignerProperty: Key: OffsetLg, DisplayName: Offset LG, FieldType: String, DefaultValue: , Description: Offset Lg
-#DesignerProperty: Key: OffsetXl, DisplayName: Offset XL, FieldType: String, DefaultValue: , Description: Offset Xl
-#DesignerProperty: Key: OffsetXxl, DisplayName: Offset XXL, FieldType: String, DefaultValue: , Description: Offset Xl
+#DesignerProperty: Key: SizeSm, DisplayName: SM Size, FieldType: String, DefaultValue: , Description: SM Size
+#DesignerProperty: Key: SizeMd, DisplayName: MD Size, FieldType: String, DefaultValue: , Description: MD Size
+#DesignerProperty: Key: SizeLg, DisplayName: LG Size, FieldType: String, DefaultValue: , Description: LG Size
+#DesignerProperty: Key: SizeXl, DisplayName: XL Size, FieldType: String, DefaultValue: , Description: XL Size
+#DesignerProperty: Key: SizeXxl, DisplayName: XXL Size, FieldType: String, DefaultValue: , Description: XXL Size
+#DesignerProperty: Key: OffsetSm, DisplayName: SM Offset, FieldType: String, DefaultValue: , Description: SM Offset
+#DesignerProperty: Key: OffsetMd, DisplayName: MD Offset, FieldType: String, DefaultValue: , Description: MD Offset
+#DesignerProperty: Key: OffsetLg, DisplayName: LG Offset, FieldType: String, DefaultValue: , Description: LG Offset
+#DesignerProperty: Key: OffsetXl, DisplayName: XL Offset, FieldType: String, DefaultValue: , Description: XL Offset
+#DesignerProperty: Key: OffsetXxl, DisplayName: XXL Offset, FieldType: String, DefaultValue: , Description: XXL Offset
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: , Description: Align Self, List: auto|baseline|center|flex-end|flex-start|inherit|initial|none|stretch
@@ -169,7 +169,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -178,14 +178,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -199,7 +199,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)

@@ -305,7 +305,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
-	If bRound Then UI.AddClassDT("aspect-square")
+	If bRound Then UI.AddClassDT("rounded-full aspect-square")
 	If bIndicatorItem Then
 		UI.AddClassDT("indicator-item")
 	End If	  
@@ -520,7 +520,7 @@ Sub setWidth(s As String)
     sWidth = s
     CustProps.put("Width", s)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetWidth(mElement, s)
+	If s <> "" Then UI.SetWidth(mElement, s)
 End Sub
 
 'get Background Color

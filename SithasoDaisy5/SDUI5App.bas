@@ -405,6 +405,9 @@ End Sub
 
 
 #if css
+	body {
+		scrollbar-gutter: unset;
+	}
 	.tlradius {
 		border-top-left-radius:var(--radius-field,.25rem) !important;
 	}
@@ -441,6 +444,7 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
+	mElement.AddClass("relative")
 	mElement.AddClass("h-screen")
 	mElement.AddClass("w-screen")
 	mElement.AddClass("m-0")

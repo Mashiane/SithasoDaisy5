@@ -12,7 +12,7 @@ Version=10
 #Event: Input (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Text Area, Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -335,6 +335,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		</div>"$).Get("#" & mName)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+		Case "label-input"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+				<textarea id="${mName}" class="textarea w-full"></textarea>
+			</div>"$).Get("#" & mName)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses} textarea" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
 	End Select
@@ -384,7 +390,7 @@ Sub setMaxHeight(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetMaxHeightByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetMaxHeightByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetMaxHeight(mElement, s)
@@ -399,7 +405,7 @@ Sub setMaxWidth(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetMaxWidthByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetMaxWidthByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetMaxWidth(mElement, s)
@@ -414,7 +420,7 @@ Sub setMinHeight(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetMinHeightByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetMinHeightByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetMinHeight(mElement, s)
@@ -429,7 +435,7 @@ Sub setMinWidth(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetMinWidthByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetMinWidthByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetMinWidth(mElement, s)
@@ -465,7 +471,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetWidthByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetWidth(mElement, sWidth)

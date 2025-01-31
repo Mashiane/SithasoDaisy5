@@ -22,7 +22,7 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -59,7 +59,7 @@ Sub Class_Globals
 	Private bGlass As Boolean = False
 	Private sHeight As String = ""
 	Private sTextColor As String = ""
-	Private sWidth As String = ""
+	Private sWidth As String = "full"
 	Private sRounded As String = "none"
 	Private sShadow As String = "sm"
 	Private sTitle As String = "NavBar"
@@ -222,7 +222,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGlass = modSD5.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
-		sWidth = Props.GetDefault("Width", "")
+		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
@@ -253,7 +253,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	UI.AddClassDT("navbar")
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	Dim xattrs As String = UI.BuildExAttributes

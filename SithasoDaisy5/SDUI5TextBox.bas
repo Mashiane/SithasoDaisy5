@@ -11,7 +11,7 @@ Version=10
 #Event: Input (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: date|datetime-local|email|month|number|password|search|tel|text|time|url|week
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
@@ -328,6 +328,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		</div>"$).Get("#" & mName)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+		Case "label-input"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+				<input id="${mName}" class="input w-full" type="text"></input>
+			</div>"$).Get("#" & mName)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		End Select
@@ -364,7 +370,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetWidthByID($"${mName}_join"$, s)
-	Case "buttons"
+	Case "buttons", "label-input"
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "normal"
 		If s <> "" Then UI.SetWidth(mElement, sWidth)

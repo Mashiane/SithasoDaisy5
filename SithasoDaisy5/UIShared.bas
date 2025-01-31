@@ -1041,7 +1041,7 @@ End Sub
 
 Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
 	If mElement = Null Then Return
-	Dim mLast As String = GetData(mElement, xattr)
+	Dim mLast As String = mElement.GetData(xattr)
 	mLast = modSD5.CStr(mLast)
 	mLast = mLast.trim
 	If mLast <> "" Then 
@@ -1053,8 +1053,10 @@ End Sub
 Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
 	If mElement = Null Then Return
 	RemoveLastClass(mElement, rpClass)
-	SetData(mElement, rpClass, nv)
-	AddClass(mElement, nv)
+	If nv <> "" Then
+		mElement.SetData(rpClass, nv)
+		AddClass(mElement, nv)
+	End If	
 End Sub
 
 'remove a class from the element you can delimiter by ;
@@ -1077,6 +1079,21 @@ End Sub
 private Sub ListRemoveItem(lst As List, item As String)
 	Dim cPos As Int = lst.IndexOf(item)
 	If cPos <> -1 Then lst.RemoveAt(cPos)
+End Sub
+
+'convert a MV string to a map
+Sub GetOptions(varStyles As String) As List
+	varStyles = modSD5.CStr(varStyles)
+	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
+	varStyles = varStyles.Replace(":", "=").Replace("|", ";")
+	varStyles = varStyles.Replace("'", "")
+	varStyles = varStyles.Replace(",", ";")
+	varStyles = varStyles.Replace(QUOTE, "")
+	varStyles = varStyles.replace("?","")
+	varStyles = varStyles.trim
+	Dim mxItems As List = modSD5.StrParse(";", varStyles)
+	mxItems = modSD5.ListRemoveDuplicates(mxItems, False)
+	Return mxItems
 End Sub
 
 'convert a MV string to a map

@@ -15,11 +15,11 @@ Version=10
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ContentTextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: , Description: Content Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: ContentFlexDirection, DisplayName: Flex Direction, FieldType: String, DefaultValue: flex-col, Description: Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-#DesignerProperty: Key: SmContentFlexDirection, DisplayName: SM Flex Direction, FieldType: String, DefaultValue: none, Description: Sm Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-#DesignerProperty: Key: MdContentFlexDirection, DisplayName: MD Flex Direction, FieldType: String, DefaultValue: none, Description: Md Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-#DesignerProperty: Key: LgContentFlexDirection, DisplayName: LG Flex Direction, FieldType: String, DefaultValue: flex-row, Description: Lg Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-#DesignerProperty: Key: XlContentFlexDirection, DisplayName: XL Flex Direction, FieldType: String, DefaultValue: none, Description: Xl Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-#DesignerProperty: Key: XxlContentFlexDirection, DisplayName: XXL Flex Direction, FieldType: String, DefaultValue: none, Description: Xxl Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
+#DesignerProperty: Key: SmContentFlexDirection, DisplayName: SM Flex Direction, FieldType: String, DefaultValue: none, Description: SM Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
+#DesignerProperty: Key: MdContentFlexDirection, DisplayName: MD Flex Direction, FieldType: String, DefaultValue: none, Description: MD Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
+#DesignerProperty: Key: LgContentFlexDirection, DisplayName: LG Flex Direction, FieldType: String, DefaultValue: flex-row, Description: LG Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
+#DesignerProperty: Key: XlContentFlexDirection, DisplayName: XL Flex Direction, FieldType: String, DefaultValue: none, Description: XL Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
+#DesignerProperty: Key: XxlContentFlexDirection, DisplayName: XXL Flex Direction, FieldType: String, DefaultValue: none, Description: XXL Content Flex Direction, List: flex-col|flex-col-reverse|flex-row|flex-row-reverse
 #DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: 56, Description: Min Height
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width

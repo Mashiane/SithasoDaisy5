@@ -8,7 +8,7 @@ Version=10
 #Event: Change (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
@@ -277,6 +277,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
           			</div>
         		</div>"$).Get("#" & mName)
+		Case "label-input"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+				<input id="${mName}" class="file-input w-full" type="file"></input>
+			</div>"$).Get("#" & mName)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 	End Select
@@ -315,7 +321,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 		Case "legend"
 			UI.SetWidthByID($"${mName}_join"$, s)
-		Case "buttons"
+		Case "buttons", "label-input"
 			UI.SetWidthByID($"${mName}_control"$, s)
 		Case "normal"
 			If s <> "" Then UI.SetWidth(mElement, sWidth)

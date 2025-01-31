@@ -29,13 +29,18 @@ Version=10
 #DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
 #DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
+#DesignerProperty: Key: Link, DisplayName: Link, FieldType: Boolean, DefaultValue: False, Description: Link
+#DesignerProperty: Key: Loading, DisplayName: Loading, FieldType: Boolean, DefaultValue: False, Description: Loading
+#DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
+#DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
+#DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: none, Description: Icon Size
+#DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
+#DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color, List: 
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
 #DesignerProperty: Key: ImageColor, DisplayName: Left Image Color, FieldType: String, DefaultValue: , Description: Left Image Color
 #DesignerProperty: Key: ImageHeight, DisplayName: Left Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
 #DesignerProperty: Key: ImageWidth, DisplayName: Left Image Width, FieldType: String, DefaultValue: 32px, Description: Left Image Width
-#DesignerProperty: Key: Link, DisplayName: Link, FieldType: Boolean, DefaultValue: False, Description: Link
-#DesignerProperty: Key: Loading, DisplayName: Loading, FieldType: Boolean, DefaultValue: False, Description: Loading
-#DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
 #DesignerProperty: Key: RightImage, DisplayName: Right Image, FieldType: String, DefaultValue: , Description: Right Image
 #DesignerProperty: Key: RightImageColor, DisplayName: Right Image Color, FieldType: String, DefaultValue: , Description: Right Image Color
 #DesignerProperty: Key: RightImageHeight, DisplayName: Right Image Height, FieldType: String, DefaultValue: 32px, Description: Right Image Height
@@ -126,6 +131,14 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_LEFT As String = "left"
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
+	Private sIconSize As String = "none"
+	Private sLeftIcon As String = ""
+	Private sLeftIconColor As String = "none"
+	Private sRightIcon As String = ""
+	Private sRightIconColor As String = "none"
+	Private bLeftIconVisible As Boolean = False
+	Private bRightIconVisible As Boolean = False
+
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -370,6 +383,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
 		sTooltipPosition = modSD5.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
+		sIconSize = Props.GetDefault("IconSize", "none")
+		sIconSize = modSD5.CStr(sIconSize)
+		If sIconSize = "none" Then sIconSize = ""
+		sLeftIcon = Props.GetDefault("LeftIcon", "")
+		sLeftIcon = modSD5.CStr(sLeftIcon)
+		sLeftIconColor = Props.GetDefault("LeftIconColor", "none")
+		sLeftIconColor = modSD5.CStr(sLeftIconColor)
+		If sLeftIconColor = "none" Then sLeftIconColor = ""
+		sRightIcon = Props.GetDefault("RightIcon", "")
+		sRightIcon = modSD5.CStr(sRightIcon)
+		sRightIconColor = Props.GetDefault("RightIconColor", "none")
+		sRightIconColor = modSD5.CStr(sRightIconColor)
+		If sRightIconColor = "none" Then sRightIconColor = ""
 	End If
 	'
 	If sParentID <> "" Then
@@ -427,8 +453,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
+		<i id="${mName}_lefticon" class="hidden"></i>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden"></img>
 		<span id="${mName}_text"></span>
+		<i id="${mName}_righticon" class="hidden"></i>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
 		<div id="${mName}_badge" class="badge hidden"></div>
 	</${sTag}>"$).Get("#" & mName)
@@ -453,6 +481,85 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setTooltipOpen(bTooltipOpen)
 	setTooltipPosition(sTooltipPosition)
 '	setVisible(bVisible)
+	setLeftIcon(sLeftIcon)
+	setIconSize(sIconSize)
+	setLeftIconColor(sLeftIconColor)
+	setRightIcon(sRightIcon)
+	setRightIconColor(sRightIconColor)
+End Sub
+
+
+'set Icon Size
+Sub setIconSize(s As String)
+	sIconSize = s
+	CustProps.put("IconSize", s)
+	If mElement = Null Then Return
+	If sLeftIcon = "" Then Return
+	UI.SetTextSizeByID($"${mName}_lefticon"$, s)
+	UI.SetTextSizeByID($"${mName}_righticon"$, s)
+End Sub
+'set Left Icon
+Sub setLeftIcon(s As String)
+	sLeftIcon = s
+	CustProps.put("LeftIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_lefticon"$, False)
+	Else
+		UI.UpdateClassByID($"${mName}_lefticon"$, "icon", s)
+		UI.SetVisibleByID($"${mName}_lefticon"$, True)
+	End If
+End Sub
+'set Left Icon Color
+Sub setLeftIconColor(s As String)
+	sLeftIconColor = s
+	CustProps.put("LeftIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_lefticon"$, s)
+End Sub
+'set Right Icon
+Sub setRightIcon(s As String)
+	sRightIcon = s
+	CustProps.put("RightIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_righticon"$, False)
+	Else
+		UI.UpdateClassByID($"${mName}_righticon"$, "icon", s)
+		UI.SetVisibleByID($"${mName}_righticon"$, True)
+	End If
+End Sub
+'set Right Icon Color
+Sub setRightIconColor(s As String)
+	sRightIconColor = s
+	CustProps.put("RightIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_righticon"$, s)
+End Sub
+
+'get Icon Size
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+'get Left Icon
+Sub getLeftIcon As String
+	Return sLeftIcon
+End Sub
+
+'get Left Icon Color
+Sub getLeftIconColor As String
+	Return sLeftIconColor
+End Sub
+
+'get Right Icon
+Sub getRightIcon As String
+	Return sRightIcon
+End Sub
+
+'get Right Icon Color
+Sub getRightIconColor As String
+	Return sRightIconColor
 End Sub
 
 
@@ -506,7 +613,7 @@ Sub getTooltipOpen As Boolean
 End Sub
 'get Tooltip Position
 Sub getTooltipPosition As String
-	return sTooltipPosition
+	Return sTooltipPosition
 End Sub
 
 
@@ -670,6 +777,11 @@ Sub setLoading(b As Boolean)
 				setLeftImageVisible(False)
 			End If	
 		End If
+		If sLeftIcon <> "" Then
+			If (sText = "") Or (sText <> "") Then
+				setLeftIconVisible(False)
+			End If
+		End If
 	Else
 		UI.RemoveClass(load, "loading")
 		UI.AddClass(load, "hidden")
@@ -677,6 +789,11 @@ Sub setLoading(b As Boolean)
 		If sImage <> "" Then
 			If (sText = "") Or (sText <> "") Then
 				setLeftImageVisible(True)
+			End If
+		End If
+		If sLeftIcon <> "" Then
+			If (sText = "") Or (sText <> "") Then
+				setLeftIconVisible(True)
 			End If
 		End If
 	End If
@@ -1058,4 +1175,29 @@ End Sub
 
 Sub OnEvent(event As String, methodName As String)
 	UI.OnEvent(mElement, event, mCallBack, methodName)
+End Sub
+
+'set Left Icon Visible
+Sub setLeftIconVisible(b As Boolean)
+	bLeftIconVisible = b
+	CustProps.put("LeftIconVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_lefticon"$, b)
+End Sub
+
+'set Right Icon Visible
+Sub setRightIconVisible(b As Boolean)
+	bRightIconVisible = b
+	CustProps.put("RightIconVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_righticon"$, b)
+End Sub
+
+'get Left Icon Visible
+Sub getLeftIconVisible As Boolean
+	Return bLeftIconVisible
+End Sub
+'get Right Icon Visible
+Sub getRightIconVisible As Boolean
+	Return bRightIconVisible
 End Sub

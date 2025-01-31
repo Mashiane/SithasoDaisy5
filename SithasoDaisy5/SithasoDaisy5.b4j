@@ -1,87 +1,79 @@
 ﻿AppType=JavaFX
 Build1=Default,b4j.example
 File1=250x300.png
-File10=emojimart.js
-File11=emojimart.json
-File12=fa-brands-400.woff2
-File13=fa-regular-400.woff2
-File14=fa-solid-900.woff2
-File15=fileSaver.min.js
-File16=flatpickr.min.css
-File17=flatpickr.min.js
-File18=FONT AWESOME LICENSE.txt
-File19=fontawesome.min.css
+File10=dayjs.min.js
+File11=fa-brands-400.woff2
+File12=fa-regular-400.woff2
+File13=fa-solid-900.woff2
+File14=fileSaver.min.js
+File15=FONT AWESOME LICENSE.txt
+File16=fontawesome.min.css
+File17=infobox.min.css
+File18=insert-rule.min.js
+File19=loader-1.css
 File2=600by600.jpg
-File20=fplocale.min.js
-File21=insert-rule.min.js
-File22=loader-1.css
-File23=material_blue.css
-File24=math.min.js
-File25=mdtoast.min.css
-File26=mdtoast.min.js
-File27=menu.svg
-File28=moment.min.js
-File29=numeral.min.js
+File20=math.min.js
+File21=mdtoast.min.css
+File22=mdtoast.min.js
+File23=menu.svg
+File24=moment.min.js
+File25=numeral.min.js
+File26=placeholderimg.jpg
+File27=roboto.min.css
+File28=Roboto100.ttf
+File29=Roboto300.ttf
 File3=BANANO LICENSE.TXT
-File30=papaparse.min.js
-File31=placeholderimg.jpg
-File32=roboto.min.css
-File33=Roboto100.ttf
-File34=Roboto300.ttf
-File35=Roboto400.ttf
-File36=Roboto500.ttf
-File37=Roboto700.ttf
-File38=Roboto900.ttf
-File39=sweetalert2.all.min.js
+File30=Roboto400.ttf
+File31=Roboto500.ttf
+File32=Roboto700.ttf
+File33=Roboto900.ttf
+File34=sweetalert2.all.min.js
+File35=sweetalert2.min.css
+File36=tailwind.min.js
+File37=tailwind3.min.js
 File4=bs5grid.min.css
-File40=sweetalert2.min.css
-File41=tailwind.min.js
 File5=checkblack.svg
 File6=closemenu.svg
-File7=DAISYUI LICENSE.txt
-File8=daisyui.css
-File9=dayjs.min.js
+File7=countUp.umd.js
+File8=DAISYUI LICENSE.txt
+File9=daisyui2.css
 FileGroup1=Default Group\IMAGES
 FileGroup10=Default Group\JAVASCRIPT
-FileGroup11=Default Group\JSON
+FileGroup11=Default Group\FONTS
 FileGroup12=Default Group\FONTS
 FileGroup13=Default Group\FONTS
-FileGroup14=Default Group\FONTS
-FileGroup15=Default Group\JAVASCRIPT
+FileGroup14=Default Group\JAVASCRIPT
+FileGroup15=Default Group\LICENCES
 FileGroup16=Default Group\CSS
-FileGroup17=Default Group\JAVASCRIPT
-FileGroup18=Default Group\LICENCES
+FileGroup17=Default Group\CSS
+FileGroup18=Default Group\JAVASCRIPT
 FileGroup19=Default Group\CSS
 FileGroup2=Default Group\IMAGES
 FileGroup20=Default Group\JAVASCRIPT
-FileGroup21=Default Group\JAVASCRIPT
-FileGroup22=Default Group\CSS
-FileGroup23=Default Group\CSS
+FileGroup21=Default Group\CSS
+FileGroup22=Default Group\JAVASCRIPT
+FileGroup23=Default Group\IMAGES
 FileGroup24=Default Group\JAVASCRIPT
-FileGroup25=Default Group\CSS
-FileGroup26=Default Group\JAVASCRIPT
-FileGroup27=Default Group\IMAGES
-FileGroup28=Default Group\JAVASCRIPT
-FileGroup29=Default Group\JAVASCRIPT
+FileGroup25=Default Group\JAVASCRIPT
+FileGroup26=Default Group\IMAGES
+FileGroup27=Default Group\CSS
+FileGroup28=Default Group\FONTS
+FileGroup29=Default Group\FONTS
 FileGroup3=Default Group\LICENCES
-FileGroup30=Default Group\JAVASCRIPT
-FileGroup31=Default Group\IMAGES
-FileGroup32=Default Group\CSS
+FileGroup30=Default Group\FONTS
+FileGroup31=Default Group\FONTS
+FileGroup32=Default Group\FONTS
 FileGroup33=Default Group\FONTS
-FileGroup34=Default Group\FONTS
-FileGroup35=Default Group\FONTS
-FileGroup36=Default Group\FONTS
-FileGroup37=Default Group\FONTS
-FileGroup38=Default Group\FONTS
-FileGroup39=Default Group\JAVASCRIPT
+FileGroup34=Default Group\JAVASCRIPT
+FileGroup35=Default Group\CSS
+FileGroup36=Default Group\JAVASCRIPT
+FileGroup37=Default Group
 FileGroup4=Default Group\CSS
-FileGroup40=Default Group\CSS
-FileGroup41=Default Group\JAVASCRIPT
 FileGroup5=Default Group\IMAGES
 FileGroup6=Default Group\IMAGES
-FileGroup7=Default Group\LICENCES
-FileGroup8=Default Group\CSS
-FileGroup9=Default Group\JAVASCRIPT
+FileGroup7=Default Group\JAVASCRIPT
+FileGroup8=Default Group\LICENCES
+FileGroup9=Default Group
 Group=Default Group
 Library1=banano
 Library2=jcore
@@ -111,72 +103,75 @@ Module29=SDUI5Dock
 Module3=SDUI5Accordion
 Module30=SDUI5Drawer
 Module31=SDUI5DropDown
-Module32=SDUI5FieldSet
-Module33=SDUI5FileInput
-Module34=SDUI5Filter
-Module35=SDUI5Footer
-Module36=SDUI5FooterTitle
-Module37=SDUI5Hero
-Module38=SDUI5Image
-Module39=SDUI5Indicator
+Module32=SDUI5Fab
+Module33=SDUI5FieldSet
+Module34=SDUI5FileInput
+Module35=SDUI5Filter
+Module36=SDUI5Footer
+Module37=SDUI5FooterTitle
+Module38=SDUI5GroupSelect
+Module39=SDUI5Hero
 Module4=SDUI5Alert
-Module40=SDUI5Join
-Module41=SDUI5Kbd
-Module42=SDUI5Label
-Module43=SDUI5Link
-Module44=SDUI5List
-Module45=SDUI5ListItem
-Module46=SDUI5Loading
-Module47=SDUI5MDToast
-Module48=SDUI5Menu
-Module49=SDUI5MenuItem
+Module40=SDUI5Image
+Module41=SDUI5Indicator
+Module42=SDUI5InfoCard
+Module43=SDUI5Join
+Module44=SDUI5Kbd
+Module45=SDUI5Label
+Module46=SDUI5Link
+Module47=SDUI5List
+Module48=SDUI5ListItem
+Module49=SDUI5Loading
 Module5=SDUI5App
-Module50=SDUI5Modal
-Module51=SDUI5NavBar
-Module52=SDUI5Panel
-Module53=SDUI5Phone
-Module54=SDUI5Progress
-Module55=SDUI5RadialProgress
-Module56=SDUI5Radio
-Module57=SDUI5RadioGroup
-Module58=SDUI5Range
-Module59=SDUI5Rating
+Module50=SDUI5MDToast
+Module51=SDUI5Menu
+Module52=SDUI5MenuItem
+Module53=SDUI5Modal
+Module54=SDUI5NavBar
+Module55=SDUI5Panel
+Module56=SDUI5Phone
+Module57=SDUI5Progress
+Module58=SDUI5RadialProgress
+Module59=SDUI5Radio
 Module6=SDUI5Avatar
-Module60=SDUI5Row
-Module61=SDUI5Segment
-Module62=SDUI5Select
-Module63=SDUI5Skeleton
-Module64=SDUI5Stack
-Module65=SDUI5Stat
-Module66=SDUI5StatItem
-Module67=SDUI5Status
-Module68=SDUI5Steps
-Module69=SDUI5StepsItem
+Module60=SDUI5RadioGroup
+Module61=SDUI5Range
+Module62=SDUI5Rating
+Module63=SDUI5Row
+Module64=SDUI5Segment
+Module65=SDUI5Select
+Module66=SDUI5Skeleton
+Module67=SDUI5Stack
+Module68=SDUI5Stat
+Module69=SDUI5StatItem
 Module7=SDUI5AvatarGroup
-Module70=SDUI5Swal
-Module71=SDUI5Swap
-Module72=SDUI5Table
-Module73=SDUI5Tabs
-Module74=SDUI5TabsItem
-Module75=SDUI5Text
-Module76=SDUI5TextArea
-Module77=SDUI5TextBox
-Module78=SDUI5Timeline
-Module79=SDUI5TimelineItem
+Module70=SDUI5Status
+Module71=SDUI5Steps
+Module72=SDUI5StepsItem
+Module73=SDUI5Swal
+Module74=SDUI5Swap
+Module75=SDUI5Table
+Module76=SDUI5Tabs
+Module77=SDUI5TabsItem
+Module78=SDUI5Text
+Module79=SDUI5TextArea
 Module8=SDUI5Badge
-Module80=SDUI5Toast
-Module81=SDUI5Toggle
-Module82=SDUI5ToolTip
-Module83=SDUI5Window
-Module84=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
-Module85=|relative|..\..\shared\SDUIMap
-Module86=|relative|..\..\shared\SDUIShared
-Module87=SithasoDaisy5
-Module88=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+Module80=SDUI5TextBox
+Module81=SDUI5Timeline
+Module82=SDUI5TimelineItem
+Module83=SDUI5Toast
+Module84=SDUI5Toggle
+Module85=SDUI5ToolTip
+Module86=SDUI5Window
+Module87=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
+Module88=|relative|..\..\shared\SDUIMap
+Module89=|relative|..\..\shared\SDUIShared
 Module9=SDUI5BottomDrawer
-NumberOfFiles=41
+Module90=SithasoDaisy5
+Module91=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+NumberOfFiles=37
 NumberOfLibraries=3
-NumberOfModules=88
+NumberOfModules=91
 Version=10
 @EndOfDesignText@
 #Region Project Attributes 
@@ -205,30 +200,33 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.TranspilerOptions.EnableLiveCodeSwapping = False
 	BANano.TranspilerOptions.DisableShortenVariableNames = True
 	BANano.Header.AddCSSFile("loader-1.css")
-	BANano.Header.AddCSSFile("daisyui.css")
-	BANano.Header.AddJavascriptFile("tailwind.min.js")
-	BANano.Header.AddCSSFile("bs5grid.min.css")
-	BANano.Header.AddCSSFile("fontawesome.min.css")
-	'
+	BANano.Header.AddCSSFile("infobox.min.css")
+	'BANano.Header.AddCSSFileForLater("flatpickr.min.css")
+	'BANano.Header.AddCSSFileForLater("material_blue.css")
 	BANano.Header.AddCSSFile("roboto.min.css")
-	BANano.Header.AddJavascriptFile("fileSaver.min.js")
 	BANano.header.AddCSSFile("sweetalert2.min.css")
-	BANano.Header.AddJavascriptFile("sweetalert2.all.min.js")
+	BANano.Header.AddCSSFile("fontawesome.min.css")
+	BANano.Header.AddCSSFile("bs5grid.min.css")
 	BANano.Header.AddCSSFile("mdtoast.min.css")
+	
+	BANano.Header.AddCSSFile("daisyui2.css")
+	BANano.Header.AddJavascriptFile("tailwind3.min.js")
+	'
+	BANano.Header.AddJavascriptFile("fileSaver.min.js")
+	BANano.Header.AddJavascriptFile("sweetalert2.all.min.js")
 	BANano.Header.AddJavascriptFile("mdtoast.min.js")
 	'BANano.Header.AddJavascriptFileForLater("eruda.js")
 	BANano.Header.AddJavascriptFileForLater("math.min.js")
 	'
-	BANano.Header.AddCSSFileForLater("flatpickr.min.css")
-	BANano.Header.AddCSSFileForLater("material_blue.css")
-	BANano.Header.AddJavascriptFileForLater("flatpickr.min.js")
-	BANano.Header.AddJavascriptFileForLater("fplocale.min.js")
+	'BANano.Header.AddJavascriptFileForLater("flatpickr.min.js")
+	'BANano.Header.AddJavascriptFileForLater("fplocale.min.js")
 	'
 	BANano.Header.AddJavascriptFile("dayjs.min.js")
 	BANano.Header.AddJavascriptFile("numeral.min.js")
 	BANano.Header.AddJavascriptFile("insert-rule.min.js")
 	BANano.Header.AddJavascriptFile("moment.min.js")
-	
+	BANano.Header.AddJavascriptFile("countUp.umd.js")
+		
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version
 	ExitApplication

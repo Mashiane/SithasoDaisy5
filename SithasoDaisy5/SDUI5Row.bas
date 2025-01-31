@@ -7,11 +7,11 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RowCols, DisplayName: Row Cols, FieldType: String, DefaultValue: , Description: Row Cols
-#DesignerProperty: Key: RowColsMd, DisplayName: Row Cols MD, FieldType: String, DefaultValue: , Description: Row Cols Md
-#DesignerProperty: Key: RowColsSm, DisplayName: Row Cols SM, FieldType: String, DefaultValue: , Description: Row Cols Sm
-#DesignerProperty: Key: RowColsLg, DisplayName: Row Cols LG, FieldType: String, DefaultValue: , Description: Row Cols Lg
-#DesignerProperty: Key: RowColsXl, DisplayName: Row Cols XL, FieldType: String, DefaultValue: , Description: Row Cols Xl
-#DesignerProperty: Key: RowColsXxl, DisplayName: Row Cols XXL, FieldType: String, DefaultValue: , Description: Row Cols Xxl
+#DesignerProperty: Key: RowColsSm, DisplayName: SM Row Cols, FieldType: String, DefaultValue: , Description: XM Row Cols
+#DesignerProperty: Key: RowColsMd, DisplayName: MD Row Cols, FieldType: String, DefaultValue: , Description: MD Row Cols
+#DesignerProperty: Key: RowColsLg, DisplayName: LG Row Cols, FieldType: String, DefaultValue: , Description: LG Row Cols
+#DesignerProperty: Key: RowColsXl, DisplayName: XL Row Cols, FieldType: String, DefaultValue: , Description: XL Row Cols
+#DesignerProperty: Key: RowColsXxl, DisplayName: XXL Row Cols, FieldType: String, DefaultValue: , Description: XXL Row Cols
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Align Items, List: normal|stretch|center|flex-start|flex-end|start|end|baseline|initial|inherit|none
@@ -161,7 +161,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -170,14 +170,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -191,7 +191,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)

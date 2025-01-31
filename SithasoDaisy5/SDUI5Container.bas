@@ -11,11 +11,11 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Container, DisplayName: Container, FieldType: Boolean, DefaultValue: True, Description: Container
 #DesignerProperty: Key: ContainerFluid, DisplayName: Container Fluid, FieldType: Boolean, DefaultValue: False, Description: Container Fluid
-#DesignerProperty: Key: ContainerLg, DisplayName: LG Container, FieldType: Boolean, DefaultValue: False, Description: Container Lg
-#DesignerProperty: Key: ContainerMd, DisplayName: MD Container, FieldType: Boolean, DefaultValue: False, Description: Container Md
-#DesignerProperty: Key: ContainerSm, DisplayName: SM Container, FieldType: Boolean, DefaultValue: False, Description: Container Sm
-#DesignerProperty: Key: ContainerXl, DisplayName: XL Container, FieldType: Boolean, DefaultValue: False, Description: Container Xl
-#DesignerProperty: Key: ContainerXxl, DisplayName: XXL Container, FieldType: Boolean, DefaultValue: False, Description: Container Xxl
+#DesignerProperty: Key: ContainerSm, DisplayName: SM Container, FieldType: Boolean, DefaultValue: False, Description: SM Container
+#DesignerProperty: Key: ContainerMd, DisplayName: MD Container, FieldType: Boolean, DefaultValue: False, Description: MD Container
+#DesignerProperty: Key: ContainerLg, DisplayName: LG Container, FieldType: Boolean, DefaultValue: False, Description: LG Container
+#DesignerProperty: Key: ContainerXl, DisplayName: XL Container, FieldType: Boolean, DefaultValue: False, Description: XL Container
+#DesignerProperty: Key: ContainerXxl, DisplayName: XXL Container, FieldType: Boolean, DefaultValue: False, Description: XXL Container
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children

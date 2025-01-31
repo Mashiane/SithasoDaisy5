@@ -10,7 +10,7 @@ Version=10
 #Event: Append (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Select, Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: Select an element, Description: Placeholder
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options (JSON)
@@ -326,6 +326,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		</div>"$).Get("#" & mName)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+		Case "label-input"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+				<select id="${mName}" class="select w-full">
+					<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
+				</select>
+			</div>"$).Get("#" & mName)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<select id="${mName}" class="${xclasses} select" ${xattrs} style="${xstyles}"></select>"$).Get("#" & mName)
 	End Select
@@ -355,7 +363,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 		Case "legend"
 			UI.SetWidthByID($"${mName}_join"$, s)
-		Case "buttons"
+		Case "buttons", "label-input"
 			UI.SetWidthByID($"${mName}_control"$, s)
 		Case "normal"
 			If s <> "" Then UI.SetWidth(mElement, sWidth)
