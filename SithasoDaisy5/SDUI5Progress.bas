@@ -304,7 +304,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<span id="${mName}_startlabel"></span>
 					<span id="${mName}_endlabel">${iValue}</span>
 				</div>
-  				<progress id="${mName}" class="progress relative" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+  				<progress id="${mName}" class="progress w-full relative" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
 				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
   					<span id="${mName}_start">${iMinValue}</span>
 					<span id="${mName}_end">${iMaxValue}</span>
@@ -316,7 +316,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
         		<div class="relative mt-6">
             		<div id="${mName}_tooltip" class="absolute tooltip top-2 tooltip-open before:text-xs" style="inset-inline-start:${iValue}%" data-tip="${iValue}"></div>
-					<progress id="${mName}" class="progress" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+					<progress id="${mName}" class="progress w-full" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
         		</div>
         		<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
 					<span id="${mName}_start">${iMinValue}</span>

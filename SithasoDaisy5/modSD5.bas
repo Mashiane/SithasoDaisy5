@@ -14,8 +14,34 @@ Sub Process_Globals
 	Private BANano As BANano		'ignore
 	Public ColorMap As Map
 	Private math As BANanoObject	'ignore
-	Type Paginate1(previousPage As Int, nextPage As Int, totalPages As Int, items As List)
+	Type Paginate(previousPage As Int, nextPage As Int, totalPages As Int, items As List)
 	Private Months As Map
+	Private Days As Map
+End Sub
+
+
+Sub InitDays
+	Days.Initialize
+	Dim x As Int = 0
+	For x = 1 To 31
+		Dim nd As String = PadRight(x, 2, "0")
+		Days.Put(nd, nd)
+	Next
+End Sub
+
+'get the length of the string
+Sub Len(Text As String) As Int
+	Return Text.Length
+End Sub
+
+Sub PadRight(Value As String, MaxLen As Int, PadChar As String) As String
+	Value = CStr(Value)
+	Dim intOrdNoLen As Int = Len(Value)
+	Dim i As Int
+	For i = 1 To (MaxLen - intOrdNoLen) Step 1
+		Value = PadChar & Value
+	Next
+	Return Value
 End Sub
 
 Sub InitColors
@@ -1068,8 +1094,8 @@ End Sub
 
 
 'get a page from a list
-Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate1
-	Dim xx As Paginate1
+Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate
+	Dim xx As Paginate
 	xx.initialize
 	Try
 		If lst.Size = 0 Then

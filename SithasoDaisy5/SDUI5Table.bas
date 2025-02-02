@@ -4664,7 +4664,7 @@ Sub ShowPreviousPage(event As BANanoEvent)
 		'setPrevPageDisabled(True)
 		iCurrentPage = BANano.parseInt(iCurrentPage) - 1
 		If iCurrentPage <= 0 Then iCurrentPage = 1
-		Dim paginater As Paginate1 = BANano.Await(modSD5.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
+		Dim paginater As Paginate = BANano.Await(modSD5.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xItems As List = paginater.items
 		If iCurrentPage = 1 Then
 			setPrevPageDisabled(True)

@@ -30,13 +30,13 @@ File33=Roboto900.ttf
 File34=sweetalert2.all.min.js
 File35=sweetalert2.min.css
 File36=tailwind.min.js
-File37=tailwind3.min.js
-File4=bs5grid.min.css
+File37=tailwind4.min.js
+File4=bootstrap-grid.min.css
 File5=checkblack.svg
 File6=closemenu.svg
 File7=countUp.umd.js
 File8=DAISYUI LICENSE.txt
-File9=daisyui2.css
+File9=daisyui6.css
 FileGroup1=Default Group\IMAGES
 FileGroup10=Default Group\JAVASCRIPT
 FileGroup11=Default Group\FONTS
@@ -68,7 +68,7 @@ FileGroup34=Default Group\JAVASCRIPT
 FileGroup35=Default Group\CSS
 FileGroup36=Default Group\JAVASCRIPT
 FileGroup37=Default Group
-FileGroup4=Default Group\CSS
+FileGroup4=Default Group
 FileGroup5=Default Group\IMAGES
 FileGroup6=Default Group\IMAGES
 FileGroup7=Default Group\JAVASCRIPT
@@ -165,13 +165,12 @@ Module85=SDUI5ToolTip
 Module86=SDUI5Window
 Module87=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
 Module88=|relative|..\..\shared\SDUIMap
-Module89=|relative|..\..\shared\SDUIShared
+Module89=SithasoDaisy5
 Module9=SDUI5BottomDrawer
-Module90=SithasoDaisy5
-Module91=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+Module90=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
 NumberOfFiles=37
 NumberOfLibraries=3
-NumberOfModules=91
+NumberOfModules=90
 Version=10
 @EndOfDesignText@
 #Region Project Attributes 
@@ -206,12 +205,12 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddCSSFile("roboto.min.css")
 	BANano.header.AddCSSFile("sweetalert2.min.css")
 	BANano.Header.AddCSSFile("fontawesome.min.css")
-	BANano.Header.AddCSSFile("bs5grid.min.css")
+	BANano.Header.AddCSSFile("bootstrap-grid.min.css")
 	BANano.Header.AddCSSFile("mdtoast.min.css")
 	
-	BANano.Header.AddCSSFile("daisyui2.css")
-	BANano.Header.AddJavascriptFile("tailwind3.min.js")
-	'
+	BANano.Header.AddCSSFile("daisyui6.css")
+	BANano.Header.AddJavascriptFile("tailwind4.min.js")
+	
 	BANano.Header.AddJavascriptFile("fileSaver.min.js")
 	BANano.Header.AddJavascriptFile("sweetalert2.all.min.js")
 	BANano.Header.AddJavascriptFile("mdtoast.min.js")

@@ -460,12 +460,12 @@ Public Sub Initialize (mCallback As Object)
 	AllViews.Initialize
 	Designs.Initialize
 	DynamicEvents.Initialize
-	SDUIShared.InitColors
-	SDUIShared.InitLanguages
-	SDUIShared.InitCountries
+'	modSD5.InitColors
+'	modSD5.InitLanguages
+'	modSD5.InitCountries
 	UserProfile.Initialize
 	modSD5.InitMonths
-	SDUIShared.InitDays
+	modSD5.InitDays
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
@@ -1582,19 +1582,19 @@ Sub AddDataModelFiles(TableName As String, FieldNames As List)
 	End If
 End Sub
 
-Sub UseGMap(GMapApiKey As String, mCallBack As Object, mapName As String)
-	mapName = mapName.ToLowerCase
-	Dim e As BANanoEvent
-	If SubExists(mCallBack, $"${mapName}_ready"$) Then
-		Dim cbReady As BANanoObject = Banano.CallBack(mCallBack, $"${mapName}_ready"$, Array(e))
-		Banano.Window.SetField($"${mapName}_ready"$, cbReady)
-	Else
-		Banano.Throw($"${mapName}_ready event is missing!"$)
-	End If
-	SDUIShared.AddJavascriptFile($"https://maps.googleapis.com/maps/api/js?key=${GMapApiKey}&callback=${mapName}_ready&libraries=places&v=3&loading=async"$)
-	'SDUIShared.AddJavascriptFile("https://cdn.jsdelivr.net/npm/gmaps@0.4.25/gmaps.min.js")
-	Banano.Await(UsesGMaps)
-End Sub
+'Sub UseGMap(GMapApiKey As String, mCallBack As Object, mapName As String)
+'	mapName = mapName.ToLowerCase
+'	Dim e As BANanoEvent
+'	If SubExists(mCallBack, $"${mapName}_ready"$) Then
+'		Dim cbReady As BANanoObject = Banano.CallBack(mCallBack, $"${mapName}_ready"$, Array(e))
+'		Banano.Window.SetField($"${mapName}_ready"$, cbReady)
+'	Else
+'		Banano.Throw($"${mapName}_ready event is missing!"$)
+'	End If
+'	modSD5.AddJavascriptFile($"https://maps.googleapis.com/maps/api/js?key=${GMapApiKey}&callback=${mapName}_ready&libraries=places&v=3&loading=async"$)
+'	'modSD5.AddJavascriptFile("https://cdn.jsdelivr.net/npm/gmaps@0.4.25/gmaps.min.js")
+'	Banano.Await(UsesGMaps)
+'End Sub
 
 ''close the drawer
 'Sub CloseDrawer(item As String)
@@ -2167,7 +2167,7 @@ End Sub
 'get a tag from an element
 Sub GetMyPos(elID As String) As String
 	elID = modSD5.CleanID(elID)
-	Dim spos As String = SDUIShared.MvLast("_", elID)
+	Dim spos As String = modSD5.MvLast("_", elID)
 	Return spos
 End Sub
 

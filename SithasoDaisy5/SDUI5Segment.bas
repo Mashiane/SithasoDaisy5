@@ -290,7 +290,7 @@ Sub SetButtonActive(btnID As String, b As Boolean)
 End Sub
 
 Sub AddButton(sKey As String, sText As String)
-	sKey = SDUIShared.CleanID(sKey)
+	sKey = modSD5.CleanID(sKey)
 	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab" aria-label="${sText}"></input>"$
 	mElement.Append(sTag)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")

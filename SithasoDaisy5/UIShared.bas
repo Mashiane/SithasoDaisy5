@@ -55,7 +55,7 @@ public Sub Trigger(mElement As BANanoElement, event As String, params() As Strin
 End Sub
 
 Sub RemoveElementByID(sID As String)
-	sID = SDUIShared.CleanID(sID)
+	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	mElement.Remove

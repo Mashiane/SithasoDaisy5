@@ -459,19 +459,19 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = SDUIShared.GetFileDetails(fileObj)
+'fileDet = modSD5.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'Dim maxSize As Int = modSD5.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''**** UPLOAD
-''fileDet = SDUIShared.UploadFileWait(fileObj)
-''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = modSD5.UploadFileWait(fileObj)
+''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 ''Dim fn As String = fileDet.FileName
 ''get the status of the upload
@@ -483,10 +483,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(SDUIShared.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(SDUIShared.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(SDUIShared.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(SDUIShared.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText
@@ -509,17 +509,17 @@ End Sub
 'for each fileObj As Map in fileList
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = SDUIShared.GetFileDetails(fileObj)
+'fileDet = modSD5.GetFileDetails(fileObj)
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'Dim maxSize As Int = modSD5.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''start uploading the file
-'fileDet = SDUIShared.UploadFileWait(fileObj)
-''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+'fileDet = modSD5.UploadFileWait(fileObj)
+''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''get the status of the upload

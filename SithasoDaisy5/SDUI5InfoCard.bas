@@ -85,8 +85,8 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = SDUIShared.CleanID(EventName)
-	mName = SDUIShared.CleanID(Name)
+	mEventName = modSD5.CleanID(EventName)
+	mName = modSD5.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
@@ -241,38 +241,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeEnabled = False
 		UI.ExcludeVisible = False
 		bAnimateCounter = Props.GetDefault("AnimateCounter", True)
-		bAnimateCounter = SDUIShared.CBool(bAnimateCounter)
+		bAnimateCounter = modSD5.CBool(bAnimateCounter)
 		sDecimal = Props.GetDefault("Decimal", ".")
-		sDecimal = SDUIShared.CStr(sDecimal)
+		sDecimal = modSD5.CStr(sDecimal)
 		sDuration = Props.GetDefault("Duration", "2")
-		sDuration = SDUIShared.CStr(sDuration)
+		sDuration = modSD5.CStr(sDuration)
 		sIcon = Props.GetDefault("Icon", "fa-solid fa-user")
-		sIcon = SDUIShared.CStr(sIcon)
+		sIcon = modSD5.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "#264348")
-		sIconColor = SDUIShared.CStr(sIconColor)
+		sIconColor = modSD5.CStr(sIconColor)
 		sInforType = Props.GetDefault("InforType", "1")
-		sInforType = SDUIShared.CStr(sInforType)
+		sInforType = modSD5.CStr(sInforType)
 		sPrefix = Props.GetDefault("Prefix", "")
-		sPrefix = SDUIShared.CStr(sPrefix)
+		sPrefix = modSD5.CStr(sPrefix)
 		sSeparator = Props.GetDefault("Separator", "")
-		sSeparator = SDUIShared.CStr(sSeparator)
+		sSeparator = modSD5.CStr(sSeparator)
 		sStartFrom = Props.GetDefault("StartFrom", "0")
-		sStartFrom = SDUIShared.CStr(sStartFrom)
+		sStartFrom = modSD5.CStr(sStartFrom)
 		sSuffix = Props.GetDefault("Suffix", "")
-		sSuffix = SDUIShared.CStr(sSuffix)
+		sSuffix = modSD5.CStr(sSuffix)
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = SDUIShared.CStr(sTextColor)
+		sTextColor = modSD5.CStr(sTextColor)
 		sTitle = Props.GetDefault("Title", "Employees")
-		sTitle = SDUIShared.CStr(sTitle)
+		sTitle = modSD5.CStr(sTitle)
 		sValue = Props.GetDefault("Value", "1000")
-		sValue = SDUIShared.CStr(sValue)
+		sValue = modSD5.CStr(sValue)
 		sDecimalPlaces = Props.GetDefault("DecimalPlaces", "0")
-		sDecimalPlaces = SDUIShared.CStr(sDecimalPlaces)
+		sDecimalPlaces = modSD5.CStr(sDecimalPlaces)
 		sEffect = Props.GetDefault("Effect", "none")
-		sEffect = SDUIShared.CStr(sEffect)
+		sEffect = modSD5.CStr(sEffect)
 		If sEffect = "none" Then sEffect = ""
 		bUseGrouping = Props.GetDefault("UseGrouping", True)
-		bUseGrouping = SDUIShared.CBool(bUseGrouping)
+		bUseGrouping = modSD5.CBool(bUseGrouping)
 	End If
 	'
 	If sParentID <> "" Then
@@ -301,13 +301,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	'
 	Options.put("decimal", sDecimal)
-	Options.put("duration", SDUIShared.CInt(sDuration))
+	Options.put("duration", modSD5.CInt(sDuration))
 	Options.put("prefix", sPrefix)
 	Options.put("separator", sSeparator)
 	Options.put("suffix", sSuffix)
-	Options.Put("startVal", SDUIShared.CInt(sStartFrom))
+	Options.Put("startVal", modSD5.CInt(sStartFrom))
 	Options.Put("useEasing", True)
-	Options.put("decimalPlaces", SDUIShared.CInt(sDecimalPlaces))
+	Options.put("decimalPlaces", modSD5.CInt(sDecimalPlaces))
 	Options.put("useGrouping", bUseGrouping)
 	
 	setInforType(sInforType)
@@ -323,7 +323,7 @@ End Sub
 Sub Refresh
 	If bAnimateCounter = False Then Return
 	Dim eKey As String = $"${mName}_value"$
-	sValue = SDUIShared.CInt(sValue)
+	sValue = modSD5.CInt(sValue)
 	CountUp.Initialize2("countUp.CountUp", Array(eKey, sValue, Options))
 	CountUp.RunMethod("start", Null)
 End Sub
@@ -332,7 +332,7 @@ End Sub
 Sub setDecimalPlaces(s As String)
 	sDecimalPlaces = s
 	CustProps.put("DecimalPlaces", s)
-	Options.put("decimalPlaces", SDUIShared.CInt(s))
+	Options.put("decimalPlaces", modSD5.CInt(s))
 End Sub
 
 'set Effect
@@ -384,7 +384,7 @@ End Sub
 Sub setDuration(s As String)
 	sDuration = s
 	CustProps.put("Duration", s)
-	Options.put("duration", SDUIShared.CInt(s))
+	Options.put("duration", modSD5.CInt(s))
 End Sub
 'set Icon
 Sub setIcon(s As String)
@@ -444,7 +444,7 @@ End Sub
 Sub setStartFrom(s As String)
 	sStartFrom = s
 	CustProps.put("StartFrom", s)
-	Options.put("startVal", SDUIShared.CInt(s))
+	Options.put("startVal", modSD5.CInt(s))
 End Sub
 'set Suffix
 Sub setSuffix(s As String)

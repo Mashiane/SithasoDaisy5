@@ -20,7 +20,7 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
-	BANano.Await(App.UsesFlatPickDateTime)
+'	BANano.Await(App.UsesFlatPickDateTime)
 	
 	'set the font of the app
 	'app.Font = "font-sans"
@@ -157,8 +157,8 @@ Private Sub drawermenu_ItemClick (item As String)
 	'close the swap button
 	appnavbar.Hamburger.Active = False
 
-	Dim sprefix As String = SDUIShared.MvField(item, 1, "-")
-	Dim ssuffix As String = SDUIShared.MvField(item, 2, "-")
+	Dim sprefix As String = modSD5.MvField(item, 1, "-")
+	Dim ssuffix As String = modSD5.MvField(item, 2, "-")
 	Select Case sprefix
 	Case "pg"
 		'only mark this item as active
