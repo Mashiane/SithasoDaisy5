@@ -20,7 +20,7 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
-'	BANano.Await(App.UsesFlatPickDateTime)
+	BANano.Await(App.UsesFlatPickDateTime)
 	
 	'set the font of the app
 	'app.Font = "font-sans"
@@ -71,7 +71,13 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat List")
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
-	drawermenu.AddItemChild("display", "pg-table", "", "Table")
+	drawermenu.AddItemParent("display", "tables", "", "Tables")
+	drawermenu.AddItemChild("tables", "pg-table", "", "Table 1")
+	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
+	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
+	
+	
+	
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
 	'
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
@@ -168,6 +174,10 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgInfoBox.Show(App)
 			Case "groupselect"
 				pgGroupSelect.Show(App)
+			Case "table2"
+				pgTable2.Show(App)
+			Case "table3"
+				pgTable3.Show(App)
 			End Select	
 		
 		

@@ -12,7 +12,7 @@ Version=10
 #Event: Input (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Text Area, Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -259,7 +259,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRequired = modSD5.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "md")
 		sSize = modSD5.CStr(sSize)
-		If sSize = "none" Then sSize = ""
+		If sSize = "none" Then sSize = "md"
 		bValidator = Props.GetDefault("Validator", False)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
@@ -290,7 +290,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinWidth = modSD5.CStr(sMinWidth)
 	End If
 	'
-	If sInputType = "buttons" Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -323,7 +322,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
-				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 					</button>
@@ -341,6 +340,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
 				<textarea id="${mName}" class="textarea w-full"></textarea>
 			</div>"$).Get("#" & mName)
+		Case "buttons-floating"
+			mElement = mTarget.Append($"[BANCLEAN]
+				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
+					<button id="${mName}_prepend" class="btn join-item hidden">
+						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+					</button>
+        			<label id="${mName}_floating" class="floating-label textarea join-item w-full tlradius trradius blradius brradius">
+          				<span id="${mName}_legend" class="label">${sLabel}</span>
+						<textarea id="${mName}" class="textarea p-0 m-0"></textarea>         				
+        			</label>
+					<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+          			</div>
+          			<button id="${mName}_append" class="btn join-item hidden">
+						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+					</button>
+      			</div>"$).Get("#" & mName)	
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses} textarea" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
 	End Select
@@ -353,7 +369,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHeight(sHeight)
 	setValue(sValue)
 	Select Case sInputType
-	Case "legend", "buttons"	
+	Case "legend", "buttons", "buttons-floating"
 		setAppendIcon(sAppendIcon)
 		setAppendVisible(bAppendVisible)
 		setPrependIcon(sPrependIcon)
@@ -521,7 +537,11 @@ Sub setPrependIcon(s As String)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_prepend"$, False)
 	Else
-		UI.RemoveClass(mElement, "tlradius")
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
+		Else
+			UI.RemoveClass(mElement, "tlradius")
+		End If
 		UI.SetVisibleByID($"${mName}_prepend"$, True)
 		UI.SetImageByID($"${mName}_prependimage"$, s)
 	End If
@@ -542,7 +562,11 @@ Sub setAppendIcon(s As String)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_append"$, False)
 	Else
-		UI.RemoveClass(mElement, "trradius")
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
+		Else
+			UI.RemoveClass(mElement, "trradius")
+		End If
 		UI.SetVisibleByID($"${mName}_append"$, True)
 		UI.SetImageByID($"${mName}_appendimage"$, s)
 	End If
@@ -637,12 +661,15 @@ Sub setSize(s As String)
 	If s = "" Then sSize = "md"
 	BANano.Await(UI.SetSize(mElement, "size", "textarea", sSize))
 	Select Case sInputType
-	Case "legend", "buttons"	
+	Case "legend", "buttons", "buttons-floating"
 		BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
 	End Select
+	If sInputType = "buttons-floating" Then
+		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "textarea", sSize))
+	End If
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

@@ -37,7 +37,6 @@ Version=10
 #Event: NextPage (e As BANanoEvent)
 #Event: GridView (e As BANanoEvent)
 #Event: Filter (e As BANanoEvent)
-#Event: ChangePage (data As List, Pagination As Object)
 #Event: Custom_Prepend_Click (event As BANanoEvent)
 #Event: Custom_Append_Click (event As BANanoEvent)
 #Event: Custom_Toggle (b As Boolean)
@@ -419,7 +418,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sComponentSize = sComponentSize.Replace("none", "")
 		sSearchSize = Props.GetDefault("SearchSize", "md")
 		sSearchSize = modSD5.CStr(sSearchSize)
-		If sSearchSize = "none" Then sSearchSize = ""
+		If sSearchSize = "none" Then sSearchSize = "md"
 		bNormalCase = Props.GetDefault("NormalCase", False)
 		bNormalCase = modSD5.CBool(bNormalCase)
 		bHasSaveSingle = Props.GetDefault("HasSaveSingle", False)
@@ -504,7 +503,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bPagination = modSD5.CBool(bPagination)
 	End If
 	'
-	UI.AddClassDT("border card w-full bg-base-100")
+	UI.AddClassDT("card w-full bg-base-100 shadow-sm")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -521,22 +520,22 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         <div id="${mName}_toolbar" class="border-b m-3 -mb-3 flex">
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
-        	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
-  				<div id="${mName}_searchboxgroup" class="hidden w-full">
-    				<label id="${mName}_searchboxlabel" class="m-0 p-0 input join-item">
-      					<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input hidden w-full"></input>
+        	<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
+  				<div id="${mName}_searchboxgroup" class="hide w-full">
+    				<label id="${mName}_searchboxlabel" class="m-0 p-0 input join-item w-full">
+      					<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input hide"></input>
     				</label>
   				</div>
-  				<button id="${mName}_searchbtn" class="btn btn-square hidden join-item">
-    				<i id="${mName}_searchbtnicon" class="fa-solid fa-magnifying-glass hidden"></i>
+  				<button id="${mName}_searchbtn" class="btn btn-square hide join-item">
+    				<i id="${mName}_searchbtnicon" class="fa-solid fa-magnifying-glass hide"></i>
   				</button>
 			</div>
-			<div id="${mName}_actions" class="hidden flex flex-1 m-4 mr-0 justify-end gap-1"></div>
+			<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
         </div>
-        <div id="${mName}_aphabets" class="mt-4 mx-4 card bg-base-100 hidden">
+        <div id="${mName}_aphabets" class="mt-4 mx-4 card bg-base-100 hide">
         	<div id="${mName}_alphanumeric" class="flex flex-wrap break-words relative"></div>
         </div>
-        <div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hidden">
+        <div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hide">
         	<div id="${mName}_columnnames" class="flex flex-wrap break-words relative"></div>
         </div>
         <div id="${mName}_tablebox" class="m-1 overflow-x-auto">
@@ -545,11 +544,11 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         			<tr id="${mName}_theadtr" class="tblheading"></tr>
         		</thead>
         		<tbody id="${mName}_body"></tbody>
-        		<tfoot id="${mName}_foot" class="hidden">
+        		<tfoot id="${mName}_foot" class="hide">
         			<tr id="${mName}_footr" class="tblfoot"></tr>
         		</tfoot>
         	</table>
-        	<input id="${mName}_file" type="file" class="hidden"></input>
+        	<input id="${mName}_file" type="file" class="hide"></input>
         </div>
     </div>"$).Get($"#${mName}"$)
 	
@@ -648,7 +647,7 @@ Sub setSearchWidth(s As String)
 	sSearchWidth = s
 	CustProps.Put("SearchWidth", s)
 	If mElement = Null Then Return
-	UI.SetWidthByID($"${mName}_searchbox"$, s)
+	UI.SetWidthByID($"${mName}_search"$, s)
 End Sub
 
 Sub getSearchWidth As String
@@ -1041,11 +1040,11 @@ Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 		Dim bcolor As String = btnColor
 		Dim shidden As String = ""
 		If tc.visible = False Then
-			shidden = "hidden"
-			bcolor = ""
+			shidden = "hide"
+			bcolor = "badge-neutral"
 		End If
 		'
-		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer">
+		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer">
         <i id="${mName}_${tc.name}_icon" data-visible="${tc.visible}" class="mr-2 fa-solid fa-check ${shidden}"></i>${tc.title}</div>"$
 		sbOptions.Append(sItem)
 		clicks1.Add($"${mName}_${tc.name}_column"$)
@@ -1073,6 +1072,7 @@ private Sub HandleAlphaClick(event As BANanoEvent)     'ignore
 	For Each a As String In Alphas.keys
 		UI.Hide($"${mName}_${a}_icon"$)
 	Next
+	UI.Hide($"${mName}_all_icon"$)
 	UI.Show($"${mName}_${colName}_icon"$)
 	BANano.CallSub(mCallBack, $"${mName}_AlphaClick"$, Array(colName))
 End Sub
@@ -1093,6 +1093,7 @@ private Sub HandleColumnClick(event As BANanoEvent)     'ignore
 			UI.SetDataAttrByID($"${mName}_${colName}_icon"$, "visible","false")
 			UI.SetDataAttrByID($"${mName}_${colName}_column"$, "visible","false")
 			UI.RemoveClassByID($"${mName}_${colName}_column"$, lcolor)
+			UI.AddClassByID($"${mName}_${colName}_column"$, "badge-neutral")
 			BANano.Await(SetColumnVisible(colName, False))
 		Case Else
 			'show icon
@@ -1100,6 +1101,7 @@ private Sub HandleColumnClick(event As BANanoEvent)     'ignore
 			UI.SetDataAttrByID($"${mName}_${colName}_icon"$, "visible","true")
 			UI.SetDataAttrByID($"${mName}_${colName}_column"$, "visible","true")
 			UI.AddClassByID($"${mName}_${colName}_column"$, lcolor)
+			UI.RemoveClassByID($"${mName}_${colName}_column"$, "badge-neutral")
 			BANano.Await(SetColumnVisible(colName, True))
 	End Select
 End Sub
@@ -1113,12 +1115,14 @@ Sub SetColumnVisibleOnColumnChooser(colName As String, colVisible As Boolean)
 			UI.SetDataAttrByID($"${mName}_${colName}_icon"$, "visible","true")
 			UI.SetDataAttrByID($"${mName}_${colName}_column"$, "visible","true")
 			UI.AddClassByID($"${mName}_${colName}_column"$, lcolor)
+			UI.RemoveClassByID($"${mName}_${colName}_column"$, "badge-neutral")
 		Case False
 			'hide
 			UI.Hide($"${mName}_${colName}_icon"$)
 			UI.SetDataAttrByID($"${mName}_${colName}_icon"$, "visible","false")
 			UI.SetDataAttrByID($"${mName}_${colName}_column"$, "visible","false")
 			UI.RemoveClassByID($"${mName}_${colName}_column"$, lcolor)
+			UI.AddClassByID($"${mName}_${colName}_column"$, "badge-neutral")
 	End Select
 End Sub
 
@@ -1165,8 +1169,8 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 		Dim acolor As String = modSD5.GetAlphaColor(initx)
 		Dim bcolor As String = modSD5.FixColor("badge", acolor)
 		'
-		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
-        <i id="${mName}_${initl}_icon" class="mr-2 fa-solid fa-check hidden"></i>${initx}</div>"$
+		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
+        <i id="${mName}_${initl}_icon" class="mr-2 fa-solid fa-check hide"></i>${initx}</div>"$
 		sbOptions.Append(sItem)
 		clicks.Add($"${mName}_${initl}_column"$)
 		clicks.Add($"${mName}_${initl}_icon"$)
@@ -1174,8 +1178,16 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	'add other
 	Dim bcolor As String = modSD5.FixColor("badge", "primary")
 	initx = "other"
-	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
-    <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hidden"></i>Other</div>"$
+	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
+    <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>Other</div>"$
+	sbOptions.Append(sItem)
+	clicks.Add($"${mName}_${initx}_column"$)
+	clicks.Add($"${mName}_${initx}_icon"$)
+	'add all
+	Dim bcolor As String = modSD5.FixColor("badge", "primary")
+	initx = "all"
+	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
+    <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>All</div>"$
 	sbOptions.Append(sItem)
 	clicks.Add($"${mName}_${initx}_column"$)
 	clicks.Add($"${mName}_${initx}_icon"$)
@@ -1238,19 +1250,19 @@ Sub setHasSearch(b As Boolean)
 	bHasSearch = b
 	If mElement = Null Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_search"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_search"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_search"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_search"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hide")
 	End If
 End Sub
 
@@ -1271,34 +1283,34 @@ End Sub
 Sub setActionsVisible(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
 	End If
 End Sub
 'set Title Visible
 Sub setToolbarVisible(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_toolbar"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_title"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_search"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_toolbar"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_title"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_search"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_toolbar"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_title"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_search"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_toolbar"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_title"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_search"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hide")
 	End If
 End Sub
 'change the search placeholder
@@ -1318,8 +1330,8 @@ Sub getToolBarButtonID(btnID As String) As String
 End Sub
 
 Sub AddToolbarButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
-'	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
+	Return btn
 End Sub
 'add an action button
 '<code>
@@ -1330,14 +1342,17 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
-'	Dim btn As SDUI5Button
-'	btn.AddButton(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, btnCaption, "button")
-'	btn.On("click", mCallBack, $"${mName}_${btnID}"$)
-'	btn.Color = btnColor
-'	btn.Outline = bButtonsOutlined
-'	btn.Size = sButtonSize
-'	btn.Root.mx("1")
-'	Return btn
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_actions"$
+	btn.Text = btnCaption
+	btn.BackgroundColor = btnColor
+	btn.Outline = bButtonsOutlined
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	Return btn
 End Sub
 Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)
 	btnID = modSD5.CleanID(btnID)
@@ -1348,9 +1363,10 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 End Sub
 
 Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
-'	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	Return btn
 End Sub
+
 'add a file upload button with table event
 '<code>
 'Sub tblName_filechange (e As BANAnoEvent)
@@ -1361,12 +1377,12 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String) A
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
-'	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-'	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}file" type="file" class="hidden"/>"$)
-'	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
-'	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
-'	BANano.GetElement($"#${mName}_${btnID}file"$).On("change", mCallBack, $"${mName}_filechange"$)
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
+	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
+	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
+	Return btn
 End Sub
 'add a file upload button with own event
 '<code>
@@ -1378,13 +1394,13 @@ Sub AddToolbarFileUpload1(btnID As String, sIcon As String, btnColor As String, 
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
-'	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-'	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
-'	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
-'	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
-'	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
-'	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
+	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
+	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
+	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
+	Return btn
 End Sub
 private Sub FileUploadHandler(e As BANanoEvent)
 	e.PreventDefault
@@ -1398,14 +1414,14 @@ private Sub FileUploadHandler(e As BANanoEvent)
 	el.RunMethod("click", Null)
 End Sub
 Sub AddToolbarActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
-'	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-'	SetToolbarButtonTextColor(btnID, btnTextColor)
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	SetToolbarButtonTextColor(btnID, btnTextColor)
+	Return btn
 End Sub
 Sub AddToolbarButtonTextColor(btnID As String, btnCaption As String, btnColor As String, btnTextColor As String) As SDUI5Button
-'	Dim btn As SDUI5Button = AddToolbarButton(btnID, btnCaption, btnColor)
-'	SetToolbarButtonTextColor(btnID, btnTextColor)
-'	Return btn
+	Dim btn As SDUI5Button = AddToolbarButton(btnID, btnCaption, btnColor)
+	SetToolbarButtonTextColor(btnID, btnTextColor)
+	Return btn
 End Sub
 'add an action button
 '<code>
@@ -1416,16 +1432,22 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
-'	Dim btn As SDUI5Button
-'	btn.AddButtonIcon(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, "", sIcon)
-'	btn.On("click", mCallBack, $"${mName}_${btnID}"$)
-'	btn.Color = btnColor
-'	btn.Outline = bButtonsOutlined
-'	btn.Size = sButtonSize
-'	btn.Circle
-'	btn.Root.mx("1")
-'	Return btn
+	'
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_actions"$
+	btn.Text = ""
+	btn.BackgroundColor = btnColor
+	btn.Shape = "circle"
+	btn.Outline = bButtonsOutlined
+	btn.LeftIcon = sIcon
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	Return btn
 End Sub
+
 Sub AddToolbarDropDownIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5DropDown
 '	Dim btn As SDUIDropDown = AddToolbarDropDownIcon(btnID, sIcon, btnColor)
 '	btn.MainButton.TextColor = btnTextColor
@@ -1533,6 +1555,7 @@ Sub setHasExportToCsv(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("exporttocsv", "fa-solid fa-file-csv", "#4e3188")
+	SetToolbarButtonTextColor("exporttocsv", "#ffffff")
 End Sub
 Sub SetExportToPDFTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToPdfTooltip", tooltip)
@@ -1545,6 +1568,7 @@ Sub setHasExportToPdf(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("exporttopdf", "fa-regular fa-file-excel", "#24babc")
+	SetToolbarButtonTextColor("exporttopdf", "#ffffff")
 End Sub
 Sub SetExportToXLSTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToXlsTooltip", tooltip)
@@ -1557,6 +1581,7 @@ Sub setHasExportToXls(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("exporttoxls", "fa-regular fa-file-excel", "#9a3d64")
+	SetToolbarButtonTextColor("exporttoxls", "#ffffff")
 End Sub
 Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("AddNewTooltip", tooltip)
@@ -1567,6 +1592,7 @@ Sub setHasAddNew(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("add", "fa-solid fa-plus", "#418448")
+	SetToolbarButtonTextColor("add", "#ffffff")
 End Sub
 'set Grid Tooltip
 Sub setGridTooltip(s As String)
@@ -1580,6 +1606,7 @@ Sub setHasGrid(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("gridview", "fa-brands fa-windows", "#ffa500")
+	SetToolbarButtonTextColor("gridview", "#ffffff")
 	If sGridTooltip <> "" Then
 		SetToolbarButtonToolTip("gridview", sGridTooltip, "primary", "left")
 	End If
@@ -1601,6 +1628,7 @@ Sub setHasSaveSingle(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("savesingle", "fa-regular fa-floppy-disk", "#7289da")
+	SetToolbarButtonTextColor("savesingle", "#ffffff")
 End Sub
 Sub SetDeleteSingleTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteSingleTooltip", tooltip)
@@ -1611,6 +1639,7 @@ Sub setHasDeleteSingle(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("deletesingle", "fa-regular fa-trash-can", "#ff9900")
+	SetToolbarButtonTextColor("deletesingle", "#ffffff")
 End Sub
 Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteAllTooltip", tooltip)
@@ -1635,6 +1664,7 @@ Sub setHasToolbarUpload(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("uploadtoolbar", "fa-solid fa-upload", "#2196f3")
+	SetToolbarButtonTextColor("uploadtoolbar", "#ffffff")
 	BANano.GetElement($"#${mName}_uploadtoolbar"$).off("click")
 	BANano.GetElement($"#${mName}_uploadtoolbar"$).On("click", Me, "UploadToolbarHandler")
 	If bMultipleFiles Then
@@ -1658,6 +1688,7 @@ Sub setHasBack(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("back", "fa-solid fa-arrow-right-from-bracket", "#3f51b5")
+	SetToolbarButtonTextColor("back", "#ffffff")
 End Sub
 
 'move the back button to the end
@@ -1680,41 +1711,42 @@ Sub setHasRefresh(b As Boolean)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("refresh", "fa-solid fa-arrows-rotate", "#2196f3")
+	SetToolbarButtonTextColor("refresh", "#ffffff")
 End Sub
 Sub setExportToCsvLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttocsv_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_exporttocsv_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_exporttocsv"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttocsv_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_exporttocsv_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setExportToPdfLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttopdf_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_exporttopdf_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_exporttopdf"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttopdf_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_exporttopdf_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setExportToXlsLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttoxls_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_exporttoxls_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_exporttoxls"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttoxls_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_exporttoxls_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setRefreshLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_refresh_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_refresh_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_refresh"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_refresh"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_refresh_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_refresh_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setRefreshDisabled(b As Boolean)
@@ -1794,21 +1826,21 @@ End Sub
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 	btn = modSD5.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub ToolbarButtonLoading(btn As String, b As Boolean)
 	btn = modSD5.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub SetToolbarSelectAllChecked(value As Boolean)
@@ -1879,39 +1911,39 @@ Sub setAddDisabled(b As Boolean)
 End Sub
 Sub setAddLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_add_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_add_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_add"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_add"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_add_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_add_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setDeleteAllLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_deleteall_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_deleteall_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_deleteall"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_deleteall"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_deleteall_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_deleteall_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setSaveSingleLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_savesingle_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_savesingle_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_savesingle"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_savesingle"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_savesingle_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_savesingle_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setToolbarUploadLoading(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setToolbarUploadDisabled(b As Boolean)
@@ -1927,11 +1959,11 @@ End Sub
 Sub setDeleteSingleLoading(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_deletesingle_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_deletesingle_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_deletesingle"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_deletesingle"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_deletesingle_icon"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_deletesingle_icon"$).RemoveClass("hide")
 	End If
 End Sub
 Sub setDeleteAllDisabled(b As Boolean)
@@ -1969,9 +2001,9 @@ Sub setToolbarActions(b As Boolean)
 	If mElement = Null Then Return
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hidden")
+		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
 	End If
 End Sub
 Sub ClearToolbarActions
@@ -2005,6 +2037,8 @@ Sub setPagination(b As Boolean)
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("prevpage", "fa-solid fa-chevron-left", "primary")
 	AddToolbarActionButtonIcon("nextpage", "fa-solid fa-chevron-right", "primary")
+	SetToolbarButtonTextColor("prevpage", "#ffffff")
+	SetToolbarButtonTextColor("nextpage", "#ffffff")
 	UI.OnEventByID($"${mName}_prevpage"$, "click", Me, "ShowPreviousPage")
 	UI.OnEventByID($"${mName}_nextpage"$, "click", Me, "ShowNextPage")
 End Sub
@@ -2334,6 +2368,7 @@ Sub setHasFilter(b As Boolean)
 	CustProps.Put("HasFilter", b)
 	If b = False Then Return
 	AddToolbarActionButtonIcon("filter", "fa-solid fa-filter", "#ad7279")
+	SetToolbarButtonTextColor("filter", "#ffffff")
 End Sub
 
 Sub getHasFilter As Boolean
@@ -4104,30 +4139,35 @@ End Sub
 '</code>
 Sub AddColumnEdit(color As String)
 	AddColumnAction("edit", "Edit", "fa-solid fa-pencil", color)
+	SetColumnTextColor("edit", "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnClone(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnClone(color As String)
 	AddColumnAction("clone", "Clone", "fa-solid fa-copy", color)
+	SetColumnTextColor("clone", "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnMenu(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnMenu(color As String)
 	AddColumnAction("menu", "Menu", "fa-solid fa-ellipsis-vertical", color)
+	SetColumnTextColor("menu", "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnDownload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnDownload(color As String)
 	AddColumnAction("download", "Download", "fa-solid fa-download", color)
+	SetColumnTextColor("download", "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnUpload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnUpload(color As String)
 	AddColumnAction("upload", "Upload", "fa-solid fa-upload", color)
+	SetColumnTextColor("upload", "#ffffff")
 End Sub
 'add delete action
 '<code>
@@ -4135,6 +4175,7 @@ End Sub
 '</code>
 Sub AddColumnDelete(color As String)
 	AddColumnAction("delete", "Delete", "fa-solid fa-trash-can", color)
+	SetColumnTextColor("delete", "#ffffff")
 End Sub
 Sub SetColumnColor(colName As String, subtitle As String)
 	colName = modSD5.CleanID(colName)
@@ -4783,7 +4824,7 @@ private Sub BuildClasses(nc As TableColumn) As String
 		Dim ww As String = modSD5.FixSize("w", nc.width)
 		sbx.Append($" ${ww} "$)
 	End If
-	If nc.visible = False Then sbx.Append(" hidden ")
+	If nc.visible = False Then sbx.Append(" hide ")
 	'
 	Select Case nc.alignment
 		Case "center", "right"
@@ -5371,7 +5412,7 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="text-xs mx-2 ${tc.TextColor}">${fldValu}%</span>
+    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="text-xs justify-start ${tc.TextColor}">${fldValu}%</span>
     <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="progress ${modSD5.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
     </td>"$
 	Return act
@@ -5602,11 +5643,11 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
     </label>
     </div>
     </td>"$
@@ -5671,12 +5712,12 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
     </label>
     </div>
     </td>"$
@@ -5735,11 +5776,11 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
     </label>
     </div>
     </td>"$
@@ -5796,11 +5837,11 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
     </label>
     </div>
     </td>"$
@@ -5964,8 +6005,8 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
     <button id="${mName}_${RowCnt}_${fldName}_button" class="no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i>
     </button>
-    <div id="${mName}_${RowCnt}_${fldName}_progress" class="hidden radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
-    <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
+    <div id="${mName}_${RowCnt}_${fldName}_progress" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
+    <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
 	Return act
@@ -6010,7 +6051,7 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i></button>
-	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
+	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
 	Return act
@@ -6718,7 +6759,7 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-2"
+		cClass = cClass & " border-1"
 	End If
 	
 	Dim act As String =  $"[BANCLEAN]
@@ -6797,7 +6838,7 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-2"
+		cClass = cClass & " border-1"
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6829,7 +6870,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_${imgCnt}" class="avatar">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-2 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
         <img id="${mName}_${RowCnt}_${fldName}_image_${imgCnt}" src="${k}" alt=""></img>
         </div>
         </div>"$
@@ -6841,7 +6882,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	If timages > 5 Then
 		Dim tOthers As Int = BANano.parseInt(timages) - 5
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_6" class="avatar placeholder">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-2 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
         <span id="${mName}_${RowCnt}_${fldName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -7448,7 +7489,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hidden")
+			elPrepend.RemoveClass("hide")
 			elPrepend.SetData("eyes", tc.PrependIcon)
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrependIcon.SetData("eyes", tc.PrependIcon)
@@ -7462,7 +7503,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hidden")
+			elAppend.RemoveClass("hide")
 			elAppend.SetData("eyes", tc.AppendIcon)
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppendIcon.SetData("eyes", tc.AppendIcon)
@@ -7516,7 +7557,7 @@ Sub AddRow(rowdata As Map)
 		If tc.Prefix = "" Then
 			elPrefix.Remove
 		Else
-			elPrefix.RemoveClass("hidden")
+			elPrefix.RemoveClass("hide")
 			elPrefix.SetText(BANano.SF(tc.Prefix))
 			elPrefix.RemoveClass("tlradius")
 			elPrefix.RemoveClass("blradius")
@@ -7527,7 +7568,7 @@ Sub AddRow(rowdata As Map)
 		If tc.suffix = "" Then
 			elSuffix.Remove
 		Else
-			elSuffix.RemoveClass("hidden")
+			elSuffix.RemoveClass("hide")
 			elSuffix.SetText(BANano.SF(tc.suffix))
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
@@ -7538,7 +7579,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hidden")
+			elPrepend.RemoveClass("hide")
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrepend.SetData("eyes", tc.PrependIcon)
 			elPrependIcon.SetData("eyes", tc.PrependIcon)
@@ -7552,7 +7593,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hidden")
+			elAppend.RemoveClass("hide")
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppend.SetData("eyes", tc.AppendIcon)
 			elAppendIcon.SetData("eyes", tc.AppendIcon)
@@ -7577,7 +7618,7 @@ Sub AddRow(rowdata As Map)
 		If tc.Prefix = "" Then
 			elPrefix.Remove
 		Else
-			elPrefix.RemoveClass("hidden")
+			elPrefix.RemoveClass("hide")
 			elPrefix.SetText(BANano.SF(tc.Prefix))
 			elPrefix.RemoveClass("tlradius")
 			elPrefix.RemoveClass("blradius")
@@ -7588,7 +7629,7 @@ Sub AddRow(rowdata As Map)
 		If tc.suffix = "" Then
 			elSuffix.Remove
 		Else
-			elSuffix.RemoveClass("hidden")
+			elSuffix.RemoveClass("hide")
 			elSuffix.SetText(BANano.SF(tc.suffix))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
@@ -7599,7 +7640,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hidden")
+			elPrepend.RemoveClass("hide")
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrepend.SetData("eyes", tc.PrependIcon)
 			elPrependIcon.SetData("eyes", tc.PrependIcon)
@@ -7613,7 +7654,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hidden")
+			elAppend.RemoveClass("hide")
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppend.SetData("eyes", tc.AppendIcon)
 			elAppendIcon.SetData("eyes", tc.AppendIcon)
@@ -7753,7 +7794,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 		bgColor = modSD5.FixColor("bg", bgColor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-2"
+		cClass = cClass & " border-1"
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
@@ -7834,7 +7875,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
 	subcontent = modSD5.CStr(subcontent)
 	If bHasRing = False Then
-		cClass = cClass & " border-2"
+		cClass = cClass & " border-1"
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
@@ -8255,11 +8296,11 @@ Sub SetRowColumnAppendLoading(colName As String, rowCnt As Int, b As Boolean)
 	'
 	If b Then
 		'hide the icon
-		bicon.AddClass("hidden")
+		bicon.AddClass("hide")
 		abutton.AddClass("loading")
 	Else
 		'show the icon
-		bicon.RemoveClass("hidden")
+		bicon.RemoveClass("hide")
 		abutton.removeClass("loading")
 	End If
 End Sub
@@ -8273,11 +8314,11 @@ Sub SetRowColumnPrependLoading(colName As String, rowCnt As Int, b As Boolean)
 	'
 	If b Then
 		'hide the icon
-		bicon.AddClass("hidden")
+		bicon.AddClass("hide")
 		abutton.AddClass("loading")
 	Else
 		'show the icon
-		bicon.RemoveClass("hidden")
+		bicon.RemoveClass("hide")
 		abutton.removeClass("loading")
 	End If
 End Sub
@@ -8606,6 +8647,8 @@ Sub setSearchSize(s As String)
 	If mElement = Null Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
+	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+	UI.SetWidthByID($"${mName}_searchbox"$, s)
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
 	Dim options1 As Map = modSD5.ListToSelectOptions(options)
@@ -8821,12 +8864,12 @@ Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
 		Case "fileinputprogress"
 			If b Then
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hidden")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hide")
 			Else
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).removeClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hidden")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hide")
 			End If
 		Case "button"
 			If b Then
@@ -8837,10 +8880,10 @@ Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
 		Case "action", "menu"
 			If b Then
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hide")
 			Else
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).removeClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hide")
 			End If
 	End Select
 End Sub
@@ -9097,7 +9140,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 				If k = "" Then Continue
 				imgCnt = BANano.parseInt(imgCnt) + 1
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_${imgCnt}" class="avatar">
-            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-2 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
+            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
             <img id="${mName}_${rowCnt}_${colName}_image_${imgCnt}" src="${k}" alt=""></img>
             </div>
             </div>"$
@@ -9109,7 +9152,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			If imgCnt > 5 Then
 				Dim tOthers As Int = BANano.parseInt(imgCnt) - 5
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_6" class="avatar placeholder">
-        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-2 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
         <span id="${mName}_${rowCnt}_${colName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -9591,6 +9634,7 @@ Sub ShowColumns(cols As List)
 		UI.SetDataAttrByID($"${mName}_${col}_icon"$, "visible","true")
 		UI.SetDataAttrByID($"${mName}_${col}_column"$, "visible","true")
 		UI.AddClassByID($"${mName}_${col}_column"$, lcolor)
+		UI.RemoveClassByID($"${mName}_${col}_column"$, "badge-neutral")
 	Next
 End Sub
 Sub HideColumns(cols As List)
@@ -9601,6 +9645,7 @@ Sub HideColumns(cols As List)
 		UI.SetDataAttrByID($"${mName}_${col}_icon"$, "visible","false")
 		UI.SetDataAttrByID($"${mName}_${col}_column"$, "visible","false")
 		UI.RemoveClassByID($"${mName}_${col}_column"$, lcolor)
+		UI.AddClassByID($"${mName}_${col}_column"$, "badge-neutral")
 	Next
 End Sub
 Private Sub BuildRowImage(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
@@ -9633,7 +9678,7 @@ Private Sub BuildRowImage(Module As Object, fldName As String, fldValu As String
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <img id="${mName}_${RowCnt}_${fldName}_image" class="border-2 ${tc.mask} ${modSD5.FixSize("w", tc.width)} ${modSD5.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
+    <img id="${mName}_${RowCnt}_${fldName}_image" class="border-1 ${tc.mask} ${modSD5.FixSize("w", tc.width)} ${modSD5.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
     </td>"$
 	'********
 	Return act
@@ -10130,23 +10175,27 @@ End Sub
 '
 Sub SearchByAlphabet(item As String, columnName As String) As List
 	columnName = columnName.tolowercase
-	Dim alphaSearch As List
-	alphaSearch.Initialize
-	For Each rec As Map In Originals
-		Dim sname As String = rec.GetDefault(columnName, "")
-		sname = modSD5.CStr(sname)
-		sname = sname.Trim
-		If sname = "" Then Continue
-		sname = sname.ToLowerCase
-		Select Case item
+	If item = "all" Then
+		Return Originals
+	Else
+		Dim alphaSearch As List
+		alphaSearch.Initialize
+		For Each rec As Map In Originals
+			Dim sname As String = rec.GetDefault(columnName, "")
+			sname = modSD5.CStr(sname)
+			sname = sname.Trim
+			If sname = "" Then Continue
+			sname = sname.ToLowerCase
+			Select Case item
 			Case "other"
 				Dim fpart As String = modSD5.Left1(sname, 1)
 				If "abcdefghijklmnopqrstuvwxyz".IndexOf(fpart) = -1 Then alphaSearch.add(rec)
 			Case Else
 				If sname.StartsWith(item) Then alphaSearch.add(rec)
-		End Select
-	Next
-	Return alphaSearch
+			End Select
+		Next
+		Return alphaSearch
+	End If
 End Sub
 
 'set Export To Pdf

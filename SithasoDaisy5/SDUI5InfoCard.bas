@@ -234,7 +234,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		UI.ExcludeBackgroundColor = False
+		UI.ExcludeBackgroundColor = True
 		UI.ExcludeEnabled = True
 		UI.ExcludeTextColor = True
 		UI.ExcludePosition = False
@@ -315,6 +315,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIcon(sIcon)
 	setIconColor(sIconColor)
 	setTextColor(sTextColor)
+	setBackgroundColor(sBackgroundColor)
 	'setVisible(bVisible)
 	Refresh
 End Sub
@@ -371,7 +372,7 @@ Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, s)
+	If s <> "" Then UI.SetStyle(mElement, "background-color", s)
 End Sub
 
 'set Decimal

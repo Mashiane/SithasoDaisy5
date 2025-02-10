@@ -218,7 +218,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bXlOpen = modSD5.CBool(bXlOpen)
 	End If
 	'
-	UI.AddClassDT("drawer bg-base-100 max-w-[100rem]")
+	UI.AddClassDT("drawer bg-base-100")
 	If bLgOpen Then UI.AddClassDT("lg:drawer-open")
 	If bMdOpen Then UI.AddClassDT("md:drawer-open")
 	If bOpen Then UI.AddClassDT("drawer-open")

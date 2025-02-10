@@ -1,74 +1,84 @@
 ﻿AppType=JavaFX
 Build1=Default,b4j.example
 File1=250x300.png
-File10=dayjs.min.js
-File11=fa-brands-400.woff2
-File12=fa-regular-400.woff2
-File13=fa-solid-900.woff2
-File14=fileSaver.min.js
-File15=FONT AWESOME LICENSE.txt
-File16=fontawesome.min.css
-File17=infobox.min.css
-File18=insert-rule.min.js
-File19=loader-1.css
+File10=daisyui7.css
+File11=dayjs.min.js
+File12=fa-brands-400.woff2
+File13=fa-regular-400.woff2
+File14=fa-solid-900.woff2
+File15=fileSaver.min.js
+File16=flatpickr.min.css
+File17=flatpickr.min.js
+File18=FONT AWESOME LICENSE.txt
+File19=fontawesome.min.css
 File2=600by600.jpg
-File20=math.min.js
-File21=mdtoast.min.css
-File22=mdtoast.min.js
-File23=menu.svg
-File24=moment.min.js
-File25=numeral.min.js
-File26=placeholderimg.jpg
-File27=roboto.min.css
-File28=Roboto100.ttf
-File29=Roboto300.ttf
+File20=fplocale.min.js
+File21=infobox.min.css
+File22=insert-rule.min.js
+File23=loader-1.css
+File24=material_blue.css
+File25=math.min.js
+File26=mdtoast.min.css
+File27=mdtoast.min.js
+File28=menu.svg
+File29=numeral.min.js
 File3=BANANO LICENSE.TXT
-File30=Roboto400.ttf
-File31=Roboto500.ttf
-File32=Roboto700.ttf
-File33=Roboto900.ttf
-File34=sweetalert2.all.min.js
-File35=sweetalert2.min.css
-File36=tailwind.min.js
-File37=tailwind4.min.js
+File30=placeholderimg.jpg
+File31=relativeTime.min.js
+File32=roboto.min.css
+File33=Roboto100.ttf
+File34=Roboto300.ttf
+File35=Roboto400.ttf
+File36=Roboto500.ttf
+File37=Roboto700.ttf
+File38=Roboto900.ttf
+File39=sweetalert2.all.min.js
 File4=bootstrap-grid.min.css
+File40=sweetalert2.min.css
+File41=tailwind.min.js
+File42=tailwind4.min.js
 File5=checkblack.svg
 File6=closemenu.svg
 File7=countUp.umd.js
 File8=DAISYUI LICENSE.txt
 File9=daisyui6.css
 FileGroup1=Default Group\IMAGES
-FileGroup10=Default Group\JAVASCRIPT
-FileGroup11=Default Group\FONTS
+FileGroup10=Default Group
+FileGroup11=Default Group\JAVASCRIPT
 FileGroup12=Default Group\FONTS
 FileGroup13=Default Group\FONTS
-FileGroup14=Default Group\JAVASCRIPT
-FileGroup15=Default Group\LICENCES
+FileGroup14=Default Group\FONTS
+FileGroup15=Default Group\JAVASCRIPT
 FileGroup16=Default Group\CSS
-FileGroup17=Default Group\CSS
-FileGroup18=Default Group\JAVASCRIPT
+FileGroup17=Default Group\JAVASCRIPT
+FileGroup18=Default Group\LICENCES
 FileGroup19=Default Group\CSS
 FileGroup2=Default Group\IMAGES
 FileGroup20=Default Group\JAVASCRIPT
 FileGroup21=Default Group\CSS
 FileGroup22=Default Group\JAVASCRIPT
-FileGroup23=Default Group\IMAGES
-FileGroup24=Default Group\JAVASCRIPT
+FileGroup23=Default Group\CSS
+FileGroup24=Default Group\CSS
 FileGroup25=Default Group\JAVASCRIPT
-FileGroup26=Default Group\IMAGES
-FileGroup27=Default Group\CSS
-FileGroup28=Default Group\FONTS
-FileGroup29=Default Group\FONTS
+FileGroup26=Default Group\CSS
+FileGroup27=Default Group\JAVASCRIPT
+FileGroup28=Default Group\IMAGES
+FileGroup29=Default Group\JAVASCRIPT
 FileGroup3=Default Group\LICENCES
-FileGroup30=Default Group\FONTS
-FileGroup31=Default Group\FONTS
-FileGroup32=Default Group\FONTS
+FileGroup30=Default Group\IMAGES
+FileGroup31=Default Group\JAVASCRIPT
+FileGroup32=Default Group\CSS
 FileGroup33=Default Group\FONTS
-FileGroup34=Default Group\JAVASCRIPT
-FileGroup35=Default Group\CSS
-FileGroup36=Default Group\JAVASCRIPT
-FileGroup37=Default Group
+FileGroup34=Default Group\FONTS
+FileGroup35=Default Group\FONTS
+FileGroup36=Default Group\FONTS
+FileGroup37=Default Group\FONTS
+FileGroup38=Default Group\FONTS
+FileGroup39=Default Group\JAVASCRIPT
 FileGroup4=Default Group
+FileGroup40=Default Group\CSS
+FileGroup41=Default Group\JAVASCRIPT
+FileGroup42=Default Group
 FileGroup5=Default Group\IMAGES
 FileGroup6=Default Group\IMAGES
 FileGroup7=Default Group\JAVASCRIPT
@@ -168,7 +178,7 @@ Module88=|relative|..\..\shared\SDUIMap
 Module89=SithasoDaisy5
 Module9=SDUI5BottomDrawer
 Module90=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
-NumberOfFiles=37
+NumberOfFiles=42
 NumberOfLibraries=3
 NumberOfModules=90
 Version=10
@@ -200,15 +210,15 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.TranspilerOptions.DisableShortenVariableNames = True
 	BANano.Header.AddCSSFile("loader-1.css")
 	BANano.Header.AddCSSFile("infobox.min.css")
-	'BANano.Header.AddCSSFileForLater("flatpickr.min.css")
-	'BANano.Header.AddCSSFileForLater("material_blue.css")
+	BANano.Header.AddCSSFileForLater("flatpickr.min.css")
+	BANano.Header.AddCSSFileForLater("material_blue.css")
 	BANano.Header.AddCSSFile("roboto.min.css")
 	BANano.header.AddCSSFile("sweetalert2.min.css")
 	BANano.Header.AddCSSFile("fontawesome.min.css")
 	BANano.Header.AddCSSFile("bootstrap-grid.min.css")
 	BANano.Header.AddCSSFile("mdtoast.min.css")
 	
-	BANano.Header.AddCSSFile("daisyui6.css")
+	BANano.Header.AddCSSFile("daisyui7.css")
 	BANano.Header.AddJavascriptFile("tailwind4.min.js")
 	
 	BANano.Header.AddJavascriptFile("fileSaver.min.js")
@@ -216,14 +226,15 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("mdtoast.min.js")
 	'BANano.Header.AddJavascriptFileForLater("eruda.js")
 	BANano.Header.AddJavascriptFileForLater("math.min.js")
-	'
-	'BANano.Header.AddJavascriptFileForLater("flatpickr.min.js")
-	'BANano.Header.AddJavascriptFileForLater("fplocale.min.js")
+	
+	BANano.Header.AddJavascriptFileForLater("flatpickr.min.js")
+	BANano.Header.AddJavascriptFileForLater("fplocale.min.js")
 	'
 	BANano.Header.AddJavascriptFile("dayjs.min.js")
+	BANano.Header.AddJavascriptFile("relativeTime.min.js")
 	BANano.Header.AddJavascriptFile("numeral.min.js")
 	BANano.Header.AddJavascriptFile("insert-rule.min.js")
-	BANano.Header.AddJavascriptFile("moment.min.js")
+'	BANano.Header.AddJavascriptFile("moment.min.js")
 	BANano.Header.AddJavascriptFile("countUp.umd.js")
 		
 	' start the build

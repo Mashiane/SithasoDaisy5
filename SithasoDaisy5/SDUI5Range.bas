@@ -12,6 +12,8 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: Int, DefaultValue: 10, MinRange: 0, MaxRange: 100, Description: Value
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Min Value
@@ -64,6 +66,8 @@ Sub Class_Globals
 	Private sThumbColor As String = ""
 	Private iValue As Int = 10
 	Private sRangeType As String = "normal"
+	Private sHeight As String = ""
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -248,6 +252,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		iValue = modSD5.Cint(iValue)
 		sRangeType = Props.GetDefault("RangeType", "normal")
 		sRangeType = modSD5.CStr(sRangeType)
+		sWidth = Props.GetDefault("Width", "full")
+		sWidth = modSD5.CStr(sWidth)
+		sHeight = Props.GetDefault("Height", "")
+		sHeight = modSD5.CStr(sHeight)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -265,13 +273,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sRangeType
 	Case "legend"	
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
+  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
   					<span id="${mName}_startlabel"></span>
 					<span id="${mName}_endlabel">${iValue}</span>
 				</div>
-  				<input id="${mName}" class="w-full relative range" type="range"></input>
+  				<input id="${mName}" class="relative range w-full" type="range"></input>
 				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
   					<span id="${mName}_start">${iMinValue}</span>
 					<span id="${mName}_end">${iMaxValue}</span>
@@ -291,21 +299,46 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				</div>
     		</div>"$).Get("#" & mName)
 	Case "normal"
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="range" class="${xclasses} range w-full" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="range" class="${xclasses} range" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		setWidth(sWidth)
 	End Select
 	
-	setColor(sColor)
+	If sColor <> "" Then setColor(sColor)
 	setEnabled(bEnabled)
-	setSize(sSize)
-	setBackgroundColor(sBackgroundColor)
+	If sSize <> "" Then setSize(sSize)
+	If sBackgroundColor <> "" Then setBackgroundColor(sBackgroundColor)
 	setMaxValue(iMaxValue)
 	setMinValue(iMinValue)
 	setStepValue(iStepValue)
 	setValue(iValue)
+	setHeight(sHeight)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+Sub getWidth As String
+	Return sWidth
+End Sub
+
+'set Height
+Sub setHeight(s As String)
+	sHeight = s
+	CustProps.put("Height", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetHeight(mElement, s)
+End Sub
+
+Sub getHeight As String
+	Return sHeight
+End Sub
 
 'legend|normal|tooltip
 Sub setRangeType(s As String)

@@ -13,6 +13,8 @@ Version=10
 #DesignerProperty: Key: Style, DisplayName: Style, FieldType: String, DefaultValue: lift, Description: Style, List: border|box|lift
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
+#DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -59,6 +61,9 @@ Sub Class_Globals
 	Public CONST STYLE_BORDER As String = "border"
 	Public CONST STYLE_BOX As String = "box"
 	Public CONST STYLE_LIFT As String = "lift"
+	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
+	Private items As Map
+	Private sActive As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -67,6 +72,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	items.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -198,11 +204,6 @@ Sub getPaddingAXYTBLR As String
 End Sub
 '
 
-Sub Clear
-	UI.Clear(mElement)
-End Sub
-
-
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
@@ -228,12 +229,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sStyle = modSD5.CStr(sStyle)
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = modSD5.CStr(sWidth)
+		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
+		sRawOptions = modSD5.CStr(sRawOptions)
+		sActive = Props.GetDefault("Active", "btn1")
+		sActive = modSD5.CStr(sActive)
 	End If
 	'
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sPlacement <> "" Then UI.AddClassDT("tabs-" & sPlacement)
 	If sStyle <> "" Then UI.AddClassDT("tabs-" & sStyle)
-	UI.AddClassDT("tabs flex-nowrap whitespace-nowrap")
+	UI.AddClassDT("tabs whitespace-nowrap")
 	UI.AddAttrDT("role", "tablist")
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
@@ -250,6 +255,60 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	BANano.Await(setOptions(sRawOptions))
+	setActive(sActive)
+End Sub
+
+Sub setOptions(s As String)
+	sRawOptions = s
+	CustProps.Put("RawOptions", s)
+	If mElement = Null Then Return
+	BANano.Await(Clear)
+	If s = "" Then Return
+	Dim m As Map = UI.GetKeyValues(s, False)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		BANano.Await(AddItem(k, v))
+	Next
+End Sub
+
+'get Raw Options
+Sub getOptions As String
+	Return sRawOptions
+End Sub
+
+Sub AddItem(sKey As String, sText As String)
+	sKey = modSD5.CleanID(sKey)
+	Dim nKey As String = $"${sKey}_${mName}"$
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, sKey, sKey)
+	ni.ParentID = mName
+	ni.Text = sText
+	ni.Visible = True
+	ni.AddComponent
+	items.Put(nKey, nKey)
+End Sub
+
+'set Active
+Sub setActive(item As String)
+	sActive = item
+	item = modSD5.CleanID(item)
+	CustProps.put("Active", item)
+	If mElement = Null Then Return
+	If item <> "" Then
+		UI.SetCheckedByID($"${item}_${mName}"$, True)
+	End If
+End Sub
+
+'get Active
+Sub getActive As String
+	Return sActive
+End Sub
+
+Sub Clear
+	If mElement = Null Then Return
+	UI.Clear(mElement)
+	items.Initialize 
 End Sub
 
 'set Height

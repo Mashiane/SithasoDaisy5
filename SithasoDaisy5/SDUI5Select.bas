@@ -10,7 +10,7 @@ Version=10
 #Event: Append (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Select, Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: Select an element, Description: Placeholder
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options (JSON)
@@ -250,7 +250,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRequired = modSD5.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "md")
 		sSize = modSD5.CStr(sSize)
-		If sSize = "none" Then sSize = ""
+		If sSize = "none" Then sSize = "md"
 		bValidator = Props.GetDefault("Validator", False)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
@@ -273,7 +273,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	If sInputType = "buttons" Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -310,7 +309,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
-		<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
 					</button>
@@ -334,6 +333,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
 				</select>
 			</div>"$).Get("#" & mName)
+		Case "buttons-floating"
+			mElement = mTarget.Append($"[BANCLEAN]	
+				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
+					<button id="${mName}_prepend" class="btn join-item hidden">
+						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+					</button>
+        			<label id="${mName}_floating" class="floating-label select join-item w-full tlradius trradius blradius brradius">
+          				<span id="${mName}_legend" class="label">${sLabel}</span>
+          				<select id="${mName}" class="select">
+            				<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
+            			</select>
+        			</label>
+					<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+          			</div>
+          			<button id="${mName}_append" class="btn join-item hidden">
+						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+					</button>
+      			</div>"$).Get("#" & mName)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<select id="${mName}" class="${xclasses} select" ${xattrs} style="${xstyles}"></select>"$).Get("#" & mName)
 	End Select
@@ -341,16 +359,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setColor(sColor)
 	setRequired(bRequired)
 	BANano.Await(setSize(sSize))
-	setGhost(bGhost)
-	setValue(sValue)
+	setGhost(bGhost)	
 	setGrow(bGrow)
 	setOptions(sRawOptions)
-	setAppendIcon(sAppendIcon)
-	setAppendVisible(bAppendVisible)
-	setPrependIcon(sPrependIcon)
-	setPrependVisible(bPrependVisible)
 	setWidth(sWidth)
-'	setVisible(bVisible)
+	setEnabled(bEnabled)
+	Select Case sInputType
+	Case "legend", "buttons", "buttons-floating"
+		setAppendIcon(sAppendIcon)
+		setAppendVisible(bAppendVisible)
+		setPrependIcon(sPrependIcon)
+		setPrependVisible(bPrependVisible)
+	End Select
+	setValue(sValue)
+	'setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
@@ -363,7 +385,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 		Case "legend"
 			UI.SetWidthByID($"${mName}_join"$, s)
-		Case "buttons", "label-input"
+		Case "buttons", "label-input", "buttons-floating"
 			UI.SetWidthByID($"${mName}_control"$, s)
 		Case "normal"
 			If s <> "" Then UI.SetWidth(mElement, sWidth)
@@ -409,8 +431,13 @@ Sub setPrependIcon(s As String)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_prepend"$, False)
 	Else
-		UI.RemoveClass(mElement, "tlradius")
-		UI.RemoveClass(mElement, "blradius")
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
+		Else
+			UI.RemoveClass(mElement, "tlradius")
+			UI.RemoveClass(mElement, "blradius")
+		End If
 		UI.SetVisibleByID($"${mName}_prepend"$, True)
 		UI.SetImageByID($"${mName}_prependimage"$, sPrependIcon)
 	End If
@@ -431,8 +458,13 @@ Sub setAppendIcon(s As String)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_append"$, False)
 	Else
-		UI.RemoveClass(mElement, "trradius")
-		UI.RemoveClass(mElement, "brradius")
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
+		Else
+			UI.RemoveClass(mElement, "trradius")
+			UI.RemoveClass(mElement, "brradius")
+		End If
 		UI.SetVisibleByID($"${mName}_append"$, True)
 		UI.SetImageByID($"${mName}_appendimage"$, s)
 	End If
@@ -470,7 +502,8 @@ End Sub
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)
 	If mElement = Null Then Return
-	Clear
+	BANano.Await(Clear)
+	If m.Size = 0 Then Return
 	Dim sb As StringBuilder
 	sb.Initialize 
 	For Each k As String In m.Keys
@@ -587,12 +620,15 @@ Sub setSize(s As String)
 	If s = "" Then sSize = "md"
 	BANano.Await(UI.SetSize(mElement, "size", "select", sSize))
 	Select Case sInputType
-	Case "buttons", "legend"	
+	Case "buttons", "legend", "buttons-floating"
 		BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
 	End Select	
+	If sInputType = "buttons-floating" Then
+		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "select", sSize))
+	End If
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)

@@ -354,6 +354,33 @@ public Sub SetColorByID(sID As String, colorName As String, prefix As String, s 
 	SetColor(mElement, colorName, prefix, s)
 End Sub
 
+public Sub SetColorStyle(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim m As Map = CreateMap()
+	m.Put("color", s)
+	mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+
+public Sub SetColorStyleByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetColorStyle(mElement, s)
+End Sub
+
+public Sub SetBackgroundColorStyle(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim m As Map = CreateMap()
+	m.Put("background-color", s)
+	mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+public Sub SetBackgroundColorStyleByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetBackgroundColorStyle(mElement, s)
+End Sub
+
 public Sub SetBackgroundColor(mElement As BANanoElement, s As String)
 	BANano.SetP(mSelf, "sBackgroundColor", s)
 	If mElement = Null Then Return
@@ -776,9 +803,9 @@ public Sub SetVisible(mElement As BANanoElement, bVisible As Boolean)
 	BANano.SetP(mSelf, "bVisible", bVisible)
 	If mElement = Null Then Return
 	If bVisible Then
-		RemoveClass(mElement, "hidden")
+		RemoveClass(mElement, "hide hidden")
 	Else
-		AddClass(mElement, "hidden")
+		AddClass(mElement, "hide hidden")
 	End If
 End Sub
 

@@ -13,6 +13,9 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: fit , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #0000ff, Description: Active Color
+#DesignerProperty: Key: ActiveTextColor, DisplayName: Active Text Color, FieldType: String, DefaultValue: #ffffff, Description: Active Text Color
+#DesignerProperty: Key: OptionWidth, DisplayName: Option Width, FieldType: String, DefaultValue: 32, Description: Option Width
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -49,6 +52,10 @@ Sub Class_Globals
 	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sHeight As String = ""
 	Private sWidth As String = "fit"
+	Private sActiveColor As String = "#0000ff"
+	Private sActiveTextColor As String = "#ffffff"
+	Private sOptionWidth As String = "32"
+	Private items As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -57,6 +64,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	items.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -203,6 +211,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "fit")
 		sWidth = modSD5.CStr(sWidth)
+		sActiveColor = Props.GetDefault("ActiveColor", "#0000ff")
+		sActiveColor = modSD5.CStr(sActiveColor)
+		sActiveTextColor = Props.GetDefault("ActiveTextColor", "#ffffff")
+		sActiveTextColor = modSD5.CStr(sActiveTextColor)
+		sOptionWidth = Props.GetDefault("OptionWidth", "32")
+		sOptionWidth = modSD5.CStr(sOptionWidth)
 	End If
 	'
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
@@ -228,6 +242,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setOptions(sRawOptions))
 	setActive(sActive)
 '	setVisible(bVisible)
+End Sub
+
+'set Active Color
+Sub setActiveColor(s As String)
+	sActiveColor = s
+	CustProps.put("ActiveColor", s)
+End Sub
+'set Active Text Color
+Sub setActiveTextColor(s As String)
+	sActiveTextColor = s
+	CustProps.put("ActiveTextColor", s)
+End Sub
+'set Option Width
+Sub setOptionWidth(s As String)
+	sOptionWidth = s
+	CustProps.put("OptionWidth", s)
+End Sub
+'get Active Color
+Sub getActiveColor As String
+	Return sActiveColor
+End Sub
+'get Active Text Color
+Sub getActiveTextColor As String
+	Return sActiveTextColor
+End Sub
+'get Option Width
+Sub getOptionWidth As String
+	Return sOptionWidth
 End Sub
 
 'get Width
@@ -259,47 +301,49 @@ End Sub
 Sub Clear
 	If mElement = Null Then Return
 	UI.Clear(mElement)
+	items.Initialize 
 End Sub
 
 Sub setOptions(s As String)
 	sRawOptions = s
 	CustProps.Put("RawOptions", s)
 	If mElement = Null Then Return
-	Clear
+	BANano.Await(Clear)
+	If s = "" Then Return
 	Dim m As Map = UI.GetKeyValues(s, False)
-	Dim tItems As Int = m.size
-	Dim cItems As Int = 0
 	For Each k As String In m.Keys
-		cItems = BANano.parseInt(cItems) + 1
 		Dim v As String = m.Get(k)
 		BANano.Await(AddButton(k, v))
-		BANano.Await(UI.SetWidthByID($"${k}_${mName}"$, $"${cItems}/${tItems}"$))
 	Next
-End Sub
-
-'set button text
-Sub SetButtonText(btnID As String, text As String)
-	btnID = modSD5.CleanID(btnID)
-	UI.SetAttrByID($"${btnID}_${mName}"$, "aria-label", text)
-End Sub
-
-'set a button active
-Sub SetButtonActive(btnID As String, b As Boolean)
-	btnID = modSD5.CleanID(btnID)
-	UI.SetCheckedByID($"${btnID}_${mName}"$, b)
 End Sub
 
 Sub AddButton(sKey As String, sText As String)
 	sKey = modSD5.CleanID(sKey)
-	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab" aria-label="${sText}"></input>"$
+	Dim oSize As String = modSD5.FixSize("w", sOptionWidth)
+	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab ${oSize}" aria-label="${sText}"></input>"$
 	mElement.Append(sTag)
+	items.Put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
 End Sub
 
 private Sub itemchange(e As BANanoEvent)
 	e.PreventDefault
 	Dim sprefix As String = modSD5.MvField(e.ID, 1, "_")
+	BANano.Await(SetActiveInternal(sprefix))
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(sprefix))
+End Sub
+
+private Sub SetActiveInternal(item As String)
+	item = modSD5.CleanID(item)
+	For Each k As String In items.Keys
+		Log(k)
+		UI.SetBackgroundColorStyleByID(k, "")
+		UI.SetColorStyleByID(k, "")
+	Next
+	If item <> "" Then
+		UI.SetBackgroundColorStyleByID($"${item}_${mName}"$, sActiveColor)
+		UI.SetColorStyleByID($"${item}_${mName}"$, sActiveTextColor)
+	End If
 End Sub
 
 Sub getOptions As String
@@ -326,16 +370,24 @@ Sub setActive(item As String)
 	item = modSD5.CleanID(item)
 	CustProps.put("Active", item)
 	If mElement = Null Then Return
-	If item <> "" Then UI.SetCheckedByID($"${item}_${mName}"$, True)
+	For Each k As String In items.Keys
+		UI.SetBackgroundColorStyleByID(k, "")
+		UI.SetColorStyleByID(k, "")
+	Next
+	If item <> "" Then 
+		UI.SetCheckedByID($"${item}_${mName}"$, True)
+		UI.SetBackgroundColorStyleByID($"${item}_${mName}"$, sActiveColor)
+		UI.SetColorStyleByID($"${item}_${mName}"$, sActiveTextColor)
+	End If
 End Sub
 
 'set Disabled
-Sub setDisabled(items As String)
-	sDisabled = items
+Sub setDisabled(sitems As String)
+	sDisabled = sitems
 	CustProps.put("Disabled", items)
 	If mElement = Null Then Return
-	If items = "" Then Return
-	Dim itemsM As Map = UI.GetKeyValues(items, False)
+	If sitems = "" Then Return
+	Dim itemsM As Map = UI.GetKeyValues(sitems, False)
 	For Each k As String In itemsM.Keys
 		UI.SetEnabledByID($"${k}_${mName}"$, False)
 	Next

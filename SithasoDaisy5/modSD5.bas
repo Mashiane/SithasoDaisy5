@@ -19,6 +19,36 @@ Sub Process_Globals
 	Private Days As Map
 End Sub
 
+#if css
+	.hide {
+		display: none !important
+	}
+	.input-group {
+    	display: flex;
+    	width: 100%;
+    	align-items: stretch
+	}
+	.input-group :where(span) {
+    display: flex;
+    align-items: center;
+    --tw-bg-opacity: 1;
+    background-color: hsl(var(--b3) / var(--tw-bg-opacity));
+    padding-left: 1rem;
+    padding-right: 1rem
+	}
+.input-group > :first-child {
+    border-top-left-radius: var(--rounded-btn, 0.5rem);
+    border-top-right-radius: 0;
+    border-bottom-left-radius: var(--rounded-btn, 0.5rem);
+    border-bottom-right-radius: 0
+	}
+.input-group > :last-child {
+    border-top-left-radius: 0;
+    border-top-right-radius: var(--rounded-btn, 0.5rem);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: var(--rounded-btn, 0.5rem)
+	}
+#End If
 
 Sub InitDays
 	Days.Initialize
@@ -1164,27 +1194,24 @@ Sub RemoveCSSRule(selector As String)
 	i.RunMethod("remove", selector)
 End Sub
 
+'date in YYYY-MM-DD HH:mm
 Sub TimeAgo(dt As String) As String
 	dt = CStr(dt).trim
 	If dt = "" Then Return ""
-	Dim bo As BANanoObject = BANano.RunJavascriptMethod("moment", Array(dt, "YYYY-MM-DD HH:mm"))
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(dt, "YYYY-MM-DD HH:mm"))
 	Dim res As String = bo.RunMethod("fromNow", Null).result
 	Return res
 End Sub
 
 'format date to meet your needs
+'https://day.js.org/docs/en/parse/string-format
 Sub FormatDisplayDate(item As String, sFormat As String) As String			'ignoredeadcode
 	Try
-		item = "" & item
+		item = CStr(item)
 		If item = "" Then Return ""
-		If BANano.isnull(item) Or BANano.IsUndefined(item) Then Return ""
 		Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(item))
 		Dim sDate As String = bo.RunMethod("format", Array(sFormat)).Result
 		If sDate = "Invalid Date" Then Return ""
-		'For Each k As String In DateTranslations.Keys
-		'	Dim v As String = DateTranslations.Get(k)
-		'	sDate = sDate.Replace(k, v)
-		'Next
 		Return sDate
 	Catch
 		Return ""
@@ -1465,6 +1492,128 @@ Sub GetMonthName3(sMonth As String) As String
 		Dim nn As String = Left1(xn, 3)
 		Return nn
 	Else
-		Return ""	
+		Return ""
 	End If
+End Sub
+
+Sub YYYYMMDD(sdate As String) As String
+	Return FormatDisplayDate(sdate, "YYYY-MM-DD")
+End Sub
+Sub YYYYMM(sdate As String) As String
+	Return FormatDisplayDate(sdate, "YYYY-MM")
+End Sub
+'return a date with day, month year name
+Sub NiceDate(sdate As String) As String				'ignoredeadcode
+	Return FormatDisplayDate(sdate, "ddd, DD MMM YYYY")
+End Sub
+Sub NiceMonth(sdate As String) As String			'ignoredeadcode
+	Return FormatDisplayDate(sdate, "MMMM, YYYY")
+End Sub
+Sub NiceYear(sdate As String) As String			'ignoredeadcode
+	Return FormatDisplayDate(sdate, "YYYY")
+End Sub
+'return a date time
+Sub NiceTime(stime As String) As String				'ignoredeadcode
+	Return FormatDisplayDate(stime, "ddd, DD MMM YYYY @ HH:mm:ss")
+End Sub
+
+Sub NiceDateTime(stime As String) As String				'ignoredeadcode
+	Return FormatDisplayDate(stime, "ddd, DD MMM YYYY @ HH:mm")
+End Sub
+
+'return money
+Sub NiceMoney(smoney As String) As String				'ignoredeadcode
+	Return FormatDisplayNumber(smoney, "0,0.00")
+End Sub
+'return thousands
+Sub Thousands(smoney As String) As String				'ignoredeadcode
+	Return FormatDisplayNumber(smoney, "0,0")
+End Sub
+
+Sub NiceFileSize(fsx As String) As String		'ignoredeadcode
+	Return FormatFileSize(fsx)
+End Sub
+
+'time now
+Sub TimeNow() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "HH:mm"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+'return the current yyyy-MM-dd
+Sub DateNow() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "yyyy-MM-dd"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+'get the date based on days added
+Sub DateOnDaysFromToday(days2Add As Int) As String
+	Dim mDateNow As String = DateNow
+	Dim res As String = DateAdd(mDateNow, days2Add)
+	Return res
+End Sub
+'return the current yyyy-MM-dd HH:mm
+Sub DateTimeNow() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "yyyy-MM-dd HH:mm"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+'date time now
+Sub DateTimeNowBackUp() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "yyyy-MM-dd HH-mm"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+'return the current yyyy-MM-dd HH:mm:ss
+Sub Now() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "yyyy-MM-dd HH:mm:ss"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+'long date
+Sub LongDateTimeToday() As String
+	DateTime.DateFormat = "yyyy-MM-dd HH:mm"
+	Dim dt As Long = DateTime.now
+	DateTime.DateFormat = "dd/MM/yyyy, HH:mm"
+	Return DateTime.Date(dt)
+End Sub
+
+Sub GetWorkingDates(startDate As String, endDate As String) As List
+	DateTime.DateFormat = "yyyy-MM-dd"
+	' Initialize the list to hold working dates
+	Dim workingDates As List
+	workingDates.Initialize
+
+	' Parse the start and end dates
+	Dim sd As Long = DateTime.DateParse(startDate)
+	Dim ed As Long = DateTime.DateParse(endDate)
+
+	' Loop through all dates from start to end
+	For i = sd To ed Step DateTime.TicksPerDay
+		' Get the day of the week (1=Sunday, 7=Saturday)
+		Dim dayOfWeek As Int = DateTime.GetDayOfWeek(i)
+
+		' Check if it's a working day (Monday to Friday)
+		If dayOfWeek <> 1 And dayOfWeek <> 7 Then
+			' Add the date to the list
+			workingDates.Add(DateTime.Date(i))
+		End If
+	Next
+
+	Return workingDates
 End Sub

@@ -334,11 +334,12 @@ End Sub
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)
 	If mElement = Null Then Return
-	Clear
+	BANano.Await(Clear)
 	If bColumnView = False Then
 		Dim iSize As Int = m.Size
 		UI.UpdateClassByID($"${mName}_options"$, "cols", $"grid-cols-${iSize}"$)
 	End If
+	If m.Size = 0 Then Return
 	'
 	Dim rSize As String = modSD5.FixSize("radio", sSize)
 	Dim rColor As String = modSD5.FixColor("radio", sColor)

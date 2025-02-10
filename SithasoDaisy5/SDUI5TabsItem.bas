@@ -115,14 +115,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -136,7 +136,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -218,12 +218,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		
 	mElement = mTarget.Append($"[BANCLEAN]
 	<input id="${mName}_${sParentID}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>
-  	<div id="${mName}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
+  	<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
 	'
 	setActive(bActive)
 	setEnabled(bEnabled)
 '	setVisible(bVisible)
-	UI.OnEvent(mElement, "change", Me, "itemchange")
+	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
 End Sub
 
 private Sub itemchange(e As BANanoEvent)

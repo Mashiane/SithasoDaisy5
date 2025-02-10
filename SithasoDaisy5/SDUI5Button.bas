@@ -253,6 +253,11 @@ Sub setMarginAXYTBLR(s As String)
 	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
+Sub AddClass(className As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, className)
+End Sub
+
 Sub getAttributes As String
 	Return sRawAttributes
 End Sub

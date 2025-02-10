@@ -281,15 +281,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	'
-	Select Case sProgressType
-	Case "legend"
-		If sWidth <> "" Then UI.AddClassDT(sWidth)
-	Case "tooltip"
-		If sWidth <> "" Then UI.AddClassDT(sWidth)
-	Case "normal"
-		If sWidth <> "" Then UI.AddClassDT(sWidth)
-	End Select
-	
+'	Select Case sProgressType
+'	Case "legend"
+'		If sWidth <> "" Then UI.AddClassDT(sWidth)
+'	Case "tooltip"
+'		If sWidth <> "" Then UI.AddClassDT(sWidth)
+'	Case "normal"
+'		If sWidth <> "" Then UI.AddClassDT(sWidth)
+'	End Select
+'	
 	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -298,8 +298,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sProgressType
 		Case "legend"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
+  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
   					<span id="${mName}_startlabel"></span>
 					<span id="${mName}_endlabel">${iValue}</span>
@@ -325,6 +325,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     		</div>"$).Get("#" & mName)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<progress id="${mName}" class="${xclasses} progress" ${xattrs} style="${xstyles}"></progress>"$).Get("#" & mName)
+			setWidth(sWidth)
 	End Select
 	If sBackgroundColor <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
 	If sColor <> "" Then UI.SetColor(mElement, "color", "progress", sColor)
@@ -333,10 +334,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.SetAttr(mElement, "min", iMinValue)
 	UI.SetAttr(mElement, "step", iStepValue)
 	UI.AddAttrDT("value", iValue)
-	If sWidth <> "" Then UI.SetWidth(mElement, sWidth)
 	setValue(iValue)
 	setIndeterminate(bIndeterminate)
+	setHeight(sHeight)
 '	setVisible(bVisible)
+End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+Sub getWidth As String
+	Return sWidth
 End Sub
 
 'set Hint

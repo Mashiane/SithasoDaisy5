@@ -229,7 +229,8 @@ Sub setOptions(s As String)
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
-	Clear
+	BANano.Await(Clear)
+	If s = "" Then Return
 	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
 	sb.Initialize 

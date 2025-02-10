@@ -342,6 +342,8 @@ Sub setOptions(s As String)
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
 	items.Initialize 
+	UI.ClearByID($"${mName}_content"$)
+	If s = "" Then Return
 	Dim mItems As Map = UI.GetKeyValues(sRawOptions, False)
 	Dim sb As StringBuilder
 	sb.Initialize
@@ -356,7 +358,6 @@ Sub setOptions(s As String)
 		sb.Append($"<input id="${k}_${mName}" class="btn ${itemSize} rounded-full" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 		items.Put(nk, nk)
 	Next
-	UI.ClearByID($"${mName}_content"$)
 	UI.AppendByID($"${mName}_content"$, sb.ToString)
 	For Each k As String In items.Keys
 		UI.OnEventByID(k, "change", Me, "changed")

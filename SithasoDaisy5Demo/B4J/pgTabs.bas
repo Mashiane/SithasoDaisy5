@@ -10,6 +10,8 @@ Sub Process_Globals
 	Private app As SDUI5App			'ignore
 	Private tabs1 As SDUI5Tabs
 	Private segment1 As SDUI5Segment
+	Private tabs2 As SDUI5Tabs
+	Private tabs3 As SDUI5Tabs
 End Sub
 
 
@@ -24,4 +26,12 @@ End Sub
 
 Private Sub segment1_Change (item As String)
 	app.ShowToastSuccess(item)
+End Sub
+
+Private Sub tabs3_Change (Item As String)
+	app.ShowToastSuccess(Item)
+End Sub
+
+Private Sub tabs2_Change (Item As String)
+	app.ShowToastSuccess(Item)
 End Sub

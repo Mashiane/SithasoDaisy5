@@ -5,7 +5,12 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+
+#Event: Change (Item As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -60,6 +65,9 @@ Sub Class_Globals
 	Public CONST SHADOW_SHADOW As String = "shadow"
 	Public CONST SHADOW_SM As String = "sm"
 	Public CONST SHADOW_XL As String = "xl"
+	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
+	Private items As Map
+	Private sActive As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -68,6 +76,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	items.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -220,6 +229,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = modSD5.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
+		sRawOptions = modSD5.CStr(sRawOptions)
+		sActive = Props.GetDefault("Active", "btn1")
+		sActive = modSD5.CStr(sActive)
 	End If
 	'
 	'If sBackgroundColor <> "base-100" Then UI.AddBackgroundColorDT(sBackgroundColor)
@@ -239,6 +252,63 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	BANano.Await(setOptions(sRawOptions))
+	setActive(sActive)
+End Sub
+
+Sub setOptions(s As String)
+	sRawOptions = s
+	CustProps.Put("RawOptions", s)
+	If mElement = Null Then Return
+	BANano.Await(Clear)
+	If s = "" Then Return
+	Dim m As Map = UI.GetKeyValues(s, False)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		BANano.Await(AddItem(k, v))
+	Next
+End Sub
+
+'get Raw Options
+Sub getOptions As String
+	Return sRawOptions
+End Sub
+
+Sub AddItem(sKey As String, sText As String)
+	sKey = modSD5.CleanID(sKey)
+	Dim nKey As String = $"${sKey}_${mName}"$
+	Dim ni As SDUI5Collapse
+	ni.Initialize(mCallBack, nKey, nKey)
+	ni.GroupName = mName
+	ni.ParentID = mName
+	ni.Title = sText
+	ni.Visible = True
+	ni.RightIcon = "arrow"
+	ni.JoinItem = True
+	ni.AddComponent
+	items.Put(nKey, nKey)
+End Sub
+
+'set Active
+Sub setActive(item As String)
+	sActive = item
+	item = modSD5.CleanID(item)
+	CustProps.put("Active", item)
+	If mElement = Null Then Return
+	If item <> "" Then
+		UI.SetCheckedByID($"${item}_${mName}"$, True)
+	End If
+End Sub
+
+'get Active
+Sub getActive As String
+	Return sActive
+End Sub
+
+Sub Clear
+	If mElement = Null Then Return
+	UI.Clear(mElement)
+	items.Initialize
 End Sub
 
 'set Background Color

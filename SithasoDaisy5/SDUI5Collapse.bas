@@ -304,7 +304,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setGroupName(sGroupName)
 	setJoinItem(bJoinItem)
 '	setVisible(bVisible)
+	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
+
+private Sub itemchange(e As BANanoEvent)
+	e.PreventDefault
+	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
+	BANano.CallSub(mCallBack, $"${sParentID}_change"$, Array(itemName))
+End Sub
+
 
 'set Group Name
 Sub setGroupName(s As String)

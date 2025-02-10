@@ -244,7 +244,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHideSelectorButton = modSD5.CBool(bHideSelectorButton)
 	End If
 	'
-	If sInputType = "buttons" Then UI.AddClassDT("join")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -271,7 +270,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	      		</fieldset>"$).Get("#" & mName)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
-				<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
