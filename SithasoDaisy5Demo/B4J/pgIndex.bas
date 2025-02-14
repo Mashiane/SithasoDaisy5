@@ -33,7 +33,7 @@ Sub Initialize					'ignoreDeadCode
 	'AddPages
 	'show the sign in page
 	'IsAuthenticated(False)
-	'pgSignIn.Show(app)
+	pgTypography.Show(App)
 	App.pageresume
 End Sub
 
