@@ -717,8 +717,8 @@ Sub AppStart (Form1 As Form, Args() As String)
 	'initialize banano for first use
 	'this is the web-app builder
 	BANano.Initialize("BANano", AppName, DateTime.now)
-	BANano.HTML_NAME = "index.html"
-	BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
+	'BANano.HTML_NAME = "index.html"
+	'BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
 	BANano.Header.Title = AppTitle
 	BANano.Header.AddFavicon("./assets/600by600.jpg", "16x16")
 	BANano.Header.AddAppleTouchIcon("./assets/600by600.jpg", "180x180")
@@ -739,7 +739,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	'BANano.Header.AddManifestIcon("android-chrome-192x192.png", "192x192")
 	'BANano.Header.AddManifestIcon("android-chrome-512x512.png", "512x512")
 	BANano.TranspilerOptions.MinifyOnline = False
-	BANano.TranspilerOptions.RemoveDeadCode = False
+	BANano.TranspilerOptions.RemoveDeadCode = True
 	BANano.TranspilerOptions.IgnoreWarningsOldBrowsers = True
 	BANano.TranspilerOptions.ShowWarningDeadCode = False
 	BANano.TranspilerOptions.MergeAllCSSFiles = False

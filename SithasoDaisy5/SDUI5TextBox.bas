@@ -385,7 +385,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -404,12 +404,12 @@ Sub getWidth As String
 	Return sWidth
 End Sub
 
-private Sub changed1(e As BANanoEvent)			'ignore
+private Sub changed1(e As BANanoEvent)			'ignoredeadcode
 	Dim cvalue As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mName}_input"$, Array(cvalue))
 End Sub
 
-private Sub changed(e As BANanoEvent)			'ignore
+private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	Dim cvalue As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(cvalue))
 End Sub
@@ -426,7 +426,7 @@ Sub getInputType As String
 	Return sInputType
 End Sub
 
-Sub setAppendIcon(s As String)
+Sub setAppendIcon(s As String)				'ignoredeadcode
 	sAppendIcon = s
 	CustProps.put("AppendIcon", s)
 	If mElement = Null Then Return
@@ -446,14 +446,14 @@ Sub setAppendIcon(s As String)
 End Sub
 
 'set Append Visible
-Sub setAppendVisible(b As Boolean)
+Sub setAppendVisible(b As Boolean)				'ignoredeadcode
 	bAppendVisible = b
 	CustProps.put("AppendVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_append"$, b)
 End Sub
 'set Prepend Icon
-Sub setPrependIcon(s As String)
+Sub setPrependIcon(s As String)				'ignoredeadcode
 	sPrependIcon = s
 	CustProps.put("PrependIcon", s)
 	If mElement = Null Then Return
@@ -472,7 +472,7 @@ Sub setPrependIcon(s As String)
 	End If
 End Sub
 'set Prepend Visible
-Sub setPrependVisible(b As Boolean)
+Sub setPrependVisible(b As Boolean)				'ignoredeadcode
 	bPrependVisible = b
 	CustProps.put("PrependVisible", b)
 	If mElement = Null Then Return
@@ -498,14 +498,14 @@ End Sub
 
 
 'set value
-Sub setValue(text As String)
+Sub setValue(text As String)			'ignoredeadcode
 	sValue = text
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
 	UI.SetValue(mElement, text)
 End Sub
 'get value
-Sub getValue As String
+Sub getValue As String					'ignoredeadcode
 	If mElement = Null Then Return ""
 	sValue = UI.GetValue(mElement)
 	Return sValue
@@ -524,7 +524,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -539,7 +539,7 @@ End Sub
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)				'ignoredeadcode
     sColor = s
     CustProps.put("Color", s)
     If mElement = Null Then Return
@@ -547,7 +547,7 @@ Sub setColor(s As String)
 End Sub
 
 'set Ghost
-Sub setGhost(b As Boolean)
+Sub setGhost(b As Boolean)				'ignoredeadcode
         bGhost = b
         CustProps.put("Ghost", b)
         If mElement = Null Then Return
@@ -558,7 +558,7 @@ Sub setGhost(b As Boolean)
         End If
 End Sub
 'set Grow
-Sub setGrow(b As Boolean)
+Sub setGrow(b As Boolean)			'ignoredeadcode
         bGrow = b
         CustProps.put("Grow", b)
         If mElement = Null Then Return
@@ -569,7 +569,7 @@ Sub setGrow(b As Boolean)
         End If
 End Sub
 'set Hint
-Sub setHint(s As String)
+Sub setHint(s As String)			'ignoredeadcode
         sHint = s
         CustProps.put("Hint", s)
         If mElement = Null Then Return
@@ -583,49 +583,49 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Max Length
-Sub setMaxLength(s As String)
+Sub setMaxLength(s As String)			'ignoredeadcode
         sMaxLength = s
         CustProps.put("MaxLength", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "maxlength", s)
 End Sub
 'set Max Value
-Sub setMaxValue(s As String)
+Sub setMaxValue(s As String)			'ignoredeadcode
         sMaxValue = s
         CustProps.put("MaxValue", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "max", s)
 End Sub
 'set Min Length
-Sub setMinLength(s As String)
+Sub setMinLength(s As String)				'ignoredeadcode
         sMinLength = s
         CustProps.put("MinLength", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "minlength", s)
 End Sub
 'set Min Value
-Sub setMinValue(s As String)
+Sub setMinValue(s As String)			'ignoredeadcode
         sMinValue = s
         CustProps.put("MinValue", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "min", s)
 End Sub
 'set Pattern
-Sub setPattern(s As String)
+Sub setPattern(s As String)			'ignoredeadcode
         sPattern = s
         CustProps.put("Pattern", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "pattern", s)
 End Sub
 'set Placeholder
-Sub setPlaceholder(s As String)
+Sub setPlaceholder(s As String)			'ignoredeadcode
         sPlaceholder = s
         CustProps.put("Placeholder", s)
         If mElement = Null Then Return
         If s <> "" Then UI.SetAttr(mElement, "placeholder", s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)				'ignoredeadcode
         bRequired = b
         CustProps.put("Required", b)
         If mElement = Null Then Return
@@ -641,7 +641,7 @@ Sub setRequired(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
     sSize = s
     CustProps.put("Size", s)
     If mElement = Null Then Return
@@ -659,7 +659,7 @@ Sub setSize(s As String)
 	End If
 End Sub
 'set Step Value
-Sub setStepValue(s As String)
+Sub setStepValue(s As String)				'ignoredeadcode
         sStepValue = s
         CustProps.put("StepValue", s)
         If mElement = Null Then Return
@@ -667,7 +667,7 @@ Sub setStepValue(s As String)
 End Sub
 'set Type Of
 'options: date|datetime-local|email|input|month|number|password|search|tel|text|time|url|week
-Sub setTypeOf(s As String)
+Sub setTypeOf(s As String)				'ignoredeadcode
     sTypeOf = s
     CustProps.put("TypeOf", s)
     If mElement = Null Then Return

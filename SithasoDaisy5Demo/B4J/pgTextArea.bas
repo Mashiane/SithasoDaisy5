@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "textareaview")
+	pgIndex.UpdateTitle("SDUI5TextArea")
 End Sub
 
 Private Sub SDUI5TextArea1_Change (Value As String)

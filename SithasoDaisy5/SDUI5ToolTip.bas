@@ -117,7 +117,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Has Content
-Sub setHasContent(b As Boolean)
+Sub setHasContent(b As Boolean)			'ignoredeadcode
 	bHasContent = b
 	CustProps.put("HasContent", b)
 	If mElement = Null Then Return

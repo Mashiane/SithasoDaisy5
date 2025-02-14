@@ -13,37 +13,37 @@ Version=10
 #DesignerProperty: Key: FlexGrow, DisplayName: Flex Grow, FieldType: String, DefaultValue: none, Description: Flex Grow, List: 0|1|none
 #DesignerProperty: Key: FlexShrink, DisplayName: Flex Shrink, FieldType: String, DefaultValue: none, Description: Flex Shrink, List: 0|1|none
 #DesignerProperty: Key: FlexWrap, DisplayName: Flex Wrap, FieldType: String, DefaultValue: none, Description: Whether The Flex Items Should Wrap Or Not, List: none|nowrap|wrap|wrap-reverse
-#DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
-#DesignerProperty: Key: AlignContent, DisplayName: Align Content, FieldType: String, DefaultValue: none, Description: Align The Flex Lines, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
-#DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Vertical Align The Flex Items, List: baseline|center|end|none|start|stretch
-#DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: none, Description: Align Self, List: auto|baseline|center|end|none|start|stretch
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
-#DesignerProperty: Key: ColSpan, DisplayName: Col Span, FieldType: String, DefaultValue: , Description: Col Span
-#DesignerProperty: Key: ColSpanXs, DisplayName: Col Span XS, FieldType: String, DefaultValue: , Description: Col Span Xs
-#DesignerProperty: Key: ColSpanSm, DisplayName: Col Span SM, FieldType: String, DefaultValue: , Description: Col Span Sm
-#DesignerProperty: Key: ColSpanMd, DisplayName: Col Span MD, FieldType: String, DefaultValue: , Description: Col Span Md
-#DesignerProperty: Key: ColSpanLg, DisplayName: Col Span LG, FieldType: String, DefaultValue: , Description: Col Span Lg
-#DesignerProperty: Key: ColSpanXl, DisplayName: Col Span XL, FieldType: String, DefaultValue: , Description: Col Span Xl
+#DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: , Description: Gap
 #DesignerProperty: Key: GridCols, DisplayName: Grid Cols, FieldType: String, DefaultValue: , Description: Grid Cols
 #DesignerProperty: Key: GridFlow, DisplayName: Grid Flow, FieldType: String, DefaultValue: none, Description: Grid Flow, List: col|col-dense|dense|none|row|row-dense
 #DesignerProperty: Key: GridRows, DisplayName: Grid Rows, FieldType: String, DefaultValue: , Description: Grid Rows
+#DesignerProperty: Key: ColSpan, DisplayName: ColSpan, FieldType: String, DefaultValue: , Description: Col Span
+#DesignerProperty: Key: ColSpanXs, DisplayName: XS ColSpan, FieldType: String, DefaultValue: , Description: XS ColSpan
+#DesignerProperty: Key: ColSpanSm, DisplayName: SM ColSpan, FieldType: String, DefaultValue: , Description: SM ColSpan
+#DesignerProperty: Key: ColSpanMd, DisplayName: MD ColSpan, FieldType: String, DefaultValue: , Description: MD ColSpan
+#DesignerProperty: Key: ColSpanLg, DisplayName: LG ColSpan, FieldType: String, DefaultValue: , Description: LG ColSpan
+#DesignerProperty: Key: ColSpanXl, DisplayName: XL ColSpan, FieldType: String, DefaultValue: , Description: XL ColSpan
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
-#DesignerProperty: Key: JustifyContent, DisplayName: Justify Content, FieldType: String, DefaultValue: none, Description: Horizontal Align The Flex Items, List: around|between|center|end|evenly|none|normal|start|stretch
-#DesignerProperty: Key: JustifyItems, DisplayName: Justify Items, FieldType: String, DefaultValue: , Description: Justify Items, List: center|end|none|start|stretch
-#DesignerProperty: Key: JustifySelf, DisplayName: Justify Self, FieldType: String, DefaultValue: none, Description: Justify Self, List: auto|center|end|none|start|stretch
-#DesignerProperty: Key: PlaceContent, DisplayName: Place Content, FieldType: String, DefaultValue: none, Description: Place Content, List: around|baseline|between|center|end|evenly|none|start|stretch
-#DesignerProperty: Key: PlaceItems, DisplayName: Place Items, FieldType: String, DefaultValue: none, Description: Place Items, List: baseline|center|end|none|start|stretch
-#DesignerProperty: Key: PlaceSelf, DisplayName: Place Self, FieldType: String, DefaultValue: none, Description: Place Self, List: auto|center|end|none|start|stretch
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: RowSpan, DisplayName: Row Span, FieldType: String, DefaultValue: , Description: Row Span
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: AlignContent, DisplayName: Align Content, FieldType: String, DefaultValue: none, Description: Align Content, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
+#DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Align Items, List: baseline|center|end|none|start|stretch
+#DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: none, Description: Align Self, List: auto|baseline|center|end|none|start|stretch
+#DesignerProperty: Key: JustifyContent, DisplayName: Justify Content, FieldType: String, DefaultValue: none, Description: Justify Content, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
+#DesignerProperty: Key: JustifyItems, DisplayName: Justify Items, FieldType: String, DefaultValue: none, Description: Justify Items, List: center|end|none|normal|start|stretch
+#DesignerProperty: Key: JustifySelf, DisplayName: Justify Self, FieldType: String, DefaultValue: none, Description: Justify Self, List: auto|center|end|none|start|stretch
+#DesignerProperty: Key: PlaceContent, DisplayName: Place Content, FieldType: String, DefaultValue: none, Description: Place Content, List: around|baseline|between|center|end|evenly|none|start|stretch
+#DesignerProperty: Key: PlaceItems, DisplayName: Place Items, FieldType: String, DefaultValue: none, Description: Place Items, List: baseline|center|end|none|start|stretch
+#DesignerProperty: Key: PlaceSelf, DisplayName: Place Self, FieldType: String, DefaultValue: none, Description: Place Self, List: auto|center|end|none|start|stretch
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -121,6 +121,9 @@ Sub Class_Globals
 	Private sWidth As String = ""
 	Private sTextAlign As String = "none"
 	Private bCenterChildren As Boolean
+	Private sAlignContent As String = "none"
+	Private sAlignItems As String = "none"
+	Private sAlignSelf As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -211,14 +214,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -332,6 +335,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAlignSelf = Props.GetDefault("AlignSelf", "none")
 		sAlignSelf = modSD5.CStr(sAlignSelf)
 		If sAlignSelf = "none" Then sAlignSelf = ""
+		sJustifyContent = Props.GetDefault("JustifyContent", "none")
+		sJustifyContent = modSD5.CStr(sJustifyContent)
+		If sJustifyContent = "none" Then sJustifyContent = ""
+		sJustifyItems = Props.GetDefault("JustifyItems", "none")
+		sJustifyItems = modSD5.CStr(sJustifyItems)
+		If sJustifyItems = "none" Then sJustifyItems = ""
+		sJustifySelf = Props.GetDefault("JustifySelf", "none")
+		sJustifySelf = modSD5.CStr(sJustifySelf)
+		If sJustifySelf = "none" Then sJustifySelf = ""
+		sPlaceContent = Props.GetDefault("PlaceContent", "none")
+		sPlaceContent = modSD5.CStr(sPlaceContent)
+		If sPlaceContent = "none" Then sPlaceContent = ""
+		sPlaceItems = Props.GetDefault("PlaceItems", "none")
+		sPlaceItems = modSD5.CStr(sPlaceItems)
+		If sPlaceItems = "none" Then sPlaceItems = ""
+		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
+		sPlaceSelf = modSD5.CStr(sPlaceSelf)
+		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
 		bCenterChildren = modSD5.CBool(bCenterChildren)
 		sColSpan = Props.GetDefault("ColSpan", "")
@@ -378,23 +399,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGridRows = modSD5.CStr(sGridRows)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
-		sJustifyContent = Props.GetDefault("JustifyContent", "none")
-		sJustifyContent = modSD5.CStr(sJustifyContent)
-		If sJustifyContent = "none" Then sJustifyContent = ""
-		sJustifyItems = Props.GetDefault("JustifyItems", "")
-		sJustifyItems = modSD5.CStr(sJustifyItems)
-		sJustifySelf = Props.GetDefault("JustifySelf", "none")
-		sJustifySelf = modSD5.CStr(sJustifySelf)
-		If sJustifySelf = "none" Then sJustifySelf = ""
-		sPlaceContent = Props.GetDefault("PlaceContent", "none")
-		sPlaceContent = modSD5.CStr(sPlaceContent)
-		If sPlaceContent = "none" Then sPlaceContent = ""
-		sPlaceItems = Props.GetDefault("PlaceItems", "none")
-		sPlaceItems = modSD5.CStr(sPlaceItems)
-		If sPlaceItems = "none" Then sPlaceItems = ""
-		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
-		sPlaceSelf = modSD5.CStr(sPlaceSelf)
-		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
@@ -412,11 +416,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sTextAlign = "none" Then sTextAlign = ""
 	End If
 	'
-	If bCenterChildren Then UI.AddCenterChildrenDT
-	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
 	If sAlignItems <> "" Then UI.AddClassDT("items-" & sAlignItems)
 	If sAlignSelf <> "" Then UI.AddClassDT("self-" & sAlignSelf)
+	If sJustifyContent <> "" Then UI.AddClassDT("justify-" & sJustifyContent)
+	If sJustifyItems <> "" Then UI.AddClassDT("justify-items-" & sJustifyItems)
+	If sJustifySelf <> "" Then UI.AddClassDT("justify-self-" & sJustifySelf)
+	If sPlaceContent <> "" Then UI.AddClassDT("place-content-" & sPlaceContent)
+	If sPlaceItems <> "" Then UI.AddClassDT("place-items-" & sPlaceItems)
+	If sPlaceSelf <> "" Then UI.AddClassDT("place-self-" & sPlaceSelf)
+	If bCenterChildren Then UI.AddCenterChildrenDT
+	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sColSpan <> "" Then UI.AddClassDT("col-span-" & sColSpan)
 	If sColSpanLg <> "" Then UI.AddClassDT("lg:col-span-" & sColSpanLg)
@@ -447,12 +457,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sGridFlow <> "" Then UI.AddClassDT("grid-flow-" & sGridFlow)
 	If sGridRows <> "" Then UI.AddClassDT("grid-rows-" & sGridRows)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sJustifyContent <> "" Then UI.AddClassDT("justify-" & sJustifyContent)
-	If sJustifyItems <> "" Then UI.AddClassDT("justify-items-" & sJustifyItems)
-	If sJustifySelf <> "" Then UI.AddClassDT("justify-self-" & sJustifySelf)
-	If sPlaceContent <> "" Then UI.AddClassDT("place-content-" & sPlaceContent)
-	If sPlaceItems <> "" Then UI.AddClassDT("place-items-" & sPlaceItems)
-	If sPlaceSelf <> "" Then UI.AddClassDT("place-self-" & sPlaceSelf)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sRowSpan <> "" Then UI.AddClassDT("row-span-" & sRowSpan)
@@ -474,6 +478,116 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+'set Align Content
+'options: none|normal|center|start|end|between|around|evenly|baseline|stretch
+Sub setAlignContent(s As String)
+	sAlignContent = s
+	CustProps.put("AlignContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "content-" & s)
+End Sub
+'set Align Items
+'options: none|start|end|center|baseline|stretch
+Sub setAlignItems(s As String)
+	sAlignItems = s
+	CustProps.put("AlignItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "items-" & s)
+End Sub
+'set Align Self
+'options: none|auto|start|end|center|stretch|baseline
+Sub setAlignSelf(s As String)
+	sAlignSelf = s
+	CustProps.put("AlignSelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "self-" & s)
+End Sub
+'set Justify Content
+'options: none|start|end|center|between|around|evenly|stretch|baseline|normal
+Sub setJustifyContent(s As String)
+	sJustifyContent = s
+	CustProps.put("JustifyContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-" & s)
+End Sub
+'set Justify Items
+'options: none|start|end|center|stretch|normal
+Sub setJustifyItems(s As String)
+	sJustifyItems = s
+	CustProps.put("JustifyItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-items-" & s)
+End Sub
+'set Justify Self
+'options: none|auto|start|end|center|stretch
+Sub setJustifySelf(s As String)
+	sJustifySelf = s
+	CustProps.put("JustifySelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-self-" & s)
+End Sub
+'set Place Content
+'options: none|center|start|end|between|around|evenly|baseline|stretch
+Sub setPlaceContent(s As String)
+	sPlaceContent = s
+	CustProps.put("PlaceContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-content-" & s)
+End Sub
+'set Place Items
+'options: none|start|end|center|baseline|stretch
+Sub setPlaceItems(s As String)
+	sPlaceItems = s
+	CustProps.put("PlaceItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-items-" & s)
+End Sub
+'set Place Self
+'options: none|auto|start|end|center|stretch
+Sub setPlaceSelf(s As String)
+	sPlaceSelf = s
+	CustProps.put("PlaceSelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-self-" & s)
+End Sub
+'get Align Content
+Sub getAlignContent As String
+	Return sAlignContent
+End Sub
+'get Align Items
+Sub getAlignItems As String
+	Return sAlignItems
+End Sub
+'get Align Self
+Sub getAlignSelf As String
+	Return sAlignSelf
+End Sub
+'get Justify Content
+Sub getJustifyContent As String
+	Return sJustifyContent
+End Sub
+'get Justify Items
+Sub getJustifyItems As String
+	Return sJustifyItems
+End Sub
+'get Justify Self
+Sub getJustifySelf As String
+	Return sJustifySelf
+End Sub
+'get Place Content
+Sub getPlaceContent As String
+	Return sPlaceContent
+End Sub
+'get Place Items
+Sub getPlaceItems As String
+	Return sPlaceItems
+End Sub
+'get Place Self
+Sub getPlaceSelf As String
+	Return sPlaceSelf
+End Sub
+
+
 
 Sub setCenterChildren(b As Boolean)
 	bCenterChildren = b
@@ -486,30 +600,6 @@ Sub getCenterChildren As Boolean
 	Return bCenterChildren
 End Sub
 
-'set Align The Flex Lines
-'options: around|baseline|between|center|end|evenly|none|normal|start|stretch
-Sub setAlignContent(s As String)
-	sAlignContent = s
-	CustProps.put("AlignContent", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "content-" & s)
-End Sub
-'set Vertical Align The Flex Items
-'options: baseline|center|end|none|start|stretch
-Sub setAlignItems(s As String)
-	sAlignItems = s
-	CustProps.put("AlignItems", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "items-" & s)
-End Sub
-'set Align Self
-'options: auto|baseline|center|end|none|start|stretch
-Sub setAlignSelf(s As String)
-	sAlignSelf = s
-	CustProps.put("AlignSelf", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "self-" & s)
-End Sub
 'set Background Color
 Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
@@ -674,54 +764,6 @@ Sub setHeight(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
-'set Horizontal Align The Flex Items
-'options: around|between|center|end|evenly|none|normal|start|stretch
-Sub setJustifyContent(s As String)
-	sJustifyContent = s
-	CustProps.put("JustifyContent", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-" & s)
-End Sub
-'set Justify Items
-'options: center|end|none|start|stretch
-Sub setJustifyItems(s As String)
-	sJustifyItems = s
-	CustProps.put("JustifyItems", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-items-" & s)
-End Sub
-'set Justify Self
-'options: auto|center|end|none|start|stretch
-Sub setJustifySelf(s As String)
-	sJustifySelf = s
-	CustProps.put("JustifySelf", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-self-" & s)
-End Sub
-'set Place Content
-'options: around|baseline|between|center|end|evenly|none|start|stretch
-Sub setPlaceContent(s As String)
-	sPlaceContent = s
-	CustProps.put("PlaceContent", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-content-" & s)
-End Sub
-'set Place Items
-'options: baseline|center|end|none|start|stretch
-Sub setPlaceItems(s As String)
-	sPlaceItems = s
-	CustProps.put("PlaceItems", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-items-" & s)
-End Sub
-'set Place Self
-'options: auto|center|end|none|start|stretch
-Sub setPlaceSelf(s As String)
-	sPlaceSelf = s
-	CustProps.put("PlaceSelf", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-self-" & s)
-End Sub
 'set Rounded
 'options: rounded-full|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 Sub setRounded(s As String)
@@ -769,18 +811,6 @@ Sub setWidth(s As String)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidth(mElement, sWidth)
-End Sub
-'get Align The Flex Lines
-Sub getAlignContent As String
-	Return sAlignContent
-End Sub
-'get Vertical Align The Flex Items
-Sub getAlignItems As String
-	Return sAlignItems
-End Sub
-'get Align Self
-Sub getAlignSelf As String
-	Return sAlignSelf
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
@@ -861,30 +891,6 @@ End Sub
 'get Height
 Sub getHeight As String
 	Return sHeight
-End Sub
-'get Horizontal Align The Flex Items
-Sub getJustifyContent As String
-	Return sJustifyContent
-End Sub
-'get Justify Items
-Sub getJustifyItems As String
-	Return sJustifyItems
-End Sub
-'get Justify Self
-Sub getJustifySelf As String
-	Return sJustifySelf
-End Sub
-'get Place Content
-Sub getPlaceContent As String
-	Return sPlaceContent
-End Sub
-'get Place Items
-Sub getPlaceItems As String
-	Return sPlaceItems
-End Sub
-'get Place Self
-Sub getPlaceSelf As String
-	Return sPlaceSelf
 End Sub
 'get Rounded
 Sub getRounded As String

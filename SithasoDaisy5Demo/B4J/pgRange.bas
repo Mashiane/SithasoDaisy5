@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "rangeview")
+	pgIndex.UpdateTitle("SDUI5Range")
 End Sub
 
 Private Sub SDUI5Range17_Change (Value As Object)

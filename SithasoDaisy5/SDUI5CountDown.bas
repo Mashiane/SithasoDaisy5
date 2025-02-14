@@ -183,7 +183,7 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 'set value
-Sub setValue(text As String)
+Sub setValue(text As String)		'ignoredeadcode
 	sValue = text
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return

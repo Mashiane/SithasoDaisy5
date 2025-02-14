@@ -14,4 +14,5 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "breadcrumbsview")
+	pgIndex.UpdateTitle("SDUI5BreadCrumbs")
 End Sub

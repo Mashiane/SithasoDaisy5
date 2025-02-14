@@ -382,7 +382,7 @@ public Sub SetBackgroundColorStyleByID(sID As String, s As String)
 	SetBackgroundColorStyle(mElement, s)
 End Sub
 
-public Sub SetBackgroundColor(mElement As BANanoElement, s As String)
+public Sub SetBackgroundColor(mElement As BANanoElement, s As String)		'ignoredeadcode
 	BANano.SetP(mSelf, "sBackgroundColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor("bg", s)
@@ -1386,13 +1386,13 @@ Sub ResponsiveClass(mElement As BANanoElement, className As String, xs As Boolea
 	If lg Then AddClass(mElement, "lg:" & className)
 End Sub
 
-Sub AddTextColorDT(tc As String)
+Sub AddTextColorDT(tc As String)   'ignoredeadcode
 	Dim s As String = modSD5.FixColor("text", tc)
 	AddAttrDT("data-textcolor", s)
 	AddClassDT(s)
 End Sub
 
-Sub AddBackgroundColorDT(tc As String)
+Sub AddBackgroundColorDT(tc As String)			'ignoredeadcode
 	Dim s As String = modSD5.FixColor("bg", tc)
 	AddAttrDT("data-color", s)
 	AddClassDT(s)
@@ -1471,13 +1471,13 @@ Sub AddShadowDT(s As String)
 	AddClassDT(x)
 End Sub
 
-Sub AddTextSizeDT(tc As String)
+Sub AddTextSizeDT(tc As String)  'ignoredeadcode
 	Dim s As String = modSD5.FixSize("text", tc)
 	AddAttrDT("data-textsize", s)
 	AddClassDT(s)
 End Sub
 
-Sub AddBackgroundImageDT(s As String)
+Sub AddBackgroundImageDT(s As String)				'ignoredeadcode
 	AddStyleDT("background-image", $"url('${s}')"$)
 	AddStyleDT("background-size", "cover")
 	AddStyleDT("width", "100%")
@@ -1494,7 +1494,7 @@ Sub SetBackgroundImage(mElement As BANanoElement, s As String)
 	AddStyleMap(mElement, m)
 End Sub
 
-Sub AddPlacementDT(sprefix As String, sPlacement As String)
+Sub AddPlacementDT(sprefix As String, sPlacement As String)   'ignoredeadcode
 	Dim hashPos As Int = sPlacement.IndexOf("-")
 	If hashPos = -1 Then
 		AddClassDT($"${sprefix}-${sPlacement}"$)

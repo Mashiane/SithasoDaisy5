@@ -7,10 +7,9 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 10, Description: Value
-#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: , Description: Border Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: , Description: Border Color
 #DesignerProperty: Key: BorderWidth, DisplayName: Border Width, FieldType: String, DefaultValue: , Description: Border Width
 #DesignerProperty: Key: ProgressSize, DisplayName: Size, FieldType: String, DefaultValue: , Description: Progress Size
 #DesignerProperty: Key: ProgressThickness, DisplayName: Thickness, FieldType: String, DefaultValue: , Description: Progress Thickness
@@ -44,8 +43,6 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	'Public Root As SDUIElement
-	Private sBackgroundColor As String = ""
 	Private sBorderColor As String = ""
 	Private sBorderWidth As String = ""
 	Private sColor As String = "none"
@@ -126,7 +123,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -135,14 +132,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -156,7 +153,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -197,7 +194,7 @@ Sub setValue(text As String)
 End Sub
 'get value
 Sub getValue As String
-	Return UI.GetValue(mElement)
+	Return sValue
 End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -205,8 +202,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		sBorderColor = Props.GetDefault("BorderColor", "")
 		sBorderColor = modSD5.CStr(sBorderColor)
 		sBorderWidth = Props.GetDefault("BorderWidth", "")
@@ -232,10 +229,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	UI.AddClassDT("radial-progress")
 	UI.AddAttrDT("role", "progressbar")
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	If sBorderWidth <> "" Then UI.AddSizeDT("border", sBorderWidth)
-	If sColor <> "" Then UI.AddTextColorDT(sColor)
+	If sColor <> "" Then UI.AddBackgroundColorDT(sColor)
 	If sProgressSize <> "" Then UI.AddStyleDT("--size", sProgressSize)
 	If sProgressThickness <> "" Then UI.AddStyleDT("--thickness", sProgressThickness)
 	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -251,13 +247,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
-'set Background Color
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, s)
-End Sub
 'set Border Color
 Sub setBorderColor(s As String)
     sBorderColor = s
@@ -265,6 +254,7 @@ Sub setBorderColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "bordercolor", "border", s)
 End Sub
+
 'set Border Width
 Sub setBorderWidth(s As String)
    sBorderWidth = s
@@ -278,7 +268,7 @@ Sub setColor(s As String)
     sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, s)
+	If s <> "" Then UI.SetBackgroundColor(mElement, s)
 End Sub
 'set Progress Size
 Sub setProgressSize(s As String)
@@ -304,10 +294,6 @@ Sub setTextColor(s As String)
     CustProps.put("TextColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColor(mElement, s)
-End Sub
-'get Background Color
-Sub getBackgroundColor As String
-        Return sBackgroundColor
 End Sub
 'get Border Color
 Sub getBorderColor As String

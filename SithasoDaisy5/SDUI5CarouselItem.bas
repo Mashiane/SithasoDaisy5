@@ -282,7 +282,7 @@ End Sub
 
 'set Image Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
-Sub setImageRounded(s As String)
+Sub setImageRounded(s As String)				'ignoredeadcode
 	sImageRounded = s
 	CustProps.put("ImageRounded", s)
 	If mElement = Null Then Return
@@ -290,7 +290,7 @@ Sub setImageRounded(s As String)
 	If s <> "" Then UI.SetRoundedByID($"${mName}_image"$, s)
 End Sub
 'set Image Rounded Box
-Sub setImageRoundedBox(b As Boolean)
+Sub setImageRoundedBox(b As Boolean)				'ignoredeadcode
 	bImageRoundedBox = b
 	CustProps.put("ImageRoundedBox", b)
 	If mElement = Null Then Return
@@ -303,7 +303,7 @@ Sub setImageRoundedBox(b As Boolean)
 End Sub
 'set Image Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
-Sub setImageShadow(s As String)
+Sub setImageShadow(s As String)			'ignoredeadcode
 	sImageShadow = s
 	CustProps.put("ImageShadow", s)
 	If mElement = Null Then Return
@@ -325,7 +325,7 @@ End Sub
 
 
 'set Image Height
-Sub setImageHeight(s As String)
+Sub setImageHeight(s As String)			'ignoredeadcode
 	sImageHeight = s
 	CustProps.put("ImageHeight", s)
 	If mElement = Null Then Return
@@ -333,7 +333,7 @@ Sub setImageHeight(s As String)
 	If s <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
 End Sub
 'set Image Width
-Sub setImageWidth(s As String)
+Sub setImageWidth(s As String)			'ignoredeadcode
 	sImageWidth = s
 	CustProps.put("ImageWidth", s)
 	If mElement = Null Then Return
@@ -350,14 +350,14 @@ Sub getImageWidth As String
 End Sub
 
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)					'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Image
-Sub setImage(s As String)
+Sub setImage(s As String)			'ignoredeadcode
 	sImage = s
 	CustProps.put("Image", s)
 	If mElement = Null Then Return
@@ -408,7 +408,7 @@ Sub setTypeOf(s As String)
         CustProps.put("TypeOf", s)
 End Sub
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
         sWidth = s
         CustProps.put("Width", s)
         If mElement = Null Then Return

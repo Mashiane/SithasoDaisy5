@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "tabsview")
+	pgIndex.UpdateTitle("SDUI5Tabs")
 End Sub
 
 Private Sub tabs1_Change (Item As String)

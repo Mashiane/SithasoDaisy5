@@ -643,7 +643,7 @@ Sub Nullify
 End Sub
 
 
-Sub setSearchWidth(s As String)
+Sub setSearchWidth(s As String)			'ignoredeadcode
 	sSearchWidth = s
 	CustProps.Put("SearchWidth", s)
 	If mElement = Null Then Return
@@ -857,7 +857,7 @@ Sub getBadgesOutlined As Boolean
 	Return bBadgesOutlined
 End Sub
 'set Title Visible
-Sub setTitleVisible(b As Boolean)
+Sub setTitleVisible(b As Boolean)				'ignoredeadcode
 	CustProps.put("TitleVisible", b)
 	bTitleVisible = b
 	If mElement = Null Then Return
@@ -888,7 +888,7 @@ Sub setNormalCase(b As Boolean)
 	bNormalCase = b
 End Sub
 'add edit, delete, clone, upload, download and menu buttons on table
-Sub AddDesignerColums
+Sub AddDesignerColums					'ignoredeadcode
 	If mElement = Null Then Return
 	If bHasEdit Then AddColumnEdit("#418448")
 	If bHasDelete Then AddColumnDelete("#db3835")
@@ -911,7 +911,7 @@ Sub getFooterID As String
 End Sub
 
 'add a row to the table header
-Sub AddHeaderRow(rowNumber As String)
+Sub AddHeaderRow(rowNumber As String)			'ignoredeadcode
 	Dim rkey As String = $"${mName}_theadtr_${rowNumber}"$
 	Dim tHeader As BANanoElement = BANano.GetElement($"#${mName}_thead"$)
 	tHeader.append($"<tr id="${rkey}" class="tblheading"></tr>"$)
@@ -947,7 +947,7 @@ private Sub AddHeaderRowSelect(rowNumber As String, name As String)
 End Sub
 
 'clear all filters
-Sub ClearFilters
+Sub ClearFilters			'ignoredeadcode
 	For Each k As String In filterNames.Keys
 		Dim v As String = filterNames.Get(k)
 		If BANano.Exists($"#${v}"$) Then
@@ -1061,7 +1061,7 @@ Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 		rowEL.on("click", Me, "HandleColumnClick")
 	Next
 End Sub
-private Sub HandleAlphaClick(event As BANanoEvent)     'ignore
+private Sub HandleAlphaClick(event As BANanoEvent)     ''ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.ID
@@ -1076,7 +1076,7 @@ private Sub HandleAlphaClick(event As BANanoEvent)     'ignore
 	UI.Show($"${mName}_${colName}_icon"$)
 	BANano.CallSub(mCallBack, $"${mName}_AlphaClick"$, Array(colName))
 End Sub
-private Sub HandleColumnClick(event As BANanoEvent)     'ignore
+private Sub HandleColumnClick(event As BANanoEvent)     ''ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -1245,7 +1245,7 @@ Sub setFooterVisible(Status As Boolean)
 	End If
 End Sub
 
-Sub setHasSearch(b As Boolean)
+Sub setHasSearch(b As Boolean)			'ignoredeadcode
 	CustProps.Put("HasSearch", b)
 	bHasSearch = b
 	If mElement = Null Then Return
@@ -1338,7 +1338,7 @@ End Sub
 'Sub tblname_btnid (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
+Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
@@ -1354,7 +1354,7 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
 	Return btn
 End Sub
-Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)
+Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
 	btnID = modSD5.CleanID(btnID)
 	Dim col As String = modSD5.FixColor("tooltip", color)
 	Dim pos As String = modSD5.FixSize("tooltip", position)
@@ -1362,7 +1362,7 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
-Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
+Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
 	Return btn
 End Sub
@@ -1373,7 +1373,7 @@ End Sub
 'tblName.FileChangeEvent
 'End Sub
 '</code>
-Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
+Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
@@ -1402,7 +1402,7 @@ Sub AddToolbarFileUpload1(btnID As String, sIcon As String, btnColor As String, 
 	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
 	Return btn
 End Sub
-private Sub FileUploadHandler(e As BANanoEvent)
+private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	e.StopPropagation
 	Dim src As String = e.OtherField("srcElement").GetField("id").Result
@@ -1428,7 +1428,7 @@ End Sub
 'Sub tblname_btnid (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
@@ -1548,8 +1548,8 @@ Sub SetExportToCSVTooltip1(tooltip As String, color As String, position As Strin
 	CustProps.put("ExportToCsvTooltip", tooltip)
 	SetToolbarButtonToolTip("exporttocsv", tooltip, color, position)
 End Sub
-'set Has Export To Csv
-Sub setHasExportToCsv(b As Boolean)
+'set Has Export To Csv	
+Sub setHasExportToCsv(b As Boolean)			'ignoredeadcode
 	bExportToCsv = modSD5.CBool(b)
 	CustProps.put("ExportToCsv", b)
 	If b = False Then Return
@@ -1562,7 +1562,7 @@ Sub SetExportToPDFTooltip1(tooltip As String, color As String, position As Strin
 	SetToolbarButtonToolTip("exporttopdf", tooltip, color, position)
 End Sub
 'set Has Export To Pdf
-Sub setHasExportToPdf(b As Boolean)
+Sub setHasExportToPdf(b As Boolean)			'ignoredeadcode
 	bExportToPdf = b
 	CustProps.Put("ExportToPdf", b)
 	If b = False Then Return
@@ -1575,7 +1575,7 @@ Sub SetExportToXLSTooltip1(tooltip As String, color As String, position As Strin
 	SetToolbarButtonToolTip("exporttoxls", tooltip, color, position)
 End Sub
 'set Has Export To Xls
-Sub setHasExportToXls(b As Boolean)
+Sub setHasExportToXls(b As Boolean)				'ignoredeadcode
 	CustProps.Put("ExportToXls", b)
 	bExportToXls = b
 	If b = False Then Return
@@ -1587,7 +1587,7 @@ Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("AddNewTooltip", tooltip)
 	SetToolbarButtonToolTip("add", tooltip, color, position)
 End Sub
-Sub setHasAddNew(b As Boolean)
+Sub setHasAddNew(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasAddnew", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1600,7 +1600,7 @@ Sub setGridTooltip(s As String)
 	CustProps.put("GridTooltip", s)
 End Sub
 'set Has Grid
-Sub setHasGrid(b As Boolean)
+Sub setHasGrid(b As Boolean)		'ignoredeadcode
 	bHasGrid = b
 	CustProps.put("HasGrid", b)
 	If b = False Then Return
@@ -1623,7 +1623,7 @@ Sub SetSaveSingleTooltip1(tooltip As String, color As String, position As String
 	CustProps.put("SaveSingleTooltip", tooltip)
 	SetToolbarButtonToolTip("savesingle", tooltip, color, position)
 End Sub
-Sub setHasSaveSingle(b As Boolean)
+Sub setHasSaveSingle(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasSaveSingle", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1634,7 +1634,7 @@ Sub SetDeleteSingleTooltip1(tooltip As String, color As String, position As Stri
 	CustProps.put("DeleteSingleTooltip", tooltip)
 	SetToolbarButtonToolTip("deletesingle", tooltip, color, position)
 End Sub
-Sub setHasDeleteSingle(b As Boolean)
+Sub setHasDeleteSingle(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasDeleteSingle", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1645,7 +1645,7 @@ Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteAllTooltip", tooltip)
 	SetToolbarButtonToolTip("deleteall", tooltip, color, position)
 End Sub
-Sub setHasDeleteAll(b As Boolean)
+Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasDeleteAll", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1659,7 +1659,7 @@ Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As Str
 	CustProps.put("UploadToolbarTooltip", tooltip)
 	SetToolbarButtonToolTip("uploadtoolbar", tooltip, color, position)
 End Sub
-Sub setHasToolbarUpload(b As Boolean)
+Sub setHasToolbarUpload(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasToolbarUpload", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1682,7 +1682,7 @@ Sub SetBackTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("BackTooltip", tooltip)
 	SetToolbarButtonToolTip("back", tooltip, color, position)
 End Sub
-Sub setHasBack(b As Boolean)
+Sub setHasBack(b As Boolean)				'ignoredeadcode
 	bHasBack = b
 	CustProps.put("HasBack", b)
 	If b = False Then Return
@@ -1706,7 +1706,7 @@ Sub SetRefreshTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("RefreshTooltip", tooltip)
 	SetToolbarButtonToolTip("refresh", tooltip, color, position)
 End Sub
-Sub setHasRefresh(b As Boolean)
+Sub setHasRefresh(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasRefresh", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1883,7 +1883,7 @@ End Sub
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
 	UI.SetTextColorByID($"#${mName}_${btn}_badge"$, value)
 End Sub
-Sub SetToolbarButtonTextColor(btn As String, value As String)
+Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
 	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
 End Sub
 'change the visibility of a button
@@ -2031,7 +2031,7 @@ Sub SetNextPageTooltip(tooltip As String, color As String, position As String)
 End Sub
 
 'the table has pagination
-Sub setPagination(b As Boolean)
+Sub setPagination(b As Boolean)				'ignoredeadcode
 	CustProps.put("Pagination", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -2080,12 +2080,12 @@ Sub ClearHeadings
 	Columns.Initialize
 End Sub
 
-Sub ClearFooter
+Sub ClearFooter			'ignoredeadcode
 	UI.ClearByID($"${mName}_footr"$)
 End Sub
 
 'clear the visible rows
-Sub ClearRows
+Sub ClearRows			'ignoredeadcode
 	Rows.Initialize
 	DPValue.Initialize
 	datepickers.Initialize
@@ -2097,7 +2097,7 @@ Sub ClearRows
 End Sub
 
 'add the select all column
-Sub AddColumnSelectAll
+Sub AddColumnSelectAll			'ignoredeadcode
 	bSelectAll = True
 	Dim name As String = "selectall"
 	Dim nc As TableColumn = NewColumn
@@ -2123,7 +2123,7 @@ Sub setSingleRowSelect(b As Boolean)
 	End If
 End Sub
 'we use this to get the id of the clicked item
-private Sub HandleSelectAll(event As BANanoEvent)		'ignore
+private Sub HandleSelectAll(event As BANanoEvent)		'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src <> "" Then
@@ -2306,7 +2306,7 @@ Sub AddColumnPlaceHolder(name As String, title As String)
 	Columns.Put(name, nc)
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 End Sub
-private Sub HandleHeaderClick(event As BANanoEvent)     'ignore
+private Sub HandleHeaderClick(event As BANanoEvent)     'ignoredeadcode
 	'#Event: HeaderClick (HeaderName As String, Asc As Boolean)
 	event.StopPropagation
 	event.PreventDefault
@@ -2363,7 +2363,7 @@ Sub SetColumnVisible(colName As String, Status As Boolean)
 	Next
 End Sub
 
-Sub setHasFilter(b As Boolean)
+Sub setHasFilter(b As Boolean)			'ignoredeadcode
 	bHasFilter = b
 	CustProps.Put("HasFilter", b)
 	If b = False Then Return
@@ -4698,7 +4698,7 @@ Sub Find(sfind As String)
 	PageResume
 End Sub
 
-Sub ShowPreviousPage(event As BANanoEvent)
+Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 	event.PreventDefault
 	Try
 		'setNextPageDisabled(True)
@@ -4727,7 +4727,7 @@ Sub ShowPreviousPage(event As BANanoEvent)
 		Log($"ShowPreviousPage: "$ &  LastException)
 	End Try
 End Sub
-Sub ShowNextPage(event As BANanoEvent)
+Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 	event.PreventDefault
 	Try
 		'setNextPageDisabled(True)
@@ -4793,7 +4793,7 @@ Sub setLowerCase(b As Boolean)
 	Return
 End Sub
 'set the items for the table without pagination
-Sub SetItems(xitems As List)
+Sub SetItems(xitems As List)			'ignoreDeadCode
 	If bLowerCase Then
 		BANano.Await(modSD5.ListOfMapsKeysToLowerCase(xitems))
 	End If
@@ -7984,7 +7984,7 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
 	'*****************
 	Return act
 End Sub
-private Sub HandleRowClick(event As BANanoEvent)     'ignore
+private Sub HandleRowClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
@@ -7998,7 +7998,7 @@ private Sub HandleRowClick(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_rowclick", Array(rowpos, rowc))
 	End If
 End Sub
-private Sub HandleMenuRow(event As BANanoEvent)     'ignore
+private Sub HandleMenuRow(event As BANanoEvent)     'ignoredeadcode
 	'menus.Put($"${mName}_${RowCnt}_${fldName}_${k}_li"$, "")
 	event.StopPropagation
 	event.PreventDefault
@@ -8015,7 +8015,7 @@ private Sub HandleMenuRow(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_menuitemrow", Array(rowpos, action, rowc))
 	End If
 End Sub
-private Sub HandleSelection(event As BANanoEvent)     'ignore
+private Sub HandleSelection(event As BANanoEvent)     'ignoredeadcode
 	'#Event: SelectRow (Status as boolean, Row As Int, item As Map)
 	'selection.Put($"${mName}_${RowCnt}_selectall"$, "")
 	event.StopPropagation
@@ -8033,7 +8033,7 @@ private Sub HandleSelection(event As BANanoEvent)     'ignore
 	End If
 End Sub
 'we use this to get the id of the clicked item
-private Sub HandleChange(event As BANanoEvent)     'ignore
+private Sub HandleChange(event As BANanoEvent)     'ignoredeadcode
 	'#Event: Checked (Checked As Boolean, Column As String, item As Map)
 	event.StopPropagation
 	event.PreventDefault
@@ -8057,7 +8057,7 @@ private Sub HandleChange(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, b, action, rowc))
 	End If
 End Sub
-private Sub HandleChangeS(event As BANanoEvent)     'ignore
+private Sub HandleChangeS(event As BANanoEvent)     'ignoredeadcode
 	'#Event: Checked (Checked As Boolean, Column As String, item As Map)
 	event.StopPropagation
 	event.PreventDefault
@@ -8079,7 +8079,7 @@ private Sub HandleChangeS(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, value, action, rowc))
 	End If
 End Sub
-private Sub HandleChangeR(event As BANanoEvent)     'ignore
+private Sub HandleChangeR(event As BANanoEvent)     'ignoredeadcode
 	'#Event: Checked (Checked As Boolean, Column As String, item As Map)
 	event.StopPropagation
 	event.PreventDefault
@@ -8102,7 +8102,7 @@ private Sub HandleChangeR(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, value, action, rowc))
 	End If
 End Sub
-private Sub HandleChangeV(event As BANanoEvent)     'ignore
+private Sub HandleChangeV(event As BANanoEvent)     'ignoredeadcode
 	'#Event: Checked (Checked As Boolean, Column As String, item As Map)
 	event.StopPropagation
 	event.PreventDefault
@@ -8128,7 +8128,7 @@ private Sub HandleChangeV(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, b, action, rowc))
 	End If
 End Sub
-private Sub HandleChangeF(event As BANanoEvent)     'ignore
+private Sub HandleChangeF(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8155,7 +8155,7 @@ private Sub HandleChangeF(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, filex, action, rowc))
 	End If
 End Sub
-private Sub Decrement(event As BANanoEvent)     'ignore
+private Sub Decrement(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8189,7 +8189,7 @@ private Sub Decrement(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, nxtvalue, action, rowc))
 	End If
 End Sub
-private Sub Increment(event As BANanoEvent)     'ignore
+private Sub Increment(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8222,7 +8222,7 @@ private Sub Increment(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, nxtvalue, action, rowc))
 	End If
 End Sub
-private Sub PrependClick(event As BANanoEvent)     'ignore
+private Sub PrependClick(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8238,7 +8238,7 @@ private Sub PrependClick(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_PrependClick", Array(rowpos, action, rowc))
 	End If
 End Sub
-private Sub AppendClick(event As BANanoEvent)     'ignore
+private Sub AppendClick(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8254,7 +8254,7 @@ private Sub AppendClick(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, mName & "_AppendClick", Array(rowpos, action, rowc))
 	End If
 End Sub
-private Sub PasswordPrepend(event As BANanoEvent)     'ignore
+private Sub PasswordPrepend(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8384,7 +8384,7 @@ private Sub PasswordAppend(event As BANanoEvent)     'ignore
 '	End If
 End Sub
 'we use this to get the id of the clicked item
-private Sub HandleClick(event As BANanoEvent)     'ignore
+private Sub HandleClick(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
@@ -8406,7 +8406,7 @@ private Sub HandleClick(event As BANanoEvent)     'ignore
 		BANano.CallSub(mCallBack, ename, Array(rowpos, rowc))
 	End If
 End Sub
-private Sub HandleFileClick(event As BANanoEvent)     'ignore
+private Sub HandleFileClick(event As BANanoEvent)     'ignoredeadcode
 	'fchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 	event.StopPropagation
 	event.PreventDefault
@@ -8640,7 +8640,7 @@ Sub LoadComponentJson(designName As String)
 End Sub
 
 'size constants
-Sub setSearchSize(s As String)
+Sub setSearchSize(s As String)			'ignoredeadcode
 	sSearchSize = s
 	CustProps.put("SearchSize", s)
 	If s = "none" Then Return
@@ -9921,7 +9921,7 @@ Sub setPdfTheme(s As String)
 End Sub
 '
 'set Is Compact
-Sub setIsCompact(b As Boolean)
+Sub setIsCompact(b As Boolean)			'ignoredeadcode
 	bIsCompact = modSD5.CBool(b)
 	CustProps.put("IsCompact", b)
 	If mElement = Null Then Return
@@ -9933,7 +9933,7 @@ Sub setIsCompact(b As Boolean)
 End Sub
 '
 'set Is Normal
-Sub setIsNormal(b As Boolean)
+Sub setIsNormal(b As Boolean)			'ignoredeadcode
 	bIsNormal = modSD5.CBool(b)
 	CustProps.put("IsNormal", b)
 	If mElement = Null Then Return
@@ -9945,7 +9945,7 @@ Sub setIsNormal(b As Boolean)
 End Sub
 
 'set Is Zebra
-Sub setIsZebra(b As Boolean)
+Sub setIsZebra(b As Boolean)				'ignoredeadcode
 	bIsZebra = modSD5.CBool(b)
 	CustProps.put("IsZebra", b)
 	If mElement = Null Then Return
@@ -10204,7 +10204,7 @@ Sub setExportToPdf(b As Boolean)
 	CustProps.put("ExportToPdf", b)
 End Sub
 
-Sub setFlexWrapActions(b As Boolean)
+Sub setFlexWrapActions(b As Boolean)			'ignoredeadcode
 	bFlexWrapActions = b
 	CustProps.put("FlexWrapActions", b)
 	If mElement = Null Then Return

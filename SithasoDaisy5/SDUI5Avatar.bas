@@ -350,14 +350,14 @@ End Sub
 
 'set Badge Size
 'options: lg|md|none|sm|xl|xs
-Sub setBadgeSize(s As String)
+Sub setBadgeSize(s As String)			'ignoredeadcode
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 End Sub
 'set Badge Visible
-Sub setBadgeVisible(b As Boolean)
+Sub setBadgeVisible(b As Boolean)		'ignoredeadcode
 	bBadgeVisible = b
 	CustProps.put("BadgeVisible", b)
 	If mElement = Null Then Return
@@ -379,14 +379,14 @@ Sub getBadgeVisible As Boolean
 End Sub
 
 'set Badge
-Sub setBadge(s As String)
+Sub setBadge(s As String)				'ignoredeadcode
 	sBadge = s
 	CustProps.put("Badge", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_badge"$, sBadge)
 End Sub
 'set Badge Color
-Sub setBadgeColor(s As String)
+Sub setBadgeColor(s As String)			'ignoredeadcode
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
@@ -395,7 +395,7 @@ Sub setBadgeColor(s As String)
 End Sub
 'set Badge Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-Sub setBadgePosition(s As String)
+Sub setBadgePosition(s As String)				'ignoredeadcode
 	sBadgePosition = s
 	CustProps.put("BadgePosition", s)
 	If mElement = Null Then Return
@@ -419,7 +419,7 @@ Sub getBadgePosition As String
 End Sub
 
 'set Text Size
-Sub setTextSize(s As String)
+Sub setTextSize(s As String)			'ignoredeadcode
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
@@ -438,14 +438,14 @@ Sub setAvatarType(s As String)
 	CustProps.put("AvatarType", s)
 End Sub
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)			'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_host"$, s)
 End Sub
 'set Size
-Sub setSize(s As String)
+Sub setSize(s As String)			'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -463,7 +463,7 @@ Sub setImage(s As String)
 End Sub
 'set Mask
 'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
-Sub setMask(s As String)
+Sub setMask(s As String)			'ignoredeadcode
 	sMask = s
 	CustProps.put("Mask", s)
 	If mElement = Null Then Return
@@ -471,7 +471,7 @@ Sub setMask(s As String)
 	UI.SetMaskByID($"${mName}_host"$, s)
 End Sub
 'set Online
-Sub setOnline(b As Boolean)
+Sub setOnline(b As Boolean)				'ignoredeadcode
 	bOnline = b
 	CustProps.put("Online", b)
 	If mElement = Null Then Return
@@ -508,7 +508,7 @@ Sub setPlaceholder(s As String)
 	UI.SetTextByID($"${mName}_text"$, s)
 End Sub
 'set Ring
-Sub setRing(b As Boolean)
+Sub setRing(b As Boolean)				'ignoredeadcode
 	bRing = b
 	CustProps.put("Ring", b)
 	If mElement = Null Then Return
@@ -519,7 +519,7 @@ Sub setRing(b As Boolean)
 	End If
 End Sub
 'set Ring Color
-Sub setRingColor(s As String)
+Sub setRingColor(s As String)				'ignoredeadcode
 	sRingColor = s
 	CustProps.put("RingColor", s)
 	If mElement = Null Then Return
@@ -527,7 +527,7 @@ Sub setRingColor(s As String)
 	If s <> "" Then UI.SetRingColorByID($"${mName}_host"$,  s)
 End Sub
 'set Ring Offset
-Sub setRingOffset(s As String)
+Sub setRingOffset(s As String)			'ignoredeadcode
 	sRingOffset = s
 	CustProps.put("RingOffset", s)
 	If mElement = Null Then Return
@@ -536,7 +536,7 @@ Sub setRingOffset(s As String)
 	If s <> "" Then UI.UpdateClassByID($"${mName}_host"$, "ringoffset", xoffset)
 End Sub
 'set Ring Offset Color
-Sub setRingOffsetColor(s As String)
+Sub setRingOffsetColor(s As String)			'ignoredeadcode
 	sRingOffsetColor = s
 	CustProps.put("RingOffsetColor", s)
 	If mElement = Null Then Return
@@ -546,7 +546,7 @@ Sub setRingOffsetColor(s As String)
 End Sub
 
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return

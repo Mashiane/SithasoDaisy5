@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "selectview")
+	pgIndex.UpdateTitle("SDUI5Select")
 End Sub
 
 Private Sub SDUI5Select1_Change (Value As String)

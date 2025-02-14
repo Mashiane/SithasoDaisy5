@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "accordionview")
+	pgIndex.UpdateTitle("SDUI5Accordion")
 End Sub
 
 Private Sub acc1_Change (Item As String)

@@ -306,7 +306,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
 
-private Sub itemchange(e As BANanoEvent)
+private Sub itemchange(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sParentID}_change"$, Array(itemName))
@@ -314,7 +314,7 @@ End Sub
 
 
 'set Group Name
-Sub setGroupName(s As String)
+Sub setGroupName(s As String)			'ignoredeadcode
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
@@ -327,7 +327,7 @@ Sub getGroupName As String
 End Sub
 
 'set Active
-Sub setActive(b As Boolean)
+Sub setActive(b As Boolean)		'ignoredeadcode
 	bActive = b
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
@@ -354,14 +354,14 @@ Sub setBorderColor(s As String)
 	If s <> "" Then UI.SetColor(mElement, "bordercolor", "border", s)
 End Sub
 'set Content Background Color
-Sub setContentBackgroundColor(s As String)
+Sub setContentBackgroundColor(s As String)			'ignoredeadcode
 	sContentBackgroundColor = s
 	CustProps.put("ContentBackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_content"$, s)
 End Sub
 'set Content Text Color
-Sub setContentTextColor(s As String)
+Sub setContentTextColor(s As String)				'ignoredeadcode
 	sContentTextColor = s
 	CustProps.put("ContentTextColor", s)
 	If mElement = Null Then Return
@@ -369,14 +369,14 @@ Sub setContentTextColor(s As String)
 End Sub
 'set Content Text Size
 'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl
-Sub setContentTextSize(s As String)
+Sub setContentTextSize(s As String)			'ignoredeadcode
 	sContentTextSize = s
 	CustProps.put("ContentTextSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextSizeByID($"${mName}_content"$, s)
 End Sub
 'set Join Item
-Sub setJoinItem(b As Boolean)
+Sub setJoinItem(b As Boolean)			'ignoredeadcode
 	bJoinItem = b
 	CustProps.put("JoinItem", b)
 	If mElement = Null Then Return
@@ -440,14 +440,14 @@ Sub setTitle(s As String)
 	UI.SetTextByID($"${mName}_title"$, s)
 End Sub
 'set Title Background Color
-Sub setTitleBackgroundColor(s As String)
+Sub setTitleBackgroundColor(s As String)			'ignoredeadcode
 	sTitleBackgroundColor = s
 	CustProps.put("TitleBackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_title"$, s)
 End Sub
 'set Title Text Color
-Sub setTitleTextColor(s As String)
+Sub setTitleTextColor(s As String)				'ignoredeadcode
 	sTitleTextColor = s
 	CustProps.put("TitleTextColor", s)
 	If mElement = Null Then Return

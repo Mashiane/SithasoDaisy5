@@ -14,4 +14,5 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "fieldsetview")
+	pgIndex.UpdateTitle("SDUI5FieldSet")
 End Sub

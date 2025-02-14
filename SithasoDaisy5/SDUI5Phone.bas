@@ -259,12 +259,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Artboard
-Sub setArtboard(i As Int)
+Sub setArtboard(i As Int)			'ignoredeadcode
 	iArtboard = i
 	CustProps.put("Artboard", i)
 	If mElement = Null Then Return
 	Select Case bHorizontal
 	Case False
+		UI.RemoveClassByID($"${mName}_camera"$, "relative rotate-90 left-0 top-[40%]")
 		Select Case i
 		Case 1
 			setWidth("320px")
@@ -286,6 +287,7 @@ Sub setArtboard(i As Int)
 			setHeight("1024px")
 		End Select
 	Case Else
+		UI.AddClassByID($"${mName}_camera"$, "relative rotate-90 left-0 top-[40%]")
 		Select Case i
 		Case 1
 			setWidth("568px")

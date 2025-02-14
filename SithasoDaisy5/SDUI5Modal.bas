@@ -419,7 +419,7 @@ Sub getHtml As String
 	Return sRawHtml
 End Sub
 
-private Sub AddYesButton
+private Sub AddYesButton				'ignoredeadcode
 	Dim yName As String = $"${mName}_yes"$
 	YesButton.Initialize(mCallBack, yName, yName)
 	YesButton.ParentID = $"${mName}_action"$
@@ -432,7 +432,7 @@ private Sub AddYesButton
 	UI.OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
 End Sub
 
-private Sub AddNoButton
+private Sub AddNoButton			'ignoredeadcode
 	Dim nName As String = $"${mName}_no"$
 	NoButton.Initialize(mCallBack, nName, nName)
 	NoButton.ParentID = $"${mName}_action"$
@@ -445,7 +445,7 @@ private Sub AddNoButton
 	UI.OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
 End Sub
 
-private Sub AddCancelButton
+private Sub AddCancelButton				'ignoredeadcode
 	Dim cName As String = $"${mName}_cancel"$
 	CancelButton.Initialize(mCallBack, cName, cName)
 	CancelButton.ParentID = $"${mName}_action"$
@@ -460,14 +460,14 @@ End Sub
 
 
 'set Actions Visible
-Sub setActionsVisible(b As Boolean)
+Sub setActionsVisible(b As Boolean)			'ignoredeadcode
 	bActionsVisible = b
 	CustProps.put("ActionsVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_action"$, b)
 End Sub
 'set Backdrop
-Sub setBackdrop(b As Boolean)
+Sub setBackdrop(b As Boolean)			'ignoredeadcode
 	bBackdrop = b
 	CustProps.put("Backdrop", b)
 	If mElement = Null Then Return
@@ -476,7 +476,7 @@ Sub setBackdrop(b As Boolean)
 	End If
 End Sub
 'set Closable
-Sub setClosable(b As Boolean)
+Sub setClosable(b As Boolean)			'ignoredeadcode
 	bClosable = b
 	CustProps.put("Closable", b)
 	If mElement = Null Then Return
@@ -496,7 +496,7 @@ Sub setGlass(b As Boolean)
 '	End If
 End Sub
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -519,28 +519,28 @@ Sub setMDMoveFrom(s As String)
 	If s <> "" Then UI.AddClass(mElement, "md:modal-" & s)
 End Sub
 'set Max Height
-Sub setMaxHeight(s As String)
+Sub setMaxHeight(s As String)				'ignoredeadcode
 	sMaxHeight = s
 	CustProps.put("MaxHeight", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMaxHeightByID($"${mName}_box"$, s)
 End Sub
 'set Max Width
-Sub setMaxWidth(s As String)
+Sub setMaxWidth(s As String)				'ignoredeadcode
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMaxWidthByID($"${mName}_box"$, s)
 End Sub
 'set Min Height
-Sub setMinHeight(s As String)
+Sub setMinHeight(s As String)		'ignoredeadcode
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMinHeightByID($"${mName}_box"$, s)
 End Sub
 'set Min Width
-Sub setMinWidth(s As String)
+Sub setMinWidth(s As String)				'ignoredeadcode
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return
@@ -574,14 +574,14 @@ Sub setSMMoveFrom(s As String)
 	If s <> "" Then UI.AddClass(mElement, "sm:modal-" & s)
 End Sub
 'set Title
-Sub setTitle(s As String)
+Sub setTitle(s As String)					'ignoredeadcode
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_title"$, s)
 End Sub
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return

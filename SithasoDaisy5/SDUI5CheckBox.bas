@@ -118,7 +118,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -304,7 +304,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
 	Dim xChecked As Boolean = mElement.GetChecked
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
@@ -321,7 +321,7 @@ Sub getCheckBoxType As String
 End Sub
 
 'set Checked Mark Color
-Sub setCheckedMarkColor(s As String)
+Sub setCheckedMarkColor(s As String)			'ignoredeadcode
 	sCheckedMarkColor = s
 	CustProps.put("CheckedMarkColor", s)
 	If mElement = Null Then Return
@@ -333,14 +333,14 @@ Sub getCheckedMarkColor As String
 End Sub
 
 'set Checked
-Sub setChecked(b As Boolean)
+Sub setChecked(b As Boolean)			'ignoredeadcode
 	bChecked = b
 	CustProps.put("Checked", b)
 	If mElement = Null Then Return
 	mElement.SetChecked(b)
 End Sub
 'set Checked Color
-Sub setCheckedColor(s As String)
+Sub setCheckedColor(s As String)				'ignoredeadcode
 	sCheckedColor = s
 	CustProps.put("CheckedColor", s)
 	If mElement = Null Then Return
@@ -348,7 +348,7 @@ Sub setCheckedColor(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -363,7 +363,7 @@ Sub setHint(s As String)
 	UI.SetTextByID($"${mName}_hint"$, s)
 End Sub
 'set Indeterminate
-Sub setIndeterminate(b As Boolean)
+Sub setIndeterminate(b As Boolean)				'ignoredeadcode
 	bIndeterminate = b
 	CustProps.put("Indeterminate", b)
 	If mElement = Null Then Return
@@ -388,7 +388,7 @@ Sub setLegend(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)			'ignoredeadcode
 	bRequired = b
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
@@ -400,7 +400,7 @@ Sub setRequired(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return

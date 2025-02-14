@@ -5,7 +5,10 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Items _content|_side, Description: Child Item _content|_side
+
+#Event: Opened (Status As Boolean)
+
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Items _content|_side|_sidecontent, Description: Child Item _content|_side|_sidecontent
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: SmOpen, DisplayName: SM Open, FieldType: Boolean, DefaultValue: False, Description: Sm Open
@@ -13,6 +16,8 @@ Version=10
 #DesignerProperty: Key: LgOpen, DisplayName: LG Open, FieldType: Boolean, DefaultValue: False, Description: Lg Open
 #DesignerProperty: Key: XlOpen, DisplayName: XL Open, FieldType: Boolean, DefaultValue: False, Description: Xl Open
 #DesignerProperty: Key: Overlay, DisplayName: Overlay, FieldType: Boolean, DefaultValue: True, Description: Overlay
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 80, Description: Width
 #DesignerProperty: Key: RightSide, DisplayName: Right Side, FieldType: Boolean, DefaultValue: False, Description: Right Side
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -51,6 +56,8 @@ Sub Class_Globals
 	Private bRightSide As Boolean = False
 	Private bSmOpen As Boolean = False
 	Private bXlOpen As Boolean = False
+	Private sBackgroundColor As String = "base-200"
+	Private sWidth As String = "80"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -198,7 +205,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -216,9 +223,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bSmOpen = modSD5.CBool(bSmOpen)
 		bXlOpen = Props.GetDefault("XlOpen", False)
 		bXlOpen = modSD5.CBool(bXlOpen)
+		sWidth = Props.GetDefault("Width", "80")
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	UI.AddClassDT("drawer bg-base-100")
+	UI.AddClassDT("drawer")
 	If bLgOpen Then UI.AddClassDT("lg:drawer-open")
 	If bMdOpen Then UI.AddClassDT("md:drawer-open")
 	If bOpen Then UI.AddClassDT("drawer-open")
@@ -241,9 +250,45 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}_content" class="drawer-content flex flex-col"></div>
 		<div id="${mName}_side" class="drawer-side z-50">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
+			<div id="${mName}_sidecontent" class="min-h-full"></div>
 		</div>
 	</div>"$).Get("#" & mName)
 	setOverlay(bOverlay)
+	setBackgroundColor(sBackgroundColor)
+	setWidth(sWidth)
+	UI.OnEventByID($"${mName}_toggle"$, "change", Me, "DrawerToggle")
+End Sub
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.SetBackgroundColor(mElement, sBackgroundColor)
+		UI.SetBackgroundColorByID($"${mName}_sidecontent"$, sBackgroundColor)
+	End If
+End Sub
+
+'set Width
+Sub setWidth(s As String)			'ignoredeadcode
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidthByID($"${mName}_sidecontent"$, sWidth)
+End Sub
+
+Sub getWidth As String
+	Return sWidth
+End Sub
+
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+
+private Sub DrawerToggle(e As BANanoEvent)			'ignoredeadcode
+	Dim bChecked As Boolean = UI.GetCheckedByID($"${mName}_toggle"$)
+	BANano.CallSub(mCallBack, $"${mName}_Opened"$, Array(bChecked))
 End Sub
 
 'set Lg Open
@@ -257,6 +302,7 @@ Sub setLgOpen(b As Boolean)
 		UI.RemoveClass(mElement, "lg:drawer-open")
 	End If
 End Sub
+
 'set Md Open
 Sub setMdOpen(b As Boolean)
 	bMdOpen = b
@@ -280,7 +326,7 @@ Sub setOpen(b As Boolean)
 	End If
 End Sub
 'set Overlay
-Sub setOverlay(b As Boolean)
+Sub setOverlay(b As Boolean)		'ignoredeadcode
 	bOverlay = b
 	CustProps.put("Overlay", b)
 	If mElement = Null Then Return

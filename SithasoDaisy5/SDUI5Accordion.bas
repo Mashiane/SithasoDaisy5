@@ -256,7 +256,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setActive(sActive)
 End Sub
 
-Sub setOptions(s As String)
+Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.Put("RawOptions", s)
 	If mElement = Null Then Return
@@ -290,7 +290,7 @@ Sub AddItem(sKey As String, sText As String)
 End Sub
 
 'set Active
-Sub setActive(item As String)
+Sub setActive(item As String)			'ignoredeadcode
 	sActive = item
 	item = modSD5.CleanID(item)
 	CustProps.put("Active", item)
@@ -305,7 +305,7 @@ Sub getActive As String
 	Return sActive
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	UI.Clear(mElement)
 	items.Initialize

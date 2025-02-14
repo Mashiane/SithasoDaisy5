@@ -14,4 +14,5 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "codeview")
+	pgIndex.UpdateTitle("SDUI5Code")
 End Sub

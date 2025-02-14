@@ -356,7 +356,7 @@ Sub setDeActivatedColor(s As String)
 End Sub
 'set Direction
 'options: horizontal|vertical
-Sub setDirection(s As String)
+Sub setDirection(s As String)			'ignoredeadcode
 	sDirection = s
 	CustProps.put("Direction", s)
 	If mElement = Null Then Return
@@ -376,7 +376,7 @@ Sub setInActiveDates(s As String)
 End Sub
 
 'set Initial Selected Date
-Sub setInitialSelectedDate(s As String)
+Sub setInitialSelectedDate(s As String)			'ignoredeadcode
 	sInitialSelectedDate = s
 	CustProps.put("InitialSelectedDate", s)
 	If mElement = Null Then Return
@@ -427,7 +427,7 @@ Sub setInitialSelectedDate(s As String)
 	Next
 End Sub
 
-private Sub MarkSelected(selectedDate As String)
+private Sub MarkSelected(selectedDate As String)			'ignoredeadcode
 	For Each sdate As String In dates.Keys
 		If sdate = selectedDate Then
 			UI.SetBackgroundColorByID($"item_${sdate}"$, sSelectionColor)
@@ -437,7 +437,7 @@ private Sub MarkSelected(selectedDate As String)
 	Next
 End Sub
 
-private Sub dateselected(e As BANanoEvent)
+private Sub dateselected(e As BANanoEvent)					'ignoredeadcode
 	e.PreventDefault
 	Dim xitem As String = modSD5.MvField(e.ID, 2, "_")
 	BANano.Await(UI.EnsureVisible($"item_${xitem}"$))

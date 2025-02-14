@@ -17,6 +17,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "tableview")
+	pgIndex.UpdateTitle("SDUI5Table")
 	'
 	Items.Initialize
 	Items.Add(CreateMap("hours":4, "on":True, "id":1, "rate":2, "email":"user1@gmail.com", "link":"https://tailwindcomponents.com/", "progress":10, "active":False, "name":"Cy Ganderton", "job":"Quality Control Specialist", "color":"Error", "avatar":"./assets/face1.jpg", "country":"USA", "clicklink":56, "sm": "fa-brands fa-twitter","dob":"1999-04-20", "tob":"20:04", "dod":"2004-04-20", "doo":"2004-04-20 10:04"))

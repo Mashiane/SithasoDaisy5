@@ -255,7 +255,7 @@ Sub setDataContent(s As String)
 	If s <> "" Then UI.SetAttr(mElement, "data-content", s)
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return

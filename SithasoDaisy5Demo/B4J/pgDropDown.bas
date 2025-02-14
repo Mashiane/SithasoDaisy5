@@ -16,6 +16,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "dropdownview")
+	pgIndex.UpdateTitle("SDUI5DropDown")
 End Sub
 
 Private Sub dd2menu_ItemClick (item As String)

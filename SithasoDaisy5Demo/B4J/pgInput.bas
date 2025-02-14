@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "inputview")
+	pgIndex.UpdateTitle("SDUI5TextBox")
 End Sub
 
 Private Sub SDUI5TextBox1_Append (e As BANanoEvent)

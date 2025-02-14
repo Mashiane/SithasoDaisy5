@@ -125,7 +125,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -317,7 +317,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -329,7 +329,7 @@ Sub getWidth As String
 End Sub
 
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -351,7 +351,7 @@ Sub getRangeType As String
 End Sub
 
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	Dim cvalue As Int = modSD5.CInt(mElement.getvalue)
 	iValue = cvalue
@@ -399,7 +399,7 @@ Sub SetTooltipVisible(b As Boolean)
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)				'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
@@ -409,7 +409,7 @@ Sub setBackgroundColor(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -430,7 +430,7 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Max Value
-Sub setMaxValue(s As Int)
+Sub setMaxValue(s As Int)			'ignoredeadcode
 	iMaxValue = s
 	CustProps.put("MaxValue", s)
 	If mElement = Null Then Return
@@ -449,7 +449,7 @@ Sub setMeasure(b As Boolean)
 '	End If
 End Sub
 'set Min Value
-Sub setMinValue(s As Int)
+Sub setMinValue(s As Int)				'ignoredeadcode
 	iMinValue = s
 	CustProps.put("MinValue", s)
 	If mElement = Null Then Return
@@ -458,7 +458,7 @@ Sub setMinValue(s As Int)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)			'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -466,7 +466,7 @@ Sub setSize(s As String)
 	UI.SetSize(mElement, "size", "range", sSize)
 End Sub
 'set Step Value
-Sub setStepValue(s As Int)
+Sub setStepValue(s As Int)			'ignoredeadcode
 	iStepValue = s
 	CustProps.put("StepValue", s)
 	If mElement = Null Then Return
@@ -487,7 +487,7 @@ Sub setThumbColor(s As String)
 '	If s <> "" Then UI.AddClass(mElement, "thumb-color-" & s)
 End Sub
 'set Value
-Sub setValue(s As Int)
+Sub setValue(s As Int)				'ignoredeadcode
 	iValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return

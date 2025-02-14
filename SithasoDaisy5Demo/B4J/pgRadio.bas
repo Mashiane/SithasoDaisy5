@@ -17,6 +17,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "radioview")
+	pgIndex.UpdateTitle("SDUI5RadioGroup")
 End Sub
 
 Private Sub SDUI5RadioGroup3_Change (Value As String)

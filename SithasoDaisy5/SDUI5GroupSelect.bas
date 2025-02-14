@@ -297,7 +297,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setSelected(sSelected))
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	UI.ClearByID($"${mName}_content"$)
 	items.Initialize 
@@ -373,7 +373,7 @@ Sub SetItemsChips(titems As Map)
 End Sub
 
 'set Raw Options
-Sub setOptions(s As String)
+Sub setOptions(s As String)				'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -434,7 +434,7 @@ Sub AddItem(k As String, v As String)
 	UI.OnEventByID(nk, "change", Me, "changed")
 End Sub
 
-private Sub changed(e As BANanoEvent)		'ignore
+private Sub changed(e As BANanoEvent)		'ignoredeadcode
 	Dim nselected As String = getSelected
 	BANano.CallSub(mCallBack, $"${mName}_changed"$, Array(nselected))
 End Sub
@@ -452,7 +452,7 @@ Sub setRoundedBox(b As Boolean)
 End Sub
 
 'set Selected
-Sub setSelected(s As String)
+Sub setSelected(s As String)					'ignoredeadcode
 	sSelected = s
 	CustProps.put("Selected", s)
 	If mElement = Null Then Return

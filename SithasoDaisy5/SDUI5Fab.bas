@@ -262,14 +262,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setToastPlacement(sToastPlacement)
 End Sub
 
-Sub Clear
+Sub Clear		'ignoredeadcode
 	If mElement = Null Then Return
 	UI.ClearByID($"${mName}_content"$)
 End Sub
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -277,7 +277,7 @@ Sub setColor(s As String)
 End Sub
 'set Dropdown Placement
 'options: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
-Sub setDropdownPlacement(s As String)
+Sub setDropdownPlacement(s As String)			'ignoredeadcode
 	sDropdownPlacement = s
 	CustProps.put("DropdownPlacement", s)
 	If mElement = Null Then Return
@@ -285,7 +285,7 @@ Sub setDropdownPlacement(s As String)
 End Sub
 'set Icon Size
 'options: xs|none|sm|md|lg|xl
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)				'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
@@ -295,7 +295,7 @@ Sub setIconSize(s As String)
 	End If
 End Sub
 'set Off Icon
-Sub setOffIcon(s As String)
+Sub setOffIcon(s As String)				'ignoredeadcode
 	sOffIcon = s
 	CustProps.put("OffIcon", s)
 	If mElement = Null Then Return
@@ -303,14 +303,14 @@ Sub setOffIcon(s As String)
 End Sub
 'set Off Text Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setOffTextColor(s As String)
+Sub setOffTextColor(s As String)				'ignoredeadcode
 	sOffTextColor = s
 	CustProps.put("OffTextColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_off"$, s)
 End Sub
 'set On Icon
-Sub setOnIcon(s As String)
+Sub setOnIcon(s As String)				'ignoredeadcode
 	sOnIcon = s
 	CustProps.put("OnIcon", s)
 	If mElement = Null Then Return
@@ -318,7 +318,7 @@ Sub setOnIcon(s As String)
 End Sub
 'set On Text Color
 'options: accent|error|info|neutral|none|primary|secondary|success|warning
-Sub setOnTextColor(s As String)
+Sub setOnTextColor(s As String)			'ignoredeadcode
 	sOnTextColor = s
 	CustProps.put("OnTextColor", s)
 	If mElement = Null Then Return
@@ -326,7 +326,7 @@ Sub setOnTextColor(s As String)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)			'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -334,7 +334,7 @@ Sub setSize(s As String)
 End Sub
 'set Toast Placement
 'options: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
-Sub setToastPlacement(s As String)
+Sub setToastPlacement(s As String)			'ignoredeadcode
 	sToastPlacement = s
 	CustProps.put("ToastPlacement", s)
 	If mElement = Null Then Return

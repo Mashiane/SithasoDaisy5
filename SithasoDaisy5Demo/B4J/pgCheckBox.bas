@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "checkboxview")
+	pgIndex.UpdateTitle("SDUI5CheckBox")
 End Sub
 
 Private Sub SDUI5CheckBox20_Change (Value As Boolean)

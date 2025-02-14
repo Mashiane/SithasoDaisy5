@@ -213,7 +213,7 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 'set text
-Sub setText(text As String)
+Sub setText(text As String)			'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -338,7 +338,7 @@ Sub getWidth As String
 	Return sWidth
 End Sub
 
-Sub setHasActions(b As Boolean)
+Sub setHasActions(b As Boolean)			'ignoredeadcode
 	bHasActions = b
 	CustProps.Put("HasActions", b)
 	If mElement = Null Then Return
@@ -350,7 +350,7 @@ Sub getHasActions As Boolean
 End Sub
 
 'set Icon Size
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)			'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
@@ -364,7 +364,7 @@ Sub getIconSize As String
 End Sub
 
 'set text
-Sub setTitle(text As String)
+Sub setTitle(text As String)				'ignoredeadcode
 	sTitle = text
 	CustProps.Put("Title", text)
 	If mElement = Null Then Return
@@ -415,7 +415,7 @@ Sub setDash(b As Boolean)
 	End If
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
@@ -428,7 +428,7 @@ Sub setIcon(s As String)
 	End If
 End Sub
 'set Icon Color
-Sub setIconColor(s As String)
+Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return

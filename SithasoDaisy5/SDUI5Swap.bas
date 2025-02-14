@@ -263,7 +263,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	</label>"$).Get("#" & mName)
 	Select Case sSwapType
 	Case "text"
-		setTextSize(sTextSize)
 		mElement.Append($"[BANCLEAN]
 		<div id="${mName}_indeterminate" class="swap-indeterminate">${sIndeterminateText}</div>
 		<div id="${mName}_on" class="swap-on">${sOnText}</div>
@@ -271,6 +270,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setOffTextColor(sOffTextColor)
 		setOnTextColor(sOnTextColor)
 		setIndeterminateTextColor(sIndeterminateTextColor)
+		setTextSize(sTextSize)
 	Case "icon"
 		mElement.Append($"[BANCLEAN]
 		<div id="${mName}_indeterminate" class="swap-indeterminate"><img id="${mName}_indeterminateicon" src="${sIndeterminateIcon}" alt=""></img></div>
@@ -284,14 +284,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnChildEvent($"${mName}_check"$, "change", Me, "swapchange")
 End Sub
 
-private Sub swapchange(e As BANanoEvent)
+private Sub swapchange(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
 	Dim b As Boolean = getActive
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(b))
 End Sub
 
 'set Active
-Sub setActive(b As Boolean)
+Sub setActive(b As Boolean)			'ignoredeadcode
 	bActive = b
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
@@ -299,7 +299,7 @@ Sub setActive(b As Boolean)
 End Sub
 
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -323,7 +323,7 @@ Sub setIndeterminateText(s As String)
 	UI.SetTextByID($"${mName}_indeterminate"$, s)
 End Sub
 'set Indeterminate Text Color
-Sub setIndeterminateTextColor(s As String)
+Sub setIndeterminateTextColor(s As String)			'ignoredeadcode
 	sIndeterminateTextColor = s
 	CustProps.put("IndeterminateTextColor", s)
 	If mElement = Null Then Return
@@ -343,8 +343,9 @@ Sub setOffText(s As String)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_off"$, s)
 End Sub
-'set Off Text Color
-Sub setOffTextColor(s As String)
+'set Off Text Color		
+Sub setOffTextColor(s As String)			'ignoredeadcode
+		
 	sOffTextColor = s
 	CustProps.put("OffTextColor", s)
 	If mElement = Null Then Return
@@ -365,7 +366,7 @@ Sub setOnText(s As String)
 	UI.SetTextByID($"${mName}_on"$, s)
 End Sub
 'set On Text Color
-Sub setOnTextColor(s As String)
+Sub setOnTextColor(s As String)			'ignoredeadcode
 	sOnTextColor = s
 	CustProps.put("OnTextColor", s)
 	If mElement = Null Then Return
@@ -378,7 +379,7 @@ Sub setSwapType(s As String)
 	CustProps.put("SwapType", s)
 End Sub
 'set Text Size
-Sub setTextSize(s As String)
+Sub setTextSize(s As String)			'ignoredeadcode
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
@@ -394,7 +395,7 @@ Sub setTypeOf(s As String)
 	UI.AddClass(mElement, "swap-" & s)
 End Sub
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return

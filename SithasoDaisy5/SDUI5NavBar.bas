@@ -10,6 +10,9 @@ Version=10
 '
 #DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left|_logo|_burger|_center|_right, Description: Child Items - _left|_logo|_burger|_center|_right
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Sticky, DisplayName: Sticky, FieldType: Boolean, DefaultValue: True, Description: Sticky
+#DesignerProperty: Key: Top, DisplayName: Top, FieldType: String, DefaultValue: 0, Description: Top
+#DesignerProperty: Key: ZIndex, DisplayName: Z Index, FieldType: String, DefaultValue: 30, Description: Z index
 #DesignerProperty: Key: HasBurger, DisplayName: Has Burger, FieldType: Boolean, DefaultValue: True, Description: Has burger
 #DesignerProperty: Key: HasLogo, DisplayName: Has Logo, FieldType: Boolean, DefaultValue: False, Description: Has Logo
 #DesignerProperty: Key: LogoImage, DisplayName: Logo Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Logo Image
@@ -72,6 +75,9 @@ Sub Class_Globals
 	Private sLogoImage As String = "./assets/mashy.jpg"
 	Private sLogoMask As String = "none"
 	Private sLogoWidth As String = "10"
+	Private bSticky As Boolean = True
+	Private sTop As String = "0"
+	Private sZIndex As String = "30"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -246,13 +252,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sLogoMask = "none" Then sLogoMask = ""
 		sLogoWidth = Props.GetDefault("LogoWidth", "10")
 		sLogoWidth = modSD5.CStr(sLogoWidth)
+		bSticky = Props.GetDefault("Sticky", True)
+		bSticky = modSD5.CBool(bSticky)
+		sTop = Props.GetDefault("Top", "0")
+		sTop = modSD5.CStr(sTop)
+		sZIndex = Props.GetDefault("ZIndex", "30")
+		sZIndex = modSD5.CStr(sZIndex)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("navbar")
 	If bGlass = True Then UI.AddClassDT("glass")
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
+	If bSticky = True Then UI.AddClassDT("sticky")
+	If sTop <> "" Then UI.AddClassDT("top-" & sTop)
+	If sZIndex <> "" Then UI.AddClassDT("z-" & sZIndex)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
@@ -285,8 +299,51 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+'set Sticky
+Sub setSticky(b As Boolean)
+	bSticky = b
+	CustProps.put("Sticky", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "sticky")
+	Else
+		UI.RemoveClass(mElement, "sticky")
+	End If
+End Sub
+
+'set Top
+Sub setTop(s As String)
+	sTop = s
+	CustProps.put("Top", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "top-" & s)
+End Sub
+
+'set Z index
+Sub setZIndex(s As String)
+	sZIndex = s
+	CustProps.put("ZIndex", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "z-" & s)
+End Sub
+
+'get Sticky
+Sub getSticky As Boolean
+	Return bSticky
+End Sub
+
+'get Top
+Sub getTop As String
+	Return sTop
+End Sub
+'get Z index
+Sub getZIndex As String
+	Return sZIndex
+End Sub
+
+
 'set Has Hamburger
-Sub setHasBurger(b As Boolean)
+Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	bHasBurger = b
 	CustProps.put("HasBurger", b)
 	If mElement = Null Then Return
@@ -312,7 +369,7 @@ End Sub
 
 
 'set Has Logo
-Sub setHasLogo(b As Boolean)
+Sub setHasLogo(b As Boolean)			'ignoredeadcode
 	bHasLogo = b
 	CustProps.put("HasLogo", b)
 	If mElement = Null Then Return
@@ -337,7 +394,7 @@ Sub getHasLogo As Boolean
 	Return bHasLogo
 End Sub
 
-private Sub swapchange(e As BANanoEvent)
+private Sub swapchange(e As BANanoEvent)		'ignoreDeadCode
 	e.PreventDefault
 	Dim b As Boolean = Hamburger.Active
 	BANano.CallSub(mCallBack, $"${mName}_BurgerClick"$, Array(b))
@@ -349,7 +406,7 @@ Sub getHasBurger As Boolean
 End Sub
 
 'set Title
-Sub setTitle(s As String)
+Sub setTitle(s As String)				'ignoredeadcode
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
@@ -370,7 +427,7 @@ Sub setTitle(s As String)
 End Sub
 'set Title Position
 'options: center|left|right
-Sub setTitlePosition(s As String)
+Sub setTitlePosition(s As String)					'ignoredeadcode
 	sTitlePosition = s
 	CustProps.put("TitlePosition", s)
 End Sub

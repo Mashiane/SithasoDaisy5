@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "toggleview")
+	pgIndex.UpdateTitle("SDUI5Toggle")
 End Sub
 
 Private Sub SDUI5Toggle2_Change (Value As Boolean)

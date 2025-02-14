@@ -213,7 +213,7 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 'set text
-Sub setText(text As String)
+Sub setText(text As String)				'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -348,7 +348,7 @@ Sub setHref(s As String)
 	If s <> "" Then UI.SetAttr(mElement, "href", s)
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
@@ -360,7 +360,7 @@ Sub setIcon(s As String)
 	End If
 End Sub
 'set Icon Color
-Sub setIconColor(s As String)
+Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
@@ -368,7 +368,7 @@ Sub setIconColor(s As String)
 	If s <> "" Then UI.SetTextColorByID($"${mName}_icon"$, s)
 End Sub
 'set Icon Size
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)				'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return

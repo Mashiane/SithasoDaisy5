@@ -241,7 +241,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndicatorColor(sIndicatorColor)
 End Sub
 
-Sub setOpen(b As Boolean)
+Sub setOpen(b As Boolean)				'ignoredeadcode
 	bOpen = b
 	CustProps.put("Open", b)
 	If mElement = Null Then Return
@@ -253,7 +253,7 @@ Sub getOpen As Boolean
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)			'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
@@ -263,7 +263,7 @@ Sub setBackgroundColor(s As String)
 	End If
 End Sub
 'set Duration
-Sub setDuration(s As String)
+Sub setDuration(s As String)			'ignoredeadcode
 	sDuration = s
 	CustProps.put("Duration", s)
 	If mElement = Null Then Return
@@ -271,7 +271,7 @@ Sub setDuration(s As String)
 End Sub
 'set Indicator Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setIndicatorColor(s As String)
+Sub setIndicatorColor(s As String)					'ignoredeadcode
 	sIndicatorColor = s
 	CustProps.put("IndicatorColor", s)
 	If mElement = Null Then Return

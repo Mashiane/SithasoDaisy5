@@ -14,4 +14,5 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "countdownview")
+	pgIndex.UpdateTitle("SDUI5CountDown")
 End Sub

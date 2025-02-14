@@ -212,8 +212,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
@@ -287,7 +287,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)			'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
@@ -295,7 +295,7 @@ Sub setBackgroundColor(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)				'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -309,14 +309,14 @@ Sub setFooter(s As String)
 	UI.SetTextByID($"${mName}_footer"$, s)
 End Sub
 'set Footer Visible
-Sub setFooterVisible(b As Boolean)
+Sub setFooterVisible(b As Boolean)			'ignoredeadcode
 	bFooterVisible = b
 	CustProps.put("FooterVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_footer"$, b)
 End Sub
 'set Header Visible
-Sub setHeaderVisible(b As Boolean)
+Sub setHeaderVisible(b As Boolean)				'ignoredeadcode
 	bHeaderVisible = b
 	CustProps.put("HeaderVisible", b)
 	If mElement = Null Then Return
@@ -330,14 +330,14 @@ Sub setImage(s As String)
 	If s <> "" Then UI.SetImageByID($"${mName}_avatar_image"$, s)
 End Sub
 'set Image Size
-Sub setImageSize(s As String)
+Sub setImageSize(s As String)				'ignoredeadcode
 	sImageSize = s
 	CustProps.put("ImageSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidthByID($"${mName}_avatar_host"$, s)
 End Sub
 'set Image Visible
-Sub setImageVisible(b As Boolean)
+Sub setImageVisible(b As Boolean)				'ignoredeadcode
 	bImageVisible = b
 	CustProps.put("ImageVisible", b)
 	If mElement = Null Then Return
@@ -373,7 +373,7 @@ Sub setPlacement(s As String)
 	If s <> "" Then UI.UpdateClass(mElement, "placement", s)
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)				'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return

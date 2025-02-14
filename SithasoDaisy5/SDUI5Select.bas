@@ -133,7 +133,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -363,7 +363,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setSize(sSize))
 	setGhost(bGhost)	
 	setGrow(bGrow)
-	setOptions(sRawOptions)
 	setWidth(sWidth)
 	setEnabled(bEnabled)
 	Select Case sInputType
@@ -373,6 +372,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setPrependIcon(sPrependIcon)
 		setPrependVisible(bPrependVisible)
 	End Select
+	BANano.Await(setOptions(sRawOptions))
 	setValue(sValue)
 	'setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
@@ -380,7 +380,7 @@ End Sub
 
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -401,7 +401,7 @@ End Sub
 
 
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault 
 	Dim cvalue As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(cvalue))
@@ -418,7 +418,7 @@ Sub getInputType As String
 End Sub
 
 'set Prepend Visible
-Sub setPrependVisible(b As Boolean)
+Sub setPrependVisible(b As Boolean)			'ignoredeadcode
 	bPrependVisible = b
 	CustProps.put("PrependVisible", b)
 	If mElement = Null Then Return
@@ -426,7 +426,7 @@ Sub setPrependVisible(b As Boolean)
 End Sub
 
 'set Prepend Icon
-Sub setPrependIcon(s As String)
+Sub setPrependIcon(s As String)			'ignoredeadcode
 	sPrependIcon = s
 	CustProps.put("PrependIcon", s)
 	If mElement = Null Then Return
@@ -446,14 +446,14 @@ Sub setPrependIcon(s As String)
 End Sub
 
 'set Append Visible
-Sub setAppendVisible(b As Boolean)
+Sub setAppendVisible(b As Boolean)			'ignoredeadcode
 	bAppendVisible = b
 	CustProps.put("AppendVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_append"$, b)
 End Sub
 
-Sub setAppendIcon(s As String)
+Sub setAppendIcon(s As String)			'ignoredeadcode
 	sAppendIcon = s
 	CustProps.put("AppendIcon", s)
 	If mElement = Null Then Return
@@ -493,7 +493,7 @@ End Sub
 
 'set Options from a MV field
 'b4j:b4j; b4i:b4i; b4r:b4r
-Sub setOptions(s As String)
+Sub setOptions(s As String)		'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -502,7 +502,7 @@ Sub setOptions(s As String)
 End Sub
 
 'load the items from a map
-Sub SetOptionsFromMap(m As Map)
+Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	If mElement = Null Then Return
 	BANano.Await(Clear)
 	If m.Size = 0 Then Return
@@ -533,7 +533,7 @@ Sub getOptions As String
 End Sub
 
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.Empty
 	If sPlaceholder = "" Then Return
@@ -549,14 +549,14 @@ End Sub
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "select", sColor)
 End Sub
 'set Ghost
-Sub setGhost(b As Boolean)
+Sub setGhost(b As Boolean)			'ignoredeadcode
 	bGhost = b
 	CustProps.put("Ghost", b)
 	If mElement = Null Then Return
@@ -567,7 +567,7 @@ Sub setGhost(b As Boolean)
 	End If
 End Sub
 'set Grow
-Sub setGrow(b As Boolean)
+Sub setGrow(b As Boolean)				'ignoredeadcode
 	bGrow = b
 	CustProps.put("Grow", b)
 	If mElement = Null Then Return
@@ -592,14 +592,14 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Placeholder
-Sub setPlaceholder(s As String)
+Sub setPlaceholder(s As String)		'ignoredeadcode
 	sPlaceholder = s
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_placeholder"$, s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)				'ignoredeadcode
 	bRequired = b
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
@@ -615,7 +615,7 @@ Sub setRequired(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -651,7 +651,7 @@ Sub setValidatorHint(s As String)
 	If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'set Value
-Sub setValue(s As String)
+Sub setValue(s As String)			'ignoredeadcode
 	sValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return

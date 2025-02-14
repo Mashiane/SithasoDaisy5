@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "navbarview")
+	pgIndex.UpdateTitle("SDUI5NavBar")
 End Sub
 
 Private Sub navbar_TitleClick (e As BANanoEvent)

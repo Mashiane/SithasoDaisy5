@@ -279,7 +279,7 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 'set text
-Sub setText(text As String)
+Sub setText(text As String)			'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -495,7 +495,7 @@ End Sub
 
 
 'set Icon Size
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)				'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
@@ -504,7 +504,7 @@ Sub setIconSize(s As String)
 	UI.SetTextSizeByID($"${mName}_righticon"$, s)
 End Sub
 'set Left Icon
-Sub setLeftIcon(s As String)
+Sub setLeftIcon(s As String)				'ignoredeadcode
 	sLeftIcon = s
 	CustProps.put("LeftIcon", s)
 	If mElement = Null Then Return
@@ -516,14 +516,14 @@ Sub setLeftIcon(s As String)
 	End If
 End Sub
 'set Left Icon Color
-Sub setLeftIconColor(s As String)
+Sub setLeftIconColor(s As String)			'ignoredeadcode
 	sLeftIconColor = s
 	CustProps.put("LeftIconColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_lefticon"$, s)
 End Sub
 'set Right Icon
-Sub setRightIcon(s As String)
+Sub setRightIcon(s As String)			'ignoredeadcode
 	sRightIcon = s
 	CustProps.put("RightIcon", s)
 	If mElement = Null Then Return
@@ -535,7 +535,7 @@ Sub setRightIcon(s As String)
 	End If
 End Sub
 'set Right Icon Color
-Sub setRightIconColor(s As String)
+Sub setRightIconColor(s As String)			'ignoredeadcode
 	sRightIconColor = s
 	CustProps.put("RightIconColor", s)
 	If mElement = Null Then Return
@@ -569,7 +569,7 @@ End Sub
 
 
 'set Tooltip
-Sub setTooltip(s As String)
+Sub setTooltip(s As String)			'ignoredeadcode
 	sTooltip = s
 	CustProps.put("Tooltip", s)
 	If mElement = Null Then Return
@@ -579,14 +579,14 @@ Sub setTooltip(s As String)
 End Sub
 'set Tooltip Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setTooltipColor(s As String)
+Sub setTooltipColor(s As String)				'ignoredeadcode
 	sTooltipColor = s
 	CustProps.put("TooltipColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "tooltipcolor", "tooltip", s)
 End Sub
 'set Tooltip Open
-Sub setTooltipOpen(b As Boolean)
+Sub setTooltipOpen(b As Boolean)				'ignoredeadcode
 	bTooltipOpen = b
 	CustProps.put("TooltipOpen", b)
 	If mElement = Null Then Return
@@ -598,7 +598,7 @@ Sub setTooltipOpen(b As Boolean)
 End Sub
 'set Tooltip Position
 'options: bottom|left|right|top
-Sub setTooltipPosition(s As String)
+Sub setTooltipPosition(s As String)			'ignoredeadcode
 	sTooltipPosition = s
 	CustProps.put("TooltipPosition", s)
 	If mElement = Null Then Return
@@ -630,7 +630,7 @@ End Sub
 
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setBadgeSize(s As String)
+Sub setBadgeSize(s As String)			'ignoredeadcode
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
@@ -724,7 +724,7 @@ Sub setGhost(b As Boolean)
 End Sub
 
 'set Image
-Sub setLeftImage(s As String)
+Sub setLeftImage(s As String)				'ignoredeadcode
 	sImage = s
 	CustProps.put("Image", s)
 	If mElement = Null Then Return
@@ -738,7 +738,7 @@ Sub setLeftImage(s As String)
 	End If
 End Sub
 'set Image Height
-Sub setLeftImageHeight(s As String)
+Sub setLeftImageHeight(s As String)				'ignoredeadcode
 	sImageHeight = s
 	CustProps.put("ImageHeight", s)
 	If mElement = Null Then Return
@@ -747,7 +747,7 @@ Sub setLeftImageHeight(s As String)
 	UI.SetHeightByID($"${mName}_leftimage"$, sImageHeight)
 End Sub
 'set Image Width
-Sub setLeftImageWidth(s As String)
+Sub setLeftImageWidth(s As String)					'ignoredeadcode
 	sImageWidth = s
 	CustProps.put("ImageWidth", s)
 	If mElement = Null Then Return
@@ -768,7 +768,7 @@ Sub setLink(b As Boolean)
 	End If
 End Sub
 'set Loading
-Sub setLoading(b As Boolean)
+Sub setLoading(b As Boolean)			'ignoredeadcode
 	bLoading = b
 	CustProps.put("Loading", b)
 	If mElement = Null Then Return
@@ -815,7 +815,7 @@ Sub setOutline(b As Boolean)
 	End If
 End Sub
 'set Right Image
-Sub setRightImage(s As String)
+Sub setRightImage(s As String)				'ignoredeadcode
 	sRightImage = s
 	CustProps.put("RightImage", s)
 	If mElement = Null Then Return
@@ -881,7 +881,7 @@ Sub setSoft(b As Boolean)
 	End If
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)				'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
@@ -984,7 +984,7 @@ Sub getWide As Boolean
 End Sub
 
 'set Image Color
-Sub setLeftImageColor(s As String)
+Sub setLeftImageColor(s As String)				'ignoredeadcode
 	sImageColor = s
 	CustProps.put("ImageColor", s)
 	If mElement = Null Then Return
@@ -1012,14 +1012,14 @@ Sub setRightImageVisible(b As Boolean)
 End Sub
 
 'set Right Image Color
-Sub setRightImageColor(s As String)
+Sub setRightImageColor(s As String)			'ignoredeadcode
 	sRightImageColor = s
 	CustProps.put("RightImageColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_rightimage"$, s)
 End Sub
 'set Right Image Height
-Sub setRightImageHeight(s As String)
+Sub setRightImageHeight(s As String)			'ignoredeadcode
 	sRightImageHeight = s
 	CustProps.put("RightImageHeight", s)
 	If mElement = Null Then Return
@@ -1028,7 +1028,7 @@ Sub setRightImageHeight(s As String)
 	UI.SetHeightByID($"${mName}_rightimage"$, sRightImageHeight)
 End Sub
 'set Right Image Width
-Sub setRightImageWidth(s As String)
+Sub setRightImageWidth(s As String)			'ignoredeadcode
 	sRightImageWidth = s
 	CustProps.put("RightImageWidth", s)
 	If mElement = Null Then Return
@@ -1051,7 +1051,7 @@ Sub getRightImageWidth As String
 End Sub
 
 'set Badge
-Sub setBadge(s As String)
+Sub setBadge(s As String)				'ignoredeadcode
 	sBadge = s
 	CustProps.put("Badge", s)
 	If mElement = Null Then Return
@@ -1064,7 +1064,7 @@ Sub setBadge(s As String)
 End Sub
 'set Badge Color
 'options: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
-Sub setBadgeColor(s As String)
+Sub setBadgeColor(s As String)				'ignoredeadcode
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
@@ -1137,7 +1137,7 @@ Sub getJoinItem As Boolean
 End Sub
 
 'set Dock Item
-Sub setDockItem(b As Boolean)
+Sub setDockItem(b As Boolean)			'ignoredeadcode
 	bDockItem = b
 	CustProps.put("DockItem", b)
 	If mElement = Null Then Return

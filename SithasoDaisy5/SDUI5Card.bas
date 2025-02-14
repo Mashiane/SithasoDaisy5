@@ -377,7 +377,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Actions Visible
-Sub setActionsVisible(b As Boolean)
+Sub setActionsVisible(b As Boolean)			'ignoredeadcode
 	bActionsVisible = b
 	CustProps.put("ActionsVisible", b)
 	If mElement = Null Then Return
@@ -402,7 +402,7 @@ Sub setBorder(b As Boolean)
 	End If
 End Sub
 'set Content Classes
-Sub setContentClasses(s As String)
+Sub setContentClasses(s As String)			'ignoredeadcode
 	sContentClasses = s
 	CustProps.put("ContentClasses", s)
 	If mElement = Null Then Return
@@ -410,7 +410,7 @@ Sub setContentClasses(s As String)
 End Sub
 
 'set Body Classes
-Sub setBodyClasses(s As String)
+Sub setBodyClasses(s As String)			'ignoredeadcode
 	sBodyClasses = s
 	CustProps.put("BodyClasses", s)
 	If mElement = Null Then Return
@@ -421,7 +421,7 @@ Sub getBodyClasses As String
 	Return sBodyClasses
 End Sub
 
-Sub setImageClasses(s As String)
+Sub setImageClasses(s As String)			'ignoredeadcode
 	sImageClasses = s
 	CustProps.put("ImageClasses", s)
 	If mElement = Null Then Return
@@ -456,7 +456,7 @@ Sub setHeight(s As String)
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Image
-Sub setImage(s As String)
+Sub setImage(s As String)				'ignoredeadcode
 	sImage = s
 	CustProps.put("Image", s)
 	If mElement = Null Then Return
@@ -481,7 +481,7 @@ Sub setImageFull(b As Boolean)
 	End If
 End Sub
 'set Image Height
-Sub setImageHeight(s As String)
+Sub setImageHeight(s As String)			'ignoredeadcode
 	sImageHeight = s
 	CustProps.put("ImageHeight", s)
 	If mElement = Null Then Return
@@ -501,7 +501,7 @@ Sub setImagePosition(s As String)
 	CustProps.put("ImagePosition", s)
 End Sub
 'set Image Rounded Box
-Sub setImageRoundedBox(b As Boolean)
+Sub setImageRoundedBox(b As Boolean)				'ignoredeadcode
 	bImageRoundedBox = b
 	CustProps.put("ImageRoundedBox", b)
 	If mElement = Null Then Return
@@ -522,7 +522,7 @@ Sub setImageRoundedBox(b As Boolean)
 End Sub
 'set Image Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
-Sub setImageShadow(s As String)
+Sub setImageShadow(s As String)				'ignoredeadcode
 	sImageShadow = s
 	CustProps.put("ImageShadow", s)
 	If mElement = Null Then Return
@@ -536,7 +536,7 @@ Sub setImageShadow(s As String)
 	End If
 End Sub
 'set Image Visible
-Sub setImageVisible(b As Boolean)
+Sub setImageVisible(b As Boolean)				'ignoredeadcode
 	bImageVisible = b
 	CustProps.put("ImageVisible", b)
 	If mElement = Null Then Return
@@ -554,7 +554,7 @@ Sub setImageVisible(b As Boolean)
 	End Select
 End Sub
 'set Image Width
-Sub setImageWidth(s As String)
+Sub setImageWidth(s As String)			'ignoredeadcode
 	sImageWidth = s
 	CustProps.put("ImageWidth", s)
 	If mElement = Null Then Return
@@ -590,7 +590,7 @@ Sub setMDSide(b As Boolean)
 	End If
 End Sub
 'set Raw Content
-Sub setContent(s As String)
+Sub setContent(s As String)			'ignoredeadcode
 	sRawContent = s
 	CustProps.put("RawContent", s)
 	If mElement = Null Then Return
@@ -662,14 +662,14 @@ Sub setTextColor(s As String)
 	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
 End Sub
 'set Title
-Sub setTitle(s As String)
+Sub setTitle(s As String)			'ignoredeadcode
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_title"$, s)
 End Sub
 'set Title Visible
-Sub setTitleVisible(b As Boolean)
+Sub setTitleVisible(b As Boolean)			'ignoredeadcode
 	bTitleVisible = b
 	CustProps.put("TitleVisible", b)
 	If mElement = Null Then Return

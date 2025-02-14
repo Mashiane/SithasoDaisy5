@@ -296,7 +296,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Hide Selector Button
-Sub setHideSelectorButton(b As Boolean)
+Sub setHideSelectorButton(b As Boolean)				'ignoredeadcode
 	bHideSelectorButton = b
 	CustProps.put("HideSelectorButton", b)
 	If mElement = Null Then Return
@@ -313,7 +313,7 @@ Sub getHideSelectorButton As Boolean
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)				'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -345,14 +345,14 @@ End Sub
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)     'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "file-input", sColor)
 End Sub
 'set Ghost
-Sub setGhost(b As Boolean)
+Sub setGhost(b As Boolean)			'ignoredeadcode
 	bGhost = b
 	CustProps.put("Ghost", b)
 	If mElement = Null Then Return
@@ -377,7 +377,7 @@ Sub setLabel(s As String)
 	UI.SetAttr(mElement, "label", s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)				'ignoredeadcode
 	bRequired = b
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
@@ -393,7 +393,7 @@ Sub setRequired(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return

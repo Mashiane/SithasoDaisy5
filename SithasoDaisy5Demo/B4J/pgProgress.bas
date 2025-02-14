@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "progressview")
+	pgIndex.UpdateTitle("SDUI5Progress")
 	progTimer.Initialize("progTimer", 1000)
 	progTimer.Enabled = False
 End Sub

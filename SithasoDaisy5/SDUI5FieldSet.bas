@@ -151,14 +151,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -172,7 +172,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -258,9 +258,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<fieldset id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
+		<legend id="${mName}_legend" class="fieldset-legend hidden hide">${sLegend}</legend>
 		<div id="${mName}_content"></div>
-		<p id="${mName}_label" class="fieldset-label">${sLabel}</p>
+		<p id="${mName}_label" class="fieldset-label hidden hide">${sLabel}</p>
 	</fieldset>"$).Get("#" & mName)
 	setLabelVisible(bLabelVisible)
 	setLegendVisible(bLegendVisible)
@@ -307,7 +307,7 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_label"$, s)
 End Sub
 'set Label Visible
-Sub setLabelVisible(b As Boolean)
+Sub setLabelVisible(b As Boolean)			'ignoredeadcode
 	bLabelVisible = b
 	CustProps.put("LabelVisible", b)
 	If mElement = Null Then Return
@@ -321,7 +321,7 @@ Sub setLegend(s As String)
 	UI.SetTextByID($"${mName}"$, s)
 End Sub
 'set Legend Visible
-Sub setLegendVisible(b As Boolean)
+Sub setLegendVisible(b As Boolean)			'ignoredeadcode
 	bLegendVisible = b
 	CustProps.put("LegendVisible", b)
 	If mElement = Null Then Return

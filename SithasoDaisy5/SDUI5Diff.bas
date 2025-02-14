@@ -313,7 +313,7 @@ Sub setDiffType(s As String)
 	CustProps.put("DiffType", s)
 End Sub
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)				'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -330,7 +330,7 @@ Sub setHeight(s As String)
 End Sub
 '
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -363,7 +363,7 @@ Sub setImage2(s As String)
 End Sub
 'set Text Size
 'options: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
-Sub setTextSize(s As String)
+Sub setTextSize(s As String)			'ignoredeadcode
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
@@ -380,14 +380,14 @@ Sub setText1(s As String)
 	UI.SetTextByID($"${mName}_text1"$, s)
 End Sub
 'set Text1 Background Color
-Sub setText1BackgroundColor(s As String)
+Sub setText1BackgroundColor(s As String)			'ignoredeadcode
 	sText1BackgroundColor = s
 	CustProps.put("Text1BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_text1"$, s)
 End Sub
 'set Text1 Text Color
-Sub setText1TextColor(s As String)
+Sub setText1TextColor(s As String)			'ignoredeadcode
 	sText1TextColor = s
 	CustProps.put("Text1TextColor", s)
 	If mElement = Null Then Return
@@ -401,14 +401,14 @@ Sub setText2(s As String)
 	UI.SetTextByID($"${mName}_text2"$, s)
 End Sub
 'set Text2 Background Color
-Sub setText2BackgroundColor(s As String)
+Sub setText2BackgroundColor(s As String)				'ignoredeadcode
 	sText2BackgroundColor = s
 	CustProps.put("Text2BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_text2"$, s)
 End Sub
 'set Text2 Text Color
-Sub setText2TextColor(s As String)
+Sub setText2TextColor(s As String)				'ignoredeadcode
 	sText2TextColor = s
 	CustProps.put("Text2TextColor", s)
 	If mElement = Null Then Return

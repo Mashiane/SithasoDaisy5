@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "filterview")
+	pgIndex.UpdateTitle("SDUI5Filter")
 End Sub
 
 Private Sub SDUI5Filter1_Change (Value As String)

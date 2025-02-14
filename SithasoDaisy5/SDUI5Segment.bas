@@ -298,13 +298,13 @@ Sub setHeight(s As String)
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	UI.Clear(mElement)
 	items.Initialize 
 End Sub
 
-Sub setOptions(s As String)
+Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.Put("RawOptions", s)
 	If mElement = Null Then Return
@@ -326,7 +326,7 @@ Sub AddButton(sKey As String, sText As String)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
 End Sub
 
-private Sub itemchange(e As BANanoEvent)
+private Sub itemchange(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
 	Dim sprefix As String = modSD5.MvField(e.ID, 1, "_")
 	BANano.Await(SetActiveInternal(sprefix))
@@ -365,7 +365,7 @@ Sub getSize As String
 End Sub
 
 'set Active
-Sub setActive(item As String)
+Sub setActive(item As String)			'ignoredeadcode
 	item = modSD5.CleanID(item)
 	CustProps.put("Active", item)
 	If mElement = Null Then Return

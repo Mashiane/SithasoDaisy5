@@ -304,7 +304,7 @@ Sub getRequired As Boolean
 	Return bRequired
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.empty
 End Sub
@@ -322,7 +322,7 @@ Sub setCount(s As Int)
 End Sub
 
 
-Sub Refresh
+Sub Refresh			'ignoredeadcode
 	If mElement = Null Then Return
 	Clear
 	Dim tCount As Int = modSD5.CInt(iCount)
@@ -388,7 +388,7 @@ Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
 	Dim xChecked As String = UI.GetValueByID(e.ID)
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
@@ -402,7 +402,7 @@ Sub setFirstHidden(b As Boolean)
 End Sub
 
 'set Gap
-Sub setGap(s As String)
+Sub setGap(s As String)			'ignoredeadcode
 	sGap = s
 	CustProps.put("Gap", s)
 	If mElement = Null Then Return
@@ -411,7 +411,7 @@ Sub setGap(s As String)
 End Sub
 
 'set Half, needs refresh
-Sub setHalf(b As Boolean)
+Sub setHalf(b As Boolean)			'ignoredeadcode
 	bHalf = b
 	CustProps.put("Half", b)
 	If mElement = Null Then Return
@@ -448,7 +448,7 @@ Sub setReadOnly(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)			'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -456,7 +456,7 @@ Sub setSize(s As String)
 	UI.SetSize(mElement, "size", "rating", s)
 End Sub
 'set Value
-Sub setValue(s As String)
+Sub setValue(s As String)			'ignoredeadcode
 	sValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return

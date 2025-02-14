@@ -274,7 +274,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</fieldset>"$).Get("#" & mName)
 		UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
-	setOptions(sRawOptions)
+	BANano.Await(setOptions(sRawOptions))
 '	setVisible(bVisible)
 End Sub
 
@@ -316,14 +316,14 @@ Sub getFitContents As Boolean
 	Return bFitContents
 End Sub
 
-Sub Clear
+Sub Clear				'ignoredeadcode
 	If mElement = Null Then Return
 	UI.ClearByID($"${mName}_options"$)
 End Sub
 
 'set Options from a MV field
 'b4j:b4j; b4i:b4i; b4r:b4r
-Sub setOptions(s As String)
+Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -332,7 +332,7 @@ Sub setOptions(s As String)
 End Sub
 
 'load the items from a map
-Sub SetOptionsFromMap(m As Map)
+Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	If mElement = Null Then Return
 	BANano.Await(Clear)
 	If bColumnView = False Then
@@ -403,7 +403,7 @@ Sub SetOptionsFromMap(m As Map)
 	Next
 End Sub
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
 	Dim xChecked As String = UI.GetValueByID(e.ID)
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))

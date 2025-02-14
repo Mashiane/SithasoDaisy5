@@ -37,6 +37,12 @@ Sub Initialize					'ignoreDeadCode
 	App.pageresume
 End Sub
 
+'fired when a drawer is closed / opened
+Private Sub appdrawer_Opened (Status As Boolean)
+	'the hamburger is a swap so open / close it when overlay is clicked also
+	appnavbar.Hamburger.Active = Status
+End Sub
+
 'NB: use this to add pages that are not added to the side nav bar
 Sub AddPages
 	'example
@@ -68,7 +74,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-diff", "", "Diff")
 	drawermenu.AddItemChild("display", "pg-kbd", "", "Kbd")
 	drawermenu.AddItemChild("display", "pg-list", "", "List")
-	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat List")
+	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat Item")
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
 	drawermenu.AddItemParent("display", "tables", "", "Tables")
@@ -95,7 +101,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("navigation", "pg-navbar", "", "Navbar")
 	drawermenu.AddItemChild("navigation", "pg-pagination", "", "Pagination")
 	drawermenu.AddItemChild("navigation", "pg-steps", "", "Steps")
-	drawermenu.AddItemChild("navigation", "pg-tab", "", "Tab")
+	drawermenu.AddItemChild("navigation", "pg-tab", "", "Tabs")
 	
 	drawermenu.AddItemParent("components", "feedback", "", "Feedback")
 	drawermenu.AddItemChild("feedback", "pg-alert", "", "Alert")
@@ -151,6 +157,7 @@ Sub CreateDrawerMenu
 End Sub
 
 
+'the hamburger is a swap button, open / close the drawer depending
 Private Sub appnavbar_BurgerClick (value As Boolean)
 	appdrawer.OpenDrawer(value)
 End Sub
@@ -359,6 +366,11 @@ Sub IsAuthenticated(b As Boolean)
 '		appdrawer.Hide
 '		appnavbar.hide
 '	End If		
+End Sub
+
+'update the title of the page
+Sub UpdateTitle(s As String)
+	appnavbar.Title = s
 End Sub
 
 Sub UpdateUserName(s As String)

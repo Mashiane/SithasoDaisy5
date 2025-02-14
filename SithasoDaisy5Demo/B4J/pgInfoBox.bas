@@ -19,6 +19,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "infoboxview")
+	pgIndex.UpdateTitle("SDUI5InfoCard")
 End Sub
 
 Private Sub SDUI5InfoCard5_Click (e As BANanoEvent)

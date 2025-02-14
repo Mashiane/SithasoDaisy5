@@ -321,7 +321,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'executes the countUp ONLY
-Sub Refresh
+Sub Refresh						'ignoredeadcode
 	If bAnimateCounter = False Then Return
 	Dim eKey As String = $"${mName}_value"$
 	sValue = modSD5.CInt(sValue)
@@ -338,7 +338,7 @@ End Sub
 
 'set Effect
 'options: none|hover-expand-effect|hover-zoom-effect
-Sub setEffect(s As String)
+Sub setEffect(s As String)				'ignoredeadcode
 	sEffect = s
 	CustProps.put("Effect", s)
 	If mElement = Null Then Return
@@ -368,7 +368,7 @@ Sub setAnimateCounter(b As Boolean)
 	CustProps.put("AnimateCounter", b)
 End Sub
 'set Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)		'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -388,14 +388,14 @@ Sub setDuration(s As String)
 	Options.put("duration", modSD5.CInt(s))
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)				'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.UpdateClassByID($"${mName}_icon"$, "icon", s)
 End Sub
 'set Icon Color
-Sub setIconColor(s As String)
+Sub setIconColor(s As String)				'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
@@ -411,7 +411,7 @@ Sub setIconColor(s As String)
 End Sub
 'set Infor Type
 'options: 1|2|3|4|5
-Sub setInforType(s As String)
+Sub setInforType(s As String)			'ignoredeadcode
 	sInforType = s
 	CustProps.put("InforType", s)
 	If mElement = Null Then Return
@@ -454,7 +454,7 @@ Sub setSuffix(s As String)
 	Options.put("suffix", s)
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return

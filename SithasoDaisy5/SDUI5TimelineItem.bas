@@ -290,7 +290,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set End
-Sub setEnd(b As Boolean)
+Sub setEnd(b As Boolean)			'ignoredeadcode
 	bEnd = b
 	CustProps.put("End", b)
 	If mElement = Null Then Return
@@ -301,7 +301,7 @@ Sub setEnd(b As Boolean)
 	End If	
 End Sub
 'set End Box
-Sub setEndBox(b As Boolean)
+Sub setEndBox(b As Boolean)			'ignoredeadcode
 	bEndBox = b
 	CustProps.put("EndBox", b)
 	If mElement = Null Then Return
@@ -313,7 +313,7 @@ Sub setEndBox(b As Boolean)
 	End If
 End Sub
 'set End Join Suffix
-Sub setEndJoinSuffix(b As Boolean)
+Sub setEndJoinSuffix(b As Boolean)			'ignoredeadcode
 	bEndJoinSuffix = b
 	CustProps.put("EndJoinSuffix", b)
 	If mElement = Null Then Return
@@ -324,7 +324,7 @@ Sub setEndJoinSuffix(b As Boolean)
 	End If
 End Sub
 'set End Join Suffix Color
-Sub setEndJoinSuffixColor(s As String)
+Sub setEndJoinSuffixColor(s As String)			'ignoredeadcode
 	sEndJoinSuffixColor = s
 	CustProps.put("EndJoinSuffixColor", s)
 	If mElement = Null Then Return
@@ -332,7 +332,7 @@ Sub setEndJoinSuffixColor(s As String)
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_endsuffix"$, s)
 End Sub
 'set End Text
-Sub setEndText(s As String)
+Sub setEndText(s As String)				'ignoredeadcode
 	sEndText = s
 	CustProps.put("EndText", s)
 	If mElement = Null Then Return
@@ -343,7 +343,7 @@ End Sub
 
 
 'set Middle
-Sub setMiddle(b As Boolean)
+Sub setMiddle(b As Boolean)				'ignoredeadcode
 	bMiddle = b
 	CustProps.put("Middle", b)
 	If mElement = Null Then Return
@@ -354,7 +354,7 @@ Sub setMiddle(b As Boolean)
 	End If
 End Sub
 'set Middle Box
-Sub setMiddleBox(b As Boolean)
+Sub setMiddleBox(b As Boolean)				'ignoredeadcode
 	bMiddleBox = b
 	CustProps.put("MiddleBox", b)
 	If mElement = Null Then Return
@@ -366,7 +366,7 @@ Sub setMiddleBox(b As Boolean)
 	End If
 End Sub
 'set Middle Icon
-Sub setMiddleIcon(s As String)
+Sub setMiddleIcon(s As String)				'ignoredeadcode
 	sMiddleIcon = s
 	CustProps.put("MiddleIcon", s)
 	If mElement = Null Then Return
@@ -379,7 +379,7 @@ Sub setMiddleIcon(s As String)
 	End If
 End Sub
 'set Middle Icon Size
-Sub setMiddleIconSize(s As String)
+Sub setMiddleIconSize(s As String)				'ignoredeadcode
 	sMiddleIconSize = s
 	CustProps.put("MiddleIconSize", s)
 	If mElement = Null Then Return
@@ -389,7 +389,7 @@ Sub setMiddleIconSize(s As String)
 	UI.SetHeightByID($"${mName}_middleicon"$, s)
 End Sub
 'set Middle Text
-Sub setMiddleText(s As String)
+Sub setMiddleText(s As String)				'ignoredeadcode
 	sMiddleText = s
 	CustProps.put("MiddleText", s)
 	If mElement = Null Then Return
@@ -398,7 +398,7 @@ Sub setMiddleText(s As String)
 End Sub
 
 'set Start
-Sub setStart(b As Boolean)
+Sub setStart(b As Boolean)				'ignoredeadcode
 	bStart = b
 	CustProps.put("Start", b)
 	If mElement = Null Then Return
@@ -409,7 +409,7 @@ Sub setStart(b As Boolean)
 	End If
 End Sub
 'set Start Box
-Sub setStartBox(b As Boolean)
+Sub setStartBox(b As Boolean)			'ignoredeadcode
 	bStartBox = b
 	CustProps.put("StartBox", b)
 	If mElement = Null Then Return
@@ -421,7 +421,7 @@ Sub setStartBox(b As Boolean)
 	End If
 End Sub
 'set Start Join Prefix
-Sub setStartJoinPrefix(b As Boolean)
+Sub setStartJoinPrefix(b As Boolean)				'ignoredeadcode
 	bStartJoinPrefix = b
 	CustProps.put("StartJoinPrefix", b)
 	If mElement = Null Then Return
@@ -432,7 +432,7 @@ Sub setStartJoinPrefix(b As Boolean)
 	End If
 End Sub
 'set Start Join Prefix Color
-Sub setStartJoinPrefixColor(s As String)
+Sub setStartJoinPrefixColor(s As String)			'ignoredeadcode
 	sStartJoinPrefixColor = s
 	CustProps.put("StartJoinPrefixColor", s)
 	If mElement = Null Then Return
@@ -440,7 +440,7 @@ Sub setStartJoinPrefixColor(s As String)
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_startprefix"$, s)
 End Sub
 'set Start Text
-Sub setStartText(s As String)
+Sub setStartText(s As String)			'ignoredeadcode
 	sStartText = s
 	CustProps.put("StartText", s)
 	If mElement = Null Then Return

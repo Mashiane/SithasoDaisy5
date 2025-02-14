@@ -283,7 +283,7 @@ Sub setAvatar(s As String)
 End Sub
 'set Avatar Size
 'options: xs|none|sm|md|lg|xl
-Sub setAvatarSize(s As String)
+Sub setAvatarSize(s As String)				'ignoredeadcode
 	sAvatarSize = s
 	CustProps.put("AvatarSize", s)
 	If mElement = Null Then Return
@@ -293,7 +293,7 @@ Sub setAvatarSize(s As String)
 	End If
 End Sub
 'set Badge
-Sub setBadge(s As String)
+Sub setBadge(s As String)			'ignoredeadcode
 	sBadge = s
 	CustProps.put("Badge", s)
 	If mElement = Null Then Return
@@ -306,7 +306,7 @@ Sub setBadge(s As String)
 End Sub
 'set Badge Color
 'options: accent|error|info|neutral|none|primary|secondary|success|warning
-Sub setBadgeColor(s As String)
+Sub setBadgeColor(s As String)				'ignoredeadcode
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
@@ -314,7 +314,7 @@ Sub setBadgeColor(s As String)
 End Sub
 'set Mask
 'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
-Sub setMask(s As String)
+Sub setMask(s As String)			'ignoredeadcode
 	sMask = s
 	CustProps.put("Mask", s)
 	If mElement = Null Then Return

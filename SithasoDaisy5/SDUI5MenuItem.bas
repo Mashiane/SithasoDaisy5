@@ -146,7 +146,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)				'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -239,7 +239,7 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 'set text
-Sub setText(text As String)
+Sub setText(text As String)			'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -413,14 +413,14 @@ Sub getMenuName As String
 	Return sMenuName
 End Sub
 
-private Sub itemclick(e As BANanoEvent)
+private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
 	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
 End Sub
 
 'set Active
-Sub setActive(b As Boolean)
+Sub setActive(b As Boolean)				'ignoredeadcode
 	bActive = b
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
@@ -431,14 +431,14 @@ Sub setActive(b As Boolean)
 	End If
 End Sub
 'set Badge
-Sub setBadge(s As String)
+Sub setBadge(s As String)			'ignoredeadcode
 	sBadge = s
 	CustProps.put("Badge", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_badge"$, sBadge)
 End Sub
 'set Badge Color
-Sub setBadgeColor(s As String)
+Sub setBadgeColor(s As String)			'ignoredeadcode
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
@@ -446,14 +446,14 @@ Sub setBadgeColor(s As String)
 End Sub
 'set Badge Size
 'options: xs|none|sm|md|lg|xl
-Sub setBadgeSize(s As String)
+Sub setBadgeSize(s As String)				'ignoredeadcode
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 End Sub
 'set Focus
-Sub setFocus(b As Boolean)
+Sub setFocus(b As Boolean)			'ignoredeadcode
 	bFocus = b
 	CustProps.put("Focus", b)
 	If mElement = Null Then Return
@@ -464,14 +464,14 @@ Sub setFocus(b As Boolean)
 	End If
 End Sub
 'set Href
-Sub setHref(s As String)
+Sub setHref(s As String)				'ignoredeadcode
 	sHref = s
 	CustProps.put("Href", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_anchor"$, "href", s)
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)		'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
@@ -496,7 +496,7 @@ Sub setItemType(s As String)
 	CustProps.put("ItemType", s)
 End Sub
 'set Parent
-Sub setParent(b As Boolean)
+Sub setParent(b As Boolean)			'ignoredeadcode
 	bParent = b
 	CustProps.put("Parent", b)
 	If mElement = Null Then Return
@@ -507,14 +507,14 @@ Sub setParent(b As Boolean)
 End Sub
 'set Target
 'options: _blank|_self|_parent|_top|none
-Sub setTarget(s As String)
+Sub setTarget(s As String)			'ignoredeadcode
 	sTarget = s
 	CustProps.put("Target", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_anchor"$, "target", s)
 End Sub
 'set Tooltip
-Sub setTooltip(s As String)
+Sub setTooltip(s As String)			'ignoredeadcode
 	sTooltip = s
 	CustProps.put("Tooltip", s)
 	If mElement = Null Then Return
@@ -528,7 +528,7 @@ Sub setTooltip(s As String)
 End Sub
 'set Tooltip Position
 'options: bottom|left|none|right|top
-Sub setTooltipPosition(s As String)
+Sub setTooltipPosition(s As String)			'ignoredeadcode
 	sTooltipPosition = s
 	CustProps.put("TooltipPosition", s)
 	If mElement = Null Then Return
@@ -593,7 +593,7 @@ End Sub
 
 'set Icon Size
 'options: xs|none|sm|md|lg|xl
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)			'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
@@ -607,7 +607,7 @@ Sub getIconSize As String
 End Sub
 
 'set Badge Visible
-Sub setBadgeVisible(b As Boolean)
+Sub setBadgeVisible(b As Boolean)			'ignoredeadcode
 	bBadgeVisible = b
 	CustProps.put("BadgeVisible", b)
 	If mElement = Null Then Return
@@ -621,7 +621,7 @@ End Sub
 
 
 'set Open
-Sub setOpen(b As Boolean)
+Sub setOpen(b As Boolean)			'ignoredeadcode
 	bOpen = b
 	CustProps.put("Open", b)
 	If mElement = Null Then Return
@@ -728,7 +728,7 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 End Sub
 
 'clear menu & child items
-Sub Clear
+Sub Clear			'ignoredeadcode
 	Items.Initialize 
 	UI.ClearByID($"${mName}_items"$)
 End Sub

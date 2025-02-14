@@ -16,6 +16,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "modalview")
+	pgIndex.UpdateTitle("SDUI5Modal")
 End Sub
 
 Private Sub btnShowModal1_Click (e As BANanoEvent)

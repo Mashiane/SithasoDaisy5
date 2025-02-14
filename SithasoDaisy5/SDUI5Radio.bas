@@ -114,7 +114,7 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 'set Enabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)				'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -210,7 +210,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -289,7 +289,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setChecked(bChecked)
 	setAriaLabel(sAriaLabel)
 	setBackgroundColor(sBackgroundColor)
-	setChecked(bChecked)
 	setGroupName(sGroupName)
 	setValue(sValue)
 	setCheckedColor(sCheckedColor)
@@ -297,7 +296,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	Dim xChecked As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
@@ -327,28 +326,28 @@ Sub getLegend As String
 End Sub
 
 'set Aria Label
-Sub setAriaLabel(s As String)
+Sub setAriaLabel(s As String)					'ignoredeadcode
 	sAriaLabel = s
 	CustProps.put("AriaLabel", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttr(mElement, "aria-label", s)
 End Sub
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)				'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
 End Sub
 'set Checked
-Sub setChecked(b As Boolean)
+Sub setChecked(b As Boolean)				'ignoredeadcode
 	bChecked = b
 	CustProps.put("Checked", b)
 	If mElement = Null Then Return
 	mElement.SetChecked(bChecked)
 End Sub
 'set Checked Color
-Sub setCheckedColor(s As String)
+Sub setCheckedColor(s As String)				'ignoredeadcode
 	sCheckedColor = s
 	CustProps.put("CheckedColor", s)
 	If mElement = Null Then Return
@@ -356,14 +355,14 @@ Sub setCheckedColor(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "radio", sColor)
 End Sub
 'set Group Name
-Sub setGroupName(s As String)
+Sub setGroupName(s As String)			'ignoredeadcode
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
@@ -387,7 +386,7 @@ End Sub
 
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -395,7 +394,7 @@ Sub setSize(s As String)
 	UI.SetSize(mElement, "size", "radio", sSize)
 End Sub
 'set Value
-Sub setValue(s As String)
+Sub setValue(s As String)				'ignoredeadcode
 	sValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return

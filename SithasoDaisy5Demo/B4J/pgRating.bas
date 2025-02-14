@@ -16,6 +16,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "ratingview")
+	pgIndex.UpdateTitle("SDUI5Rating")
 End Sub
 
 Private Sub SDUI5Rating1_Change (Value As String)

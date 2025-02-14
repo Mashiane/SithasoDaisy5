@@ -110,7 +110,7 @@ Sub OnEvent(event As String, methodName As String)
 End Sub
 
 'set text
-Sub setText(text As String)
+Sub setText(text As String)				'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -176,7 +176,7 @@ End Sub
 
 'set Indicator Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-Sub setPosition(s As String)
+Sub setPosition(s As String)					'ignoredeadcode
 	sPosition = s
 	CustProps.put("Position", s)
 	If mElement = Null Then Return
@@ -193,7 +193,7 @@ Sub getPosition As String
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)			'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
@@ -201,7 +201,7 @@ Sub setBackgroundColor(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)				'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -217,7 +217,7 @@ Sub setColor(s As String)
 End Sub
 'set Indicator Size
 'options: xs|none|sm|md|lg|xl
-Sub setIndicatorSize(s As String)
+Sub setIndicatorSize(s As String)			'ignoredeadcode
 	sIndicatorSize = s
 	CustProps.put("IndicatorSize", s)
 	If mElement = Null Then Return
@@ -232,7 +232,7 @@ Sub setIndicatorSize(s As String)
 End Sub
 'set Type Of
 'options: badge|status|text
-Sub setTypeOf(s As String)
+Sub setTypeOf(s As String)				'ignoredeadcode
 	sTypeOf = s
 	CustProps.put("TypeOf", s)
 	If mElement = Null Then Return

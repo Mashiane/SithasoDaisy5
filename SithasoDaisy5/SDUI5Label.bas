@@ -412,7 +412,7 @@ End Sub
 
 
 'set Group Name
-Sub setGroupName(s As String)
+Sub setGroupName(s As String)			'ignoredeadcode
 	sGroupName = s
 	CustProps.put("GroupName", s)
 	If mElement = Null Then Return
@@ -424,7 +424,7 @@ Sub getGroupName As String
 End Sub
 
 'set Checked Color
-Sub setCheckedColor(s As String)
+Sub setCheckedColor(s As String)			'ignoredeadcode
 	sCheckedColor = s
 	CustProps.put("CheckedColor", s)
 	If mElement = Null Then Return
@@ -437,42 +437,42 @@ End Sub
 
 
 'set Label Width
-Sub setLabelWidth(s As String)
+Sub setLabelWidth(s As String)				'ignoredeadcode
 	sLabelWidth = s
 	CustProps.put("LabelWidth", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidthByID($"${mName}_prefix"$, s)
 End Sub
-'set Max Length
-Sub setMaxLength(s As String)
+'set Max Length	
+Sub setMaxLength(s As String)				'ignoredeadcode
 	sMaxLength = s
 	CustProps.put("MaxLength", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "maxlength", s)
 End Sub
 'set Max Value
-Sub setMaxValue(s As String)
+Sub setMaxValue(s As String)			'ignoredeadcode
 	sMaxValue = s
 	CustProps.put("MaxValue", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "max", s)
 End Sub
 'set Min Length
-Sub setMinLength(s As String)
+Sub setMinLength(s As String)			'ignoredeadcode
 	sMinLength = s
 	CustProps.put("MinLength", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "minlength", s)
 End Sub
 'set Min Value
-Sub setMinValue(s As String)
+Sub setMinValue(s As String)				'ignoredeadcode
 	sMinValue = s
 	CustProps.put("MinValue", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "min", s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)				'ignoredeadcode
 	bRequired = b
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
@@ -483,7 +483,7 @@ Sub setRequired(b As Boolean)
 	End If
 End Sub
 'set Step Value
-Sub setStepValue(s As String)
+Sub setStepValue(s As String)			'ignoredeadcode
 	sStepValue = s
 	CustProps.put("StepValue", s)
 	If mElement = Null Then Return
@@ -519,7 +519,7 @@ Sub getStepValue As String
 End Sub
 
 'set Label
-Sub setLabel(s As String)
+Sub setLabel(s As String)				'ignoredeadcode
 	sLabel = s
 	CustProps.put("Label", s)
 	If mElement = Null Then Return
@@ -530,7 +530,7 @@ Sub setLabel(s As String)
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)			'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
@@ -570,7 +570,7 @@ Sub setInputType(s As String)
 End Sub
 
 'set Placeholder
-Sub setPlaceholder(s As String)
+Sub setPlaceholder(s As String)			'ignoredeadcode
 	sPlaceholder = s
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return
@@ -584,7 +584,7 @@ End Sub
 
 'set Options from a MV field
 'b4j:b4j; b4i:b4i; b4r:b4r
-Sub setOptions(s As String)
+Sub setOptions(s As String)					'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -596,7 +596,7 @@ Sub setOptions(s As String)
 End Sub
 
 'load the items from a map
-Sub SetOptionsFromMap(m As Map)
+Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 	If mElement = Null Then Return
 	Clear
 	Dim sb As StringBuilder
@@ -625,7 +625,7 @@ Sub getOptions As String
 	Return sRawOptions
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	Select Case sInputType
 	Case "select"
@@ -647,7 +647,7 @@ End Sub
 
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -668,7 +668,7 @@ Sub setSize(s As String)
 	End Select
 End Sub
 'set Suffix
-Sub setSuffix(s As String)
+Sub setSuffix(s As String)				'ignoredeadcode
 	sSuffix = s
 	CustProps.put("Suffix", s)
 	If mElement = Null Then Return
@@ -679,7 +679,7 @@ Sub setSuffix(s As String)
 End Sub
 
 'set Validator
-Sub setValidator(b As Boolean)
+Sub setValidator(b As Boolean)				'ignoredeadcode
 	bValidator = b
 	CustProps.put("Validator", b)
 	If mElement = Null Then Return

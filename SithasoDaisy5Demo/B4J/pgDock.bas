@@ -17,6 +17,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "dockview")
+	pgIndex.UpdateTitle("SDUI5Dock")
 End Sub
 
 Private Sub SDUI5Button3_Click (e As BANanoEvent)

@@ -219,7 +219,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	UI.ClearByID($"${mName}_content"$)
 End Sub
 

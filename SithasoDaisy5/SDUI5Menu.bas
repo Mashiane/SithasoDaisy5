@@ -732,7 +732,7 @@ Sub SetItemVisible(item As String, b As Boolean)
 End Sub
 
 'clear menu & child items
-Sub Clear
+Sub Clear			'ignoredeadcode
 	Items.Initialize
 	UI.Clear(mElement)
 End Sub

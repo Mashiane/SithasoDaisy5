@@ -16,6 +16,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "swapview")
+	pgIndex.UpdateTitle("SDUI5Swap")
 End Sub
 
 Private Sub SDUI5Swap2_Change (value As Boolean)

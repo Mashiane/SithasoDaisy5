@@ -226,7 +226,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
 End Sub
 
-private Sub itemchange(e As BANanoEvent)
+private Sub itemchange(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
 	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sParentID}_change"$, Array(itemName))
@@ -246,7 +246,7 @@ Sub getText As String
 End Sub
 
 'set Active
-Sub setActive(b As Boolean)
+Sub setActive(b As Boolean)		'ignoredeadcode
 	bActive = b
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
@@ -288,7 +288,7 @@ Sub setBorderColor(s As String)
 '	If s <> "" Then UI.AddClass(mElement, "border-color-" & s)
 End Sub
 'set Disabled
-Sub setEnabled(b As Boolean)
+Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.put("Enabled", b)
 	If mElement = Null Then Return

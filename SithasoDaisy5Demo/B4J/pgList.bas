@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "listview")
+	pgIndex.UpdateTitle("SDUI5List")
 	'
 	items.Initialize
 	items.Add(CreateMap("id":1, "name":"Dia Lupa", "album":"Remaining Season", "display":"https://img.daisyui.com/images/profile/demo/1@94.webp", _

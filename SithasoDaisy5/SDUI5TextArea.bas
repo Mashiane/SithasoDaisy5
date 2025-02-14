@@ -142,8 +142,8 @@ Sub getVisible As Boolean
 	bVisible = UI.GetVisible(mElement)
 	Return bVisible
 End Sub
-'set Enabled
-Sub setEnabled(b As Boolean)
+'set Enabled			
+Sub setEnabled(b As Boolean)				'ignoredeadcode
 	bEnabled = b
 	CustProps.Put("Enabled", b)
 	If mElement = Null Then Return
@@ -389,7 +389,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Auto Size To Content
-Sub setAutoSizeToContent(b As Boolean)
+Sub setAutoSizeToContent(b As Boolean)		'ignoredeadcode
 	bAutoSizeToContent = b
 	CustProps.put("AutoSizeToContent", b)
 	If mElement = Null Then Return
@@ -400,7 +400,7 @@ Sub setAutoSizeToContent(b As Boolean)
 	End If
 End Sub
 'set Max Height
-Sub setMaxHeight(s As String)
+Sub setMaxHeight(s As String)				'ignoredeadcode
 	sMaxHeight = s
 	CustProps.put("MaxHeight", s)
 	If mElement = Null Then Return
@@ -415,7 +415,7 @@ Sub setMaxHeight(s As String)
 	End Select
 End Sub
 'set Max Width
-Sub setMaxWidth(s As String)
+Sub setMaxWidth(s As String)			'ignoredeadcode
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
@@ -430,7 +430,7 @@ Sub setMaxWidth(s As String)
 	End Select
 End Sub
 'set Min Height
-Sub setMinHeight(s As String)
+Sub setMinHeight(s As String)			'ignoredeadcode
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
@@ -445,7 +445,7 @@ Sub setMinHeight(s As String)
 	End Select
 End Sub
 'set Min Width
-Sub setMinWidth(s As String)
+Sub setMinWidth(s As String)			'ignoredeadcode
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return
@@ -481,7 +481,7 @@ Sub getMinWidth As String
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -502,12 +502,12 @@ Sub getWidth As String
 End Sub
 
 
-private Sub changed1(e As BANanoEvent)			'ignore
+private Sub changed1(e As BANanoEvent)			'ignoredeadcode
 	Dim cvalue As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mName}_input"$, Array(cvalue))
 End Sub
 
-private Sub changed(e As BANanoEvent)			'ignore
+private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	Dim cvalue As String = mElement.GetValue
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(cvalue))
 End Sub
@@ -524,7 +524,7 @@ Sub getInputType As String
 End Sub
 
 'set Prepend Visible
-Sub setPrependVisible(b As Boolean)
+Sub setPrependVisible(b As Boolean)				'ignoredeadcode
 	bPrependVisible = b
 	CustProps.put("PrependVisible", b)
 	If mElement = Null Then Return
@@ -532,7 +532,7 @@ Sub setPrependVisible(b As Boolean)
 End Sub
 
 'set Prepend Icon
-Sub setPrependIcon(s As String)
+Sub setPrependIcon(s As String)				'ignoredeadcode
 	sPrependIcon = s
 	CustProps.put("PrependIcon", s)
 	If mElement = Null Then Return
@@ -550,14 +550,14 @@ Sub setPrependIcon(s As String)
 End Sub
 
 'set Append Visible
-Sub setAppendVisible(b As Boolean)
+Sub setAppendVisible(b As Boolean)			'ignoredeadcode
 	bAppendVisible = b
 	CustProps.put("AppendVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_append"$, b)
 End Sub
 
-Sub setAppendIcon(s As String)
+Sub setAppendIcon(s As String)				'ignoredeadcode
 	sAppendIcon = s
 	CustProps.put("AppendIcon", s)
 	If mElement = Null Then Return
@@ -594,14 +594,14 @@ End Sub
 
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setColor(s As String)
+Sub setColor(s As String)				'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetColor(mElement, "color", "textarea", sColor)
 End Sub
 'set Ghost
-Sub setGhost(b As Boolean)
+Sub setGhost(b As Boolean)					'ignoredeadcode
 	bGhost = b
 	CustProps.put("Ghost", b)
 	If mElement = Null Then Return
@@ -612,7 +612,7 @@ Sub setGhost(b As Boolean)
 	End If
 End Sub
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -633,14 +633,14 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Placeholder
-Sub setPlaceholder(s As String)
+Sub setPlaceholder(s As String)			'ignoredeadcode
 	sPlaceholder = s
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttr(mElement, "placeholder", s)
 End Sub
 'set Required
-Sub setRequired(b As Boolean)
+Sub setRequired(b As Boolean)			'ignoredeadcode
 	bRequired = b
 	CustProps.put("Required", b)
 	If mElement = Null Then Return
@@ -656,7 +656,7 @@ Sub setRequired(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -692,7 +692,7 @@ Sub setValidatorHint(s As String)
 	If s <> "" Then UI.SetAttr(mElement, "validator-hint", s)
 End Sub
 'set Value
-Sub setValue(s As String)
+Sub setValue(s As String)				'ignoredeadcode
 	sValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return

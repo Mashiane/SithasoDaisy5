@@ -209,7 +209,7 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 'set value
-Sub setValue(i As Int)
+Sub setValue(i As Int)			'ignoredeadcode
 	iValue = i
 	CustProps.Put("Value", i)
 	If mElement = Null Then Return
@@ -341,7 +341,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)				'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -433,14 +433,14 @@ Sub setColor(s As String)
 	If s <> "" Then UI.SetColor(mElement, "color", "progress", s)
 End Sub
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)				'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, s)
 End Sub
 'set Indeterminate
-Sub setIndeterminate(b As Boolean)
+Sub setIndeterminate(b As Boolean)				'ignoredeadcode
 	bIndeterminate = b
 	CustProps.put("Indeterminate", b)
 	If mElement = Null Then Return

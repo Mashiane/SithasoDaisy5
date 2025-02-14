@@ -14,6 +14,8 @@ Version=10
 #DesignerProperty: Key: Opacity, DisplayName: Opacity, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Opacity
 #DesignerProperty: Key: ListCol, DisplayName: List Col, FieldType: String, DefaultValue: none, Description: List Col, List: grow|none|wrap
 #DesignerProperty: Key: FontVariant, DisplayName: Font Variant, FieldType: String, DefaultValue: none, Description: Font Variant, List: diagonal-fractions|lining-nums|none|normal-nums|oldstyle-nums|ordinal|proportional-nums|slashed-zero|stacked-fractions|tabular-nums
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: ApplyDefaults, DisplayName: Apply Defaults, FieldType: Boolean, DefaultValue: True, Description: Apply Defaults
 #DesignerProperty: Key: Decoration, DisplayName: Decoration, FieldType: String, DefaultValue: none, Description: Decoration, List: line-through|no-underline|none|underline
 #DesignerProperty: Key: FontWeight, DisplayName: Font Weight, FieldType: String, DefaultValue: none, Description: Font Weight, List: black|bold|extrabold|extralight|light|medium|none|normal|semibold|thin
@@ -23,7 +25,18 @@ Version=10
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: none, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Transform, DisplayName: Transform, FieldType: String, DefaultValue: none, Description: Transform, List: capitalize|lowercase|none|normal-case|uppercase
-#DesignerProperty: Key: VerticalAlign, DisplayName: Vertical Align, FieldType: String, DefaultValue: none, Description: Vertical Align, List: baseline|bottom|middle|none|text-bottom|text-top|top
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
+#DesignerProperty: Key: AlignContent, DisplayName: Align Content, FieldType: String, DefaultValue: none, Description: Align Content, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
+#DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Align Items, List: baseline|center|end|none|start|stretch
+#DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: none, Description: Align Self, List: auto|baseline|center|end|none|start|stretch
+#DesignerProperty: Key: JustifyContent, DisplayName: Justify Content, FieldType: String, DefaultValue: none, Description: Justify Content, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
+#DesignerProperty: Key: JustifyItems, DisplayName: Justify Items, FieldType: String, DefaultValue: none, Description: Justify Items, List: center|end|none|normal|start|stretch
+#DesignerProperty: Key: JustifySelf, DisplayName: Justify Self, FieldType: String, DefaultValue: none, Description: Justify Self, List: auto|center|end|none|start|stretch
+#DesignerProperty: Key: PlaceContent, DisplayName: Place Content, FieldType: String, DefaultValue: none, Description: Place Content, List: around|baseline|between|center|end|evenly|none|start|stretch
+#DesignerProperty: Key: PlaceItems, DisplayName: Place Items, FieldType: String, DefaultValue: none, Description: Place Items, List: baseline|center|end|none|start|stretch
+#DesignerProperty: Key: PlaceSelf, DisplayName: Place Self, FieldType: String, DefaultValue: none, Description: Place Self, List: auto|center|end|none|start|stretch
 #DesignerProperty: Key: WordBreak, DisplayName: Word Break, FieldType: String, DefaultValue: none, Description: Word Break, List: all|none|normal|words
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -66,7 +79,6 @@ Sub Class_Globals
 	Private sTextSize As String = "none"
 	Private sTextTag As String = "p"
 	Private sTransform As String = "none"
-	Private sVerticalAlign As String = "none"
 	Private sWordBreak As String = "none"
 	Private bLoremIpsum As Boolean = False
 	Public CONST DECORATION_LINE_THROUGH As String = "line-through"
@@ -99,13 +111,6 @@ Sub Class_Globals
 	Public CONST TRANSFORM_NONE As String = "none"
 	Public CONST TRANSFORM_NORMAL_CASE As String = "normal-case"
 	Public CONST TRANSFORM_UPPERCASE As String = "uppercase"
-	Public CONST VERTICALALIGN_BASELINE As String = "baseline"
-	Public CONST VERTICALALIGN_BOTTOM As String = "bottom"
-	Public CONST VERTICALALIGN_MIDDLE As String = "middle"
-	Public CONST VERTICALALIGN_NONE As String = "none"
-	Public CONST VERTICALALIGN_TEXT_BOTTOM As String = "text-bottom"
-	Public CONST VERTICALALIGN_TEXT_TOP As String = "text-top"
-	Public CONST VERTICALALIGN_TOP As String = "top"
 	Public CONST WORDBREAK_ALL As String = "all"
 	Public CONST WORDBREAK_NONE As String = "none"
 	Public CONST WORDBREAK_NORMAL As String = "normal"
@@ -128,6 +133,20 @@ Sub Class_Globals
 	Public CONST FONTVARIANT_SLASHED_ZERO As String = "slashed-zero"
 	Public CONST FONTVARIANT_STACKED_FRACTIONS As String = "stacked-fractions"
 	Public CONST FONTVARIANT_TABULAR_NUMS As String = "tabular-nums"
+	Private bCenterChildren As Boolean
+	Private sAlignContent As String = "none"
+	Private sAlignItems As String = "none"
+	Private sJustifyContent As String = "none"
+	Private sJustifyItems As String = "none"
+	Private sJustifySelf As String = "none"
+	Private sPlaceContent As String = "none"
+	Private sPlaceItems As String = "none"
+	Private sPlaceSelf As String = "none"
+	Private sRounded As String = "none"
+	Private sShadow As String = "none"
+	Private sAlignSelf As String = ""
+	Private sHeight As String = ""
+	Private sWidth As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -269,7 +288,7 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 'set text
-Sub setText(text As String)
+Sub setText(text As String)			'ignoredeadcode
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
@@ -295,6 +314,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sAlignContent = Props.GetDefault("AlignContent", "none")
+		sAlignContent = modSD5.CStr(sAlignContent)
+		If sAlignContent = "none" Then sAlignContent = ""
+		sAlignItems = Props.GetDefault("AlignItems", "none")
+		sAlignItems = modSD5.CStr(sAlignItems)
+		If sAlignItems = "none" Then sAlignItems = ""
+		sAlignSelf = Props.GetDefault("AlignSelf", "none")
+		sAlignSelf = modSD5.CStr(sAlignSelf)
+		If sAlignSelf = "none" Then sAlignSelf = ""
+		sJustifyContent = Props.GetDefault("JustifyContent", "none")
+		sJustifyContent = modSD5.CStr(sJustifyContent)
+		If sJustifyContent = "none" Then sJustifyContent = ""
+		sJustifyItems = Props.GetDefault("JustifyItems", "none")
+		sJustifyItems = modSD5.CStr(sJustifyItems)
+		If sJustifyItems = "none" Then sJustifyItems = ""
+		sJustifySelf = Props.GetDefault("JustifySelf", "none")
+		sJustifySelf = modSD5.CStr(sJustifySelf)
+		If sJustifySelf = "none" Then sJustifySelf = ""
+		sPlaceContent = Props.GetDefault("PlaceContent", "none")
+		sPlaceContent = modSD5.CStr(sPlaceContent)
+		If sPlaceContent = "none" Then sPlaceContent = ""
+		sPlaceItems = Props.GetDefault("PlaceItems", "none")
+		sPlaceItems = modSD5.CStr(sPlaceItems)
+		If sPlaceItems = "none" Then sPlaceItems = ""
+		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
+		sPlaceSelf = modSD5.CStr(sPlaceSelf)
+		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		bApplyDefaults = Props.GetDefault("ApplyDefaults", True)
 		bApplyDefaults = modSD5.CBool(bApplyDefaults)
 		sDecoration = Props.GetDefault("Decoration", "none")
@@ -321,9 +367,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTransform = Props.GetDefault("Transform", "none")
 		sTransform = modSD5.CStr(sTransform)
 		If sTransform = "none" Then sTransform = ""
-		sVerticalAlign = Props.GetDefault("VerticalAlign", "none")
-		sVerticalAlign = modSD5.CStr(sVerticalAlign)
-		If sVerticalAlign = "none" Then sVerticalAlign = ""
 		sWordBreak = Props.GetDefault("WordBreak", "none")
 		sWordBreak = modSD5.CStr(sWordBreak)
 		If sWordBreak = "none" Then sWordBreak = ""
@@ -341,6 +384,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sFontVariant = Props.GetDefault("FontVariant", "none")
 		sFontVariant = modSD5.CStr(sFontVariant)
 		If sFontVariant = "none" Then sFontVariant = ""
+		bCenterChildren = Props.GetDefault("CenterChildren", False)
+		bCenterChildren = modSD5.CBool(bCenterChildren)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = modSD5.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		sHeight = Props.GetDefault("Height", "")
+		sHeight = modSD5.CStr(sHeight)
+		sWidth = Props.GetDefault("Width", "")
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If bApplyDefaults Then
@@ -366,11 +421,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End Select
 	End If
 	'
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
+	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
+	If sAlignItems <> "" Then UI.AddClassDT("items-" & sAlignItems)
+	If sAlignSelf <> "" Then UI.AddClassDT("self-" & sAlignSelf)
+	If sJustifyContent <> "" Then UI.AddClassDT("justify-" & sJustifyContent)
+	If sJustifyItems <> "" Then UI.AddClassDT("justify-items-" & sJustifyItems)
+	If sJustifySelf <> "" Then UI.AddClassDT("justify-self-" & sJustifySelf)
+	If sPlaceContent <> "" Then UI.AddClassDT("place-content-" & sPlaceContent)
+	If sPlaceItems <> "" Then UI.AddClassDT("place-items-" & sPlaceItems)
+	If sPlaceSelf <> "" Then UI.AddClassDT("place-self-" & sPlaceSelf)
+	If bCenterChildren Then UI.AddCenterChildrenDT
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)	
+	
 	If sFontVariant <> "" Then UI.AddClassDT(sFontVariant)
 	If sListCol <> "" Then UI.AddClassDT("list-col-" & sListCol)
 	If bLoremIpsum Then sText = modSD5.LoremIpsum(1)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
-	If sVerticalAlign <> "" Then UI.AddClassDT("align-" & sVerticalAlign)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -403,10 +472,157 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+'set Align Content
+'options: none|normal|center|start|end|between|around|evenly|baseline|stretch
+Sub setAlignContent(s As String)
+	sAlignContent = s
+	CustProps.put("AlignContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "content-" & s)
+End Sub
+'set Align Items
+'options: none|start|end|center|baseline|stretch
+Sub setAlignItems(s As String)
+	sAlignItems = s
+	CustProps.put("AlignItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "items-" & s)
+End Sub
+'set Align Self
+'options: none|auto|start|end|center|stretch|baseline
+Sub setAlignSelf(s As String)
+	sAlignSelf = s
+	CustProps.put("AlignSelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "self-" & s)
+End Sub
+'set Justify Content
+'options: none|start|end|center|between|around|evenly|stretch|baseline|normal
+Sub setJustifyContent(s As String)
+	sJustifyContent = s
+	CustProps.put("JustifyContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-" & s)
+End Sub
+'set Justify Items
+'options: none|start|end|center|stretch|normal
+Sub setJustifyItems(s As String)
+	sJustifyItems = s
+	CustProps.put("JustifyItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-items-" & s)
+End Sub
+'set Justify Self
+'options: none|auto|start|end|center|stretch
+Sub setJustifySelf(s As String)
+	sJustifySelf = s
+	CustProps.put("JustifySelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "justify-self-" & s)
+End Sub
+'set Place Content
+'options: none|center|start|end|between|around|evenly|baseline|stretch
+Sub setPlaceContent(s As String)
+	sPlaceContent = s
+	CustProps.put("PlaceContent", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-content-" & s)
+End Sub
+'set Place Items
+'options: none|start|end|center|baseline|stretch
+Sub setPlaceItems(s As String)
+	sPlaceItems = s
+	CustProps.put("PlaceItems", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-items-" & s)
+End Sub
+'set Place Self
+'options: none|auto|start|end|center|stretch
+Sub setPlaceSelf(s As String)
+	sPlaceSelf = s
+	CustProps.put("PlaceSelf", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "place-self-" & s)
+End Sub
+'get Align Content
+Sub getAlignContent As String
+	Return sAlignContent
+End Sub
+'get Align Items
+Sub getAlignItems As String
+	Return sAlignItems
+End Sub
+'get Align Self
+Sub getAlignSelf As String
+	Return sAlignSelf
+End Sub
+'get Justify Content
+Sub getJustifyContent As String
+	Return sJustifyContent
+End Sub
+'get Justify Items
+Sub getJustifyItems As String
+	Return sJustifyItems
+End Sub
+'get Justify Self
+Sub getJustifySelf As String
+	Return sJustifySelf
+End Sub
+'get Place Content
+Sub getPlaceContent As String
+	Return sPlaceContent
+End Sub
+'get Place Items
+Sub getPlaceItems As String
+	Return sPlaceItems
+End Sub
+'get Place Self
+Sub getPlaceSelf As String
+	Return sPlaceSelf
+End Sub
+
+
+Sub setCenterChildren(b As Boolean)
+	bCenterChildren = b
+	CustProps.Put("CenterChildren", b)
+	If mElement = Null Then Return
+	If b Then UI.SetCenterChildren(mElement, True)
+End Sub
+
+Sub getCenterChildren As Boolean
+	Return bCenterChildren
+End Sub
+
+'set Height
+Sub setHeight(s As String)
+	sHeight = s
+	CustProps.put("Height", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
+End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+'get Height
+Sub getHeight As String
+	Return sHeight
+End Sub
+
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub
+
 
 'set Font Variant
 'options: diagonal-fractions|lining-nums|none|normal-nums|oldstyle-nums|ordinal|proportional-nums|slashed-zero|stacked-fractions|tabular-nums
-Sub setFontVariant(s As String)
+Sub setFontVariant(s As String)			'ignoredeadcode
 	sFontVariant = s
 	CustProps.put("FontVariant", s)
 	If mElement = Null Then Return
@@ -432,7 +648,7 @@ Sub getListCol As String
 End Sub
 
 'set Opacity
-Sub setOpacity(i As Int)
+Sub setOpacity(i As Int)			'ignoredeadcode
 	iOpacity = i
 	CustProps.put("Opacity", i)
 	If mElement = Null Then Return
@@ -451,7 +667,7 @@ Sub setApplyDefaults(b As Boolean)
 End Sub
 'set Decoration
 'options: line-through|no-underline|none|underline
-Sub setDecoration(s As String)
+Sub setDecoration(s As String)			'ignoredeadcode
 	sDecoration = s
 	CustProps.put("Decoration", s)
 	If mElement = Null Then Return
@@ -459,14 +675,14 @@ Sub setDecoration(s As String)
 End Sub
 'set Font Weight
 'options: black|bold|extrabold|extralight|light|medium|none|normal|semibold|thin
-Sub setFontWeight(s As String)
+Sub setFontWeight(s As String)			'ignoredeadcode
 	sFontWeight = s
 	CustProps.put("FontWeight", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddClassByID($"${mName}_text"$, "font-" & s)
 End Sub
 'set Italic
-Sub setItalic(b As Boolean)
+Sub setItalic(b As Boolean)			'ignoredeadcode
 	bItalic = b
 	CustProps.put("Italic", b)
 	If mElement = Null Then Return
@@ -478,7 +694,7 @@ Sub setItalic(b As Boolean)
 End Sub
 'set Overflow
 'options: none|overflow-clip|overflow-ellipsis|truncate
-Sub setOverflow(s As String)
+Sub setOverflow(s As String)				'ignoredeadcode
 	sOverflow = s
 	CustProps.put("Overflow", s)
 	If mElement = Null Then Return
@@ -493,7 +709,7 @@ Sub setTextAlign(s As String)
 	If s <> "" Then UI.SetStyle(mElement, "text-align", s)
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)				'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
@@ -501,7 +717,7 @@ Sub setTextColor(s As String)
 End Sub
 'set Text Size
 'options: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
-Sub setTextSize(s As String)
+Sub setTextSize(s As String)			'ignoredeadcode
 	sTextSize = s
 	CustProps.put("TextSize", s)
 	If mElement = Null Then Return
@@ -515,23 +731,15 @@ Sub setTextTag(s As String)
 End Sub
 'set Transform
 'options: capitalize|lowercase|none|normal-case|uppercase
-Sub setTransform(s As String)
+Sub setTransform(s As String)		'ignoredeadcode
 	sTransform = s
 	CustProps.put("Transform", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddClassByID($"${mName}_text"$, s)
 End Sub
-'set Vertical Align
-'options: baseline|bottom|middle|none|text-bottom|text-top|top
-Sub setVerticalAlign(s As String)
-	sVerticalAlign = s
-	CustProps.put("VerticalAlign", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "align-" & s)
-End Sub
 'set Word Break
 'options: all|none|normalwords
-Sub setWordBreak(s As String)
+Sub setWordBreak(s As String)			'ignoredeadcode
 	sWordBreak = s
 	CustProps.put("WordBreak", s)
 	If mElement = Null Then Return
@@ -577,17 +785,13 @@ End Sub
 Sub getTransform As String
 	Return sTransform
 End Sub
-'get Vertical Align
-Sub getVerticalAlign As String
-	Return sVerticalAlign
-End Sub
 'get Word Break
 Sub getWordBreak As String
 	Return sWordBreak
 End Sub
 
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
@@ -603,7 +807,7 @@ End Sub
 
 'set Icon Size
 'options: xs|none|sm|md|lg|xl
-Sub setIconSize(s As String)
+Sub setIconSize(s As String)			'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return

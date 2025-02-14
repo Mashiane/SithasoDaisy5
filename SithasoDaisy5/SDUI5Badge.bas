@@ -388,7 +388,7 @@ Sub setHeight(s As String)
 	If s <> "" Then UI.SetHeight(mElement, s)
 End Sub
 'set Left Icon
-Sub setLeftIcon(s As String)
+Sub setLeftIcon(s As String)			'ignoredeadcode
 	sLeftIcon = s
 	CustProps.put("LeftIcon", s)
 	If mElement = Null Then Return
@@ -404,14 +404,14 @@ Sub setLeftIcon(s As String)
 	End If
 End Sub
 'set Left Icon Color
-Sub setLeftIconColor(s As String)
+Sub setLeftIconColor(s As String)  'ignoredeadcode
 	sLeftIconColor = s
 	CustProps.put("LeftIconColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_lefticon"$, s)
 End Sub
 'set Left Icon Size
-Sub setLeftIconSize(s As String)
+Sub setLeftIconSize(s As String)   'ignoredeadcode
 	sLeftIconSize = s
 	CustProps.put("LeftIconSize", s)
 	If mElement = Null Then Return
@@ -432,7 +432,7 @@ Sub setOutline(b As Boolean)
 End Sub
 
 'set Right Icon
-Sub setRightIcon(s As String)
+Sub setRightIcon(s As String)		'ignoredeadcode
 	sRightIcon = s
 	CustProps.put("RightIcon", s)
 	If mElement = Null Then Return
@@ -448,14 +448,14 @@ Sub setRightIcon(s As String)
 	End If
 End Sub
 'set Right Icon Color
-Sub setRightIconColor(s As String)
+Sub setRightIconColor(s As String)			'ignoredeadcode
 	sRightIconColor = s
 	CustProps.put("RightIconColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_righticon"$, s)
 End Sub
 'set Right Icon Size
-Sub setRightIconSize(s As String)
+Sub setRightIconSize(s As String)				'ignoredeadcode
 	sRightIconSize = s
 	CustProps.put("RightIconSize", s)
 	If mElement = Null Then Return
@@ -476,7 +476,7 @@ Sub setRound(b As Boolean)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
@@ -496,7 +496,7 @@ Sub setSoft(b As Boolean)
 End Sub
 
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)				'ignoredeadcode
     sTextColor = s
     CustProps.put("TextColor", s)
 	If mElement = Null Then Return
@@ -504,7 +504,7 @@ Sub setTextColor(s As String)
 End Sub
 'set Text Size
 'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl
-Sub setTextSize(s As String)
+Sub setTextSize(s As String)				'ignoredeadcode
     sTextSize = s
     CustProps.put("TextSize", s)
 	If mElement = Null Then Return
@@ -602,7 +602,7 @@ End Sub
 
 'set Indicator Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-Sub setIndicatorPosition(s As String)
+Sub setIndicatorPosition(s As String)				'ignoredeadcode
 	sIndicatorPosition = s
 	CustProps.put("IndicatorPosition", s)
 	If mElement = Null Then Return

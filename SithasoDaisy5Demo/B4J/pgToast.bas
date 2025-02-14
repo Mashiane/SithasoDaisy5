@@ -18,6 +18,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "toastview")
+	pgIndex.UpdateTitle("SDUI5Toast")
 End Sub
 
 Private Sub toast5_Click (e As BANanoEvent)

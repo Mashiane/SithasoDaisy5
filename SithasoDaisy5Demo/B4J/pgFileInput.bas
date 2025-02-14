@@ -15,6 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "fileinputview")
+	pgIndex.UpdateTitle("SDUI5FileInput")
 End Sub
 
 Private Sub SDUI5FileInput1_Change (e As BANanoEvent)

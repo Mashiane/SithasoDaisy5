@@ -301,7 +301,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set value
-Sub setValue(text As String)
+Sub setValue(text As String)				'ignoredeadcode
 	sValue = text
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
@@ -314,7 +314,7 @@ Sub setValue(text As String)
 End Sub
 
 'set Value Text Color
-Sub setValueTextColor(s As String)
+Sub setValueTextColor(s As String)			'ignoredeadcode
 	sValueTextColor = s
 	CustProps.put("ValueTextColor", s)
 	If mElement = Null Then Return
@@ -328,14 +328,14 @@ Sub getValue As String
 End Sub
 
 'set Actions Visible
-Sub setActionsVisible(b As Boolean)
+Sub setActionsVisible(b As Boolean)			'ignoredeadcode
 	bActionsVisible = b
 	CustProps.put("ActionsVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_actions"$, b)
 End Sub
 'set Desc
-Sub setDesc(s As String)
+Sub setDesc(s As String)			'ignoredeadcode
 	sDesc = s
 	CustProps.put("Desc", s)
 	If mElement = Null Then Return
@@ -347,21 +347,21 @@ Sub setDesc(s As String)
 	End If
 End Sub
 'set Desc Text Color
-Sub setDescTextColor(s As String)
+Sub setDescTextColor(s As String)			'ignoredeadcode
 	sDescTextColor = s
 	CustProps.put("DescTextColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorbyid($"${mName}_desc"$, s)
 End Sub
 'set Figure Color
-Sub setFigureColor(s As String)
+Sub setFigureColor(s As String)				'ignoredeadcode
 	sFigureColor = s
 	CustProps.put("FigureColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorbyid($"${mName}_figure"$, s)
 End Sub
 'set Icon
-Sub setIcon(s As String)
+Sub setIcon(s As String)				'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
@@ -375,7 +375,7 @@ Sub setIcon(s As String)
 	UI.SetVisibleByID($"${mName}_image"$, True)
 End Sub
 'set Icon Height
-Sub setIconHeight(s As String)
+Sub setIconHeight(s As String)				'ignoredeadcode
 	sIconHeight = s
 	CustProps.put("IconHeight", s)
 	If mElement = Null Then Return
@@ -383,14 +383,14 @@ Sub setIconHeight(s As String)
 	If s <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
 End Sub
 'set Icon Visible
-Sub setIconVisible(b As Boolean)
+Sub setIconVisible(b As Boolean)				'ignoredeadcode
 	bIconVisible = b
 	CustProps.put("IconVisible", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_icon"$, b)
 End Sub
 'set Icon Width
-Sub setIconWidth(s As String)
+Sub setIconWidth(s As String)				'ignoredeadcode
 	sIconWidth = s
 	CustProps.put("IconWidth", s)
 	If mElement = Null Then Return
@@ -436,7 +436,7 @@ Sub setShadow(s As String)
 	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
 'set Title
-Sub setTitle(s As String)
+Sub setTitle(s As String)				'ignoredeadcode
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
@@ -448,7 +448,7 @@ Sub setTitle(s As String)
 	End If
 End Sub
 'set Title Text Color
-Sub setTitleTextColor(s As String)
+Sub setTitleTextColor(s As String)				'ignoredeadcode
 	sTitleTextColor = s
 	CustProps.put("TitleTextColor", s)
 	If mElement = Null Then Return

@@ -14,6 +14,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.Await(app.ClearPageView)
+	pgIndex.UpdateTitle("SDUI5Grid")
 	'create a container for the page
 	Dim cont As SDUI5Container
 	cont.Initialize(Me, "container1", "container1")

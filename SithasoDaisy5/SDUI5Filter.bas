@@ -212,7 +212,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setOptions(sRawOptions))
 End Sub
 
-Sub Clear
+Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.empty
 	mElement.Append($"<input id="reset_${mName}" class="btn filter-reset" value="reset" type="radio" name="${mName}" aria-label="All"></input>"$)
@@ -225,7 +225,7 @@ Sub AddOption(sKey As String, sValue As String)
 End Sub
 
 'set Raw Options
-Sub setOptions(s As String)
+Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -248,7 +248,7 @@ Sub setOptions(s As String)
 	Next
 End Sub
 
-private Sub changed(e As BANanoEvent)
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
 	Dim xChecked As String = UI.GetValueByID(e.ID)
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))

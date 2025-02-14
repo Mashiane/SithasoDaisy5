@@ -335,14 +335,14 @@ Sub setBackgroundImage(s As String)
 End Sub
 'set Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setContentFlexDirection(s As String)
+Sub setContentFlexDirection(s As String)			'ignoredeadcode
 	sContentFlexDirection = s
 	CustProps.put("ContentFlexDirection", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddClassByID($"${mName}_content"$, s)
 End Sub
 'set Content Text Align
-Sub setContentTextAlign(s As String)
+Sub setContentTextAlign(s As String)			'ignoredeadcode
 	sContentTextAlign = s
 	CustProps.put("ContentTextAlign", s)
 	If mElement = Null Then Return
@@ -357,7 +357,7 @@ Sub setHeight(s As String)
 End Sub
 'set Lg Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setLgContentFlexDirection(s As String)
+Sub setLgContentFlexDirection(s As String)			'ignoredeadcode
 	sLgContentFlexDirection = s
 	CustProps.put("LgContentFlexDirection", s)
 	If mElement = Null Then Return
@@ -365,7 +365,7 @@ Sub setLgContentFlexDirection(s As String)
 End Sub
 'set Md Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setMdContentFlexDirection(s As String)
+Sub setMdContentFlexDirection(s As String)			'ignoredeadcode
 	sMdContentFlexDirection = s
 	CustProps.put("MdContentFlexDirection", s)
 	If mElement = Null Then Return
@@ -386,28 +386,28 @@ Sub setMinWidth(s As String)
 	If s <> "" Then UI.SetMinWidth(mElement, s)
 End Sub
 'set Overlay
-Sub setOverlay(b As Boolean)
+Sub setOverlay(b As Boolean)			'ignoredeadcode
 	bOverlay = b
 	CustProps.put("Overlay", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_overlay"$, b)
 End Sub
 'set Raw Content Attributes
-Sub setContentAttributes(s As String)
+Sub setContentAttributes(s As String)				'ignoredeadcode
 	sRawContentAttributes = s
 	CustProps.put("RawContentAttributes", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttributesByID($"${mName}_content"$, s)
 End Sub
 'set Raw Content Class
-Sub setContentClass(s As String)
+Sub setContentClass(s As String)			'ignoredeadcode
 	sRawContentClass = s
 	CustProps.put("RawContentClass", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetClassesByID($"${mName}_content"$, s)
 End Sub
 'set Raw Content Style
-Sub setContentStyle(s As String)
+Sub setContentStyle(s As String)			'ignoredeadcode
 	sRawContentStyle = s
 	CustProps.put("RawContentStyle", s)
 	If mElement = Null Then Return
@@ -415,7 +415,7 @@ Sub setContentStyle(s As String)
 End Sub
 'set Sm Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setSmContentFlexDirection(s As String)
+Sub setSmContentFlexDirection(s As String)			'ignoredeadcode
 	sSmContentFlexDirection = s
 	CustProps.put("SmContentFlexDirection", s)
 	If mElement = Null Then Return
@@ -437,7 +437,7 @@ Sub setWidth(s As String)
 End Sub
 'set Xl Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setXlContentFlexDirection(s As String)
+Sub setXlContentFlexDirection(s As String)			'ignoredeadcode
 	sXlContentFlexDirection = s
 	CustProps.put("XlContentFlexDirection", s)
 	If mElement = Null Then Return
@@ -445,7 +445,7 @@ Sub setXlContentFlexDirection(s As String)
 End Sub
 'set Xxl Content Flex Direction
 'options: flex-col|flex-col-reverse|flex-row|flex-row-reverse
-Sub setXxlContentFlexDirection(s As String)
+Sub setXxlContentFlexDirection(s As String)			'ignoredeadcode
 	sXxlContentFlexDirection = s
 	CustProps.put("XxlContentFlexDirection", s)
 	If mElement = Null Then Return

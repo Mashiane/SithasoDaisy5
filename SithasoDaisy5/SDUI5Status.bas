@@ -258,7 +258,7 @@ Sub setHeight(s As String)
 End Sub
 'set Indicator Position
 'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-Sub setIndicatorPosition(s As String)
+Sub setIndicatorPosition(s As String)			'ignoredeadcode
 	sIndicatorPosition = s
 	CustProps.put("IndicatorPosition", s)
 	If mElement = Null Then Return
