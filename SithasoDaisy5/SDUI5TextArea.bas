@@ -357,14 +357,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
 					</button>
       			</div>"$).Get("#" & mName)	
+			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses} textarea" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
 	End Select
+	'
 	setPlaceholder(sPlaceholder)
 	setColor(sColor)
 	setEnabled(bEnabled)
-	setRequired(bRequired)
-	BANano.Await(setSize(sSize))
+	setRequired(bRequired)		
 	setGhost(bGhost)
 	setHeight(sHeight)
 	setValue(sValue)
@@ -374,16 +376,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setAppendVisible(bAppendVisible)
 		setPrependIcon(sPrependIcon)
 		setPrependVisible(bPrependVisible)
-	End Select
-	setWidth(sWidth)
+	End Select		
 	setAutoSizeToContent(bAutoSizeToContent)
+	UI.OnEvent(mElement, "change", Me, "changed")
+	UI.OnEvent(mElement, "input", Me, "changed1")
+	BANano.Await(setSize(sSize))
+	setWidth(sWidth)
 	setMaxWidth(sMaxWidth)
 	setMaxHeight(sMaxHeight)
 	setMinWidth(sMinWidth)
 	setMinHeight(sMinHeight)
-'	setVisible(bVisible)
-	UI.OnEvent(mElement, "change", Me, "changed")
-	UI.OnEvent(mElement, "input", Me, "changed1")
 End Sub
 
 'set Auto Size To Content
@@ -487,7 +489,7 @@ Sub setWidth(s As String)
 	Select Case sInputType
 	Case "legend"
 		UI.SetWidthByID($"${mName}_join"$, s)
-	Case "buttons", "label-input"
+	Case "buttons", "label-input", "chip-group"
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "normal"
 		UI.SetWidth(mElement, sWidth)
@@ -661,7 +663,7 @@ Sub setSize(s As String)
 	If s = "" Then sSize = "md"
 	BANano.Await(UI.SetSize(mElement, "size", "textarea", sSize))
 	Select Case sInputType
-	Case "legend", "buttons", "buttons-floating"
+	Case "legend", "buttons", "buttons-floating", "chip-group"
 		BANano.Await(UI.SetSizeByID($"${mName}_prepend"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))

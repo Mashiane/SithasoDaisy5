@@ -219,12 +219,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sOptionWidth = modSD5.CStr(sOptionWidth)
 	End If
 	'
+	
+	UI.AddClassDT("tabs tabs-box inline-flex flex-nowrap whitespace-nowrap")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	UI.AddAttrDT("role", "tablist")
-	UI.AddClassDT("tabs tabs-box inline-flex flex-nowrap whitespace-nowrap")
-	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
-	'
+	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)	'
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -336,7 +336,6 @@ End Sub
 private Sub SetActiveInternal(item As String)
 	item = modSD5.CleanID(item)
 	For Each k As String In items.Keys
-		Log(k)
 		UI.SetBackgroundColorStyleByID(k, "")
 		UI.SetColorStyleByID(k, "")
 	Next

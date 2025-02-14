@@ -183,7 +183,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -192,14 +192,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -213,7 +213,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -597,7 +597,7 @@ Private Sub BuildRow(xRow As GridRow) As String
 	For rowCnt = 1 To rowTot
 		LastRow = LastRow + 1
 		Dim rowKey As String = $"${mName}r${LastRow}"$
-		sb.Append($"<div id="${rowKey}" class="row ${BuildRowClass(xRow)}">"$)
+		sb.Append($"<div id="${rowKey}" class="grid grid-cols-12 ${BuildRowClass(xRow)}">"$)
 		'get the columns to add
 		Dim cols As List = xRow.Columns
 		'how many columns to add here
@@ -630,7 +630,7 @@ Private Sub BuildRow(xRow As GridRow) As String
 				Dim sbCol As StringBuilder
 				sbCol.Initialize
 				sbCol.Append($"<div id="${cellKey}" ${sbStyle.tostring}"$)
-				sbCol.Append($"class="col "$)
+				sbCol.Append($"class="p-2 "$)
 				sbCol.Append(BuildColumnClass(Column))
 				sbCol.Append(" ")
 				sbCol.Append(BuildSpans(Column))
@@ -697,28 +697,56 @@ private Sub BuildMarginPadding(sprefix As String, gma As String, gmx As String, 
 	Return sout
 End Sub
 
+'private Sub BuildSpans1(col As GridColumn) As String
+'	Dim sb As StringBuilder
+'	sb.Initialize
+'	If col.gxs <> "" And col.gxs <> "0" Then sb.Append($"col-xs-${col.gxs} "$)
+'	If col.gsm <> "" And col.gsm <> "0" Then sb.Append($"col-sm-${col.gsm} "$)
+'	If col.gmd <> "" And col.gmd <> "0" Then sb.Append($"col-md-${col.gmd} "$)
+'	If col.glg <> "" And col.glg <> "0" Then sb.Append($"col-lg-${col.glg} "$)
+'	If col.gxl <> "" And col.gxl <> "0" Then sb.Append($"col-xl-${col.gxl} "$)
+'	Dim sout As String = sb.ToString
+'	sb.Initialize
+'	sout = sout.trim
+'	Return sout
+'End Sub
+
 private Sub BuildSpans(col As GridColumn) As String
 	Dim sb As StringBuilder
 	sb.Initialize
-	If col.gxs <> "" And col.gxs <> "0" Then sb.Append($"col-xs-${col.gxs} "$)
-	If col.gsm <> "" And col.gsm <> "0" Then sb.Append($"col-sm-${col.gsm} "$)
-	If col.gmd <> "" And col.gmd <> "0" Then sb.Append($"col-md-${col.gmd} "$)
-	If col.glg <> "" And col.glg <> "0" Then sb.Append($"col-lg-${col.glg} "$)
-	If col.gxl <> "" And col.gxl <> "0" Then sb.Append($"col-xl-${col.gxl} "$)
+	sb.Append($"col-span-12 "$)
+	If col.gsm <> "" And col.gsm <> "0" Then sb.Append($"sm:col-span-${col.gsm} "$)
+	If col.gmd <> "" And col.gmd <> "0" Then sb.Append($"md:col-span-${col.gmd} "$)
+	If col.glg <> "" And col.glg <> "0" Then sb.Append($"lg:col-span-${col.glg} "$)
+	If col.gxl <> "" And col.gxl <> "0" Then sb.Append($"xl:col-span-${col.gxl} "$)
 	Dim sout As String = sb.ToString
 	sb.Initialize
 	sout = sout.trim
 	Return sout
 End Sub
 
+'private Sub BuildOffsets1(col As GridColumn) As String
+'	Dim sb As StringBuilder
+'	sb.Initialize
+'	If col.ofxs <> "" And col.gxs <> "0" Then sb.Append($"offset-xs-${col.ofxs} "$)
+'	If col.ofsm <> "" And col.gsm <> "0" Then sb.Append($"offset-sm-${col.ofsm} "$)
+'	If col.ofmd <> "" And col.gmd <> "0" Then sb.Append($"offset-md-${col.ofmd} "$)
+'	If col.oflg <> "" And col.glg <> "0" Then sb.Append($"offset-lg-${col.oflg} "$)
+'	If col.ofxl <> "" And col.gxl <> "0" Then sb.Append($"offset-xl-${col.ofxl} "$)
+'	Dim sout As String = sb.ToString
+'	sb.Initialize
+'	sout = sout.trim
+'	Return sout
+'End Sub
+
 private Sub BuildOffsets(col As GridColumn) As String
 	Dim sb As StringBuilder
 	sb.Initialize
-	If col.ofxs <> "" And col.gxs <> "0" Then sb.Append($"offset-xs-${col.ofxs} "$)
-	If col.ofsm <> "" And col.gsm <> "0" Then sb.Append($"offset-sm-${col.ofsm} "$)
-	If col.ofmd <> "" And col.gmd <> "0" Then sb.Append($"offset-md-${col.ofmd} "$)
-	If col.oflg <> "" And col.glg <> "0" Then sb.Append($"offset-lg-${col.oflg} "$)
-	If col.ofxl <> "" And col.gxl <> "0" Then sb.Append($"offset-xl-${col.ofxl} "$)
+	'If col.ofxs <> "" And col.gxs <> "0" Then sb.Append($"offset-xs-${col.ofxs} "$)
+	If col.ofsm <> "" And col.gsm <> "0" Then sb.Append($"sm:${modSD5.FixOffset(col.ofsm)} "$)
+	If col.ofmd <> "" And col.gmd <> "0" Then sb.Append($"md:${modSD5.FixOffset(col.ofmd)} "$)
+	If col.oflg <> "" And col.glg <> "0" Then sb.Append($"lg:${modSD5.FixOffset(col.oflg)} "$)
+	If col.ofxl <> "" And col.gxl <> "0" Then sb.Append($"xl:${modSD5.FixOffset(col.ofxl)} "$)
 	Dim sout As String = sb.ToString
 	sb.Initialize
 	sout = sout.trim

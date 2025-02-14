@@ -301,9 +301,9 @@ Sub setHideSelectorButton(b As Boolean)
 	CustProps.put("HideSelectorButton", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddClass(mElement, "[&::file-selector-button]:hidden p-2.5")
+		UI.AddClass(mElement, "[&::file-selector-button]:hidden")
 	Else
-		UI.RemoveClass(mElement, "[&::file-selector-button]:hidden p-2.5")
+		UI.RemoveClass(mElement, "[&::file-selector-button]:hidden")
 	End If
 End Sub
 

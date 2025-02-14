@@ -404,33 +404,6 @@ Private Sub Class_Globals
 End Sub
 
 
-#if css
-	body {
-		scrollbar-gutter: unset;
-	}
-	.tlradius {
-		border-top-left-radius:var(--radius-field,.25rem) !important;
-	}
-	.blradius {
-		border-bottom-left-radius:var(--radius-field,.25rem) !important;
-	}
-	.trradius {
-		border-top-right-radius:var(--radius-field,.25rem) !important;
-	}
-	.brradius {
-		border-bottom-right-radius:var(--radius-field,.25rem) !important;
-	}
-#End If
-
-#if css
-	input[type=search] {-webkit-appearance: searchfield !important;} input[type=search]::-webkit-search-cancel-	button {-webkit-appearance: searchfield-cancel-button !important;}
-#End If
-
-#if css
-	.flatpickr-wrapper {
-		width:100%
-	}
-#End If
 
 '<code>
 'Banano.Await(app.UsesPocketBase)
@@ -516,27 +489,6 @@ Sub SetTheme(s As String)
 	html.SetData("theme", s)
 End Sub
 
-#if css
-.unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
-#End If
-
-'#if css
-'.brzero {
-'	border-top-right-radius: 0px !important,
-'	border-bottom-right-radius: 0px !important
-'}
-'.blzero {
-'	border-top-left-radius: 0px !important,
-'	border-bottom-left-radius: 0px !important
-'}
-'#End If
 '
 'Sub SetRTL(b As Boolean)
 '	Select Case b

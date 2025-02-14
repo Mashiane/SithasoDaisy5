@@ -317,8 +317,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBodyClasses = modSD5.CStr(sBodyClasses)
 	End If
 	'
-	If bBorder = True Then UI.AddClassDT("card-border")
 	UI.AddClassDT("card")
+	If bBorder = True Then UI.AddClassDT("card-border")
 	If bDash = True Then UI.AddClassDT("card-dash")
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bImageFull = True Then UI.AddClassDT("image-full")

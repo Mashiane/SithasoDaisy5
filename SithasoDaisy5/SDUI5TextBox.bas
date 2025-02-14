@@ -350,6 +350,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
 					</button>
       			</div>"$).Get("#" & mName)	
+			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		End Select

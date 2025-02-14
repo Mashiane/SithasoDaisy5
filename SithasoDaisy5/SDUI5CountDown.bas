@@ -188,7 +188,7 @@ Sub setValue(text As String)
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_text"$, text)
-	UI.SetStyleComputedByID($"${mName}_text"$, "--value", text)
+	UI.SetStyleByID($"${mName}_text"$, "--value", text)
 End Sub
 'get value
 Sub getValue As String

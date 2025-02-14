@@ -257,11 +257,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValueTextColor = modSD5.CStr(sValueTextColor)
 	End If
 	'
+	UI.AddClassDT("stat")
 	If bPlaceItemsCenter = True Then UI.AddClassDT("place-items-center")
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	UI.AddClassDT("stat")
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

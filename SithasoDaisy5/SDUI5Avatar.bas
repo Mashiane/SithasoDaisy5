@@ -21,8 +21,7 @@ Version=10
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Badge Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BadgeVisible, DisplayName: Badge Visible, FieldType: Boolean, DefaultValue: False, Description: Badge Visible
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: primary, Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: 12, Description: Width & Height
 #DesignerProperty: Key: OnlineStatus, DisplayName: Online Status, FieldType: Boolean, DefaultValue: False, Description: Online Status
 #DesignerProperty: Key: Online, DisplayName: Online, FieldType: Boolean, DefaultValue: False, Description: Online
 #DesignerProperty: Key: OnlineColor, DisplayName: Online Color, FieldType: String, DefaultValue: , Description: Online Color
@@ -65,7 +64,6 @@ Sub Class_Globals
 	'Public Root As SDUIElement
 	Private sAvatarType As String = "image"
 	Private sBackgroundColor As String = "primary"
-	Private sHeight As String = ""
 	Private sImage As String = "./assets/600by600.jpg"
 	Private sMask As String = "circle"
 	Private bOnline As Boolean = False
@@ -77,7 +75,6 @@ Sub Class_Globals
 	Private sRingOffset As String = "2"
 	Private sRingOffsetColor As String = "base-100"
 	Private sTextColor As String = ""
-	Private sWidth As String = "12"
 	Public CONST AVATARTYPE_IMAGE As String = "image"
 	Public CONST AVATARTYPE_PLACEHOLDER As String = "placeholder"
 	Private sTextSize As String = ""
@@ -104,6 +101,7 @@ Sub Class_Globals
 	Private bActivator As Boolean = False
 	Private bRoundedField As Boolean = False
 	Private bChatImage As Boolean = False
+	Private sSize As String = "12"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -185,7 +183,7 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
@@ -245,8 +243,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeTextColor = True
 		sAvatarType = Props.GetDefault("AvatarType", "image")
 		sAvatarType = modSD5.CStr(sAvatarType)
-		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sSize = Props.GetDefault("Size", "12")
+		sSize = modSD5.CStr(sSize)
 		sImage = Props.GetDefault("Image", "./assets/600by600.jpg")
 		sImage = modSD5.CStr(sImage)
 		sMask = Props.GetDefault("Mask", "circle")
@@ -268,8 +266,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRingOffset = modSD5.CStr(sRingOffset)
 		sRingOffsetColor = Props.GetDefault("RingOffsetColor", "base-100")
 		sRingOffsetColor = modSD5.CStr(sRingOffsetColor)
-		sWidth = Props.GetDefault("Width", "12")
-		sWidth = modSD5.CStr(sWidth)
 		sTextSize = Props.GetDefault("TextSize", "")
 		sTextSize = modSD5.CStr(sTextSize)
 		sBadge = Props.GetDefault("Badge", "")
@@ -337,8 +333,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setBackgroundColor(sBackgroundColor)
 		setTextSize(sTextSize)
 	End Select
-	setWidth(sWidth)
-	setHeight(sHeight)
+	setSize(sSize)
 	setMask(sMask)
 	setOnline(bOnline)
 	setRing(bRing)
@@ -449,12 +444,15 @@ Sub setBackgroundColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_host"$, s)
 End Sub
-'set Height
-Sub setHeight(s As String)
-	sHeight = s
-	CustProps.put("Height", s)
+'set Size
+Sub setSize(s As String)
+	sSize = s
+	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeightByID($"${mName}_host"$, s)
+	If s <> "" Then 
+		UI.SetHeightByID($"${mName}_host"$, s)
+		UI.SetWidthByID($"${mName}_host"$, s)
+	End If
 End Sub
 'set Image
 Sub setImage(s As String)
@@ -554,13 +552,6 @@ Sub setTextColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorByID($"${mName}_host"$, s)
 End Sub
-'set Width
-Sub setWidth(s As String)
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidthByID($"${mName}_host"$, s)
-End Sub
 'get Avatar Type
 Sub getAvatarType As String
 	Return sAvatarType
@@ -569,9 +560,9 @@ End Sub
 Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
-'get Height
-Sub getHeight As String
-	Return sHeight
+'get Size
+Sub getSize As String
+	Return sSize
 End Sub
 'get Image
 Sub getImage As String
@@ -616,10 +607,6 @@ End Sub
 'get Text Color
 Sub getTextColor As String
 	Return sTextColor
-End Sub
-'get Width
-Sub getWidth As String
-	Return sWidth
 End Sub
 
 public Sub getParentID() As String

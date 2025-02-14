@@ -215,9 +215,13 @@ public Sub BuildExClass() As String
 	'
 	If ExcludeVisible = False Then
 		Dim bVisible As Boolean = modSD5.CBool(GetVisibleDT)
-		If bVisible = False Then AddClassDT("hidden")
+		If bVisible = False Then AddClassDT("hidden hide")
 	End If
 	'
+	Dim sClasses As String = GetClasses
+	Dim cl As List = GetClassList(sClasses)
+	classList = BANano.DeepMerge(classList, cl)
+	
 	Dim sMarginAXYTBLR As String = GetMarginAXYTBLR
 	sMarginAXYTBLR = modSD5.CStr(sMarginAXYTBLR)
 	Dim marginsM As Map = GetMarginPaddingMap(sMarginAXYTBLR)
@@ -250,9 +254,6 @@ Sub SetGutter(mElement As BANanoElement, s As String)
 	Dim sClass As String = modSD5.Join(";", gutList)
 	AddClass(mElement, sClass)	
 End Sub
-
-
-
 
 private Sub BuildStyles(o As Map) As String
 	Dim colStyle As StringBuilder
@@ -601,13 +602,11 @@ Sub AddClassList(mElement As BANanoElement, lst As List)
 	AddClass(mElement, sList)
 End Sub
 
-Sub AddStyleComputedMap(mElement As BANanoElement, ms As Map)
+Sub AddStyleMap(mElement As BANanoElement, ms As Map)
 	If mElement = Null Then Return
 	If ms.Size = 0 Then Return
-	For Each k As String In ms.Keys
-		Dim v As String = ms.Get(k)
-		AddStyleComputed(mElement, k, v)
-	Next
+	Dim svalue As String = BANano.ToJson(ms)
+	mElement.SetStyle(svalue)
 End Sub
 
 Sub ClearByID(sID As String)
@@ -648,13 +647,6 @@ End Sub
 
 public Sub GetHTML() As String
 	Return BANano.GetP(mSelf, "sHTML")
-End Sub
-
-'add a style to an element using a map
-Sub AddStyleMap(mElement As BANanoElement, ms As Map)
-	If mElement = Null Then Return
-	If ms.Size = 0 Then Return
-	mElement.SetStyle(BANano.ToJson(ms))
 End Sub
 
 'set attributes that are delimited by :;
@@ -922,41 +914,25 @@ Sub RemoveAttr(mElement As BANanoElement, attr As String)
 	mElement.RemoveAttr(attr)
 End Sub
 
-'add a computed style to the element
-Sub AddStyleComputed(mElement As BANanoElement, attr As String, text As String)
-	If mElement = Null Then Return
-	attr = modSD5.DeCamelCase(attr)
-	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))
-End Sub
-
-Sub SetStyleComputed(mElement As BANanoElement, attr As String, text As String)
-	If mElement = Null Then Return
-	attr = modSD5.DeCamelCase(attr)
-	mElement.GetField("style").RunMethod("setProperty", Array(attr, text))
-End Sub
-
 'add a styles to the element
 Sub SetStyle(mElement As BANanoElement, k As String, v As String)
 	If mElement = Null Then Return
 	k = modSD5.DeCamelCase(k)
-	Dim ms As Map = CreateMap()
-	ms.Put(k, v)
-	mElement.SetStyle(BANano.ToJson(ms))
+	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
 End Sub
 
 Sub SetStyleByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetStyle(mElement, k, v)
+	k = modSD5.DeCamelCase(k)
+	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
 End Sub
 
 'add a styles to the element
 Sub AddStyle(mElement As BANanoElement, k As String, v As String)
 	If mElement = Null Then Return
 	k = modSD5.DeCamelCase(k)
-	Dim ms As Map = CreateMap()
-	ms.Put(k, v)
-	mElement.SetStyle(BANano.ToJson(ms))
+	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
 End Sub
 
 Sub AddClassByID(sID As String, k As String)
@@ -969,12 +945,6 @@ Sub AddStyleByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	AddStyle(mElement, k, v)
-End Sub
-
-Sub SetStyleComputedByID(sID As String, k As String, v As String)
-	sID = modSD5.CleanID(sID)
-	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	AddStyleComputed(mElement, k, v)
 End Sub
 
 Sub AddStyleDT(k As String, v As String)
@@ -1084,6 +1054,19 @@ Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
 		mElement.SetData(rpClass, nv)
 		AddClass(mElement, nv)
 	End If	
+End Sub
+
+private Sub GetClassList(s As String) As List
+	Dim l As List
+	l.Initialize 
+	s = modSD5.CStr(s)
+	s = s.Replace(" ", ";")
+	s = s.Replace(CRLF, ";")
+	s = s.Replace("<br/>", ";")
+	s = s.Trim
+	If s = "" Then Return l
+	l = modSD5.StrParse(";", s)
+	Return l
 End Sub
 
 'remove a class from the element you can delimiter by ;
@@ -1199,9 +1182,9 @@ End Sub
 
 private Sub GetMarginPaddingMap(varOffsets As String) As Map
 	Dim mm As Map = CreateMap("a":"", "x":"", "y":"", "t":"", "b":"", "l":"", "r":"")
-	dim om as map = GetKeyValues(varOffsets, false)
+	Dim om As Map = GetKeyValues(varOffsets, False)
 	For Each k As String In om.Keys
-		dim v as string = om.Get(k)
+		Dim v As String = om.Get(k)
 		mm.Put(k, v)
 	Next
 	Return mm

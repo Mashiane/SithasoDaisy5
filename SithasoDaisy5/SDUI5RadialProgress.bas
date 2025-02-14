@@ -192,7 +192,7 @@ Sub setValue(text As String)
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
 	UI.SetAttr(mElement, "aria-valuenow", sValue)
-	UI.AddStyleComputed(mElement, "--value", sValue)
+	UI.AddStyle(mElement, "--value", sValue)
 	UI.SetText(mElement, sText)
 End Sub
 'get value
@@ -286,7 +286,7 @@ Sub setProgressSize(s As String)
     CustProps.put("ProgressSize", s)
 	If mElement = Null Then Return
 	If sProgressSize <> "" Then 
-		UI.AddStyleComputed(mElement, "--size", sProgressSize)
+		UI.AddStyle(mElement, "--size", sProgressSize)
 	End If
 End Sub
 'set Progress Thickness
@@ -295,7 +295,7 @@ Sub setProgressThickness(s As String)
 	CustProps.put("ProgressThickness", s)
 	If mElement = Null Then Return
 	If sProgressThickness <> "" Then 
-		UI.AddStyleComputed(mElement, "--thickness", sProgressThickness)
+		UI.AddStyle(mElement, "--thickness", sProgressThickness)
 	End If
 End Sub
 'set Text Color

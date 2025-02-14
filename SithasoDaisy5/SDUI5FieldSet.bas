@@ -239,9 +239,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
+	UI.AddClassDT("fieldset")
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddClassDT("border-" & sBorderColor)
-	UI.AddClassDT("fieldset")
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)

@@ -18,8 +18,7 @@ Sub Show(MainApp As SDUI5App)
 	Dim cont As SDUI5Container
 	cont.Initialize(Me, "container1", "container1")
 	cont.TextAlign = app.TEXTALIGN_CENTER
-	cont.ContainerFluid = True
-	cont.Width = "100%"
+	cont.Container = True
 	cont.ParentID = app.PageView
 	cont.ShowGridDesign = True
 	cont.AddComponent

@@ -235,11 +235,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sActive = modSD5.CStr(sActive)
 	End If
 	'
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sPlacement <> "" Then UI.AddClassDT("tabs-" & sPlacement)
-	If sStyle <> "" Then UI.AddClassDT("tabs-" & sStyle)
 	UI.AddClassDT("tabs whitespace-nowrap")
 	UI.AddAttrDT("role", "tablist")
+	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sPlacement <> "" Then UI.AddClassDT("tabs-" & sPlacement)
+	If sStyle <> "" Then UI.AddClassDT("tabs-" & sStyle)	
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	If sSize <> "" Then UI.AddSizeDT("tabs", sSize)
 	Dim xattrs As String = UI.BuildExAttributes

@@ -249,9 +249,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	UI.AddClassDT("navbar")
 	If bGlass = True Then UI.AddClassDT("glass")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	UI.AddClassDT("navbar")
+	
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)

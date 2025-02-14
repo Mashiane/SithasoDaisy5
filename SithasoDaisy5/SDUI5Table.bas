@@ -9077,7 +9077,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 		Case "radial"
 			fldVal = modSD5.CInt(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_radial"$).SetText($"${fldVal}%"$)
-			UI.SetStyleComputedByID($"#${mName}_${rowCnt1}_${colName}_radial"$, "--value", fldVal)
+			UI.SetStyleByID($"#${mName}_${rowCnt1}_${colName}_radial"$, "--value", fldVal)
 		Case "select", "selectgroup"
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_select"$).SetValue(fldVal)
 		Case "textbox",  "password", "number",  "passwordgroup", "textboxgroup", "dialer","telephone"

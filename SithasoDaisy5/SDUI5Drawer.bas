@@ -239,7 +239,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
 		<div id="${mName}_content" class="drawer-content flex flex-col"></div>
-		<div id="${mName}_side" class="drawer-side border z-50">
+		<div id="${mName}_side" class="drawer-side z-50">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 		</div>
 	</div>"$).Get("#" & mName)
@@ -357,6 +357,6 @@ Sub OpenDrawer(b As Boolean)
 End Sub
 
 Sub ToggleDrawer
-	Dim bChecked As Boolean = UI.GetCheckedByID($"${mName}_checked"$)
+	Dim bChecked As Boolean = UI.GetCheckedByID($"${mName}_toggle"$)
 	UI.SetCheckedByID($"${mName}_toggle"$, Not(bChecked))
 End Sub

@@ -194,10 +194,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		sHeight = Props.GetDefault("Height", "56")
 		sHeight = modSD5.CStr(sHeight)
-		If sHeight = "56" Then sHeight = ""
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
-		If sWidth = "full" Then sWidth = ""
 	End If
 	'
 	UI.AddClassDT("mockup-window border-base-300 border")

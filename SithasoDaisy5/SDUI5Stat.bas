@@ -12,11 +12,11 @@ Version=10
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: shadow, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
-#DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: horizontal, Description: Direction, List: horizontal|vertical
-#DesignerProperty: Key: SMDirection, DisplayName: S M Direction, FieldType: String, DefaultValue: horizontal, Description: S m Direction, List: horizontal|vertical
-#DesignerProperty: Key: MDDirection, DisplayName: M D Direction, FieldType: String, DefaultValue: horizontal, Description: M d Direction, List: horizontal|vertical
-#DesignerProperty: Key: LGDirection, DisplayName: L G Direction, FieldType: String, DefaultValue: horizontal, Description: L g Direction, List: horizontal|vertical
-#DesignerProperty: Key: XLDirection, DisplayName: X L Direction, FieldType: String, DefaultValue: horizontal, Description: X l Direction, List: horizontal|vertical
+#DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
+#DesignerProperty: Key: SMDirection, DisplayName: SM Direction, FieldType: String, DefaultValue: none, Description: SM Direction, List: horizontal|vertical|none
+#DesignerProperty: Key: MDDirection, DisplayName: MD Direction, FieldType: String, DefaultValue: horizontal, Description: MD Direction, List: horizontal|vertical|none
+#DesignerProperty: Key: LGDirection, DisplayName: LG Direction, FieldType: String, DefaultValue: none, Description: LG Direction, List: horizontal|vertical|none
+#DesignerProperty: Key: XLDirection, DisplayName: XL Direction, FieldType: String, DefaultValue: none, Description: XL Direction, List: horizontal|vertical|none
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -50,14 +50,14 @@ Sub Class_Globals
 	Private sBackgroundColor As String = "base-100"
 	Private bBorder As Boolean = False
 	Private sBorderColor As String = "base-300"
-	Private sDirection As String = "horizontal"
-	Private sLGDirection As String = "horizontal"
+	Private sDirection As String = "vertical"
+	Private sLGDirection As String = "none"
 	Private sMDDirection As String = "horizontal"
 	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = False
-	Private sSMDirection As String = "horizontal"
+	Private sSMDirection As String = "none"
 	Private sShadow As String = "shadow"
-	Private sXLDirection As String = "horizontal"
+	Private sXLDirection As String = "none"
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
 End Sub
@@ -142,7 +142,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -151,14 +151,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -172,7 +172,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -217,26 +217,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bBorder = modSD5.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
 		sBorderColor = modSD5.CStr(sBorderColor)
-		sDirection = Props.GetDefault("Direction", "horizontal")
+		sDirection = Props.GetDefault("Direction", "vertical")
 		sDirection = modSD5.CStr(sDirection)
-		sLGDirection = Props.GetDefault("LGDirection", "horizontal")
+		sLGDirection = Props.GetDefault("LGDirection", "none")
 		sLGDirection = modSD5.CStr(sLGDirection)
+		If sLGDirection = "none" Then sLGDirection = ""
 		sMDDirection = Props.GetDefault("MDDirection", "horizontal")
 		sMDDirection = modSD5.CStr(sMDDirection)
+		If sMDDirection = "none" Then sMDDirection = ""
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
 		bRoundedBox = modSD5.CBool(bRoundedBox)
-		sSMDirection = Props.GetDefault("SMDirection", "horizontal")
+		sSMDirection = Props.GetDefault("SMDirection", "none")
 		sSMDirection = modSD5.CStr(sSMDirection)
+		If sSMDirection = "none" Then sSMDirection = ""
 		sShadow = Props.GetDefault("Shadow", "shadow")
 		sShadow = modSD5.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
-		sXLDirection = Props.GetDefault("XLDirection", "horizontal")
+		sXLDirection = Props.GetDefault("XLDirection", "none")
 		sXLDirection = modSD5.CStr(sXLDirection)
+		If sXLDirection = "none" Then sXLDirection = ""
 	End If
 	'
+	UI.AddClassDT("stats")
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	If sDirection <> "" Then UI.AddClassDT("stats-" & sDirection)
@@ -245,8 +250,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sSMDirection <> "" Then UI.AddClassDT("sm:stats-" & sSMDirection)
-	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	UI.AddClassDT("stats")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)	
 	If sXLDirection <> "" Then UI.AddClassDT("xl:stats-" & sXLDirection)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

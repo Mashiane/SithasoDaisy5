@@ -253,10 +253,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
+	UI.AddClassDT("diff aspect-16/9")
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)        
-	UI.AddClassDT("diff aspect-16/9")
 	UI.AddAttrDT("tabindex", "0")
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)

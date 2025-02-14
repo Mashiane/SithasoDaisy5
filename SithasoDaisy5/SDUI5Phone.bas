@@ -231,8 +231,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
-	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	UI.AddClassDT("mockup-phone")
+	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)

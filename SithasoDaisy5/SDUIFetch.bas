@@ -430,7 +430,7 @@ End Sub
 
 'set content type application json
 Sub SetContentTypeApplicationJSON
-	SetContentType("application/json; charset=UTF-8")
+	SetContentType("application/json; charset=utf-8")
 End Sub
 
 Sub SetContentTypeApplication_X_WWW_Form_URLEncoded
@@ -438,7 +438,7 @@ Sub SetContentTypeApplication_X_WWW_Form_URLEncoded
 End Sub
 
 Sub SetContentTypeApplication_X_WWW_Form_URLEncodedUTF8
-	SetContentType("application/x-www-form-urlencoded;charset=UTF-8")
+	SetContentType("application/x-www-form-urlencoded;charset=utf-8")
 End Sub
 
 '<code>

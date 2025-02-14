@@ -138,10 +138,6 @@ End Sub
 Sub RemoveAttr(attr As String)
 	UI.RemoveAttr(mElement, attr)
 End Sub
-'add a computed style to the element
-Sub AddStyleComputed(attr As String, text As String)
-	UI.AddStyleComputed(mElement, attr, text)
-End Sub
 'add a collection of styles to the element
 Sub AddStyleMap(ms As Map)
 	UI.AddStyleMap(mElement, ms)

@@ -208,7 +208,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "full" Then UI.AddWidthDT( sWidth)
+	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

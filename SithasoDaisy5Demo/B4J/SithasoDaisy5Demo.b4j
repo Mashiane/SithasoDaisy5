@@ -744,7 +744,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.TranspilerOptions.ShowWarningDeadCode = False
 	BANano.TranspilerOptions.MergeAllCSSFiles = False
 	BANano.TranspilerOptions.MergeAllJavascriptFiles = False
-	BANano.TranspilerOptions.EnableLiveCodeSwapping = False
+	BANano.TranspilerOptions.EnableLiveCodeSwapping = True
 	BANano.TranspilerOptions.DisableShortenVariableNames = True
 	'BANano.Header.OnDOMContentLoaded = SDUIShared.DOMContentLoaded
 	'BANano.TranspilerOptions.DoNotDeleteFolderOnCompilation($"C:\laragon\www\${AppName}\assets"$)

@@ -204,9 +204,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
+	UI.AddClassDT("stack")
 	If sAlignment <> "" Then UI.AddClassDT("stack-" & sAlignment)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	UI.AddClassDT("stack")
+	
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

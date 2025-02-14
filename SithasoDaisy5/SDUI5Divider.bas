@@ -222,11 +222,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
+	UI.AddClassDT("divider")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)     
 	If sColor <> "" Then UI.AddColorDT("divider", sColor)
 	If sDirection <> "" Then UI.AddClassDT("divider-" & sDirection)
-	UI.AddClassDT("divider")
 	If sTextPlacement <> "" Then UI.AddClassDT("divider-" & sTextPlacement)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

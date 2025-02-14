@@ -81,8 +81,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	If sHorizontalPosition <> "" Then UI.AddClassDT("toast-" & sHorizontalPosition)
 	UI.AddClassDT("toast")
+	If sHorizontalPosition <> "" Then UI.AddClassDT("toast-" & sHorizontalPosition)
 	If sVerticalPosition <> "" Then UI.AddClassDT("toast-" & sVerticalPosition)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

@@ -218,7 +218,7 @@ Sub setValue(i As Int)
 	Case "legend"
 		UI.SetTextByID($"${mName}_endlabel"$, iValue)
 	Case "tooltip"
-		UI.SetStyleComputedByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
+		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
 	Case "normal"
 	End Select

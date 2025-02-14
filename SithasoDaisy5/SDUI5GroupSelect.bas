@@ -13,8 +13,10 @@ Version=10
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: SingleSelect, DisplayName: Single Select, FieldType: Boolean, DefaultValue: False, Description: Single Select
-#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: primary, Description: Active Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: Size, DisplayName: Button Size, FieldType: String, DefaultValue: xs, Description: Button Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #22c55e, Description: Active Color
+#DesignerProperty: Key: ChipColor, DisplayName: Chip Color, FieldType: String, DefaultValue: neutral, Description: Chip Color
+#DesignerProperty: Key: ChipOutlined, DisplayName: Chip Outlined, FieldType: Boolean, DefaultValue: False, Description: Chip Outlined
+#DesignerProperty: Key: Size, DisplayName: Chip Size, FieldType: String, DefaultValue: xs, Description: Button Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
 #DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
@@ -52,7 +54,7 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sActiveColor As String = "primary"
+	Private sActiveColor As String = "#22c55e"
 	Private sBackgroundColor As String = "base-200"
 	Private bBorder As Boolean = True
 	Private sBorderColor As String = "base-300"
@@ -67,6 +69,18 @@ Sub Class_Globals
 	Private sSize As String = "xs"
 	Private sWidth As String = "full"
 	Private items As Map
+	Private sChipColor As String = "neutral"
+	Private bChipOutlined As Boolean = False
+	Public CONST CHIPCOLOR_ACCENT As String = "accent"
+	Public CONST CHIPCOLOR_ERROR As String = "error"
+	Public CONST CHIPCOLOR_GHOST As String = "ghost"
+	Public CONST CHIPCOLOR_INFO As String = "info"
+	Public CONST CHIPCOLOR_NONE As String = "none"
+	Public CONST CHIPCOLOR_NUETRAL As String = "nuetral"
+	Public CONST CHIPCOLOR_PRIMARY As String = "primary"
+	Public CONST CHIPCOLOR_SECONDARY As String = "secondary"
+	Public CONST CHIPCOLOR_SUCCESS As String = "success"
+	Public CONST CHIPCOLOR_WARNING As String = "warning"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -220,7 +234,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sActiveColor = Props.GetDefault("ActiveColor", "primary")
+		sActiveColor = Props.GetDefault("ActiveColor", "#22c55e")
 		sActiveColor = modSD5.CStr(sActiveColor)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
 		sBackgroundColor = modSD5.CStr(sBackgroundColor)
@@ -249,15 +263,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = modSD5.CStr(sSize)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		sChipColor = Props.GetDefault("ChipColor", "neutral")
+		sChipColor = modSD5.CStr(sChipColor)
+		bChipOutlined = Props.GetDefault("ChipOutlined", False)
+		bChipOutlined = modSD5.CBool(bChipOutlined)
 	End If
 	'
+	UI.AddClassDT("fieldset")
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddClassDT("border-" & sBorderColor)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
-	UI.AddClassDT("fieldset")
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -336,6 +355,23 @@ Sub setLabel(s As String)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
+
+'set items chips that can be selected
+'pass blank to
+Sub SetItemsChips(titems As Map)
+	Dim sb As StringBuilder
+	sb.Initialize 
+	For Each k As String In titems.Keys
+		Dim v As String = titems.Get(k)
+		sb.Append(k)
+		sb.Append(":")
+		sb.Append(v)
+		sb.Append(";")
+	Next
+	Dim sout As String = modSD5.remdelim(sb.ToString, ";")
+	BANano.Await(setOptions(sout))
+End Sub
+
 'set Raw Options
 Sub setOptions(s As String)
 	sRawOptions = s
@@ -350,12 +386,23 @@ Sub setOptions(s As String)
 	Dim itemSize As String = modSD5.FixSize("btn", sSize) 
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
+	Dim itemColor As String = modSD5.FixColor("btn", sChipColor)
+	Dim soutline As String = ""
+	If bChipOutlined Then soutline = "btn-outline"
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
 	
 	For Each k As String In mItems.Keys
 		Dim v As String = mItems.Get(k)
 		k = modSD5.CleanID(k)
 		Dim nk As String = $"${k}_${mName}"$
-		sb.Append($"<input id="${k}_${mName}" class="btn ${itemSize} rounded-full" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+		sb.Append($"<input id="${k}_${mName}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 		items.Put(nk, nk)
 	Next
 	UI.AppendByID($"${mName}_content"$, sb.ToString)
@@ -370,8 +417,19 @@ Sub AddItem(k As String, v As String)
 	Dim itemSize As String = modSD5.FixSize("btn", sSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
+	Dim itemColor As String = modSD5.FixColor("btn", sChipColor)
+	Dim soutline As String = ""
+	If bChipOutlined Then soutline = "btn-outline"
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
 	
-	UI.AppendByID($"${mName}_content"$, $"<input id="${nk}" class="btn ${itemSize} rounded-full" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+	UI.AppendByID($"${mName}_content"$, $"<input id="${nk}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 	items.Put(nk, nk)
 	UI.OnEventByID(nk, "change", Me, "changed")
 End Sub
@@ -429,8 +487,6 @@ End Sub
 Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "btn", sSize)
 End Sub
 
 'set Width
@@ -507,4 +563,27 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+'set Chip Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setChipColor(s As String)
+	sChipColor = s
+	CustProps.put("ChipColor", s)
+End Sub
+
+'set Chip Outlined
+Sub setChipOutlined(b As Boolean)
+	bChipOutlined = b
+	CustProps.put("ChipOutlined", b)
+End Sub
+
+'get Chip Color
+Sub getChipColor As String
+	Return sChipColor
+End Sub
+
+'get Chip Outlined
+Sub getChipOutlined As Boolean
+	Return bChipOutlined
 End Sub

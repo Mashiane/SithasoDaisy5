@@ -218,10 +218,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	UI.AddClassDT("footer")
 	If bCenter = True Then UI.AddClassDT("footer-center")
 	If sDirection <> "" Then UI.AddClassDT("footer-" & sDirection)
 	If sDirectionOnSmall <> "" Then UI.AddClassDT("sm:footer-" & sDirectionOnSmall)
-	UI.AddClassDT("footer")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)

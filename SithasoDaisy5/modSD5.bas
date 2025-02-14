@@ -20,6 +20,38 @@ Sub Process_Globals
 End Sub
 
 #if css
+	.unselectable {
+    	-webkit-touch-callout: none;
+    	-webkit-user-select: none;
+    	-khtml-user-select: none;
+    	-moz-user-select: none;
+    	-ms-user-select: none;
+    	user-select: none;
+	}
+	body {
+		scrollbar-gutter: unset;
+	}
+	.tlradius {
+		border-top-left-radius:var(--radius-field,.25rem) !important;
+	}
+	.blradius {
+		border-bottom-left-radius:var(--radius-field,.25rem) !important;
+	}
+	.trradius {
+		border-top-right-radius:var(--radius-field,.25rem) !important;
+	}
+	.brradius {
+		border-bottom-right-radius:var(--radius-field,.25rem) !important;
+	}
+	input[type=search] {
+		-webkit-appearance: searchfield !important;
+	} 
+	input[type=search]::-webkit-search-cancel-	button {
+		-webkit-appearance: searchfield-cancel-button !important;
+	}
+	.flatpickr-wrapper {
+		width:100%
+	}
 	.hide {
 		display: none !important
 	}
@@ -29,25 +61,119 @@ End Sub
     	align-items: stretch
 	}
 	.input-group :where(span) {
-    display: flex;
-    align-items: center;
-    --tw-bg-opacity: 1;
-    background-color: hsl(var(--b3) / var(--tw-bg-opacity));
-    padding-left: 1rem;
-    padding-right: 1rem
+    	display: flex;
+    	align-items: center;
+    	--tw-bg-opacity: 1;
+    	background-color: hsl(var(--b3) / var(--tw-bg-opacity));
+    	padding-left: 1rem;
+    	padding-right: 1rem
 	}
-.input-group > :first-child {
-    border-top-left-radius: var(--rounded-btn, 0.5rem);
-    border-top-right-radius: 0;
-    border-bottom-left-radius: var(--rounded-btn, 0.5rem);
-    border-bottom-right-radius: 0
+	.input-group > :first-child {
+    	border-top-left-radius: var(--rounded-btn, 0.5rem);
+    	border-top-right-radius: 0;
+    	border-bottom-left-radius: var(--rounded-btn, 0.5rem);
+    	border-bottom-right-radius: 0
 	}
-.input-group > :last-child {
-    border-top-left-radius: 0;
-    border-top-right-radius: var(--rounded-btn, 0.5rem);
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: var(--rounded-btn, 0.5rem)
+	.input-group > :last-child {
+    	border-top-left-radius: 0;
+    	border-top-right-radius: var(--rounded-btn, 0.5rem);
+    	border-bottom-left-radius: 0;
+    	border-bottom-right-radius: var(--rounded-btn, 0.5rem)
 	}
+	.form-control {
+  		display: flex;
+  		flex-direction: column;
+	}
+	.label-text {
+  		font-size: 0.875rem;
+  		line-height: 1.25rem;
+  		--tw-text-opacity: 1;
+  		color: var(--fallback-bc, oklch(var(--bc) / var(--tw-text-opacity)));
+	}
+	.label-text-alt {
+  		font-size: 0.75rem;
+  		line-height: 1rem;
+  		--tw-text-opacity: 1;
+  		color: var(--fallback-bc, oklch(var(--bc) / var(--tw-text-opacity)));
+	}
+	.container,
+.container-fluid,
+.container-lg,
+.container-md,
+.container-sm,
+.container-xl,
+.container-xxl {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+@media (min-width: 576px) {
+  .container,
+  .container-sm {
+    max-width: 540px;
+  }
+}
+@media (min-width: 768px) {
+  .container,
+  .container-md,
+  .container-sm {
+    max-width: 720px;
+  }
+}
+@media (min-width: 992px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm {
+    max-width: 960px;
+  }
+}
+@media (min-width: 1200px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl {
+    max-width: 1140px;
+  }
+}
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1320px;
+  }
+}
+
+.row {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
+}
+.row > * {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  margin-top: var(--bs-gutter-y);
+}
+.col {
+  flex: 1 0 0%;
+}
 #End If
 
 Sub InitDays
@@ -520,6 +646,35 @@ Sub FixShadow(s As String) As String
 		Case Else
 			Dim x As String = "shadow-" & s
 			Return x
+	End Select
+End Sub
+
+Sub FixOffset(s As String) As String
+	Select Case s
+	Case "1"
+		Return "ml-1/12"
+	Case "2"
+		Return "ml-2/12"
+	Case "3"
+		Return "ml-3/12"
+	Case "4"
+		Return "ml-4/12"
+	Case "5"
+		Return "ml-5/12"
+	Case "6"
+		Return "ml-1/2"
+	Case "7"
+		Return "ml-7/12"
+	Case "8"
+		Return "ml-8/12"
+	Case "9"
+		Return "ml-9/12"
+	Case "10"
+		Return "ml-10/12"
+	Case "11"
+		Return 	"ml-11/12"
+	Case Else
+		Return ""							
 	End Select
 End Sub
 
@@ -1616,4 +1771,20 @@ Sub GetWorkingDates(startDate As String, endDate As String) As List
 	Next
 
 	Return workingDates
+End Sub
+
+'remove the delimiter from stringbuilder
+Sub RemDelim(sValue As String, Delim As String) As String
+	Dim sw As Boolean = sValue.EndsWith(Delim)
+	If sw Then
+		Dim lDelim As Int = Delim.Length
+		Dim nValue As String = sValue
+		sw = nValue.EndsWith(Delim)
+		If sw Then
+			nValue = nValue.SubString2(0, nValue.Length-lDelim)
+		End If
+		Return nValue
+	Else
+		Return sValue
+	End If
 End Sub

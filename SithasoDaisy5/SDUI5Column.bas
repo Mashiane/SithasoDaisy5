@@ -17,6 +17,7 @@ Version=10
 #DesignerProperty: Key: OffsetLg, DisplayName: LG Offset, FieldType: String, DefaultValue: , Description: LG Offset
 #DesignerProperty: Key: OffsetXl, DisplayName: XL Offset, FieldType: String, DefaultValue: , Description: XL Offset
 #DesignerProperty: Key: OffsetXxl, DisplayName: XXL Offset, FieldType: String, DefaultValue: , Description: XXL Offset
+#DesignerProperty: Key: Order, DisplayName: Order, FieldType: String, DefaultValue: , Description: Order
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: AlignSelf, DisplayName: Align Self, FieldType: String, DefaultValue: , Description: Align Self, List: auto|baseline|center|flex-end|flex-start|inherit|initial|none|stretch
@@ -27,7 +28,6 @@ Version=10
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
-#DesignerProperty: Key: Order, DisplayName: Order, FieldType: String, DefaultValue: , Description: Order
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -72,7 +72,7 @@ Sub Class_Globals
 	Private sOffsetSm As String = ""
 	Private sOffsetXl As String = ""
 	Private sOrder As String = ""
-	Private sSize As String = ""
+	Private sSize As String = "12"
 	Private sSizeLg As String = ""
 	Private sSizeMd As String = ""
 	Private sSizeSm As String = ""
@@ -264,9 +264,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sOffsetXl = modSD5.CStr(sOffsetXl)
 		sOrder = Props.GetDefault("Order", "")
 		sOrder = modSD5.CStr(sOrder)
-		sSize = Props.GetDefault("Size", "none")
+		sSize = Props.GetDefault("Size", "12")
 		sSize = modSD5.CStr(sSize)
-		If sSize = "none" Then sSize = ""
 		sSizeLg = Props.GetDefault("SizeLg", "")
 		sSizeLg = modSD5.CStr(sSizeLg)
 		sSizeMd = Props.GetDefault("SizeMd", "")
@@ -300,21 +299,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sAlignSelf <> "" Then UI.AddStyleDT("align-self", sAlignSelf)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("col")
-	If sSize <> "" Then UI.AddSizeDT("col", sSize)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sOffsetLg <> "" Then UI.AddClassDT("offset-lg-" & sOffsetLg)
-	If sOffsetMd <> "" Then UI.AddClassDT("offset-md-" & sOffsetMd)
-	If sOffsetSm <> "" Then UI.AddClassDT("offset-sm-" & sOffsetSm)
-	If sOffsetXl <> "" Then UI.AddClassDT("offset-xl-" & sOffsetXl)
+	UI.AddClassDT("p-2")
+	If sSize <> "" Then UI.AddClassDT("col-span-" & sSize)
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sOrder <> "" Then UI.AddClassDT("order-" & sOrder)
-	If sSizeLg <> "" Then UI.AddClassDT("col-lg-" & sSizeLg)
-	If sSizeMd <> "" Then UI.AddClassDT("col-md-" & sSizeMd)
-	If sSizeSm <> "" Then UI.AddClassDT("col-sm-" & sSizeSm)
-	If sSizeXl <> "" Then UI.AddClassDT("col-xl-" & sSizeXl)
-	If sSizeXxl <> "" Then UI.AddClassDT("col-xxl-" & sSizeXxl)
+	If sSizeLg <> "" Then UI.AddClassDT("lg:col-span-" & sSizeLg)
+	If sSizeMd <> "" Then UI.AddClassDT("md:col-span-" & sSizeMd)
+	If sSizeSm <> "" Then UI.AddClassDT("sm:col-span-" & sSizeSm)
+	If sSizeXl <> "" Then UI.AddClassDT("xl:col-span-" & sSizeXl)
+	If sSizeXxl <> "" Then UI.AddClassDT("xxl:col-span-" & sSizeXxl)
+	If sOffsetLg <> "" Then UI.AddClassDT("lg:" & modSD5.FixOffset(sOffsetLg))
+	If sOffsetMd <> "" Then UI.AddClassDT("md:" & modSD5.FixOffset(sOffsetMd))
+	If sOffsetSm <> "" Then UI.AddClassDT("sm:" & modSD5.FixOffset(sOffsetSm))
+	If sOffsetXl <> "" Then UI.AddClassDT("xl:" & modSD5.FixOffset(sOffsetXl))
+	If sOffsetXxl <> "" Then UI.AddClassDT("xxl:" & modSD5.FixOffset(sOffsetXxl))
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -368,29 +368,42 @@ Sub setOffsetLg(s As String)
 	sOffsetLg = s
 	CustProps.put("OffsetLg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "offset-lg-" & s)
+	If s <> "" Then UI.AddClass(mElement, "lg:" & modSD5.FixOffset(s))
 End Sub
 'set Offset Md
 Sub setOffsetMd(s As String)
 	sOffsetMd = s
 	CustProps.put("OffsetMd", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "offset-md-" & s)
+	If s <> "" Then UI.AddClass(mElement, "md:" & modSD5.FixOffset(s))
 End Sub
 'set Offset Sm
 Sub setOffsetSm(s As String)
 	sOffsetSm = s
 	CustProps.put("OffsetSm", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "offset-sm-" & s)
+	If s <> "" Then UI.AddClass(mElement, "sm:" & modSD5.FixOffset(s))
 End Sub
 'set Offset Xl
 Sub setOffsetXl(s As String)
 	sOffsetXl = s
 	CustProps.put("OffsetXl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "offset-xl-" & s)
+	If s <> "" Then UI.AddClass(mElement, "xl:" & modSD5.FixOffset(s))
 End Sub
+'
+'set Offset XXl
+Sub setOffsetXxl(s As String)
+	sOffsetXxl = s
+	CustProps.put("OffsetXxl", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "xxl:" & modSD5.FixOffset(s))
+End Sub
+
+Sub getOffsetXxl As String
+	Return sOffsetXxl
+End Sub
+
 'set Order
 Sub setOrder(s As String)
 	sOrder = s
@@ -404,42 +417,42 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSize(mElement, "size", "col", sSize)
+	If s <> "" Then UI.AddClass(mElement, "col-span-" & sSize)
 End Sub
 'set Size Lg
 Sub setSizeLg(s As String)
 	sSizeLg = s
 	CustProps.put("SizeLg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-lg-" & s)
+	If s <> "" Then UI.AddClass(mElement, "lg:col-span-" & s)
 End Sub
 'set Size Md
 Sub setSizeMd(s As String)
 	sSizeMd = s
 	CustProps.put("SizeMd", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-md-" & s)
+	If s <> "" Then UI.AddClass(mElement, "md:col-span-" & s)
 End Sub
 'set Size Sm
 Sub setSizeSm(s As String)
 	sSizeSm = s
 	CustProps.put("SizeSm", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-sm-" & s)
+	If s <> "" Then UI.AddClass(mElement, "sm:col-span-" & s)
 End Sub
 'set Size Xl
 Sub setSizeXl(s As String)
 	sSizeXl = s
 	CustProps.put("SizeXl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-xl-" & s)
+	If s <> "" Then UI.AddClass(mElement, "xl:col-span-" & s)
 End Sub
 'set Size Xxl
 Sub setSizeXxl(s As String)
 	sSizeXxl = s
 	CustProps.put("SizeXxl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-xxl-" & s)
+	If s <> "" Then UI.AddClass(mElement, "xxl:col-span-" & s)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)

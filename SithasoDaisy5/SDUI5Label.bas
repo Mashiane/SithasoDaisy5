@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: LabelWidth, DisplayName: Label Width, FieldType: String, DefaultValue: , Description: Label Width
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
@@ -89,6 +90,7 @@ Sub Class_Globals
 	Private sValue As String = ""
 	Private sCheckedColor As String = ""
 	Private sGroupName As String = ""
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -284,6 +286,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckedColor = modSD5.CStr(sCheckedColor)
 		sGroupName = Props.GetDefault("GroupName", "")
 		sGroupName = modSD5.CStr(sGroupName)
+		sWidth = Props.GetDefault("Width", "full")
+		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If bFloatingLabel = True Then UI.AddClassDT("floating-label")
@@ -298,7 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTag = "select"	
 	End Select
 	UI.AddClassDT(sTag)
-	
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -330,6 +334,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetAttrByID($"${mName}_input"$, "type", "password")
 	Case "toggle"
 		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "toggle")
 		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
 		UI.SetVisibleByID($"${mName}_prefix"$, False)
 		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
@@ -338,6 +343,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetVisibleByID($"${mName}_suffix"$, True)
 	Case "radio"
 		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "radio")
 		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
 		UI.SetVisibleByID($"${mName}_prefix"$, False)
 		UI.SetAttrByID($"${mName}_input"$, "type", "radio")
@@ -346,6 +352,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetVisibleByID($"${mName}_suffix"$, True)
 	Case "checkbox"
 		UI.RemoveClass(mElement, "input")
+		UI.AddClass(mElement, "checkbox")
 		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
 		UI.SetVisibleByID($"${mName}_prefix"$, False)
 		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
@@ -389,6 +396,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setCheckedColor(sCheckedColor)
 '	setVisible(bVisible)
 End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub
+
 
 'set Group Name
 Sub setGroupName(s As String)

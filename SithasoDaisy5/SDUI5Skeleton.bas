@@ -127,7 +127,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -212,6 +212,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
+	UI.AddClassDT("skeleton")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -222,7 +223,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			UI.AddClassDT("shrink-" & sShrink)
 		End If
 	End If
-	UI.AddClassDT("skeleton")
+	
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

@@ -6,19 +6,18 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: RowCols, DisplayName: Row Cols, FieldType: String, DefaultValue: , Description: Row Cols
-#DesignerProperty: Key: RowColsSm, DisplayName: SM Row Cols, FieldType: String, DefaultValue: , Description: XM Row Cols
-#DesignerProperty: Key: RowColsMd, DisplayName: MD Row Cols, FieldType: String, DefaultValue: , Description: MD Row Cols
-#DesignerProperty: Key: RowColsLg, DisplayName: LG Row Cols, FieldType: String, DefaultValue: , Description: LG Row Cols
-#DesignerProperty: Key: RowColsXl, DisplayName: XL Row Cols, FieldType: String, DefaultValue: , Description: XL Row Cols
-#DesignerProperty: Key: RowColsXxl, DisplayName: XXL Row Cols, FieldType: String, DefaultValue: , Description: XXL Row Cols
-#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
+#DesignerProperty: Key: GridCols, DisplayName: Grid Cols, FieldType: String, DefaultValue: 12, Description: Grid Cols
+#DesignerProperty: Key: GridColsSm, DisplayName: SM Grid Cols, FieldType: String, DefaultValue: , Description: SM Grid Cols
+#DesignerProperty: Key: GridColsMd, DisplayName: MD Grid Cols, FieldType: String, DefaultValue: , Description: MD Grid Cols
+#DesignerProperty: Key: GridColsLg, DisplayName: LG Grid Cols, FieldType: String, DefaultValue: , Description: LG Grid Cols
+#DesignerProperty: Key: GridColsXl, DisplayName: XL Grid Cols, FieldType: String, DefaultValue: , Description: XL Grid Cols
+#DesignerProperty: Key: GridColsXxl, DisplayName: XXL Grid Cols, FieldType: String, DefaultValue: , Description: XXL Grid Cols
+#DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: 2, Description: Gap
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Align Items, List: normal|stretch|center|flex-start|flex-end|start|end|baseline|initial|inherit|none
 #DesignerProperty: Key: JustifyContent, DisplayName: Justify Content, FieldType: String, DefaultValue: none, Description: Justify Content, List: center|flex-end|flex-start|inherit|initial|none|space-around|space-between|space-evenly
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Gutter, DisplayName: Gutter, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=?, Description: Gutter
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -57,19 +56,17 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sText As String = ""
 	Public Tag As Object
 	Private sAlignItems As String = "none"
 	Private sBackgroundColor As String = ""
-	Private sGutter As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sHeight As String = ""
 	Private sJustifyContent As String = "none"
-	Private sRowCols As String = ""
-	Private sRowColsLg As String = ""
-	Private sRowColsMd As String = ""
-	Private sRowColsSm As String = ""
-	Private sRowColsXl As String = ""
-	Private sRowColsXxl As String = ""
+	Private sGridCols As String = "12"
+	Private sGridColsLg As String = ""
+	Private sGridColsMd As String = ""
+	Private sGridColsSm As String = ""
+	Private sGridColsXl As String = ""
+	Private sGridColsXxl As String = ""
 	Private sTextColor As String = ""
 	Private sWidth As String = ""
 	Private sRawBorderColor As String = "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?"
@@ -80,6 +77,7 @@ Sub Class_Globals
 	Private sShadow As String = "none"
 	Private sTextAlign As String = "none"	
 	Private bCenterChildren As Boolean
+	Private sGap As String = "2"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -220,18 +218,6 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
-'set text
-Sub setText(text As String)
-	sText = text
-	CustProps.Put("Text", text)
-	If mElement = Null Then Return
-	UI.SetText(mElement, text)
-End Sub
-'get text
-Sub getText As String
-	sText = UI.GetText(mElement)
-	Return sText
-End Sub
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -245,25 +231,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAlignItems = Props.GetDefault("AlignItems", "none")
 		sAlignItems = modSD5.CStr(sAlignItems)
 		If sAlignItems = "none" Then sAlignItems = ""
-		sGutter = Props.GetDefault("Gutter", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
-		sGutter = modSD5.CStr(sGutter)
+		sGap = Props.GetDefault("Gap", "2")
+		sGap = modSD5.CStr(sGap)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
 		sJustifyContent = Props.GetDefault("JustifyContent", "none")
 		sJustifyContent = modSD5.CStr(sJustifyContent)
 		If sJustifyContent = "none" Then sJustifyContent = ""
-		sRowCols = Props.GetDefault("RowCols", "")
-		sRowCols = modSD5.CStr(sRowCols)
-		sRowColsLg = Props.GetDefault("RowColsLg", "")
-		sRowColsLg = modSD5.CStr(sRowColsLg)
-		sRowColsMd = Props.GetDefault("RowColsMd", "")
-		sRowColsMd = modSD5.CStr(sRowColsMd)
-		sRowColsSm = Props.GetDefault("RowColsSm", "")
-		sRowColsSm = modSD5.CStr(sRowColsSm)
-		sRowColsXl = Props.GetDefault("RowColsXl", "")
-		sRowColsXl = modSD5.CStr(sRowColsXl)
-		sRowColsXxl = Props.GetDefault("RowColsXxl", "")
-		sRowColsXxl = modSD5.CStr(sRowColsXxl)
+		sGridCols = Props.GetDefault("GridCols", "")
+		sGridCols = modSD5.CStr(sGridCols)
+		sGridColsLg = Props.GetDefault("GridColsLg", "")
+		sGridColsLg = modSD5.CStr(sGridColsLg)
+		sGridColsMd = Props.GetDefault("GridColsMd", "")
+		sGridColsMd = modSD5.CStr(sGridColsMd)
+		sGridColsSm = Props.GetDefault("GridColsSm", "")
+		sGridColsSm = modSD5.CStr(sGridColsSm)
+		sGridColsXl = Props.GetDefault("GridColsXl", "")
+		sGridColsXl = modSD5.CStr(sGridColsXl)
+		sGridColsXxl = Props.GetDefault("GridColsXxl", "")
+		sGridColsXxl = modSD5.CStr(sGridColsXxl)
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = modSD5.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
@@ -279,23 +265,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bCenterChildren = modSD5.CBool(bCenterChildren)
 	End If
 	'
+	UI.AddClassDT("grid")
 	If bCenterChildren Then UI.AddCenterChildrenDT
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If sGutter <> "" Then UI.AddGuttersDT(sGutter)
 	If sAlignItems <> "" Then UI.AddStyleDT("align-items", sAlignItems)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sJustifyContent <> "" Then UI.AddStyleDT("justify-content", sJustifyContent)
-	UI.AddClassDT("row")
-	If sRowCols <> "" Then UI.AddClassDT("row-cols-" & sRowCols)
-	If sRowColsLg <> "" Then UI.AddClassDT("row-cols-lg-" & sRowColsLg)
-	If sRowColsMd <> "" Then UI.AddClassDT("row-cols-md-" & sRowColsMd)
-	If sRowColsSm <> "" Then UI.AddClassDT("row-cols-sm-" & sRowColsSm)
-	If sRowColsXl <> "" Then UI.AddClassDT("row-cols-xl-" & sRowColsXl)
-	If sRowColsXxl <> "" Then UI.AddClassDT("row-cols-xxl-" & sRowColsXxl)
-'	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
+	
+	If sGap <> "" Then UI.UpdateClassDT("gap", "gap-" & sGap)
+	If sGridCols <> "" Then UI.AddClassDT("grid-cols-" & sGridCols)
+	If sGridColsLg <> "" Then UI.AddClassDT("lg:grid-cols-" & sGridColsLg)
+	If sGridColsMd <> "" Then UI.AddClassDT("md:grid-cols-" & sGridColsMd)
+	If sGridColsSm <> "" Then UI.AddClassDT("sm:grid-cols-" & sGridColsSm)
+	If sGridColsXl <> "" Then UI.AddClassDT("xl:grid-cols-" & sGridColsXl)
+	If sGridColsXxl <> "" Then UI.AddClassDT("xxl:grid-cols-" & sGridColsXxl)
+	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -308,7 +295,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
 End Sub
 
@@ -338,13 +325,14 @@ Sub setBackgroundColor(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
 End Sub
-'set Gutter
-Sub setGutter(s As String)
-	sGutter = s
-	CustProps.put("Gutter", s)
+'set Gap
+Sub setGap(s As String)
+	sGap = s
+	CustProps.put("Gap", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetGutter(mElement, s)
+	If s <> "" Then UI.UpdateClass(mElement, "gap", "gap-" & s)
 End Sub
+
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
@@ -361,46 +349,46 @@ Sub setJustifyContent(s As String)
 	If s <> "" Then UI.SetStyle(mElement, "justify-content", s)
 End Sub
 'set Row Cols
-Sub setRowCols(s As String)
-	sRowCols = s
-	CustProps.put("RowCols", s)
+Sub setGridCols(s As String)
+	sGridCols = s
+	CustProps.put("GridCols", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-" & s)
+	If s <> "" Then UI.AddClass(mElement, "grid-cols-" & s)
 End Sub
 'set Row Cols Lg
-Sub setRowColsLg(s As String)
-	sRowColsLg = s
-	CustProps.put("RowColsLg", s)
+Sub setGridColsLg(s As String)
+	sGridColsLg = s
+	CustProps.put("GridColsLg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-lg-" & s)
+	If s <> "" Then UI.AddClass(mElement, "lg:grid-cols-" & s)
 End Sub
 'set Row Cols Md
-Sub setRowColsMd(s As String)
-	sRowColsMd = s
-	CustProps.put("RowColsMd", s)
+Sub setGridColsMd(s As String)
+	sGridColsMd = s
+	CustProps.put("GridColsMd", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-md-" & s)
+	If s <> "" Then UI.AddClass(mElement, "md:grid-cols-" & s)
 End Sub
 'set Row Cols Sm
-Sub setRowColsSm(s As String)
-	sRowColsSm = s
-	CustProps.put("RowColsSm", s)
+Sub setGridColsSm(s As String)
+	sGridColsSm = s
+	CustProps.put("GridColsSm", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-sm-" & s)
+	If s <> "" Then UI.AddClass(mElement, "sm:grid-cols-" & s)
 End Sub
 'set Row Cols Xl
-Sub setRowColsXl(s As String)
-	sRowColsXl = s
-	CustProps.put("RowColsXl", s)
+Sub setGridColsXl(s As String)
+	sGridColsXl = s
+	CustProps.put("GridColsXl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-xl-" & s)
+	If s <> "" Then UI.AddClass(mElement, "xl:grid-cols-" & s)
 End Sub
 'set Row Cols Xxl
-Sub setRowColsXxl(s As String)
-	sRowColsXxl = s
-	CustProps.put("RowColsXxl", s)
+Sub setGridColsXxl(s As String)
+	sGridColsXxl = s
+	CustProps.put("GridColsXxl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-cols-xxl-" & s)
+	If s <> "" Then UI.AddClass(mElement, "xxl:grid-cols-" & s)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)
@@ -424,9 +412,9 @@ End Sub
 Sub getBackgroundColor As String
 	Return sBackgroundColor
 End Sub
-'get Gutter
-Sub getGutter As String
-	Return sGutter
+'get Gap
+Sub getGap As String
+	Return sGap
 End Sub
 'get Height
 Sub getHeight As String
@@ -437,28 +425,28 @@ Sub getJustifyContent As String
 	Return sJustifyContent
 End Sub
 'get Row Cols
-Sub getRowCols As String
-	Return sRowCols
+Sub getGridCols As String
+	Return sGridCols
 End Sub
 'get Row Cols Lg
-Sub getRowColsLg As String
-	Return sRowColsLg
+Sub getGridColsLg As String
+	Return sGridColsLg
 End Sub
 'get Row Cols Md
-Sub getRowColsMd As String
-	Return sRowColsMd
+Sub getGridColsMd As String
+	Return sGridColsMd
 End Sub
 'get Row Cols Sm
-Sub getRowColsSm As String
-	Return sRowColsSm
+Sub getGridColsSm As String
+	Return sGridColsSm
 End Sub
 'get Row Cols Xl
-Sub getRowColsXl As String
-	Return sRowColsXl
+Sub getGridColsXl As String
+	Return sGridColsXl
 End Sub
 'get Row Cols Xxl
-Sub getRowColsXxl As String
-	Return sRowColsXxl
+Sub getGridColsXxl As String
+	Return sGridColsXxl
 End Sub
 'get Text Color
 Sub getTextColor As String

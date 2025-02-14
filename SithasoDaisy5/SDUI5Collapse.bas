@@ -11,7 +11,7 @@ Version=10
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Collapse, Description: Title
 #DesignerProperty: Key: RawContent, DisplayName: HTML Content, FieldType: String, DefaultValue: Collapse Content, Description: HTML Content
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
-#DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: none, Description: Right Icon, List: arrow|plus|none
+#DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: arrow, Description: Right Icon, List: arrow|plus
 #DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: TitleBackgroundColor, DisplayName: Title Background Color, FieldType: String, DefaultValue: , Description: Title Background Color
 #DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
@@ -63,7 +63,7 @@ Sub Class_Globals
 	Private bJoinItem As Boolean = False
 	Private sOpenClose As String = "none"
 	Private sRawContent As String = "Collapse Content"
-	Private sRightIcon As String = "none"
+	Private sRightIcon As String = "arrow"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
 	Private sTextColor As String = ""
@@ -249,7 +249,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawContent = modSD5.CStr(sRawContent)
 		sRightIcon = Props.GetDefault("RightIcon", "arrow")
 		sRightIcon = modSD5.CStr(sRightIcon)
-		If sRightIcon = "none" Then sRightIcon = ""
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = modSD5.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
@@ -270,9 +269,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGroupName = modSD5.CStr(sGroupName)        
 	End If
 	'
+	UI.AddClassDT("collapse")
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
-	UI.AddClassDT("collapse")
 	If bJoinItem = True Then UI.AddClassDT("join-item")
 	If sOpenClose <> "" Then UI.UpdateClassDT("openclose", "collapse-" & sOpenClose)
 	If sRightIcon <> "" Then UI.UpdateClassDT("righticon", "collapse-" & sRightIcon)
@@ -408,7 +407,7 @@ Sub setRightIcon(s As String)
 	sRightIcon = s
 	CustProps.put("RightIcon", s)
 	If mElement = Null Then Return
-	If s <> "arrow" Then UI.AddClass(mElement, "collapse-" & s)
+	If s <> "" Then UI.AddClass(mElement, "collapse-" & s)
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0

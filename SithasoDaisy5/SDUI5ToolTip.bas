@@ -98,11 +98,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	UI.AddClassDT("tooltip")
 	If sColor <> "" Then UI.AddColorDT("tooltip", sColor)
 	If bOpen Then UI.AddClassDT("tooltip-open")
 	UI.AddClassDT("tooltip-" & sTooltipPosition)
 	If sTip <> "" Then UI.AddAttrDT("data-tip", sTip)
-	UI.AddClassDT("tooltip")
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

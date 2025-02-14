@@ -404,7 +404,7 @@ Sub setBackgroundColor(s As String)
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.AddStyleComputed(mElement, "--range-shdw", s)
+		UI.AddStyle(mElement, "--range-shdw", s)
 	End If
 End Sub
 'set Color
@@ -496,7 +496,7 @@ Sub setValue(s As Int)
 	Case "legend"
 		UI.SetTextByID($"${mName}_endlabel"$, iValue)
 	Case "tooltip"
-		UI.SetStyleComputedByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
+		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
 	Case "normal"
 	End Select

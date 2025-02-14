@@ -1,89 +1,83 @@
 ﻿AppType=JavaFX
 Build1=Default,b4j.example
 File1=250x300.png
-File10=daisyui7.css
-File11=dayjs.min.js
-File12=fa-brands-400.woff2
-File13=fa-regular-400.woff2
-File14=fa-solid-900.woff2
-File15=fileSaver.min.js
-File16=flatpickr.min.css
-File17=flatpickr.min.js
-File18=FONT AWESOME LICENSE.txt
-File19=fontawesome.min.css
+File10=fa-brands-400.woff2
+File11=fa-regular-400.woff2
+File12=fa-solid-900.woff2
+File13=fileSaver.min.js
+File14=flatpickr.min.css
+File15=flatpickr.min.js
+File16=FONT AWESOME LICENSE.txt
+File17=fontawesome.min.css
+File18=fplocale.min.js
+File19=infobox.min.css
 File2=600by600.jpg
-File20=fplocale.min.js
-File21=infobox.min.css
-File22=insert-rule.min.js
-File23=loader-1.css
-File24=material_blue.css
-File25=math.min.js
-File26=mdtoast.min.css
-File27=mdtoast.min.js
-File28=menu.svg
-File29=numeral.min.js
+File20=insert-rule.min.js
+File21=loader-1.css
+File22=material_blue.css
+File23=math.min.js
+File24=mdtoast.min.css
+File25=mdtoast.min.js
+File26=menu.svg
+File27=numeral.min.js
+File28=placeholderimg.jpg
+File29=relativeTime.min.js
 File3=BANANO LICENSE.TXT
-File30=placeholderimg.jpg
-File31=relativeTime.min.js
-File32=roboto.min.css
-File33=Roboto100.ttf
-File34=Roboto300.ttf
-File35=Roboto400.ttf
-File36=Roboto500.ttf
-File37=Roboto700.ttf
-File38=Roboto900.ttf
-File39=sweetalert2.all.min.js
-File4=bootstrap-grid.min.css
-File40=sweetalert2.min.css
-File41=tailwind.min.js
-File42=tailwind4.min.js
-File5=checkblack.svg
-File6=closemenu.svg
-File7=countUp.umd.js
-File8=DAISYUI LICENSE.txt
-File9=daisyui6.css
+File30=roboto.min.css
+File31=Roboto100.ttf
+File32=Roboto300.ttf
+File33=Roboto400.ttf
+File34=Roboto500.ttf
+File35=Roboto700.ttf
+File36=Roboto900.ttf
+File37=sweetalert2.all.min.js
+File38=sweetalert2.min.css
+File39=tailwind4.min.js
+File4=checkblack.svg
+File5=closemenu.svg
+File6=countUp.umd.js
+File7=DAISYUI LICENSE.txt
+File8=daisyui8.css
+File9=dayjs.min.js
 FileGroup1=Default Group\IMAGES
-FileGroup10=Default Group
-FileGroup11=Default Group\JAVASCRIPT
+FileGroup10=Default Group\FONTS
+FileGroup11=Default Group\FONTS
 FileGroup12=Default Group\FONTS
-FileGroup13=Default Group\FONTS
-FileGroup14=Default Group\FONTS
+FileGroup13=Default Group\JAVASCRIPT
+FileGroup14=Default Group\CSS
 FileGroup15=Default Group\JAVASCRIPT
-FileGroup16=Default Group\CSS
-FileGroup17=Default Group\JAVASCRIPT
-FileGroup18=Default Group\LICENCES
+FileGroup16=Default Group\LICENCES
+FileGroup17=Default Group\CSS
+FileGroup18=Default Group\JAVASCRIPT
 FileGroup19=Default Group\CSS
 FileGroup2=Default Group\IMAGES
 FileGroup20=Default Group\JAVASCRIPT
 FileGroup21=Default Group\CSS
-FileGroup22=Default Group\JAVASCRIPT
-FileGroup23=Default Group\CSS
+FileGroup22=Default Group\CSS
+FileGroup23=Default Group\JAVASCRIPT
 FileGroup24=Default Group\CSS
 FileGroup25=Default Group\JAVASCRIPT
-FileGroup26=Default Group\CSS
+FileGroup26=Default Group\IMAGES
 FileGroup27=Default Group\JAVASCRIPT
 FileGroup28=Default Group\IMAGES
 FileGroup29=Default Group\JAVASCRIPT
 FileGroup3=Default Group\LICENCES
-FileGroup30=Default Group\IMAGES
-FileGroup31=Default Group\JAVASCRIPT
-FileGroup32=Default Group\CSS
+FileGroup30=Default Group\CSS
+FileGroup31=Default Group\FONTS
+FileGroup32=Default Group\FONTS
 FileGroup33=Default Group\FONTS
 FileGroup34=Default Group\FONTS
 FileGroup35=Default Group\FONTS
 FileGroup36=Default Group\FONTS
-FileGroup37=Default Group\FONTS
-FileGroup38=Default Group\FONTS
+FileGroup37=Default Group\JAVASCRIPT
+FileGroup38=Default Group\CSS
 FileGroup39=Default Group\JAVASCRIPT
-FileGroup4=Default Group
-FileGroup40=Default Group\CSS
-FileGroup41=Default Group\JAVASCRIPT
-FileGroup42=Default Group
+FileGroup4=Default Group\IMAGES
 FileGroup5=Default Group\IMAGES
-FileGroup6=Default Group\IMAGES
-FileGroup7=Default Group\JAVASCRIPT
-FileGroup8=Default Group\LICENCES
-FileGroup9=Default Group
+FileGroup6=Default Group\JAVASCRIPT
+FileGroup7=Default Group\LICENCES
+FileGroup8=Default Group\CSS
+FileGroup9=Default Group\JAVASCRIPT
 Group=Default Group
 Library1=banano
 Library2=jcore
@@ -178,7 +172,7 @@ Module88=|relative|..\..\shared\SDUIMap
 Module89=SithasoDaisy5
 Module9=SDUI5BottomDrawer
 Module90=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
-NumberOfFiles=42
+NumberOfFiles=39
 NumberOfLibraries=3
 NumberOfModules=90
 Version=10
@@ -188,12 +182,12 @@ Version=10
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 5.01
+	#LibraryVersion: 5.07
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "5.01"
+	Private LibVersion As String = "5.07"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)	
@@ -215,10 +209,10 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddCSSFile("roboto.min.css")
 	BANano.header.AddCSSFile("sweetalert2.min.css")
 	BANano.Header.AddCSSFile("fontawesome.min.css")
-	BANano.Header.AddCSSFile("bootstrap-grid.min.css")
+'	BANano.Header.AddCSSFile("bootstrap-grid.min.css")
 	BANano.Header.AddCSSFile("mdtoast.min.css")
 	
-	BANano.Header.AddCSSFile("daisyui7.css")
+	BANano.Header.AddCSSFile("daisyui8.css")
 	BANano.Header.AddJavascriptFile("tailwind4.min.js")
 	
 	BANano.Header.AddJavascriptFile("fileSaver.min.js")
