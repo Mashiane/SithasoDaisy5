@@ -1640,6 +1640,10 @@ Sub UsesSQLite
 	Banano.Await(LoadAssetsOnDemand("SQLite", Array("sql-browser.min.js")))
 End Sub
 
+Sub UsesInfoBox
+	Banano.Await(LoadAssetsOnDemand("CountUp", Array("math.min.js")))
+End Sub
+
 Sub UsesMath
 	Banano.Await(LoadAssetsOnDemand("MathIT", Array("math.min.js")))
 End Sub
@@ -1662,9 +1666,9 @@ Sub CopyFromClipBoard As String
 End Sub
 
 
-Sub UsesFlatPickDateTime
-	Banano.Await(LoadAssetsOnDemand("FlatPicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
-End Sub
+'Sub UsesFlatPickDateTime
+'	Banano.Await(LoadAssetsOnDemand("FlatPicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
+'End Sub
 
 Sub UsesLottiePlayer
 	Banano.Await(LoadAssetsOnDemand("Lottie", Array("lottie-player.js")))

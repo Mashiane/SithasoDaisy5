@@ -263,7 +263,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
-	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
@@ -273,7 +273,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
         		</div>"$).Get("#" & mName)
 		Case "label-input"
@@ -564,4 +564,30 @@ End Sub
 'ensure we can select the same file again
 Sub Nullify
 	mElement.SetValue(Null)
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As Object = GetFile
+	If BANano.IsNull(v) Then
+'		setErrorCaption(mErrorMessage)
+		setColor("error")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+	setColor("success")
+'	setHintCaption(mHint)
+'	HintColorIntensity("green", 600)
+	Return False
+End Sub
+
+'run validation
+Sub ResetValidation
+	Try
+		setColor("success")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+	Catch
+		
+	End Try		'ignore
 End Sub

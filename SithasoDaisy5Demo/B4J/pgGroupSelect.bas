@@ -19,11 +19,11 @@ Sub Show(MainApp As SDUI5App)
 	pgIndex.UpdateTitle("SDUI5GroupSelect")
 End Sub
 
-Private Sub SDUI5GroupSelect1_Changed (Selected As String)
+Private Sub SDUI5GroupSelect1_Change (Selected As String)
 	app.ShowToastSuccess(Selected)
 End Sub
 
 
-Private Sub SDUI5GroupSelect2_Changed (Selected As String)
+Private Sub SDUI5GroupSelect2_Change (Selected As String)
 	app.ShowSwalSuccess(Selected)
 End Sub

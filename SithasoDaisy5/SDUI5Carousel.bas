@@ -226,8 +226,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "neutral")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = Props.GetDefault("BackgroundColor", "neutral")
+'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		sDirection = Props.GetDefault("Direction", "horizontal")
 		sDirection = modSD5.CStr(sDirection)
 		sHeight = Props.GetDefault("Height", "")

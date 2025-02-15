@@ -232,7 +232,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	UI.AddClassDT("mockup-phone")
-	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)

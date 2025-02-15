@@ -243,7 +243,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("stats")
 	If bBorder = True Then UI.AddClassDT("border")
-	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sDirection <> "" Then UI.AddClassDT("stats-" & sDirection)
 	If sLGDirection <> "" Then UI.AddClassDT("lg:stats-" & sLGDirection)
 	If sMDDirection <> "" Then UI.AddClassDT("md:stats-" & sMDDirection)

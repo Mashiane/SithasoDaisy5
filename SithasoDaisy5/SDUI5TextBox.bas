@@ -305,7 +305,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						</button>
 	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
-	            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden"><img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img></button>
 	        		</div>          
@@ -321,7 +321,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					</button>
           			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden"><img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img></button>
         		</div>"$).Get("#" & mName)
@@ -344,7 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<input id="${mName}" class="tlradius"></input>          				
         			</label>
 					<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
@@ -760,5 +760,67 @@ Sub getValidator As Boolean
 End Sub
 'get Validator Hint
 Sub getValidatorHint As String
-        Return sValidatorHint
+	Return sValidatorHint
+End Sub
+
+'Not(IsMatch)
+Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	otherValue = modSD5.CStr(otherValue)
+	otherValue = otherValue.Trim
+	If v = otherValue Then
+		setColor("success")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+		Return False
+	Else
+'		setErrorCaption(tErrorMessage)
+		setColor("error")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+End Sub
+Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	If v.Length >= minLen Then
+		setColor("success")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+		Return False
+	Else
+'		setErrorCaption(tErrorMessage)
+		setColor("error")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+End Sub
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	If v = "" Then
+'		setErrorCaption(mErrorMessage)
+		setColor("error")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+	setColor("success")
+'	setHintCaption(mHint)
+'	HintColorIntensity("green", 600)
+	Return False
+End Sub
+
+Sub ResetValidation
+	Try
+		setColor("success")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+	Catch
+		
+	End Try		'ignore
 End Sub

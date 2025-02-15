@@ -211,8 +211,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
 		bBorder = modSD5.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
@@ -241,7 +241,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("fieldset")
 	If bBorder = True Then UI.AddClassDT("border")
-	If sBorderColor <> "" Then UI.AddClassDT("border-" & sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)

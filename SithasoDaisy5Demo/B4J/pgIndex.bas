@@ -20,7 +20,9 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
-	BANano.Await(App.UsesFlatPickDateTime)
+	BANano.Await(pgTypography.Show(App))
+
+'	BANano.Await(App.UsesFlatPickDateTime)
 	
 	'set the font of the app
 	'app.Font = "font-sans"
@@ -33,7 +35,6 @@ Sub Initialize					'ignoreDeadCode
 	'AddPages
 	'show the sign in page
 	'IsAuthenticated(False)
-	pgTypography.Show(App)
 	App.pageresume
 End Sub
 

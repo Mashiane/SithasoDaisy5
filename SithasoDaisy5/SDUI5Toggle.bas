@@ -499,3 +499,23 @@ End Sub
 Sub getValidatorHint As String
 	Return sValidatorHint
 End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As Boolean = getChecked
+	v = modSD5.CBool(v)
+	If v = False Then
+		setColor("error")
+		Return True
+	End If
+	setColor("success")
+	Return False
+End Sub
+
+Sub ResetValidation
+	Try
+		setColor("success")
+	Catch
+		
+	End Try		'ignore
+End Sub

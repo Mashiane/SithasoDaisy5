@@ -1453,6 +1453,12 @@ Sub AddColorDT(prefix As String, tc As String)
 	AddClassDT(s)
 End Sub
 
+Sub AddBorderColorDT(tc As String)					'ignoredeadcode
+	Dim s As String = modSD5.FixSize("border", tc)
+	AddAttrDT("data-bordercolor", s)
+	AddClassDT(s)
+End Sub
+
 Sub AddMaskDT(tc As String)
 	Dim s As String = modSD5.FixMask(tc)
 	AddAttrDT("data-mask", s)

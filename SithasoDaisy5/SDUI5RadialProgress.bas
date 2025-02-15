@@ -229,7 +229,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	UI.AddClassDT("radial-progress")
 	UI.AddAttrDT("role", "progressbar")
-	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sBorderWidth <> "" Then UI.AddSizeDT("border", sBorderWidth)
 	If sColor <> "" Then UI.AddBackgroundColorDT(sColor)
 	If sProgressSize <> "" Then UI.AddStyleDT("--size", sProgressSize)

@@ -550,3 +550,31 @@ Sub getValue As Int
 	iValue = modSD5.CInt(mElement.GetValue)
 	Return iValue
 End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	If v = "" Then
+'		setErrorCaption(mErrorMessage)
+'		BorderColorIntensity("error", "")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+'	BorderColorIntensity("#22c55e", "")
+'	setHintCaption(mHint)
+'	HintColorIntensity("green", 600)
+	Return False
+End Sub
+
+'run validation
+Sub ResetValidation
+	Try
+'		BorderColorIntensity("#22c55e", "")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+	Catch
+		
+	End Try		'ignore
+End Sub

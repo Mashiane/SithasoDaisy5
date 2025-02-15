@@ -5,7 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#Event: Changed (Selected As String)
+#Event: Change (Selected As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Group Select, Description: Label
@@ -29,7 +29,7 @@ Version=10
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
-#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=4; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=2; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
 #DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
 #DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
@@ -236,8 +236,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		sActiveColor = Props.GetDefault("ActiveColor", "#22c55e")
 		sActiveColor = modSD5.CStr(sActiveColor)
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
 		bBorder = modSD5.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
@@ -271,7 +271,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("fieldset")
 	If bBorder = True Then UI.AddClassDT("border")
-	If sBorderColor <> "" Then UI.AddClassDT("border-" & sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -412,6 +412,7 @@ Sub setOptions(s As String)				'ignoredeadcode
 End Sub
 
 Sub AddItem(k As String, v As String)
+	If mElement = Null Then Return
 	k = modSD5.CleanID(k)
 	Dim nk As String = $"${k}_${mName}"$
 	Dim itemSize As String = modSD5.FixSize("btn", sSize)
@@ -436,7 +437,7 @@ End Sub
 
 private Sub changed(e As BANanoEvent)		'ignoredeadcode
 	Dim nselected As String = getSelected
-	BANano.CallSub(mCallBack, $"${mName}_changed"$, Array(nselected))
+	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
 End Sub
 
 'set Rounded Box
@@ -586,4 +587,24 @@ End Sub
 'get Chip Outlined
 Sub getChipOutlined As Boolean
 	Return bChipOutlined
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getSelected
+	v = modSD5.cstr(v)
+	If v = "" Then
+		setBorderColor("error")
+		Return True
+	End If
+	setBorderColor("success")
+	Return False
+End Sub
+
+Sub ResetValidation
+	Try
+		setBorderColor("success")
+	Catch
+		
+	End Try		'ignore
 End Sub

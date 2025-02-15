@@ -467,7 +467,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setWordBreak(sWordBreak)
 	setTextColor(sTextColor)
 	setOverflow(sOverflow)
-	setOpacity(iOpacity)
+	If iOpacity <> 100 Then setOpacity(iOpacity)
 	setFontVariant(sFontVariant)
 '	setVisible(bVisible)
 End Sub

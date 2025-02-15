@@ -8,9 +8,9 @@ Version=10
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio Group, Description: Label
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox Group, Description: Label
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Raw Options
-#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
+#DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
@@ -59,7 +59,7 @@ Sub Class_Globals
 	Private sColor As String = "none"
 	Private sGroupName As String = ""
 	Private sHint As String = ""
-	Private sLabel As String = "Radio Group"
+	Private sLabel As String = "CheckBox Group"
 	Private sSize As String = "none"
 	Private sValue As String = ""
 	Private sRawOptions As String = "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r"
@@ -73,6 +73,7 @@ Sub Class_Globals
 	Private sWidth As String = "full"
 	Private sHeight As String = ""
 	Private items As Map
+	Private sSelected As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -258,9 +259,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRoundedBox = modSD5.CBool(bRoundedBox)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
-		sWidth = Props.GetDefault("Width", "fit")
+		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		sSelected = Props.GetDefault("Selected", "")
+		sSelected = modSD5.CStr(sSelected)
 	End If
+	'
 	UI.AddClassDT("fieldset")
 	If bBorder Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
@@ -279,26 +283,96 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	Select Case bColumnView
-	Case True
-		mElement = mTarget.Append($"[BANCLEAN]
+		Case True
+			mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options"></div>
 	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
-	Case Else		
-		'row view
-		mElement = mTarget.Append($"[BANCLEAN]
+		Case Else
+			'row view
+			mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options" class="grid grid-cols-3 gap-4 w-fit"></div>
 	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
-		UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
+			UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
 	BANano.Await(setOptions(sRawOptions))
-	BANano.Await(setValue(sValue))
+	BANano.Await(setSelected(sSelected))
 '	setVisible(bVisible)
+End Sub
+
+'set Selected
+Sub setSelected(s As String)					'ignoredeadcode
+	sSelected = s
+	CustProps.put("Selected", s)
+	If mElement = Null Then Return
+	Dim selectedList As List = UI.GetOptions(s)
+	'uncheck everything
+	For Each item As String In items.keys
+		UI.SetCheckedByID(item, False)
+	Next
+	'check what is available
+	For Each item As String In selectedList
+		Dim npart As String = $"${item}_${mName}"$
+		UI.SetCheckedByID(npart, True)
+	Next
+End Sub
+
+Sub AddItem(k As String, v As String)
+	If mElement = Null Then Return
+	k = modSD5.CleanID(k)
+	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
+	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
+	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
+	Dim sb As StringBuilder
+	sb.Initialize
+	'
+	If bColumnView Then
+		Select Case sLabelPosition
+			Case "left"
+				sb.Append($"<div id="${k}_${mName}_host" class="flex items-center justify-between mb-2">
+		      <label class="cursor-pointer select-none">
+			  	<span id="${k}_${mName}_label">${v}</span>
+			  </label>
+		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+		  </div>"$)
+				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+			Case "right"
+				sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+			<span id="${k}_${mName}_label">${v}</span>
+			</label>"$)
+				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+		End Select
+	Else
+		sb.Append($"[BANCLEAN]
+		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
+            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+            <span id="${k}_${mName}_label" class="text-start">${v}</span> 
+        </div>"$)
+		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+	End If
+	UI.AppendByID($"${mName}_options"$, sb.ToString)
+	UI.OnEventByID($"${k}_${mName}"$, "change", Me, "changed")
+End Sub
+
+'get Selected
+Sub getSelected As String
+	Dim selectedItems As List
+	selectedItems.Initialize
+	For Each item As String In items.keys
+		Dim b As Boolean = UI.GetCheckedByID(item)
+		If b Then
+			Dim ok As String = modSD5.MvField(item, 1, "_")
+			selectedItems.Add(ok)
+		End If
+	Next
+	sSelected = modSD5.Join(";", selectedItems)
+	Return sSelected
 End Sub
 
 
@@ -340,44 +414,6 @@ Sub setOptions(s As String)			'ignoredeadcode
 	SetOptionsFromMap(m)
 End Sub
 
-Sub AddItem(k As String, v As String)
-	If mElement = Null Then Return
-	k = modSD5.CleanID(k)
-	Dim rSize As String = modSD5.FixSize("radio", sSize)
-	Dim rColor As String = modSD5.FixColor("radio", sColor)
-	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
-	Dim sb As StringBuilder
-	sb.Initialize 
-	'
-	If bColumnView Then
-		Select Case sLabelPosition
-		Case "left"
-			sb.Append($"<div id="${k}_${mName}_host" class="flex items-center justify-between mb-2">
-		      <label class="cursor-pointer select-none">
-			  	<span id="${k}_${mName}_label">${v}</span>
-			  </label>
-		      <input id="${k}_${mName}" name="${sGroupName}" value="${k}" type="radio" class="radio ${rColor} ${rSize} ${cColor}"/>
-		  </div>"$)
-		  items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
-		Case "right"
-			sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-			<input id="${k}_${mName}" type="radio" name="${sGroupName}" value="${k}" class="radio ${rColor} ${rSize} ${cColor}"/>
-			<span id="${k}_${mName}_label">${v}</span>
-			</label>"$)
-			items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
-		End Select
-	Else
-		sb.Append($"[BANCLEAN]
-		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-            <input id="${k}_${mName}" name="${sGroupName}" type="radio" value="${k}" class="radio ${rColor} ${rSize} ${cColor}"/>
-            <span id="${k}_${mName}_label" class="text-start">${v}</span> 
-        </div>"$)
-		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
-	End If
-	UI.AppendByID($"${mName}_options"$, sb.ToString)
-	UI.OnEventByID($"${k}_${mName}"$, "change", Me, "changed")
-End Sub
-
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	If mElement = Null Then Return
@@ -388,71 +424,74 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	End If
 	If m.Size = 0 Then Return
 	'
-	Dim rSize As String = modSD5.FixSize("radio", sSize)
-	Dim rColor As String = modSD5.FixColor("radio", sColor)
+	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
+	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
 	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
 	Dim sb As StringBuilder
 	sb.Initialize
-	items.Initialize  
+	items.Initialize
 	If bColumnView Then
 		Select Case sLabelPosition
-		Case "left"
-			For Each k As String In m.Keys
-				Dim v As String = m.Get(k)
-				Dim sk As String = modSD5.CleanID(k)
-'				sb.Append($"[BANCLEAN]
-'					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
-'						<span id="${sk}_${mName}_label">${v}</span>
-'						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
-'					</label>"$)
-					
-				sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
+			Case "left"
+				For Each k As String In m.Keys
+					Dim v As String = m.Get(k)
+					Dim sk As String = modSD5.CleanID(k)
+					sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
 			      <label class="cursor-pointer select-none">
 			        <span id="${sk}_${mName}_label">${v}</span>
 			      </label>
-			      <input id="${sk}_${mName}" name="${sGroupName}" value="${sk}" type="radio" class="radio ${rColor} ${rSize} ${cColor}"/>
+			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor}"/>
 			    </div>"$)
-				items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
-			Next
-		Case "right"
-			For Each k As String In m.Keys
-				Dim v As String = m.Get(k)
-				Dim sk As String = modSD5.CleanID(k)
-'				sb.Append($"[BANCLEAN]
-'					<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
-'					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
-'					<span id="${sk}_${mName}_label">${v}</span>
-'				</label>"$)
-				'
+					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+				Next
+			Case "right"
+				For Each k As String In m.Keys
+					Dim v As String = m.Get(k)
+					Dim sk As String = modSD5.CleanID(k)
 					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-      					<input id="${sk}_${mName}" type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
+      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
       					<span id="${sk}_${mName}_label">${v}</span>
     				</label>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
-			Next
+				Next
 		End Select
-	Else	
+	Else
 		For Each k As String In m.Keys
 			Dim v As String = m.Get(k)
 			Dim sk As String = modSD5.CleanID(k)
 			sb.Append($"[BANCLEAN]
 				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-              		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
+              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
 			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 		Next
-	End If	
+	End If
 	BANano.Await(UI.AppendByID($"${mName}_options"$, sb.ToString))
 	For Each item As String In items.keys
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next
 End Sub
 
+'set items chips that can be selected
+'pass blank to
+Sub SetItemsChips(titems As Map)
+	Dim sb As StringBuilder
+	sb.Initialize
+	For Each k As String In titems.Keys
+		Dim v As String = titems.Get(k)
+		sb.Append(k)
+		sb.Append(":")
+		sb.Append(v)
+		sb.Append(";")
+	Next
+	Dim sout As String = modSD5.remdelim(sb.ToString, ";")
+	BANano.Await(setOptions(sout))
+End Sub
+
 private Sub changed(e As BANanoEvent)			'ignoreDeadCode
-	e.PreventDefault
-	Dim xChecked As String = UI.GetValueByID(e.ID)
-	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(xChecked))
+	Dim nselected As String = getSelected
+	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
 End Sub
 
 
@@ -589,11 +628,11 @@ Sub setSize(s As String)
 	CustProps.put("Size", s)
 End Sub
 'set Value
-Sub setValue(s As String)			'ignoredeadcode
+Sub setValue(s As String)
 	sValue = s
 	CustProps.put("Value", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetCheckedByID($"${sValue}_${mName}"$, True)
+	'If mElement = Null Then Return
+	'mElement.SetValue(s)
 End Sub
 'get Btn
 'get Checked Color
@@ -618,16 +657,7 @@ Sub getLabel As String
 End Sub
 'get Value
 Sub getValue As String
-	Dim selectedItems As List
-	selectedItems.Initialize
-	For Each item As String In items.keys
-		Dim b As Boolean = UI.GetCheckedByID(item)
-		If b Then
-			Dim ok As String = modSD5.MvField(item, 1, "_")
-			selectedItems.Add(ok)
-		End If
-	Next
-	sValue = modSD5.Join(";", selectedItems)
+	'sValue = mElement.getvalue
 	Return sValue
 End Sub
 

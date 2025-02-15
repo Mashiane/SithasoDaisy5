@@ -91,6 +91,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Options.Initialize
 	UI.Initialize(Me)
+	BANano.DependsOnAsset("infobox.min.css")
+	BANano.DependsOnAsset("countUp.umd.js")
 End Sub
 ' returns the BANanoElement
 Public Sub getElement() As BANanoElement

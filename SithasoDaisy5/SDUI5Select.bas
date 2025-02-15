@@ -297,7 +297,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
 					</select>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
@@ -317,7 +317,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
 					</select>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
@@ -346,7 +346,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			</select>
         			</label>
 					<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
@@ -701,4 +701,32 @@ End Sub
 Sub getValue As String
 	sValue = mElement.getvalue
 	Return sValue
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	If v = "" Then
+'		setErrorCaption(mErrorMessage)
+		setColor("error")
+'		HintColorIntensity("red", 600)
+		Return True
+	End If
+	setColor("success")
+'	setHintCaption(mHint)
+'	HintColorIntensity("green", 600)
+	Return False
+End Sub
+
+'run validation
+Sub ResetValidation
+	Try
+		setColor("success")
+'		setHintCaption(mHint)
+'		HintColorIntensity("green", 600)
+	Catch
+		
+	End Try		'ignore
 End Sub

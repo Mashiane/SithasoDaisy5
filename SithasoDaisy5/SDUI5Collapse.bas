@@ -271,7 +271,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	UI.AddClassDT("collapse")
 	If bBorder = True Then UI.AddClassDT("border")
-	If sBorderColor <> "" Then UI.AddColorDT("border", sBorderColor)
+	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If bJoinItem = True Then UI.AddClassDT("join-item")
 	If sOpenClose <> "" Then UI.UpdateClassDT("openclose", "collapse-" & sOpenClose)
 	If sRightIcon <> "" Then UI.UpdateClassDT("righticon", "collapse-" & sRightIcon)

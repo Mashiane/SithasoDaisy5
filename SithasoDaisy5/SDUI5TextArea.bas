@@ -312,7 +312,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden"><img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img></button>
         		</div>          
@@ -328,7 +328,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden"><img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img></button>
         		</div>"$).Get("#" & mName)
@@ -351,7 +351,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<textarea id="${mName}" class="textarea p-0 m-0"></textarea>         				
         			</label>
 					<div id="${mName}_required" class="indicator join-item hidden">
-            			<span id="${mName}_badge" class="indicator-item badge badge-error badge-xs hidden"></span>
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
@@ -742,4 +742,24 @@ End Sub
 Sub getValue As String
 	sValue = mElement.getvalue
 	Return sValue
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = modSD5.CStr(v)
+	v = v.Trim
+	If v = "" Then
+		setColor("error")
+		Return True
+	End If
+	setColor("success")
+	Return False
+End Sub
+
+Sub ResetValidation
+	Try
+		setColor("success")
+	Catch
+	End Try		'ignore
 End Sub

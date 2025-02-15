@@ -353,6 +353,13 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	DPValue.Initialize 
 	Originals.Initialize 
 	UI.Initialize(Me)
+	BANano.DependsOnAsset("flatpickr.min.css")
+	BANano.DependsOnAsset("material_blue.css")
+	BANano.DependsOnAsset("flatpickr.min.js")
+	BANano.DependsOnAsset("fplocale.min.js")
+	BANano.DependsOnAsset("numeral.min.js")
+	BANano.DependsOnAsset("dayjs.min.js")
+	BANano.DependsOnAsset("relativeTime.min.js")
 End Sub
 
 Sub DesignerCreateView (Target As BANanoElement, Props As Map)
