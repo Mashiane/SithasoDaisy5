@@ -20,6 +20,7 @@ Version=10
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
 #DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
@@ -73,6 +74,7 @@ Sub Class_Globals
 	Private sWidth As String = "full"
 	Private sHeight As String = ""
 	Private items As Map
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -260,11 +262,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = modSD5.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "fit")
 		sWidth = modSD5.CStr(sWidth)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	UI.AddClassDT("fieldset")
 	If bBorder Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -284,7 +290,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options"></div>
-	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+	      		<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
 	Case Else		
 		'row view
@@ -292,7 +298,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options" class="grid grid-cols-3 gap-4 w-fit"></div>
-	      		<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+	      		<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
 		UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
@@ -301,6 +307,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, sShadow)
+End Sub
+
+Sub getShadow As String
+	Return sShadow
+End Sub
 
 'set Column View
 Sub setColumnView(b As Boolean)
@@ -574,6 +592,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)

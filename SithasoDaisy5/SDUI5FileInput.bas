@@ -19,6 +19,11 @@ Version=10
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -60,6 +65,11 @@ Sub Class_Globals
 	Private sInputType As String = "normal"
 	Private sWidth As String = "full"
 	Private bHideSelectorButton As Boolean = False
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -212,7 +222,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -242,6 +252,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = modSD5.CStr(sWidth)
 		bHideSelectorButton = Props.GetDefault("HideSelectorButton", False)
 		bHideSelectorButton = modSD5.CBool(bHideSelectorButton)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -266,8 +287,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          		</div>          
-	        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
+	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
@@ -294,6 +320,78 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 '	setVisible(bVisible)
 End Sub
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sInputType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
 
 'set Hide Selector Button
 Sub setHideSelectorButton(b As Boolean)				'ignoredeadcode
@@ -368,6 +466,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)
@@ -570,23 +673,28 @@ End Sub
 Sub IsBlank As Boolean
 	Dim v As Object = GetFile
 	If BANano.IsNull(v) Then
-'		setErrorCaption(mErrorMessage)
-		setColor("error")
-'		HintColorIntensity("red", 600)
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
 		Return True
 	End If
-	setColor("success")
-'	setHintCaption(mHint)
-'	HintColorIntensity("green", 600)
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
 	Return False
 End Sub
 
-'run validation
 Sub ResetValidation
 	Try
-		setColor("success")
-'		setHintCaption(mHint)
-'		HintColorIntensity("green", 600)
+		If sInputType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
 	Catch
 		
 	End Try		'ignore

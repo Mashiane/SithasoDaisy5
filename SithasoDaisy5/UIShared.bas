@@ -316,12 +316,27 @@ public Sub GetBorderStyle() As String
 	Return BANano.GetP(mSelf, "sRawBorderStyle")
 End Sub
 
-public Sub SetBorderColor(mElement As BANanoElement, s As String)
+public Sub SetBorderColorStyle(mElement As BANanoElement, s As String)
 	BANano.SetP(mSelf, "sRawBorderColor", s)
 	If mElement = Null Then Return
 	Dim bb As Map = GetBordersMap("color", s)
 	AddStyleMap(mElement, bb)
 End Sub
+
+public Sub SetBorderColor(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim ncolor As String = modSD5.FixColor("border", s)
+	UpdateClass(mElement, "bordercolor", ncolor)
+End Sub
+
+public Sub SetBorderColorByID(sID As String, s As String)
+	sID = modSD5.CStr(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	Dim ncolor As String = modSD5.FixColor("border", s)
+	UpdateClass(mElement, "bordercolor", ncolor)
+End Sub
+
 
 public Sub GetBorderColor() As String
 	Return BANano.GetP(mSelf, "sRawBorderColor")
@@ -468,6 +483,25 @@ public Sub SetTextColorByID(sID As String, s As String)
 	SetTextColor(mElement, s)
 End Sub
 
+Sub SetIconSizeStyle(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	If s = "" Then s = "md"
+	Select Case s
+		Case "xs"
+			S = "16px"   '"24px"
+		Case "sm"
+			S = "24px"  ' "32px"
+		Case "md"
+			S = "32px" ' "40px"
+		Case "lg"
+			S =  "40px" ' "48px"
+		Case "xl"
+			S = "48px" ' "56px"
+	End Select
+	SetStyle(mElement, "font-size", s)
+	SetStyle(mElement, "font-size", s)
+End Sub
+
 'set Image Size
 Sub SetButtonImageSize(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
@@ -495,7 +529,11 @@ Sub SetButtonImageSizeByID(sID As String, s As String)
 	SetButtonImageSize(mElement, s)
 End Sub
 
-
+Sub SetIconSizeStyleByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetIconSizeStyle(mElement, s)
+End Sub
 
 public Sub SetTextSizeByID(sID As String, s As String)
 	sID = modSD5.CleanID(sID)

@@ -24,10 +24,17 @@ Version=10
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: PrependImage, DisplayName: Prepend Image, FieldType: String, DefaultValue: , Description: Prepend Image
 #DesignerProperty: Key: PrependIcon, DisplayName: Prepend Icon, FieldType: String, DefaultValue: , Description: Prepend Icon
 #DesignerProperty: Key: PrependVisible, DisplayName: Prepend Visible, FieldType: Boolean, DefaultValue: False, Description: Prepend Visible
+#DesignerProperty: Key: AppendImage, DisplayName: Append Image, FieldType: String, DefaultValue: , Description: Append Image
 #DesignerProperty: Key: AppendIcon, DisplayName: Append Icon, FieldType: String, DefaultValue: , Description: Append Icon
 #DesignerProperty: Key: AppendVisible, DisplayName: Append Visible, FieldType: Boolean, DefaultValue: False, Description: Append Visible
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -76,6 +83,13 @@ Sub Class_Globals
 	Private bPrependVisible As Boolean = False
 	Private sInputType As String = "normal"
 	Private sWidth As String = "full"
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
+	Private sAppendImage As String = ""
+	Private sPrependImage As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -229,7 +243,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -271,6 +285,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sInputType = modSD5.CStr(sInputType)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		sAppendImage = Props.GetDefault("AppendImage", "")
+		sAppendImage = modSD5.CStr(sAppendImage)
+		sPrependImage = Props.GetDefault("PrependImage", "")
+		sPrependImage = modSD5.CStr(sPrependImage)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -291,7 +320,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
+						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
 					</button>
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
@@ -300,18 +330,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
+						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
         		</div>          
-        		<p id="${mName}_hint" class="fieldset-label">${sHint}</p>
+        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
       		</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 		<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
+						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
 					</button>
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
@@ -320,7 +357,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
+						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
         		</div>"$).Get("#" & mName)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -337,7 +375,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]	
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" src="${sPrependIcon}" alt=""></img>
+						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
+						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
 					</button>
         			<label id="${mName}_floating" class="floating-label select join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -349,7 +388,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" src="${sAppendIcon}" alt=""></img>
+						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
+						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
       			</div>"$).Get("#" & mName)
 			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -367,8 +407,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setEnabled(bEnabled)
 	Select Case sInputType
 	Case "legend", "buttons", "buttons-floating"
+		setAppendImage(sAppendImage)
 		setAppendIcon(sAppendIcon)
 		setAppendVisible(bAppendVisible)
+		setPrependImage(sPrependImage)
 		setPrependIcon(sPrependIcon)
 		setPrependVisible(bPrependVisible)
 	End Select
@@ -378,6 +420,76 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sInputType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
 
 'set Width
 Sub setWidth(s As String)			'ignoredeadcode
@@ -425,26 +537,6 @@ Sub setPrependVisible(b As Boolean)			'ignoredeadcode
 	UI.SetVisibleByID($"${mName}_prepend"$, b)
 End Sub
 
-'set Prepend Icon
-Sub setPrependIcon(s As String)			'ignoredeadcode
-	sPrependIcon = s
-	CustProps.put("PrependIcon", s)
-	If mElement = Null Then Return
-	If s = "" Then
-		UI.SetVisibleByID($"${mName}_prepend"$, False)
-	Else
-		If sInputType = "buttons-floating" Then
-			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
-			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
-		Else
-			UI.RemoveClass(mElement, "tlradius")
-			UI.RemoveClass(mElement, "blradius")
-		End If
-		UI.SetVisibleByID($"${mName}_prepend"$, True)
-		UI.SetImageByID($"${mName}_prependimage"$, sPrependIcon)
-	End If
-End Sub
-
 'set Append Visible
 Sub setAppendVisible(b As Boolean)			'ignoredeadcode
 	bAppendVisible = b
@@ -453,24 +545,6 @@ Sub setAppendVisible(b As Boolean)			'ignoredeadcode
 	UI.SetVisibleByID($"${mName}_append"$, b)
 End Sub
 
-Sub setAppendIcon(s As String)			'ignoredeadcode
-	sAppendIcon = s
-	CustProps.put("AppendIcon", s)
-	If mElement = Null Then Return
-	If s = "" Then
-		UI.SetVisibleByID($"${mName}_append"$, False)
-	Else
-		If sInputType = "buttons-floating" Then
-			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
-			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
-		Else
-			UI.RemoveClass(mElement, "trradius")
-			UI.RemoveClass(mElement, "brradius")
-		End If
-		UI.SetVisibleByID($"${mName}_append"$, True)
-		UI.SetImageByID($"${mName}_appendimage"$, s)
-	End If
-End Sub
 
 'get Append Icon
 Sub getAppendIcon As String
@@ -583,6 +657,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)
@@ -613,6 +692,94 @@ Sub setRequired(b As Boolean)				'ignoredeadcode
 		UI.SetVisibleByID($"${mName}_badge"$, False)
 	End If
 End Sub
+
+Sub setAppendImage(s As String)				'ignoredeadcode
+	sAppendImage = s
+	CustProps.put("AppendImage", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_appendimage"$, False)
+	Else
+		UI.SetImageByID($"${mName}_appendimage"$, s)
+		UI.SetVisibleByID($"${mName}_appendimage"$, True)
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
+		Else
+			UI.RemoveClass(mElement, "trradius")
+			UI.RemoveClass(mElement, "brradius")
+		End If
+	End If
+End Sub
+
+Sub setAppendIcon(s As String)				'ignoredeadcode
+	sAppendIcon = s
+	CustProps.put("AppendIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_appendicon"$, False)
+	Else
+		UI.UpdateClassByID($"${mName}_appendicon"$, "icon", s)
+		UI.SetVisibleByID($"${mName}_appendicon"$, True)
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
+		Else
+			UI.RemoveClass(mElement, "trradius")
+			UI.RemoveClass(mElement, "brradius")
+		End If
+	End If
+End Sub
+
+Sub getAppendImage As String
+	Return sAppendImage
+End Sub
+
+
+'set Prepend Image
+Sub setPrependImage(s As String)				'ignoredeadcode
+	sPrependImage = s
+	CustProps.put("PrependImage", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_prependimage"$, False)
+	Else
+		UI.SetImageByID($"${mName}_prependimage"$, s)
+		UI.SetVisibleByID($"${mName}_prependimage"$, True)
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
+		Else
+			UI.RemoveClass(mElement, "tlradius")
+			UI.RemoveClass(mElement, "blradius")
+		End If
+	End If
+End Sub
+
+Sub getPrependImage As String
+	Return sPrependImage
+End Sub
+
+'set Prepend Icon
+Sub setPrependIcon(s As String)				'ignoredeadcode
+	sPrependIcon = s
+	CustProps.put("PrependIcon", s)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_prependicon"$, False)
+	Else
+		UI.UpdateClassByID($"${mName}_prependicon"$, "icon", s)
+		UI.SetVisibleByID($"${mName}_prependicon"$, True)
+		If sInputType = "buttons-floating" Then
+			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
+			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
+		Else
+			UI.RemoveClass(mElement, "tlradius")
+			UI.RemoveClass(mElement, "blradius")
+		End If
+	End If
+End Sub
+
 'set Size
 'options: xs|none|sm|md|lg|xl
 Sub setSize(s As String)				'ignoredeadcode
@@ -627,6 +794,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
+		BANano.Await(UI.SetIconSizeStyleByID($"${mName}_prependicon"$, sSize))
+		BANano.Await(UI.SetIconSizeStyleByID($"${mName}_appendicon"$, sSize))
 	End Select	
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "select", sSize))
@@ -709,23 +878,28 @@ Sub IsBlank As Boolean
 	v = modSD5.CStr(v)
 	v = v.Trim
 	If v = "" Then
-'		setErrorCaption(mErrorMessage)
-		setColor("error")
-'		HintColorIntensity("red", 600)
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
 		Return True
 	End If
-	setColor("success")
-'	setHintCaption(mHint)
-'	HintColorIntensity("green", 600)
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
 	Return False
 End Sub
 
-'run validation
 Sub ResetValidation
 	Try
-		setColor("success")
-'		setHintCaption(mHint)
-'		HintColorIntensity("green", 600)
+		If sInputType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
 	Catch
 		
 	End Try		'ignore

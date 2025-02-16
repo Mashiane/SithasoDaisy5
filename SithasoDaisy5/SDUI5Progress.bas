@@ -309,7 +309,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<span id="${mName}_start">${iMinValue}</span>
 					<span id="${mName}_end">${iMaxValue}</span>
 				</div>
-				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+				<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
 		Case "tooltip"
 			mElement = mTarget.Append($"[BANCLEAN]
@@ -358,6 +358,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 
 Sub getHint As String

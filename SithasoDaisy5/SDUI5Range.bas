@@ -5,24 +5,29 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#Event: Change (Value As Int)
+#Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RangeType, DisplayName: Range Type, FieldType: String, DefaultValue: normal, Description: Range Type, List: legend|normal|tooltip
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 10, Description: Value
+#DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: 0, Description: Min Value
+#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: String, DefaultValue: 1, Description: Step Value
+#DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: String, DefaultValue: 100, Description: Max Value
+#DesignerProperty: Key: Measure, DisplayName: Measure, FieldType: Boolean, DefaultValue: False, Description: Measure
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: ThumbColor, DisplayName: Thumb Color, FieldType: String, DefaultValue: , Description: Thumb Color
+#DesignerProperty: Key: RangeBackgroundColor, DisplayName: Range Background Color, FieldType: String, DefaultValue: , Description: Range Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Value, DisplayName: Value, FieldType: Int, DefaultValue: 10, MinRange: 0, MaxRange: 100, Description: Value
-#DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Min Value
-#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: Int, DefaultValue: 1, MinRange: 0, MaxRange: 100, Description: Step Value
-#DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Max Value
-#DesignerProperty: Key: Measure, DisplayName: Measure, FieldType: Boolean, DefaultValue: False, Description: Measure
-#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
-#DesignerProperty: Key: ThumbColor, DisplayName: Thumb Color, FieldType: String, DefaultValue: , Description: Thumb Color
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -53,21 +58,26 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sBackgroundColor As String = ""
+	Private sRangeBackgroundColor As String = ""
 	Private sColor As String = "none"
 	Private sHint As String = ""
 	Private sLabel As String = ""
-	Private iMaxValue As Int = 100
+	Private sMaxValue As String = "100"
 	Private bMeasure As Boolean = False
-	Private iMinValue As Int = 0
+	Private sMinValue As String = "0"
 	Private sSize As String = "none"
-	Private iStepValue As Int = 1
+	Private sStepValue As String = "1"
 	Private sTextColor As String = ""
 	Private sThumbColor As String = ""
-	Private iValue As Int = 10
+	Private sValue As String = "10"
 	Private sRangeType As String = "normal"
 	Private sHeight As String = ""
 	Private sWidth As String = "full"
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -224,8 +234,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sRangeBackgroundColor = Props.GetDefault("RangeBackgroundColor", "")
+		sRangeBackgroundColor = modSD5.CStr(sRangeBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -233,29 +243,40 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHint = modSD5.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "")
 		sLabel = modSD5.CStr(sLabel)
-		iMaxValue = Props.GetDefault("MaxValue", 100)
-		iMaxValue = modSD5.Cint(iMaxValue)
+		sMaxValue = Props.GetDefault("MaxValue", "100")
+		sMaxValue = modSD5.CStr(sMaxValue)
 		bMeasure = Props.GetDefault("Measure", False)
 		bMeasure = modSD5.CBool(bMeasure)
-		iMinValue = Props.GetDefault("MinValue", 0)
-		iMinValue = modSD5.Cint(iMinValue)
+		sMinValue = Props.GetDefault("MinValue", "0")
+		sMinValue = modSD5.CStr(sMinValue)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = modSD5.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		iStepValue = Props.GetDefault("StepValue", 1)
-		iStepValue = modSD5.CInt(iStepValue)
+		sStepValue = Props.GetDefault("StepValue", "1")
+		sStepValue = modSD5.CStr(sStepValue)
 		sTextColor = Props.GetDefault("TextColor", "")
 		sTextColor = modSD5.CStr(sTextColor)
 		sThumbColor = Props.GetDefault("ThumbColor", "")
 		sThumbColor = modSD5.CStr(sThumbColor)
-		iValue = Props.GetDefault("Value", 10)
-		iValue = modSD5.Cint(iValue)
+		sValue = Props.GetDefault("Value", "10")
+		sValue = modSD5.CStr(sValue)
 		sRangeType = Props.GetDefault("RangeType", "normal")
 		sRangeType = modSD5.CStr(sRangeType)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = modSD5.CStr(sHeight)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -272,48 +293,135 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	Select Case sRangeType
 	Case "legend"	
-		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
-				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
-  					<span id="${mName}_startlabel"></span>
-					<span id="${mName}_endlabel">${iValue}</span>
-				</div>
-  				<input id="${mName}" class="relative range w-full" type="range"></input>
-				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
-  					<span id="${mName}_start">${iMinValue}</span>
-					<span id="${mName}_end">${iMaxValue}</span>
-				</div>
-				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
-			</fieldset>"$).Get("#" & mName)
+'		mElement = mTarget.Append($"[BANCLEAN]
+'			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
+'  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
+'				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
+'  					<span id="${mName}_startlabel"></span>
+'					<span id="${mName}_endlabel">${iValue}</span>
+'				</div>
+'  				<input id="${mName}" class="relative range w-full" type="range"></input>
+'				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
+'  					<span id="${mName}_start">${iMinValue}</span>
+'					<span id="${mName}_end">${iMaxValue}</span>
+'				</div>
+'				<label id="${mName}_hint" class="fieldset-label">${sHint}</label>
+'			</fieldset>"$).Get("#" & mName)
+'			setBackgroundColor(sBackgroundColor)
+'			setBorder(bBorder)
+'			setBorderColor(sBorderColor)
+'			setRoundedBox(bRoundedBox)
+'			setShadow(sShadow)
+			mElement = mTarget.Append($"[BANCLEAN]
+				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+					<div id="${mName}_tooltip" class="tooltip" data-tip="${sValue}">
+						<input id="${mName}" step="${sStepValue}" max="${sMaxValue}" min="${sMinValue}" value="${sValue}" class="range join-item w-full" type="range"></input>
+					</div>
+	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	      		</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 	Case "tooltip"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
         		<div class="relative mt-6">
-            		<div id="${mName}_tooltip" class="absolute tooltip top-2 tooltip-open before:text-xs" style="inset-inline-start:${iValue}%" data-tip="${iValue}"></div>
-					<input id="${mName}" class="range w-full" type="range" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></input>
+            		<div id="${mName}_tooltip" class="absolute tooltip top-2 tooltip-open before:text-xs" style="inset-inline-start:${sValue}%" data-tip="${sValue}"></div>
+					<input id="${mName}" class="range w-full" type="range" value="${sValue}" step="${sStepValue}" min="${sMinValue}" max="${sMaxValue}"></input>
         		</div>
         		<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
-					<span id="${mName}_start">${iMinValue}</span>
-					<span id="${mName}_end">${iMaxValue}</span>
+					<span id="${mName}_start">${sMinValue}</span>
+					<span id="${mName}_end">${sMaxValue}</span>
 				</div>
     		</div>"$).Get("#" & mName)
 	Case "normal"
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="range" class="${xclasses} range" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			mElement = mTarget.Append($"[BANCLEAN]
+			<input id="${mName}" type="range" class="${xclasses} range" ${xattrs} style="${xstyles}" value="${sValue}" step="${sStepValue}" min="${sMinValue}" max="${sMaxValue}"></input>"$).Get("#" & mName)
 		setWidth(sWidth)
 	End Select
 	
 	If sColor <> "" Then setColor(sColor)
 	setEnabled(bEnabled)
 	If sSize <> "" Then setSize(sSize)
-	If sBackgroundColor <> "" Then setBackgroundColor(sBackgroundColor)
-	setMaxValue(iMaxValue)
-	setMinValue(iMinValue)
-	setStepValue(iStepValue)
-	setValue(iValue)
+	If sRangeBackgroundColor <> "" Then setRangeBackgroundColor(sRangeBackgroundColor)
 	setHeight(sHeight)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sRangeType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub
 
 'set Width
@@ -353,14 +461,15 @@ End Sub
 
 private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
-	Dim cvalue As Int = modSD5.CInt(mElement.getvalue)
-	iValue = cvalue
+	Dim cvalue As String = modSD5.CStr(mElement.getvalue)
+	sValue = cvalue
 	Select Case sRangeType
 	Case "legend"
-		UI.SetTextByID($"${mName}_endlabel"$, iValue)
+'		UI.SetTextByID($"${mName}_endlabel"$, iValue)
+		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
 	Case "tooltip"
 		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${cvalue}%"$)
-		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
+		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
 	Case "normal"
 	End Select
 	BANano.CallSub(mCallBack, $"${mEventName}_change"$, Array(cvalue))
@@ -399,9 +508,9 @@ Sub SetTooltipVisible(b As Boolean)
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)				'ignoredeadcode
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
+Sub setRangeBackgroundColor(s As String)				'ignoredeadcode
+	sRangeBackgroundColor = s
+	CustProps.put("RangeBackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.AddStyle(mElement, "--range-shdw", s)
@@ -421,6 +530,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)
@@ -430,12 +544,12 @@ Sub setLabel(s As String)
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
 'set Max Value
-Sub setMaxValue(s As Int)			'ignoredeadcode
-	iMaxValue = s
+Sub setMaxValue(s As String)			'ignoredeadcode
+	sMaxValue = s
 	CustProps.put("MaxValue", s)
 	If mElement = Null Then Return
 	UI.SetAttr(mElement, "max", s)
-	UI.SetTextByID($"${mName}_end"$, iMaxValue)
+	UI.SetTextByID($"${mName}_end"$, sMaxValue)
 End Sub
 'set Measure
 Sub setMeasure(b As Boolean)
@@ -449,12 +563,12 @@ Sub setMeasure(b As Boolean)
 '	End If
 End Sub
 'set Min Value
-Sub setMinValue(s As Int)				'ignoredeadcode
-	iMinValue = s
+Sub setMinValue(s As String)				'ignoredeadcode
+	sMinValue = s
 	CustProps.put("MinValue", s)
 	If mElement = Null Then Return
 	UI.SetAttr(mElement, "min", s)
-	UI.SetTextByID($"${mName}_end"$, iMaxValue)
+	UI.SetTextByID($"${mName}_end"$, sMaxValue)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
@@ -466,8 +580,8 @@ Sub setSize(s As String)			'ignoredeadcode
 	UI.SetSize(mElement, "size", "range", sSize)
 End Sub
 'set Step Value
-Sub setStepValue(s As Int)			'ignoredeadcode
-	iStepValue = s
+Sub setStepValue(s As String)			'ignoredeadcode
+	sStepValue = s
 	CustProps.put("StepValue", s)
 	If mElement = Null Then Return
 	UI.SetAttr(mElement, "step", s)
@@ -487,23 +601,24 @@ Sub setThumbColor(s As String)
 '	If s <> "" Then UI.AddClass(mElement, "thumb-color-" & s)
 End Sub
 'set Value
-Sub setValue(s As Int)				'ignoredeadcode
-	iValue = s
+Sub setValue(s As String)				'ignoredeadcode
+	sValue = s
 	CustProps.put("Value", s)
 	If mElement = Null Then Return
-	mElement.SetValue(iValue)
+	mElement.SetValue(sValue)
 	Select Case sRangeType
 	Case "legend"
-		UI.SetTextByID($"${mName}_endlabel"$, iValue)
+'		UI.SetTextByID($"${mName}_endlabel"$, iValue)
+		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
 	Case "tooltip"
-		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${iValue}%"$)
-		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
+		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${sValue}%"$)
+		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
 	Case "normal"
 	End Select
 End Sub
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
+'get Range Background Color
+Sub getRangeBackgroundColor As String
+	Return sRangeBackgroundColor
 End Sub
 'get Color
 Sub getColor As String
@@ -518,24 +633,24 @@ Sub getLabel As String
 	Return sLabel
 End Sub
 'get Max Value
-Sub getMaxValue As Int
-	Return iMaxValue
+Sub getMaxValue As String
+	Return sMaxValue
 End Sub
 'get Measure
 Sub getMeasure As Boolean
 	Return bMeasure
 End Sub
 'get Min Value
-Sub getMinValue As Int
-	Return iMinValue
+Sub getMinValue As String
+	Return sMinValue
 End Sub
 'get Size
 Sub getSize As String
 	Return sSize
 End Sub
 'get Step Value
-Sub getStepValue As Int
-	Return iStepValue
+Sub getStepValue As String
+	Return sStepValue
 End Sub
 'get Text Color
 Sub getTextColor As String
@@ -546,9 +661,9 @@ Sub getThumbColor As String
 	Return sThumbColor
 End Sub
 'get Value
-Sub getValue As Int
-	iValue = modSD5.CInt(mElement.GetValue)
-	Return iValue
+Sub getValue As String
+	sValue = modSD5.Cstr(mElement.GetValue)
+	Return sValue
 End Sub
 
 'run validation
@@ -556,24 +671,29 @@ Sub IsBlank As Boolean
 	Dim v As String = getValue
 	v = modSD5.CStr(v)
 	v = v.Trim
-	If v = "" Then
-'		setErrorCaption(mErrorMessage)
-'		BorderColorIntensity("error", "")
-'		HintColorIntensity("red", 600)
+	If v = "" Or v = "0" Then
+		If sRangeType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
 		Return True
 	End If
-'	BorderColorIntensity("#22c55e", "")
-'	setHintCaption(mHint)
-'	HintColorIntensity("green", 600)
+	If sRangeType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
 	Return False
 End Sub
 
-'run validation
 Sub ResetValidation
 	Try
-'		BorderColorIntensity("#22c55e", "")
-'		setHintCaption(mHint)
-'		HintColorIntensity("green", 600)
+		If sRangeType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
 	Catch
 		
 	End Try		'ignore

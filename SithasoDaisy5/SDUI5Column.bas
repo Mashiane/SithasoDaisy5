@@ -685,7 +685,7 @@ Sub setBorderColor(s As String)
 	sRawBorderColor = s
 	CustProps.Put("RawBorderColor", s)
 	If mElement = Null Then Return
-	UI.SetBorderColor(mElement, sRawBorderColor)
+	UI.SetBorderColorStyle(mElement, sRawBorderColor)
 End Sub
 Sub getBorderColor As String
 	Return sRawBorderColor

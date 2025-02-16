@@ -121,6 +121,7 @@ Sub Class_Globals
 	Public NoButton As SDUI5Button
 	Public CancelButton As SDUI5Button
 	Private sRawHtml As String = ""
+	Private validations As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -840,4 +841,60 @@ End Sub
 'get Yes Visible
 Sub getYesVisible As Boolean
 	Return bYesVisible
+End Sub
+
+'reset the validations
+'validate an element
+'<code>
+''reset the validations
+'app.ResetValidation
+''validate each of the elements
+'app.Validate(txtFirstName.IsBlank)
+'app.Validate(txtLastName.IsBlank)
+'app.Validate(txtEmail.IsBlank)
+'app.Validate(txtTelephone.IsBlank)
+'app.Validate(txtAddress.IsBlank)
+'app.Validate(radGender.IsBlank)
+''check the form status
+'If app.IsValid = False Then Return
+'</code>
+Sub ResetValidation
+	validations.Initialize
+End Sub
+
+'<code>
+''reset the validations
+'app.ResetValidation
+''validate each of the elements
+'app.Validate(txtFirstName.IsBlank)
+'app.Validate(txtLastName.IsBlank)
+'app.Validate(txtEmail.IsBlank)
+'app.Validate(txtTelephone.IsBlank)
+'app.Validate(txtAddress.IsBlank)
+'app.Validate(radGender.IsBlank)
+''check the form status
+'If app.IsValid = False Then Return
+'</code>
+Sub Validate(response As Boolean)
+	'add responses that are true
+	validations.Put(response, response)
+End Sub
+
+'<code>
+''reset the validations
+'app.ResetValidation
+''validate each of the elements
+'app.Validate(txtFirstName.IsBlank)
+'app.Validate(txtLastName.IsBlank)
+'app.Validate(txtEmail.IsBlank)
+'app.Validate(txtTelephone.IsBlank)
+'app.Validate(txtAddress.IsBlank)
+'app.Validate(radGender.IsBlank)
+''check the form status
+'If app.IsValid = False Then Return
+'</code>
+Sub IsValid As Boolean
+	Dim hastrue As Boolean = validations.ContainsKey(True)
+	If hastrue Then Return False
+	Return True
 End Sub

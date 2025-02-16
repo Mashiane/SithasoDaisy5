@@ -13,16 +13,21 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Rating, Description: Label
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: star, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color, List: accent|error|info|neutral|primary|secondary|success|warning|none
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: RatingBackgroundColor, DisplayName: Rating Background Color, FieldType: String, DefaultValue: , Description: Rating Background Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|sm|xl|xs
 #DesignerProperty: Key: Count, DisplayName: Count, FieldType: Int, DefaultValue: 5, MinRange: 0, MaxRange: 10, Description: Count of ratings
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 2, Description: Value
-#DesignerProperty: Key: FirstHidden, DisplayName: First Hidden, FieldType: Boolean, DefaultValue: False, Description: First Hidden
+#DesignerProperty: Key: FirstHidden, DisplayName: First Hidden, FieldType: Boolean, DefaultValue: True, Description: First Hidden
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: 2, Description: Gap
 #DesignerProperty: Key: Half, DisplayName: Half, FieldType: Boolean, DefaultValue: False, Description: Half
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: ReadOnly, DisplayName: Read Only, FieldType: Boolean, DefaultValue: False, Description: Read Only
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -55,7 +60,7 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sColor As String = "primary"
 	Private iCount As Int = 5
-	Private bFirstHidden As Boolean = False
+	Private bFirstHidden As Boolean = True
 	Private sGap As String = "2"
 	Private bHalf As Boolean = False
 	Private sHint As String = ""
@@ -66,7 +71,13 @@ Sub Class_Globals
 	Private sValue As String = "2"
 	Private bRequired As Boolean = False
 	Private sInputType As String = "normal"
-	Private sBackgroundColor As String = "none"
+	Private sRatingBackgroundColor As String = "none"
+	Private items As List
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -224,12 +235,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sRatingBackgroundColor = Props.GetDefault("RatingBackgroundColor", "none")
+		sRatingBackgroundColor = modSD5.CStr(sRatingBackgroundColor)
+		If sRatingBackgroundColor = "none" Then sRatingBackgroundColor = ""
 		sColor = Props.GetDefault("Color", "primary")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		iCount = Props.GetDefault("Count", 5)
 		iCount = modSD5.Cint(iCount)
-		bFirstHidden = Props.GetDefault("FirstHidden", False)
+		bFirstHidden = Props.GetDefault("FirstHidden", True)
 		bFirstHidden = modSD5.CBool(bFirstHidden)
 		sGap = Props.GetDefault("Gap", "2")
 		sGap = modSD5.CStr(sGap)
@@ -251,6 +265,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRequired = modSD5.CBool(bRequired)
 		sInputType = Props.GetDefault("InputType", "normal")
 		sInputType = modSD5.CStr(sInputType)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -270,8 +295,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}" class="rating"></div>
-				<div id="${mName}_hint" class="fieldset-label">${sHint}</div>
+				<div id="${mName}_hint" class="fieldset-label hide">${sHint}</div>
 			</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses} rating" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 	End Select
@@ -282,6 +312,79 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setValue(sValue)
 '	setVisible(bVisible)
 End Sub
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sInputType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+
 
 'legend|normal
 Sub setInputType(s As String)
@@ -307,6 +410,7 @@ End Sub
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.empty
+	items.Initialize 
 End Sub
 
 'set Color, needs Refresh
@@ -329,12 +433,11 @@ Sub Refresh			'ignoredeadcode
 	Dim fCount As Int = 0
 	Dim maskName As String = modSD5.FixMask(sMask)
 	Dim colorName As String = modSD5.FixColor("bg", sColor)
-	If sBackgroundColor <> "" Then
-		colorName = modSD5.FixColor("bg", sBackgroundColor)
+	If sRatingBackgroundColor <> "" Then
+		colorName = modSD5.FixColor("bg", sRatingBackgroundColor)
 	End If
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim items As List
 	items.Initialize 		
 	Select Case bReadOnly
 	Case True
@@ -344,7 +447,7 @@ Sub Refresh			'ignoredeadcode
 		mElement.Append(sb.ToString)
 	Case False
 		If bFirstHidden Then
-			sb.Append($"<input id="${mName}_0" type="radio" value="0" name="${mName}" class="rating-hidden" aria-label="Clear"></input>"$)
+			sb.Append($"<input id="${mName}_0" type="radio" value="0" name="${mName}" class="rating-hidden hidden hide" aria-label="Clear"></input>"$)
 		End If		
 		Dim itemClasses As List
 		For fCount = 1 To tCount
@@ -376,16 +479,16 @@ Sub Refresh			'ignoredeadcode
 	End Select
 End Sub
 
-'set Background Color
+'set Rating Background Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
+Sub setRangeBackgroundColor(s As String)
+	sRatingBackgroundColor = s
+	CustProps.put("RatingBackgroundColor", s)
 End Sub
 
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
+'get Rating Background Color
+Sub getRatingBackgroundColor As String
+	Return sRatingBackgroundColor
 End Sub
 
 private Sub changed(e As BANanoEvent)			'ignoreDeadCode
@@ -427,6 +530,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)
@@ -456,6 +564,7 @@ Sub setSize(s As String)			'ignoredeadcode
 	UI.SetSize(mElement, "size", "rating", s)
 End Sub
 'set Value
+'to deselect all items, use 0
 Sub setValue(s As String)			'ignoredeadcode
 	sValue = s
 	CustProps.put("Value", s)
@@ -508,33 +617,46 @@ Sub getSize As String
 End Sub
 'get Value
 Sub getValue As String
-	sValue = mElement.GetChecked
+	Dim selectedItems As List
+	selectedItems.Initialize
+	For Each item As String In items
+		Dim b As Boolean = UI.GetCheckedByID(item)
+		If b Then
+			Dim ok As String = modSD5.MvField(item, 2, "_")
+			selectedItems.Add(ok)
+		End If
+	Next
+	sValue = modSD5.Join(";", selectedItems)
 	Return sValue
 End Sub
 
-'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
 	v = modSD5.CStr(v)
 	v = v.Trim
-	If v = "" Then
-'		setErrorCaption(mErrorMessage)
-'		BorderColorIntensity("error", "")
-'		HintColorIntensity("red", 600)
+	If v = "" Or v = "0" Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
 		Return True
 	End If
-'	BorderColorIntensity("#22c55e", "")
-'	setHintCaption(mHint)
-'	HintColorIntensity("green", 600)
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
 	Return False
 End Sub
 
-'run validation
 Sub ResetValidation
 	Try
-'		BorderColorIntensity("#22c55e", "")
-'		setHintCaption(mHint)
-'		HintColorIntensity("green", 600)
+		If sInputType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
 	Catch
 		
 	End Try		'ignore

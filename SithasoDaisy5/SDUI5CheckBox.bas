@@ -11,6 +11,10 @@ Version=10
 #DesignerProperty: Key: CheckBoxType, DisplayName: CheckBox Type, FieldType: String, DefaultValue: normal, Description: CheckBox Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Options , Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox , Description: Label
+#DesignerProperty: Key: TermsConditionsCaption, DisplayName: Terms Conditions Caption, FieldType: String, DefaultValue: , Description: Terms Conditions Caption
+#DesignerProperty: Key: TermsConditionsUrl, DisplayName: Terms Conditions Url, FieldType: String, DefaultValue: , Description: Terms Conditions Url
+#DesignerProperty: Key: PrivacyPolicyCaption, DisplayName: Privacy Policy Caption, FieldType: String, DefaultValue: , Description: Privacy Policy Caption
+#DesignerProperty: Key: PrivacyPolicyUrl, DisplayName: Privacy Policy Url, FieldType: String, DefaultValue: , Description: Privacy Policy Url
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
@@ -22,6 +26,11 @@ Version=10
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -66,6 +75,15 @@ Sub Class_Globals
 	Private sValidatorHint As String = ""
 	Private sCheckedMarkColor As String = ""
 	Private sCheckBoxType As String = "normal"
+	Private sPrivacyPolicyCaption As String = ""
+	Private sPrivacyPolicyUrl As String = ""
+	Private sTermsConditionsCaption As String = ""
+	Private sTermsConditionsUrl As String = ""
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -214,7 +232,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -248,6 +266,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckedMarkColor = modSD5.CStr(sCheckedMarkColor)
 		sCheckBoxType = Props.GetDefault("CheckBoxType", "normal")
 		sCheckBoxType = modSD5.CStr(sCheckBoxType)
+		sPrivacyPolicyCaption = Props.GetDefault("PrivacyPolicyCaption", "")
+		sPrivacyPolicyCaption = modSD5.CStr(sPrivacyPolicyCaption)
+		sPrivacyPolicyUrl = Props.GetDefault("PrivacyPolicyUrl", "")
+		sPrivacyPolicyUrl = modSD5.CStr(sPrivacyPolicyUrl)
+		sTermsConditionsCaption = Props.GetDefault("TermsConditionsCaption", "")
+		sTermsConditionsCaption = modSD5.CStr(sTermsConditionsCaption)
+		sTermsConditionsUrl = Props.GetDefault("TermsConditionsUrl", "")
+		sTermsConditionsUrl = modSD5.CStr(sTermsConditionsUrl)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -272,6 +309,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} checkbox" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		Case "left-label"
@@ -300,9 +342,101 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndeterminate(bIndeterminate)
 	setCheckedColor(sCheckedColor)
 	setCheckedMarkColor(sCheckedMarkColor)
+	'
+	If (sTermsConditionsCaption <> "") Or (sPrivacyPolicyCaption <> "") Then
+		Dim sbLabel As StringBuilder
+		sbLabel.Initialize
+		If sTermsConditionsUrl = "" Then sTermsConditionsUrl = "#"
+		If sPrivacyPolicyUrl = "" Then sPrivacyPolicyUrl = "#"
+		'define the caption
+		sbLabel.Append($"<span>${sLabel}</span>"$)
+		If sTermsConditionsCaption <> "" Then
+			sbLabel.Append($"<a id="${mName}_terms" class="ml-2 link link-primary" target="_blank" href="${sTermsConditionsUrl}">${sTermsConditionsCaption}</a>"$)
+		End If
+		If sPrivacyPolicyCaption <> "" Then
+			sbLabel.Append($"<span>{NBSP}&{NBSP}</span>"$)
+			sbLabel.Append($"<a id="${mName}_privary" class="link link-primary" target="_blank" href="${sPrivacyPolicyUrl}">${sPrivacyPolicyCaption}</a>"$)
+		End If
+		BANano.GetElement($"#${mName}_label"$).Empty
+		BANano.GetElement($"#${mName}_label"$).Append(BANano.SF(sbLabel.ToString))
+	End If	
+	
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
+
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sCheckBoxType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
 
 private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
@@ -361,6 +495,11 @@ Sub setHint(s As String)
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
 End Sub
 'set Indeterminate
 Sub setIndeterminate(b As Boolean)				'ignoredeadcode
@@ -490,17 +629,67 @@ Sub IsBlank As Boolean
 	Dim v As Boolean = getChecked
 	v = modSD5.CBool(v)
 	If v = False Then
-		setColor("error")
+		If sCheckBoxType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
 		Return True
 	End If
-	setColor("success")
+	If sCheckBoxType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
 	Return False
 End Sub
 
 Sub ResetValidation
 	Try
-		setColor("success")
+		If sCheckBoxType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
 	Catch
 		
 	End Try		'ignore
+End Sub
+
+
+'set Privacy Policy Caption
+Sub setPrivacyPolicyCaption(s As String)
+	sPrivacyPolicyCaption = s
+	CustProps.put("PrivacyPolicyCaption", s)
+End Sub
+'set Privacy Policy Url
+Sub setPrivacyPolicyUrl(s As String)
+	sPrivacyPolicyUrl = s
+	CustProps.put("PrivacyPolicyUrl", s)
+End Sub
+'set Terms Conditions Caption
+Sub setTermsConditionsCaption(s As String)
+	sTermsConditionsCaption = s
+	CustProps.put("TermsConditionsCaption", s)
+End Sub
+'set Terms Conditions Url
+Sub setTermsConditionsUrl(s As String)
+	sTermsConditionsUrl = s
+	CustProps.put("TermsConditionsUrl", s)
+End Sub
+'get Privacy Policy Caption
+Sub getPrivacyPolicyCaption As String
+	Return sPrivacyPolicyCaption
+End Sub
+'get Privacy Policy Url
+Sub getPrivacyPolicyUrl As String
+	Return sPrivacyPolicyUrl
+End Sub
+'get Terms Conditions Caption
+Sub getTermsConditionsCaption As String
+	Return sTermsConditionsCaption
+End Sub
+'get Terms Conditions Url
+Sub getTermsConditionsUrl As String
+	Return sTermsConditionsUrl
 End Sub

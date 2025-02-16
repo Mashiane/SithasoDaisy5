@@ -10,6 +10,20 @@ Sub Process_Globals
 	Private app As SDUI5App			'ignore
 	Private btnShowModal1 As SDUI5Button
 	Private modal1 As SDUI5Modal
+	Private inputmodal As SDUI5Modal
+	Private SDUI5Button1 As SDUI5Button
+	Private txtfirstname As SDUI5TextBox
+	Private txtlastname As SDUI5TextBox
+	Private chkBreakfast As SDUI5CheckBoxGroup
+	Private gsActivities As SDUI5GroupSelect
+	Private rdGender As SDUI5RadioGroup
+	Private txtdob As SDUI5TextBox
+	Private rgSalary As SDUI5Range
+	Private rtService As SDUI5Rating
+	Private cboQualification As SDUI5Select
+	Private txtPersonalDetails As SDUI5TextArea
+	Private chkAgree As SDUI5CheckBox
+	Private fpImage As SDUI5FileInput
 End Sub
 
 
@@ -39,4 +53,67 @@ End Sub
 Private Sub modal1_Cancel_Click (e As BANanoEvent)
 	e.PreventDefault
 	modal1.close
+End Sub
+
+Private Sub SDUI5Button1_Click (e As BANanoEvent)
+	inputmodal.show
+	txtfirstname.ResetValidation
+	txtfirstname.Value = ""
+	txtlastname.resetvalidation
+	txtlastname.Value = "" 
+	chkBreakfast.ResetValidation
+	'nothing is selected
+	chkBreakfast.Selected = ""
+	gsActivities.ResetValidation
+	'nothing is selected
+	gsActivities.Selected = ""
+	rdGender.ResetValidation
+	rdGender.Value = "male"
+	txtdob.ResetValidation
+	txtdob.Value = ""
+	rgSalary.Value = "100"
+	rgSalary.ResetValidation
+	rtService.Value = 0
+	rtService.ResetValidation
+	cboQualification.ResetValidation
+	cboQualification.Value = ""
+	txtPersonalDetails.ResetValidation
+	txtPersonalDetails.Value = ""
+	chkAgree.ResetValidation
+	chkAgree.Checked = False
+	fpImage.ResetValidation
+	fpImage.Nullify
+End Sub
+
+Private Sub inputmodal_Yes_Click (e As BANanoEvent)
+	'begin validation of components
+	inputmodal.ResetValidation
+	'validate each of the elements
+	inputmodal.Validate(txtfirstname.IsBlank)
+	inputmodal.Validate(txtlastname.IsBlank)
+	inputmodal.Validate(txtdob.IsBlank)
+	inputmodal.Validate(chkBreakfast.IsBlank)
+	inputmodal.Validate(gsActivities.IsBlank)
+	inputmodal.Validate(rdGender.IsBlank)
+	inputmodal.Validate(rgSalary.IsBlank)
+	inputmodal.Validate(rtService.IsBlank)
+	inputmodal.Validate(cboQualification.IsBlank)
+	inputmodal.Validate(txtPersonalDetails.IsBlank)
+	inputmodal.Validate(chkAgree.IsBlank)
+	inputmodal.Validate(fpImage.IsBlank)
+	
+'	app.Validate(txtEmail.IsBlank)
+'	app.Validate(txtTelephone.IsBlank)
+'	app.Validate(txtAddress.IsBlank)
+'	app.Validate(radGender.IsBlank)
+	'check the form status
+	If inputmodal.IsValid = False Then 
+		app.ShowToastError("Please specify all required information!")
+		Return
+	End If
+	
+End Sub
+
+Private Sub inputmodal_No_Click (e As BANanoEvent)
+	inputmodal.Close
 End Sub
