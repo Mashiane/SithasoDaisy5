@@ -108,6 +108,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("feedback", "pg-alert", "", "Alert")
 	drawermenu.AddItemChild("feedback", "pg-loading", "", "Loading")
 	drawermenu.AddItemChild("feedback", "pg-progress", "", "Progress")
+	drawermenu.SetItemBadge("pg-progress", "bugs", "error")
 	drawermenu.AddItemChild("feedback", "pg-radialprogress", "", "Radial Progress")
 	drawermenu.AddItemChild("feedback", "pg-skeleton", "", "Skeleton")
 	drawermenu.AddItemChild("feedback", "pg-toast", "", "Toast")
@@ -147,7 +148,7 @@ Sub CreateDrawerMenu
 	'
 	drawermenu.AddItemParent("components", "mockup", "", "Mockup")
 	drawermenu.AddItemChild("mockup", "pg-phone", "", "Phone")
-	drawermenu.SetItemBadge("pg-phone", "bugs", "primary")
+	drawermenu.SetItemBadge("pg-phone", "bugs", "error")
 	drawermenu.AddItemChild("mockup", "pg-browser", "", "Browser")
 	drawermenu.AddItemChild("mockup", "pg-code", "", "Code")
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
@@ -155,6 +156,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "plugins", "", "Plugins")
 	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
 	drawermenu.AddItemChild("plugins", "pg-groupselect", "", "Group Select")
+	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
 End Sub
 
 
@@ -184,6 +186,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgTable2.Show(App)
 			Case "table3"
 				pgTable3.Show(App)
+			Case "preferences"
+				pgPreferences.Show(App)
 			End Select	
 		
 		

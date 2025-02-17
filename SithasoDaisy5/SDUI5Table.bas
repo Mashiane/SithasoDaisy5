@@ -121,6 +121,7 @@ Version=10
 #DesignerProperty: Key: HasMenu, DisplayName: Has Menu, FieldType: Boolean, DefaultValue: False, Description: Has Menu
 #DesignerProperty: Key: MenuTooltip, DisplayName: Menu Tooltip, FieldType: String, DefaultValue: , Description: Menu Tooltip
 #DesignerProperty: Key: FlexWrapActions, DisplayName: Wrap Actions, FieldType: Boolean, DefaultValue: False, Description: Wrap Actions
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A-X-Y-T-B-L-R
 #DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A-X-Y-T-B-L-R
@@ -242,6 +243,7 @@ Private Sub Class_Globals
 	Private sSearchWidth As String = "300px"
 	Private bPagination As Boolean = True
 	Private mEventName As String = ""
+	Private sShadow As String = "none"
 End Sub
 
 ' returns the element id
@@ -508,9 +510,13 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bWrapHeadings = modSD5.CBool(bWrapHeadings)
 		bPagination = Props.GetDefault("Pagination", True)
 		bPagination = modSD5.CBool(bPagination)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
-	UI.AddClassDT("card w-full bg-base-100 shadow-sm")
+	UI.AddClassDT("card card-border w-full bg-base-100")
+	If sShadow <> "" Then UI.AddClassDT("shadow-" & sShadow)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -525,7 +531,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	mElement = mTarget.Append($"[BANCLEAN]
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-        <div id="${mName}_toolbar" class="border-b m-3 -mb-3 flex">
+        <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
         	<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
   				<div id="${mName}_searchboxgroup" class="hide w-full">
@@ -539,14 +545,16 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</div>
 			<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
         </div>
+		<div id="${mName}_divider1" class="m-0 divider"></div>
         <div id="${mName}_aphabets" class="mt-4 mx-4 card bg-base-100 hide">
         	<div id="${mName}_alphanumeric" class="flex flex-wrap break-words relative"></div>
         </div>
-        <div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hide">
+		<div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hide">
         	<div id="${mName}_columnnames" class="flex flex-wrap break-words relative"></div>
         </div>
+		<div id="${mName}_divider2" class="m-0 divider"></div>
         <div id="${mName}_tablebox" class="m-1 overflow-x-auto">
-        	<table id="${mName}_table" class="table w-full ${mName}table border-b">
+        	<table id="${mName}_table" class="table w-full ${mName}table">
         		<thead id="${mName}_thead">
         			<tr id="${mName}_theadtr" class="tblheading"></tr>
         		</thead>
@@ -561,16 +569,18 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	'add a file to import files
 	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
-	Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
-	txtsearch.On("keyup", Me, "SearchInternal")
-	txtsearch.On("search", Me, "SearchClear")
-	setSearchSize(sSearchSize)
-	BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
+	If bHasSearch Then
+		setHasSearch(bHasSearch)
+		setSearchWidth(sSearchWidth)
+		Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
+		txtsearch.On("keyup", Me, "SearchInternal")
+		txtsearch.On("search", Me, "SearchClear")
+		setSearchSize(sSearchSize)
+		BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
+	End If
 	setFlexWrapActions(bFlexWrapActions)
 	'
 	If bHasFilter Then AddHeaderRow("filters")
-	setHasSearch(bHasSearch)
-	setSearchWidth(sSearchWidth)
 	setPagination(bPagination)
 	setHasAddNew(bHasAddnew)
 	setHasSaveSingle(bHasSaveSingle)
@@ -618,6 +628,21 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
 End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClass(mElement, "shadow-" & s)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
 
 'get the list of selected files
 Sub GetFiles As List
@@ -1256,21 +1281,12 @@ Sub setHasSearch(b As Boolean)			'ignoredeadcode
 	CustProps.Put("HasSearch", b)
 	bHasSearch = b
 	If mElement = Null Then Return
-	If b = True Then
-		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_search"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hide")
-	Else
-		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_search"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hide")
-	End If
+	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"#${mName}_search"$, b)
+	UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
+	UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
 End Sub
 
 Sub getHasSearch As Boolean
@@ -1298,27 +1314,15 @@ End Sub
 'set Title Visible
 Sub setToolbarVisible(b As Boolean)
 	If mElement = Null Then Return
-	If b = True Then
-		BANano.GetElement($"#${mName}_toolbar"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_title"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchbox"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_search"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchbtn"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).RemoveClass("hide")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).RemoveClass("hide")
-	Else
-		BANano.GetElement($"#${mName}_toolbar"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_title"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchbox"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_search"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchboxgroup"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchbtn"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchbtnicon"$).AddClass("hide")
-		BANano.GetElement($"#${mName}_searchboxlabel"$).AddClass("hide")
-	End If
+	UI.SetVisibleByID($"#${mName}_toolbar"$, b)
+	UI.SetVisibleByID($"#${mName}_title"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"#${mName}_search"$, b)
+	UI.SetVisibleByID($"#${mName}_actions"$, b)
+	UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
+	UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
 End Sub
 'change the search placeholder
 '<code>
@@ -3157,7 +3161,7 @@ End Sub
 '<code>
 'tbl.AddColumnRating("rate", "Satisfaction", 3, "item.color")
 '</code>
-Sub AddColumnRating(name As String, title As String, ssize As Int, color As String)
+Sub AddColumnRating(name As String, title As String, ssize As Int, color As String, mask As String)
 	name = name.tolowercase
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
@@ -3165,6 +3169,7 @@ Sub AddColumnRating(name As String, title As String, ssize As Int, color As Stri
 	nc.typeof = "rating"
 	nc.color = color
 	nc.size = ssize
+	nc.mask = modSD5.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -3341,7 +3346,7 @@ Sub AddColumnCheckBox(name As String, title As String, color As String, readOnly
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
 	'
-	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="cursor-pointer  ${hclass}">${title}</th>"$
+	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="text-center cursor-pointer  ${hclass}">${title}</th>"$
 	UI.AppendByID($"${mName}_theadtr"$, hr)
 	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_${name}_tf"   style="${BuildStyle(nc)}" ></td>"$)
 	'
@@ -4052,7 +4057,7 @@ Sub AddColumnToggle(name As String, title As String, color As String, readOnly A
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
 	'
-	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="cursor-pointer  ${hclass}">${title}</th>"$
+	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="text-center cursor-pointer  ${hclass}">${title}</th>"$
 	UI.AppendByID($"${mName}_theadtr"$, hr)
 	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_${name}_tf"   style="${BuildStyle(nc)}" ></td>"$)
 	'
@@ -4893,7 +4898,7 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i>
+    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i>
     </td>"$
 	Return act
 End Sub
@@ -4949,7 +4954,7 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor}  ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
-    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
+    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
     </td>"$
@@ -5008,7 +5013,7 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
-    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
+    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
     </div>
     </td>"$
 	Return act
@@ -5281,7 +5286,7 @@ Private Sub BuildRowToggle(Module As Object, fldName As String, fldValu As Strin
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <td id="${mName}_${RowCnt}_${fldName}"  class="text-center ${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <input type="checkbox" id="${mName}_${RowCnt}_${fldName}_toggle" ${creadonly} ${cchecked} class="toggle ${btnColor} ${cClass}}"></input>
     </td>"$
 	Return act
@@ -5330,7 +5335,7 @@ Private Sub BuildRowCheckBox(Module As Object, fldName As String, fldValu As Str
 	End If
 	'Dim tsize As String = modSD5.FixSize("checkbox", sComponentSize)
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <td id="${mName}_${RowCnt}_${fldName}"  class="text-center ${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <input type="checkbox" id="${mName}_${RowCnt}_${fldName}_checkbox" ${creadonly} ${cchecked} class="checkbox ${btnColor} ${cClass}"></input>
     </td>"$
 	Return act
@@ -5371,15 +5376,15 @@ Private Sub BuildRowRange(Module As Object, fldName As String, fldValu As String
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
-	'Dim tsize As String = modSD5.FixSize("range", sComponentSize)
+	Dim tsize As String = modSD5.FixSize("range", sComponentSize)
+	Dim txsize As String = modSD5.FixSize("text", sComponentSize)
+	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <label class="input-group w-full">
-    <span id="${mName}_${RowCnt}_${fldName}_range_text" class="text-sm bg-transparent ${tc.TextColor}">${fldValu}</span>
-    <input type="range" id="${mName}_${RowCnt}_${fldName}_range" max="${tc.maxvalue}" value="${fldValu}" class="range range-xs ${btnColor} ${cClass}"></input>
-    <div></div>
+    <label class="flex items-center w-full gap-2">
+    <span id="${mName}_${RowCnt}_${fldName}_range_text" class="${txsize} bg-transparent ${tc.TextColor}">${fldValu}</span>
+    <input type="range" id="${mName}_${RowCnt}_${fldName}_range" max="${tc.maxvalue}" value="${fldValu}" class="range ${tsize} ${btnColor} ${cClass}"></input>
     </label></td>"$
-	'
 	Return act
 End Sub
 Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
@@ -5417,10 +5422,29 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
+	'
+	Dim psize As String = "24px"
+	Select Case sComponentSize
+	Case "xs"
+		psize = "8px"
+	Case "sm"
+		psize = "16px"
+	Case "md"
+		psize = "24px"
+	Case "lg"
+		psize = "32px"
+	Case "xl"
+		psize = "40px"
+	End Select
+	Dim psize1 As String = modSD5.FixSize("h", psize)
+	Dim tsize As String = modSD5.FixSize("text", sComponentSize)
+	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="text-xs justify-start ${tc.TextColor}">${fldValu}%</span>
-    <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="progress ${modSD5.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
+	<label class="flex items-center w-full gap-2">
+    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="${tsize} justify-start ${tc.TextColor}">${fldValu}%</span>
+    <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="rounded-full ${psize1} progress ${modSD5.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
+	</label>
     </td>"$
 	Return act
 End Sub
@@ -5461,10 +5485,11 @@ Private Sub BuildRowRadial(Module As Object, fldName As String, fldValu As Strin
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = modSD5.FixColor("text", bgColor)
 	End If
+	
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_radial" style="--value:${fldValu};--size:${tc.size};" class="${tc.TextColor} radial-progress ${btnColor} ${cClass}">${fldValu}${tc.suffix}</div>
+    <div id="${mName}_${RowCnt}_${fldName}_radial" role="progressbar" style="--value:${fldValu};--size:${tc.size};" class="${tc.TextColor} radial-progress ${btnColor} ${cClass}">${fldValu}${tc.suffix}</div>
     </td>"$
 	Return act
 End Sub
@@ -6010,9 +6035,9 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i>
+    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i>
     </button>
-    <div id="${mName}_${RowCnt}_${fldName}_progress" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
+    <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
     <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
@@ -6057,7 +6082,7 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i></button>
+    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
@@ -6435,7 +6460,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 				Dim sItem As String = $"[BANCLEAN]
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
-            <span class="flex-none"><i id="${mName}_${RowCnt}_${fldName}_${k}_i" data-eyes="${i}" class="${i}"></i></span>
+            <span class="flex-none"><i id="${mName}_${RowCnt}_${fldName}_${k}_i" data-icon="${i}" class="${i}"></i></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6461,7 +6486,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tc.TextColor} no-animation btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i>
+    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -6634,7 +6659,7 @@ Private Sub BuildRowRating(Module As Object, fldName As String, fldValu As Strin
 		If modSD5.CStr(fldValu) = modSD5.CStr(rCnt) Then
 			sbChecked = $"checked="checked""$
 		End If
-		sbRating.Append($"<input id="${mName}_${RowCnt}_${fldName}_${rCnt}_rating" ${sbChecked} value="${rCnt}" type="radio" name="${mName}_${RowCnt}_${fldName}_rating" class="mask mask-star-2 ${btnColor} ${cClass} radio-${sComponentSize}"></input>"$)
+		sbRating.Append($"<input id="${mName}_${RowCnt}_${fldName}_${rCnt}_rating" ${sbChecked} value="${rCnt}" type="radio" name="${mName}_${RowCnt}_${fldName}_rating" class="${tc.mask} ${btnColor} ${cClass} radio-${sComponentSize}"></input>"$)
 	Next
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6888,8 +6913,8 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	'we have more than 5 images, so add a placeholder
 	If timages > 5 Then
 		Dim tOthers As Int = BANano.parseInt(timages) - 5
-		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_6" class="avatar placeholder">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_6" class="avatar avatar-placeholder">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
         <span id="${mName}_${RowCnt}_${fldName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -7087,7 +7112,7 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-eyes="${tc.icon}" class="${tc.icon}"></i></button>
+    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i></button>
     </td>"$
 	'********
 	Return act
@@ -7497,9 +7522,9 @@ Sub AddRow(rowdata As Map)
 			elPrepend.Remove
 		Else
 			elPrepend.RemoveClass("hide")
-			elPrepend.SetData("eyes", tc.PrependIcon)
+			elPrepend.SetData("icon", tc.PrependIcon)
 			elPrependIcon.AddClass(tc.PrependIcon)
-			elPrependIcon.SetData("eyes", tc.PrependIcon)
+			elPrependIcon.SetData("icon", tc.PrependIcon)
 			elInput.RemoveClass("tlradius")
 			elInput.RemoveClass("blradius")
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-left-radius": "0px")))
@@ -7511,9 +7536,9 @@ Sub AddRow(rowdata As Map)
 			elAppend.Remove
 		Else
 			elAppend.RemoveClass("hide")
-			elAppend.SetData("eyes", tc.AppendIcon)
+			elAppend.SetData("icon", tc.AppendIcon)
 			elAppendIcon.AddClass(tc.AppendIcon)
-			elAppendIcon.SetData("eyes", tc.AppendIcon)
+			elAppendIcon.SetData("icon", tc.AppendIcon)
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
 			elInput.RemoveClass("trradius")
@@ -7541,10 +7566,10 @@ Sub AddRow(rowdata As Map)
 		'
 		elPrependIcon.AddClass(tc.PrependIcon)
 		elPrepend.AddClass("text-current bg-base-100 hover:bg-transparent")
-		elPrepend.SetData("eyes", tc.PrependIcon)
-		elAppend.SetData("eyes", tc.AppendIcon)
-		elPrependIcon.SetData("eyes", tc.PrependIcon)
-		elAppendIcon.SetData("eyes", tc.AppendIcon)
+		elPrepend.SetData("icon", tc.PrependIcon)
+		elAppend.SetData("icon", tc.AppendIcon)
+		elPrependIcon.SetData("icon", tc.PrependIcon)
+		elAppendIcon.SetData("icon", tc.AppendIcon)
 		elPrepend.on("click", Me, "Decrement")
 		elAppendIcon.AddClass(tc.AppendIcon)
 		elAppend.AddClass("text-current bg-base-100 hover:bg-transparent")
@@ -7588,8 +7613,8 @@ Sub AddRow(rowdata As Map)
 		Else
 			elPrepend.RemoveClass("hide")
 			elPrependIcon.AddClass(tc.PrependIcon)
-			elPrepend.SetData("eyes", tc.PrependIcon)
-			elPrependIcon.SetData("eyes", tc.PrependIcon)
+			elPrepend.SetData("icon", tc.PrependIcon)
+			elPrependIcon.SetData("icon", tc.PrependIcon)
 			elSelect.RemoveClass("tlradius")
 			elSelect.RemoveClass("blradius")
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-top-left-radius": "0px")))
@@ -7602,8 +7627,8 @@ Sub AddRow(rowdata As Map)
 		Else
 			elAppend.RemoveClass("hide")
 			elAppendIcon.AddClass(tc.AppendIcon)
-			elAppend.SetData("eyes", tc.AppendIcon)
-			elAppendIcon.SetData("eyes", tc.AppendIcon)
+			elAppend.SetData("icon", tc.AppendIcon)
+			elAppendIcon.SetData("icon", tc.AppendIcon)
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
 			elSelect.RemoveClass("trradius")
@@ -7649,8 +7674,8 @@ Sub AddRow(rowdata As Map)
 		Else
 			elPrepend.RemoveClass("hide")
 			elPrependIcon.AddClass(tc.PrependIcon)
-			elPrepend.SetData("eyes", tc.PrependIcon)
-			elPrependIcon.SetData("eyes", tc.PrependIcon)
+			elPrepend.SetData("icon", tc.PrependIcon)
+			elPrependIcon.SetData("icon", tc.PrependIcon)
 			elInput.RemoveClass("tlradius")
 			elInput.RemoveClass("blradius")
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-left-radius": "0px")))
@@ -7663,8 +7688,8 @@ Sub AddRow(rowdata As Map)
 		Else
 			elAppend.RemoveClass("hide")
 			elAppendIcon.AddClass(tc.AppendIcon)
-			elAppend.SetData("eyes", tc.AppendIcon)
-			elAppendIcon.SetData("eyes", tc.AppendIcon)
+			elAppend.SetData("icon", tc.AppendIcon)
+			elAppendIcon.SetData("icon", tc.AppendIcon)
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
 			elInput.RemoveClass("trradius")
@@ -8650,12 +8675,12 @@ End Sub
 Sub setSearchSize(s As String)			'ignoredeadcode
 	sSearchSize = s
 	CustProps.put("SearchSize", s)
-	If s = "none" Then Return
 	If mElement = Null Then Return
+	If s = "none" Then s = ""
+	If s = "" Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.SetWidthByID($"${mName}_searchbox"$, s)
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
 	Dim options1 As Map = modSD5.ListToSelectOptions(options)
@@ -8806,7 +8831,7 @@ Sub GetRow(rowCnt As Int) As Map
 		'
 		Select Case tc.typeof
 			Case "action", "menu"
-				Dim rowvalue As Object = BANano.GetElement($"#${mName}_${rowCnt1}_${fldName}_icon"$).GetData("eyes")
+				Dim rowvalue As Object = BANano.GetElement($"#${mName}_${rowCnt1}_${fldName}_icon"$).GetData("icon")
 				rowdata.put(fldName, rowvalue)
 			Case "icon"
 			Case "icontitle"
@@ -9132,10 +9157,10 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 		Case "avatartitlesubtitle"
 		Case "action", "menu"
 			Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$)
-			Dim ticon As String = el.GetData("eyes")
+			Dim ticon As String = el.GetData("icon")
 			el.RemoveClass(ticon)
 			el.AddClass(fldVal)
-			el.setdata("eyes", fldVal)
+			el.setdata("icon", fldVal)
 		Case "avatargroup"
 			Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_group"$)
 			el.Empty
@@ -9158,8 +9183,8 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			'we have more than 5 images, so add a placeholder
 			If imgCnt > 5 Then
 				Dim tOthers As Int = BANano.parseInt(imgCnt) - 5
-				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_6" class="avatar placeholder">
-        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral-focus text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_6" class="avatar avatar-placeholder">
+        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
         <span id="${mName}_${rowCnt}_${colName}_span_6">+${tOthers}</span>
         </div>
         </div>"$

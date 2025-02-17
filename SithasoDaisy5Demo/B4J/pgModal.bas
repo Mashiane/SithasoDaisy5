@@ -24,6 +24,7 @@ Sub Process_Globals
 	Private txtPersonalDetails As SDUI5TextArea
 	Private chkAgree As SDUI5CheckBox
 	Private fpImage As SDUI5FileInput
+	Private pgTasks As SDUI5Progress
 End Sub
 
 
@@ -111,7 +112,21 @@ Private Sub inputmodal_Yes_Click (e As BANanoEvent)
 		app.ShowToastError("Please specify all required information!")
 		Return
 	End If
-	
+	'
+	Dim rec As Map = CreateMap()
+	rec.Put("firstname", txtfirstname.Value)
+	rec.Put("lastname", txtlastname.Value)
+	rec.Put("date_of_birth", txtdob.Value)
+	rec.Put("breakfast", chkBreakfast.Value)
+	rec.Put("activities", gsActivities.Value)
+	rec.Put("gender", rdGender.Value)
+	rec.Put("salary", rgSalary.Value)
+	rec.Put("rate_service", rtService.Value)
+	rec.Put("qualification", cboQualification.Value)
+	rec.Put("personal_details", txtPersonalDetails.Value)
+	rec.Put("agree", chkAgree.Checked)
+	rec.Put("profile_image", fpImage.GetFile)
+	Log(rec)
 End Sub
 
 Private Sub inputmodal_No_Click (e As BANanoEvent)

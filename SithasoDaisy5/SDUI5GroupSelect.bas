@@ -608,3 +608,15 @@ Sub ResetValidation
 		
 	End Try		'ignore
 End Sub
+
+'get selected
+Sub getValue As String
+	sSelected = getSelected
+	Return sSelected
+End Sub
+
+'set selected
+Sub setValue(s As String)
+	sSelected = s
+	setSelected(s)
+End Sub

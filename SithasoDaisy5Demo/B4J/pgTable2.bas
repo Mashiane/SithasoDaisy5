@@ -41,7 +41,7 @@ Sub Show(MainApp As SDUI5App)
 	table1.AddColumnDateTimePicker1("doo", "Date of Opening", False, "Y-m-d H:i", "d/m/Y H:i", False, False, False, "es")
 	table1.AddColumnRange("hours", "Hours", 8, app.COLOR_ACCENT)
 	table1.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
-	table1.AddColumnRating("rate", "Satisfaction", 3, "item.color")
+	table1.AddColumnRating("rate", "Satisfaction", 3, "item.color", app.MASK_HEART)
 	table1.AddColumnToggle("on", "Off/On", app.COLOR_PRIMARY, False)
 		
 	'add columns for editing

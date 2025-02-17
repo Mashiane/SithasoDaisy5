@@ -6,16 +6,20 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: ProgressType, DisplayName: Progress Type, FieldType: String, DefaultValue: normal, Description: Progress Type, List: legend|normal|tooltip
+#DesignerProperty: Key: ProgressType, DisplayName: Progress Type, FieldType: String, DefaultValue: normal, Description: Progress Type, List: legend|normal|tooltip|normal-text
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: ProgressBackgroundColor, DisplayName: Progress Background Color, FieldType: String, DefaultValue: , Description: Progress Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Value
+#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: #ffffff, Description: Text Color
+#DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: xs, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
+#DesignerProperty: Key: TextVisible, DisplayName: Text Visible, FieldType: Boolean, DefaultValue: False, Description: Text Visible
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
-#DesignerProperty: Key: Value, DisplayName: Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Value
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: Int, DefaultValue: 0, MinRange: 0, MaxRange: 100, Description: Min Value
 #DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: Int, DefaultValue: 1, MinRange: 0, MaxRange: 100, Description: Step Value
 #DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Max Value
@@ -23,6 +27,11 @@ Version=10
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: Ticks, DisplayName: Ticks, FieldType: String, DefaultValue: , Description: Ticks
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -54,7 +63,7 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	'Public Root As SDUIElement
-	Private sBackgroundColor As String = ""
+	Private sProgressBackgroundColor As String = ""
 	Private sColor As String = "none"
 	Private sHeight As String = ""
 	Private bIndeterminate As Boolean = False
@@ -71,6 +80,15 @@ Sub Class_Globals
 	Private sProgressType As String = "normal"
 	Private sLabel As String = ""
 	Private sHint As String = ""
+	Private sSize As String = "md"
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
+	Private sTextColor As String = "#ffffff"
+	Private sTextSize As String = "xs"
+	Private bTextVisible As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -222,6 +240,7 @@ Sub setValue(i As Int)			'ignoredeadcode
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", iValue)
 	Case "normal"
 	End Select
+	UI.SetTextByID($"${mName}_value"$, $"${iValue}%"$)
 End Sub
 'get value
 Sub getValue As Int
@@ -236,7 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "none")
 		sColor = modSD5.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -270,6 +289,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sProgressType = modSD5.CStr(sProgressType)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = modSD5.CStr(sHint)
+		sSize = Props.GetDefault("Size", "none")
+		sSize = modSD5.CStr(sSize)
+		If sSize = "none" Then sSize = "md"
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = modSD5.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = modSD5.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = modSD5.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = modSD5.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		sTextColor = Props.GetDefault("TextColor", "#ffffff")
+		sTextColor = modSD5.CStr(sTextColor)
+		sTextSize = Props.GetDefault("TextSize", "xs")
+		sTextSize = modSD5.CStr(sTextSize)
+		bTextVisible = Props.GetDefault("TextVisible", False)
+		bTextVisible = modSD5.CBool(bTextVisible)
 	End If
 	'
 	If sParentID <> "" Then
@@ -297,47 +336,236 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	Select Case sProgressType
 		Case "legend"
+'			mElement = mTarget.Append($"[BANCLEAN]
+'			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
+'  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
+'				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
+'  					<span id="${mName}_startlabel"></span>
+'					<span id="${mName}_endlabel">${iValue}</span>
+'				</div>
+'  				<progress id="${mName}" class="progress rounded-full w-full relative" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+'				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
+'  					<span id="${mName}_start">${iMinValue}</span>
+'					<span id="${mName}_end">${iMaxValue}</span>
+'				</div>
+'				<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
+'			</fieldset>"$).Get("#" & mName)
+			
+			
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="-mt-8 ${xclasses} fieldset" ${xattrs} style="${xstyles}">
-  				<legend id="${mName}_legend" class="relative top-6 fieldset-legend">${sLabel}</legend>
-				<div id="${mName}_label" class="flex text-xs opacity-50 justify-between">
-  					<span id="${mName}_startlabel"></span>
-					<span id="${mName}_endlabel">${iValue}</span>
-				</div>
-  				<progress id="${mName}" class="progress w-full relative" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
-				<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
-  					<span id="${mName}_start">${iMinValue}</span>
-					<span id="${mName}_end">${iMaxValue}</span>
-				</div>
-				<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
-			</fieldset>"$).Get("#" & mName)
+				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+					<div id="${mName}_tooltip" class="relative tooltip w-full" data-tip="${iValue}">
+						<progress id="${mName}" step="${iStepValue}" max="${iMaxValue}" min="${iMinValue}" value="${iValue}" class="progress rounded-full w-full"></progress>
+						<div id="${mName}_value" class="absolute inset-0 flex -top-2 items-center font-bold justify-center">${iValue}%</div>
+					</div>
+	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	      		</fieldset>"$).Get("#" & mName)
+				
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
+			setTextColor(sTextColor)
+			setTextSize(sTextSize)
+			setTextVisible(bTextVisible)
 		Case "tooltip"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-        		<div class="relative mt-6">
-            		<div id="${mName}_tooltip" class="absolute tooltip top-2 tooltip-open before:text-xs" style="inset-inline-start:${iValue}%" data-tip="${iValue}"></div>
-					<progress id="${mName}" class="progress w-full" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+        		<div class="relative mt-6 w-full">
+            		<div id="${mName}_tooltip" class="absolute tooltip tooltip-open before:text-xs" style="inset-inline-start:${iValue}%" data-tip="${iValue}"></div>
+					<progress id="${mName}" class="progress rounded-full w-full" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>
+					<div id="${mName}_value" class="absolute inset-0 flex -top-2 items-center justify-center font-bold">${iValue}%</div>
         		</div>
         		<div id="${mName}_startend" class="flex text-xs opacity-50 justify-between">
 					<span id="${mName}_start">${iMinValue}</span>
 					<span id="${mName}_end">${iMaxValue}</span>
 				</div>
     		</div>"$).Get("#" & mName)
+			UpdateTooltipTop
+			setTextColor(sTextColor)
+			setTextSize(sTextSize)
+			setTextVisible(bTextVisible)
 		Case "normal"
-			mElement = mTarget.Append($"[BANCLEAN]<progress id="${mName}" class="${xclasses} progress" ${xattrs} style="${xstyles}"></progress>"$).Get("#" & mName)
+			mElement = mTarget.Append($"[BANCLEAN]<progress id="${mName}" class="${xclasses} progress rounded-full" ${xattrs} style="${xstyles}" value="${iValue}" step="${iStepValue}" min="${iMinValue}" max="${iMaxValue}"></progress>"$).Get("#" & mName)
 			setWidth(sWidth)
+		Case "normal-text"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="w-full ${xclasses}" ${xattrs} style="${xstyles}">
+	        	<div id="${mName}_tooltip" class="w-full relative tooltip" data-tip="${iValue}">
+					<progress id="${mName}" step="${iStepValue}" max="${iMaxValue}" min="${iMinValue}" value="${iValue}" class="progress rounded-full w-full"></progress>
+					<div id="${mName}_value" class="absolute inset-0 flex -top-2 items-center font-bold justify-center">${iValue}%</div>
+				</div>
+	        </div>"$).Get("#" & mName)
+			setTextColor(sTextColor)
+			setTextSize(sTextSize)
+			setTextVisible(bTextVisible)
 	End Select
-	If sBackgroundColor <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If sProgressBackgroundColor <> "" Then UI.SetBackgroundColor(mElement, sProgressBackgroundColor)
 	If sColor <> "" Then UI.SetColor(mElement, "color", "progress", sColor)
 	If sHeight <> "" Then UI.SetHeight(mElement, sHeight)
-	UI.SetAttr(mElement, "max", iMaxValue)
-	UI.SetAttr(mElement, "min", iMinValue)
-	UI.SetAttr(mElement, "step", iStepValue)
-	UI.AddAttrDT("value", iValue)
-	setValue(iValue)
 	setIndeterminate(bIndeterminate)
-	setHeight(sHeight)
-'	setVisible(bVisible)
+	If sSize <> "" Then setSize(sSize)
+	setValue(iValue)
+	'setVisible(bVisible)
+End Sub
+
+'set Text Color
+Sub setTextColor(s As String)			'ignoredeadcode
+	sTextColor = s
+	CustProps.put("TextColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_value"$, sTextColor)
+End Sub
+'set Text Size
+'options: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
+Sub setTextSize(s As String)			'ignoredeadcode
+	sTextSize = s
+	CustProps.put("TextSize", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextSizeByID($"${mName}_value"$, sTextSize)
+End Sub
+'set Text Visible
+Sub setTextVisible(b As Boolean)			'ignoredeadcode
+	bTextVisible = b
+	CustProps.put("TextVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_value"$, b)
+End Sub
+'get Text Color
+Sub getTextColor As String
+	Return sTextColor
+End Sub
+'get Text Size
+Sub getTextSize As String
+	Return sTextSize
+End Sub
+'get Text Visible
+Sub getTextVisible As Boolean
+	Return bTextVisible
+End Sub
+
+
+
+'xs - 8px
+'sm - 16px
+'md - 24px
+'lg - 32px
+'xl - 40px
+private Sub UpdateTooltipTop		'ignoredeadcode
+	Select Case sSize
+	Case "lg"
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-1")
+	Case "md"
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-1")
+	Case "sm"
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-1")
+	Case "xl"
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-1")
+	Case "xs"
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-3")
+	Case Else
+			UI.UpdateClassByID($"${mName}_tooltip"$, "top", "top-1")
+	End Select
+End Sub
+
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+'set Size
+'options: xs|none|sm|md|lg|xl
+Sub setSize(s As String)			'ignoredeadcode
+	sSize = s
+	CustProps.put("Size", s)
+	If mElement = Null Then Return
+	If s = "" Then sSize = "md"
+	Dim psize As String = "24px"
+	Select Case s
+	Case "xs"
+		psize = "8px"
+	Case "sm"
+		psize = "16px"
+	Case "md"
+		psize = "24px"
+	Case "lg"
+		psize = "32px"
+	Case "xl"
+		psize = "40px"
+	End Select
+	UI.SetSize(mElement, "size", "h", psize)
+End Sub
+
+Sub getSize As String
+	Return sSize
 End Sub
 
 'set Width
@@ -422,10 +650,10 @@ Sub SetTooltipVisible(b As Boolean)
 	UI.SetVisibleByID($"${mName}_tooltip"$, b)
 End Sub
 
-'set Background Color
-Sub setBackgroundColor(s As String)
-	sBackgroundColor = s
-	CustProps.put("BackgroundColor", s)
+'set Progress Background Color
+Sub setProgressBackgroundColor(s As String)
+	sProgressBackgroundColor = s
+	CustProps.put("ProgressBackgroundColor", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColor(mElement, s)
 End Sub
@@ -517,10 +745,12 @@ Sub setTicks(s As String)
 	If mElement = Null Then Return
 	'If s <> "" Then UI.SetAttr(mElement, "ticks", s)
 End Sub
-'get Background Color
-Sub getBackgroundColor As String
-	Return sBackgroundColor
+'get Progress Background Color
+Sub getProgressBackgroundColor As String
+	Return sProgressBackgroundColor
 End Sub
+
+
 'get Color
 Sub getColor As String
 	Return sColor

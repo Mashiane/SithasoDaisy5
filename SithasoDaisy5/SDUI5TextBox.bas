@@ -12,7 +12,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
-#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: date|datetime-local|email|month|number|password|search|tel|text|time|url|week
+#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date|datetime-local|email|month|number|password|search|tel|text|time|url|week
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -26,8 +26,8 @@ Version=10
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: MinLength, DisplayName: Min Length, FieldType: String, DefaultValue: , Description: Min Length
 #DesignerProperty: Key: MaxLength, DisplayName: Max Length, FieldType: String, DefaultValue: , Description: Max Length
-#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: String, DefaultValue: , Description: Step Value
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: , Description: Min Value
+#DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: String, DefaultValue: , Description: Step Value
 #DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: String, DefaultValue: , Description: Max Value
 #DesignerProperty: Key: Pattern, DisplayName: Pattern, FieldType: String, DefaultValue: , Description: Pattern
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
@@ -403,6 +403,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		End Select
+		setTypeOf(sTypeOf)
 		setColor(sColor)
 		setGhost(bGhost)
 		setGrow(bGrow)
@@ -416,7 +417,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setRequired(bRequired)
 		BANano.Await(setSize(sSize))
 	setStepValue(sStepValue)
-	setTypeOf(sTypeOf)
 	setEnabled(bEnabled)
 	Select Case sInputType
 	Case "legend", "buttons", "buttons-floating"
@@ -445,9 +445,24 @@ Sub setShowEyes(b As Boolean)				'ignoredeadcode
 	bAppendVisible = bShowEyes
 	Select Case sTypeOf
 	Case "password"
-		sAppendIcon = "fa-regular fa-eye"
+		sAppendIcon = "fa-solid fa-eye"
 	Case "text"
-		sAppendIcon = "fa-regular fa-eye-slash"
+		sAppendIcon = "fa-solid fa-eye-slash"
+	End Select
+	UI.OnEventByID($"${mName}_append"$, "click", Me, "TogglePassword")
+End Sub
+
+private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	Dim cicon As String = BANano.GetElement($"#${mName}_appendicon"$).GetData("icon")
+	cicon = modSD5.CStr(cicon)
+	Select Case cicon
+	Case "fa-solid fa-eye"
+		mElement.SetAttr("type", "text")
+		UI.SetIconNameByID($"${mName}_appendicon"$, "fa-solid fa-eye-slash")
+	Case "fa-solid fa-eye-slash"
+		mElement.SetAttr("type", "password")
+		UI.SetIconNameByID($"${mName}_appendicon"$, "fa-solid fa-eye")
 	End Select
 End Sub
 
@@ -867,9 +882,62 @@ Sub setTypeOf(s As String)				'ignoredeadcode
     sTypeOf = s
     CustProps.put("TypeOf", s)
     If mElement = Null Then Return
-    If s <> "text" Then UI.SetAttr(mElement, "type", s)
+    If s <> "" Then UI.SetAttr(mElement, "type", s)
 	If sTypeOf = "tel" Then UI.AddClass(mElement, "tabular-nums")
 	If sTypeOf = "number" Then UI.AddClass(mElement, "tabular-nums")
+	If sTypeOf = "dialer" Then
+		UI.SetNoArrows(mElement)
+		If sValue = "" Then sValue = "0"
+		If sMinValue = "" Then sMinValue = "0"
+		If sMaxValue = "" Then sMaxValue = "100"
+		If sStepValue = "" Then sStepValue = "1"
+		UI.SetAttr(mElement, "type", "number")
+		UI.AddClass(mElement, "text-center tabular-nums")
+		sPrependImage = ""
+		sAppendImage = ""
+		sPrependIcon = "fa-solid fa-minus"
+		sAppendIcon = "fa-solid fa-plus"
+		bPrependVisible = True
+		bAppendVisible = True
+		UI.OnEventByID($"${mName}_prepend"$, "click", Me, "PropertyDecrement")
+		UI.OnEventByID($"${mName}_append"$, "click", Me, "PropertyIncrement")
+	End If
+End Sub
+
+private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode
+	event.StopPropagation
+	event.PreventDefault
+	Dim minvalue As Int = modSD5.CInt(mElement.GetAttr("min"))
+	Dim stpvalue As Int = modSD5.CInt(mElement.GetAttr("step"))
+	Dim curvalue As Int = modSD5.CInt(mElement.GetValue)
+	Dim nxtvalue As Int = BANano.parseInt(curvalue) - BANano.parseInt(stpvalue)
+	If nxtvalue < minvalue Then
+		nxtvalue = minvalue
+		mElement.SetValue(minvalue)
+	Else
+		mElement.SetValue(nxtvalue)
+	End If
+	'
+	Dim e As BANanoEvent
+	CallSub2(mCallBack, $"${mName}_prepend"$, e)		'ignore
+End Sub
+
+private Sub PropertyIncrement(event As BANanoEvent)     'ignoredeadcode
+	event.StopPropagation
+	event.PreventDefault
+	Dim maxvalue As Int = modSD5.CInt(mElement.GetAttr("max"))
+	Dim stpvalue As Int = modSD5.CInt(mElement.GetAttr("step"))
+	Dim curvalue As Int = modSD5.CInt(mElement.GetValue)
+	Dim nxtvalue As Int = BANano.parseInt(curvalue) + BANano.parseInt(stpvalue)
+	If nxtvalue > maxvalue Then
+		nxtvalue = maxvalue
+		mElement.SetValue(maxvalue)
+	Else
+		mElement.SetValue(nxtvalue)
+	End If
+	'
+	Dim e As BANanoEvent
+	CallSub2(mCallBack, $"${mName}_append"$, e)		'ignore
 End Sub
 
 'set Validator

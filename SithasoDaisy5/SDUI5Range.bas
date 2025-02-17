@@ -347,7 +347,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setEnabled(bEnabled)
 	If sSize <> "" Then setSize(sSize)
 	If sRangeBackgroundColor <> "" Then setRangeBackgroundColor(sRangeBackgroundColor)
-	setHeight(sHeight)
+	If sHeight <> "" Then setHeight(sHeight)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
@@ -357,7 +357,6 @@ End Sub
 Sub setBackgroundColor(s As String)			'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
-	If sRangeType <> "legend" Then Return
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
 End Sub

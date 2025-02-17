@@ -19,6 +19,51 @@ Sub Process_Globals
 	Private Days As Map
 End Sub
 
+'prefix a color
+Sub FixColorIntensity(prefix As String, v As String, i As String) As String
+	prefix = CStr(prefix)
+	v = CStr(v)
+	i = CStr(i)
+	If prefix = "" Or v = "" Then Return ""
+	Dim p1 As String = FixColor(prefix, v)
+	If i <> "" Then
+		If p1.Contains("[") = False Then
+			p1 = p1 & "-" & i
+		End If
+	End If
+	If p1.EndsWith("-") Then p1 = ""
+	Return p1
+End Sub
+
+'code for DOMContentLoaded
+Sub DOMContentLoaded As String
+	Dim str As String = $"var body = document.getElementById("body");
+    var loader1 = document.createElement("div");
+    loader1.setAttribute("id", "loader-1")
+    loader1.style.cssText = 'display:block;top:0px;position:fixed;width:100%;height:100%;z-index:999999';
+    var loader = document.createElement("div");
+    loader.setAttribute("id", "loader")
+    loader1.appendChild(loader);
+    body.appendChild(loader1);"$
+	Return str
+End Sub
+
+Sub ShowLoader
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "block")
+	lEL.SetStyle(BANano.ToJson(mStyle))
+End Sub
+
+Sub HideLoader
+	Dim lEL As BANanoElement
+	lEL.Initialize("#loader-1")
+	Dim mStyle As Map = CreateMap()
+	mStyle.Put("display", "none")
+	lEL.SetStyle(BANano.ToJson(mStyle))
+End Sub
+
 #if css
 	.unselectable {
     	-webkit-touch-callout: none;
@@ -1578,22 +1623,6 @@ Sub Alpha(value As String) As String
 	Catch
 		Return value
 	End Try
-End Sub
-
-Sub ShowLoader
-	Dim lEL As BANanoElement
-	lEL.Initialize("#loader-1")
-	Dim mStyle As Map = CreateMap()
-	mStyle.Put("display", "block")
-	lEL.SetStyle(BANano.ToJson(mStyle))
-End Sub
-
-Sub HideLoader
-	Dim lEL As BANanoElement
-	lEL.Initialize("#loader-1")
-	Dim mStyle As Map = CreateMap()
-	mStyle.Put("display", "none")
-	lEL.SetStyle(BANano.ToJson(mStyle))
 End Sub
 
 Sub DateAdd(mDate As String, HowManyDays As Int) As String

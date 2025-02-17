@@ -31,6 +31,20 @@ Public Sub Initialize(self As Object)
 	ExcludePosition = False
 End Sub
 
+Sub SetReadOnly(mElement As BANanoElement, b As Boolean)
+	If mElement = Null Then Return 
+	If b Then
+		mElement.SetAttr("readonly", "readonly")
+	Else
+		mElement.RemoveAttr("readonly")
+	End If
+End Sub
+
+Sub SetNoArrows(mElement As BANanoElement)
+	If mElement = Null Then Return
+	AddClass(mElement, "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none")
+End Sub
+
 Sub GetElementByID(sID As String) As BANanoElement
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -742,6 +756,12 @@ private Sub GetPositionMap(varStyles As String) As Map
 	Return ms
 End Sub
 
+Sub SetPositionByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetPosition(mElement, s)
+End Sub
+
 public Sub SetPosition(mElement As BANanoElement, s As String)
 	BANano.SetP(mSelf, "sPosition", s)
 	If mElement = Null Then Return
@@ -762,6 +782,13 @@ public Sub SetPaddingAXYTBLR(mElement As BANanoElement, s As String)
 	AddClassList(mElement, classList)
 End Sub
 
+Sub SetPaddingAXYTBLRByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetPaddingAXYTBLR(mElement, s)
+End Sub
+
+
 ' internal use
 public Sub GetPaddingAXYTBLR() As String
 	Return BANano.GetP(mSelf, "sPaddingAXYTBLR")
@@ -773,6 +800,12 @@ public Sub SetMarginAXYTBLR(mElement As BANanoElement, s As String)
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("m", mm)
 	AddClassList(mElement, classList)
+End Sub
+
+Sub SetMarginAXYTBLRByID(sID As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMarginAXYTBLR(mElement, s)
 End Sub
 
 public Sub GetMarginAXYTBLR() As String
@@ -886,6 +919,8 @@ Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, Meth
 	If SubExists(CallBack, MethodName) Then
 		mElement.Off(event)
 		mElement.On(event, CallBack, MethodName)
+	Else
+		BANano.Console.Error($"${event}.${MethodName} event DOES NOT exist!"$)
 	End If
 End Sub
 
@@ -961,9 +996,30 @@ End Sub
 
 Sub SetStyleByID(sID As String, k As String, v As String)
 	sID = modSD5.CleanID(sID)
-	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	k = modSD5.DeCamelCase(k)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
 	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+End Sub
+
+Sub RemoveStyleByID(sID As String, k As String)
+	sID = modSD5.CleanID(sID)
+	k = modSD5.DeCamelCase(k)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.GetField("style").RunMethod("removeProperty", Array(k))
+End Sub
+
+Sub GetStyleByID(sID As String, k As String) As String
+	sID = modSD5.CleanID(sID)
+	k = modSD5.DeCamelCase(k)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return ""
+	Dim computed As BANanoObject
+	computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
+	Dim res As String = computed.RunMethod("getPropertyValue", k).Result
+	res = modSD5.CStr(res)
+	Return res
 End Sub
 
 'add a styles to the element
@@ -1072,6 +1128,17 @@ Sub AddAttrMap(mElement As BANanoElement, ms As Map)
 		Dim v As String = ms.Get(k)
 		mElement.SetAttr(k,v)
 	Next
+End Sub
+
+Sub SetIconNameByID(elName As String, scontent As String)
+	elName = modSD5.CleanID(elName)
+	Dim el As BANanoElement = BANano.GetElement($"#${elName}"$)
+	If el = Null Then Return
+	Dim mLastIcon As String = el.GetData("icon")
+	mLastIcon = modSD5.CStr(mLastIcon)
+	If mLastIcon <> "" Then el.RemoveClass(mLastIcon)
+	el.AddClass(scontent)
+	el.SetData("icon", scontent)
 End Sub
 
 Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
