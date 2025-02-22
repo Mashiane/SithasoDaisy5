@@ -6,15 +6,15 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: input, Description: Input Type, List: select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: input, Description: Input Type, List: select|input|email|password|tel|url|number|file
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Label, Description: Caption
+#DesignerProperty: Key: Suffix, DisplayName: Suffix, FieldType: String, DefaultValue: , Description: Suffix
+#DesignerProperty: Key: FloatingLabel, DisplayName: Floating Label, FieldType: Boolean, DefaultValue: False, Description: Floating Label
 #DesignerProperty: Key: LabelWidth, DisplayName: Label Width, FieldType: String, DefaultValue: , Description: Label Width
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
-#DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
-#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
-#DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
 #DesignerProperty: Key: MinLength, DisplayName: Min Length, FieldType: String, DefaultValue: , Description: Min Length
 #DesignerProperty: Key: MaxLength, DisplayName: Max Length, FieldType: String, DefaultValue: , Description: Max Length
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: , Description: Min Value
@@ -23,9 +23,6 @@ Version=10
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: FloatingLabel, DisplayName: Floating Label, FieldType: Boolean, DefaultValue: False, Description: Floating Label
-#DesignerProperty: Key: Suffix, DisplayName: Suffix, FieldType: String, DefaultValue: , Description: Suffix
-#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -68,18 +65,6 @@ Sub Class_Globals
 	Private sSuffix As String = ""
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
-	Public CONST INPUTTYPE_NONE As String = "none"
-	Public CONST INPUTTYPE_SELECT As String = "select"
-	Public CONST INPUTTYPE_TEXT As String = "text"
-	Public CONST SIZE_LG As String = "lg"
-	Public CONST SIZE_MD As String = "md"
-	Public CONST SIZE_NONE As String = "none"
-	Public CONST SIZE_SM As String = "sm"
-	Public CONST SIZE_XL As String = "xl"
-	Public CONST SIZE_XS As String = "xs"
-	Public CONST TAGTYPE_LABEL As String = "label"
-	Public CONST TAGTYPE_SPAN As String = "span"
-	Private bChecked As Boolean = False
 	Private sLabelWidth As String = ""
 	Private sMaxLength As String = ""
 	Private sMaxValue As String = ""
@@ -88,8 +73,6 @@ Sub Class_Globals
 	Private bRequired As Boolean = False
 	Private sStepValue As String = ""
 	Private sValue As String = ""
-	Private sCheckedColor As String = ""
-	Private sGroupName As String = ""
 	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
@@ -264,8 +247,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bValidator = modSD5.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
 		sValidatorHint = modSD5.CStr(sValidatorHint)
-		bChecked = Props.GetDefault("Checked", False)
-		bChecked = modSD5.CBool(bChecked)
 		sLabelWidth = Props.GetDefault("LabelWidth", "")
 		sLabelWidth = modSD5.CStr(sLabelWidth)
 		sMaxLength = Props.GetDefault("MaxLength", "")
@@ -282,22 +263,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sStepValue = modSD5.CStr(sStepValue)
 		sValue = Props.GetDefault("Value", "")
 		sValue = modSD5.CStr(sValue)
-		sCheckedColor = Props.GetDefault("CheckedColor", "")
-		sCheckedColor = modSD5.CStr(sCheckedColor)
-		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = modSD5.CStr(sGroupName)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = modSD5.CStr(sWidth)
 	End If
 	'
 	If bFloatingLabel = True Then UI.AddClassDT("floating-label")
-	'select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
+	'select|input|email|password|tel|url|number|file
 	Dim sTag As String = sInputType
 	Select Case sInputType
-	Case "email", "password", "toggle", "range", "checkbox", "radio", "tel", "url", "number", "input"
+	Case "email", "password", "tel", "url", "number", "input", "file"
 		sTag = "input"
-	Case "textarea"
-		sTag = "textarea"
 	Case "select" 
 		sTag = "select"	
 	End Select
@@ -319,12 +294,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<label id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   			<span id="${mName}_prefix" class="label whitespace-nowrap">${sLabel}</span>
   			<${sTag} id="${mName}_input"></${sTag}>
-			<span id="${mName}_suffix" class="label hidden whitespace-nowrap">${sSuffix}</span>
+			<span id="${mName}_suffix" class="label hide whitespace-nowrap">${sSuffix}</span>
 		</label>
-		<div id="${mName}_validatorhint" class="validator-hint">${sValidatorHint}</div>"$).Get("#" & mName)
+		<div id="${mName}_validatorhint" class="validator-hint hide">${sValidatorHint}</div>"$).Get("#" & mName)
 	'
-	''select|input|email|password|toggle|range|checkbox|textarea|tel|url|number|radio
-	
 	Select Case sInputType
 	Case "input"
 		UI.SetAttrByID($"${mName}_input"$, "type", "text")
@@ -332,59 +305,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetAttrByID($"${mName}_input"$, "type", "email")
 	Case "password"
 		UI.SetAttrByID($"${mName}_input"$, "type", "password")
-	Case "toggle"
-		UI.RemoveClass(mElement, "input")
-		UI.AddClass(mElement, "toggle")
-		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
-		UI.SetVisibleByID($"${mName}_prefix"$, False)
-		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
-		UI.AddClassByID($"${mName}_input"$, "toggle")
-		UI.SetTextByID($"${mName}_suffix"$, sLabel)
-		UI.SetVisibleByID($"${mName}_suffix"$, True)
-	Case "radio"
-		UI.RemoveClass(mElement, "input")
-		UI.AddClass(mElement, "radio")
-		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
-		UI.SetVisibleByID($"${mName}_prefix"$, False)
-		UI.SetAttrByID($"${mName}_input"$, "type", "radio")
-		UI.AddClassByID($"${mName}_input"$, "radio")
-		UI.SetTextByID($"${mName}_suffix"$, sLabel)
-		UI.SetVisibleByID($"${mName}_suffix"$, True)
-	Case "checkbox"
-		UI.RemoveClass(mElement, "input")
-		UI.AddClass(mElement, "checkbox")
-		UI.AddClass(mElement, "flex cursor-pointer fieldset-label items-center")
-		UI.SetVisibleByID($"${mName}_prefix"$, False)
-		UI.SetAttrByID($"${mName}_input"$, "type", "checkbox")
-		UI.AddClassByID($"${mName}_input"$, "checkbox")
-		UI.SetTextByID($"${mName}_suffix"$, sLabel)
-		UI.SetVisibleByID($"${mName}_suffix"$, True)
-	Case "range"
-		UI.SetAttrByID($"${mName}_input"$, "type", "range")
-		UI.AddClassByID($"${mName}_input"$, "range")
-	Case "textarea"
-		UI.AddClassByID($"${mName}_input"$, "textarea")
 	Case "tel"
 		UI.SetAttrByID($"${mName}_input"$, "type", "tel")
 		UI.AddClassByID($"${mName}_input"$, "tabular-nums")
 	Case "url"
 		UI.SetAttrByID($"${mName}_input"$, "type", "url")
+	Case "file"
+		UI.SetAttrByID($"${mName}_input"$, "type", "file")
+		UI.AddClassByID($"${mName}_input"$, $"file-input [&::file-selector-button]:hidden p-1"$)
 	Case "number"
 		UI.SetAttrByID($"${mName}_input"$, "type", "number")
+		UI.AddClassByID($"${mName}_input"$, "tabular-nums")
 	End Select
-	'
-	Select Case sInputType
-	Case "radio", "checkbox", "toggle"
-	Case Else
-		setSuffix(sSuffix)
-		setLabel(sLabel)
-	End Select
-	
+		
 	BANano.Await(setColor(sColor))
 	BANano.Await(setSize(sSize))
-	BANano.Await(setOptions(sRawOptions))
+	If sInputType = "select" Then
+		BANano.Await(setOptions(sRawOptions))
+	End If
 	setPlaceholder(sPlaceholder)
-	setValidator(bValidator)
+	
 	setLabelWidth(sLabelWidth)
 	setMaxLength(sMaxLength)
 	setMaxValue(sMaxValue)
@@ -392,49 +332,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setMinValue(sMinValue)
 	setRequired(bRequired)
 	setStepValue(sStepValue)
-	setGroupName(sGroupName)
-	setCheckedColor(sCheckedColor)
-'	setVisible(bVisible)
+	setWidth(sWidth)
+	setLabel(sLabel)
+	setSuffix(sSuffix)
+	setValidatorHint(sValidatorHint)
+	setValidator(bValidator)
+	'setVisible(bVisible)
 End Sub
 
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
+	If s <> "" Then 
+		UI.SetWidth(mElement, sWidth)
+		UI.SetWidthByID($"${mName}_input"$, sWidth)
+	End If
 End Sub
 
 'get Width
 Sub getWidth As String
 	Return sWidth
 End Sub
-
-
-'set Group Name
-Sub setGroupName(s As String)			'ignoredeadcode
-	sGroupName = s
-	CustProps.put("GroupName", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "name", s)
-End Sub
-
-Sub getGroupName As String
-	Return sGroupName
-End Sub
-
-'set Checked Color
-Sub setCheckedColor(s As String)			'ignoredeadcode
-	sCheckedColor = s
-	CustProps.put("CheckedColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetCheckedTextColorByID($"${mName}_input"$, s)
-End Sub
-
-Sub getCheckedColor As String
-	Return sCheckedColor
-End Sub
-
 
 'set Label Width
 Sub setLabelWidth(s As String)				'ignoredeadcode
@@ -443,6 +363,7 @@ Sub setLabelWidth(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidthByID($"${mName}_prefix"$, s)
 End Sub
+
 'set Max Length	
 Sub setMaxLength(s As String)				'ignoredeadcode
 	sMaxLength = s
@@ -450,6 +371,7 @@ Sub setMaxLength(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "maxlength", s)
 End Sub
+
 'set Max Value
 Sub setMaxValue(s As String)			'ignoredeadcode
 	sMaxValue = s
@@ -457,6 +379,7 @@ Sub setMaxValue(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "max", s)
 End Sub
+
 'set Min Length
 Sub setMinLength(s As String)			'ignoredeadcode
 	sMinLength = s
@@ -464,6 +387,7 @@ Sub setMinLength(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "minlength", s)
 End Sub
+
 'set Min Value
 Sub setMinValue(s As String)				'ignoredeadcode
 	sMinValue = s
@@ -471,6 +395,7 @@ Sub setMinValue(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "min", s)
 End Sub
+
 'set Required
 Sub setRequired(b As Boolean)				'ignoredeadcode
 	bRequired = b
@@ -482,6 +407,7 @@ Sub setRequired(b As Boolean)				'ignoredeadcode
 		UI.RemoveAttrByID($"${mName}_input"$, "required")
 	End If
 End Sub
+
 'set Step Value
 Sub setStepValue(s As String)			'ignoredeadcode
 	sStepValue = s
@@ -489,6 +415,7 @@ Sub setStepValue(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttrByID($"${mName}_input"$, "step", s)
 End Sub
+
 'get Label Width
 Sub getLabelWidth As String
 	Return sLabelWidth
@@ -525,7 +452,9 @@ Sub setLabel(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_prefix"$, s)
 	If s = "" Then
-		UI.RemoveElementByID($"${mName}_prefix"$)
+		UI.SetVisibleByID($"${mName}_prefix"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_prefix"$, True)
 	End If
 End Sub
 'set Color
@@ -540,16 +469,11 @@ Sub setColor(s As String)			'ignoredeadcode
 		UI.SetColorByID($"${mName}_input"$, "color", "select", s)
 	Case "input", "email", "password", "tel", "url", "number"
 		UI.SetColorByID($"${mName}_input"$, "color", "input", s)
-	Case "toggle"
-		UI.SetColorByID($"${mName}_input"$, "color", "toggle", s)
-	Case "range"
-		UI.SetColorByID($"${mName}_input"$, "color", "range", s)
-	Case "checkbox"
-		UI.SetColorByID($"${mName}_input"$, "color", "checkbox", s)
-	Case "textarea"
-		UI.SetColorByID($"${mName}_input"$, "color", "textarea", s)
+	Case "file"
+		UI.SetColorByID($"${mName}_input"$, "color", "file-input", s)
 	End Select
 End Sub
+
 'set Floating Label
 Sub setFloatingLabel(b As Boolean)
 	bFloatingLabel = b
@@ -575,9 +499,7 @@ Sub setPlaceholder(s As String)			'ignoredeadcode
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return
 	Select Case sInputType
-	Case "select"
-		UI.SetTextByID($"${mName}_placeholder"$, s)
-	Case "input", "email", "password", "textarea", "tel", "url", "number"
+	Case "input", "email", "password", "tel", "url", "number"
 		UI.SetAttrByID($"${mName}_input"$, "placeholder", s)
 	End Select
 End Sub
@@ -598,7 +520,7 @@ End Sub
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 	If mElement = Null Then Return
-	Clear
+	BANano.Await(Clear)
 	Dim sb As StringBuilder
 	sb.Initialize
 	For Each k As String In m.Keys
@@ -657,14 +579,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		UI.SetSizeByID($"${mName}_input"$, "size", "select", sSize)
 	Case "input", "email", "password", "tel", "url", "number"
 		UI.SetSizeByID($"${mName}_input"$, "size", "input", sSize)
-	Case "toggle"
-		UI.SetSizeByID($"${mName}_input"$, "size", "toggle", sSize)
-	Case "range"
-		UI.SetSizeByID($"${mName}_input"$, "size", "range", sSize)
-	Case "checkbox"
-		UI.SetSizeByID($"${mName}_input"$, "size", "checkbox", sSize)
-	Case "textarea"
-		UI.SetSizeByID($"${mName}_input"$, "size", "textarea", sSize)
+	Case "file"
+		UI.SetSizeByID($"${mName}_input"$, "size", "file-input", sSize)
 	End Select
 End Sub
 'set Suffix
@@ -674,7 +590,9 @@ Sub setSuffix(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_suffix"$, s)
 	If s = "" Then
-		UI.RemoveElementByID($"${mName}_suffix"$)
+		UI.SetVisibleByID($"${mName}_suffix"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_suffix"$, True)
 	End If
 End Sub
 
@@ -683,18 +601,23 @@ Sub setValidator(b As Boolean)				'ignoredeadcode
 	bValidator = b
 	CustProps.put("Validator", b)
 	If mElement = Null Then Return
-	If b = True Then
+	If b Then
 		UI.AddClassByID($"${mName}_input"$, "validator")
 	Else
 		UI.RemoveClassByID($"${mName}_input"$, "validator")
 	End If
 End Sub
 'set Validator Hint
-Sub setValidatorHint(s As String)
+Sub setValidatorHint(s As String)		'ignoredeadcode
 	sValidatorHint = s
 	CustProps.put("ValidatorHint", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_validatorhint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_validatorhint"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_validatorhint"$, True)
+	End If
 End Sub
 'get Caption
 Sub getLabel As String

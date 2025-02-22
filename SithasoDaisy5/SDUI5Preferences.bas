@@ -14,6 +14,8 @@ Version=10
 #Event: Property_PrependClick (e As BANanoEvent)
 #Event: Property_FileChange (e As BANanoEvent)
 #Event: Property_Click (e As BANanoEvent)
+#Event: Button_Click (e As BANanoEvent)
+#Event: Button_FileChange (e As BANanoEvent)
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Property Bag, Description: Title
@@ -28,6 +30,7 @@ Version=10
 #DesignerProperty: Key: IsZebra, DisplayName: Is Zebra, FieldType: Boolean, DefaultValue: False, Description: Is Zebra
 #DesignerProperty: Key: PropertyPadding, DisplayName: Property Padding, FieldType: String, DefaultValue: py-1, Description: Property Padding
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: right, Description: Position, List: bottom|left|right|top
 #DesignerProperty: Key: WrapActions, DisplayName: Wrap Actions, FieldType: Boolean, DefaultValue: True, Description: Wrap Actions
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -81,30 +84,6 @@ Private Sub Class_Globals
 	Private ComponentType As Map
 	Private Overwrites As Map
 	'
-	Public const PROPERTY_Dialer As String = "Dialer"
-	Public const PROPERTY_SelectGroup As String = "SelectGroup"
-	Public const PROPERTY_PasswordGroup As String = "PasswordGroup"
-	Public const PROPERTY_TextBoxGroup As String = "TextBoxGroup"
-	Public const PROPERTY_TextBox As String = "TextBox"
-	Public const PROPERTY_PassWord As String = "Password"
-	Public const PROPERTY_Color As String = "Color"
-	Public const PROPERTY_Number As String = "Number"
-	Public const PROPERTY_Telephone As String = "Telephone"
-	Public const PROPERTY_TextArea As String = "TextArea"
-	Public const PROPERTY_Select As String = "Select"
-	Public const PROPERTY_FileInput As String = "FileInput"
-	Public const PROPERTY_Avatar As String = "Avatar"
-	Public const PROPERTY_Progress As String = "Progress"
-	Public const PROPERTY_Range As String = "Range"
-	Public const PROPERTY_CheckBox As String = "CheckBox"
-	Public const PROPERTY_Toggle As String = "Toggle"
-	Public const PROPERTY_RadialProgress As String = "RadialProgress"
-	Public const PROPERTY_Rating As String = "Rating"
-	Public const PROPERTY_RadioGroup As String = "RadioGroup"
-	Public const PROPERTY_DatePicker As String = "DatePicker"
-	Public const PROPERTY_TimePicker As String = "TimePicker"
-	Public const PROPERTY_DateTimePicker As String = "DateTimePicker"
-	'
 	Private validations As Map
 	Private LastColors As Map
 	Private RGOptions As Map
@@ -118,8 +97,8 @@ Private Sub Class_Globals
 	Private datepickers As Map
 	Private sSearchWidth As String = "300px"
 	Public IsLive As Boolean = True
-	Private ttColor As String = ""
 	Private sShadow As String = "none"
+	Private sTooltipPosition As String = "right"
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
@@ -332,10 +311,11 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sTooltipColor = "none" Then sTooltipColor = ""
 		bWrapActions = Props.GetDefault("WrapActions", True)
 		bWrapActions = modSD5.CBool(bWrapActions)
-		ttColor = modSD5.FixColor("tooltip", sTooltipColor)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = modSD5.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sTooltipPosition = Props.GetDefault("TooltipPosition", "right")
+		sTooltipPosition = modSD5.CStr(sTooltipPosition)
 	End If
 	'
 	UI.AddClassDT("card-border card w-full bg-base-100")
@@ -366,7 +346,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     					<i id="${mName}_searchbtnicon" class="fa-solid fa-magnifying-glass hide"></i>
   					</button>
 				</div>
-				<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
+				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
         	</div>
 			<div id="${mName}_divider" class="m-0 divider"></div>
         	<div id="${mName}_card" class="overflow-x-auto">
@@ -1241,13 +1221,13 @@ End Sub
 Sub SetPropertyRequired(Key As String, status As Boolean)
 	If status Then
 		Compulsory.Put(Key,Key)
-		If BANano.Exists($"#${mName}_${Key}_badge"$) Then
-			BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		If BANano.Exists($"#${mName}_${Key}badge"$) Then
+			BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 		End If
 	Else
 		Compulsory.Remove(Key)
-		If BANano.Exists($"#${mName}_${Key}_badge"$) Then
-			BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		If BANano.Exists($"#${mName}_${Key}badge"$) Then
+			BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 		End If
 	End If
 End Sub
@@ -1648,8 +1628,8 @@ Sub getName As String
 	Return $"${mName}"$
 End Sub
 
-Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, iMinValue As Int, iStepValue As Int, iMaxValue As Int)
-	AddPropertyTextBoxGroup(Key, Title, DefaultValue, Description, Required, TooltipPos)
+Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Required As Boolean, iMinValue As Int, iStepValue As Int, iMaxValue As Int)
+	AddPropertyTextBoxGroup(Key, Title, DefaultValue, Required)
 	SetPropertyType(Key, "number")
 	ComponentType.Put(Key, "Dialer")
 	SetPropertyAddClass(Key, "text-center tabular-nums")
@@ -1682,7 +1662,7 @@ private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode
 	End If
 	'
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
-		Dim data As Map = getPropertyBag
+		Dim data As Map = BANano.Await(getPropertyBag)
 		CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
 	End If
 End Sub
@@ -1706,7 +1686,7 @@ private Sub PropertyIncrement(event As BANanoEvent)     'ignoredeadcode
 	End If
 	'
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
-		Dim data As Map = getPropertyBag
+		Dim data As Map = BANano.Await(getPropertyBag)
 		CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
 	End If
 End Sub
@@ -1749,83 +1729,90 @@ End Sub
 '	Return AppendButton
 'End Sub
 
-Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextBox")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
-Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextBoxGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div id="${mName}_${Key}_formcontrol" class="form-control">
-    <label id="${mName}_${Key}_inputgroup" class="input-group">
-    <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
-    <input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize} input-bordered w-full tlradius blradius trradius brradius"></input>
-    <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
-    </label>
-    </div>
-    </div>
-    </div>
-    </td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+    		<div class="indicator w-full">
+    			<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
+    				<label id="${mName}_${Key}_inputgroup" class="input-group">
+    					<span id="${mName}_${Key}_prefix" class="hide"></span>
+    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
+    					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize} input-bordered w-full tlradius blradius trradius brradius"></input>
+    					<span id="${mName}_${Key}_suffix" class="hide"></span>
+    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
+    				</label>
+    			</div>
+    		</div>
+    	</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
-Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, Options As Map)
+
+Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "SelectGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th">${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div id="${mName}_${Key}_formcontrol" class="form-control">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
@@ -1836,16 +1823,14 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     </label>
     </div>
     </div>
-    </div>
     </td>
     </tr>"$
 	'
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -1863,20 +1848,24 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 	sbOptions.Initialize
 End Sub
-Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+
+Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "PasswordGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor}  w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div id="${mName}_${Key}_formcontrol" class="form-control">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
@@ -1886,17 +1875,15 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     </label>
     </div>
     </div>
-    </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	SetPropertyShowEyes(Key, True)
 	
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2024,28 +2011,29 @@ End Sub
 'DateFormat: "Y-m-d"
 'DisplayDateFormat: "F j, Y"
 'https://flatpickr.js.org/formatting/
-Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, _
-    DateFormat As String, DisplayDateFormat As String, locale As String)
+Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, locale As String)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "DatePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor}  w-full tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2086,11 +2074,15 @@ End Sub
 '	ComponentType.Put(Key, "RollDate")
 '	If Required Then Compulsory.Put(Key, Key)
 '	Dim scode As String = $"[BANCLEAN]
-'    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-'    <td id="${mName}_${Key}_th">${Title}</td>
+'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+'<td id="${mName}_${Key}_th" >
+'			<span id="${mName}_${Key}_tooltip">
+'				<span id="${mName}_${Key}_title">${Title}</span>
+'			</span>
+'		</td>		
 '    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
 '    <div class="indicator w-full">
-'    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+'    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
 '    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}"></div>
 '    </div>
 '    </td>
@@ -2098,9 +2090,9 @@ End Sub
 '	BANano.GetElement($"#${mName}_body"$).Append(scode)
 '	SetPropertyDescription(Key, Description)
 '	If Required Then
-'		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 '	Else
-'		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 '	End If
 '	'
 '	Dim cname As String = $"${mName}_${Key}"$
@@ -2110,28 +2102,31 @@ End Sub
 '	sig.RemoveHint
 '	rolldate.Put(cname, sig)
 'End Sub
-Sub AddPropertySignaturePad(Key As String, Title As String, Description As String, Required As Boolean, TooltipPos As String, Width As String, Height As String, ImageType As String)
+Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean, Width As String, Height As String, ImageType As String)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, "")
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Signature")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th">${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}"></div>
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    <div id="${mName}_${Key}" class="w-full"></div>
     </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	'
 	Dim cname As String = $"${mName}_${Key}"$
@@ -2148,28 +2143,29 @@ End Sub
 'DateFormat: "Y-m-d H:i"
 'DisplayDateFormat: "F j, Y H:i"
 'https://flatpickr.js.org/formatting/
-Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, _
-    DateFormat As String, DisplayDateFormat As String, Time24Hours As Boolean, locale As String)
+Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, Time24Hours As Boolean, locale As String)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "DateTimePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2199,28 +2195,29 @@ End Sub
 'DateFormat: "H:i" or "G:i K"
 'https://flatpickr.js.org/formatting/
 'locale = 'en
-Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, _
-    TimeFormat As String, DisplayFormat As String, Time24Hours As Boolean, locale As String)
+Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, TimeFormat As String, DisplayFormat As String, Time24Hours As Boolean, locale As String)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TimePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2249,27 +2246,29 @@ Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String
 End Sub
 
 
-Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Password")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="password" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2281,10 +2280,14 @@ End Sub
 '	ComponentType.Put(Key, "Color")
 '	If Required Then Compulsory.Put(Key, Key)
 '	Dim scode As String = $"[BANCLEAN]
-'    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-'    <td id="${mName}_${Key}_th" >${Title}</td>
+'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+'<td id="${mName}_${Key}_th" >
+'			<span id="${mName}_${Key}_tooltip">
+'				<span id="${mName}_${Key}_title">${Title}</span>
+'			</span>
+'		</td>		
 '    <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-'    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+'    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
 '    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
 '    <input id="${mName}_${Key}" name="${mName}_${Key}" type="color" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
 '    </div></td>
@@ -2292,59 +2295,63 @@ End Sub
 '	BANano.GetElement($"#${mName}_body"$).Append(scode)
 '	SetPropertyDescription(Key, Description)
 '	If Required Then
-'		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 '	Else
-'		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 '	End If
 '	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 '	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 'End Sub
-Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Number")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="number" inputmode="numeric" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
-Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Telephone")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <input id="${mName}_${Key}" name="${mName}_${Key}" type="tel" inputmode="tel" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
-    </div></td>
+    </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2356,8 +2363,12 @@ Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Col
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Email")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <a id="${mName}_${Key}" href="mailto:${DefaultValue}" class="link ${xcolor}">${DefaultValue}</a>
     </td>
@@ -2372,8 +2383,12 @@ Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Col
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Label")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <label id="${mName}_${Key}" class="${xcolor}">${DefaultValue}</label>
     </td>
@@ -2388,8 +2403,12 @@ Sub AddPropertyLink(Key As String, Title As String, DefaultValue As String, Colo
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Link")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <a id="${mName}_${Key}" href="${DefaultValue}" target="_blank" class="link ${xcolor}">${DefaultValue}</a>
     </td>
@@ -2404,8 +2423,12 @@ Sub AddPropertyPlaceHolder(Key As String, Title As String, DefaultValue As Strin
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "PlaceHolder")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}">${DefaultValue}</div>
     </td>
@@ -2449,9 +2472,11 @@ End Sub
 Sub SetPropertyFocus(Key As String)
 	BANano.GetElement($"#${mName}_${Key}"$).RunMethod("focus", Null)
 End Sub
+
+'check only some properties
 Sub PropertiesAreValid(props As List) As Boolean
 	'get the pbag values
-	Dim values As Map = getPropertyBag
+	Dim values As Map = BANano.Await(getPropertyBag)
 	Dim iValid As Int = 0
 	'loop through each key
 	For Each k As String In props
@@ -2473,9 +2498,10 @@ Sub PropertiesAreValid(props As List) As Boolean
 		Return False
 	End If
 End Sub
+'is the property bag valid
 Sub PropertyBagIsValid As Boolean
 	'get the pbag values
-	Dim values As Map = GetPropertyBag
+	Dim values As Map = BANano.Await(getPropertyBag)
 	Dim iValid As Int = 0
 	'loop through each key
 	For Each k As String In propBagKeys.Keys
@@ -2499,6 +2525,7 @@ Sub PropertyBagIsValid As Boolean
 		Return False
 	End If
 End Sub
+'check if propertues match
 Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 	Dim v1 As String = GetPropertyValue(fld1)
 	Dim v2 As String = GetPropertyValue(fld2)
@@ -2516,20 +2543,23 @@ Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 		Return False
 	End If
 End Sub
-Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
+Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextArea")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div id="${mName}_${Key}_formcontrol" class="form-control">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
@@ -2539,16 +2569,14 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     </label>
     </div>
     </div>
-    </div>
     </td>
     </tr>"$
 		
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2561,12 +2589,23 @@ End Sub
 Sub SetPropertyProgressText(Key As String, value As String)
 	BANano.GetElement($"#${mName}_${Key}_text"$).SetText(value)
 End Sub
+
 Sub SetPropertyCaption(Key As String, value As String)
-	BANano.GetElement($"#${mName}_${Key}_th"$).SetHTML(BANano.SF(value))
+	BANano.GetElement($"#${mName}_${Key}_title"$).SetHTML(BANano.SF(value))
 End Sub
-Sub SetPropertyCaptionHTML(Key As String, value As String)
-	BANano.GetElement($"#${mName}_${Key}_th"$).SetHTML(value)
+
+Sub SetPropertyToolTip(Key As String, value As String)
+	Dim tColor As String = modSD5.FixColor("tooltip", sTooltipColor)
+	Dim tPos As String = $"tooltip-${sTooltipPosition}"$
+	If value = "" Then
+		UI.RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		BANano.GetElement($"#${mName}_${Key}_tooltip"$).RemoveAttr("data-tip")
+	Else
+		UI.AddClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		BANano.GetElement($"#${mName}_${Key}_tooltip"$).SetData("tip", value)
+	End If
 End Sub
+
 'left, center, right
 Sub SetPropertyAlignment(Key As String, value As String)
 	Dim malign As String = ""
@@ -2585,34 +2624,8 @@ Sub SetPropertyAlignment(Key As String, value As String)
 	If BANano.Exists($"#${mName}_${Key}"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
 	End If
-	'
-	'	Dim sComponentType As String = ComponentType.Get(Key)
-	'	Select Case sComponentType
-	'		Case "Avatar", "Image"
-	'		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
-	'		Case "TextBox", "TextBoxGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password", "Color", "Number", _
-	'		"Telephone", "TextArea", "Select", "SelectGroup", "Dialer"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "RollDate"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "Signature"
-	'		Case "RadialProgress"
-	'		Case "Rating", "RadioGroup"
-	'		Case "CheckBox", "Toggle"
-	'		Case "Progress"
-	'		Case "Range"
-	'		Case "Email"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "Link"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "Label"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "AvatarPlaceholder"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'		Case "AvatarGroup"
-	'			BANano.GetElement($"#${mName}_${Key}"$).AddClass(malign)
-	'	End Select
 End Sub
+
 Sub SetPropertyValue(Key As String, value As String)
 	Dim sComponentType As String = ComponentType.Get(Key)
 	Select Case sComponentType
@@ -2658,7 +2671,7 @@ Sub SetPropertyValue(Key As String, value As String)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText($"${value}%"$)
 			BANano.GetElement($"#${mName}_${Key}"$).SetData("value", value)
 			UI.SetStyleByID($"#${mName}_${Key}"$,"--value", value)
-		Case "Rating", "RadioGroup"
+		Case "Rating"
 			BANano.GetElement($"#${mName}_${Key}_${value}"$).SetChecked(True)
 		Case "CheckBox", "Toggle"
 			value = modSD5.CBool(value)
@@ -2688,10 +2701,28 @@ Sub SetPropertyValue(Key As String, value As String)
 		Case "AvatarGroup"
 			Dim bo As Object = value
 			SetPropertyAvatarGroupItems(Key, bo)		'ignore
+		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup"
+			value = modSD5.CStr(value)
+			Dim lvalues As List = modSD5.StrParse(";", value)
+			lvalues = modSD5.ListTrimItems(lvalues)
+			'get all items in the group select
+			'uncheck everything
+			Dim allitems As Map = RGOptions.Get(Key)
+			For Each k As String In allitems.Keys
+				k = modSD5.CleanID(k)
+				Dim nk As String = $"${mName}_${Key}_${k}"$
+				BANano.Await(UI.SetCheckedByID(nk, False))
+			Next
+			'check the ones we have specified
+			For Each k As String In lvalues
+				k = modSD5.CleanID(k)
+				Dim nk As String = $"${mName}_${Key}_${k}"$
+				BANano.Await(UI.SetCheckedByID(nk, True))
+			Next
 	End Select
 End Sub
 Sub GetPropertyHintID(Key As String) As String
-	Return $"${mName}_${Key}_row"$
+	Return $"${mName}_${Key}row"$
 End Sub
 Sub GetPropertyValue(Key As String) As String
 	Dim sComponentType As String = ComponentType.Get(Key)
@@ -2724,11 +2755,11 @@ Sub GetPropertyValue(Key As String) As String
 			Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
 			v = Itemx.GetValue
 			v = modSD5.CInt(v)
-		Case "RadioGroup"
-			Dim Itemx As BANanoElement
-			Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
-			v = Itemx.GetValue
-			v = modSD5.CStr(v)
+		'Case "RadioGroup"
+		'	Dim Itemx As BANanoElement
+		'	Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
+		'	v = Itemx.GetValue
+		'	v = modSD5.CStr(v)
 		Case "CheckBox", "Toggle"
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetChecked
 			v = modSD5.CBool(v)
@@ -2743,6 +2774,19 @@ Sub GetPropertyValue(Key As String) As String
 		Case "Signature"
 			'Dim sig As SDUISignaturePad = signatures.Get($"${mName}_${Key}"$)
 			'v = sig.toDataURL
+		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup"
+			'get all items in the group select
+			Dim allitems As Map = RGOptions.Get(Key)
+			Dim sItems As List
+			sItems.Initialize 
+			For Each k As String In allitems.Keys
+				Dim nk As String = $"${mName}_${Key}_${k}"$
+				Dim b As Boolean = BANano.Await(UI.GetCheckedByID(nk))
+				If b Then
+					sItems.Add(k)
+				End If
+			Next
+			v = modSD5.Join(";", sItems)
 		Case Else
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetValue
 			v = modSD5.CStr(v)
@@ -2769,29 +2813,31 @@ Sub GetPropertyImage(Key As String) As String
 	Return imgLink
 End Sub
 Sub SetPropertyBadge(Key As String, value As Object)
-	BANano.GetElement($"#${mName}_${Key}_badge"$).SetText(value)
+	BANano.GetElement($"#${mName}_${Key}badge"$).SetText(value)
 End Sub
-Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String, Options As Map)
+Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
 	propBagKeys.Put(Key, Required)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Select")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th">${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}_badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
+    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select grow select-${sComponentSize} select-bordered w-full">
-    </select></div></div></td>
+    </select></div></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}_badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2807,10 +2853,9 @@ Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, De
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	sbOptions.Initialize
 End Sub
+
+'set select items from a map
 Sub SetPropertySelectMap(Key As String, Options As Map)
-	SetPropertyItemsMap(Key, Options)
-End Sub
-Sub SetPropertyItemsMap(Key As String, Options As Map)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2833,10 +2878,9 @@ Sub SetPropertySelectAddItem(Key As String, itemValue As String, itemText As Str
 	Catch
 	End Try		'ignore
 End Sub
-Sub SetPropertySelectList(Key As String, Options As List)
-	SetPropertyItemsList(Key, Options)
-End Sub
-Sub SetPropertyItemsList(Key As String, Options As List)
+
+'set select items from a list
+Sub SetPropertySelectItemsList(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2848,6 +2892,7 @@ Sub SetPropertyItemsList(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Append(sbOptions.ToString)
 	sbOptions.Initialize
 End Sub
+
 Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
 	Dim xitems As String = modSD5.Join(";", Images)
 	Dim sSize As String = BANano.GetElement($"#${mName}_${Key}_group"$).GetData("size")
@@ -2859,7 +2904,7 @@ Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
 	For Each k As String In Images
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
-		Dim sItem As String = $"<div id="${mName}_${Key}_avatar1_${imgCnt}" class="avatar">
+		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
         <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${modSD5.FixSize("w",sSize)}">
         <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
         </div>
@@ -2871,10 +2916,8 @@ Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
 	BANano.GetElement($"#${mName}_${Key}_group"$).Append(sbItems.ToString)
 	sbItems.Initialize
 End Sub
-Sub SetPropertySelectListSort(Key As String, Options As List)
-	SetPropertyItemsListSort(Key, Options)
-End Sub
-Sub SetPropertyItemsListSort(Key As String, Options As List)
+
+Sub SetPropertySelectItemsListSort(Key As String, Options As List)
 	Options.Sort(True)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
@@ -2887,10 +2930,8 @@ Sub SetPropertyItemsListSort(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Append(sbOptions.ToString)
 	sbOptions.Initialize
 End Sub
-Sub SetPropertySelectOptions(Key As String, delim As String, bSort As Boolean, bAddNothingSelected As Boolean, sOptions As String)
-	SetPropertyItemsOptions(Key, delim, bSort, bAddNothingSelected, sOptions)
-End Sub
-Sub SetPropertyItemsOptions(Key As String, delim As String, bSort As Boolean, bAddNothingSelected As Boolean, sOptions As String)
+
+Sub SetPropertySelectItemsOptions(Key As String, delim As String, bSort As Boolean, bAddNothingSelected As Boolean, sOptions As String)
 	Dim options As List = modSD5.StrParse(delim, sOptions)
 	If bSort Then options.Sort(True)
 	Dim sbOptions As StringBuilder
@@ -2906,10 +2947,8 @@ Sub SetPropertyItemsOptions(Key As String, delim As String, bSort As Boolean, bA
 	BANano.GetElement($"#${mName}_${Key}"$).Append(sbOptions.ToString)
 	sbOptions.Initialize
 End Sub
-Sub SetPropertySelectList1(Key As String, bAddNothingSelected As Boolean, options As List)
-	SetPropertyItemsList1(Key, bAddNothingSelected, options)
-End Sub
-Sub SetPropertyItemsList1(Key As String, bAddNothingSelected As Boolean, Options As List)
+
+Sub SetPropertySelectItemsList1(Key As String, bAddNothingSelected As Boolean, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2953,20 +2992,27 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyFileInput(Key As String, Title As String, Description As String, TooltipPos As String)
+Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInput")
+	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-${sComponentSize} file-input-bordered w-full"></input><div></td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<div class="indicator w-full">
+				<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-${sComponentSize} file-input-bordered w-full"></input>
+			<div>
+		</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
 	Else
@@ -3011,29 +3057,30 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyFileInputProgress(Key As String, Title As String, Description As String, TooltipPos As String, xSize As String, xIcon As String, xColor As String)
+Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String, xIcon As String, xColor As String)
 	If xIcon = "" Then xIcon = "fa-solid fa-arrow-up-from-bracket"
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInputProgress")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div id="${mName}_${Key}_formcontrol" class="flex items-center">
-    <button id="${mName}_${Key}_button" class="btn btn-circle btn-${xColor} w-[${xSize}] h-[${xSize}]">
-    <i id="${mName}_${Key}_icon" data-icon="${xIcon}" class="${xIcon} fa-2xl"></i>
-    <div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}"
-    style="--size:${xSize}; --thickness: 1px;"></div>
-    </button>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
-    </div><div>
-    </td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+    		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
+    			<button id="${mName}_${Key}_button" class="btn btn-circle btn-${xColor} w-[${xSize}] h-[${xSize}]">
+    				<i id="${mName}_${Key}_icon" data-icon="${xIcon}" class="${xIcon} fa-2xl"></i>
+    				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
+    			</button>
+    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
+    		</div>
+    	</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}_button"$).RemoveClass("hide")
 	BANano.GetElement($"#${mName}_${Key}_progress"$).AddClass("hide")
 	BANano.GetElement($"#${mName}_${Key}_icon"$).RemoveClass("hide")
@@ -3096,8 +3143,8 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyCamCorder(Key As String, Title As String, Description As String, TooltipPos As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, Description, TooltipPos, xSize, "", xColor)
+Sub AddPropertyCamCorder(Key As String, Title As String, xSize As String, xColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
 	SetPropertyFileInputProgressCamCorder(Key)
 	ComponentType.Put(Key, "CamCorder")
 End Sub
@@ -3139,8 +3186,8 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyCamera(Key As String, Title As String, Description As String, TooltipPos As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, Description, TooltipPos, xSize, "", xColor)
+Sub AddPropertyCamera(Key As String, Title As String, xSize As String, xColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
 	SetPropertyFileInputProgressCamera(Key)
 	ComponentType.Put(Key, "Camera")
 End Sub
@@ -3182,16 +3229,16 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyMicrophone(Key As String, Title As String, Description As String, TooltipPos As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, Description, TooltipPos, xSize, "", xColor)
+Sub AddPropertyMicrophone(Key As String, Title As String, xSize As String, xColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
 	SetPropertyFileInputProgressMicrophone(Key)
 	ComponentType.Put(Key, "Microphone")
 End Sub
-Sub SetPropertyFileInputProgressCamCorder(key As String)
+private Sub SetPropertyFileInputProgressCamCorder(key As String)
 	UI.SetIconNameByID($"${mName}_${key}_icon"$, "fa-solid fa-video")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "video/*;capture=camcorder")
 End Sub
-Sub SetPropertyFileInputProgressCamera(key As String)
+private Sub SetPropertyFileInputProgressCamera(key As String)
 	UI.SetIconNameByID($"${mName}_${key}_icon"$, "fa-solid fa-camera")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "image/*;capture=camera")
 	UI.SetAttrByID($"${mName}_${key}"$, "capture", "environment")
@@ -3225,29 +3272,31 @@ Sub SetPropertyFileInputProgressLoading(key As String, Value As Int, Status As B
 	End If
 End Sub
 
-Sub AddPropertyAvatar(Key As String, Title As String, Description As String, sSize As String, Shape As String, Url As String)
+Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As String, Url As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Avatar")
 	Dim smask As String = modSD5.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
-    <div id="${mName}_${Key}_avatar1" class="avatar">
+    <div id="${mName}_${Key}_avatar" class="avatar">
     <div id="${mName}_${Key}_host" class="${smask} ${modSD5.FixSize("w",sSize)}">
     <img id="${mName}_${Key}_src" name="${mName}_${Key}" src="${Url}" alt=""></img>
-    </div>
     </div>
     </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 End Sub
-Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As String, Description As String, sSize As String, Shape As String, Color As String, textSize As String)
+
+Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As String, sSize As String, Shape As String, Color As String, textSize As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -3256,41 +3305,44 @@ Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As
 	Dim acolor As String = modSD5.FixColor("bg", Color) & " " & modSD5.FixColorIntensity("text", Color, "content")
 	Dim tsize As String = modSD5.FixSize("text", textSize)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip tooltip-right" data-tip="${Description}">
-    <div id="${mName}_${Key}_avatar1" class="avatar avatar-placeholder">
+    <div id="${mName}_${Key}_avatar" class="avatar avatar-placeholder">
     <div id="${mName}_${Key}_host" class="${acolor} ${smask} ${modSD5.FixSize("w",sSize)}">
     <span id="${mName}_${Key}_span" class="${tsize}" name="${mName}_${Key}">${DefaultValue}</img>
-    </div>
     </div>
     </div>
     </td>
     </tr>"$
 	'
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}_span"$).SetText(BANano.SF(DefaultValue))
 End Sub
-Sub AddPropertyAvatarGroup(Key As String, Title As String, Description As String, sSize As String, Shape As String, Images As List)
+
+Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shape As String, Images As List)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, "")
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarGroup")
 	Dim smask As String = modSD5.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-right" data-tip="${Description}">
     <div id="${mName}_${Key}_group" class="avatar-group -space-x-3" data-size="${sSize}" data-shape="${Shape}">
-    </div>
     </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	Dim sbItems As StringBuilder
 	sbItems.Initialize
 	Dim imgCnt As Int = 0
@@ -3298,7 +3350,7 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, Description As String
 	For Each k As String In Images
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
-		Dim sItem As String = $"<div id="${mName}_${Key}_avatar1_${imgCnt}" class="avatar">
+		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
         <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${modSD5.FixSize("w",sSize)}">
         <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
         </div>
@@ -3310,13 +3362,13 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, Description As String
 	sbItems.Initialize
 End Sub
 Sub SetPropertyAvatarOnline(Key As String, Status As Boolean, IsVisible As Boolean)
-	BANano.GetElement($"#${mName}_${Key}_avatar1"$).RemoveClass("offline")
-	BANano.GetElement($"#${mName}_${Key}_avatar1"$).RemoveClass("online")
+	BANano.GetElement($"#${mName}_${Key}_avatar"$).RemoveClass("offline")
+	BANano.GetElement($"#${mName}_${Key}_avatar"$).RemoveClass("online")
 	If IsVisible = False Then Return
 	If Status Then
-		BANano.GetElement($"#${mName}_${Key}_avatar1"$).AddClass("online")
+		BANano.GetElement($"#${mName}_${Key}_avatar"$).AddClass("online")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_avatar1"$).AddClass("offline")
+		BANano.GetElement($"#${mName}_${Key}_avatar"$).AddClass("offline")
 	End If
 End Sub
 Sub SetPropertyAvatarRing(Key As String, Status As Boolean, Color As String)
@@ -3362,34 +3414,25 @@ Sub SetPropertyImageMask(Key As String, Shape As String)
 	Next
 	BANano.GetElement($"#${mName}_${Key}_src"$).AddClass(smask)
 End Sub
-Sub SetPropertyDescription(Key As String, Description As String)
-	If BANano.Exists($"#${mName}_${Key}_tooltip"$) = False Then Return
-	Description = modSD5.CStr(Description)
-	If Description = "" Then
-		BANano.GetElement($"#${mName}_${Key}_tooltip"$).RemoveAttr("data-tip")
-		BANano.GetElement($"#${mName}_${Key}_tooltip"$).RemoveClass("tooltip")
-	Else
-		BANano.GetElement($"#${mName}_${Key}_tooltip"$).AddClass("tooltip")
-		BANano.GetElement($"#${mName}_${Key}_tooltip"$).SetAttr("data-tip", Description)
-	End If
-End Sub
-Sub AddPropertyImage(Key As String, Title As String, Description As String, Width As String, Height As String, Shape As String, Url As String)
+
+Sub AddPropertyImage(Key As String, Title As String, Width As String, Height As String, Shape As String, Url As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "Image")
 	ComponentType.Put(Key, "Image")
 	Dim smask As String = modSD5.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
     <img id="${mName}_${Key}_src" class="${smask}" name="${mName}_${Key}" src="${Url}" alt=""></img>
-    </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	UI.SetWidthByID($"#${mName}_${Key}_src"$, Width)
 	UI.SetHeightByID($"#${mName}_${Key}_src"$, Height)
 End Sub
@@ -3403,7 +3446,7 @@ Sub SetPropertyImage(Key As String, imgUrl As String)
 	BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("src", value)
 	BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("data-src", imgUrl)
 End Sub
-Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String, Description As String, TooltipPos As String)
+Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -3425,56 +3468,61 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
 	Dim psize1 As String = modSD5.FixSize("h", psize)
 	
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} w-full tooltip-${TooltipPos}" data-tip="${Description}">
-    <div class="flex items-center">
+    <div class="flex items-center w-full">
     <span id="${mName}_${Key}_text" class="text-${sComponentSize} mx-2">${DefaultValue}%</span>
     <progress id="${mName}_${Key}" name="${mName}_${Key}" class="rounded-full progress progress-${Color} w-full ${psize1}" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></progress>
-    </div>
     </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 End Sub
-Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String, Description As String, TooltipPos As String)
+
+Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Range")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
     <div class="flex items-center">
     <span id="${mName}_${Key}_text" class="text-${sComponentSize} mx-2">${DefaultValue}</span>
     <input type="range" id="${mName}_${Key}" name="${mName}_${Key}" class="range range-${sComponentSize} range-${Color} w-full" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></input>
     </div>
-    </div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
-Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean, Color As String, Description As String)
+Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean, Color As String)
 	DefaultValue = modSD5.CBool(DefaultValue)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "CheckBox")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
-    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="checkbox checkbox-${Color} checkbox-${sComponentSize}"></input></div></td>
+    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="checkbox checkbox-${Color} checkbox-${sComponentSize}"></input></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}"$).SetChecked(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
@@ -3594,19 +3642,19 @@ Sub SetPropertyColor(Key As String, s As String)
 			BANano.GetElement($"#${mName}_${Key}_4"$).AddClass(tcolor)
 			BANano.GetElement($"#${mName}_${Key}_5"$).AddClass(tcolor)
 			LastColors.Put(Key, s)
-		Case "RadioGroup"
-			Dim opt As Map = RGOptions.Get(Key)
-			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("radio", lcolor)
-				For Each k As String In opt.Keys
-					BANano.GetElement($"#${mName}_${Key}_${k}"$).RemoveClass(llcolor)
-				Next
-			End If
-			Dim tcolor As String = modSD5.FixColor("radio", s)
-			For Each k As String In opt.Keys
-				BANano.GetElement($"#${mName}_${Key}_${k}"$).AddClass(tcolor)
-			Next
-			LastColors.Put(Key, s)
+'		Case "RadioGroup"
+'			Dim opt As Map = RGOptions.Get(Key)
+'			If lcolor <> "" Then
+'				Dim llcolor As String = modSD5.FixColor("radio", lcolor)
+'				For Each k As String In opt.Keys
+'					BANano.GetElement($"#${mName}_${Key}_${k}"$).RemoveClass(llcolor)
+'				Next
+'			End If
+'			Dim tcolor As String = modSD5.FixColor("radio", s)
+'			For Each k As String In opt.Keys
+'				BANano.GetElement($"#${mName}_${Key}_${k}"$).AddClass(tcolor)
+'			Next
+'			LastColors.Put(Key, s)
 	End Select
 End Sub
 Sub SetPropertyChecked(Key As String, b As Boolean)
@@ -3643,38 +3691,42 @@ End Sub
 Sub SetPropertyRows(Key As String, v As String)
 	BANano.GetElement($"#${mName}_${Key}"$).SetAttr("rows", v)
 End Sub
-Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, Color As String, Description As String)
+Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, Color As String)
 	DefaultValue = modSD5.CBool(DefaultValue)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "Toggle")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
-    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="toggle toggle-${Color} toggle-${sComponentSize}"></input></div></td>
+    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="toggle toggle-${Color} toggle-${sComponentSize}"></input></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}"$).SetChecked(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
-Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Boolean, Color As String, Description As String, sSize As String, sThickNess As String)
+Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Boolean, Color As String, sSize As String, sThickNess As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "RadialProgress")
 	ComponentType.Put(Key, "RadialProgress")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
-    <div name="${mName}_${Key}" id="${mName}_${Key}" role="progressbar" class="radial-progress text-${Color}"></div></div></td>
+    <div name="${mName}_${Key}" id="${mName}_${Key}" role="progressbar" class="radial-progress text-${Color}"></div></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	BANano.GetElement($"#${mName}_${Key}"$).SetText($"${DefaultValue}%"$)
 	BANano.GetElement($"#${mName}_${Key}"$).SetData("value", DefaultValue)
 	UI.SetStyleByID($"#${mName}_${Key}"$, "--value", DefaultValue)
@@ -3685,7 +3737,7 @@ Sub SetPropertyRadialProgress(Key As String, Value As Object)
 	BANano.GetElement($"#${mName}_${Key}"$).SetText($"${Value}%"$)
 	UI.SetStyleByID($"#${mName}_${Key}"$,"--value", Value)
 End Sub
-Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Color As String, Description As String, mask As String)
+Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Color As String, mask As String)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Rating")
@@ -3694,10 +3746,13 @@ Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Co
 	Dim rSize As String = modSD5.FixSize("rating", sComponentSize)
 	Dim rmask As String = modSD5.FixMask(mask)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-right" data-tip="${Description}">
     <div id="${mName}_${Key}" class="rating gap-1 ${rSize}">
 	<input id="${mName}_${Key}_0" type="radio" name="${mName}_${Key}" value="0" class="rating-hidden hide ${rmask} ${rColor}" aria-label="0 star"/>
     <input id="${mName}_${Key}_1" type="radio" name="${mName}_${Key}" value="1" class="${rmask} ${rColor}" aria-label="1 star"/>
@@ -3705,10 +3760,9 @@ Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Co
     <input id="${mName}_${Key}_3" type="radio" name="${mName}_${Key}" value="3" class="${rmask} ${rColor}" aria-label="3 star"/>
     <input id="${mName}_${Key}_4 "type="radio" name="${mName}_${Key}" value="4" class="${rmask} ${rColor}" aria-label="4 star"/>
     <input id="${mName}_${Key}_5" type="radio" name="${mName}_${Key}" value="5" class="${rmask} ${rColor}" aria-label="5 star"/>
-    </div></div></td>
+    </div></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
 	If DefaultValue <> "" Then
 		'BANano.GetElement($"input[name='${Key}']"$).SetValue(DefaultValue)
 		BANano.GetElement($"#${mName}_${Key}_${DefaultValue}"$).SetChecked(True)
@@ -3727,11 +3781,11 @@ Sub SetPropertyRadioGroup(Key As String, Value As Object)
 End Sub
 
 Sub SetPropertyOneColumn(Key As String)
-	BANano.GetElement($"#${mName}_${Key}_row"$).RemoveClass("sm:grid-cols-2")
+	BANano.GetElement($"#${mName}_${Key}row"$).RemoveClass("sm:grid-cols-2")
 End Sub
 
 Sub SetPropertyTwoColumn(Key As String)
-	BANano.GetElement($"#${mName}_${Key}_row"$).AddClass("sm:grid-cols-2")
+	BANano.GetElement($"#${mName}_${Key}row"$).AddClass("sm:grid-cols-2")
 End Sub
 
 'hide some properties
@@ -3748,47 +3802,278 @@ Sub ShowProperty(Keys As List)
 End Sub
 Sub SetPropertyVisible(Key As String, bStatus As Boolean)
 	If bStatus Then
-		BANano.GetElement($"#${mName}_${Key}_row"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}row"$).RemoveClass("hide")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_row"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}row"$).AddClass("hide")
 	End If
 	If bStatus = False Then
 		SetPropertyRequired(Key, False)
 	End If
 End Sub
-Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String, Color As String, Description As String, TooltipPos As String, Options As Map)
+
+
+Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As String, Color As String, bSingleSelect As Boolean, ActiveColor As String, Options As Map)
+	propBagKeys.Put(Key, False)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "GroupSelect")
+	ComponentType.Put(Key, "GroupSelect")
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<div id="${mName}_${Key}_content" class="flex gap-2 flex-wrap w-full"></div>
+    	</td>
+    </tr>"$	
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	BANano.Await(SetPropertyGroupSelectItems(Key, Color, ActiveColor, bSingleSelect, Options))
+	'
+	If DefaultValue <> "" Then
+		Dim litems As List = modSD5.StrParse(";", DefaultValue)
+		litems = modSD5.ListTrimItems(litems)
+		For Each k As String In litems
+			k = modSD5.CleanID(k)
+			Dim nk As String = $"${mName}_${Key}_${k}"$
+			BANano.Await(UI.SetCheckedByID(nk, True))
+		Next
+	End If
+End Sub
+
+Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
+	propBagKeys.Put(Key, False)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "CheckBoxGroup")
+	ComponentType.Put(Key, "CheckBoxGroup")
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<div id="${mName}_${Key}_content"></div>
+    	</td>
+    </tr>"$	
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	BANano.Await(SetPropertyCheckBoxGroupItems(Key, Color, ActiveColor, Options))
+	'
+	If DefaultValue <> "" Then
+		Dim litems As List = modSD5.StrParse(";", DefaultValue)
+		litems = modSD5.ListTrimItems(litems)
+		For Each k As String In litems
+			k = modSD5.CleanID(k)
+			Dim nk As String = $"${mName}_${Key}_${k}"$
+			BANano.Await(UI.SetCheckedByID(nk, True))
+		Next
+	End If
+End Sub
+
+Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
+	propBagKeys.Put(Key, False)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "ToggleGroup")
+	ComponentType.Put(Key, "ToggleGroup")
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<div id="${mName}_${Key}_content"></div>
+    	</td>
+    </tr>"$	
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	BANano.Await(SetPropertyToggleGroupItems(Key, Color, ActiveColor, Options))
+	'
+	If DefaultValue <> "" Then
+		Dim litems As List = modSD5.StrParse(";", DefaultValue)
+		litems = modSD5.ListTrimItems(litems)
+		For Each k As String In litems
+			k = modSD5.CleanID(k)
+			Dim nk As String = $"${mName}_${Key}_${k}"$
+			BANano.Await(UI.SetCheckedByID(nk, True))
+		Next
+	End If
+End Sub
+
+Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "RadioGroup")
-	RGOptions.Put(Key, Options)
 	ComponentType.Put(Key, "RadioGroup")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}_row" class="grid grid-cols-1 sm:grid-cols-2">
-    <td id="${mName}_${Key}_th" >${Title}</td>
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_tooltip" class="tooltip ${ttColor} tooltip-${TooltipPos} w-full" data-tip="${Description}"></div>
-    </td>
-    </tr>"$
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<div id="${mName}_${Key}_content"></div>
+    	</td>
+    </tr>"$	
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	SetPropertyDescription(Key, Description)
-	For Each k As String In Options.Keys
-		If k = "" Then Continue
-		Dim v As String = Options.Get(k)
-		Dim sItem As String = $"<div class="form-control">
-        <label class="label cursor-pointer">
-        <span class="label-text">${v}</span>
-        <input id="${mName}_${Key}_${k}" type="radio" name="${mName}_${Key}" value="${k}" class="radio radio-${Color} radio-${sComponentSize}"></input>
-        </label>
-        </div>"$
-		BANano.GetElement($"#${mName}_${Key}_tooltip"$).Append(sItem)
-		BANano.GetElement($"#${mName}_${Key}_${k}"$).On("change", Me, "OnPropChangeInternal")
-	Next
+	BANano.Await(SetPropertyRadioGroupItems(Key, Color, ActiveColor, Options))
+	'
 	If DefaultValue <> "" Then
-		If BANano.Exists($"#${mName}_${Key}_${DefaultValue}"$) Then
-			BANano.GetElement($"#${mName}_${Key}_${DefaultValue}"$).SetChecked(True)
-		End If
+		DefaultValue = modSD5.CleanID(DefaultValue)
+		Dim nk As String = $"${mName}_${Key}_${DefaultValue}"$
+		BANano.Await(UI.SetCheckedByID(nk, True))
 	End If
 End Sub
+
+Sub SetPropertyRadioGroupItems(Key As String, sColor As String, sActiveColor As String, items As Map)
+	Dim xitems As Map = BANano.DeepClone(items)
+	RGOptions.Put(Key, xitems)
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim itemSize As String = modSD5.FixSize("radio", sComponentSize)
+	Dim itemColor As String = modSD5.FixColor("radio", sColor)
+	Dim checkedColor As String = ""
+	Dim checkedBorder As String = ""
+	Dim checkedText As String = ""
+	If sActiveColor <> "" Then
+		checkedColor = modSD5.FixColor("checked:text", sActiveColor)
+'		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
+'		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+	End If
+	
+	For Each k As String In xitems.Keys
+		Dim v As String = xitems.Get(k)
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		'
+		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+      				<input id="${mName}_${Key}_${k}" type="radio" name="${Key}" value="${k}" class="radio ${itemColor} ${itemSize} ${checkedColor} ${checkedText} ${checkedBorder}"/>
+      					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
+    				</label>"$)
+	Next
+	UI.ClearByID($"${mName}_${Key}_content"$)
+	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	For Each k As String In xitems.Keys
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+	Next
+End Sub
+
+Sub SetPropertyToggleGroupItems(Key As String, sColor As String, sActiveColor As String, items As Map)
+	Dim xitems As Map = BANano.DeepClone(items)
+	RGOptions.Put(Key, xitems)
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim itemSize As String = modSD5.FixSize("toggle", sComponentSize)
+	Dim itemColor As String = modSD5.FixColor("toggle", sColor)
+	Dim checkedColor As String = ""
+	Dim checkedBorder As String = ""
+	Dim checkedText As String = ""
+	If sActiveColor <> "" Then
+		checkedColor = modSD5.FixColor("checked:text", sActiveColor)
+'		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
+'		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+	End If
+	
+	For Each k As String In xitems.Keys
+		Dim v As String = xitems.Get(k)
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		'
+		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+      				<input id="${mName}_${Key}_${k}" type="checkbox" name="${Key}[]" value="${k}" class="toggle ${itemColor} ${itemSize} ${checkedColor} ${checkedText} ${checkedBorder}"/>
+      					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
+    				</label>"$)
+	Next
+	UI.ClearByID($"${mName}_${Key}_content"$)
+	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	For Each k As String In xitems.Keys
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+	Next
+End Sub
+
+
+
+Sub SetPropertyCheckBoxGroupItems(Key As String, sColor As String, sActiveColor As String, items As Map)
+	Dim xitems As Map = BANano.DeepClone(items)
+	RGOptions.Put(Key, xitems)
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim itemSize As String = modSD5.FixSize("checkbox", sComponentSize)
+	Dim itemColor As String = modSD5.FixColor("checkbox", sColor)
+	Dim checkedColor As String = ""
+	Dim checkedBorder As String = ""
+	Dim checkedText As String = ""
+	If sActiveColor <> "" Then
+'		checkedText = modSD5.FixColor("checked:text", sActiveColor)
+		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
+		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+	End If
+	
+	For Each k As String In xitems.Keys
+		Dim v As String = xitems.Get(k)
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		'
+		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+      				<input id="${mName}_${Key}_${k}" type="checkbox" name="${Key}[]" value="${k}" class="checkbox ${itemColor} ${itemSize} ${checkedColor} ${checkedText} ${checkedBorder}"/>
+      					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
+    				</label>"$)
+	Next
+	UI.ClearByID($"${mName}_${Key}_content"$)
+	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	For Each k As String In xitems.Keys
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+	Next
+End Sub
+
+
+Sub SetPropertyGroupSelectItems(Key As String, sColor As String, sActiveColor As String, bSingleSelect As Boolean, items As Map)
+	Dim xitems As Map = BANano.DeepClone(items)
+	RGOptions.Put(Key, xitems)
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim itemSize As String = modSD5.FixSize("btn", sComponentSize)
+	Dim iType As String = "checkbox"
+	If bSingleSelect Then iType = "radio"
+	Dim itemColor As String = modSD5.FixColor("btn", sColor)
+	Dim soutline As String = ""
+	If bButtonsOutlined Then soutline = "btn-outline"
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
+	
+	For Each k As String In xitems.Keys
+		Dim v As String = xitems.Get(k)
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		sb.Append($"<input id="${nk}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${Key}" type="${iType}" aria-label="${v}">"$)
+	Next
+	UI.ClearByID($"${mName}_${Key}_content"$)
+	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	For Each k As String In xitems.Keys
+		k = modSD5.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+	Next
+End Sub
+
 Sub GetPropertyFileInput (e As BANanoEvent) As Map
 	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
 	'get the selected files, if any
@@ -3797,6 +4082,7 @@ Sub GetPropertyFileInput (e As BANanoEvent) As Map
 	Dim filex As Map = res.Get(0)
 	Return filex
 End Sub
+
 Sub GetPropertyFilesInput (e As BANanoEvent) As List
 	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
 	'get the selected files, if any
@@ -3804,6 +4090,7 @@ Sub GetPropertyFilesInput (e As BANanoEvent) As List
 	Dim res As List = files.As(List)
 	Return res
 End Sub
+
 Sub GetFileFromEvent (e As BANanoEvent) As Map
 	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
 	'get the selected files, if any
@@ -3812,6 +4099,7 @@ Sub GetFileFromEvent (e As BANanoEvent) As Map
 	Dim filex As Map = res.Get(0)
 	Return filex
 End Sub
+
 Sub GetFilesFromEvent (e As BANanoEvent) As List
 	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
 	'get the selected files, if any
@@ -3820,16 +4108,15 @@ Sub GetFilesFromEvent (e As BANanoEvent) As List
 	Return res
 End Sub
 
-Sub SetPropetyBagDefaults
-	setPropertyBag(propBagValues)
-End Sub
 'set values to be defaults
 Sub SetPropertyBagDefaults
 	setPropertyBag(propBagValues)
 End Sub
+
 Sub SetPropetyBag(item As Map)
 	setPropertyBag(item)
 End Sub
+
 Sub ResetPropetyBag
 	setPropertyBag(propBagValues)
 End Sub
@@ -3844,7 +4131,7 @@ End Sub
 Sub getPropertyBag As Map
 	Dim values As Map = CreateMap()
 	For Each k As String In ComponentType.Keys
-		Dim v As String = GetPropertyValue(k)
+		Dim v As String = BANano.Await(GetPropertyValue(k))
 		values.put(k, v)
 	Next
 	Return values
@@ -3854,7 +4141,7 @@ Private Sub OnPropChangeInternal(e As BANanoEvent)
 	e.PreventDefault
 	e.StopPropagation
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
-		Dim data As Map = getPropertyBag
+		Dim data As Map = BANano.Await(getPropertyBag)
 		CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
 	End If
 End Sub
@@ -3909,18 +4196,18 @@ End Sub
 Sub ShowDesign(designName As String, compName As String)
 	BANano.Await(Clear)
 	'this is not a dropdown
-	AddPropertyTextBox("ComponentType", "Custom Type", designName, "", False, "left")
+	AddPropertyTextBox("ComponentType", "Custom Type", designName, False)
 	SetPropertyEnabled("ComponentType", False)
 	'
 	'component name
-	AddPropertyTextBox("ComponentName", "Item Name", compName, "", False, "left")
+	AddPropertyTextBox("ComponentName", "Item Name", compName, False)
 	SetPropertyAutoFocus("ComponentName", True)
 	If bIncludeProjectName Then
-		AddPropertyTextBox("ProjectName", "Project Name", compName, "", False, "left")
+		AddPropertyTextBox("ProjectName", "Project Name", compName, False)
 	End If
 	'
 	If bIncludeViewName Then
-		AddPropertyTextBox("ViewName", "View Name", compName, "", False, "left")
+		AddPropertyTextBox("ViewName", "View Name", compName, False)
 	End If
 	'
 	Dim properties As List
@@ -3932,7 +4219,6 @@ Sub ShowDesign(designName As String, compName As String)
 			Dim skey As String = rec.Getdefault("Key","")
 			Dim sdisplayname As String = rec.Getdefault("DisplayName","")
 			Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-			Dim sdescription As String = rec.getdefault("Description","")
 			Dim sfieldtype As String = rec.getdefault("FieldType","")
 			'Dim sMinRange As String = rec.GetDefault("minrange", "0")
 			'Dim sMaxRange As String = rec.GetDefault("maxrange", "0")
@@ -3940,90 +4226,87 @@ Sub ShowDesign(designName As String, compName As String)
 			'ignore all readmes
 			If skey.StartsWith("ReadMe") Then Continue
 			If skey = "" Then Continue
-			If sdescription = "" Then sdescription = sdisplayname
-			'is a tooltip
-			sdescription = ""
 			'
 			If Overwrites.ContainsKey(skey) = True Then
 				'we have an overwrite of a type
 				Dim nType As String = Overwrites.Get(skey)
 				Select Case nType
 					Case "DatePicker"
-						AddPropertyDatePicker(skey, sdisplayname, sdefaultvalue,sdescription,False,"left", "Y-m-d", "F j, Y", "en")
+						AddPropertyDatePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d", "F j, Y", "en")
 					Case "DateTimePicker"
-						AddPropertyDateTimePicker(skey, sdisplayname, sdefaultvalue,sdescription,False,"left", "Y-m-d H:i", "F j, Y  H:i", True, "en")
+						AddPropertyDateTimePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d H:i", "F j, Y  H:i", True, "en")
 					Case "TimePicker"
-						AddPropertyTimePicker(skey, sdisplayname, sdefaultvalue,sdescription,False,"left", "H:i", "H:i", True, "en")
+						AddPropertyTimePicker(skey, sdisplayname, sdefaultvalue, False, "H:i", "H:i", True, "en")
 					Case "TextBox"
-						AddPropertyTextBox(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyTextBox(skey, sdisplayname, sdefaultvalue,False)
 					Case "Dialer"
 						sdefaultvalue = modSD5.CInt(sdefaultvalue)
-						AddPropertyDialer(skey,sdisplayname, sdefaultvalue,sdescription, False, "left", 0, 1, 100)
+						AddPropertyDialer(skey,sdisplayname, sdefaultvalue, False, 0, 1, 100)
 					Case "TextBoxGroup"
-						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,False)
 					Case "PasswordGroup"
-						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,False)
 					Case "Password"
-						AddPropertyPassword(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyPassword(skey, sdisplayname, sdefaultvalue,False)
 					Case "Color"
 '						AddPropertyColor(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
 					Case "Number"
 						sdefaultvalue = modSD5.Val(sdefaultvalue)
-						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
 					Case "Telephone"
-						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,False)
 					Case "TextArea"
-						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False)
 						'AddPropertyTextArea(skey, sdisplayname, "","", False, "left")
 						'SetPropertyValue(skey, sdefaultvalue)
 						SetPropertyPrependIcon(skey, "fa-regular fa-paste")
 						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 						SetPropertyOneColumn(skey)
 					Case "Select"
-						AddPropertySelect(skey, sdisplayname, sdefaultvalue,sdescription,False,"left",CreateMap())
+						AddPropertySelect(skey, sdisplayname, sdefaultvalue,False,CreateMap())
 					Case "SelectGroup"
-						AddPropertySelectGroup(skey, sdisplayname, sdefaultvalue,sdescription,False,"left",CreateMap())
+						AddPropertySelectGroup(skey, sdisplayname, sdefaultvalue,False,CreateMap())
 					Case "FileInput"
-						AddPropertyFileInput(skey, sdisplayname, sdescription,"left")
+						AddPropertyFileInput(skey, sdisplayname,False)
 					Case "FileInputProgress"
-						AddPropertyFileInputProgress(skey, sdisplayname, sdescription, "left", "80px" , "fa-solid fa-arrow-up-from-bracket", "success")
+						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "fa-solid fa-arrow-up-from-bracket", "success")
 					Case "CamCorder"
-						AddPropertyCamCorder(skey, sdisplayname, sdescription, "left", "80px", "success")
+						AddPropertyCamCorder(skey, sdisplayname, "80px", "success")
 					Case "Camera"
-						AddPropertyCamera(skey, sdisplayname, sdescription, "left", "80px", "success")
+						AddPropertyCamera(skey, sdisplayname, "80px", "success")
 					Case "Microphone"
-						AddPropertyMicrophone(skey, sdisplayname, sdescription, "left", "80px", "success")
+						AddPropertyMicrophone(skey, sdisplayname, "80px", "success")
 					Case "Avatar"
-						AddPropertyAvatar(skey, sdisplayname, sdescription, "12", "rounded", sdefaultvalue)
+						AddPropertyAvatar(skey, sdisplayname, "12", "rounded", sdefaultvalue)
 					Case "AvatarPlaceholder"
 						sdefaultvalue = modSD5.Val(sdefaultvalue)
-						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, sdescription, "12", "rounded", "success", "8xl")
+						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "8xl")
 					Case "AvatarGroup"
 						Dim imags As List
 						imags.Initialize
-						AddPropertyAvatarGroup(skey, sdisplayname, sdescription, "12", "rounded", imags)
+						AddPropertyAvatarGroup(skey, sdisplayname, "12", "rounded", imags)
 					Case "Image"
-						AddPropertyImage(skey, sdisplayname, sdescription, "100px", "100px", "rounded", sdefaultvalue)
+						AddPropertyImage(skey, sdisplayname, "100px", "100px", "rounded", sdefaultvalue)
 					Case "Signature"
-						AddPropertySignaturePad(skey, sdisplayname, sdescription, False, "left", "400", "200", "jpeg")
+						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
 					Case "Progress"
 						sdefaultvalue = modSD5.cint(sdefaultvalue)
-						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100",sdescription, "left")
+						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100")
 					Case "Range"
 						sdefaultvalue = modSD5.CInt(sdefaultvalue)
-						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100", sdescription, "left")
+						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100")
 					Case "CheckBox"
 						sdefaultvalue = modSD5.CBool(sdefaultvalue)
-						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success", sdescription)
+						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
 					Case "Toggle"
 						sdefaultvalue = modSD5.CBool(sdefaultvalue)
-						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success", sdescription)
+						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success")
 					Case "RadialProgress"
-						AddPropertyRadialProgress(skey,sdisplayname, sdefaultvalue, "success", sdescription, "", "")
+						AddPropertyRadialProgress(skey,sdisplayname, sdefaultvalue, "success", "", "")
 					Case "Rating"
-						AddPropertyRating(skey,sdisplayname, sdefaultvalue, "success", sdescription, "mask-star-2")
+						AddPropertyRating(skey,sdisplayname, sdefaultvalue, "success", "mask-star-2")
 					Case "RadioGroup"
-						AddPropertyRadioGroup(skey, sdisplayname, sdefaultvalue, "success", sdescription, "left", CreateMap())
+						AddPropertyRadioGroup(skey, sdisplayname, sdefaultvalue, "", "success", CreateMap())
 				End Select
 			Else
 				Select Case sfieldtype
@@ -4033,28 +4316,28 @@ Sub ShowDesign(designName As String, compName As String)
 							Case ""
 								'this is not a dropdown
 								If skey.StartsWith("Raw") Then
-									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
+									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
 									SetPropertyPrependIcon(skey, "fa-regular fa-paste")
 									BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 									SetPropertyOneColumn(skey)
 								Else	
-									AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
+									AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
 								End If
 							Case Else
 								'this is a drop down
-								AddPropertySelect(skey, sdisplayname, sdefaultvalue, sdescription, False, "left", CreateMap())
+								AddPropertySelect(skey, sdisplayname, sdefaultvalue, False, CreateMap())
 								Dim lstItems As List = modSD5.StrParse("|", sList)
-								SetPropertyItemsListSort(skey, lstItems)
+								SetPropertySelectItemsListSort(skey, lstItems)
 						End Select
 					Case "Boolean"
 						sdefaultvalue = modSD5.CBool(sdefaultvalue)
-						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success", sdescription)
+						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
 					Case "Int"
 						sdefaultvalue = modSD5.CInt(sdefaultvalue)
 						'sMinRange = modSD5.CInt(sMinRange)
 						'sMaxRange = modSD5.CInt(sMaxRange)
 						'If sMaxRange = 0 Then sMaxRange = 100
-						AddPropertyNumber(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
+						AddPropertyNumber(skey, sdisplayname, sdefaultvalue, False)
 					Case "Color"
 						sdefaultvalue = modSD5.CStr(sdefaultvalue)
 '						AddPropertyColor(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
@@ -4284,33 +4567,33 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 	'clear the property bag
 	BANano.Await(Clear)
 	If isComponent Then
-		AddPropertyTextBox("ComponentID", "Component ID","","",False,"left")
+		AddPropertyTextBox("ComponentID", "Component ID","",False)
 		SetPropertyVisible("ComponentID", False)
 		SetPropertyValue("ComponentID", compID)
-		AddPropertyTextBox("ComponentName", "Component Name","","",False,"left")
+		AddPropertyTextBox("ComponentName", "Component Name","",False)
 		SetPropertyValue("ComponentName", compName)
-		AddPropertyCheckBox("ComponentActive", "Component Active",False,"success","")
+		AddPropertyCheckBox("ComponentActive", "Component Active",False,"success")
 		SetPropertyValue("ComponentActive", True)
-		AddPropertyCheckBox("ComponentIndex", "Component On Index",False,"success","")
+		AddPropertyCheckBox("ComponentIndex", "Component On Index",False,"success")
 		SetPropertyValue("ComponentIndex", False)
-		AddPropertyCheckBox("ComponentTemplate", "Component Template",False,"success","")
+		AddPropertyCheckBox("ComponentTemplate", "Component Template",False,"success")
 		SetPropertyValue("ComponentTemplate", False)
-		AddPropertyCheckBox("CreateB4xLayout", "Create B4x JSON Layout",False,"success","")
+		AddPropertyCheckBox("CreateB4xLayout", "Create B4x JSON Layout",False,"success")
 		SetPropertyValue("CreateB4xLayout", False)
-		AddPropertyTextBox("ComponentType", "Component Type","","",False,"left")
+		AddPropertyTextBox("ComponentType", "Component Type","",False)
 		SetPropertyEnabled("ComponentType", False)
 		SetPropertyValue("ComponentType", compType)
-		AddPropertySelect("ComponentParentID", "Parent Component", "", "", False, "left", CreateMap())
-		AddPropertyCheckBox("ParentDevice", "Parent Device",False,"success","")
-		AddPropertySelect("ComponentNavigateTo", "Navigate To", "String", "", False, "left", CreateMap())
-		AddPropertyTextBox("ComponentTableName", "Table Name","","",False,"left")
-		AddPropertyTextBox("ComponentFieldName", "Field Name","","",False,"left")
-		AddPropertySelect("ComponentFieldType", "Field Type", "String", "", False, "left", CreateMap("Blob":"Blob","Bool":"Bool", _
+		AddPropertySelect("ComponentParentID", "Parent Component", "", False, CreateMap())
+		AddPropertyCheckBox("ParentDevice", "Parent Device",False,"success")
+		AddPropertySelect("ComponentNavigateTo", "Navigate To", "String", False, CreateMap())
+		AddPropertyTextBox("ComponentTableName", "Table Name","",False)
+		AddPropertyTextBox("ComponentFieldName", "Field Name","",False)
+		AddPropertySelect("ComponentFieldType", "Field Type", "String", False, CreateMap("Blob":"Blob","Bool":"Bool", _
 		"Date":"Date","Double":"Double","Int":"Int", "String":"String","File":"File"))
-		AddPropertyCheckBox("ComponentPrimaryID", "Primary Key",False,"success","")
-		AddPropertyTextBox("ComponentForeignTable", "Foreign Table","","",False,"left")
-		AddPropertyTextBox("ComponentForeignKey", "Foreign Key","","",False,"left")
-		AddPropertyTextBox("ComponentForeignValue", "Field Value","","",False,"left")
+		AddPropertyCheckBox("ComponentPrimaryID", "Primary Key",False,"success")
+		AddPropertyTextBox("ComponentForeignTable", "Foreign Table","",False)
+		AddPropertyTextBox("ComponentForeignKey", "Foreign Key","",False)
+		AddPropertyTextBox("ComponentForeignValue", "Field Value","",False)
 	End If
 	'
 	For Each rec As Map In  props
@@ -4330,10 +4613,10 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 		Select Case sfieldtype
 			Case "Boolean"
 				sdefaultvalue = modSD5.CBool(sdefaultvalue)
-				AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes","")
+				AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes")
 			Case "Int"
 				sdefaultvalue = modSD5.CInt(sdefaultvalue)
-				AddPropertyNumber(skey, sdisplayname, sdefaultvalue,"",False, "left")
+				AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
 			Case "Color"
 				sdefaultvalue = modSD5.CStr(sdefaultvalue)
 '				AddPropertyColor(skey, sdisplayname,sdefaultvalue,"",False,"left")
@@ -4343,22 +4626,156 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 					Case ""
 						'does the key start with raw, make multi-line
 						If skey.tolowercase.StartsWith("raw") Then
-							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, "", False, "left")
+							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
 							SetPropertyPrependIcon(skey, "fa-regular fa-paste")
 							BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 							SetPropertyOneColumn(skey)
 						Else
 							'this is not a dropdown
-							AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, "", False, "left")
+							AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
 						End If
 					Case Else
-						AddPropertySelect(skey, sdisplayname, "", "", False, "left", CreateMap())
+						AddPropertySelect(skey, sdisplayname, "", False, CreateMap())
 						Dim lstItems As List = modSD5.StrParse("|", sList)
 						lstItems.Sort(True)
-						SetPropertyItemsList(skey, lstItems)
+						SetPropertySelectItemsList(skey, lstItems)
 						SetPropertyValue(skey, sdefaultvalue)
 				End Select
 		End Select
 	Next
 	'UpdatePropertyPadding(sPropertyPadding)
+End Sub
+
+'add an action button
+'<code>
+'Sub tblname_btnid_click (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
+	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+	UI.Show($"${mName}_actions"$)
+	btnID = modSD5.CleanID(btnID)
+	'
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_actions"$
+	btn.Text = ""
+	btn.BackgroundColor = btnColor
+	btn.Shape = "circle"
+	btn.Outline = bButtonsOutlined
+	btn.LeftIcon = sIcon
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
+	Return btn
+End Sub
+
+'add an action button
+'<code>
+'Sub tblname_btnid_click (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+	UI.Show($"${mName}_actions"$)
+	btnID = modSD5.CleanID(btnID)
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_actions"$
+	btn.Text = btnCaption
+	btn.BackgroundColor = btnColor
+	btn.Outline = bButtonsOutlined
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_click"$)
+	Return btn
+End Sub
+
+Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
+	btnID = modSD5.CleanID(btnID)
+	Dim col As String = modSD5.FixColor("tooltip", color)
+	Dim pos As String = modSD5.FixSize("tooltip", position)
+	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
+End Sub
+
+'add a file upload button with table event
+'<code>
+'Sub tblName_btnid_filechange (e As BANAnoEvent)
+'tblName.FileChangeEvent
+'End Sub
+'</code>
+Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+	UI.Show($"${mName}_actions"$)
+	btnID = modSD5.CleanID(btnID)
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
+	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
+	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_FileChange"$)
+	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
+	Return btn
+End Sub
+
+private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	e.StopPropagation
+	Dim src As String = e.OtherField("srcElement").GetField("id").Result
+	If src = "" Then Return
+	Dim p2 As String = modSD5.MvField(src, 2, "_")
+	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${p2}_file"$)
+	'click the file input to fire change event
+	el.SetValue(Null)
+	el.RunMethod("click", Null)
+End Sub
+
+Sub AddToolbarActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	SetToolbarButtonTextColor(btnID, btnTextColor)
+	Return btn
+End Sub
+
+Sub AddToolbarButtonTextColor(btnID As String, btnCaption As String, btnColor As String, btnTextColor As String) As SDUI5Button
+	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
+	SetToolbarButtonTextColor(btnID, btnTextColor)
+	Return btn
+End Sub
+
+'change a toolbar button color
+Sub SetToolbarButtonColor(btn As String, value As String)
+	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+End Sub
+
+Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
+	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+End Sub
+
+'change the visibility of a button
+Sub SetToolbarButtonVisible(btn As String, value As Boolean)
+	UI.SetVisibleByID($"#${mName}_${btn}"$, value)
+End Sub
+
+Sub SetToolbarButtonEnable(btn As String, b As Boolean)
+	btn = modSD5.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+	End If
+End Sub
+
+Sub SetToolbarButtonLoading(btn As String, b As Boolean)
+	btn = modSD5.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
+	End If
 End Sub

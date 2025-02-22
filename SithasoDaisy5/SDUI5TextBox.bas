@@ -12,7 +12,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
-#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date|datetime-local|email|month|number|password|search|tel|text|time|url|week
+#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -31,6 +31,17 @@ Version=10
 #DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: String, DefaultValue: , Description: Max Value
 #DesignerProperty: Key: Pattern, DisplayName: Pattern, FieldType: String, DefaultValue: , Description: Pattern
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
+#DesignerProperty: Key: DPMode, DisplayName: DP Mode, FieldType: String, DefaultValue: single, Description: Date Picker Mode, List: multiple|range|single|time
+#DesignerProperty: Key: DPDateFormat, DisplayName: DP Date Format, FieldType: String, DefaultValue: Y-m-d, Description: Date Picker Date Format
+#DesignerProperty: Key: DPAltFormat, DisplayName: DP Alt Format, FieldType: String, DefaultValue: F j, Y, Description: Date Picker Alt Format
+#DesignerProperty: Key: DPAllowInput, DisplayName: DP Allow Input, FieldType: Boolean, DefaultValue: False, Description: Date Picker Allow Input
+#DesignerProperty: Key: DPAltInput, DisplayName: DP Alt Input, FieldType: Boolean, DefaultValue: True, Description: Date Picker Alt Input
+#DesignerProperty: Key: DPAltInputClass, DisplayName: DP Alt Input Class, FieldType: String, DefaultValue: , Description: Date Picker Alt Input Class
+#DesignerProperty: Key: DPCloseOnSelect, DisplayName: DP Close On Select, FieldType: Boolean, DefaultValue: False, Description: DP Close On Select
+#DesignerProperty: Key: DPConjunction, DisplayName: DP Conjunction, FieldType: String, DefaultValue: , Description: Date Picker Conjunction
+#DesignerProperty: Key: DPShowMonths, DisplayName: D P Show Months, FieldType: Int, DefaultValue: 1, Description: D p Show Months
+#DesignerProperty: Key: DPLocale, DisplayName: DP Locale, FieldType: String, DefaultValue: en, Description: Date Picker Locale
+#DesignerProperty: Key: DPPosition, DisplayName: DP Position, FieldType: String, DefaultValue: auto, Description: Date Picker Position, List: auto|above|below|auto left|auto center|auto right|above left|above center|above right|below left|below center|below right
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: PrependImage, DisplayName: Prepend Image, FieldType: String, DefaultValue: , Description: Prepend Image
@@ -92,19 +103,6 @@ Sub Class_Globals
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sValue As String = ""
-	Public CONST TYPEOF_DATE As String = "date"
-	Public CONST TYPEOF_DATETIME_LOCAL As String = "datetime-local"
-	Public CONST TYPEOF_EMAIL As String = "email"
-	Public CONST TYPEOF_MONTH As String = "month"
-	Public CONST TYPEOF_NONE As String = "none"
-	Public CONST TYPEOF_NUMBER As String = "number"
-	Public CONST TYPEOF_PASSWORD As String = "password"
-	Public CONST TYPEOF_SEARCH As String = "search"
-	Public CONST TYPEOF_TEL As String = "tel"
-	Public CONST TYPEOF_TEXT As String = "text"
-	Public CONST TYPEOF_TIME As String = "time"
-	Public CONST TYPEOF_URL As String = "url"
-	Public CONST TYPEOF_WEEK As String = "week"
 	Private sAppendIcon As String = ""
 	Private bAppendVisible As Boolean = False
 	Private sPrependIcon As String = ""
@@ -119,6 +117,19 @@ Sub Class_Globals
 	Private bShowEyes As Boolean = False
 	Private sAppendImage As String = ""
 	Private sPrependImage As String = ""
+	Private bDPAllowInput As Boolean = False
+	Private sDPAltFormat As String = "F j, Y"
+	Private bDPAltInput As Boolean = True
+	Private sDPAltInputClass As String = ""
+	Private bDPCloseOnSelect As Boolean = False
+	Private sDPConjunction As String = ""
+	Private sDPDateFormat As String = "Y-m-d"
+	Private sDPMode As String = "single"
+	Private iDPShowMonths As Int = 1
+	Private options As Map
+	Private FP As BANanoObject			'ignore
+	Private sDPLocale As String = "en"
+	Private sDPPosition As String = "auto"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -127,6 +138,11 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	UI.Initialize(Me)
+	options.Initialize
+	BANano.DependsOnAsset("flatpickr.min.css")
+	BANano.DependsOnAsset("material_blue.css")
+	BANano.DependsOnAsset("flatpickr.min.js")
+	BANano.DependsOnAsset("fplocale.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -313,7 +329,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			sAppendImage = Props.GetDefault("AppendImage", "")
 			sAppendImage = modSD5.CStr(sAppendImage)
 			sPrependImage = Props.GetDefault("PrependImage", "")
-			sPrependImage = modSD5.CStr(sPrependImage)
+		sPrependImage = modSD5.CStr(sPrependImage)
+		bDPAllowInput = Props.GetDefault("DPAllowInput", False)
+		bDPAllowInput = modSD5.CBool(bDPAllowInput)
+		sDPAltFormat = Props.GetDefault("DPAltFormat", "F j, Y")
+		sDPAltFormat = modSD5.CStr(sDPAltFormat)
+		bDPAltInput = Props.GetDefault("DPAltInput", True)
+		bDPAltInput = modSD5.CBool(bDPAltInput)
+		sDPAltInputClass = Props.GetDefault("DPAltInputClass", "")
+		sDPAltInputClass = modSD5.CStr(sDPAltInputClass)
+		bDPCloseOnSelect = Props.GetDefault("DPCloseOnSelect", False)
+		bDPCloseOnSelect = modSD5.CBool(bDPCloseOnSelect)
+		sDPConjunction = Props.GetDefault("DPConjunction", "")
+		sDPConjunction = modSD5.CStr(sDPConjunction)
+		sDPDateFormat = Props.GetDefault("DPDateFormat", "Y-m-d H:i")
+		sDPDateFormat = modSD5.CStr(sDPDateFormat)
+		sDPMode = Props.GetDefault("DPMode", "single")
+		sDPMode = modSD5.CStr(sDPMode)
+		iDPShowMonths = Props.GetDefault("DPShowMonths", 1)
+		iDPShowMonths = modSD5.CInt(iDPShowMonths)
+		sDPLocale = Props.GetDefault("DPLocale", "en")
+		sDPLocale = modSD5.CStr(sDPLocale)
+		sDPPosition = Props.GetDefault("DPPosition", "auto")
+		sDPPosition = modSD5.CStr(sDPPosition)
 		End If
         '
 		Dim xattrs As String = UI.BuildExAttributes
@@ -337,7 +375,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
 							<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
 						</button>
-	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full"/>
+	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
@@ -353,8 +391,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				setBorderColor(sBorderColor)
 				setRoundedBox(bRoundedBox)
 				setShadow(sShadow)
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+				UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+				If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+				If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "buttons"
 			mElement = mTarget.Append($"[BANCLEAN]			
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
@@ -362,7 +401,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
 						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
 					</button>
-          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full"></input>
+          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
@@ -371,14 +410,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
         		</div>"$).Get("#" & mName)
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
-				<input id="${mName}" class="input w-full" type="text"></input>
+				<input id="${mName}" class="input w-full ${mName}" type="text"></input>
 			</div>"$).Get("#" & mName)
+			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
 		Case "buttons-floating"
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
@@ -388,7 +429,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
-						<input id="${mName}" class="tlradius"></input>          				
+						<input id="${mName}" class="tlradius ${mName}"></input>          				
         			</label>
 					<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
@@ -398,10 +439,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
       			</div>"$).Get("#" & mName)	
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "normal"
-			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			UI.SetField(mElement, "data-typeof", "")
 		End Select
 		setTypeOf(sTypeOf)
 		setColor(sColor)
@@ -430,9 +473,266 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 	setWidth(sWidth)
 	setValue(sValue)
+	
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 	UI.OnEvent(mElement, "input", Me, "changed1")
+	'
+	Select Case sTypeOf
+	Case "date-picker", "date-time-picker", "time-picker"
+		BANano.Await(RefreshDatePicker)
+	End Select
+End Sub
+
+Sub RefreshDatePicker			'ignoredeadcode
+	options.Initialize
+	options.put("enableTime", False)
+	options.Put("noCalendar", False)
+	If sTypeOf = "time-picker" Or sTypeOf = "date-time-picker" Then
+		options.put("time_24hr", True)
+		options.put("enableTime", True)
+		If sTypeOf = "time-picker" Then
+			options.put("noCalendar", True)
+		Else
+			options.put("noCalendar", False)
+		End If	
+	End If
+	If sDPAltFormat <> "" Then
+		bDPAltInput = True
+		CustProps.Put("DPAltInput", bDPAltInput)
+	End If
+	If sDPMode = "time" Or sDPMode = "single" Then 
+		bDPCloseOnSelect = True
+		CustProps.Put("DPCloseOnSelect", bDPCloseOnSelect)
+	End If
+	options.put("closeOnSelect", bDPCloseOnSelect)
+	If sDPAltFormat <> "" Then options.put("altFormat", sDPAltFormat)
+	options.put("altInput", bDPAltInput)
+	options.put("allowInput", bDPAllowInput)
+	If sDPAltInputClass <> "" Then options.put("altInputClass", sDPAltInputClass)
+	If sDPAltFormat <> "" Then options.put("ariaDateFormat", sDPAltFormat)
+	options.put("clickOpens", True)
+	If sDPConjunction <> "" Then options.put("conjunction", sDPConjunction)
+	If sDPDateFormat <> "" Then options.put("dateFormat", sDPDateFormat)
+	If sValue <> "" Then options.put("defaultDate", sValue)
+	options.put("disableMobile", True)
+	options.put("position", sDPPosition)
+	options.put("locale", sDPLocale)
+	options.put("mode", sDPMode)
+	options.put("showMonths", modSD5.CInt(iDPShowMonths))
+	'
+	'set properties and update the textbox
+	Dim selectedDates As Object
+	Dim dateStr As Object
+	Dim instance As Object
+	Dim cbDateChange As BANanoObject = BANano.CallBack(Me, "DateChange", Array(selectedDates, dateStr, instance))
+	options.Put("onChange", cbDateChange)
+	'
+	UI.AddClassByID(mName, "flatpickr")
+	Dim typeOf As String = UI.GetFieldByID(mName, "data-typeof")
+	If typeOf <> "" Then 
+		'add to this component
+		Dim el As BANanoElement = UI.GetElementByID(typeOf)
+		options.Put("appendTo", el.ToObject)
+		options.Put("positionElement", el.ToObject)
+		UI.AddClassByID(typeOf, "flatpickr")
+	End If
+	
+	Dim xkey As String = $"#${mName}"$
+	FP = BANano.RunJavascriptMethod("flatpickr", Array(xkey, options))
+End Sub
+
+Sub CloseDatePicker
+	FP.RunMethod("close", Null)
+End Sub
+
+Sub OpenDatePicker
+	FP.RunMethod("open", Null)
+End Sub
+
+Sub RedrawDatePicker
+	FP.RunMethod("redraw", Null)
+End Sub
+
+Sub ToogleDatePicker
+	FP.RunMethod("toggle", Null)
+End Sub
+
+'set Horizontal Position
+'options: auto|above|below|auto left|auto center|auto right|above left|above center|above right|below left|below center|below right
+Sub setDPPosition(s As String)
+	sDPPosition = s
+	CustProps.put("DPPosition", s)
+End Sub
+
+Sub getDPPosition As String
+	Return sDPPosition
+End Sub
+
+'set Locale
+'set Date Picker Locale
+'<code>
+''ar: Arabic,
+''at: Austria,
+''az: Azerbaijan,
+''be: Belarusian,
+''bg: Bulgarian,
+''bn: Bangla,
+''bs: Bosnian,
+''ca: Catalan,
+''ckb: Kurdish,
+''cat: Catalan,
+''cs: Czech,
+''cy: Welsh,
+''da: Danish,
+''de: German,
+''en: english,
+''eo: Esperanto,
+''es: Spanish,
+''et: Estonian,
+''fa: Persian,
+''fi: Finnish,
+''fo: Faroese,
+''fr: French,
+''gr: Greek,
+''he: Hebrew,
+''hi: Hindi,
+''hr: Croatian,
+''hu: Hungarian,
+''hy: Armenian,
+''id: Indonesian,
+''is: Icelandic,
+''it: Italian,
+''ja: Japanese,
+''ka: Georgian,
+''ko: Korean,
+''km: Khmer,
+''kz: Kazakh,
+''lt: Lithuanian,
+''lv: Latvian,
+''mk: Macedonian,
+''mn: Mongolian,
+''ms: Malaysian,
+''my: Burmese,
+''nl: Dutch,
+''nn: NorwegianNynorsk,
+''no: Norwegian,
+''pa: Punjabi,
+''pl: Polish,
+''pt: Portuguese,
+''ro: Romanian,
+''ru: Russian,
+''si: Sinhala,
+''sk: Slovak,
+''sl: Slovenian,
+''sq: Albanian,
+''sr: Serbian,
+''sv: Swedish,
+''th: Thai,
+''tr: Turkish,
+''uk: Ukrainian,
+''vn: Vietnamese,
+''zh: Mandarin,
+''zh_tw: MandarinTraditional,
+''uz: Uzbek,
+''uz_latn: UzbekLatin
+'</code>
+Sub setDPLocale(s As String)
+	sDPLocale = s
+	CustProps.put("DPLocale", s)
+End Sub
+
+Sub getDPLocale As String
+	Return sDPLocale
+End Sub
+
+'set Date Picker Allow Input
+Sub setDPAllowInput(b As Boolean)
+	bDPAllowInput = b
+	CustProps.put("DPAllowInput", b)
+End Sub
+
+'set  Date Picker  Alt Format
+Sub setDPAltFormat(s As String)
+	sDPAltFormat = s
+	CustProps.put("DPAltFormat", s)
+End Sub
+'set Date Picker Alt Input
+Sub setDPAltInput(b As Boolean)
+	bDPAltInput = b
+	CustProps.put("DPAltInput", b)
+End Sub
+'set Date Picker Alt Input Class
+Sub setDPAltInputClass(s As String)
+	sDPAltInputClass = s
+	CustProps.put("DPAltInputClass", s)
+End Sub
+'set Date Picker Close On Select
+Sub setDPCloseOnSelect(b As Boolean)
+	bDPCloseOnSelect = b
+	CustProps.put("DPCloseOnSelect", b)
+End Sub
+'set Date Picker Conjunction
+Sub setDPConjunction(s As String)
+	sDPConjunction = s
+	CustProps.put("DPConjunction", s)
+End Sub
+'set Date Picker Date Format
+Sub setDPDateFormat(s As String)
+	sDPDateFormat = s
+	CustProps.put("DPDateFormat", s)
+End Sub
+'set Date Picker Mode
+'options: multiple|range|single
+Sub setDPMode(s As String)
+	sDPMode = s
+	CustProps.put("DPMode", s)
+End Sub
+'set Date Picker Show Months
+Sub setDPShowMonths(i As Int)
+	iDPShowMonths = i
+	CustProps.put("DPShowMonths", i)
+End Sub
+'get D p Allow Input
+Sub getDPAllowInput As Boolean
+	Return bDPAllowInput
+End Sub
+'get D p Alt Format
+Sub getDPAltFormat As String
+	Return sDPAltFormat
+End Sub
+'get D p Alt Input
+Sub getDPAltInput As Boolean
+	Return bDPAltInput
+End Sub
+'get D p Alt Input Class
+Sub getDPAltInputClass As String
+	Return sDPAltInputClass
+End Sub
+'get D p Close On Select
+Sub getDPCloseOnSelect As Boolean
+	Return bDPCloseOnSelect
+End Sub
+'get D p Conjunction
+Sub getDPConjunction As String
+	Return sDPConjunction
+End Sub
+'get D p Date Format
+Sub getDPDateFormat As String
+	Return sDPDateFormat
+End Sub
+'get D p Mode
+Sub getDPMode As String
+	Return sDPMode
+End Sub
+'get D p Show Months
+Sub getDPShowMonths As Int
+	Return iDPShowMonths
+End Sub
+
+
+private Sub DateChange(selectedDates As Object, dateStr As Object, instance As Object)	'ignoredeadcode
+	setValue(dateStr)
 End Sub
 
 'set Show Eyes
@@ -706,12 +1006,19 @@ Sub setValue(text As String)			'ignoredeadcode
 	sValue = text
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
-	UI.SetValue(mElement, text)
+	mElement.SetValue(text)
+	Select Case sTypeOf
+	Case "date-picker", "date-time-picker", "time-picker"
+		Try
+			FP.RunMethod("setDate", Array(text))
+		Catch
+		End Try				'ignore
+	End Select
 End Sub
 'get value
 Sub getValue As String					'ignoredeadcode
 	If mElement = Null Then Return ""
-	sValue = UI.GetValue(mElement)
+	sValue = mElement.GetValue
 	Return sValue
 End Sub
 
@@ -877,15 +1184,18 @@ Sub setStepValue(s As String)				'ignoredeadcode
         If s <> "" Then UI.SetAttr(mElement, "step", s)
 End Sub
 'set Type Of
-'options: date|datetime-local|email|input|month|number|password|search|tel|text|time|url|week
+'options: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url
 Sub setTypeOf(s As String)				'ignoredeadcode
     sTypeOf = s
     CustProps.put("TypeOf", s)
     If mElement = Null Then Return
     If s <> "" Then UI.SetAttr(mElement, "type", s)
-	If sTypeOf = "tel" Then UI.AddClass(mElement, "tabular-nums")
-	If sTypeOf = "number" Then UI.AddClass(mElement, "tabular-nums")
-	If sTypeOf = "dialer" Then
+	Select Case sTypeOf
+	Case "tel"
+		UI.AddClass(mElement, "tabular-nums")
+	Case "number"
+		UI.AddClass(mElement, "tabular-nums")
+	Case "dialer"
 		UI.SetNoArrows(mElement)
 		If sValue = "" Then sValue = "0"
 		If sMinValue = "" Then sMinValue = "0"
@@ -901,7 +1211,13 @@ Sub setTypeOf(s As String)				'ignoredeadcode
 		bAppendVisible = True
 		UI.OnEventByID($"${mName}_prepend"$, "click", Me, "PropertyDecrement")
 		UI.OnEventByID($"${mName}_append"$, "click", Me, "PropertyIncrement")
-	End If
+	Case "date-picker"
+		UI.SetAttr(mElement, "type", "text")
+	Case "date-time-picker"
+		UI.SetAttr(mElement, "type", "text")
+	Case "time-picker"
+		UI.SetAttr(mElement, "type", "text")
+	End Select
 End Sub
 
 private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode

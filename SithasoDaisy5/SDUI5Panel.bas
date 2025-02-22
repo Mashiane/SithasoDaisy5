@@ -20,6 +20,12 @@ Version=10
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
 #DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: , Description: Gap
+#DesignerProperty: Key: GapX, DisplayName: Gap X, FieldType: String, DefaultValue: , Description: Gap X
+#DesignerProperty: Key: GapY, DisplayName: Gap Y, FieldType: String, DefaultValue: , Description: Gap Y
+#DesignerProperty: Key: SMGap, DisplayName: SM Gap, FieldType: String, DefaultValue: , Description: SM Gap
+#DesignerProperty: Key: MDGap, DisplayName: MD Gap, FieldType: String, DefaultValue: , Description: MD Gap
+#DesignerProperty: Key: LGGap, DisplayName: LG Gap, FieldType: String, DefaultValue: , Description: LG Gap
+#DesignerProperty: Key: XLGap, DisplayName: XL Gap, FieldType: String, DefaultValue: , Description: XL Gap
 #DesignerProperty: Key: GridCols, DisplayName: Grid Cols, FieldType: String, DefaultValue: , Description: Grid Cols
 #DesignerProperty: Key: GridFlow, DisplayName: Grid Flow, FieldType: String, DefaultValue: none, Description: Grid Flow, List: col|col-dense|dense|none|row|row-dense
 #DesignerProperty: Key: GridRows, DisplayName: Grid Rows, FieldType: String, DefaultValue: , Description: Grid Rows
@@ -124,6 +130,12 @@ Sub Class_Globals
 	Private sAlignContent As String = "none"
 	Private sAlignItems As String = "none"
 	Private sAlignSelf As String = "none"
+	Private sGapX As String = ""
+	Private sGapY As String = ""
+	Private sLGGap As String = ""
+	Private sMDGap As String = ""
+	Private sSMGap As String = ""
+	Private sXLGap As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -195,6 +207,7 @@ Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
+	If s = "none" Then s = ""
 	If s <> "" Then UI.SetStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
@@ -205,6 +218,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
+	If s = "none" Then s = ""
 	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
@@ -414,8 +428,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTextAlign = Props.GetDefault("TextAlign", "none")
 		sTextAlign = modSD5.CStr(sTextAlign)
 		If sTextAlign = "none" Then sTextAlign = ""
+		sGapX = Props.GetDefault("GapX", "")
+		sGapX = modSD5.CStr(sGapX)
+		sGapY = Props.GetDefault("GapY", "")
+		sGapY = modSD5.CStr(sGapY)
+		sLGGap = Props.GetDefault("LGGap", "")
+		sLGGap = modSD5.CStr(sLGGap)
+		sMDGap = Props.GetDefault("MDGap", "")
+		sMDGap = modSD5.CStr(sMDGap)
+		sSMGap = Props.GetDefault("SMGap", "")
+		sSMGap = modSD5.CStr(sSMGap)
+		sXLGap = Props.GetDefault("XLGap", "")
+		sXLGap = modSD5.CStr(sXLGap)
 	End If
 	'
+	If sLGGap <> "" Then UI.AddClassDT("lg:gap-" & sLGGap)
+	If sMDGap <> "" Then UI.AddClassDT("md:gap-" & sMDGap)
+	If sSMGap <> "" Then UI.AddClassDT("sm:gap-" & sSMGap)
+	If sXLGap <> "" Then UI.AddClassDT("xl:gap-" & sXLGap)
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
 	If sAlignItems <> "" Then UI.AddClassDT("items-" & sAlignItems)
 	If sAlignSelf <> "" Then UI.AddClassDT("self-" & sAlignSelf)
@@ -452,6 +482,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sFlexWrap <> "" Then UI.AddClassDT("flex-" & sFlexWrap)
 	If bFlexbox = True Then UI.AddClassDT("flex")
 	If sGap <> "" Then UI.AddClassDT("gap-" & sGap)
+	If sGapX <> "" Then UI.AddClassDT("gap-x-" & sGapX)
+	If sGapY <> "" Then UI.AddClassDT("gap-y-" & sGapY)
 	If bGrid = True Then UI.AddClassDT("grid")
 	If sGridCols <> "" Then UI.AddClassDT("grid-cols-" & sGridCols)
 	If sGridFlow <> "" Then UI.AddClassDT("grid-flow-" & sGridFlow)
@@ -478,13 +510,88 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+'set L g Gap
+Sub setLGGap(s As String)
+	sLGGap = s
+	CustProps.put("LGGap", s)
+	If mElement = Null Then Return
+	UI.RemoveLastClass(mElement, "lggap")
+	If s <> "0" Then UI.UpdateClassOnly(mElement, "lggap", "lg:gap-" & s)
+End Sub
+
+'set M d Gap
+Sub setMDGap(s As String)
+	sMDGap = s
+	CustProps.put("MDGap", s)
+	If mElement = Null Then Return
+	UI.RemoveLastClass(mElement, "mdgap")
+	If s <> "0" Then UI.UpdateClass(mElement, "mdgap", "md:gap-" & s)
+End Sub
+
+'set S m Gap
+Sub setSMGap(s As String)
+	sSMGap = s
+	CustProps.put("SMGap", s)
+	If mElement = Null Then Return
+	UI.RemoveLastClass(mElement, "smgap")
+	If s <> "0" Then UI.UpdateClass(mElement, "smgap", "sm:gap-" & s)
+End Sub
+
+'set X l Gap
+Sub setXLGap(s As String)
+	sXLGap = s
+	CustProps.put("XLGap", s)
+	If mElement = Null Then Return
+	UI.RemoveLastClass(mElement, "xlgap")
+	If s <> "0" Then UI.UpdateClass(mElement, "xlgap", "xl:gap-" & s)
+End Sub
+
+'get L g Gap
+Sub getLGGap As String
+	Return sLGGap
+End Sub
+'get M d Gap
+Sub getMDGap As String
+	Return sMDGap
+End Sub
+'get S m Gap
+Sub getSMGap As String
+	Return sSMGap
+End Sub
+'get X l Gap
+Sub getXLGap As String
+	Return sXLGap
+End Sub
+
+Sub setGapX(s As String)
+	sGapX = s
+	CustProps.put("GapX", s)
+	If mElement = Null Then Return
+	UI.UpdateClass(mElement, "gapx", "gap-x-" & s)
+End Sub
+
+Sub getGapX As String
+	Return sGapX
+End Sub
+
+Sub setGapY(s As String)
+	sGapY = s
+	CustProps.put("GapY", s)
+	If mElement = Null Then Return
+	UI.UpdateClass(mElement, "gapy", "gap-y-" & s)
+End Sub
+
+Sub getGapY As String
+	Return sGapY
+End Sub
+
 'set Align Content
 'options: none|normal|center|start|end|between|around|evenly|baseline|stretch
 Sub setAlignContent(s As String)
 	sAlignContent = s
 	CustProps.put("AlignContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "content-" & s)
+	UI.UpdateClass(mElement, "ac", "content-" & s)
 End Sub
 'set Align Items
 'options: none|start|end|center|baseline|stretch
@@ -492,7 +599,7 @@ Sub setAlignItems(s As String)
 	sAlignItems = s
 	CustProps.put("AlignItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "items-" & s)
+	UI.UpdateClass(mElement, "ai", "items-" & s)
 End Sub
 'set Align Self
 'options: none|auto|start|end|center|stretch|baseline
@@ -500,7 +607,7 @@ Sub setAlignSelf(s As String)
 	sAlignSelf = s
 	CustProps.put("AlignSelf", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "self-" & s)
+	UI.UpdateClass(mElement, "as", "self-" & s)
 End Sub
 'set Justify Content
 'options: none|start|end|center|between|around|evenly|stretch|baseline|normal
@@ -508,7 +615,7 @@ Sub setJustifyContent(s As String)
 	sJustifyContent = s
 	CustProps.put("JustifyContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-" & s)
+	UI.UpdateClass(mElement, "j", "justify-" & s)
 End Sub
 'set Justify Items
 'options: none|start|end|center|stretch|normal
@@ -516,7 +623,7 @@ Sub setJustifyItems(s As String)
 	sJustifyItems = s
 	CustProps.put("JustifyItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-items-" & s)
+	UI.UpdateClass(mElement, "ji", "justify-items-" & s)
 End Sub
 'set Justify Self
 'options: none|auto|start|end|center|stretch
@@ -524,7 +631,7 @@ Sub setJustifySelf(s As String)
 	sJustifySelf = s
 	CustProps.put("JustifySelf", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "justify-self-" & s)
+	UI.UpdateClass(mElement, "js", "justify-self-" & s)
 End Sub
 'set Place Content
 'options: none|center|start|end|between|around|evenly|baseline|stretch
@@ -532,7 +639,7 @@ Sub setPlaceContent(s As String)
 	sPlaceContent = s
 	CustProps.put("PlaceContent", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-content-" & s)
+	UI.UpdateClass(mElement, "pc", "place-content-" & s)
 End Sub
 'set Place Items
 'options: none|start|end|center|baseline|stretch
@@ -540,7 +647,7 @@ Sub setPlaceItems(s As String)
 	sPlaceItems = s
 	CustProps.put("PlaceItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-items-" & s)
+	UI.UpdateClass(mElement, "pi", "place-items-" & s)
 End Sub
 'set Place Self
 'options: none|auto|start|end|center|stretch
@@ -548,7 +655,7 @@ Sub setPlaceSelf(s As String)
 	sPlaceSelf = s
 	CustProps.put("PlaceSelf", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "place-self-" & s)
+	UI.UpdateClass(mElement, "ps", "place-self-" & s)
 End Sub
 'get Align Content
 Sub getAlignContent As String
@@ -612,42 +719,42 @@ Sub setColSpan(s As String)
 	sColSpan = s
 	CustProps.put("ColSpan", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-span-" & s)
+	UI.UpdateClass(mElement, "cs", "col-span-" & s)
 End Sub
 'set Col Span Lg
 Sub setColSpanLg(s As String)
 	sColSpanLg = s
 	CustProps.put("ColSpanLg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "lg:col-span-" & s)
+	UI.UpdateClass(mElement, "lgcs", "lg:col-span-" & s)
 End Sub
 'set Col Span Md
 Sub setColSpanMd(s As String)
 	sColSpanMd = s
 	CustProps.put("ColSpanMd", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "md:col-span-" & s)
+	UI.UpdateClass(mElement, "mdcs", "md:col-span-" & s)
 End Sub
 'set Col Span Sm
 Sub setColSpanSm(s As String)
 	sColSpanSm = s
 	CustProps.put("ColSpanSm", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "sm:col-span-" & s)
+	UI.UpdateClass(mElement, "smcs", "sm:col-span-" & s)
 End Sub
 'set Col Span Xl
 Sub setColSpanXl(s As String)
 	sColSpanXl = s
 	CustProps.put("ColSpanXl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "xl:col-span-" & s)
+	UI.UpdateClass(mElement, "xlcs", "xl:col-span-" & s)
 End Sub
 'set Col Span Xs
 Sub setColSpanXs(s As String)
 	sColSpanXs = s
 	CustProps.put("ColSpanXs", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "xs:col-span-" & s)
+	UI.UpdateClass(mElement, "xscs", "xs:col-span-" & s)
 End Sub
 'set Flex
 'options: 1|auto|initial|none
@@ -655,14 +762,14 @@ Sub setFlex(s As String)
 	sFlex = s
 	CustProps.put("Flex", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "flex-" & s)
+	UI.UpdateClass(mElement, "flex", "flex-" & s)
 End Sub
 'set Flex Basis
 Sub setFlexBasis(s As String)
 	sFlexBasis = s
 	CustProps.put("FlexBasis", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "basis-" & s)
+	UI.UpdateClass(mElement, "flexb", "basis-" & s)
 End Sub
 'set Display Direction Of Flex Items In The Flex Container
 'options: col|col-reverse|none|row|row-reverse
@@ -670,7 +777,7 @@ Sub setFlexDirection(s As String)
 	sFlexDirection = s
 	CustProps.put("FlexDirection", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "flex-" & s)
+	UI.UpdateClass(mElement, "flexd", "flex-" & s)
 End Sub
 'set Flex Grow
 'options: 0|1|none
@@ -680,9 +787,9 @@ Sub setFlexGrow(s As String)
 	If mElement = Null Then Return
 	Select Case sFlexGrow
 	Case "1"
-		UI.AddClass(mElement, "grow")
+		UI.UpdateClass(mElement, "grow", "grow")
 	Case "0"
-		UI.AddClass(mElement, "grow-" & sFlexGrow)
+		UI.UpdateClass(mElement, "grow", "grow-" & sFlexGrow)
 	End Select
 End Sub
 'set Flex Shrink
@@ -693,9 +800,9 @@ Sub setFlexShrink(s As String)
 	If mElement = Null Then Return
 	Select Case sFlexShrink
 	Case "1"
-		UI.AddClass(mElement, "shrink")
+		UI.UpdateClass(mElement, "shrink", "shrink")
 	Case "0"
-		UI.AddClass(mElement, "shrink-" & sFlexShrink)
+		UI.UpdateClass(mElement, "shrink", "shrink-" & sFlexShrink)
 	End Select
 End Sub
 'set Whether The Flex Items Should Wrap Or Not
@@ -704,7 +811,7 @@ Sub setFlexWrap(s As String)
 	sFlexWrap = s
 	CustProps.put("FlexWrap", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "flex-" & s)
+	UI.UpdateClass(mElement, "wrap", "flex-" & s)
 End Sub
 'set Flexbox
 Sub setFlexbox(b As Boolean)
@@ -722,7 +829,7 @@ Sub setGap(s As String)
 	sGap = s
 	CustProps.put("Gap", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "gap-" & s)
+	UI.UpdateClass(mElement, "gap", "gap-" & s)
 End Sub
 'set Grid
 Sub setGrid(b As Boolean)
@@ -740,7 +847,8 @@ Sub setGridCols(s As String)
 	sGridCols = s
 	CustProps.put("GridCols", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "grid-cols-" & s)
+	UI.RemoveLastClass(mElement, "gc")
+	If s <> "0" Then UI.UpdateClassOnly(mElement, "gc", "grid-cols-" & s)
 End Sub
 'set Grid Flow
 'options: col|col-dense|dense|none|row|row-dense
@@ -748,21 +856,22 @@ Sub setGridFlow(s As String)
 	sGridFlow = s
 	CustProps.put("GridFlow", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "grid-flow-" & s)
+	UI.UpdateClass(mElement, "gf", "grid-flow-" & s)
 End Sub
 'set Grid Rows
 Sub setGridRows(s As String)
 	sGridRows = s
 	CustProps.put("GridRows", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "grid-rows-" & s)
+	UI.RemoveLastClass(mElement, "gr")
+	If s <> "0" Then UI.UpdateClassOnly(mElement, "gr", "grid-rows-" & s)
 End Sub
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeight(mElement, sHeight)
+	UI.SetHeight(mElement, sHeight)
 End Sub
 'set Rounded
 'options: rounded-full|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
@@ -770,7 +879,7 @@ Sub setRounded(s As String)
 	sRounded = s
 	CustProps.put("Rounded", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetRounded(mElement, sRounded)
+	UI.SetRounded(mElement, sRounded)
 End Sub
 'set Rounded Box
 Sub setRoundedBox(b As Boolean)
@@ -788,7 +897,7 @@ Sub setRowSpan(s As String)
 	sRowSpan = s
 	CustProps.put("RowSpan", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "row-span-" & s)
+	UI.UpdateClass(mElement, "rs", "row-span-" & s)
 End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
@@ -796,21 +905,21 @@ Sub setShadow(s As String)
 	sShadow = s
 	CustProps.put("Shadow", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetShadow(mElement, sShadow)
+	UI.SetShadow(mElement, sShadow)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	UI.SetTextColor(mElement, sTextColor)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
+	UI.SetWidth(mElement, sWidth)
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
@@ -918,16 +1027,37 @@ Sub getWidth As String
 	Return sWidth
 End Sub
 
+Sub GetAttr(attr As String) As String
+	If mElement = Null Then Return ""
+	Dim ret As String = mElement.GetAttr(attr)
+	ret = modSD5.CStr(ret)
+	Return ret
+End Sub
 
+Sub SetAttr(k As String, v As String)
+	If mElement = Null Then Return
+	mElement.SetAttr(k, v)
+End Sub
 'set Text Align
 'options: left|right|center|justify|start|end|none
 Sub setTextAlign(s As String)
 	sTextAlign = s
 	CustProps.put("TextAlign", s)
 	If mElement = Null Then Return
+	If s = "none" Then s = ""
 	If s <> "" Then UI.SetStyle(mElement, "text-align", s)
 End Sub
 'get Text Align
 Sub getTextAlign As String
 	Return sTextAlign
+End Sub
+
+Sub Clear			
+	If mElement = Null Then Return
+	UI.Clear(mElement)
+End Sub
+
+Sub Append(s As String)
+	If mElement = Null Then Return
+	mElement.Append(s)
 End Sub

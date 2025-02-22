@@ -33,12 +33,9 @@ Version=10
 #DesignerProperty: Key: CancelColor, DisplayName: Cancel Color, FieldType: String, DefaultValue: gray, Description: Cancel Color
 #DesignerProperty: Key: CancelLoading, DisplayName: Cancel Loading, FieldType: Boolean, DefaultValue: False, Description: Cancel Loading
 #DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
-#DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
-#DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
-#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: fit, Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700px , Description: Width
+#DesignerProperty: Key: FullScreen, DisplayName: Full Screen, FieldType: Boolean, DefaultValue: False , Description: Full Screen
 #DesignerProperty: Key: MoveFrom, DisplayName: Move From, FieldType: String, DefaultValue: middle, Description: Move From, List: bottom|end|middle|start|top
 #DesignerProperty: Key: SMMoveFrom, DisplayName: SM Move From, FieldType: String, DefaultValue: none, Description: S m Move From, List: bottom|end|middle|none|start|top
 #DesignerProperty: Key: MDMoveFrom, DisplayName: MD Move From, FieldType: String, DefaultValue: none, Description: M d Move From, List: bottom|end|middle|none|start|top
@@ -78,18 +75,14 @@ Sub Class_Globals
 	Private bBackdrop As Boolean = True
 	Private bClosable As Boolean = True
 	Private bGlass As Boolean = False
-	Private sHeight As String = ""
+	Private sHeight As String = "fit"
 	Private sLGMoveFrom As String = "none"
 	Private sMDMoveFrom As String = "none"
-	Private sMaxHeight As String = ""
-	Private sMaxWidth As String = ""
-	Private sMinHeight As String = ""
-	Private sMinWidth As String = ""
 	Private sMoveFrom As String = "middle"
 	Private bOpen As Boolean = False
 	Private sSMMoveFrom As String = "none"
 	Private sTitle As String = "Modal Dialog"
-	Private sWidth As String = ""
+	Private sWidth As String = "700px"
 	Private sXLMoveFrom As String = "none"
 	Public CONST MOVEFROM_BOTTOM As String = "bottom"
 	Public CONST MOVEFROM_END As String = "end"
@@ -122,6 +115,7 @@ Sub Class_Globals
 	Public CancelButton As SDUI5Button
 	Private sRawHtml As String = ""
 	Private validations As Map
+	Private bFullScreen As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -213,14 +207,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -234,7 +228,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -281,7 +275,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bClosable = modSD5.CBool(bClosable)
 		bGlass = Props.GetDefault("Glass", False)
 		bGlass = modSD5.CBool(bGlass)
-		sHeight = Props.GetDefault("Height", "")
+		sHeight = Props.GetDefault("Height", "fit")
 		sHeight = modSD5.CStr(sHeight)
 		sLGMoveFrom = Props.GetDefault("LGMoveFrom", "none")
 		sLGMoveFrom = modSD5.CStr(sLGMoveFrom)
@@ -289,14 +283,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMDMoveFrom = Props.GetDefault("MDMoveFrom", "none")
 		sMDMoveFrom = modSD5.CStr(sMDMoveFrom)
 		If sMDMoveFrom = "none" Then sMDMoveFrom = ""
-		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = modSD5.CStr(sMaxHeight)
-		sMaxWidth = Props.GetDefault("MaxWidth", "")
-		sMaxWidth = modSD5.CStr(sMaxWidth)
-		sMinHeight = Props.GetDefault("MinHeight", "")
-		sMinHeight = modSD5.CStr(sMinHeight)
-		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
 		sMoveFrom = Props.GetDefault("MoveFrom", "middle")
 		sMoveFrom = modSD5.CStr(sMoveFrom)
 		bOpen = Props.GetDefault("Open", False)
@@ -306,7 +292,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSMMoveFrom = "none" Then sSMMoveFrom = ""
 		sTitle = Props.GetDefault("Title", "Modal Dialog")
 		sTitle = modSD5.CStr(sTitle)
-		sWidth = Props.GetDefault("Width", "")
+		sWidth = Props.GetDefault("Width", "700px")
 		sWidth = modSD5.CStr(sWidth)
 		sXLMoveFrom = Props.GetDefault("XLMoveFrom", "none")
 		sXLMoveFrom = modSD5.CStr(sXLMoveFrom)
@@ -345,6 +331,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCancelCaption = modSD5.CStr(sCancelCaption)
 		sRawHtml = Props.GetDefault("RawHtml", "")
 		sRawHtml = modSD5.CStr(sRawHtml)
+		bFullScreen = Props.GetDefault("FullScreen", False)
+		bFullScreen = modSD5.CBool(bFullScreen)
 	End If
 	'
 	UI.AddClassDT("modal")
@@ -365,29 +353,48 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	
+	
 	mElement = mTarget.Append($"[BANCLEAN]
-	<dialog id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_box" class="modal-box relative sm:max-w-xl">
-			<form id="${mName}_closeform" method="dialog">
-      			<button id="${mName}_close" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+	<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
+	<div id="${mName}" role="dialog" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}_box" class="modal-box relative sm:w-full sm:h-full">
+			<form id="${mName}_closeform">
+      			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
     		</form>
     		<h3 id="${mName}_title" class="text-lg font-bold">${sTitle}</h3>
     		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
         	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
 		</div>
-		<form id="${mName}_bdrop" method="dialog" class="modal-backdrop">
-    		<button>close</button>
-  		</form>
-	</dialog>"$).Get("#" & mName)
+	</div>"$).Get("#" & mName)
+		
+'	mElement = mTarget.Append($"[BANCLEAN]
+'	<dialog id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+'		<div id="${mName}_box" class="modal-box relative sm:max-w-xl">
+'			<form id="${mName}_closeform" method="dialog">
+'      			<button id="${mName}_close" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+'    		</form>
+'    		<h3 id="${mName}_title" class="text-lg font-bold">${sTitle}</h3>
+'    		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
+'        	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
+'		</div>
+'		<form id="${mName}_bdrop" method="dialog" class="modal-backdrop">
+'    		<button>close</button>
+'  		</form>
+'	</dialog>"$).Get("#" & mName)
 	setActionsVisible(bActionsVisible)
 	setBackdrop(bBackdrop)
 	setClosable(bClosable)
-	setMinHeight(sMinHeight)
-	setMaxHeight(sMaxHeight)
-	setHeight(sHeight)
-	setMinWidth(sMinWidth)
-	setMaxWidth(sMaxWidth)
-	setWidth(sWidth)
+	If bFullScreen = False Then
+		setHeight(sHeight)
+		setWidth(sWidth)
+	Else
+		UI.SetWidthByID($"${mName}_box"$, "full")
+		UI.SetHeightByID($"${mName}_box"$, "full")
+		UI.SetMaxWidthByID($"${mName}_box"$, "full")
+		UI.SetMaxHeightByID($"${mName}_box"$, "full")
+		UI.RemoveClassByID($"${mName}_box"$, "sm:w-full sm:h-full")
+	End If
 	setTitle(sTitle)
 	'sort action buttons
 	Select Case sActionType
@@ -405,6 +412,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(AddNoButton)
 		BANano.Await(AddCancelButton)
 	End Select
+End Sub
+
+Sub setFullScreen(b As Boolean)
+	bFullScreen = b
+	CustProps.Put("FullScreen", b)
+	If mElement = Null Then Return
+	If b = False Then Return
+	UI.SetWidthByID($"${mName}_box"$, "full")
+	UI.SetHeightByID($"${mName}_box"$, "full")
+	UI.SetMaxWidthByID($"${mName}_box"$, "full")
+	UI.SetMaxHeightByID($"${mName}_box"$, "full")
+	UI.RemoveClassByID($"${mName}_box"$, "sm:w-full sm:h-full")
 End Sub
 
 'set Raw Html
@@ -501,7 +520,10 @@ Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetHeightByID($"${mName}_box"$, sHeight)
+	If s <> "" Then 
+		UI.SetHeightResponsiveByID($"${mName}_box"$, "md", sHeight)
+		UI.SetMaxHeightResponsiveByID($"${mName}_box"$, "md", "90vh")
+	End If
 End Sub
 'set L g Move From
 'options: bottom|end|middle|none|start|top
@@ -518,34 +540,6 @@ Sub setMDMoveFrom(s As String)
 	CustProps.put("MDMoveFrom", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddClass(mElement, "md:modal-" & s)
-End Sub
-'set Max Height
-Sub setMaxHeight(s As String)				'ignoredeadcode
-	sMaxHeight = s
-	CustProps.put("MaxHeight", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMaxHeightByID($"${mName}_box"$, s)
-End Sub
-'set Max Width
-Sub setMaxWidth(s As String)				'ignoredeadcode
-	sMaxWidth = s
-	CustProps.put("MaxWidth", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMaxWidthByID($"${mName}_box"$, s)
-End Sub
-'set Min Height
-Sub setMinHeight(s As String)		'ignoredeadcode
-	sMinHeight = s
-	CustProps.put("MinHeight", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMinHeightByID($"${mName}_box"$, s)
-End Sub
-'set Min Width
-Sub setMinWidth(s As String)				'ignoredeadcode
-	sMinWidth = s
-	CustProps.put("MinWidth", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMinWidthByID($"${mName}_box"$, s)
 End Sub
 'set Move From
 'options: bottom|end|middle|start|top
@@ -586,7 +580,10 @@ Sub setWidth(s As String)			'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidthByID($"${mName}_box"$, sWidth)
+	If s <> "" Then 
+		UI.SetWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+		UI.SetMaxWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+	End If
 End Sub
 'set X l Move From
 'options: bottom|end|middle|none|start|top
@@ -624,22 +621,6 @@ End Sub
 Sub getMDMoveFrom As String
 	Return sMDMoveFrom
 End Sub
-'get Max Height
-Sub getMaxHeight As String
-	Return sMaxHeight
-End Sub
-'get Max Width
-Sub getMaxWidth As String
-	Return sMaxWidth
-End Sub
-'get Min Height
-Sub getMinHeight As String
-	Return sMinHeight
-End Sub
-'get Min Width
-Sub getMinWidth As String
-	Return sMinWidth
-End Sub
 'get Move From
 Sub getMoveFrom As String
 	Return sMoveFrom
@@ -668,13 +649,13 @@ End Sub
 'show the modal
 Sub Show
 	If mElement = Null Then Return
-	mElement.RunMethod("showModal", Null)
+	UI.SetCheckedByID($"${mName}_toggle"$, True)
 End Sub
 
 'close the modal
 Sub Close
 	If mElement = Null Then Return
-	mElement.RunMethod("close", Null)
+	UI.SetCheckedByID($"${mName}_toggle"$, False)
 End Sub
 
 'set Cancel Caption

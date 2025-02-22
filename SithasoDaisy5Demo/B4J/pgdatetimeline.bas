@@ -15,7 +15,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "datetimelineview")
-	pgIndex.UpdateTitle("SDUI5DatePickerTimeLine")
+	pgIndex.UpdateTitle("Calendars")
 End Sub
 
 Private Sub dptime_Change (Value As String)

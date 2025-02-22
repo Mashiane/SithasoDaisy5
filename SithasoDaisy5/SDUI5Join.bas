@@ -247,7 +247,8 @@ Sub setGridCols(s As String)
 	sGridCols = s
 	CustProps.put("GridCols", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "grid-cols-" & s)
+	UI.RemoveLastClass(mElement, "gc")
+	If s <> "0" Then UI.UpdateClassOnly(mElement, "gc", "grid-cols-" & s)
 End Sub
 'get Grid
 Sub getGrid As Boolean

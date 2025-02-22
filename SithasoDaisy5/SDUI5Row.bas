@@ -487,7 +487,8 @@ Sub setGridCols(s As String)
 	sGridCols = s
 	CustProps.put("GridCols", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "grid-cols-" & s)
+	UI.RemoveLastClass(mElement, "gc")
+	If s <> "0" Then UI.UpdateClassOnly(mElement, "gc", "grid-cols-" & s)
 End Sub
 'set Row Cols Lg
 Sub setGridColsLg(s As String)
@@ -661,4 +662,15 @@ End Sub
 'get Text Align
 Sub getTextAlign As String
 	Return sTextAlign
+End Sub
+
+
+Sub Clear			
+	If mElement = Null Then Return
+	UI.Clear(mElement)
+End Sub
+
+Sub Append(s As String)
+	If mElement = Null Then Return
+	mElement.Append(s)
 End Sub

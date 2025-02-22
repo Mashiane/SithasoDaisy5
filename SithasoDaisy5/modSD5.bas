@@ -19,6 +19,52 @@ Sub Process_Globals
 	Private Days As Map
 End Sub
 
+'convert a MV string to a map
+Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
+	varStyles = CStr(varStyles)
+	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
+	varStyles = varStyles.Replace(":", "=").Replace("|", ";")
+	varStyles = varStyles.Replace("'", "")
+	varStyles = varStyles.Replace(",", ";")
+	varStyles = varStyles.Replace(QUOTE, "")
+	varStyles = varStyles.replace("?","")
+	varStyles = varStyles.trim
+	Dim mxItems As List = StrParse(";", varStyles)
+	mxItems = ListRemoveDuplicates(mxItems, False)
+	Dim ms As Map = CreateMap()
+	For Each mtx As String In mxItems
+		mtx = mtx.Trim
+		If mtx = "" Then Continue
+		Dim k As String = MvField(mtx,1,"=")
+		Dim v As String = MvField(mtx,2,"=")
+		v = CStr(v)
+		k = CStr(k)
+		k = k.trim
+		v = v.trim
+		If k <> "" And v <> "" Then
+			If deCamel Then k = DeCamelCase(k)
+			ms.put(k, v)
+		End If
+	Next
+	Return ms
+End Sub
+
+'remove items, case sensitive
+Sub MvRemoveItems(delim As String, value As String, sitems As String) As String
+	Dim nitems As List
+	nitems.Initialize 
+	'
+	Dim items As List = StrParse(delim, value)
+	Dim spitems As List = StrParse(delim, sitems)
+	'
+	For Each k As String In items
+		If spitems.IndexOf(k) = -1 Then nitems.Add(k)
+	Next
+	'
+	Dim res As String = Join(delim, nitems)
+	Return res
+End Sub
+
 'prefix a color
 Sub FixColorIntensity(prefix As String, v As String, i As String) As String
 	prefix = CStr(prefix)
@@ -218,6 +264,18 @@ End Sub
 }
 .col {
   flex: 1 0 0%;
+}
+
+.progress::-webkit-progress-value {
+  border-radius: 9999px;
+}
+
+.progress::-moz-progress-bar {
+  border-radius: 9999px;
+}
+
+.flatpickr-wrapper {
+	width:100%
 }
 #End If
 

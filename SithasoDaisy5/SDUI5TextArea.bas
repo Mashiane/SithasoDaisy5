@@ -356,8 +356,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
@@ -374,8 +374,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</img></button>
         		</div>"$).Get("#" & mName)
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
@@ -401,8 +401,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
       			</div>"$).Get("#" & mName)	
-			UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses} textarea" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
 	End Select

@@ -759,3 +759,13 @@ End Sub
 Sub getTextAlign As String
 	Return sTextAlign
 End Sub
+
+Sub Clear			
+	If mElement = Null Then Return
+	UI.Clear(mElement)
+End Sub
+
+Sub Append(s As String)
+	If mElement = Null Then Return
+	mElement.Append(s)
+End Sub

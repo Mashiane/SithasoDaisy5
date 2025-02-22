@@ -488,6 +488,10 @@ Sub setOnlineColor(s As String)
 	sOnlineColor = s
 	CustProps.put("OnlineColor", s)
 	If mElement = Null Then Return
+	'[&.online]:before:bg-indigo-400
+	If s = "" Then Return
+'	Dim ocolor As String = modSD5.FixColor("bg", s)
+	
 	'If s <> "" Then UI.SetAttr(mElement, "online-color", s)
 End Sub
 'set Online Status

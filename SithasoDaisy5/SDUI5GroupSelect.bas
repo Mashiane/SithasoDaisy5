@@ -402,7 +402,7 @@ Sub setOptions(s As String)				'ignoredeadcode
 		Dim v As String = mItems.Get(k)
 		k = modSD5.CleanID(k)
 		Dim nk As String = $"${k}_${mName}"$
-		sb.Append($"<input id="${k}_${mName}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+		sb.Append($"<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 		items.Put(nk, nk)
 	Next
 	UI.AppendByID($"${mName}_content"$, sb.ToString)

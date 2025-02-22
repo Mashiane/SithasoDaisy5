@@ -1382,9 +1382,10 @@ End Sub
 '<code>
 'Sub tblName_filechange (e As BANAnoEvent)
 'tblName.FileChangeEvent
+'tblName.FileChangeMultiple
 'End Sub
 '</code>
-Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String) As SDUI5Button		'ignoredeadcode
+Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = modSD5.CleanID(btnID)
@@ -1393,26 +1394,10 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String) A
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
 	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
-	Return btn
-End Sub
-'add a file upload button with own event
-'<code>
-'Sub tblName_btnID_filechange (e As BANAnoEvent)
-'tblName.FileChangeMultiple
-'End Sub
-'</code>
-Sub AddToolbarFileUpload1(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
-	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
-	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
-	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
 	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
 	Return btn
 End Sub
+
 private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	e.StopPropagation
@@ -1424,6 +1409,7 @@ private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	el.SetValue(Null)
 	el.RunMethod("click", Null)
 End Sub
+
 Sub AddToolbarActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
 	SetToolbarButtonTextColor(btnID, btnTextColor)

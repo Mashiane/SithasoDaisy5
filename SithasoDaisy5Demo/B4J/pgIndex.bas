@@ -52,6 +52,9 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
+	drawermenu.AddItemParent("", "play", "", "PlayGround")
+	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
+	
 	drawermenu.AddItemChild("", "pg-typography", "", "Typography")
 	drawermenu.AddItemParent("", "components", "", "Components")
 	drawermenu.SetItemOpen("components", True)
@@ -108,15 +111,13 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("feedback", "pg-alert", "", "Alert")
 	drawermenu.AddItemChild("feedback", "pg-loading", "", "Loading")
 	drawermenu.AddItemChild("feedback", "pg-progress", "", "Progress")
-	drawermenu.SetItemBadge("pg-progress", "bugs", "error")
 	drawermenu.AddItemChild("feedback", "pg-radialprogress", "", "Radial Progress")
 	drawermenu.AddItemChild("feedback", "pg-skeleton", "", "Skeleton")
 	drawermenu.AddItemChild("feedback", "pg-toast", "", "Toast")
 	drawermenu.AddItemChild("feedback", "pg-tooltip", "", "Tooltip")
 	'
 	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
-	drawermenu.AddItemChild("dinput", "pg-calendar", "", "Calendar")
-	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Date Time Line")
+	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Calendars")
 	drawermenu.AddItemChild("dinput", "pg-checkbox", "", "Checkbox")
 	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
 	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
@@ -130,9 +131,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
 	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
 	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validator")
-	'
-	drawermenu.SetItemBadge("pg-calendar", "", "error")
-	drawermenu.SetItemBadge("pg-validator", "", "error")
 	'
 	drawermenu.AddItemParent("components", "layout", "", "Layout")
 	drawermenu.AddItemChild("layout", "pg-grid", "", "Grid")
@@ -188,6 +186,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgTable3.Show(App)
 			Case "preferences"
 				pgPreferences.Show(App)
+			Case "gridbuilder"
+				pggridbuilder.show(App)
 			End Select	
 		
 		

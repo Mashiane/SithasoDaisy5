@@ -16,6 +16,7 @@ Sub Class_Globals
 	Public ExcludeVisible As Boolean = False
 	Public ExcludeEnabled As Boolean = False
 	Public ExcludePosition As Boolean = False
+	Private fields As Map
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
@@ -29,6 +30,7 @@ Public Sub Initialize(self As Object)
 	ExcludeVisible = False
 	ExcludeEnabled = False
 	ExcludePosition = False
+	fields.Initialize 
 End Sub
 
 Sub SetReadOnly(mElement As BANanoElement, b As Boolean)
@@ -52,6 +54,14 @@ Sub GetElementByID(sID As String) As BANanoElement
 	Return mElement
 End Sub
 
+Sub GetElementObjectByID(sID As String) As BANanoObject
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return Null
+	Return mElement.ToObject
+End Sub
+
+'scroll into view
 Sub EnsureVisible(sID As String)
 	sID = modSD5.CleanID(sID)
 	If BANano.Exists($"#${sID}"$) = False Then Return
@@ -253,22 +263,6 @@ public Sub BuildExClass() As String
 	Return xStyle
 End Sub
 
-Sub AddGuttersDT(s As String)
-	Dim gutM As Map = GetMarginPaddingMap(s)
-	Dim gutList As List = MarginPaddingToList("g", gutM)
-	Dim sClass As String = modSD5.Join(";", gutList)
-	AddAttrDT("data-gutter", sClass)
-	AddClassDT(sClass)
-End Sub
-
-Sub SetGutter(mElement As BANanoElement, s As String)
-	If mElement = Null Then Return
-	Dim gutM As Map = GetMarginPaddingMap(s)
-	Dim gutList As List = MarginPaddingToList("g", gutM)
-	Dim sClass As String = modSD5.Join(";", gutList)
-	AddClass(mElement, sClass)	
-End Sub
-
 private Sub BuildStyles(o As Map) As String
 	Dim colStyle As StringBuilder
 	colStyle.Initialize
@@ -450,7 +444,9 @@ End Sub
 public Sub SetCheckedColor(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim s1 As String = modSD5.FixColor("checked:bg", s)
+	Dim s2 As String = modSD5.FixColor("checked:border", s)
 	UpdateClass(mElement, "checkedbgcolor", s1)
+	UpdateClass(mElement, "checkedborder", s2)
 End Sub
 
 public Sub SetCheckedColorByID(sID As String, s As String)
@@ -1146,7 +1142,8 @@ Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
 	Dim mLast As String = mElement.GetData(xattr)
 	mLast = modSD5.CStr(mLast)
 	mLast = mLast.trim
-	If mLast <> "" Then 
+	mElement.RemoveAttr($"data-${xattr}"$)
+	If mLast <> "" Then
 		RemoveClass(mElement, mLast)
 	End If
 End Sub
@@ -1155,10 +1152,44 @@ End Sub
 Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
 	If mElement = Null Then Return
 	RemoveLastClass(mElement, rpClass)
-	If nv <> "" Then
-		mElement.SetData(rpClass, nv)
-		AddClass(mElement, nv)
-	End If	
+	If nv = "" Then Return
+	If nv = "none" Then Return
+	If nv.EndsWith("-") = True Then Return
+	If nv.EndsWith("-none") = True Then Return
+	mElement.SetData(rpClass, nv)
+	AddClass(mElement, nv)
+End Sub
+
+'Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
+'	If mElement = Null Then Return
+'	Dim mLast As String = mElement.GetField($"data-${xattr}"$).Result
+'	mLast = modSD5.CStr(mLast)
+'	mLast = mLast.trim
+'	If mLast <> "" Then 
+'		RemoveClass(mElement, mLast)
+'	End If
+'End Sub
+
+''this is for dynamic classes
+'Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
+'	If mElement = Null Then Return
+'	RemoveLastClass(mElement, rpClass)
+'	If nv = "" Then Return
+'	If nv = "none" Then Return
+'	If nv.EndsWith("-") = True Then Return
+'	If nv.EndsWith("-none") = True Then Return
+'	mElement.SetField($"data-${rpClass}"$, nv)
+'	AddClass(mElement, nv)
+'End Sub
+
+Sub UpdateClassOnly(mElement As BANanoElement, rpClass As String, nv As String)
+	If mElement = Null Then Return
+	If nv = "" Then Return
+	If nv = "none" Then Return
+	If nv.EndsWith("-") = True Then Return
+	If nv.EndsWith("-none") = True Then Return
+	mElement.SetField($"data-${rpClass}"$, nv)
+	AddClass(mElement, nv)
 End Sub
 
 private Sub GetClassList(s As String) As List
@@ -1356,16 +1387,68 @@ Sub SetHeight(mElement As BANanoElement, s As String)
 	UpdateClass(mElement, "height", sw)
 End Sub
 
+Sub SetHeightResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("h", s)
+	Dim nw As String = $"${breakpoint}:${sw}"$
+	UpdateClass(mElement, $"${breakpoint}height"$, nw)
+End Sub
+
 Sub SetHeightByID(sID As String, s As String)
 	sID = modSD5.CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	SetHeight(mElement, s)
 End Sub
 
+Sub SetHeightResponsiveByID(sID As String, breakpoint As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetHeightResponsive(mElement, breakpoint, s)
+End Sub
+
 Sub SetWidth(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim sw As String = modSD5.FixSize("w", s)
 	UpdateClass(mElement, "width", sw)
+End Sub
+
+Sub SetWidthResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("w", s)
+	Dim nw As String = $"${breakpoint}:${sw}"$
+	UpdateClass(mElement, $"${breakpoint}width"$, nw)
+End Sub
+
+Sub SetMaxWidthResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("max-w", s)
+	Dim nw As String = $"${breakpoint}:${sw}"$
+	UpdateClass(mElement, $"${breakpoint}maxwidth"$, nw)
+End Sub
+
+Sub SetMaxWidthResponsiveByID(sID As String, breakpoint As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMaxWidthResponsive(mElement, breakpoint, s)
+End Sub
+
+Sub SetMaxHeightResponsiveByID(sID As String, breakpoint As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetMaxHeightResponsive(mElement, breakpoint, s)
+End Sub
+
+Sub SetMaxHeightResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	If mElement = Null Then Return
+	Dim sw As String = modSD5.FixSize("max-h", s)
+	Dim nw As String = $"${breakpoint}:${sw}"$
+	UpdateClass(mElement, $"${breakpoint}maxheight"$, nw)
+End Sub
+
+Sub SetWidthResponsiveByID(sID As String, breakpoint As String, s As String)
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetWidthResponsive(mElement, breakpoint, s)
 End Sub
 
 Sub SetMaxHeight(mElement As BANanoElement, s As String)
@@ -1642,4 +1725,32 @@ Sub SetCenterChildren(mElement As BANanoElement, b As Boolean)
 	Else
 		RemoveClass(mElement, "flex justify-center items-center")
 	End If
+End Sub
+
+Sub SetField(mElement As BANanoElement, k As String, v As String)   'ignoredeadcode
+	If mElement = Null Then Return
+	mElement.SetField(k, v)
+End Sub
+
+Sub GetField(mElement As BANanoElement, k As String) As String			'ignoredeadcode
+	If mElement = Null Then Return ""
+	Dim v As String = mElement.GetField(k).Result
+	v = modSD5.CStr(v)
+	Return v
+End Sub
+
+Sub SetFieldByID(sID As String, k As String, v As String)				'ignoredeadcode
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.SetField(k, v)
+End Sub
+
+Sub GetFieldByID(sID As String, k As String) As String					'ignoredeadcode
+	sID = modSD5.CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return ""
+	Dim v As String = mElement.GetField(k).Result
+	v = modSD5.CStr(v)
+	Return v
 End Sub

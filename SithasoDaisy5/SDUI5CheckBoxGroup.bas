@@ -344,7 +344,17 @@ Sub AddItem(k As String, v As String)
 	k = modSD5.CleanID(k)
 	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
 	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
-	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
+	
+	Dim cColor As String = ""
+	Dim checkedColor As String = ""
+	Dim checkedBorder As String = ""
+	
+	If sCheckedColor <> "" Then
+'		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
+		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
+		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+	End If
+	
 	Dim sb As StringBuilder
 	sb.Initialize
 	'
@@ -355,12 +365,12 @@ Sub AddItem(k As String, v As String)
 		      <label class="cursor-pointer select-none">
 			  	<span id="${k}_${mName}_label">${v}</span>
 			  </label>
-		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 		  </div>"$)
 				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 			Case "right"
 				sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			<span id="${k}_${mName}_label">${v}</span>
 			</label>"$)
 				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
@@ -368,7 +378,7 @@ Sub AddItem(k As String, v As String)
 	Else
 		sb.Append($"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
             <span id="${k}_${mName}_label" class="text-start">${v}</span> 
         </div>"$)
 		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
@@ -443,7 +453,16 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	'
 	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
 	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
-	Dim cColor As String = modSD5.FixColor("checked:text", sCheckedColor)
+	Dim cColor As String = ""
+	Dim checkedColor As String = ""
+	Dim checkedBorder As String = ""
+	
+	If sCheckedColor <> "" Then
+'		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
+		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
+		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+	End If
+	
 	Dim sb As StringBuilder
 	sb.Initialize
 	items.Initialize
@@ -457,7 +476,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 			      <label class="cursor-pointer select-none">
 			        <span id="${sk}_${mName}_label">${v}</span>
 			      </label>
-			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			    </div>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 				Next
@@ -466,7 +485,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 					Dim v As String = m.Get(k)
 					Dim sk As String = modSD5.CleanID(k)
 					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
       					<span id="${sk}_${mName}_label">${v}</span>
     				</label>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
@@ -478,7 +497,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 			Dim sk As String = modSD5.CleanID(k)
 			sb.Append($"[BANCLEAN]
 				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor}"/>
+              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
 			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)

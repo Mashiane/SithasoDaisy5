@@ -57,7 +57,7 @@ Private Sub modal1_Cancel_Click (e As BANanoEvent)
 End Sub
 
 Private Sub SDUI5Button1_Click (e As BANanoEvent)
-	inputmodal.show
+	BANano.Await(inputmodal.show)
 	txtfirstname.ResetValidation
 	txtfirstname.Value = ""
 	txtlastname.resetvalidation
@@ -84,7 +84,9 @@ Private Sub SDUI5Button1_Click (e As BANanoEvent)
 	chkAgree.Checked = False
 	fpImage.ResetValidation
 	fpImage.Nullify
+'	txtdob.RedrawDatePicker
 End Sub
+
 
 Private Sub inputmodal_Yes_Click (e As BANanoEvent)
 	'begin validation of components
