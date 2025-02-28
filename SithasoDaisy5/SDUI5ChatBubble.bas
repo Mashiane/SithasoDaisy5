@@ -67,11 +67,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -80,7 +81,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -91,7 +92,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -217,32 +218,32 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sFooter = Props.GetDefault("Footer", "Delivered")
-		sFooter = modSD5.CStr(sFooter)
+		sFooter = UI.CStr(sFooter)
 		bFooterVisible = Props.GetDefault("FooterVisible", True)
-		bFooterVisible = modSD5.CBool(bFooterVisible)
+		bFooterVisible = UI.CBool(bFooterVisible)
 		bHeaderVisible = Props.GetDefault("HeaderVisible", True)
-		bHeaderVisible = modSD5.CBool(bHeaderVisible)
+		bHeaderVisible = UI.CBool(bHeaderVisible)
 		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
-		sImage = modSD5.CStr(sImage)
+		sImage = UI.CStr(sImage)
 		sImageSize = Props.GetDefault("ImageSize", "10")
-		sImageSize = modSD5.CStr(sImageSize)
+		sImageSize = UI.CStr(sImageSize)
 		bImageVisible = Props.GetDefault("ImageVisible", True)
-		bImageVisible = modSD5.CBool(bImageVisible)
+		bImageVisible = UI.CBool(bImageVisible)
 		sMessage = Props.GetDefault("Message", "Welcome to SithasoDaisy5")
-		sMessage = modSD5.CStr(sMessage)
+		sMessage = UI.CStr(sMessage)
 		sMessageFrom = Props.GetDefault("MessageFrom", "Mashy")
-		sMessageFrom = modSD5.CStr(sMessageFrom)
+		sMessageFrom = UI.CStr(sMessageFrom)
 		sMessageTime = Props.GetDefault("MessageTime", "17:20")
-		sMessageTime = modSD5.CStr(sMessageTime)
+		sMessageTime = UI.CStr(sMessageTime)
 		sPlacement = Props.GetDefault("Placement", "start")
-		sPlacement = modSD5.CStr(sPlacement)
+		sPlacement = UI.CStr(sPlacement)
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 	End If
 	'
 	UI.AddClassDT("chat")
@@ -258,7 +259,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	Dim imgW As String = modSD5.FixSize("w", sImageSize)
+	Dim imgW As String = UI.FixSize("w", sImageSize)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   		<div id="${mName}_avatar" class="chat-image avatar">

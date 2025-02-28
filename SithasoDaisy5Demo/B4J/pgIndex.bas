@@ -105,6 +105,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("navigation", "pg-navbar", "", "Navbar")
 	drawermenu.AddItemChild("navigation", "pg-pagination", "", "Pagination")
 	drawermenu.AddItemChild("navigation", "pg-steps", "", "Steps")
+	drawermenu.AddItemChild("navigation", "pg-wizard", "", "Wizard")
 	drawermenu.AddItemChild("navigation", "pg-tab", "", "Tabs")
 	
 	drawermenu.AddItemParent("components", "feedback", "", "Feedback")
@@ -169,8 +170,8 @@ Private Sub drawermenu_ItemClick (item As String)
 	'close the swap button
 	appnavbar.Hamburger.Active = False
 
-	Dim sprefix As String = modSD5.MvField(item, 1, "-")
-	Dim ssuffix As String = modSD5.MvField(item, 2, "-")
+	Dim sprefix As String = App.UI.MvField(item, 1, "-")
+	Dim ssuffix As String = App.UI.MvField(item, 2, "-")
 	Select Case sprefix
 	Case "pg"
 		'only mark this item as active
@@ -188,8 +189,9 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgPreferences.Show(App)
 			Case "gridbuilder"
 				pggridbuilder.show(App)
-			End Select	
-		
+			Case "wizard"	
+				pgWizard.show(App)
+			End Select		
 		
 			Select Case ssuffix
 			Case "calendar"

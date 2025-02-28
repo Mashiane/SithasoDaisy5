@@ -19,9 +19,10 @@ Version=10
 #DesignerProperty: Key: Side, DisplayName: Image on Side, FieldType: Boolean, DefaultValue: False, Description: Image on Side
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Card Title, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
-#DesignerProperty: Key: RawContent, DisplayName: Raw Content, FieldType: String, DefaultValue: Card Content, Description: Raw Content
-#DesignerProperty: Key: BodyClasses, DisplayName: Body Classes, FieldType: String, DefaultValue: , Description: Body Classes
+#DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: Card Content, Description: Content
 #DesignerProperty: Key: ContentClasses, DisplayName: Content Classes, FieldType: String, DefaultValue: , Description: Content Classes
+#DesignerProperty: Key: BodyClasses, DisplayName: Body Classes, FieldType: String, DefaultValue: , Description: Body Classes
+#DesignerProperty: Key: Shrink, DisplayName: Shrink, FieldType: String, DefaultValue: none, Description: Shrink, List: 0|1|none
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
@@ -98,15 +99,16 @@ Sub Class_Globals
 	Public CONST IMAGEPOSITION_END As String = "end"
 	Public CONST IMAGEPOSITION_START As String = "start"
 	Private sImageClasses As String = ""
-	private sBodyClasses as string = ""
+	Private sBodyClasses As String = ""
+	Private sShrink As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
-	mCallBack = Callback
-	CustProps.Initialize
 	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -115,7 +117,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -126,7 +128,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -190,14 +192,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -211,7 +213,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -252,69 +254,72 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActionsVisible = Props.GetDefault("ActionsVisible", True)
-		bActionsVisible = modSD5.CBool(bActionsVisible)
+		bActionsVisible = UI.CBool(bActionsVisible)
 '		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-100")
-'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sContentClasses = Props.GetDefault("ContentClasses", "")
-		sContentClasses = modSD5.CStr(sContentClasses)
+		sContentClasses = UI.CStr(sContentClasses)
 		bDash = Props.GetDefault("Dash", False)
-		bDash = modSD5.CBool(bDash)
+		bDash = UI.CBool(bDash)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
-		sImage = modSD5.CStr(sImage)
+		sImage = UI.CStr(sImage)
 		bImageFull = Props.GetDefault("ImageFull", False)
-		bImageFull = modSD5.CBool(bImageFull)
+		bImageFull = UI.CBool(bImageFull)
 		sImageHeight = Props.GetDefault("ImageHeight", "")
-		sImageHeight = modSD5.CStr(sImageHeight)
+		sImageHeight = UI.CStr(sImageHeight)
 		sImagePosition = Props.GetDefault("ImagePosition", "start")
-		sImagePosition = modSD5.CStr(sImagePosition)
+		sImagePosition = UI.CStr(sImagePosition)
 		bImageRoundedBox = Props.GetDefault("ImageRoundedBox", False)
-		bImageRoundedBox = modSD5.CBool(bImageRoundedBox)
+		bImageRoundedBox = UI.CBool(bImageRoundedBox)
 		sImageShadow = Props.GetDefault("ImageShadow", "none")
-		sImageShadow = modSD5.CStr(sImageShadow)
+		sImageShadow = UI.CStr(sImageShadow)
 		If sImageShadow = "none" Then sImageShadow = ""
 		bImageVisible = Props.GetDefault("ImageVisible", False)
-		bImageVisible = modSD5.CBool(bImageVisible)
+		bImageVisible = UI.CBool(bImageVisible)
 		sImageWidth = Props.GetDefault("ImageWidth", "")
-		sImageWidth = modSD5.CStr(sImageWidth)
+		sImageWidth = UI.CStr(sImageWidth)
 		bLGSide = Props.GetDefault("LGSide", False)
-		bLGSide = modSD5.CBool(bLGSide)
+		bLGSide = UI.CBool(bLGSide)
 		bMDSide = Props.GetDefault("MDSide", False)
-		bMDSide = modSD5.CBool(bMDSide)
+		bMDSide = UI.CBool(bMDSide)
 		sRawContent = Props.GetDefault("RawContent", "Card Content")
-		sRawContent = modSD5.CStr(sRawContent)
+		sRawContent = UI.CStr(sRawContent)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		bSMSide = Props.GetDefault("SMSide", False)
-		bSMSide = modSD5.CBool(bSMSide)
+		bSMSide = UI.CBool(bSMSide)
 		sShadow = Props.GetDefault("Shadow", "sm")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		bSide = Props.GetDefault("Side", False)
-		bSide = modSD5.CBool(bSide)
+		bSide = UI.CBool(bSide)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		sTitle = Props.GetDefault("Title", "Card Title")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		bTitleVisible = Props.GetDefault("TitleVisible", True)
-		bTitleVisible = modSD5.CBool(bTitleVisible)
+		bTitleVisible = UI.CBool(bTitleVisible)
 		sWidth = Props.GetDefault("Width", "96")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		bXLSide = Props.GetDefault("XLSide", False)
-		bXLSide = modSD5.CBool(bXLSide)
+		bXLSide = UI.CBool(bXLSide)
 		sImageClasses = Props.GetDefault("ImageClasses", "")
-		sImageClasses = modSD5.CStr(sImageClasses)
+		sImageClasses = UI.CStr(sImageClasses)
 		sBodyClasses = Props.GetDefault("BodyClasses", "")
-		sBodyClasses = modSD5.CStr(sBodyClasses)
+		sBodyClasses = UI.CStr(sBodyClasses)
+		sShrink = Props.GetDefault("Shrink", "none")
+		sShrink = UI.CStr(sShrink)
+		If sShrink = "none" Then sShrink = ""
 	End If
 	'
 	UI.AddClassDT("card")
@@ -332,6 +337,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sSize <> "" Then UI.AddSizeDT("card", sSize)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If bXLSide = True Then UI.AddClassDT("xl:card-side")
+	If sShrink <> "" Then
+		If sShrink = "1" Then
+			UI.AddClassDT("shrink")
+		Else
+			UI.AddClassDT("shrink-" & sShrink)
+		End If
+	End If
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -374,6 +386,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setImageClasses(sImageClasses)
 	End If	
 '	setVisible(bVisible)
+End Sub
+
+'set Shrink
+'options: 0|1|none
+Sub setShrink(s As String)
+	sShrink = s
+	CustProps.put("Shrink", s)
+	If mElement = Null Then Return
+	If s <> "" Then
+		If s = "1" Then UI.AddClass(mElement, "shrink")
+		If s <> "1" Then UI.AddClass(mElement, "shrink-" & sShrink)
+	End If
+End Sub
+
+'get Shrink
+Sub getShrink As String
+	Return sShrink
+End Sub
+
+'get a step from the wizard
+Sub ContentAt As String
+	Return $"#${mName}_content"$
 End Sub
 
 'set Actions Visible

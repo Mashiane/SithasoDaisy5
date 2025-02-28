@@ -8,8 +8,9 @@ Version=10
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: checkbox, Description: Type Of, List: checkbox|toggle
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox Group, Description: Label
-#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Raw Options
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -75,14 +76,15 @@ Sub Class_Globals
 	Private items As Map
 	Private sSelected As String = ""
 	Private sShadow As String = "none"
+	Private sTypeOf As String = "checkbox"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
 	items.Initialize 
 End Sub
 ' returns the element id
@@ -92,7 +94,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -103,7 +105,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -229,42 +231,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 '		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
-		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sCheckedColor = UI.CStr(sCheckedColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = modSD5.CStr(sGroupName)
+		sGroupName = UI.CStr(sGroupName)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Label")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		bColumnView = Props.GetDefault("ColumnView", False)
-		bColumnView = modSD5.CBool(bColumnView)
+		bColumnView = UI.CBool(bColumnView)
 		sLabelPosition = Props.GetDefault("LabelPosition", "right")
-		sLabelPosition = modSD5.CStr(sLabelPosition)
+		sLabelPosition = UI.CStr(sLabelPosition)
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sSelected = Props.GetDefault("Selected", "")
-		sSelected = modSD5.CStr(sSelected)
+		sSelected = UI.CStr(sSelected)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sTypeOf = Props.GetDefault("TypeOf", "checkbox")
+		sTypeOf = UI.CStr(sTypeOf)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -303,8 +307,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</fieldset>"$).Get("#" & mName)
 			UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
-	BANano.Await(setOptions(sRawOptions))
-	BANano.Await(setSelected(sSelected))
+	setOptions(sRawOptions)
+	setSelected(sSelected)
 '	setVisible(bVisible)
 End Sub
 
@@ -341,18 +345,18 @@ End Sub
 
 Sub AddItem(k As String, v As String)
 	If mElement = Null Then Return
-	k = modSD5.CleanID(k)
-	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
-	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
+	k = UI.CleanID(k)
+	Dim rSize As String = UI.FixSize(sTypeOf, sSize)
+	Dim rColor As String = UI.FixColor(sTypeOf, sColor)
 	
 	Dim cColor As String = ""
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	
 	If sCheckedColor <> "" Then
-'		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
-		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
-		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+'		cColor  = UI.FixColor("checked:text", sCheckedColor)
+		checkedColor  = UI.FixColor("checked:bg", sCheckedColor)
+		checkedBorder = UI.FixColor("checked:border", sCheckedColor)
 	End If
 	
 	Dim sb As StringBuilder
@@ -365,12 +369,12 @@ Sub AddItem(k As String, v As String)
 		      <label class="cursor-pointer select-none">
 			  	<span id="${k}_${mName}_label">${v}</span>
 			  </label>
-		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 		  </div>"$)
 				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 			Case "right"
 				sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			<span id="${k}_${mName}_label">${v}</span>
 			</label>"$)
 				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
@@ -378,7 +382,7 @@ Sub AddItem(k As String, v As String)
 	Else
 		sb.Append($"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
             <span id="${k}_${mName}_label" class="text-start">${v}</span> 
         </div>"$)
 		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
@@ -394,11 +398,11 @@ Sub getSelected As String
 	For Each item As String In items.keys
 		Dim b As Boolean = UI.GetCheckedByID(item)
 		If b Then
-			Dim ok As String = modSD5.MvField(item, 1, "_")
+			Dim ok As String = UI.MvField(item, 1, "_")
 			selectedItems.Add(ok)
 		End If
 	Next
-	sSelected = modSD5.Join(";", selectedItems)
+	sSelected = UI.Join(";", selectedItems)
 	Return sSelected
 End Sub
 
@@ -444,23 +448,23 @@ End Sub
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	If mElement = Null Then Return
-	BANano.Await(Clear)
+	Clear
 	If bColumnView = False Then
 		Dim iSize As Int = m.Size
 		UI.UpdateClassByID($"${mName}_options"$, "cols", $"grid-cols-${iSize}"$)
 	End If
 	If m.Size = 0 Then Return
 	'
-	Dim rSize As String = modSD5.FixSize("checkbox", sSize)
-	Dim rColor As String = modSD5.FixColor("checkbox", sColor)
+	Dim rSize As String = UI.FixSize(sTypeOf, sSize)
+	Dim rColor As String = UI.FixColor(sTypeOf, sColor)
 	Dim cColor As String = ""
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	
 	If sCheckedColor <> "" Then
-'		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
-		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
-		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+'		cColor  = UI.FixColor("checked:text", sCheckedColor)
+		checkedColor  = UI.FixColor("checked:bg", sCheckedColor)
+		checkedBorder = UI.FixColor("checked:border", sCheckedColor)
 	End If
 	
 	Dim sb As StringBuilder
@@ -471,21 +475,21 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 			Case "left"
 				For Each k As String In m.Keys
 					Dim v As String = m.Get(k)
-					Dim sk As String = modSD5.CleanID(k)
+					Dim sk As String = UI.CleanID(k)
 					sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
 			      <label class="cursor-pointer select-none">
 			        <span id="${sk}_${mName}_label">${v}</span>
 			      </label>
-			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			    </div>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 				Next
 			Case "right"
 				For Each k As String In m.Keys
 					Dim v As String = m.Get(k)
-					Dim sk As String = modSD5.CleanID(k)
+					Dim sk As String = UI.CleanID(k)
 					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
       					<span id="${sk}_${mName}_label">${v}</span>
     				</label>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
@@ -494,16 +498,16 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	Else
 		For Each k As String In m.Keys
 			Dim v As String = m.Get(k)
-			Dim sk As String = modSD5.CleanID(k)
+			Dim sk As String = UI.CleanID(k)
 			sb.Append($"[BANCLEAN]
 				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="checkbox ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
 			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 		Next
 	End If
-	BANano.Await(UI.AppendByID($"${mName}_options"$, sb.ToString))
+	UI.AppendByID($"${mName}_options"$, sb.ToString)
 	For Each item As String In items.keys
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next
@@ -521,8 +525,8 @@ Sub SetItemsChips(titems As Map)
 		sb.Append(v)
 		sb.Append(";")
 	Next
-	Dim sout As String = modSD5.remdelim(sb.ToString, ";")
-	BANano.Await(setOptions(sout))
+	Dim sout As String = UI.remdelim(sb.ToString, ";")
+	setOptions(sout)
 End Sub
 
 private Sub changed(e As BANanoEvent)			'ignoreDeadCode
@@ -576,7 +580,7 @@ Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
 	Dim nm As Map = CreateMap()
 	For Each k As String In m
-		Dim sk As String = modSD5.CleanID(k)
+		Dim sk As String = UI.CleanID(k)
 		nm.Put(sk, k)
 	Next
 	SetOptionsFromMap(nm)
@@ -693,7 +697,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getSelected
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		setBorderColor("error")

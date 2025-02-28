@@ -69,11 +69,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -82,7 +83,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -93,7 +94,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -218,34 +219,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sHeight = Props.GetDefault("Height", "80")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sImage = Props.GetDefault("Image", "./assets/mashy.jpg")
-		sImage = modSD5.CStr(sImage)
+		sImage = UI.CStr(sImage)
 		bIndicatorButtons = Props.GetDefault("IndicatorButtons", False)
-		bIndicatorButtons = modSD5.CBool(bIndicatorButtons)
+		bIndicatorButtons = UI.CBool(bIndicatorButtons)
 		bNavigationButtons = Props.GetDefault("NavigationButtons", False)
-		bNavigationButtons = modSD5.CBool(bNavigationButtons)
+		bNavigationButtons = UI.CBool(bNavigationButtons)
 		sItemPosition = Props.GetDefault("ItemPosition", "")
-		sItemPosition = modSD5.CStr(sItemPosition)
+		sItemPosition = UI.CStr(sItemPosition)
 		bRefreshCarousel = Props.GetDefault("RefreshCarousel", False)
-		bRefreshCarousel = modSD5.CBool(bRefreshCarousel)
+		bRefreshCarousel = UI.CBool(bRefreshCarousel)
 		bRelative = Props.GetDefault("Relative", False)
-		bRelative = modSD5.CBool(bRelative)
+		bRelative = UI.CBool(bRelative)
 		sTypeOf = Props.GetDefault("TypeOf", "image")
-		sTypeOf = modSD5.CStr(sTypeOf)
+		sTypeOf = UI.CStr(sTypeOf)
 		sWidth = Props.GetDefault("Width", "80")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sImageHeight = Props.GetDefault("ImageHeight", "80")
-		sImageHeight = modSD5.CStr(sImageHeight)
+		sImageHeight = UI.CStr(sImageHeight)
 		sImageWidth = Props.GetDefault("ImageWidth", "80")
-		sImageWidth = modSD5.CStr(sImageWidth)
+		sImageWidth = UI.CStr(sImageWidth)
 		sImageRounded = Props.GetDefault("ImageRounded", "none")
-		sImageRounded = modSD5.CStr(sImageRounded)
+		sImageRounded = UI.CStr(sImageRounded)
 		If sImageRounded = "none" Then sImageRounded = ""
 		bImageRoundedBox = Props.GetDefault("ImageRoundedBox", False)
-		bImageRoundedBox = modSD5.CBool(bImageRoundedBox)
+		bImageRoundedBox = UI.CBool(bImageRoundedBox)
 		sImageShadow = Props.GetDefault("ImageShadow", "none")
-		sImageShadow = modSD5.CStr(sImageShadow)
+		sImageShadow = UI.CStr(sImageShadow)
 		If sImageShadow = "none" Then sImageShadow = ""
 	End If
 	'

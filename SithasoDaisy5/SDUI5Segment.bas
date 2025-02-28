@@ -59,11 +59,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	items.Initialize 
 End Sub
 ' returns the element id
@@ -149,7 +150,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -160,7 +161,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -199,24 +200,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sActive = Props.GetDefault("Active", "btn1")
-		sActive = modSD5.Cstr(sActive)
+		sActive = UI.Cstr(sActive)
 		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		sDisabled = Props.GetDefault("Disabled", "")
-		sDisabled = modSD5.Cstr(sDisabled)
+		sDisabled = UI.Cstr(sDisabled)
 		sSize = Props.GetDefault("Size", "md")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "fit")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sActiveColor = Props.GetDefault("ActiveColor", "#0000ff")
-		sActiveColor = modSD5.CStr(sActiveColor)
+		sActiveColor = UI.CStr(sActiveColor)
 		sActiveTextColor = Props.GetDefault("ActiveTextColor", "#ffffff")
-		sActiveTextColor = modSD5.CStr(sActiveTextColor)
+		sActiveTextColor = UI.CStr(sActiveTextColor)
 		sOptionWidth = Props.GetDefault("OptionWidth", "32")
-		sOptionWidth = modSD5.CStr(sOptionWidth)
+		sOptionWidth = UI.CStr(sOptionWidth)
 	End If
 	'
 	
@@ -300,7 +301,7 @@ End Sub
 
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
-	UI.Clear(mElement)
+	mElement.empty
 	items.Initialize 
 End Sub
 
@@ -318,8 +319,8 @@ Sub setOptions(s As String)			'ignoredeadcode
 End Sub
 
 Sub AddButton(sKey As String, sText As String)
-	sKey = modSD5.CleanID(sKey)
-	Dim oSize As String = modSD5.FixSize("w", sOptionWidth)
+	sKey = UI.CleanID(sKey)
+	Dim oSize As String = UI.FixSize("w", sOptionWidth)
 	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab ${oSize}" aria-label="${sText}"></input>"$
 	mElement.Append(sTag)
 	items.Put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
@@ -328,13 +329,13 @@ End Sub
 
 private Sub itemchange(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
-	Dim sprefix As String = modSD5.MvField(e.ID, 1, "_")
+	Dim sprefix As String = UI.MvField(e.ID, 1, "_")
 	BANano.Await(SetActiveInternal(sprefix))
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(sprefix))
 End Sub
 
 private Sub SetActiveInternal(item As String)
-	item = modSD5.CleanID(item)
+	item = UI.CleanID(item)
 	For Each k As String In items.Keys
 		UI.SetBackgroundColorStyleByID(k, "")
 		UI.SetColorStyleByID(k, "")
@@ -366,7 +367,7 @@ End Sub
 
 'set Active
 Sub setActive(item As String)			'ignoredeadcode
-	item = modSD5.CleanID(item)
+	item = UI.CleanID(item)
 	CustProps.put("Active", item)
 	If mElement = Null Then Return
 	For Each k As String In items.Keys

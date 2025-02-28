@@ -59,11 +59,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -95,7 +96,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -240,22 +241,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bHover = Props.GetDefault("Hover", False)
-		bHover = modSD5.CBool(bHover)
+		bHover = UI.CBool(bHover)
 		sHref = Props.GetDefault("Href", "#")
-		sHref = modSD5.CStr(sHref)
+		sHref = UI.CStr(sHref)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
-		sIconColor = modSD5.CStr(sIconColor)
+		sIconColor = UI.CStr(sIconColor)
 		sIconSize = Props.GetDefault("IconSize", "24px")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		sTarget = Props.GetDefault("Target", "none")
-		sTarget = modSD5.CStr(sTarget)
+		sTarget = UI.CStr(sTarget)
 		bListItem = Props.GetDefault("ListItem", False)
-		bListItem = modSD5.CBool(bListItem)
+		bListItem = UI.CBool(bListItem)
 	End If
 	'
 	UI.AddClassDT("link")

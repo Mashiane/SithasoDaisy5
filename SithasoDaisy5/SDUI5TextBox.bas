@@ -44,11 +44,15 @@ Version=10
 #DesignerProperty: Key: DPPosition, DisplayName: DP Position, FieldType: String, DefaultValue: auto, Description: Date Picker Position, List: auto|above|below|auto left|auto center|auto right|above left|above center|above right|below left|below center|below right
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: PrependColor, DisplayName: Prepend Color, FieldType: String, DefaultValue: none, Description: Prepend Color
 #DesignerProperty: Key: PrependImage, DisplayName: Prepend Image, FieldType: String, DefaultValue: , Description: Prepend Image
 #DesignerProperty: Key: PrependIcon, DisplayName: Prepend Icon, FieldType: String, DefaultValue: , Description: Prepend Icon
+#DesignerProperty: Key: PrependIconColor, DisplayName: Prepend Icon Color, FieldType: String, DefaultValue: none, Description: Prepend Icon Color
 #DesignerProperty: Key: PrependVisible, DisplayName: Prepend Visible, FieldType: Boolean, DefaultValue: False, Description: Prepend Visible
+#DesignerProperty: Key: AppendColor, DisplayName: Append Color, FieldType: String, DefaultValue: none, Description: Append Color
 #DesignerProperty: Key: AppendImage, DisplayName: Append Image, FieldType: String, DefaultValue: , Description: Append Image
 #DesignerProperty: Key: AppendIcon, DisplayName: Append Icon, FieldType: String, DefaultValue: , Description: Append Icon
+#DesignerProperty: Key: AppendIconColor, DisplayName: Append Icon Color, FieldType: String, DefaultValue: none, Description: Append Icon Color
 #DesignerProperty: Key: AppendVisible, DisplayName: Append Visible, FieldType: Boolean, DefaultValue: False, Description: Append Visible
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
@@ -130,14 +134,20 @@ Sub Class_Globals
 	Private FP As BANanoObject			'ignore
 	Private sDPLocale As String = "en"
 	Private sDPPosition As String = "auto"
+	Private sAppendColor As String = "none"
+	Private sAppendIconColor As String = "none"
+	Private sPrependColor As String = "none"
+	Private sPrependIconColor As String = "none"
+	private sDataTypeOf as string = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	options.Initialize
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("material_blue.css")
@@ -151,7 +161,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -162,7 +172,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -264,94 +274,106 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             'UI.ExcludeVisible = True
             'UI.ExcludeEnabled = True
             sColor = Props.GetDefault("Color", "none")
-            sColor = modSD5.CStr(sColor)
+            sColor = UI.CStr(sColor)
             If sColor = "none" Then sColor = ""
             bGhost = Props.GetDefault("Ghost", False)
-            bGhost = modSD5.CBool(bGhost)
+            bGhost = UI.CBool(bGhost)
             bGrow = Props.GetDefault("Grow", False)
-            bGrow = modSD5.CBool(bGrow)
+            bGrow = UI.CBool(bGrow)
             sHint = Props.GetDefault("Hint", "")
-            sHint = modSD5.CStr(sHint)
+            sHint = UI.CStr(sHint)
             sLabel = Props.GetDefault("Label", "")
-            sLabel = modSD5.CStr(sLabel)
+            sLabel = UI.CStr(sLabel)
             sMaxLength = Props.GetDefault("MaxLength", "")
-            sMaxLength = modSD5.CStr(sMaxLength)
+            sMaxLength = UI.CStr(sMaxLength)
             sMaxValue = Props.GetDefault("MaxValue", "")
-            sMaxValue = modSD5.CStr(sMaxValue)
+            sMaxValue = UI.CStr(sMaxValue)
             sMinLength = Props.GetDefault("MinLength", "")
-            sMinLength = modSD5.CStr(sMinLength)
+            sMinLength = UI.CStr(sMinLength)
             sMinValue = Props.GetDefault("MinValue", "")
-            sMinValue = modSD5.CStr(sMinValue)
+            sMinValue = UI.CStr(sMinValue)
             sPattern = Props.GetDefault("Pattern", "")
-            sPattern = modSD5.CStr(sPattern)
+            sPattern = UI.CStr(sPattern)
             sPlaceholder = Props.GetDefault("Placeholder", "")
-            sPlaceholder = modSD5.CStr(sPlaceholder)
+            sPlaceholder = UI.CStr(sPlaceholder)
             bRequired = Props.GetDefault("Required", False)
-            bRequired = modSD5.CBool(bRequired)
+            bRequired = UI.CBool(bRequired)
             sSize = Props.GetDefault("Size", "md")
-            sSize = modSD5.CStr(sSize)
+            sSize = UI.CStr(sSize)
             If sSize = "none" Then sSize = "md"
             sStepValue = Props.GetDefault("StepValue", "")
-            sStepValue = modSD5.CStr(sStepValue)
+            sStepValue = UI.CStr(sStepValue)
             sTypeOf = Props.GetDefault("TypeOf", "text")
-            sTypeOf = modSD5.CStr(sTypeOf)
+            sTypeOf = UI.CStr(sTypeOf)
             bValidator = Props.GetDefault("Validator", False)
-            bValidator = modSD5.CBool(bValidator)
+            bValidator = UI.CBool(bValidator)
             sValidatorHint = Props.GetDefault("ValidatorHint", "")
-            sValidatorHint = modSD5.CStr(sValidatorHint)
+            sValidatorHint = UI.CStr(sValidatorHint)
             sValue = Props.GetDefault("Value", "")
-			sValue = modSD5.CStr(sValue)
+			sValue = UI.CStr(sValue)
 			sAppendIcon = Props.GetDefault("AppendIcon", "")
-			sAppendIcon = modSD5.CStr(sAppendIcon)
+			sAppendIcon = UI.CStr(sAppendIcon)
 			bAppendVisible = Props.GetDefault("AppendVisible", False)
-			bAppendVisible = modSD5.CBool(bAppendVisible)
+			bAppendVisible = UI.CBool(bAppendVisible)
 			sPrependIcon = Props.GetDefault("PrependIcon", "")
-			sPrependIcon = modSD5.CStr(sPrependIcon)
+			sPrependIcon = UI.CStr(sPrependIcon)
 			bPrependVisible = Props.GetDefault("PrependVisible", False)
-			bPrependVisible = modSD5.CBool(bPrependVisible)
+			bPrependVisible = UI.CBool(bPrependVisible)
 			sInputType = Props.GetDefault("InputType", "normal")
-			sInputType = modSD5.CStr(sInputType)
+			sInputType = UI.CStr(sInputType)
 			sWidth = Props.GetDefault("Width", "full")
-			sWidth = modSD5.CStr(sWidth)
+			sWidth = UI.CStr(sWidth)
 			sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-			sBackgroundColor = modSD5.CStr(sBackgroundColor)
+			sBackgroundColor = UI.CStr(sBackgroundColor)
 			bBorder = Props.GetDefault("Border", True)
-			bBorder = modSD5.CBool(bBorder)
+			bBorder = UI.CBool(bBorder)
 			sBorderColor = Props.GetDefault("BorderColor", "base-300")
-			sBorderColor = modSD5.CStr(sBorderColor)
+			sBorderColor = UI.CStr(sBorderColor)
 			bRoundedBox = Props.GetDefault("RoundedBox", False)
-			bRoundedBox = modSD5.CBool(bRoundedBox)
+			bRoundedBox = UI.CBool(bRoundedBox)
 			sShadow = Props.GetDefault("Shadow", "none")
-			sShadow = modSD5.CStr(sShadow)
+			sShadow = UI.CStr(sShadow)
 			If sShadow = "none" Then sShadow = ""
 			bShowEyes = Props.GetDefault("ShowEyes", False)
-			bShowEyes = modSD5.CBool(bShowEyes)
+			bShowEyes = UI.CBool(bShowEyes)
 			sAppendImage = Props.GetDefault("AppendImage", "")
-			sAppendImage = modSD5.CStr(sAppendImage)
+			sAppendImage = UI.CStr(sAppendImage)
 			sPrependImage = Props.GetDefault("PrependImage", "")
-		sPrependImage = modSD5.CStr(sPrependImage)
+		sPrependImage = UI.CStr(sPrependImage)
 		bDPAllowInput = Props.GetDefault("DPAllowInput", False)
-		bDPAllowInput = modSD5.CBool(bDPAllowInput)
+		bDPAllowInput = UI.CBool(bDPAllowInput)
 		sDPAltFormat = Props.GetDefault("DPAltFormat", "F j, Y")
-		sDPAltFormat = modSD5.CStr(sDPAltFormat)
+		sDPAltFormat = UI.CStr(sDPAltFormat)
 		bDPAltInput = Props.GetDefault("DPAltInput", True)
-		bDPAltInput = modSD5.CBool(bDPAltInput)
+		bDPAltInput = UI.CBool(bDPAltInput)
 		sDPAltInputClass = Props.GetDefault("DPAltInputClass", "")
-		sDPAltInputClass = modSD5.CStr(sDPAltInputClass)
+		sDPAltInputClass = UI.CStr(sDPAltInputClass)
 		bDPCloseOnSelect = Props.GetDefault("DPCloseOnSelect", False)
-		bDPCloseOnSelect = modSD5.CBool(bDPCloseOnSelect)
+		bDPCloseOnSelect = UI.CBool(bDPCloseOnSelect)
 		sDPConjunction = Props.GetDefault("DPConjunction", "")
-		sDPConjunction = modSD5.CStr(sDPConjunction)
+		sDPConjunction = UI.CStr(sDPConjunction)
 		sDPDateFormat = Props.GetDefault("DPDateFormat", "Y-m-d H:i")
-		sDPDateFormat = modSD5.CStr(sDPDateFormat)
+		sDPDateFormat = UI.CStr(sDPDateFormat)
 		sDPMode = Props.GetDefault("DPMode", "single")
-		sDPMode = modSD5.CStr(sDPMode)
+		sDPMode = UI.CStr(sDPMode)
 		iDPShowMonths = Props.GetDefault("DPShowMonths", 1)
-		iDPShowMonths = modSD5.CInt(iDPShowMonths)
+		iDPShowMonths = UI.CInt(iDPShowMonths)
 		sDPLocale = Props.GetDefault("DPLocale", "en")
-		sDPLocale = modSD5.CStr(sDPLocale)
+		sDPLocale = UI.CStr(sDPLocale)
 		sDPPosition = Props.GetDefault("DPPosition", "auto")
-		sDPPosition = modSD5.CStr(sDPPosition)
+		sDPPosition = UI.CStr(sDPPosition)
+		sAppendColor = Props.GetDefault("AppendColor", "none")
+		sAppendColor = UI.CStr(sAppendColor)
+		If sAppendColor = "none" Then sAppendColor = ""
+		sAppendIconColor = Props.GetDefault("AppendIconColor", "none")
+		sAppendIconColor = UI.CStr(sAppendIconColor)
+		If sAppendIconColor = "none" Then sAppendIconColor = ""
+		sPrependColor = Props.GetDefault("PrependColor", "none")
+		sPrependColor = UI.CStr(sPrependColor)
+		If sPrependColor = "none" Then sPrependColor = ""
+		sPrependIconColor = Props.GetDefault("PrependIconColor", "none")
+		sPrependIconColor = UI.CStr(sPrependIconColor)
+		If sPrependIconColor = "none" Then sPrependIconColor = ""
 		End If
         '
 		Dim xattrs As String = UI.BuildExAttributes
@@ -391,7 +413,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				setBorderColor(sBorderColor)
 				setRoundedBox(bRoundedBox)
 				setShadow(sShadow)
-				UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+				sDataTypeOf = $"${mName}_control"$
 				If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 				If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "buttons"
@@ -410,16 +432,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
         		</div>"$).Get("#" & mName)
-			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+			sDataTypeOf = $"${mName}_control"$
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="mb-1 fieldset-label">${sLabel}</label>
 				<input id="${mName}" class="input w-full ${mName}" type="text"></input>
 			</div>"$).Get("#" & mName)
-			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+			sDataTypeOf = $"${mName}_control"$
 		Case "buttons-floating"
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
@@ -439,12 +461,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
 					</button>
       			</div>"$).Get("#" & mName)	
-			UI.SetField(mElement, "data-typeof", $"${mName}_control"$)
+			sDataTypeOf = $"${mName}_control"$
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
-			UI.SetField(mElement, "data-typeof", "")
+			sDataTypeOf = ""
 		End Select
 		setTypeOf(sTypeOf)
 		setColor(sColor)
@@ -470,6 +492,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setPrependImage(sPrependImage)
 		setPrependIcon(sPrependIcon)
 		setPrependVisible(bPrependVisible)
+		setPrependColor(sPrependColor)
+		setPrependIconColor(sPrependIconColor)
+		setAppendColor(sAppendColor)
+		setAppendIconColor(sAppendIconColor)
 	End Select
 	setWidth(sWidth)
 	setValue(sValue)
@@ -480,8 +506,66 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	Select Case sTypeOf
 	Case "date-picker", "date-time-picker", "time-picker"
-		BANano.Await(RefreshDatePicker)
+			BANano.Await(RefreshDatePicker)
 	End Select
+End Sub
+
+'set Append Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setAppendColor(s As String)			'ignoredeadcode
+	sAppendColor = s
+	CustProps.put("AppendColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_append"$, s)
+End Sub
+'set Append Icon Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setAppendIconColor(s As String)			'ignoredeadcode
+	sAppendIconColor = s
+	CustProps.put("AppendIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_appendicon"$, s)
+End Sub
+'set Prepend Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setPrependColor(s As String)				'ignoredeadcode
+	sPrependColor = s
+	CustProps.put("PrependColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_prepend"$, s)
+End Sub
+'set Prepend Icon Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setPrependIconColor(s As String)			'ignoredeadcode
+	sPrependIconColor = s
+	CustProps.put("PrependIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_prependicon"$, s)
+End Sub
+'get Append Color
+Sub getAppendColor As String
+	Return sAppendColor
+End Sub
+'get Append Icon Color
+Sub getAppendIconColor As String
+	Return sAppendIconColor
+End Sub
+'get Prepend Color
+Sub getPrependColor As String
+	Return sPrependColor
+End Sub
+'get Prepend Icon Color
+Sub getPrependIconColor As String
+	Return sPrependIconColor
+End Sub
+
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
 End Sub
 
 Sub RefreshDatePicker			'ignoredeadcode
@@ -519,7 +603,7 @@ Sub RefreshDatePicker			'ignoredeadcode
 	options.put("position", sDPPosition)
 	options.put("locale", sDPLocale)
 	options.put("mode", sDPMode)
-	options.put("showMonths", modSD5.CInt(iDPShowMonths))
+	options.put("showMonths", UI.CInt(iDPShowMonths))
 	'
 	'set properties and update the textbox
 	Dim selectedDates As Object
@@ -529,14 +613,13 @@ Sub RefreshDatePicker			'ignoredeadcode
 	options.Put("onChange", cbDateChange)
 	'
 	UI.AddClassByID(mName, "flatpickr")
-	Dim typeOf As String = UI.GetFieldByID(mName, "data-typeof")
-	If typeOf <> "" Then 
-		'add to this component
-		Dim el As BANanoElement = UI.GetElementByID(typeOf)
-		options.Put("appendTo", el.ToObject)
-		options.Put("positionElement", el.ToObject)
-		UI.AddClassByID(typeOf, "flatpickr")
-	End If
+'	If sDataTypeOf <> "" Then 
+'		'add to this component
+'		Dim el As BANanoElement = UI.GetElementByID(sDataTypeOf)
+'		options.Put("appendTo", el.ToObject)
+'		options.Put("positionElement", el.ToObject)
+'		UI.AddClassByID(sDataTypeOf, "flatpickr")
+'	End If
 	
 	Dim xkey As String = $"#${mName}"$
 	FP = BANano.RunJavascriptMethod("flatpickr", Array(xkey, options))
@@ -755,7 +838,7 @@ End Sub
 private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	Dim cicon As String = BANano.GetElement($"#${mName}_appendicon"$).GetData("icon")
-	cicon = modSD5.CStr(cicon)
+	cicon = UI.CStr(cicon)
 	Select Case cicon
 	Case "fa-solid fa-eye"
 		mElement.SetAttr("type", "text")
@@ -1223,9 +1306,9 @@ End Sub
 private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
-	Dim minvalue As Int = modSD5.CInt(mElement.GetAttr("min"))
-	Dim stpvalue As Int = modSD5.CInt(mElement.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(mElement.GetValue)
+	Dim minvalue As Int = UI.CInt(mElement.GetAttr("min"))
+	Dim stpvalue As Int = UI.CInt(mElement.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(mElement.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) - BANano.parseInt(stpvalue)
 	If nxtvalue < minvalue Then
 		nxtvalue = minvalue
@@ -1241,9 +1324,9 @@ End Sub
 private Sub PropertyIncrement(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
-	Dim maxvalue As Int = modSD5.CInt(mElement.GetAttr("max"))
-	Dim stpvalue As Int = modSD5.CInt(mElement.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(mElement.GetValue)
+	Dim maxvalue As Int = UI.CInt(mElement.GetAttr("max"))
+	Dim stpvalue As Int = UI.CInt(mElement.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(mElement.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) + BANano.parseInt(stpvalue)
 	If nxtvalue > maxvalue Then
 		nxtvalue = maxvalue
@@ -1346,9 +1429,9 @@ End Sub
 'Not(IsMatch)
 Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
-	otherValue = modSD5.CStr(otherValue)
+	otherValue = UI.CStr(otherValue)
 	otherValue = otherValue.Trim
 	If v = otherValue Then
 		If sInputType = "legend" Then
@@ -1368,7 +1451,7 @@ Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean
 End Sub
 Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v.Length >= minLen Then
 		If sInputType = "legend" Then
@@ -1389,7 +1472,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		If sInputType = "legend" Then

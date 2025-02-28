@@ -71,11 +71,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -84,7 +85,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -95,7 +96,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -220,36 +221,36 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sDiffType = Props.GetDefault("DiffType", "image")
-		sDiffType = modSD5.CStr(sDiffType)
+		sDiffType = UI.CStr(sDiffType)
 		sHeight = Props.GetDefault("Height", "80")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sImage1 = Props.GetDefault("Image1", "./assets/13.jpg")
-		sImage1 = modSD5.CStr(sImage1)
+		sImage1 = UI.CStr(sImage1)
 		sImage2 = Props.GetDefault("Image2", "./assets/13.jpg")
-		sImage2 = modSD5.CStr(sImage2)
+		sImage2 = UI.CStr(sImage2)
 		sTextSize = Props.GetDefault("TextSize", "9xl")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		sText1 = Props.GetDefault("Text1", "SITHASODAISY5")
-		sText1 = modSD5.CStr(sText1)
+		sText1 = UI.CStr(sText1)
 		sText1BackgroundColor = Props.GetDefault("Text1BackgroundColor", "primary")
-		sText1BackgroundColor = modSD5.CStr(sText1BackgroundColor)
+		sText1BackgroundColor = UI.CStr(sText1BackgroundColor)
 		sText1TextColor = Props.GetDefault("Text1TextColor", "primary-content")
-		sText1TextColor = modSD5.CStr(sText1TextColor)
+		sText1TextColor = UI.CStr(sText1TextColor)
 		sText2 = Props.GetDefault("Text2", "SITHASODAISY5")
-		sText2 = modSD5.CStr(sText2)
+		sText2 = UI.CStr(sText2)
 		sText2BackgroundColor = Props.GetDefault("Text2BackgroundColor", "base-200")
-		sText2BackgroundColor = modSD5.CStr(sText2BackgroundColor)
+		sText2BackgroundColor = UI.CStr(sText2BackgroundColor)
 		sText2TextColor = Props.GetDefault("Text2TextColor", "")
-		sText2TextColor = modSD5.CStr(sText2TextColor)
+		sText2TextColor = UI.CStr(sText2TextColor)
 		sWidth = Props.GetDefault("Width", "80")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'

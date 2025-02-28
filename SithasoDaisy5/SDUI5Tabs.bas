@@ -67,11 +67,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	items.Initialize 
 End Sub
 ' returns the element id
@@ -81,7 +82,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -92,7 +93,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -218,21 +219,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sPlacement = Props.GetDefault("Placement", "top")
-		sPlacement = modSD5.CStr(sPlacement)
+		sPlacement = UI.CStr(sPlacement)
 		sPlacement = sPlacement.ToLowerCase
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sStyle = Props.GetDefault("Style", "lift")
-		sStyle = modSD5.CStr(sStyle)
+		sStyle = UI.CStr(sStyle)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		sActive = Props.GetDefault("Active", "btn1")
-		sActive = modSD5.CStr(sActive)
+		sActive = UI.CStr(sActive)
 	End If
 	'
 	UI.AddClassDT("tabs whitespace-nowrap")
@@ -255,7 +256,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
-	BANano.Await(setOptions(sRawOptions))
+	setOptions(sRawOptions)
 	setActive(sActive)
 End Sub
 
@@ -263,13 +264,18 @@ Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.Put("RawOptions", s)
 	If mElement = Null Then Return
-	BANano.Await(Clear)
+	Clear
 	If s = "" Then Return
 	Dim m As Map = UI.GetKeyValues(s, False)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		BANano.Await(AddItem(k, v))
+		AddItem(k, v)
 	Next
+End Sub
+
+'get a step from the wizard
+Sub ContentAt(key As String) As String
+	Return $"#${key}_${mName}_content"$
 End Sub
 
 'get Raw Options
@@ -278,7 +284,7 @@ Sub getOptions As String
 End Sub
 
 Sub AddItem(sKey As String, sText As String)
-	sKey = modSD5.CleanID(sKey)
+	sKey = UI.CleanID(sKey)
 	Dim nKey As String = $"${sKey}_${mName}"$
 	Dim ni As SDUI5TabsItem
 	ni.Initialize(mCallBack, sKey, sKey)
@@ -292,7 +298,7 @@ End Sub
 'set Active
 Sub setActive(item As String)			'ignoredeadcode
 	sActive = item
-	item = modSD5.CleanID(item)
+	item = UI.CleanID(item)
 	CustProps.put("Active", item)
 	If mElement = Null Then Return
 	If item <> "" Then
@@ -307,7 +313,7 @@ End Sub
 
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
-	UI.Clear(mElement)
+	mElement.empty
 	items.Initialize 
 End Sub
 
@@ -376,12 +382,12 @@ End Sub
 
 'set button text
 Sub SetTabItemText(btnID As String, text As String)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	UI.SetAttrByID($"${btnID}_${mName}"$, "aria-label", text)
 End Sub
 
 'set a button active
 Sub SetTabItemActive(btnID As String, b As Boolean)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	UI.SetCheckedByID($"${btnID}_${mName}"$, b)
 End Sub

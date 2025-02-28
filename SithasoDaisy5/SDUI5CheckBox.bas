@@ -87,11 +87,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -100,7 +101,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -111,7 +112,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -237,53 +238,53 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bChecked = Props.GetDefault("Checked", False)
-		bChecked = modSD5.CBool(bChecked)
+		bChecked = UI.CBool(bChecked)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
-		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sCheckedColor = UI.CStr(sCheckedColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
-		bIndeterminate = modSD5.CBool(bIndeterminate)
+		bIndeterminate = UI.CBool(bIndeterminate)
 		sLabel = Props.GetDefault("Label", "CheckBox")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sLegend = Props.GetDefault("Legend", "Options")
-		sLegend = modSD5.CStr(sLegend)
+		sLegend = UI.CStr(sLegend)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sUncheckedColor = Props.GetDefault("UncheckedColor", "")
-		sUncheckedColor = modSD5.CStr(sUncheckedColor)
+		sUncheckedColor = UI.CStr(sUncheckedColor)
 		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
+		bValidator = UI.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sValidatorHint = UI.CStr(sValidatorHint)
 		sCheckedMarkColor = Props.GetDefault("CheckedMarkColor", "")
-		sCheckedMarkColor = modSD5.CStr(sCheckedMarkColor)
+		sCheckedMarkColor = UI.CStr(sCheckedMarkColor)
 		sCheckBoxType = Props.GetDefault("CheckBoxType", "normal")
-		sCheckBoxType = modSD5.CStr(sCheckBoxType)
+		sCheckBoxType = UI.CStr(sCheckBoxType)
 		sPrivacyPolicyCaption = Props.GetDefault("PrivacyPolicyCaption", "")
-		sPrivacyPolicyCaption = modSD5.CStr(sPrivacyPolicyCaption)
+		sPrivacyPolicyCaption = UI.CStr(sPrivacyPolicyCaption)
 		sPrivacyPolicyUrl = Props.GetDefault("PrivacyPolicyUrl", "")
-		sPrivacyPolicyUrl = modSD5.CStr(sPrivacyPolicyUrl)
+		sPrivacyPolicyUrl = UI.CStr(sPrivacyPolicyUrl)
 		sTermsConditionsCaption = Props.GetDefault("TermsConditionsCaption", "")
-		sTermsConditionsCaption = modSD5.CStr(sTermsConditionsCaption)
+		sTermsConditionsCaption = UI.CStr(sTermsConditionsCaption)
 		sTermsConditionsUrl = Props.GetDefault("TermsConditionsUrl", "")
-		sTermsConditionsUrl = modSD5.CStr(sTermsConditionsUrl)
+		sTermsConditionsUrl = UI.CStr(sTermsConditionsUrl)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
@@ -365,6 +366,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
+End Sub
 
 'set Background Color
 Sub setBackgroundColor(s As String)			'ignoredeadcode
@@ -627,7 +636,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As Boolean = getChecked
-	v = modSD5.CBool(v)
+	v = UI.CBool(v)
 	If v = False Then
 		If sCheckBoxType = "legend" Then
 			setBorderColor("error")

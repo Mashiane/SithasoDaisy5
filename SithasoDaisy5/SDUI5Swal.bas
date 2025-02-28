@@ -8,10 +8,12 @@ Version=10
 Private Sub Class_Globals
 	Private swal As BANanoObject
 	Private options As Map
+	Private UI As UIShared 'ignore
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
 Sub Initialize As SDUI5Swal
+	UI.Initialize(Me)
 	options.Initialize
 	swal.Initialize("swal")
 	confirmButtonColor("#2196f3")
@@ -24,12 +26,12 @@ Sub buttonsStyling(b As Boolean) As SDUI5Swal
 End Sub
 
 Sub confirmButtonClass(s As String) As SDUI5Swal
-	modSD5.PutRecursive(options, "customClass.confirmButton", s)
+	UI.PutRecursive(options, "customClass.confirmButton", s)
 	Return Me
 End Sub
 
 Sub cancelButtonClass(s As String) As SDUI5Swal
-	modSD5.PutRecursive(options, "customClass.cancelButton", s)
+	UI.PutRecursive(options, "customClass.cancelButton", s)
 	Return Me
 End Sub
 

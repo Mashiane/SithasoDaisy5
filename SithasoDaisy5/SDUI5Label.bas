@@ -77,11 +77,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -90,7 +91,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -101,7 +102,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -226,45 +227,45 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sLabel = Props.GetDefault("Label", "")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bFloatingLabel = Props.GetDefault("FloatingLabel", False)
-		bFloatingLabel = modSD5.CBool(bFloatingLabel)
+		bFloatingLabel = UI.CBool(bFloatingLabel)
 		sInputType = Props.GetDefault("InputType", "input")
-		sInputType = modSD5.CStr(sInputType)
+		sInputType = UI.CStr(sInputType)
 		sPlaceholder = Props.GetDefault("Placeholder", "")
-		sPlaceholder = modSD5.CStr(sPlaceholder)
+		sPlaceholder = UI.CStr(sPlaceholder)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sSuffix = Props.GetDefault("Suffix", "")
-		sSuffix = modSD5.CStr(sSuffix)
+		sSuffix = UI.CStr(sSuffix)
 		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
+		bValidator = UI.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sValidatorHint = UI.CStr(sValidatorHint)
 		sLabelWidth = Props.GetDefault("LabelWidth", "")
-		sLabelWidth = modSD5.CStr(sLabelWidth)
+		sLabelWidth = UI.CStr(sLabelWidth)
 		sMaxLength = Props.GetDefault("MaxLength", "")
-		sMaxLength = modSD5.CStr(sMaxLength)
+		sMaxLength = UI.CStr(sMaxLength)
 		sMaxValue = Props.GetDefault("MaxValue", "")
-		sMaxValue = modSD5.CStr(sMaxValue)
+		sMaxValue = UI.CStr(sMaxValue)
 		sMinLength = Props.GetDefault("MinLength", "")
-		sMinLength = modSD5.CStr(sMinLength)
+		sMinLength = UI.CStr(sMinLength)
 		sMinValue = Props.GetDefault("MinValue", "")
-		sMinValue = modSD5.CStr(sMinValue)
+		sMinValue = UI.CStr(sMinValue)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sStepValue = Props.GetDefault("StepValue", "")
-		sStepValue = modSD5.CStr(sStepValue)
+		sStepValue = UI.CStr(sStepValue)
 		sValue = Props.GetDefault("Value", "")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	If bFloatingLabel = True Then UI.AddClassDT("floating-label")
@@ -318,10 +319,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.AddClassByID($"${mName}_input"$, "tabular-nums")
 	End Select
 		
-	BANano.Await(setColor(sColor))
-	BANano.Await(setSize(sSize))
+	setColor(sColor)
+	setSize(sSize)
 	If sInputType = "select" Then
-		BANano.Await(setOptions(sRawOptions))
+		setOptions(sRawOptions)
 	End If
 	setPlaceholder(sPlaceholder)
 	
@@ -520,12 +521,12 @@ End Sub
 'load the items from a map
 Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 	If mElement = Null Then Return
-	BANano.Await(Clear)
+	Clear
 	Dim sb As StringBuilder
 	sb.Initialize
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		Dim sk As String = modSD5.CleanID(k)
+		Dim sk As String = UI.CleanID(k)
 		sb.Append($"<option id="${sk}_${mName}" value="${sk}">${v}</option>"$)
 	Next
 	UI.AppendByID($"${mName}_input)"$, sb.ToString)
@@ -536,7 +537,7 @@ Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
 	Dim nm As Map = CreateMap()
 	For Each k As String In m
-		Dim sk As String = modSD5.CleanID(k)
+		Dim sk As String = UI.CleanID(k)
 		nm.Put(sk, k)
 	Next
 	SetOptionsFromMap(nm)
@@ -561,7 +562,7 @@ Sub AddItem(iKey As String, iValue As String)
 	If mElement = Null Then Return
 	Select Case sInputType
 	Case "select"
-		iKey = modSD5.CleanID(iKey)
+		iKey = UI.CleanID(iKey)
 		Dim scode As String = $"<option id="${iKey}_${mName}" value="${iKey}">${iValue}</option>"$
 		UI.AppendByID($"${mName}_input"$, scode)
 	End Select	

@@ -81,11 +81,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -94,7 +95,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -105,7 +106,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -235,47 +236,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sRangeBackgroundColor = Props.GetDefault("RangeBackgroundColor", "")
-		sRangeBackgroundColor = modSD5.CStr(sRangeBackgroundColor)
+		sRangeBackgroundColor = UI.CStr(sRangeBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sMaxValue = Props.GetDefault("MaxValue", "100")
-		sMaxValue = modSD5.CStr(sMaxValue)
+		sMaxValue = UI.CStr(sMaxValue)
 		bMeasure = Props.GetDefault("Measure", False)
-		bMeasure = modSD5.CBool(bMeasure)
+		bMeasure = UI.CBool(bMeasure)
 		sMinValue = Props.GetDefault("MinValue", "0")
-		sMinValue = modSD5.CStr(sMinValue)
+		sMinValue = UI.CStr(sMinValue)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sStepValue = Props.GetDefault("StepValue", "1")
-		sStepValue = modSD5.CStr(sStepValue)
+		sStepValue = UI.CStr(sStepValue)
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		sThumbColor = Props.GetDefault("ThumbColor", "")
-		sThumbColor = modSD5.CStr(sThumbColor)
+		sThumbColor = UI.CStr(sThumbColor)
 		sValue = Props.GetDefault("Value", "10")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sRangeType = Props.GetDefault("RangeType", "normal")
-		sRangeType = modSD5.CStr(sRangeType)
+		sRangeType = UI.CStr(sRangeType)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
@@ -352,6 +353,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
 
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
+End Sub
 
 'set Background Color
 Sub setBackgroundColor(s As String)			'ignoredeadcode
@@ -460,7 +468,7 @@ End Sub
 
 private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
-	Dim cvalue As String = modSD5.CStr(mElement.getvalue)
+	Dim cvalue As String = UI.CStr(mElement.getvalue)
 	sValue = cvalue
 	Select Case sRangeType
 	Case "legend"
@@ -661,14 +669,14 @@ Sub getThumbColor As String
 End Sub
 'get Value
 Sub getValue As String
-	sValue = modSD5.Cstr(mElement.GetValue)
+	sValue = UI.Cstr(mElement.GetValue)
 	Return sValue
 End Sub
 
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Or v = "0" Then
 		If sRangeType = "legend" Then

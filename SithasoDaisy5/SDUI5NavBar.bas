@@ -81,11 +81,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -104,7 +105,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -225,39 +226,39 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bGlass = Props.GetDefault("Glass", False)
-		bGlass = modSD5.CBool(bGlass)
+		bGlass = UI.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "sm")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		sTitle = Props.GetDefault("Title", "NavBar")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sTitlePosition = Props.GetDefault("TitlePosition", "left")
-		sTitlePosition = modSD5.CStr(sTitlePosition)
+		sTitlePosition = UI.CStr(sTitlePosition)
 		bHasBurger = Props.GetDefault("HasBurger", True)
-		bHasBurger = modSD5.CBool(bHasBurger)
+		bHasBurger = UI.CBool(bHasBurger)
 		bHasLogo = Props.GetDefault("HasLogo", False)
-		bHasLogo = modSD5.CBool(bHasLogo)
+		bHasLogo = UI.CBool(bHasLogo)
 		sLogoHeight = Props.GetDefault("LogoHeight", "10")
-		sLogoHeight = modSD5.CStr(sLogoHeight)
+		sLogoHeight = UI.CStr(sLogoHeight)
 		sLogoImage = Props.GetDefault("LogoImage", "./assets/mashy.jpg")
-		sLogoImage = modSD5.CStr(sLogoImage)
+		sLogoImage = UI.CStr(sLogoImage)
 		sLogoMask = Props.GetDefault("LogoMask", "none")
-		sLogoMask = modSD5.CStr(sLogoMask)
+		sLogoMask = UI.CStr(sLogoMask)
 		If sLogoMask = "none" Then sLogoMask = ""
 		sLogoWidth = Props.GetDefault("LogoWidth", "10")
-		sLogoWidth = modSD5.CStr(sLogoWidth)
+		sLogoWidth = UI.CStr(sLogoWidth)
 		bSticky = Props.GetDefault("Sticky", True)
-		bSticky = modSD5.CBool(bSticky)
+		bSticky = UI.CBool(bSticky)
 		sTop = Props.GetDefault("Top", "0")
-		sTop = modSD5.CStr(sTop)
+		sTop = UI.CStr(sTop)
 		sZIndex = Props.GetDefault("ZIndex", "30")
-		sZIndex = modSD5.CStr(sZIndex)
+		sZIndex = UI.CStr(sZIndex)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)

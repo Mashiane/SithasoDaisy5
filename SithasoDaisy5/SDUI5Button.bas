@@ -21,7 +21,7 @@ Version=10
 #DesignerProperty: Key: TooltipOpen, DisplayName: Tooltip Open, FieldType: Boolean, DefaultValue: False, Description: Tooltip Open
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|right|top|none
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: none, Description: Shape, List: square|circle|none
+#DesignerProperty: Key: Shape, DisplayName: Shape/Rounded, FieldType: String, DefaultValue: none, Description: Shape/Rounded, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Block, DisplayName: Block, FieldType: Boolean, DefaultValue: False, Description: Block
 #DesignerProperty: Key: Wide, DisplayName: Wide, FieldType: Boolean, DefaultValue: False, Description: Wide
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
@@ -53,6 +53,7 @@ Version=10
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: md, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -138,15 +139,16 @@ Sub Class_Globals
 	Private sRightIconColor As String = "none"
 	Private bLeftIconVisible As Boolean = False
 	Private bRightIconVisible As Boolean = False
-
+	Private sShadow As String = "md"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -167,7 +169,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -305,102 +307,105 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		bActive = Props.GetDefault("Active", False)
-		bActive = modSD5.CBool(bActive)
+		bActive = UI.CBool(bActive)
 		bBlock = Props.GetDefault("Block", False)
-		bBlock = modSD5.CBool(bBlock)
+		bBlock = UI.CBool(bBlock)
 		sShape = Props.GetDefault("Shape", "none")
-		sShape = modSD5.CStr(sShape)
+		sShape = UI.CStr(sShape)
 		If sShape = "none" Then sShape = ""
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = modSD5.CBool(bDash)
+		bDash = UI.CBool(bDash)
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = modSD5.CBool(bGhost)
+		bGhost = UI.CBool(bGhost)
 		sImage = Props.GetDefault("Image", "")
-		sImage = modSD5.CStr(sImage)
+		sImage = UI.CStr(sImage)
 		sImageColor = Props.GetDefault("ImageColor", "")
-		sImageColor = modSD5.CStr(sImageColor)        
+		sImageColor = UI.CStr(sImageColor)        
 		sImageHeight = Props.GetDefault("ImageHeight", "32px")
-		sImageHeight = modSD5.CStr(sImageHeight)
+		sImageHeight = UI.CStr(sImageHeight)
 		sImageWidth = Props.GetDefault("ImageWidth", "32px")
-		sImageWidth = modSD5.CStr(sImageWidth)
+		sImageWidth = UI.CStr(sImageWidth)
 		bLink = Props.GetDefault("Link", False)
-		bLink = modSD5.CBool(bLink)
+		bLink = UI.CBool(bLink)
 		bLoading = Props.GetDefault("Loading", False)
-		bLoading = modSD5.CBool(bLoading)
+		bLoading = UI.CBool(bLoading)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = modSD5.CBool(bOutline)
+		bOutline = UI.CBool(bOutline)
 		sRightImage = Props.GetDefault("RightImage", "")
-		sRightImage = modSD5.CStr(sRightImage)
+		sRightImage = UI.CStr(sRightImage)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sSizeLarge = Props.GetDefault("SizeLarge", "none")
-		sSizeLarge = modSD5.CStr(sSizeLarge)
+		sSizeLarge = UI.CStr(sSizeLarge)
 		If sSizeLarge = "none" Then sSizeLarge = ""
 		sSizeMedium = Props.GetDefault("SizeMedium", "none")
-		sSizeMedium = modSD5.CStr(sSizeMedium)
+		sSizeMedium = UI.CStr(sSizeMedium)
 		If sSizeMedium = "none" Then sSizeMedium = ""
 		sSizeSmall = Props.GetDefault("SizeSmall", "none")
-		sSizeSmall = modSD5.CStr(sSizeSmall)
+		sSizeSmall = UI.CStr(sSizeSmall)
 		If sSizeSmall = "none" Then sSizeSmall = ""
 		sSizeXLarge = Props.GetDefault("SizeXLarge", "none")
-		sSizeXLarge = modSD5.CStr(sSizeXLarge)
+		sSizeXLarge = UI.CStr(sSizeXLarge)
 		If sSizeXLarge = "none" Then sSizeXLarge = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = modSD5.CBool(bSoft)
+		bSoft = UI.CBool(bSoft)
 		bWide = Props.GetDefault("Wide", False)
-		bWide = modSD5.CBool(bWide)
+		bWide = UI.CBool(bWide)
 		sRightImageColor = Props.GetDefault("RightImageColor", "")
-		sRightImageColor = modSD5.CStr(sRightImageColor)
+		sRightImageColor = UI.CStr(sRightImageColor)
 		sRightImageHeight = Props.GetDefault("RightImageHeight", "32px")
-		sRightImageHeight = modSD5.CStr(sRightImageHeight)
+		sRightImageHeight = UI.CStr(sRightImageHeight)
 		sRightImageWidth = Props.GetDefault("RightImageWidth", "32px")
-		sRightImageWidth = modSD5.CStr(sRightImageWidth)
+		sRightImageWidth = UI.CStr(sRightImageWidth)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = modSD5.CStr(sBadge)
+		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
-		sBadgeColor = modSD5.CStr(sBadgeColor)
+		sBadgeColor = UI.CStr(sBadgeColor)
 		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
-		sBadgeSize = modSD5.CStr(sBadgeSize)
+		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		bJoinItem = Props.GetDefault("JoinItem", False)
-		bJoinItem = modSD5.CBool(bJoinItem)
+		bJoinItem = UI.CBool(bJoinItem)
 		bDockItem = Props.GetDefault("DockItem", False)
-		bDockItem = modSD5.CBool(bDockItem)
+		bDockItem = UI.CBool(bDockItem)
 		bActivator = Props.GetDefault("Activator", False)
-		bActivator = modSD5.CBool(bActivator)
+		bActivator = UI.CBool(bActivator)
 		bRoundedField = Props.GetDefault("RoundedField", False)
-		bRoundedField = modSD5.CBool(bRoundedField)
+		bRoundedField = UI.CBool(bRoundedField)
 		sTooltip = Props.GetDefault("Tooltip", "")
-		sTooltip = modSD5.CStr(sTooltip)
+		sTooltip = UI.CStr(sTooltip)
 		sTooltipColor = Props.GetDefault("TooltipColor", "none")
-		sTooltipColor = modSD5.CStr(sTooltipColor)
+		sTooltipColor = UI.CStr(sTooltipColor)
 		If sTooltipColor = "none" Then sTooltipColor = ""
 		bTooltipOpen = Props.GetDefault("TooltipOpen", False)
-		bTooltipOpen = modSD5.CBool(bTooltipOpen)
+		bTooltipOpen = UI.CBool(bTooltipOpen)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
-		sTooltipPosition = modSD5.CStr(sTooltipPosition)
+		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
 		sIconSize = Props.GetDefault("IconSize", "none")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		If sIconSize = "none" Then sIconSize = ""
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
-		sLeftIcon = modSD5.CStr(sLeftIcon)
+		sLeftIcon = UI.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "none")
-		sLeftIconColor = modSD5.CStr(sLeftIconColor)
+		sLeftIconColor = UI.CStr(sLeftIconColor)
 		If sLeftIconColor = "none" Then sLeftIconColor = ""
 		sRightIcon = Props.GetDefault("RightIcon", "")
-		sRightIcon = modSD5.CStr(sRightIcon)
+		sRightIcon = UI.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "none")
-		sRightIconColor = modSD5.CStr(sRightIconColor)
+		sRightIconColor = UI.CStr(sRightIconColor)
 		If sRightIconColor = "none" Then sRightIconColor = ""
+		sShadow = Props.GetDefault("Shadow", "md")
+		sShadow = UI.CStr(sShadow)
+		sShadow = sShadow.ToLowerCase
 	End If
 	'
 	If sParentID <> "" Then
@@ -435,7 +440,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			UI.AddClassDT("btn-square")
 		Case "circle"	
 			UI.AddClassDT("btn-circle")
+		Case Else
+			UI.AddRoundedDT(sShape)	
 		End Select
+		If sShadow <> "" Then UI.AddShadowDT(sShadow)
 		If sColor <> "" Then UI.AddColorDT("btn", sColor)
 		If bDash = True Then UI.AddClassDT("btn-dash")
 		If bGhost = True Then UI.AddClassDT("btn-ghost")
@@ -448,8 +456,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSizeXLarge <> "" Then UI.AddClassDT("xl:btn-" & sSizeXLarge)
 		If bSoft = True Then UI.AddClassDT("btn-soft")
 		If bWide = True Then UI.AddClassDT("btn-wide")
-		If sHeight <> "" Then UI.AddHeightDT( sHeight)
-		If sWidth <> "" Then UI.AddWidthDT( sWidth)
+		If sHeight <> "" Then UI.AddHeightDT(sHeight)
+		If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	End If
 	UI.AddClassDT("inline-flex items-center")
 	Dim xattrs As String = UI.BuildExAttributes
@@ -459,11 +467,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<i id="${mName}_lefticon" class="hidden"></i>
-		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden"></img>
+		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
 		<i id="${mName}_righticon" class="hidden"></i>
-		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden"></img>
-		<div id="${mName}_badge" class="badge hidden"></div>
+		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
+		<div id="${mName}_badge" class="badge rounded-full hidden"></div>
 	</${sTag}>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	setText(sText)
@@ -493,6 +501,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setRightIconColor(sRightIconColor)
 End Sub
 
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	s = s.ToLowerCase
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
 
 'set Icon Size
 Sub setIconSize(s As String)				'ignoredeadcode
@@ -676,15 +706,19 @@ Sub setBlock(b As Boolean)
 End Sub
 
 'set Circle
-Sub setShape(s As String)
+'square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setShape(s As String)			'ignoredeadcode
 	sShape = s
 	CustProps.put("Shape", S)
 	If mElement = Null Then Return
+	If s = "none" Then s = ""
 	Select Case sShape
 	Case "square"
-		UI.UpdateClass(mElement, "shape", "btn-square")
+		UI.UpdateClass(mElement, "rounded", "btn-square")
 	Case "circle"
-		UI.UpdateClass(mElement, "shape", "btn-circle")
+		UI.UpdateClass(mElement, "rounded", "btn-circle")
+	Case Else
+		UI.SetRounded(mElement, s)	
 	End Select
 End Sub
 

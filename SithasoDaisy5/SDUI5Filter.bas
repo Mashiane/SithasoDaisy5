@@ -43,11 +43,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -56,7 +57,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -67,7 +68,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -192,7 +193,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 	End If
 	'
 	UI.AddClassDT("filter")
@@ -209,7 +210,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
-	BANano.Await(setOptions(sRawOptions))
+	setOptions(sRawOptions)
 End Sub
 
 Sub Clear			'ignoredeadcode
@@ -220,7 +221,7 @@ End Sub
 
 Sub AddOption(sKey As String, sValue As String)
 	If mElement = Null Then Return
-	sKey = modSD5.CleanID(sKey)
+	sKey = UI.CleanID(sKey)
 	mElement.Append($"<input id="${sKey}_${mName}" class="btn" type="radio" value="${sKey}" name="${mName}" aria-label="${sValue}"></input>"$)
 End Sub
 
@@ -229,7 +230,7 @@ Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
-	BANano.Await(Clear)
+	Clear
 	If s = "" Then Return
 	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
@@ -238,11 +239,11 @@ Sub setOptions(s As String)			'ignoredeadcode
 	items.Initialize 
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		Dim sk As String = modSD5.CleanID(k)
+		Dim sk As String = UI.CleanID(k)
 		sb.Append($"<input id="${sk}_${mName}" class="btn" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
 		items.Add($"${sk}_${mName}"$)
 	Next
-	BANano.Await(mElement.Append(sb.ToString))
+	mElement.Append(sb.ToString)
 	For Each item As String In items
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next

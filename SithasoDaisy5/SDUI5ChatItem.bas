@@ -59,11 +59,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -72,7 +73,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -83,7 +84,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -208,29 +209,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAvatar = Props.GetDefault("Avatar", "")
-		sAvatar = modSD5.CStr(sAvatar)
+		sAvatar = UI.CStr(sAvatar)
 		sAvatarSize = Props.GetDefault("AvatarSize", "12")
-		sAvatarSize = modSD5.CStr(sAvatarSize)
+		sAvatarSize = UI.CStr(sAvatarSize)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = modSD5.CStr(sBadge)
+		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "none")
-		sBadgeColor = modSD5.CStr(sBadgeColor)
+		sBadgeColor = UI.CStr(sBadgeColor)
 		If sBadgeColor = "none" Then sBadgeColor = ""
 		sMask = Props.GetDefault("Mask", "none")
-		sMask = modSD5.CStr(sMask)
+		sMask = UI.CStr(sMask)
 		If sMask = "none" Then sMask = ""
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sSubTitle = Props.GetDefault("SubTitle", "Chat Subtitle")
-		sSubTitle = modSD5.CStr(sSubTitle)
+		sSubTitle = UI.CStr(sSubTitle)
 		sTimeAgo = Props.GetDefault("TimeAgo", "Time Ago")
-		sTimeAgo = modSD5.CStr(sTimeAgo)
+		sTimeAgo = UI.CStr(sTimeAgo)
 		sTitle = Props.GetDefault("Title", "Chat Title")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 	End If
 	'
 	UI.AddClassDT("flex items-center justify-between p-4 hover:bg-gray-100")
@@ -263,7 +264,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		</div>
       		</div>
       		<div id="${mName}_rights" class="text-right">
-        		<div id="${mName}_badge" class="badge">${sBadge}</div>
+        		<div id="${mName}_badge" class="badge rounded-full">${sBadge}</div>
         		<p id="${mName}_time" class="text-sm text-gray-400">${sTimeAgo}</p>
       		</div>
     	</div>"$).Get("#" & mName)

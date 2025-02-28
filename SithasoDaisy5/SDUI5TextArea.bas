@@ -30,11 +30,15 @@ Version=10
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: PrependColor, DisplayName: Prepend Color, FieldType: String, DefaultValue: none, Description: Prepend Color
 #DesignerProperty: Key: PrependImage, DisplayName: Prepend Image, FieldType: String, DefaultValue: , Description: Prepend Image
 #DesignerProperty: Key: PrependIcon, DisplayName: Prepend Icon, FieldType: String, DefaultValue: , Description: Prepend Icon
+#DesignerProperty: Key: PrependIconColor, DisplayName: Prepend Icon Color, FieldType: String, DefaultValue: none, Description: Prepend Icon Color
 #DesignerProperty: Key: PrependVisible, DisplayName: Prepend Visible, FieldType: Boolean, DefaultValue: False, Description: Prepend Visible
+#DesignerProperty: Key: AppendColor, DisplayName: Append Color, FieldType: String, DefaultValue: none, Description: Append Color
 #DesignerProperty: Key: AppendImage, DisplayName: Append Image, FieldType: String, DefaultValue: , Description: Append Image
 #DesignerProperty: Key: AppendIcon, DisplayName: Append Icon, FieldType: String, DefaultValue: , Description: Append Icon
+#DesignerProperty: Key: AppendIconColor, DisplayName: Append Icon Color, FieldType: String, DefaultValue: none, Description: Append Icon Color
 #DesignerProperty: Key: AppendVisible, DisplayName: Append Visible, FieldType: Boolean, DefaultValue: False, Description: Append Visible
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
@@ -100,14 +104,19 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
+	Private sAppendColor As String = "none"
+	Private sAppendIconColor As String = "none"
+	Private sPrependColor As String = "none"
+	Private sPrependIconColor As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -116,7 +125,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -127,7 +136,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -257,66 +266,78 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = modSD5.CBool(bGhost)
+		bGhost = UI.CBool(bGhost)
 		sHeight = Props.GetDefault("Height", "12")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Text Area")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sPlaceholder = Props.GetDefault("Placeholder", "")
-		sPlaceholder = modSD5.CStr(sPlaceholder)
+		sPlaceholder = UI.CStr(sPlaceholder)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "md")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = "md"
 		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
+		bValidator = UI.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sValidatorHint = UI.CStr(sValidatorHint)
 		sValue = Props.GetDefault("Value", "")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sAppendIcon = Props.GetDefault("AppendIcon", "")
-		sAppendIcon = modSD5.CStr(sAppendIcon)
+		sAppendIcon = UI.CStr(sAppendIcon)
 		bAppendVisible = Props.GetDefault("AppendVisible", False)
-		bAppendVisible = modSD5.CBool(bAppendVisible)
+		bAppendVisible = UI.CBool(bAppendVisible)
 		sPrependIcon = Props.GetDefault("PrependIcon", "")
-		sPrependIcon = modSD5.CStr(sPrependIcon)
+		sPrependIcon = UI.CStr(sPrependIcon)
 		bPrependVisible = Props.GetDefault("PrependVisible", False)
-		bPrependVisible = modSD5.CBool(bPrependVisible)
+		bPrependVisible = UI.CBool(bPrependVisible)
 		sInputType = Props.GetDefault("InputType", "normal")
-		sInputType = modSD5.CStr(sInputType)
+		sInputType = UI.CStr(sInputType)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		bAutoSizeToContent = Props.GetDefault("AutoSizeToContent", False)
-		bAutoSizeToContent = modSD5.CBool(bAutoSizeToContent)
+		bAutoSizeToContent = UI.CBool(bAutoSizeToContent)
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxHeight = UI.CStr(sMaxHeight)
 		sMaxWidth = Props.GetDefault("MaxWidth", "")
-		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMaxWidth = UI.CStr(sMaxWidth)
 		sMinHeight = Props.GetDefault("MinHeight", "")
-		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
+		sMinWidth = UI.CStr(sMinWidth)
 		sAppendImage = Props.GetDefault("AppendImage", "")
-		sAppendImage = modSD5.CStr(sAppendImage)
+		sAppendImage = UI.CStr(sAppendImage)
 		sPrependImage = Props.GetDefault("PrependImage", "")
-		sPrependImage = modSD5.CStr(sPrependImage)
+		sPrependImage = UI.CStr(sPrependImage)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sAppendColor = Props.GetDefault("AppendColor", "none")
+		sAppendColor = UI.CStr(sAppendColor)
+		If sAppendColor = "none" Then sAppendColor = ""
+		sAppendIconColor = Props.GetDefault("AppendIconColor", "none")
+		sAppendIconColor = UI.CStr(sAppendIconColor)
+		If sAppendIconColor = "none" Then sAppendIconColor = ""
+		sPrependColor = Props.GetDefault("PrependColor", "none")
+		sPrependColor = UI.CStr(sPrependColor)
+		If sPrependColor = "none" Then sPrependColor = ""
+		sPrependIconColor = Props.GetDefault("PrependIconColor", "none")
+		sPrependIconColor = UI.CStr(sPrependIconColor)
+		If sPrependIconColor = "none" Then sPrependIconColor = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -378,8 +399,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="mb-1 fieldset-label">${sLabel}</label>
 				<textarea id="${mName}" class="textarea w-full"></textarea>
 			</div>"$).Get("#" & mName)
 		Case "buttons-floating"
@@ -422,6 +443,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setPrependImage(sPrependImage)
 		setPrependIcon(sPrependIcon)
 		setPrependVisible(bPrependVisible)
+		setPrependColor(sPrependColor)
+		setPrependIconColor(sPrependIconColor)
+		setAppendColor(sAppendColor)
+		setAppendIconColor(sAppendIconColor)
 	End Select		
 	setAutoSizeToContent(bAutoSizeToContent)
 	UI.OnEvent(mElement, "change", Me, "changed")
@@ -434,6 +459,62 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setMinHeight(sMinHeight)
 End Sub
 
+'set Append Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setAppendColor(s As String)			'ignoredeadcode
+	sAppendColor = s
+	CustProps.put("AppendColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_append"$, s)
+End Sub
+'set Append Icon Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setAppendIconColor(s As String)			'ignoredeadcode
+	sAppendIconColor = s
+	CustProps.put("AppendIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_appendicon"$, s)
+End Sub
+'set Prepend Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setPrependColor(s As String)				'ignoredeadcode
+	sPrependColor = s
+	CustProps.put("PrependColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_prepend"$, s)
+End Sub
+'set Prepend Icon Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setPrependIconColor(s As String)			'ignoredeadcode
+	sPrependIconColor = s
+	CustProps.put("PrependIconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorByID($"${mName}_prependicon"$, s)
+End Sub
+'get Append Color
+Sub getAppendColor As String
+	Return sAppendColor
+End Sub
+'get Append Icon Color
+Sub getAppendIconColor As String
+	Return sAppendIconColor
+End Sub
+'get Prepend Color
+Sub getPrependColor As String
+	Return sPrependColor
+End Sub
+'get Prepend Icon Color
+Sub getPrependIconColor As String
+	Return sPrependIconColor
+End Sub
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
+End Sub
 
 'set Background Color
 Sub setBackgroundColor(s As String)			'ignoredeadcode
@@ -920,7 +1001,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		If sInputType = "legend" Then

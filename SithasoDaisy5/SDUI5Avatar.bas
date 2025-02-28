@@ -31,6 +31,7 @@ Version=10
 #DesignerProperty: Key: RingOffsetColor, DisplayName: Ring Offset Color, FieldType: String, DefaultValue: base-100, Description: Ring Offset Color
 #DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
 #DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -102,14 +103,15 @@ Sub Class_Globals
 	Private bRoundedField As Boolean = False
 	Private bChatImage As Boolean = False
 	Private sSize As String = "12"
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
-	mCallBack = Callback
-	CustProps.Initialize
 	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -128,7 +130,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -242,48 +244,50 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sAvatarType = Props.GetDefault("AvatarType", "image")
-		sAvatarType = modSD5.CStr(sAvatarType)
+		sAvatarType = UI.CStr(sAvatarType)
 		sSize = Props.GetDefault("Size", "12")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		sImage = Props.GetDefault("Image", "./assets/600by600.jpg")
-		sImage = modSD5.CStr(sImage)
+		sImage = UI.CStr(sImage)
 		sMask = Props.GetDefault("Mask", "circle")
-		sMask = modSD5.CStr(sMask)
+		sMask = UI.CStr(sMask)
 		If sMask = "none" Then sMask = ""
 		bOnline = Props.GetDefault("Online", False)
-		bOnline = modSD5.CBool(bOnline)
+		bOnline = UI.CBool(bOnline)
 		sOnlineColor = Props.GetDefault("OnlineColor", "")
-		sOnlineColor = modSD5.CStr(sOnlineColor)
+		sOnlineColor = UI.CStr(sOnlineColor)
 		bOnlineStatus = Props.GetDefault("OnlineStatus", False)
-		bOnlineStatus = modSD5.CBool(bOnlineStatus)
+		bOnlineStatus = UI.CBool(bOnlineStatus)
 		sPlaceholder = Props.GetDefault("Placeholder", "S")
-		sPlaceholder = modSD5.CStr(sPlaceholder)
+		sPlaceholder = UI.CStr(sPlaceholder)
 		bRing = Props.GetDefault("Ring", False)
-		bRing = modSD5.CBool(bRing)
+		bRing = UI.CBool(bRing)
 		sRingColor = Props.GetDefault("RingColor", "primary")
-		sRingColor = modSD5.CStr(sRingColor)
+		sRingColor = UI.CStr(sRingColor)
 		sRingOffset = Props.GetDefault("RingOffset", "2")
-		sRingOffset = modSD5.CStr(sRingOffset)
+		sRingOffset = UI.CStr(sRingOffset)
 		sRingOffsetColor = Props.GetDefault("RingOffsetColor", "base-100")
-		sRingOffsetColor = modSD5.CStr(sRingOffsetColor)
+		sRingOffsetColor = UI.CStr(sRingOffsetColor)
 		sTextSize = Props.GetDefault("TextSize", "")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = modSD5.CStr(sBadge)
+		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "secondary")
-		sBadgeColor = modSD5.CStr(sBadgeColor)
+		sBadgeColor = UI.CStr(sBadgeColor)
 		sBadgePosition = Props.GetDefault("BadgePosition", "top-end")
-		sBadgePosition = modSD5.CStr(sBadgePosition)
+		sBadgePosition = UI.CStr(sBadgePosition)
 		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
-		sBadgeSize = modSD5.CStr(sBadgeSize)
+		sBadgeSize = UI.CStr(sBadgeSize)
 		bBadgeVisible = Props.GetDefault("BadgeVisible", False)
-		bBadgeVisible = modSD5.CBool(bBadgeVisible)
+		bBadgeVisible = UI.CBool(bBadgeVisible)
 		bActivator = Props.GetDefault("Activator", False)
-		bActivator = modSD5.CBool(bActivator)
+		bActivator = UI.CBool(bActivator)
 		bRoundedField = Props.GetDefault("RoundedField", False)
-		bRoundedField = modSD5.CBool(bRoundedField)
+		bRoundedField = UI.CBool(bRoundedField)
 		bChatImage = Props.GetDefault("ChatImage", False)
-		bChatImage = modSD5.CBool(bChatImage)
+		bChatImage = UI.CBool(bChatImage)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = UI.CStr(sShadow)
 	End If
 	'
 	If sParentID <> "" Then
@@ -316,7 +320,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "image"
 		mElement = mTarget.Append($"[BANCLEAN]
 		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-			<span id="${mName}_badge" class="hidden indicator-item badge">${sBadge}</span>
+			<span id="${mName}_badge" class="hidden indicator-item rounded-full badge">${sBadge}</span>
   			<div id="${mName}_host">
     			<img id="${mName}_image" src="${sImage}" alt=""></img>
   			</div>
@@ -324,7 +328,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "placeholder"
 		mElement = mTarget.Append($"[BANCLEAN]
 		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-			<span id="${mName}_badge" class="hidden indicator-item badge">${sBadge}</span>
+			<span id="${mName}_badge" class="hidden indicator-item rounded-full badge">${sBadge}</span>
   			<div id="${mName}_host">
 				<span id="${mName}_text">${sPlaceholder}</span>
 			</div>
@@ -345,7 +349,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadgePosition(sBadgePosition)
 	setBadgeSize(sBadgeSize)
 	setBadgeVisible(bBadgeVisible)
+	setShadow(sShadow)
 '	setVisible(bVisible)
+End Sub
+
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)				'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	UI.SetShadowByID($"${mName}_host"$, s)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub
 
 'set Badge Size
@@ -401,8 +421,8 @@ Sub setBadgePosition(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If sBadge = "" Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = modSD5.mvfield(s,1,"-")
-	Dim spart As String = modSD5.mvfield(s,2,"-")
+	Dim fpart As String = UI.mvfield(s,1,"-")
+	Dim spart As String = UI.mvfield(s,2,"-")
 	UI.UpdateClassByID($"${mName}_badge"$, "badgeposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'get Badge
@@ -490,7 +510,7 @@ Sub setOnlineColor(s As String)
 	If mElement = Null Then Return
 	'[&.online]:before:bg-indigo-400
 	If s = "" Then Return
-'	Dim ocolor As String = modSD5.FixColor("bg", s)
+'	Dim ocolor As String = UI.FixColor("bg", s)
 	
 	'If s <> "" Then UI.SetAttr(mElement, "online-color", s)
 End Sub

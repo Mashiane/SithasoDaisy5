@@ -85,12 +85,13 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
-	UI.Initialize(Me)
+	
 	BANano.DependsOnAsset("infobox.min.css")
 	BANano.DependsOnAsset("countUp.umd.js")
 End Sub
@@ -117,7 +118,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -243,38 +244,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeEnabled = False
 		UI.ExcludeVisible = False
 		bAnimateCounter = Props.GetDefault("AnimateCounter", True)
-		bAnimateCounter = modSD5.CBool(bAnimateCounter)
+		bAnimateCounter = UI.CBool(bAnimateCounter)
 		sDecimal = Props.GetDefault("Decimal", ".")
-		sDecimal = modSD5.CStr(sDecimal)
+		sDecimal = UI.CStr(sDecimal)
 		sDuration = Props.GetDefault("Duration", "2")
-		sDuration = modSD5.CStr(sDuration)
+		sDuration = UI.CStr(sDuration)
 		sIcon = Props.GetDefault("Icon", "fa-solid fa-user")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "#264348")
-		sIconColor = modSD5.CStr(sIconColor)
+		sIconColor = UI.CStr(sIconColor)
 		sInforType = Props.GetDefault("InforType", "1")
-		sInforType = modSD5.CStr(sInforType)
+		sInforType = UI.CStr(sInforType)
 		sPrefix = Props.GetDefault("Prefix", "")
-		sPrefix = modSD5.CStr(sPrefix)
+		sPrefix = UI.CStr(sPrefix)
 		sSeparator = Props.GetDefault("Separator", "")
-		sSeparator = modSD5.CStr(sSeparator)
+		sSeparator = UI.CStr(sSeparator)
 		sStartFrom = Props.GetDefault("StartFrom", "0")
-		sStartFrom = modSD5.CStr(sStartFrom)
+		sStartFrom = UI.CStr(sStartFrom)
 		sSuffix = Props.GetDefault("Suffix", "")
-		sSuffix = modSD5.CStr(sSuffix)
+		sSuffix = UI.CStr(sSuffix)
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		sTitle = Props.GetDefault("Title", "Employees")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sValue = Props.GetDefault("Value", "1000")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sDecimalPlaces = Props.GetDefault("DecimalPlaces", "0")
-		sDecimalPlaces = modSD5.CStr(sDecimalPlaces)
+		sDecimalPlaces = UI.CStr(sDecimalPlaces)
 		sEffect = Props.GetDefault("Effect", "none")
-		sEffect = modSD5.CStr(sEffect)
+		sEffect = UI.CStr(sEffect)
 		If sEffect = "none" Then sEffect = ""
 		bUseGrouping = Props.GetDefault("UseGrouping", True)
-		bUseGrouping = modSD5.CBool(bUseGrouping)
+		bUseGrouping = UI.CBool(bUseGrouping)
 	End If
 	'
 	If sParentID <> "" Then
@@ -303,13 +304,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	'
 	Options.put("decimal", sDecimal)
-	Options.put("duration", modSD5.CInt(sDuration))
+	Options.put("duration", UI.CInt(sDuration))
 	Options.put("prefix", sPrefix)
 	Options.put("separator", sSeparator)
 	Options.put("suffix", sSuffix)
-	Options.Put("startVal", modSD5.CInt(sStartFrom))
+	Options.Put("startVal", UI.CInt(sStartFrom))
 	Options.Put("useEasing", True)
-	Options.put("decimalPlaces", modSD5.CInt(sDecimalPlaces))
+	Options.put("decimalPlaces", UI.CInt(sDecimalPlaces))
 	Options.put("useGrouping", bUseGrouping)
 	
 	setInforType(sInforType)
@@ -326,7 +327,7 @@ End Sub
 Sub Refresh						'ignoredeadcode
 	If bAnimateCounter = False Then Return
 	Dim eKey As String = $"${mName}_value"$
-	sValue = modSD5.CInt(sValue)
+	sValue = UI.CInt(sValue)
 	CountUp.Initialize2("countUp.CountUp", Array(eKey, sValue, Options))
 	CountUp.RunMethod("start", Null)
 End Sub
@@ -335,7 +336,7 @@ End Sub
 Sub setDecimalPlaces(s As String)
 	sDecimalPlaces = s
 	CustProps.put("DecimalPlaces", s)
-	Options.put("decimalPlaces", modSD5.CInt(s))
+	Options.put("decimalPlaces", UI.CInt(s))
 End Sub
 
 'set Effect
@@ -387,7 +388,7 @@ End Sub
 Sub setDuration(s As String)
 	sDuration = s
 	CustProps.put("Duration", s)
-	Options.put("duration", modSD5.CInt(s))
+	Options.put("duration", UI.CInt(s))
 End Sub
 'set Icon
 Sub setIcon(s As String)				'ignoredeadcode
@@ -447,7 +448,7 @@ End Sub
 Sub setStartFrom(s As String)
 	sStartFrom = s
 	CustProps.put("StartFrom", s)
-	Options.put("startVal", modSD5.CInt(s))
+	Options.put("startVal", UI.CInt(s))
 End Sub
 'set Suffix
 Sub setSuffix(s As String)

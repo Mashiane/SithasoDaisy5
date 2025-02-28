@@ -58,7 +58,7 @@ End Sub
 'If j.Success Then
 '	Dim Response As Map = j.response
 '	If Response.ContainsKey("contents") Then
-'		Dim minionTaal As String = modSD5.GetRecursive(Response, "contents.translated")
+'		Dim minionTaal As String = UI.GetRecursive(Response, "contents.translated")
 '		txtConvert.Value = minionTaal
 '	End If
 'Else	
@@ -297,7 +297,7 @@ End Sub
 'If j.Success Then
 '	Dim Response As Map = j.response
 '	If Response.ContainsKey("contents") Then
-'		Dim minionTaal As String = modSD5.GetRecursive(Response, "contents.translated")
+'		Dim minionTaal As String = UI.GetRecursive(Response, "contents.translated")
 '		txtConvert.Value = minionTaal
 '	End If
 'Else	
@@ -447,7 +447,7 @@ End Sub
 'If j.Success Then
 '	Dim Response As Map = j.response
 '	If Response.ContainsKey("contents") Then
-'		Dim minionTaal As String = modSD5.GetRecursive(Response, "contents.translated")
+'		Dim minionTaal As String = UI.GetRecursive(Response, "contents.translated")
 '		txtConvert.Value = minionTaal
 '	End If
 'Else	
@@ -464,7 +464,7 @@ End Sub
 'If j.Success Then
 '	Dim Response As Map = j.response
 '	If Response.ContainsKey("contents") Then
-'		Dim minionTaal As String = modSD5.GetRecursive(Response, "contents.translated")
+'		Dim minionTaal As String = UI.GetRecursive(Response, "contents.translated")
 '		txtConvert.Value = minionTaal
 '	End If
 'Else	
@@ -485,7 +485,7 @@ End Sub
 'If j.Success Then
 '	Dim Response As Map = j.response
 '	If Response.ContainsKey("contents") Then
-'		Dim minionTaal As String = modSD5.GetRecursive(Response, "contents.translated")
+'		Dim minionTaal As String = UI.GetRecursive(Response, "contents.translated")
 '		txtConvert.Value = minionTaal
 '	End If
 'Else	

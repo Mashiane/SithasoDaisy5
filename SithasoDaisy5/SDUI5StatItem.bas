@@ -72,11 +72,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -85,7 +86,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -96,7 +97,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -222,39 +223,39 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActionsVisible = Props.GetDefault("ActionsVisible", False)
-		bActionsVisible = modSD5.CBool(bActionsVisible)
+		bActionsVisible = UI.CBool(bActionsVisible)
 		sDesc = Props.GetDefault("Desc", "21% more than last month")
-		sDesc = modSD5.CStr(sDesc)
+		sDesc = UI.CStr(sDesc)
 		sDescTextColor = Props.GetDefault("DescTextColor", "")
-		sDescTextColor = modSD5.CStr(sDescTextColor)
+		sDescTextColor = UI.CStr(sDescTextColor)
 		sFigureColor = Props.GetDefault("FigureColor", "")
-		sFigureColor = modSD5.CStr(sFigureColor)
+		sFigureColor = UI.CStr(sFigureColor)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconHeight = Props.GetDefault("IconHeight", "12")
-		sIconHeight = modSD5.CStr(sIconHeight)
+		sIconHeight = UI.CStr(sIconHeight)
 		bIconVisible = Props.GetDefault("IconVisible", False)
-		bIconVisible = modSD5.CBool(bIconVisible)
+		bIconVisible = UI.CBool(bIconVisible)
 		sIconWidth = Props.GetDefault("IconWidth", "12")
-		sIconWidth = modSD5.CStr(sIconWidth)
+		sIconWidth = UI.CStr(sIconWidth)
 		bPlaceItemsCenter = Props.GetDefault("PlaceItemsCenter", False)
-		bPlaceItemsCenter = modSD5.CBool(bPlaceItemsCenter)
+		bPlaceItemsCenter = UI.CBool(bPlaceItemsCenter)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTitle = Props.GetDefault("Title", "Total Page Views")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sTitleTextColor = Props.GetDefault("TitleTextColor", "")
-		sTitleTextColor = modSD5.CStr(sTitleTextColor)
+		sTitleTextColor = UI.CStr(sTitleTextColor)
 		sValue = Props.GetDefault("Value", "89 400")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sValueTextColor = Props.GetDefault("ValueTextColor", "")
-		sValueTextColor = modSD5.CStr(sValueTextColor)
+		sValueTextColor = UI.CStr(sValueTextColor)
 	End If
 	'
 	UI.AddClassDT("stat")

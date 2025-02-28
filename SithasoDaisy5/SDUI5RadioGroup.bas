@@ -9,7 +9,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio Group, Description: Label
-#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Raw Options
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Options
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -78,11 +78,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	items.Initialize 
 End Sub
 ' returns the element id
@@ -92,7 +93,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -103,7 +104,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -229,41 +230,41 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 '		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
-		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sCheckedColor = UI.CStr(sCheckedColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = modSD5.CStr(sGroupName)
+		sGroupName = UI.CStr(sGroupName)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Label")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sValue = Props.GetDefault("Value", "")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		bColumnView = Props.GetDefault("ColumnView", False)
-		bColumnView = modSD5.CBool(bColumnView)
+		bColumnView = UI.CBool(bColumnView)
 		sLabelPosition = Props.GetDefault("LabelPosition", "right")
-		sLabelPosition = modSD5.CStr(sLabelPosition)
+		sLabelPosition = UI.CStr(sLabelPosition)
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "fit")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	UI.AddClassDT("fieldset")
@@ -360,18 +361,18 @@ End Sub
 
 Sub AddItem(k As String, v As String)
 	If mElement = Null Then Return
-	k = modSD5.CleanID(k)
-	Dim rSize As String = modSD5.FixSize("radio", sSize)
-	Dim rColor As String = modSD5.FixColor("radio", sColor)
+	k = UI.CleanID(k)
+	Dim rSize As String = UI.FixSize("radio", sSize)
+	Dim rColor As String = UI.FixColor("radio", sColor)
 	'
 	Dim cColor As String = ""
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	
 	If sCheckedColor <> "" Then
-		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
-'		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
-'		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+		cColor  = UI.FixColor("checked:text", sCheckedColor)
+'		checkedColor  = UI.FixColor("checked:bg", sCheckedColor)
+'		checkedBorder = UI.FixColor("checked:border", sCheckedColor)
 	End If
 	
 	Dim sb As StringBuilder
@@ -416,17 +417,17 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	End If
 	If m.Size = 0 Then Return
 	'
-	Dim rSize As String = modSD5.FixSize("radio", sSize)
-	Dim rColor As String = modSD5.FixColor("radio", sColor)
+	Dim rSize As String = UI.FixSize("radio", sSize)
+	Dim rColor As String = UI.FixColor("radio", sColor)
 	'
 	Dim cColor As String = ""
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	
 	If sCheckedColor <> "" Then
-		cColor  = modSD5.FixColor("checked:text", sCheckedColor)
-'		checkedColor  = modSD5.FixColor("checked:bg", sCheckedColor)
-'		checkedBorder = modSD5.FixColor("checked:border", sCheckedColor)
+		cColor  = UI.FixColor("checked:text", sCheckedColor)
+'		checkedColor  = UI.FixColor("checked:bg", sCheckedColor)
+'		checkedBorder = UI.FixColor("checked:border", sCheckedColor)
 	End If
 	
 	Dim sb As StringBuilder
@@ -437,7 +438,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 		Case "left"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
-				Dim sk As String = modSD5.CleanID(k)
+				Dim sk As String = UI.CleanID(k)
 '				sb.Append($"[BANCLEAN]
 '					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
 '						<span id="${sk}_${mName}_label">${v}</span>
@@ -455,7 +456,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 		Case "right"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
-				Dim sk As String = modSD5.CleanID(k)
+				Dim sk As String = UI.CleanID(k)
 '				sb.Append($"[BANCLEAN]
 '					<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
 '					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
@@ -472,7 +473,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	Else	
 		For Each k As String In m.Keys
 			Dim v As String = m.Get(k)
-			Dim sk As String = modSD5.CleanID(k)
+			Dim sk As String = UI.CleanID(k)
 			sb.Append($"[BANCLEAN]
 				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
               		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${sk}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
@@ -539,7 +540,7 @@ Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
 	Dim nm As Map = CreateMap()
 	For Each k As String In m
-		Dim sk As String = modSD5.CleanID(k)
+		Dim sk As String = UI.CleanID(k)
 		nm.Put(sk, k)
 	Next
 	SetOptionsFromMap(nm)
@@ -666,18 +667,18 @@ Sub getValue As String
 	For Each item As String In items.keys
 		Dim b As Boolean = UI.GetCheckedByID(item)
 		If b Then
-			Dim ok As String = modSD5.MvField(item, 1, "_")
+			Dim ok As String = UI.MvField(item, 1, "_")
 			selectedItems.Add(ok)
 		End If
 	Next
-	sValue = modSD5.Join(";", selectedItems)
+	sValue = UI.Join(";", selectedItems)
 	Return sValue
 End Sub
 
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		setBorderColor("error")

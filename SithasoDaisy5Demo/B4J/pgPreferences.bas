@@ -46,7 +46,7 @@ Sub Show(MainApp As SDUI5App)
 	propbag.AddPropertyToggle("toggle1", "Toggle", True, "success")
 	propbag.AddPropertyRating("rating1", "Rating 1", "2", "primary", app.MASK_STAR_2)
 	'
-	Dim gsOptions As Map = modSD5.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
+	Dim gsOptions As Map = App.UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 	BANano.Await(propbag.AddPropertyGroupSelect("groupselect1", "Group Select", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 	BANano.Await(propbag.SetPropertyValue("groupselect1", "horseride"))
 	BANano.Await(propbag.AddPropertyCheckBoxGroup("checkboxgroup1", "CheckBox Group", "spar;quadbike", "neutral", "#22c55e", gsOptions))

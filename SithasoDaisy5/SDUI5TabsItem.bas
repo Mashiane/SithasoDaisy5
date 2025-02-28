@@ -60,11 +60,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -73,7 +74,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -84,7 +85,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -176,22 +177,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActive = Props.GetDefault("Active", False)
-		bActive = modSD5.CBool(bActive)
+		bActive = UI.CBool(bActive)
 		'sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = UI.CStr(sBackgroundColor)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = modSD5.CStr(sBadge)
+		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
-		sBadgeColor = modSD5.CStr(sBadgeColor)
+		sBadgeColor = UI.CStr(sBadgeColor)
 		sBadgeSize = Props.GetDefault("BadgeSize", "none")
-		sBadgeSize = modSD5.CStr(sBadgeSize)
+		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sBorderColor = Props.GetDefault("BorderColor", "")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bEnabled = Props.GetDefault("Enabled", True)
-		bEnabled = modSD5.CBool(bEnabled)
+		bEnabled = UI.CBool(bEnabled)
 		'sTextColor = Props.GetDefault("TextColor", "")
-		'sTextColor = modSD5.CStr(sTextColor)
+		'sTextColor = UI.CStr(sTextColor)
 	End If
 	'
 	'If bActive = True Then UI.AddClassDT("tab-active")
@@ -228,7 +229,7 @@ End Sub
 
 private Sub itemchange(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
-	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
+	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sParentID}_change"$, Array(itemName))
 End Sub
 

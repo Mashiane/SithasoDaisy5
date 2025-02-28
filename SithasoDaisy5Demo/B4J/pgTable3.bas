@@ -54,7 +54,7 @@ Sub Show(MainApp As SDUI5App)
 	'get the total number of processed rows
 	sRowCount = summary.Get("rowcount")
 	'format the value to be a thousand
-	sRowCount = modSD5.Thousands(sRowCount)
+	sRowCount = App.UI.Thousands(sRowCount)
 	'set the first column to show the total
 	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
 End Sub

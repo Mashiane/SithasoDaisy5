@@ -49,12 +49,14 @@ Sub Class_Globals
 	Public CONST TYPEOF_SUCCESS As String = "success"
 	Public CONST TYPEOF_WARNING As String = "warning"
 	Private MDToastObject As BANanoObject
+	Private UI As UIShared 'ignore
 End Sub
 
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
@@ -63,7 +65,7 @@ End Sub
 
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -91,21 +93,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		sParentID = Props.GetDefault("ParentID", "")
-		sParentID = modSD5.CStr(sParentID)
+		sParentID = UI.CStr(sParentID)
 		sActionText = Props.GetDefault("ActionText", "OK")
-		sActionText = modSD5.CStr(sActionText)
+		sActionText = UI.CStr(sActionText)
 		iDuration = Props.GetDefault("Duration", 5000)
-		iDuration = modSD5.CInt(iDuration)
+		iDuration = UI.CInt(iDuration)
 		bInteraction = Props.GetDefault("Interaction", False)
-		bInteraction = modSD5.CBool(bInteraction)
+		bInteraction = UI.CBool(bInteraction)
 		sInteractionTimeout = Props.GetDefault("InteractionTimeout", "")
-		sInteractionTimeout = modSD5.CStr(sInteractionTimeout)
+		sInteractionTimeout = UI.CStr(sInteractionTimeout)
 		bModal = Props.GetDefault("Modal", False)
-		bModal = modSD5.CBool(bModal)
+		bModal = UI.CBool(bModal)
 		sPosition = Props.GetDefault("Position", "bottom_left")
-		sPosition = modSD5.CStr(sPosition)
+		sPosition = UI.CStr(sPosition)
 		sTypeOf = Props.GetDefault("TypeOf", "default")
-		sTypeOf = modSD5.CStr(sTypeOf)
+		sTypeOf = UI.CStr(sTypeOf)
 	End If
 	'
 	Options.put("actionText", sActionText)

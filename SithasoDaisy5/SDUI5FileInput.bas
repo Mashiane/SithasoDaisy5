@@ -73,11 +73,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -86,7 +87,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -97,7 +98,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -227,41 +228,41 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = modSD5.CBool(bGhost)
+		bGhost = UI.CBool(bGhost)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Please select a file")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
+		bValidator = UI.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sValidatorHint = UI.CStr(sValidatorHint)
 		sInputType = Props.GetDefault("InputType", "normal")
-		sInputType = modSD5.CStr(sInputType)
+		sInputType = UI.CStr(sInputType)
 		bVisible = Props.GetDefault("Visible", True)
-		bVisible = modSD5.CBool(bVisible)
+		bVisible = UI.CBool(bVisible)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		bHideSelectorButton = Props.GetDefault("HideSelectorButton", False)
-		bHideSelectorButton = modSD5.CBool(bHideSelectorButton)
+		bHideSelectorButton = UI.CBool(bHideSelectorButton)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
@@ -304,8 +305,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		</div>"$).Get("#" & mName)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<label id="${mName}_legend" class="fieldset-label">${sLabel}</label>
+			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
+				<label id="${mName}_legend" class="mb-1 fieldset-label">${sLabel}</label>
 				<input id="${mName}" class="file-input w-full" type="file"></input>
 			</div>"$).Get("#" & mName)
 	Case "normal"
@@ -319,6 +320,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHideSelectorButton(bHideSelectorButton)
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 '	setVisible(bVisible)
+End Sub
+
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
 End Sub
 
 'set Background Color
@@ -561,19 +571,19 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''**** UPLOAD
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 ''Dim fn As String = fileDet.FileName
 ''get the status of the upload
@@ -585,10 +595,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText
@@ -611,17 +621,17 @@ End Sub
 'for each fileObj As Map in fileList
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''start uploading the file
-'fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+'fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''get the status of the upload

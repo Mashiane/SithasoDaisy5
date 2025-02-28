@@ -81,11 +81,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -94,7 +95,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -105,7 +106,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -236,45 +237,45 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sRatingBackgroundColor = Props.GetDefault("RatingBackgroundColor", "none")
-		sRatingBackgroundColor = modSD5.CStr(sRatingBackgroundColor)
+		sRatingBackgroundColor = UI.CStr(sRatingBackgroundColor)
 		If sRatingBackgroundColor = "none" Then sRatingBackgroundColor = ""
 		sColor = Props.GetDefault("Color", "primary")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		iCount = Props.GetDefault("Count", 5)
-		iCount = modSD5.Cint(iCount)
+		iCount = UI.Cint(iCount)
 		bFirstHidden = Props.GetDefault("FirstHidden", True)
-		bFirstHidden = modSD5.CBool(bFirstHidden)
+		bFirstHidden = UI.CBool(bFirstHidden)
 		sGap = Props.GetDefault("Gap", "2")
-		sGap = modSD5.CStr(sGap)
+		sGap = UI.CStr(sGap)
 		bHalf = Props.GetDefault("Half", False)
-		bHalf = modSD5.CBool(bHalf)
+		bHalf = UI.CBool(bHalf)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sLabel = Props.GetDefault("Label", "Rating")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sMask = Props.GetDefault("Mask", "star")
-		sMask = modSD5.CStr(sMask)
+		sMask = UI.CStr(sMask)
 		bReadOnly = Props.GetDefault("ReadOnly", False)
-		bReadOnly = modSD5.CBool(bReadOnly)
+		bReadOnly = UI.CBool(bReadOnly)
 		sSize = Props.GetDefault("Size", "md")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		sValue = Props.GetDefault("Value", "2")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sInputType = Props.GetDefault("InputType", "normal")
-		sInputType = modSD5.CStr(sInputType)
+		sInputType = UI.CStr(sInputType)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
@@ -429,12 +430,12 @@ End Sub
 Sub Refresh			'ignoredeadcode
 	If mElement = Null Then Return
 	Clear
-	Dim tCount As Int = modSD5.CInt(iCount)
+	Dim tCount As Int = UI.CInt(iCount)
 	Dim fCount As Int = 0
-	Dim maskName As String = modSD5.FixMask(sMask)
-	Dim colorName As String = modSD5.FixColor("bg", sColor)
+	Dim maskName As String = UI.FixMask(sMask)
+	Dim colorName As String = UI.FixColor("bg", sColor)
 	If sRatingBackgroundColor <> "" Then
-		colorName = modSD5.FixColor("bg", sRatingBackgroundColor)
+		colorName = UI.FixColor("bg", sRatingBackgroundColor)
 	End If
 	Dim sb As StringBuilder
 	sb.Initialize
@@ -459,7 +460,7 @@ Sub Refresh			'ignoredeadcode
 				posD = fCount - 0.5
 				itemClasses.add("mask-half-1")
 			End If
-			Dim sclasses As String = modSD5.Join(" ", itemClasses)
+			Dim sclasses As String = UI.Join(" ", itemClasses)
 				sb.Append($"<input id="${mName}_${fCount}" type="radio" value="${posD}" name="${mName}" class="${sclasses}" aria-label="${posD} star"></input>"$)
 			items.Add($"${mName}_${fCount}"$)
 			If bHalf Then
@@ -467,7 +468,7 @@ Sub Refresh			'ignoredeadcode
 				itemClasses.Add(maskName)
 				itemClasses.Add(colorName)
 				itemClasses.add("mask-half-2")
-				Dim sclasses As String = modSD5.Join(" ", itemClasses)
+				Dim sclasses As String = UI.Join(" ", itemClasses)
 				sb.Append($"<input id="${mName}_${fCount}_2" type="radio" value="${fCount}" name="${mName}" class="${sclasses}" aria-label="${fCount} star"></input>"$)
 				items.Add($"${mName}_${fCount}_2"$)
 			End If
@@ -477,6 +478,14 @@ Sub Refresh			'ignoredeadcode
 			UI.OnChildEvent(k, "change", Me, "changed")
 		Next
 	End Select
+End Sub
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		UI.FocusByID($"${mName}_1"$)
+	Catch
+	End Try			'ignore
 End Sub
 
 'set Rating Background Color
@@ -622,17 +631,17 @@ Sub getValue As String
 	For Each item As String In items
 		Dim b As Boolean = UI.GetCheckedByID(item)
 		If b Then
-			Dim ok As String = modSD5.MvField(item, 2, "_")
+			Dim ok As String = UI.MvField(item, 2, "_")
 			selectedItems.Add(ok)
 		End If
 	Next
-	sValue = modSD5.Join(";", selectedItems)
+	sValue = UI.Join(";", selectedItems)
 	Return sValue
 End Sub
 
 Sub IsBlank As Boolean
 	Dim v As String = getValue
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Or v = "0" Then
 		If sInputType = "legend" Then

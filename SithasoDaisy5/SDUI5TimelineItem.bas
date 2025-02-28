@@ -69,11 +69,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -82,7 +83,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -93,7 +94,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -218,35 +219,35 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bEnd = Props.GetDefault("End", True)
-		bEnd = modSD5.CBool(bEnd)
+		bEnd = UI.CBool(bEnd)
 		bEndBox = Props.GetDefault("EndBox", False)
-		bEndBox = modSD5.CBool(bEndBox)
+		bEndBox = UI.CBool(bEndBox)
 		bEndJoinSuffix = Props.GetDefault("EndJoinSuffix", False)
-		bEndJoinSuffix = modSD5.CBool(bEndJoinSuffix)
+		bEndJoinSuffix = UI.CBool(bEndJoinSuffix)
 		sEndJoinSuffixColor = Props.GetDefault("EndJoinSuffixColor", "")
-		sEndJoinSuffixColor = modSD5.CStr(sEndJoinSuffixColor)
+		sEndJoinSuffixColor = UI.CStr(sEndJoinSuffixColor)
 		sEndText = Props.GetDefault("EndText", "")
-		sEndText = modSD5.CStr(sEndText)
+		sEndText = UI.CStr(sEndText)
 		bMiddle = Props.GetDefault("Middle", True)
-		bMiddle = modSD5.CBool(bMiddle)
+		bMiddle = UI.CBool(bMiddle)
 		bMiddleBox = Props.GetDefault("MiddleBox", False)
-		bMiddleBox = modSD5.CBool(bMiddleBox)
+		bMiddleBox = UI.CBool(bMiddleBox)
 		sMiddleIcon = Props.GetDefault("MiddleIcon", "./assets/checkblack.svg")
-		sMiddleIcon = modSD5.CStr(sMiddleIcon)
+		sMiddleIcon = UI.CStr(sMiddleIcon)
 		sMiddleIconSize = Props.GetDefault("MiddleIconSize", "16px")
-		sMiddleIconSize = modSD5.CStr(sMiddleIconSize)
+		sMiddleIconSize = UI.CStr(sMiddleIconSize)
 		sMiddleText = Props.GetDefault("MiddleText", "")
-		sMiddleText = modSD5.CStr(sMiddleText)
+		sMiddleText = UI.CStr(sMiddleText)
 		bStart = Props.GetDefault("Start", True)
-		bStart = modSD5.CBool(bStart)
+		bStart = UI.CBool(bStart)
 		bStartBox = Props.GetDefault("StartBox", False)
-		bStartBox = modSD5.CBool(bStartBox)
+		bStartBox = UI.CBool(bStartBox)
 		bStartJoinPrefix = Props.GetDefault("StartJoinPrefix", False)
-		bStartJoinPrefix = modSD5.CBool(bStartJoinPrefix)
+		bStartJoinPrefix = UI.CBool(bStartJoinPrefix)
 		sStartJoinPrefixColor = Props.GetDefault("StartJoinPrefixColor", "")
-		sStartJoinPrefixColor = modSD5.CStr(sStartJoinPrefixColor)
+		sStartJoinPrefixColor = UI.CStr(sStartJoinPrefixColor)
 		sStartText = Props.GetDefault("StartText", "")
-		sStartText = modSD5.CStr(sStartText)
+		sStartText = UI.CStr(sStartText)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes

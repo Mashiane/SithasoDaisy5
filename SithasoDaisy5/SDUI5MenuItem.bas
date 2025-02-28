@@ -91,11 +91,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	Items.Initialize 
 End Sub
 
@@ -121,7 +122,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -266,44 +267,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActive = Props.GetDefault("Active", False)
-		bActive = modSD5.CBool(bActive)
+		bActive = UI.CBool(bActive)
 		sBadge = Props.GetDefault("Badge", "")
-		sBadge = modSD5.CStr(sBadge)
+		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "secondary")
-		sBadgeColor = modSD5.CStr(sBadgeColor)
+		sBadgeColor = UI.CStr(sBadgeColor)
 		If sBadgeColor = "none" Then sBadgeColor = ""
 		sBadgeSize = Props.GetDefault("BadgeSize", "xs")
-		sBadgeSize = modSD5.CStr(sBadgeSize)
+		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		bFocus = Props.GetDefault("Focus", False)
-		bFocus = modSD5.CBool(bFocus)
+		bFocus = UI.CBool(bFocus)
 		sHref = Props.GetDefault("Href", "")
-		sHref = modSD5.CStr(sHref)
+		sHref = UI.CStr(sHref)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
-		sIconColor = modSD5.CStr(sIconColor)
+		sIconColor = UI.CStr(sIconColor)
 		sItemType = Props.GetDefault("ItemType", "normal")
-		sItemType = modSD5.CStr(sItemType)
+		sItemType = UI.CStr(sItemType)
 		If sItemType = "" Then sItemType = ""
 		bParent = Props.GetDefault("Parent", False)
-		bParent = modSD5.CBool(bParent)
+		bParent = UI.CBool(bParent)
 		sTarget = Props.GetDefault("Target", "none")
-		sTarget = modSD5.CStr(sTarget)
+		sTarget = UI.CStr(sTarget)
 		If sTarget = "none" Then sTarget = ""
 		sTooltip = Props.GetDefault("Tooltip", "")
-		sTooltip = modSD5.CStr(sTooltip)
+		sTooltip = UI.CStr(sTooltip)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
-		sTooltipPosition = modSD5.CStr(sTooltipPosition)
+		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
 		sMenuName = Props.GetDefault("MenuName", "")
-		sMenuName = modSD5.CStr(sMenuName)
+		sMenuName = UI.CStr(sMenuName)
 		sIconSize = Props.GetDefault("IconSize", "5")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		bBadgeVisible = Props.GetDefault("BadgeVisible", False)
-		bBadgeVisible = modSD5.CBool(bBadgeVisible)    
+		bBadgeVisible = UI.CBool(bBadgeVisible)    
 		bOpen = Props.GetDefault("Open", False)
-		bOpen = modSD5.CBool(bOpen)            
+		bOpen = UI.CBool(bOpen)            
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -357,7 +358,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<summary id="${mName}_anchor">
 					<img id="${mName}_icon" alt="" src="${sIcon}" class="hidden"></img>
 					<span id="${mName}_text">${sText}</span>
-					<span id="${mName}_badge" class="badge hidden">${sBadge}</span>
+					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</summary>	
 				<ul id="${mName}_items" class="hidden"></ul>
 			</details>
@@ -369,7 +370,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<a id="${mName}_anchor">
 					<img id="${mName}_icon" alt="" src="${sIcon}" class="hidden"></img>
 					<span id="${mName}_text" class="hidden">${sText}</span>
-					<span id="${mName}_badge" class="badge hidden">${sBadge}</span>
+					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>
 				<ul id="${mName}_items" class="hidden"></ul>
 		</li>"$).Get("#" & mName)
@@ -415,7 +416,7 @@ End Sub
 
 private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
-	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
+	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
 End Sub
 
@@ -639,7 +640,7 @@ End Sub
 
 'add a title
 Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -653,7 +654,7 @@ End Sub
 
 'add a normal item
 Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -668,7 +669,7 @@ End Sub
 
 'add an icon
 Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -683,7 +684,7 @@ End Sub
 
 'add a icon text
 Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem 
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -698,7 +699,7 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 End Sub
 
 Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem 
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -713,7 +714,7 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 End Sub
 
 Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -735,7 +736,7 @@ End Sub
 
 'set a single item
 Sub SetItemActive(itemKey As String)
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	If Items.ContainsKey(itemKey) = False Then Return
 	For Each k As String In Items.Keys
 		If k = itemKey Then

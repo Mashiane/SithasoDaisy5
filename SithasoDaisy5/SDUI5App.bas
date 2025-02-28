@@ -14,7 +14,7 @@ Version=10
 #Event: DarkTheme (e As BANanoEvent)
 
 Private Sub Class_Globals
-	Private UI As UIShared
+	Public UI As UIShared
 	Public mElement As BANanoElement 'ignore
 	Public Process As String
 	Private mback As Object				'ignore
@@ -382,6 +382,7 @@ Private Sub Class_Globals
 	Public CONST GRIDFLOW_NONE As String = "none"
 	Public CONST GRIDFLOW_ROW As String = "row"
 	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
+	Public EmojiData As Map
 End Sub
 
 
@@ -406,7 +407,7 @@ Public Sub Initialize (mCallback As Object)
 	'empty the body of the page
 	mElement.Empty
 	AddLoader
-	modSD5.InitColors  
+	UI.InitColors  
 	Themes.Initialize
 	templates.Initialize
 	templateViews.Initialize
@@ -414,12 +415,12 @@ Public Sub Initialize (mCallback As Object)
 	AllViews.Initialize
 	Designs.Initialize
 	DynamicEvents.Initialize
-'	modSD5.InitColors
-'	modSD5.InitLanguages
-'	modSD5.InitCountries
+'	UI.InitColors
+'	UI.InitLanguages
+'	UI.InitCountries
 	UserProfile.Initialize
-	modSD5.InitMonths
-	modSD5.InitDays
+	UI.InitMonths
+	UI.InitDays
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
@@ -482,9 +483,9 @@ End Sub
 
 ''shows the chosen page
 'Sub ShowPage(pgName As String) As Boolean
-'	Dim prefix As String = modSD5.mvfield(pgName, 1, "_")
+'	Dim prefix As String = UI.mvfield(pgName, 1, "_")
 '	If prefix = "page" Then
-'		Dim pgNameX As String = modSD5.mvfield(pgName, 2, "_")
+'		Dim pgNameX As String = UI.mvfield(pgName, 2, "_")
 '		If Pages.ContainsKey(pgNameX) = False Then Return False
 '		Dim mCallBack As BANanoObject = Pages.Get(pgNameX)
 '		mCallBack.RunMethod("show", Me)
@@ -496,7 +497,7 @@ End Sub
 
 ''shows the chosen page by name
 'Sub ShowPageByName(pgName As String) As Boolean
-'	pgName = modSD5.CleanID(pgName)
+'	pgName = UI.CleanID(pgName)
 '	If Pages.ContainsKey(pgName) = False Then Return False
 '	Dim mCallBack As BANanoObject = Pages.Get(pgName)
 '	mCallBack.RunMethod("show", Me)
@@ -505,9 +506,9 @@ End Sub
 
 ''shows the chosen page
 'Sub ShowServerPage(pgName As String) As Boolean
-'	Dim prefix As String = modSD5.mvfield(pgName, 1, "_")
+'	Dim prefix As String = UI.mvfield(pgName, 1, "_")
 '	If prefix = "page" Then
-'		Dim pgNameX As String = modSD5.mvfield(pgName, 2, "_")
+'		Dim pgNameX As String = UI.mvfield(pgName, 2, "_")
 '		If Pages.ContainsKey(pgNameX) = False Then Return False
 '		Dim mCallBack As BANanoObject = Pages.Get(pgNameX)
 '		mCallBack.RunMethod("show", Null)
@@ -521,7 +522,7 @@ End Sub
 'Sub ShowServerPage1(PageModule As Object)
 '	Dim pgX As BANanoObject = PageModule
 '	Dim pgName As String = pgX.RunMethod("getname", Null).Result
-'	pgName = modSD5.CStr(pgName)
+'	pgName = UI.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) = False Then Return
 '	pgX.RunMethod("show", Null)
@@ -532,7 +533,7 @@ End Sub
 'Sub ShowPage1(PageModule As Object)
 '	Dim pgX As BANanoObject = PageModule
 '	Dim pgName As String = pgX.RunMethod("getname", Null).Result
-'	pgName = modSD5.CStr(pgName)
+'	pgName = UI.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) = False Then Return
 '	pgX.RunMethod("show", Me)
@@ -571,7 +572,7 @@ End Sub
 'Sub AddPage(mCallBack As BANanoObject)
 '	Dim pgName As String = mCallBack.RunMethod("getname", Null).Result
 '	Dim pgTitle As String = mCallBack.RunMethod("gettitle", Null).Result
-'	pgName = modSD5.CStr(pgName)
+'	pgName = UI.CStr(pgName)
 '	If pgName = "" Then Return
 '	If Pages.ContainsKey(pgName) Then Return
 '	Pages.Put(pgName, mCallBack)
@@ -668,7 +669,7 @@ End Sub
 Sub IsDarkMode As Boolean
 	Dim matchMedia As BANanoObject = Banano.Window.RunMethod("matchMedia", "(prefers-color-scheme: dark)")
 	Dim res As Boolean = matchMedia.GetField("matches").result
-	res = modSD5.CBool(res)
+	res = UI.CBool(res)
 	Return res
 End Sub
 
@@ -763,7 +764,7 @@ Sub ApplyTheme(themeName As String, items As List)
 	If Themes.ContainsKey(themeName) Then
 		themerec = Themes.Get(themeName)
 		oldclasses = themerec.Get("classes")
-		Dim sclasses As String = modSD5.Join(" ", oldclasses)
+		Dim sclasses As String = UI.Join(" ", oldclasses)
 		For Each item As String In items
 			Dim ikey As String = $"#${item}"$
 			Banano.GetElement(ikey).AddClass(sclasses)
@@ -1221,12 +1222,12 @@ End Sub
 Sub ParseTree(Rootx As Map)
 	'does this contains children
 	If Rootx.ContainsKey("children") Then
-		Dim rootID As String = modSD5.GetRecursive(Rootx, "attributes.id")
-		rootID = modSD5.CStr(rootID)
+		Dim rootID As String = UI.GetRecursive(Rootx, "attributes.id")
+		rootID = UI.CStr(rootID)
 		rootID = rootID.trim
 		If rootID = "" Then
 			rootID = guidAlphaApp(15)
-			modSD5.PutRecursive(Rootx, "attributes.id", rootID)
+			UI.PutRecursive(Rootx, "attributes.id", rootID)
 		End If
 		'get the children
 		Dim children As List = Rootx.Get("children")
@@ -1235,17 +1236,17 @@ Sub ParseTree(Rootx As Map)
 		'loop through each child
 		For childCnt = 0 To childTot
 			Dim child As Map = children.Get(childCnt)
-			Dim childID As String = modSD5.GetRecursive(child, "attributes.id")
-			childID = modSD5.CStr(childID)
+			Dim childID As String = UI.GetRecursive(child, "attributes.id")
+			childID = UI.CStr(childID)
 			childID = childID.trim
 			If childID = "" Then
 				childID = guidAlphaApp(15)
-				modSD5.PutRecursive(child, "attributes.id", childID)
+				UI.PutRecursive(child, "attributes.id", childID)
 			End If
 			child.Put("treePosition", childCnt)
 			'get the parent id
-			Dim parentID As String = modSD5.GetRecursive(Rootx, "attributes.id")
-			parentID = modSD5.CStr(parentID)
+			Dim parentID As String = UI.GetRecursive(Rootx, "attributes.id")
+			parentID = UI.CStr(parentID)
 			'create a new record
 			Dim nitem As Map = CreateMap()
 			nitem.Put("parent", parentID)
@@ -1286,7 +1287,7 @@ End Sub
 
 'get the text of an element
 Sub GetIDText(id As String) As String
-	id = modSD5.CleanID(id)
+	id = UI.CleanID(id)
 	If Banano.Exists($"#${id}"$) Then
 		Dim res As String = Banano.GetElement($"#${id}"$).GetText
 		Return res
@@ -1524,8 +1525,8 @@ End Sub
 '	Else
 '		Banano.Throw($"${mapName}_ready event is missing!"$)
 '	End If
-'	modSD5.AddJavascriptFile($"https://maps.googleapis.com/maps/api/js?key=${GMapApiKey}&callback=${mapName}_ready&libraries=places&v=3&loading=async"$)
-'	'modSD5.AddJavascriptFile("https://cdn.jsdelivr.net/npm/gmaps@0.4.25/gmaps.min.js")
+'	UI.AddJavascriptFile($"https://maps.googleapis.com/maps/api/js?key=${GMapApiKey}&callback=${mapName}_ready&libraries=places&v=3&loading=async"$)
+'	'UI.AddJavascriptFile("https://cdn.jsdelivr.net/npm/gmaps@0.4.25/gmaps.min.js")
 '	Banano.Await(UsesGMaps)
 'End Sub
 
@@ -1632,16 +1633,12 @@ Sub UsesPDFLib
 End Sub
 
 Sub UsesEmojiMart
-	Banano.Await(LoadAssetsOnDemand("SQLite", Array("emojimart.js")))
-	modSD5.EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
+	Banano.Await(LoadAssetsOnDemand("EmojiMart", Array("emojimart.js")))
+	EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
 End Sub
 
 Sub UsesSQLite
 	Banano.Await(LoadAssetsOnDemand("SQLite", Array("sql-browser.min.js")))
-End Sub
-
-Sub UsesInfoBox
-	Banano.Await(LoadAssetsOnDemand("CountUp", Array("math.min.js")))
 End Sub
 
 Sub UsesMath
@@ -1839,7 +1836,7 @@ End Sub
 
 ''add item as form
 'Sub AddAsForm(Module As Object, elID As String)
-'	elID = modSD5.CleanID(elID)
+'	elID = UI.CleanID(elID)
 '	Dim xform As SDUIForm
 '	xform.Initialize(Module, elID, elID)
 '	xform.LinkExisting
@@ -1884,7 +1881,7 @@ Sub AddMyLayoutFile(tempID As String, fileName As String)
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
 		Dim tid As String = hItem.GetDefault("id","")
-		tid = modSD5.CStr(tid)
+		tid = UI.CStr(tid)
 		tid = tid.trim
 		Select Case stype
 			Case "checkbox", "Element", "file", "radio", "text", "search", "hidden", "range", _
@@ -1925,7 +1922,7 @@ Sub AddMyLayout(tempID As String, tempHTML As String)
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
 		Dim tid As String = hItem.GetDefault("id","")
-		tid = modSD5.CStr(tid)
+		tid = UI.CStr(tid)
 		tid = tid.trim
 		Select Case stype
 			Case "checkbox", "Element", "file", "radio", "text", "search", "hidden", "range", _
@@ -1964,7 +1961,7 @@ End Sub
 'End Sub
 '</code>
 Sub LoadMyLayout(targetID As String, tempID As String, content As Map) As Int
-	targetID = modSD5.CleanID(targetID)
+	targetID = UI.CleanID(targetID)
 	If templates.ContainsKey(tempID) = False Then Return -1
 	'get the template HTML
 	Dim tmpHTML As String = templates.Get(tempID)
@@ -2014,7 +2011,7 @@ End Sub
 'End Sub
 '</code>
 Sub LoadMyLayoutPrepend(targetID As String, tempID As String, content As Map) As Int
-	targetID = modSD5.CleanID(targetID)
+	targetID = UI.CleanID(targetID)
 	If templates.ContainsKey(tempID) = False Then Return -1
 	'get the template HTML
 	Dim tmpHTML As String = templates.Get(tempID)
@@ -2095,7 +2092,7 @@ End Sub
 'get a tag from an element
 'this should be the record
 Sub GetMyTag(elID As String) As Object
-	elID = modSD5.CleanID(elID)
+	elID = UI.CleanID(elID)
 	Dim el As BANanoElement = Banano.GetElement($"#${elID}"$)
 	Dim xtag As Object = el.GetField("tag")
 	Return xtag
@@ -2103,8 +2100,8 @@ End Sub
 
 'get a tag from an element
 Sub GetMyPos(elID As String) As String
-	elID = modSD5.CleanID(elID)
-	Dim spos As String = modSD5.MvLast("_", elID)
+	elID = UI.CleanID(elID)
+	Dim spos As String = UI.MvLast("_", elID)
 	Return spos
 End Sub
 
@@ -2246,6 +2243,6 @@ End Sub
 
 'get an item index from eID
 Sub IndexFromEventID(eID As String) As String
-	Dim pos As String = modSD5.MvField(eID, 2, "_")
+	Dim pos As String = UI.MvField(eID, 2, "_")
 	Return pos
 End Sub

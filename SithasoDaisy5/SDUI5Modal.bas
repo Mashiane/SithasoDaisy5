@@ -19,17 +19,20 @@ Version=10
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
 #DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Actions Visible
 #DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel
+#DesignerProperty: Key: BottonsWidth, DisplayName: Bottons Width, FieldType: String, DefaultValue: 22, Description: Bottons Width
+#DesignerProperty: Key: ButtonsShadow, DisplayName: Buttons Shadow, FieldType: String, DefaultValue: md, Description: Buttons Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: ButtonsRounded, DisplayName: Buttons Rounded, FieldType: String, DefaultValue: md, Description: Buttons Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: YesCaption, DisplayName: Yes Caption, FieldType: String, DefaultValue: Yes, Description: Yes Caption
-#DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: , Description: Yes Text Color
+#DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
 #DesignerProperty: Key: YesColor, DisplayName: Yes Color, FieldType: String, DefaultValue: success, Description: Yes Color
 #DesignerProperty: Key: YesLoading, DisplayName: Yes Loading, FieldType: Boolean, DefaultValue: False, Description: Yes Loading
 #DesignerProperty: Key: NoCaption, DisplayName: No Caption, FieldType: String, DefaultValue: No, Description: No Caption
-#DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: , Description: No Text Color
+#DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
 #DesignerProperty: Key: NoColor, DisplayName: No Color, FieldType: String, DefaultValue: error, Description: No Color
 #DesignerProperty: Key: NoLoading, DisplayName: No Loading, FieldType: Boolean, DefaultValue: False, Description: No Loading
 #DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
 #DesignerProperty: Key: CancelCaption, DisplayName: Cancel Caption, FieldType: String, DefaultValue: Cancel, Description: Cancel Caption
-#DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: , Description: Cancel Text Color
+#DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: #ffffff, Description: Cancel Text Color
 #DesignerProperty: Key: CancelColor, DisplayName: Cancel Color, FieldType: String, DefaultValue: gray, Description: Cancel Color
 #DesignerProperty: Key: CancelLoading, DisplayName: Cancel Loading, FieldType: Boolean, DefaultValue: False, Description: Cancel Loading
 #DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
@@ -92,17 +95,17 @@ Sub Class_Globals
 	Private sActionType As String = "yes-no"
 	Private sCancelColor As String = "gray"
 	Private bCancelLoading As Boolean = False
-	Private sCancelTextColor As String = ""
+	Private sCancelTextColor As String = "#ffffff"
 	Private bCancelVisible As Boolean = True
 	Private sNoCaption As String = "No"
 	Private sNoColor As String = "error"
 	Private bNoLoading As Boolean = False
-	Private sNoTextColor As String = ""
+	Private sNoTextColor As String = "#ffffff"
 	Private bNoVisible As Boolean = True
 	Private sYesCaption As String = "Yes"
 	Private sYesColor As String = "success"
 	Private bYesLoading As Boolean = False
-	Private sYesTextColor As String = ""
+	Private sYesTextColor As String = "#ffffff"
 	Private bYesVisible As Boolean = True
 	Private sCancelCaption As String = "Cancel"
 	Public CONST ACTIONTYPE_CANCEL As String = "cancel"
@@ -116,14 +119,18 @@ Sub Class_Globals
 	Private sRawHtml As String = ""
 	Private validations As Map
 	Private bFullScreen As Boolean = False
+	Private sBottonsWidth As String = "22"
+	Private sButtonsShadow As String = "md"
+	Private sButtonsRounded As String = "md"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -132,7 +139,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -143,7 +150,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -268,71 +275,77 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActionsVisible = Props.GetDefault("ActionsVisible", True)
-		bActionsVisible = modSD5.CBool(bActionsVisible)
+		bActionsVisible = UI.CBool(bActionsVisible)
 		bBackdrop = Props.GetDefault("Backdrop", True)
-		bBackdrop = modSD5.CBool(bBackdrop)
+		bBackdrop = UI.CBool(bBackdrop)
 		bClosable = Props.GetDefault("Closable", True)
-		bClosable = modSD5.CBool(bClosable)
+		bClosable = UI.CBool(bClosable)
 		bGlass = Props.GetDefault("Glass", False)
-		bGlass = modSD5.CBool(bGlass)
+		bGlass = UI.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "fit")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sLGMoveFrom = Props.GetDefault("LGMoveFrom", "none")
-		sLGMoveFrom = modSD5.CStr(sLGMoveFrom)
+		sLGMoveFrom = UI.CStr(sLGMoveFrom)
 		If sLGMoveFrom = "none" Then sLGMoveFrom = ""
 		sMDMoveFrom = Props.GetDefault("MDMoveFrom", "none")
-		sMDMoveFrom = modSD5.CStr(sMDMoveFrom)
+		sMDMoveFrom = UI.CStr(sMDMoveFrom)
 		If sMDMoveFrom = "none" Then sMDMoveFrom = ""
 		sMoveFrom = Props.GetDefault("MoveFrom", "middle")
-		sMoveFrom = modSD5.CStr(sMoveFrom)
+		sMoveFrom = UI.CStr(sMoveFrom)
 		bOpen = Props.GetDefault("Open", False)
-		bOpen = modSD5.CBool(bOpen)
+		bOpen = UI.CBool(bOpen)
 		sSMMoveFrom = Props.GetDefault("SMMoveFrom", "none")
-		sSMMoveFrom = modSD5.CStr(sSMMoveFrom)
+		sSMMoveFrom = UI.CStr(sSMMoveFrom)
 		If sSMMoveFrom = "none" Then sSMMoveFrom = ""
 		sTitle = Props.GetDefault("Title", "Modal Dialog")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sWidth = Props.GetDefault("Width", "700px")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sXLMoveFrom = Props.GetDefault("XLMoveFrom", "none")
-		sXLMoveFrom = modSD5.CStr(sXLMoveFrom)
+		sXLMoveFrom = UI.CStr(sXLMoveFrom)
 		If sXLMoveFrom = "none" Then sXLMoveFrom = ""
 		sActionType = Props.GetDefault("ActionType", "yes-no")
-		sActionType = modSD5.CStr(sActionType)
+		sActionType = UI.CStr(sActionType)
 		sCancelColor = Props.GetDefault("CancelColor", "gray")
-		sCancelColor = modSD5.CStr(sCancelColor)
+		sCancelColor = UI.CStr(sCancelColor)
 		bCancelLoading = Props.GetDefault("CancelLoading", False)
-		bCancelLoading = modSD5.CBool(bCancelLoading)
-		sCancelTextColor = Props.GetDefault("CancelTextColor", "")
-		sCancelTextColor = modSD5.CStr(sCancelTextColor)
+		bCancelLoading = UI.CBool(bCancelLoading)
+		sCancelTextColor = Props.GetDefault("CancelTextColor", "#ffffff")
+		sCancelTextColor = UI.CStr(sCancelTextColor)
 		bCancelVisible = Props.GetDefault("CancelVisible", True)
-		bCancelVisible = modSD5.CBool(bCancelVisible)
+		bCancelVisible = UI.CBool(bCancelVisible)
 		sNoCaption = Props.GetDefault("NoCaption", "No")
-		sNoCaption = modSD5.CStr(sNoCaption)
+		sNoCaption = UI.CStr(sNoCaption)
 		sNoColor = Props.GetDefault("NoColor", "error")
-		sNoColor = modSD5.CStr(sNoColor)
+		sNoColor = UI.CStr(sNoColor)
 		bNoLoading = Props.GetDefault("NoLoading", False)
-		bNoLoading = modSD5.CBool(bNoLoading)
-		sNoTextColor = Props.GetDefault("NoTextColor", "")
-		sNoTextColor = modSD5.CStr(sNoTextColor)
+		bNoLoading = UI.CBool(bNoLoading)
+		sNoTextColor = Props.GetDefault("NoTextColor", "#ffffff")
+		sNoTextColor = UI.CStr(sNoTextColor)
 		bNoVisible = Props.GetDefault("NoVisible", True)
-		bNoVisible = modSD5.CBool(bNoVisible)
+		bNoVisible = UI.CBool(bNoVisible)
 		sYesCaption = Props.GetDefault("YesCaption", "Yes")
-		sYesCaption = modSD5.CStr(sYesCaption)
+		sYesCaption = UI.CStr(sYesCaption)
 		sYesColor = Props.GetDefault("YesColor", "success")
-		sYesColor = modSD5.CStr(sYesColor)
+		sYesColor = UI.CStr(sYesColor)
 		bYesLoading = Props.GetDefault("YesLoading", False)
-		bYesLoading = modSD5.CBool(bYesLoading)
-		sYesTextColor = Props.GetDefault("YesTextColor", "")
-		sYesTextColor = modSD5.CStr(sYesTextColor)
+		bYesLoading = UI.CBool(bYesLoading)
+		sYesTextColor = Props.GetDefault("YesTextColor", "#ffffff")
+		sYesTextColor = UI.CStr(sYesTextColor)
 		bYesVisible = Props.GetDefault("YesVisible", True)
-		bYesVisible = modSD5.CBool(bYesVisible)
+		bYesVisible = UI.CBool(bYesVisible)
 		sCancelCaption = Props.GetDefault("CancelCaption", "Cancel")
-		sCancelCaption = modSD5.CStr(sCancelCaption)
+		sCancelCaption = UI.CStr(sCancelCaption)
 		sRawHtml = Props.GetDefault("RawHtml", "")
-		sRawHtml = modSD5.CStr(sRawHtml)
+		sRawHtml = UI.CStr(sRawHtml)
 		bFullScreen = Props.GetDefault("FullScreen", False)
-		bFullScreen = modSD5.CBool(bFullScreen)
+		bFullScreen = UI.CBool(bFullScreen)
+		sBottonsWidth = Props.GetDefault("BottonsWidth", "22")
+		sBottonsWidth = UI.CStr(sBottonsWidth)
+		sButtonsShadow = Props.GetDefault("ButtonsShadow", "md")
+		sButtonsShadow = UI.CStr(sButtonsShadow)
+		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
+		sButtonsRounded = UI.CStr(sButtonsRounded)
 	End If
 	'
 	UI.AddClassDT("modal")
@@ -414,6 +427,54 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 End Sub
 
+
+'set Buttons Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setButtonsRounded(s As String)
+	sButtonsRounded = s
+	CustProps.put("ButtonsRounded", s)
+	If mElement = Null Then Return
+	UI.SetRoundedByID($"${mName}_yes"$, s)
+	UI.SetRoundedByID($"${mName}_no"$, s)
+	UI.SetRoundedByID($"${mName}_cancel"$, s)
+End Sub
+
+'get Buttons Rounded
+Sub getButtonsRounded As String
+	Return sButtonsRounded
+End Sub
+
+'set Bottons Width
+Sub setBottonsWidth(s As String)
+	sBottonsWidth = s
+	CustProps.put("BottonsWidth", s)
+	If mElement = Null Then Return
+	UI.SetWidthByID($"${mName}_yes"$, s)
+	UI.SetWidthByID($"${mName}_no"$, s)
+	UI.SetWidthByID($"${mName}_cancel"$, s)
+End Sub
+
+'set Buttons Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setButtonsShadow(s As String)
+	sButtonsShadow = s
+	CustProps.put("ButtonsShadow", s)
+	If mElement = Null Then Return
+	UI.SetShadowByID($"${mName}_yes"$, s)
+	UI.SetShadowByID($"${mName}_no"$, s)
+	UI.SetShadowByID($"${mName}_cancel"$, s)
+End Sub
+
+'get Bottons Width
+Sub getBottonsWidth As String
+	Return sBottonsWidth
+End Sub
+
+'get Buttons Shadow
+Sub getButtonsShadow As String
+	Return sButtonsShadow
+End Sub
+
 Sub setFullScreen(b As Boolean)
 	bFullScreen = b
 	CustProps.Put("FullScreen", b)
@@ -448,6 +509,9 @@ private Sub AddYesButton				'ignoredeadcode
 	YesButton.Text = sYesCaption
 	YesButton.Visible = bYesVisible
 	YesButton.Loading = bYesLoading
+	YesButton.Width = sBottonsWidth
+	YesButton.Shadow = sButtonsShadow
+	YesButton.Shape = sButtonsRounded
 	YesButton.AddComponent
 	UI.OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
 End Sub
@@ -461,6 +525,9 @@ private Sub AddNoButton			'ignoredeadcode
 	NoButton.Text = sNoCaption
 	NoButton.Visible = bNoVisible
 	NoButton.Loading = bNoLoading
+	NoButton.Width = sBottonsWidth
+	NoButton.Shadow = sButtonsShadow
+	NoButton.Shape = sButtonsRounded
 	NoButton.AddComponent
 	UI.OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
 End Sub
@@ -474,6 +541,9 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.Text = sCancelCaption
 	CancelButton.Visible = bCancelVisible
 	CancelButton.Loading = bCancelLoading
+	CancelButton.Width = sBottonsWidth
+	CancelButton.Shadow = sButtonsShadow
+	CancelButton.Shape = sButtonsRounded
 	CancelButton.AddComponent
 	UI.OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)	
 End Sub

@@ -264,7 +264,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -345,8 +345,9 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
-	mName = modSD5.CleanID(Name)
-	mEventName = modSD5.CleanID(EventName)
+	UI.Initialize(Me)
+	mName = UI.CleanID(Name)
+	mEventName = UI.CleanID(EventName)
 	mCallBack = CallBack
 	CustProps.Initialize
 	filterNames.Initialize
@@ -354,7 +355,7 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	Rows.Initialize 
 	DPValue.Initialize 
 	Originals.Initialize 
-	UI.Initialize(Me)
+	
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
@@ -374,144 +375,144 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sItemsPerPage = Props.GetDefault("ItemsPerPage", "5")
-		sItemsPerPage = modSD5.CStr(sItemsPerPage)
-		iItemsPerPage = modSD5.CInt(sItemsPerPage)
+		sItemsPerPage = UI.CStr(sItemsPerPage)
+		iItemsPerPage = UI.CInt(sItemsPerPage)
 		bVisible = Props.GetDefault("Visible", True)
-		bVisible = modSD5.CBool(bVisible)
+		bVisible = UI.CBool(bVisible)
 		bHasAddnew = Props.GetDefault("HasAddnew", True)
-		bHasAddnew = modSD5.CBool(bHasAddnew)
+		bHasAddnew = UI.CBool(bHasAddnew)
 		bHasBack = Props.GetDefault("HasBack", True)
-		bHasBack = modSD5.CBool(bHasBack)
+		bHasBack = UI.CBool(bHasBack)
 		bHasClone = Props.GetDefault("HasClone", False)
-		bHasClone = modSD5.CBool(bHasClone)
+		bHasClone = UI.CBool(bHasClone)
 		bHasDelete = Props.GetDefault("HasDelete", False)
-		bHasDelete = modSD5.CBool(bHasDelete)
+		bHasDelete = UI.CBool(bHasDelete)
 		bHasDownload = Props.GetDefault("HasDownload", False)
-		bHasDownload = modSD5.CBool(bHasDownload)
+		bHasDownload = UI.CBool(bHasDownload)
 		bHasUpload = Props.GetDefault("HasUpload", False)
-		bHasUpload = modSD5.CBool(bHasUpload)
+		bHasUpload = UI.CBool(bHasUpload)
 		bHasEdit = Props.GetDefault("HasEdit", False)
-		bHasEdit = modSD5.CBool(bHasEdit)
+		bHasEdit = UI.CBool(bHasEdit)
 		bHasMenu = Props.GetDefault("HasMenu", False)
-		bHasMenu = modSD5.CBool(bHasMenu)
+		bHasMenu = UI.CBool(bHasMenu)
 		bHasRefresh = Props.GetDefault("HasRefresh", True)
-		bHasRefresh = modSD5.CBool(bHasRefresh)
+		bHasRefresh = UI.CBool(bHasRefresh)
 		bHasSearch = Props.GetDefault("HasSearch", False)
-		bHasSearch = modSD5.CBool(bHasSearch)
+		bHasSearch = UI.CBool(bHasSearch)
 		bIsCompact = Props.GetDefault("IsCompact", False)
-		bIsCompact = modSD5.CBool(bIsCompact)
+		bIsCompact = UI.CBool(bIsCompact)
 		bIsNormal = Props.GetDefault("IsNormal", False)
-		bIsNormal = modSD5.CBool(bIsNormal)
+		bIsNormal = UI.CBool(bIsNormal)
 		bIsZebra = Props.GetDefault("IsZebra", False)
-		bIsZebra = modSD5.CBool(bIsZebra)
+		bIsZebra = UI.CBool(bIsZebra)
 		sTitle = Props.GetDefault("Title", "")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		bBadgesOutlined = Props.GetDefault("BadgesOutlined", False)
-		bBadgesOutlined = modSD5.CBool(bBadgesOutlined)
+		bBadgesOutlined = UI.CBool(bBadgesOutlined)
 		sBadgesSize = Props.GetDefault("BadgesSize", "md")
-		sBadgesSize = modSD5.CStr(sBadgesSize)
+		sBadgesSize = UI.CStr(sBadgesSize)
 		sButtonSize = Props.GetDefault("ButtonSize", "md")
-		sButtonSize = modSD5.CStr(sButtonSize)
+		sButtonSize = UI.CStr(sButtonSize)
 		bButtonsOutlined = Props.GetDefault("ButtonsOutlined", False)
-		bButtonsOutlined = modSD5.CBool(bButtonsOutlined)
+		bButtonsOutlined = UI.CBool(bButtonsOutlined)
 		bHover = Props.GetDefault("Hover", False)
-		bHover = modSD5.CBool(bHover)
+		bHover = UI.CBool(bHover)
 		bSelectAll = Props.GetDefault("SelectAll", False)
-		bSelectAll = modSD5.CBool(bSelectAll)
+		bSelectAll = UI.CBool(bSelectAll)
 		bHasDeleteAll = Props.GetDefault("HasDeleteAll", False)
-		bHasDeleteAll = modSD5.CBool(bHasDeleteAll)
+		bHasDeleteAll = UI.CBool(bHasDeleteAll)
 		bHasToolbarUpload = Props.GetDefault("HasToolbarUpload", False)
-		bHasToolbarUpload = modSD5.CBool(bHasToolbarUpload)
+		bHasToolbarUpload = UI.CBool(bHasToolbarUpload)
 		sComponentSize = Props.GetDefault("ComponentSize", "md")
-		sComponentSize = modSD5.CStr(sComponentSize)
+		sComponentSize = UI.CStr(sComponentSize)
 		sComponentSize = sComponentSize.Replace("none", "")
 		sSearchSize = Props.GetDefault("SearchSize", "md")
-		sSearchSize = modSD5.CStr(sSearchSize)
+		sSearchSize = UI.CStr(sSearchSize)
 		If sSearchSize = "none" Then sSearchSize = "md"
 		bNormalCase = Props.GetDefault("NormalCase", False)
-		bNormalCase = modSD5.CBool(bNormalCase)
+		bNormalCase = UI.CBool(bNormalCase)
 		bHasSaveSingle = Props.GetDefault("HasSaveSingle", False)
-		bHasSaveSingle = modSD5.CBool(bHasSaveSingle)
+		bHasSaveSingle = UI.CBool(bHasSaveSingle)
 		bHasDeleteSingle = Props.GetDefault("HasDeleteSingle", False)
-		bHasDeleteSingle = modSD5.CBool(bHasDeleteSingle)
+		bHasDeleteSingle = UI.CBool(bHasDeleteSingle)
 		bLowerCase = Props.GetDefault("LowerCase", False)
-		bLowerCase = modSD5.CBool(bLowerCase)
+		bLowerCase = UI.CBool(bLowerCase)
 		bTitleVisible = Props.GetDefault("TitleVisible", True)
-		bTitleVisible = modSD5.CBool(bTitleVisible)
+		bTitleVisible = UI.CBool(bTitleVisible)
 		sExcelTitle = Props.GetDefault("ExcelTitle", "Table")
-		sExcelTitle = modSD5.cstr(sExcelTitle)
+		sExcelTitle = UI.cstr(sExcelTitle)
 		sFontSize = Props.GetDefault("FontSize", "11")
-		sFontSize = modSD5.CStr(sFontSize)
+		sFontSize = UI.CStr(sFontSize)
 		sPageSize = Props.GetDefault("PageSize", "a4")
-		sPageSize = modSD5.CStr(sPageSize)
+		sPageSize = UI.CStr(sPageSize)
 		sUnit = Props.GetDefault("Unit", "pt")
-		sUnit = modSD5.CStr(sUnit)
+		sUnit = UI.CStr(sUnit)
 		sOrientation = Props.GetDefault("Orientation", "landscape")
-		sOrientation = modSD5.CStr(sOrientation)
+		sOrientation = UI.CStr(sOrientation)
 		sPageBreakRepeat = Props.GetDefault("PageBreakRepeat", "")
-		sPageBreakRepeat = modSD5.CStr(sPageBreakRepeat)
+		sPageBreakRepeat = UI.CStr(sPageBreakRepeat)
 		sPdfTheme = Props.GetDefault("PdfTheme", "striped")
-		sPdfTheme = modSD5.CStr(sPdfTheme)
+		sPdfTheme = UI.CStr(sPdfTheme)
 		bExportToCsv = Props.GetDefault("ExportToCsv", False)
-		bExportToCsv = modSD5.CBool(bExportToCsv)
+		bExportToCsv = UI.CBool(bExportToCsv)
 		bExportToPdf = Props.GetDefault("ExportToPdf", False)
-		bExportToPdf = modSD5.CBool(bExportToPdf)
+		bExportToPdf = UI.CBool(bExportToPdf)
 		bExportToXls = Props.GetDefault("ExportToXls", False)
-		bExportToXls = modSD5.CBool(bExportToXls)
+		bExportToXls = UI.CBool(bExportToXls)
 		bHasExportMenu = Props.getdefault("HasExportMenu", False)
-		bHasExportMenu = modSD5.cbool(bHasExportMenu)
+		bHasExportMenu = UI.cbool(bHasExportMenu)
 		bMultipleFiles = Props.GetDefault("MultipleFiles", False)
-		bMultipleFiles = modSD5.CBool(bMultipleFiles)
+		bMultipleFiles = UI.CBool(bMultipleFiles)
 		sAddNewTooltip = Props.GetDefault("AddNewTooltip", "")
-		sAddNewTooltip = modSD5.CStr(sAddNewTooltip)
+		sAddNewTooltip = UI.CStr(sAddNewTooltip)
 		sBackTooltip = Props.GetDefault("BackTooltip", "")
-		sBackTooltip = modSD5.CStr(sBackTooltip)
+		sBackTooltip = UI.CStr(sBackTooltip)
 		sCloneTooltip = Props.GetDefault("CloneTooltip", "")
-		sCloneTooltip = modSD5.CStr(sCloneTooltip)
+		sCloneTooltip = UI.CStr(sCloneTooltip)
 		sDeleteAllTooltip = Props.GetDefault("DeleteAllTooltip", "")
-		sDeleteAllTooltip = modSD5.CStr(sDeleteAllTooltip)
+		sDeleteAllTooltip = UI.CStr(sDeleteAllTooltip)
 		sDeleteSingleTooltip = Props.GetDefault("DeleteSingleTooltip", "")
-		sDeleteSingleTooltip = modSD5.CStr(sDeleteSingleTooltip)
+		sDeleteSingleTooltip = UI.CStr(sDeleteSingleTooltip)
 		sDeleteTooltip = Props.GetDefault("DeleteTooltip", "")
-		sDeleteTooltip = modSD5.CStr(sDeleteTooltip)
+		sDeleteTooltip = UI.CStr(sDeleteTooltip)
 		sDownloadTooltip = Props.GetDefault("DownloadTooltip", "")
-		sDownloadTooltip = modSD5.CStr(sDownloadTooltip)
+		sDownloadTooltip = UI.CStr(sDownloadTooltip)
 		sEditTooltip = Props.GetDefault("EditTooltip", "")
-		sEditTooltip = modSD5.CStr(sEditTooltip)
+		sEditTooltip = UI.CStr(sEditTooltip)
 		sExportToCsvTooltip = Props.GetDefault("ExportToCsvTooltip", "")
-		sExportToCsvTooltip = modSD5.CStr(sExportToCsvTooltip)
+		sExportToCsvTooltip = UI.CStr(sExportToCsvTooltip)
 		sExportToPdfTooltip = Props.GetDefault("ExportToPdfTooltip", "")
-		sExportToPdfTooltip = modSD5.CStr(sExportToPdfTooltip)
+		sExportToPdfTooltip = UI.CStr(sExportToPdfTooltip)
 		sExportToXlsTooltip = Props.GetDefault("ExportToXlsTooltip", "")
-		sExportToXlsTooltip = modSD5.CStr(sExportToXlsTooltip)
+		sExportToXlsTooltip = UI.CStr(sExportToXlsTooltip)
 		sMenuTooltip = Props.GetDefault("MenuTooltip", "")
-		sMenuTooltip = modSD5.CStr(sMenuTooltip)
+		sMenuTooltip = UI.CStr(sMenuTooltip)
 		sRefreshTooltip = Props.GetDefault("RefreshTooltip", "")
-		sRefreshTooltip = modSD5.CStr(sRefreshTooltip)
+		sRefreshTooltip = UI.CStr(sRefreshTooltip)
 		sSaveSingleTooltip = Props.GetDefault("SaveSingleTooltip", "")
-		sSaveSingleTooltip = modSD5.CStr(sSaveSingleTooltip)
+		sSaveSingleTooltip = UI.CStr(sSaveSingleTooltip)
 		sTooltipColor = Props.GetDefault("TooltipColor", "primary")
-		sTooltipColor = modSD5.CStr(sTooltipColor)
+		sTooltipColor = UI.CStr(sTooltipColor)
 		sUploadToolbarTooltip = Props.GetDefault("UploadToolbarTooltip", "")
-		sUploadToolbarTooltip = modSD5.CStr(sUploadToolbarTooltip)
+		sUploadToolbarTooltip = UI.CStr(sUploadToolbarTooltip)
 		sUploadTooltip = Props.GetDefault("UploadTooltip", "")
-		sUploadTooltip = modSD5.CStr(sUploadTooltip)
+		sUploadTooltip = UI.CStr(sUploadTooltip)
 		sGridTooltip = Props.GetDefault("GridTooltip", "")
-		sGridTooltip = modSD5.CStr(sGridTooltip)
+		sGridTooltip = UI.CStr(sGridTooltip)
 		bHasGrid = Props.GetDefault("HasGrid", False)
-		bHasGrid = modSD5.CBool(bHasGrid)
+		bHasGrid = UI.CBool(bHasGrid)
 		bHasFilter = Props.GetDefault("HasFilter", False)
-		bHasFilter = modSD5.CBool(bHasFilter)
+		bHasFilter = UI.CBool(bHasFilter)
 		bFlexWrapActions = Props.GetDefault("FlexWrapActions", False)
-		bFlexWrapActions = modSD5.CBool(bFlexWrapActions)
+		bFlexWrapActions = UI.CBool(bFlexWrapActions)
 		sSearchWidth = Props.GetDefault("SearchWidth", "300px")
-		sSearchWidth= modSD5.CStr(sSearchWidth)
+		sSearchWidth= UI.CStr(sSearchWidth)
 		bWrapHeadings = Props.GetDefault("WrapHeadings", False)
-		bWrapHeadings = modSD5.CBool(bWrapHeadings)
+		bWrapHeadings = UI.CBool(bWrapHeadings)
 		bPagination = Props.GetDefault("Pagination", True)
-		bPagination = modSD5.CBool(bPagination)
+		bPagination = UI.CBool(bPagination)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 	End If
 	'
@@ -899,21 +900,21 @@ End Sub
 'set the hover and focus color of elements
 Sub SetMenuItemColor(c As String)
 	If c = "" Then Return
-	itemColor1 = $"hover:${modSD5.FixColor("bg", c)}"$
-	itemColor2 = $"focus:${modSD5.FixColor("bg", c)}"$
-	itemColor4 = $"active:${modSD5.FixColor("bg", c)}"$
+	itemColor1 = $"hover:${UI.FixColor("bg", c)}"$
+	itemColor2 = $"focus:${UI.FixColor("bg", c)}"$
+	itemColor4 = $"active:${UI.FixColor("bg", c)}"$
 End Sub
 Sub SetMenuItemHoverColor(c As String)
 	If c = "" Then Return
-	itemColor1 = $"hover:${modSD5.FixColor("bg", c)}"$
+	itemColor1 = $"hover:${UI.FixColor("bg", c)}"$
 End Sub
 Sub SetMenuItemFocusColor(c As String)
 	If c = "" Then Return
-	itemColor2 = $"focus:${modSD5.FixColor("bg", c)}"$
+	itemColor2 = $"focus:${UI.FixColor("bg", c)}"$
 End Sub
 Sub SetMenuItemActiveColor(c As String)
 	If c = "" Then Return
-	itemColor4 = $"active:${modSD5.FixColor("bg", c)}"$
+	itemColor4 = $"active:${UI.FixColor("bg", c)}"$
 End Sub
 Sub setNormalCase(b As Boolean)
 	CustProps.put("NormalCase", b)
@@ -969,7 +970,7 @@ private Sub AddHeaderRowSelect(rowNumber As String, name As String)
 	Dim rkey1 As String = $"${mName}_theadtr_${rowNumber}_${name}"$
 	Dim rkey2 As String = $"${mName}_theadtr_${rowNumber}_${name}_select"$
 	'
-	Dim sSize As String = modSD5.FixSize("select", sComponentSize)
+	Dim sSize As String = UI.FixSize("select", sComponentSize)
 	Dim hr As String = $"<th id="${rkey1}">
 	<select id="${rkey2}" class="select select-bordered w-full ${sSize}"></select>
 	</th>"$
@@ -1056,8 +1057,8 @@ Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 	'
 	Dim boutline As String = ""
 	If bBadgesOutlined Then boutline = "badge-outline"
-	Dim sh As String = modSD5.FixSize("h", Height)
-	Dim btnColor As String = modSD5.FixColor("badge", Color)
+	Dim sh As String = UI.FixSize("h", Height)
+	Dim btnColor As String = UI.FixColor("badge", Color)
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	'show column chooser
@@ -1099,7 +1100,7 @@ private Sub HandleAlphaClick(event As BANanoEvent)     ''ignoredeadcode
 	Dim src As String = event.ID
 	If src = "" Then Return
 	'get the column name
-	Dim colName As String = modSD5.MvField(src, 2, "_")
+	Dim colName As String = UI.MvField(src, 2, "_")
 	UI.Hide($"${mName}_other_icon"$)
 	For Each a As String In Alphas.keys
 		UI.Hide($"${mName}_${a}_icon"$)
@@ -1114,9 +1115,9 @@ private Sub HandleColumnClick(event As BANanoEvent)     ''ignoredeadcode
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
 	Dim el As BANanoElement = BANano.GetElement($"#${src}"$)
-	Dim dvisible As Boolean = modSD5.CBool(el.GetData("visible"))
+	Dim dvisible As Boolean = UI.CBool(el.GetData("visible"))
 	'get the column name
-	Dim colName As String = modSD5.MvField(src, 2, "_")
+	Dim colName As String = UI.MvField(src, 2, "_")
 	Dim lcolor As String = UI.GetDataAttrByID($"${mName}_columnchooser"$, "color")
 	Select Case dvisible
 		Case True
@@ -1172,7 +1173,7 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	'
 	Dim boutline As String = ""
 	If bBadgesOutlined Then boutline = "badge-outline"
-	Dim sh As String = modSD5.FixSize("h", Height)
+	Dim sh As String = UI.FixSize("h", Height)
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	'show column chooser
@@ -1181,11 +1182,11 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	Alphas.Initialize
 	For Each row As Map In Originals
 		Dim cdata As String = row.GetDefault(ColumnName, "")
-		cdata = modSD5.CStr(cdata)
-		cdata = modSD5.Alpha(cdata)
+		cdata = UI.CStr(cdata)
+		cdata = UI.Alpha(cdata)
 		cdata = cdata.Trim
 		If cdata = "" Then Continue
-		Dim slet As String = modSD5.Left1(cdata,1)
+		Dim slet As String = UI.Left1(cdata,1)
 		slet = slet.ToLowerCase
 		Alphas.Put(slet, "")
 	Next
@@ -1196,10 +1197,10 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	Next
 	xsort.Sort(True)
 	For Each col As String In xsort
-		Dim initx As String = modSD5.Initials(col)
+		Dim initx As String = UI.Initials(col)
 		Dim initl As String = initx.ToLowerCase
-		Dim acolor As String = modSD5.GetAlphaColor(initx)
-		Dim bcolor As String = modSD5.FixColor("badge", acolor)
+		Dim acolor As String = UI.GetAlphaColor(initx)
+		Dim bcolor As String = UI.FixColor("badge", acolor)
 		'
 		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
         <i id="${mName}_${initl}_icon" class="mr-2 fa-solid fa-check hide"></i>${initx}</div>"$
@@ -1208,7 +1209,7 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 		clicks.Add($"${mName}_${initl}_icon"$)
 	Next
 	'add other
-	Dim bcolor As String = modSD5.FixColor("badge", "primary")
+	Dim bcolor As String = UI.FixColor("badge", "primary")
 	initx = "other"
 	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
     <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>Other</div>"$
@@ -1216,7 +1217,7 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	clicks.Add($"${mName}_${initx}_column"$)
 	clicks.Add($"${mName}_${initx}_icon"$)
 	'add all
-	Dim bcolor As String = modSD5.FixColor("badge", "primary")
+	Dim bcolor As String = UI.FixColor("badge", "primary")
 	initx = "all"
 	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
     <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>All</div>"$
@@ -1336,7 +1337,7 @@ Sub getSearchID As String
 End Sub
 
 Sub getToolBarButtonID(btnID As String) As String
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Return $"${mName}_${btnID}"$
 End Sub
 
@@ -1352,7 +1353,7 @@ End Sub
 Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button
 	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
 	btn.ParentID = $"${mName}_actions"$
@@ -1366,9 +1367,9 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 	Return btn
 End Sub
 Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
-	btnID = modSD5.CleanID(btnID)
-	Dim col As String = modSD5.FixColor("tooltip", color)
-	Dim pos As String = modSD5.FixSize("tooltip", position)
+	btnID = UI.CleanID(btnID)
+	Dim col As String = UI.FixColor("tooltip", color)
+	Dim pos As String = UI.FixSize("tooltip", position)
 	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
@@ -1388,7 +1389,7 @@ End Sub
 Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
@@ -1403,7 +1404,7 @@ private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.StopPropagation
 	Dim src As String = e.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim p2 As String = modSD5.MvField(src, 2, "_")
+	Dim p2 As String = UI.MvField(src, 2, "_")
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${p2}_file"$)
 	'click the file input to fire change event
 	el.SetValue(Null)
@@ -1428,7 +1429,7 @@ End Sub
 Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	'
 	Dim btn As SDUI5Button
 	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
@@ -1453,7 +1454,7 @@ End Sub
 Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5DropDown
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIDropDown
 '	btn.AddDropDownIcon(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sButtonSize, sIcon)
 '	btn.MainButton.NoGhost
@@ -1469,7 +1470,7 @@ End Sub
 Sub AddToolbarDropDown(btnID As String, btnColor As String, btnLabel As String) As SDUI5DropDown
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIDropDown
 '	btn.AddDropDown(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, btnLabel)
 '	btn.MainButton.Color = btnColor
@@ -1483,7 +1484,7 @@ End Sub
 Sub AddToolbarDropDownAvatar(btnID As Object, sSize As String, ImgURL As String) As SDUI5DropDown
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIDropDown
 '	btn.AddDropDownAvatar(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sSize, ImgURL)
 '	btn.Menu.mt(1)
@@ -1494,7 +1495,7 @@ End Sub
 Sub AddToolbarSelect(id As String, prependIcon As String, appendIcon As String, options As Map) As SDUI5Select
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	id = modSD5.CleanID(id)
+	id = UI.CleanID(id)
 '	Dim el As SDUISelect
 '	el.AddSelect(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
 '	el.RemoveHint
@@ -1509,7 +1510,7 @@ End Sub
 Sub AddToolbarSelectNormal(id As String, options As Map) As SDUI5Select
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	id = modSD5.CleanID(id)
+	id = UI.CleanID(id)
 '	Dim el As SDUISelect
 '	el.AddSelectNormal(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, False)
 '	el.Size = sComponentSize
@@ -1520,7 +1521,7 @@ End Sub
 Sub AddToolbarTextBox(id As String, prependIcon As String, appendIcon As String) As SDUI5TextBox
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	id = modSD5.CleanID(id)
+	id = UI.CleanID(id)
 '	Dim el As SDUITextBox
 '	el.AddTextBoxGroup(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
 '	el.RemoveHint
@@ -1534,7 +1535,7 @@ End Sub
 Sub AddToolbarTextBoxNormal(id As String) As SDUI5TextBox
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	id = modSD5.CleanID(id)
+	id = UI.CleanID(id)
 '	Dim el As SDUITextBox
 '	el.AddTextBox(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$)
 '	el.Size = sComponentSize
@@ -1547,7 +1548,7 @@ Sub SetExportToCSVTooltip1(tooltip As String, color As String, position As Strin
 End Sub
 'set Has Export To Csv	
 Sub setHasExportToCsv(b As Boolean)			'ignoredeadcode
-	bExportToCsv = modSD5.CBool(b)
+	bExportToCsv = UI.CBool(b)
 	CustProps.put("ExportToCsv", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -1801,7 +1802,7 @@ Sub setNextPageDisabled(b As Boolean)
 	End If
 End Sub
 Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
@@ -1811,7 +1812,7 @@ Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
 	End If
 End Sub
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
@@ -1821,7 +1822,7 @@ Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 	End If
 End Sub
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
@@ -1831,7 +1832,7 @@ Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 	End If
 End Sub
 Sub ToolbarButtonLoading(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
@@ -1857,7 +1858,7 @@ Sub SetRowSelectChecked(rowPos As Int, value As Boolean)
 	UI.SetCheckedByID($"#${mName}_${rowPos}_selectall"$, value)
 End Sub
 Sub SetToolbarButtonBadge(btn As String, value As String)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If value = "" Or value = "0" Then
 		UI.Hide($"#${mName}_${btn}_badge"$)
 	Else
@@ -2009,7 +2010,7 @@ Sub ClearToolbarActions
 End Sub
 Sub setItemsPerPage(i As String)
 	CustProps.put("ItemsPerPage", i)
-	iItemsPerPage = modSD5.CInt(i)
+	iItemsPerPage = UI.CInt(i)
 End Sub
 'change the title of the table
 Sub setTitle(t As String)
@@ -2059,11 +2060,11 @@ private Sub SearchClick(e As BANanoEvent)
 End Sub
 
 Sub PagePause
-	modSD5.ShowLoader
+	UI.ShowLoader
 End Sub
 
 Sub PageResume
-	modSD5.HideLoader
+	UI.HideLoader
 End Sub
 
 private Sub SearchInternal(e As BANanoEvent)		'ignore
@@ -2153,7 +2154,7 @@ Sub GetAllChecked(Status As Boolean) As List
 	Return nl
 End Sub
 Sub GetColumnPosition(colName As String) As Int
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return -1
 	Dim colTot As Int = Columns.Size - 1
 	Dim colCnt As Int
@@ -2172,7 +2173,7 @@ Sub SetColumnAlignMultiple(salign As String, colNames As List)
 	Next
 End Sub
 Sub SetColumnAlign(colName As String, salign As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	salign = salign.ToLowerCase
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim nc As TableColumn = Columns.Get(colName)
@@ -2203,7 +2204,7 @@ Sub SetColumnAlign(colName As String, salign As String)
 	End Select
 End Sub
 Sub getColumnID(colName As String) As String
-	colName = modSD5.cleanid(colName)
+	colName = UI.cleanid(colName)
 	Dim xColName As String = $"${mName}_${colName}_th"$
 	If BANano.Exists($"#${xColName}"$) Then
 		Return xColName
@@ -2212,7 +2213,7 @@ Sub getColumnID(colName As String) As String
 	End If
 End Sub
 Sub getFooterColumnID(colName As String) As String
-	colName = modSD5.cleanid(colName)
+	colName = UI.cleanid(colName)
 	Dim xColName As String = $"${mName}_${colName}_tf"$
 	If BANano.Exists($"#${xColName}"$) Then
 		Return xColName
@@ -2226,7 +2227,7 @@ End Sub
 'right align these columns
 Sub RightAlignColumns(colNames As List)
 	For Each col As String In colNames
-		col = modSD5.CleanID(col)
+		col = UI.CleanID(col)
 		If Columns.ContainsKey(col) = False Then Continue
 		'Dim mstyle As Map = CreateMap()
 		'mstyle.Put("text-align", "right")
@@ -2242,7 +2243,7 @@ End Sub
 'center align these columns
 Sub CenterAlignColumns(colNames As List)
 	For Each col As String In colNames
-		col = modSD5.CleanID(col)
+		col = UI.CleanID(col)
 		If Columns.ContainsKey(col) = False Then Continue
 		'Dim mstyle As Map = CreateMap()
 		'mstyle.Put("text-align", "center")
@@ -2310,9 +2311,9 @@ private Sub HandleHeaderClick(event As BANanoEvent)     'ignoredeadcode
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
 	'id="${mName}_${name}_th"
-	Dim colName As String = modSD5.MvField(src, 2, "_")
+	Dim colName As String = UI.MvField(src, 2, "_")
 	Dim sasc As String = BANano.GetElement($"#${src}"$).GetData("order")
-	sasc = modSD5.CStr(sasc)
+	sasc = UI.CStr(sasc)
 	Dim r As Boolean = False
 	Select Case sasc
 		Case "", "a"
@@ -2383,7 +2384,7 @@ private Sub SetColumnVisibleHeaderRow(rowNumber As String, name As String, b As 
 End Sub
 
 Sub SetColumnTitle(colName As String, title As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.title = title
@@ -2395,7 +2396,7 @@ Sub SetColumnTitle(colName As String, title As String)
 End Sub
 
 Sub SetColumnFileSize(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "filesize"
@@ -2424,7 +2425,7 @@ Sub AddColumnFileSize(name As String, title As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnMoney(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "money"
@@ -2455,7 +2456,7 @@ Sub AddColumnMoney(name As String, title As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnDate(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "date"
@@ -2505,7 +2506,7 @@ Sub AddColumnDateTime(name As String, title As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnDateTime(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "datetime"
@@ -2513,7 +2514,7 @@ Sub SetColumnDateTime(colName As String)
 	End If
 End Sub
 Sub SetColumnThousand(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "thousand"
@@ -2544,7 +2545,7 @@ Sub AddColumnThousand(name As String, title As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnAction(colName As String, iconName As String, iconColor As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "action"
@@ -2557,7 +2558,7 @@ Sub SetColumnAction(colName As String, iconName As String, iconColor As String)
 End Sub
 
 Sub SetColumnFileAction(colName As String, iconName As String, iconColor As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "fileaction"
@@ -2570,7 +2571,7 @@ Sub SetColumnFileAction(colName As String, iconName As String, iconColor As Stri
 End Sub
 
 Sub SetColumnMenu(colName As String, iconName As String, iconColor As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "menu"
@@ -2719,8 +2720,8 @@ End Sub
 'dim samount As String = item.get("amount")
 'dim sqta as String = item.get("qta")
 ''convert to double
-'Dim totalx As Double = modSD5.CDbl(samount) * modSD5.CInt(sqta)
-'totalx = modSD5.CDbl(totalx)
+'Dim totalx As Double = UI.CDbl(samount) * UI.CInt(sqta)
+'totalx = UI.CDbl(totalx)
 'return totalx
 'End Sub
 '</code>
@@ -2830,7 +2831,7 @@ End Sub
 ''get the amount for this row
 'dim samount As String = item.get("amount")
 ''convert to double
-'dim iamount As Int = modSD5.CDbl(samount)
+'dim iamount As Int = UI.CDbl(samount)
 'if iamount < 0 then
 'the text color should be red if amount < 0
 'return "text-red"
@@ -2891,7 +2892,7 @@ Sub AddColumnClass(colName As String, classes As List)
 	End If
 End Sub
 Sub SetColumnLink(colName As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "link"
@@ -2924,7 +2925,7 @@ Sub AddColumnLink(name As String, title As String, subtitle As String, color As 
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnClickLink(colName As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "clicklink"
@@ -2957,7 +2958,7 @@ Sub AddColumnClickLink(name As String, title As String, subtitle As String, colo
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnEmail(colName As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "email"
@@ -2967,7 +2968,7 @@ Sub SetColumnEmail(colName As String, subtitle As String, color As String)
 	End If
 End Sub
 Sub SetColumnWebsite(colName As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "website"
@@ -3024,7 +3025,7 @@ Sub AddColumnWebsite(name As String, title As String, subtitle As String, color 
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnIcon(colName As String, ssize As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "icon"
@@ -3058,7 +3059,7 @@ Sub AddColumnIcon(name As String, title As String, ssize As String, color As Str
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 End Sub
 Sub SetColumnButton(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "button"
@@ -3092,7 +3093,7 @@ Sub AddColumnButton(name As String, title As String, color As String)
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 End Sub
 Sub SetColumnBadge(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "badge"
@@ -3102,8 +3103,8 @@ Sub SetColumnBadge(colName As String, color As String)
 	End If
 End Sub
 Sub SetColumnBackgroundColor(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
-	Dim tcolor As String = modSD5.FixColor("bg", color)
+	colName = UI.CleanID(colName)
+	Dim tcolor As String = UI.FixColor("bg", color)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.BGColor = tcolor
@@ -3135,7 +3136,7 @@ Sub AddColumnBadge(name As String, title As String, color As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnRating(colName As String, ssize As Int, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "rating"
@@ -3155,7 +3156,7 @@ Sub AddColumnRating(name As String, title As String, ssize As Int, color As Stri
 	nc.typeof = "rating"
 	nc.color = color
 	nc.size = ssize
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -3169,7 +3170,7 @@ Sub AddColumnRating(name As String, title As String, ssize As Int, color As Stri
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnRadialProgress(colName As String, ssize As String, color As String, suffix As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "radial"
@@ -3205,7 +3206,7 @@ Sub AddColumnRadialProgress(name As String, title As String, ssize As String, co
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnProgress(colName As String, width As Int, maxvalue As Int, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "progress"
@@ -3241,7 +3242,7 @@ Sub AddColumnProgress(name As String, title As String, width As Int, maxvalue As
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnRange(colName As String, maxvalue As Int, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "range"
@@ -3275,7 +3276,7 @@ Sub AddColumnRange(name As String, title As String, maxvalue As Int, color As St
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnCheckBox(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "checkbox"
@@ -3285,7 +3286,7 @@ Sub SetColumnCheckBox(colName As String, color As String)
 	End If
 End Sub
 Sub SetColumnSelect(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "select"
@@ -3293,7 +3294,7 @@ Sub SetColumnSelect(colName As String)
 	End If
 End Sub
 Sub SetColumnOptions(colname As String, options As Map)
-	colname = modSD5.CleanID(colname)
+	colname = UI.CleanID(colname)
 	If Columns.ContainsKey(colname) Then
 		Dim nc As TableColumn = Columns.Get(colname)
 		nc.options = options
@@ -3301,7 +3302,7 @@ Sub SetColumnOptions(colname As String, options As Map)
 	End If
 End Sub
 Sub SetColumnRadioGroup(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "radiogroup"
@@ -3309,7 +3310,7 @@ Sub SetColumnRadioGroup(colName As String)
 	End If
 End Sub
 Sub SetColumnReadOnly(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.readonly = True
@@ -3346,7 +3347,7 @@ End Sub
 'countries.Add("South Africa")
 'countries.Add("USA")
 'countries.Add("Nigeria")
-'Dim options As Map = modSD5.ListToSelectOptions(countries)
+'Dim options As Map = UI.ListToSelectOptions(countries)
 'tbl.AddColumnSelect("country", "Country", False, True, options)
 '</code>
 Sub AddColumnSelect(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As Map)
@@ -3376,23 +3377,23 @@ End Sub
 'tbl.AddColumnSelectFromList("country", "Country", False, True, Array("South Africa","USA","Nigeria"))
 '</code>
 Sub AddColumnSelectFromList(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As List)
-	Dim optionsM As Map = modSD5.ListToSelectOptions(options)
+	Dim optionsM As Map = UI.ListToSelectOptions(options)
 	AddColumnSelect(name, title, readOnly, bAddNothingSelected, optionsM)
 End Sub
 Sub SetColumnOptionsFromList(colname As String, options As List)
-	Dim optionsM As Map = modSD5.ListToSelectOptions(options)
+	Dim optionsM As Map = UI.ListToSelectOptions(options)
 	SetColumnOptions(colname, optionsM)
 End Sub
 Sub SetColumnOptionsFromListSort(colname As String, options As List)
-	Dim optionsM As Map = modSD5.ListToSelectOptionsSort(options)
+	Dim optionsM As Map = UI.ListToSelectOptionsSort(options)
 	SetColumnOptions(colname, optionsM)
 End Sub
 Sub AddColumnSelectFromListSort(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As List)
-	Dim optionsM As Map = modSD5.ListToSelectOptionsSort(options)
+	Dim optionsM As Map = UI.ListToSelectOptionsSort(options)
 	AddColumnSelect(name, title, readOnly, bAddNothingSelected, optionsM)
 End Sub
 Sub AddColumnRadioGroupFromList(name As String, title As String, readOnly As Boolean, color As String, options As List)
-	Dim optionsM As Map = modSD5.ListToSelectOptions(options)
+	Dim optionsM As Map = UI.ListToSelectOptions(options)
 	AddColumnRadioGroup(name, title, readOnly, color, optionsM)
 End Sub
 '<code>
@@ -3421,8 +3422,8 @@ Sub AddColumnRadioGroup(name As String, title As String, readOnly As Boolean, co
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTextColor(colName As String, color As String)
-	Dim tcolor As String = modSD5.FixColor("text", color)
-	colName = modSD5.CleanID(colName)
+	Dim tcolor As String = UI.FixColor("text", color)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.TextColor = tcolor
@@ -3430,7 +3431,7 @@ Sub SetColumnTextColor(colName As String, color As String)
 	End If
 End Sub
 Sub SetColumnTextBox(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "textbox"
@@ -3438,7 +3439,7 @@ Sub SetColumnTextBox(colName As String)
 	End If
 End Sub
 Sub SetColumnTelephone(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "telephone"
@@ -3494,7 +3495,7 @@ Sub AddColumnTelephone(name As String, title As String, readOnly As Boolean)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTextBoxGroup(colName As String, Prefix As String, PrependIcon As String, Suffix As String, AppendIcon As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "textboxgroup"
@@ -3506,7 +3507,7 @@ Sub SetColumnTextBoxGroup(colName As String, Prefix As String, PrependIcon As St
 	End If
 End Sub
 Sub SetColumnSelectGroup(colName As String, Prefix As String, PrependIcon As String, Suffix As String, AppendIcon As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "selectgroup"
@@ -3518,7 +3519,7 @@ Sub SetColumnSelectGroup(colName As String, Prefix As String, PrependIcon As Str
 	End If
 End Sub
 Sub SetColumnPasswordGroup(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "passwordgroup"
@@ -3646,7 +3647,7 @@ Sub AddColumnDialer(name As String, title As String, readOnly As Boolean, minVal
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTextDialer(colName As String, minValue As Int, stepValue As Int, maxValue As Int)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "dialer"
@@ -3684,7 +3685,7 @@ Sub AddColumnPassword(name As String, title As String, readOnly As Boolean)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnPassword(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "password"
@@ -3692,7 +3693,7 @@ Sub SetColumnPassword(colName As String)
 	End If
 End Sub
 Sub SetColumnNumber(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "number"
@@ -3724,7 +3725,7 @@ Sub AddColumnNumber(name As String, title As String, readOnly As Boolean)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnFileInput(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "file"
@@ -3813,7 +3814,7 @@ Sub AddColumnFileInputProgress(name As String, title As String, xButtonSize As S
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 End Sub
 Sub SetColumnDatePicker(colName As String, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "datepicker"
@@ -3827,7 +3828,7 @@ Sub SetColumnDatePicker(colName As String, dateFormat As String, altFormat As St
 	End If
 End Sub
 Sub SetColumnDateTimePicker(colName As String, dateFormat As String, altFormat As String, slocale As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "datetimepicker"
@@ -3898,7 +3899,7 @@ Sub AddColumnDatePicker1(name As String, title As String, readOnly As Boolean, d
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTimePicker(colName As String, dateFormat As String, bNoCalendar As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "timepicker"
@@ -3994,7 +3995,7 @@ Sub AddColumnTimePicker(name As String, title As String, readOnly As Boolean, da
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTextArea(colName As String, tRows As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "textarea"
@@ -4052,7 +4053,7 @@ Sub AddColumnToggle(name As String, title As String, color As String, readOnly A
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnToggle(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "toggle"
@@ -4176,7 +4177,7 @@ Sub AddColumnDelete(color As String)
 	SetColumnTextColor("delete", "#ffffff")
 End Sub
 Sub SetColumnColor(colName As String, subtitle As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "color"
@@ -4186,7 +4187,7 @@ Sub SetColumnColor(colName As String, subtitle As String)
 	End If
 End Sub
 Sub SetColumnLocale(colName As String, slocale As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.Locale = slocale
@@ -4194,7 +4195,7 @@ Sub SetColumnLocale(colName As String, slocale As String)
 	End If
 End Sub
 Sub SetColumnMaxLength(colName As String, smaxlen As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.MaxLength = smaxlen
@@ -4226,38 +4227,38 @@ Sub AddColumnColor(name As String, title As String, subtitle As String)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnAvatar(colName As String, ssize As String, mask As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatar"
 		nc.size = ssize
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		Columns.Put(colName, nc)
 	End If
 End Sub
 Sub SetColumnAvatarPlaceholder(colName As String, ssize As String, mask As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatarplaceholder"
 		nc.size = ssize
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		nc.color = color
 		Columns.Put(colName, nc)
 	End If
 End Sub
 Sub SetColumnAvatarGroup(colName As String, ssize As String, mask As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatargroup"
 		nc.size = ssize
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		Columns.Put(colName, nc)
 	End If
 End Sub
 Sub SetColumnBadgeGroup(colName As String, sheight As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "badgegroup"
@@ -4266,7 +4267,7 @@ Sub SetColumnBadgeGroup(colName As String, sheight As String)
 	End If
 End Sub
 Sub SetColumnAvatarRing(colName As String, HasRing As Boolean, Color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatar"
@@ -4276,7 +4277,7 @@ Sub SetColumnAvatarRing(colName As String, HasRing As Boolean, Color As String)
 	End If
 End Sub
 Sub SetColumnAvatarOnline(colName As String, OnlineField As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatar"
@@ -4285,13 +4286,13 @@ Sub SetColumnAvatarOnline(colName As String, OnlineField As String)
 	End If
 End Sub
 Sub SetColumnImage(colName As String, width As Int, height As Int, mask As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "image"
 		nc.width = width
 		nc.height = height
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		Columns.Put(colName, nc)
 	End If
 End Sub
@@ -4301,7 +4302,7 @@ Sub SetColumnHeightMultiple(height As String, colNames As List)
 	Next
 End Sub
 Sub SetColumnHeight(colName As String, height As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.height = height
@@ -4314,7 +4315,7 @@ Sub SetColumnWidthMultiple(width As String, colNames As List)
 	Next
 End Sub
 Sub SetColumnWidth(colName As String, width As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.width = width
@@ -4323,7 +4324,7 @@ Sub SetColumnWidth(colName As String, width As String)
 End Sub
 'set the actual table height
 Sub SetTableColumnHeight(colName As String, height As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.colHeight = height
@@ -4335,7 +4336,7 @@ Sub SetTableColumnHeight(colName As String, height As String)
 End Sub
 'set the actual table width
 Sub SetTableColumnWidth(colName As String, width As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.colWidth = width
@@ -4357,7 +4358,7 @@ Sub AddColumnAvatar(name As String, title As String, ssize As String, mask As St
 	nc.title = title
 	nc.typeof = "avatar"
 	nc.size = ssize
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -4381,7 +4382,7 @@ Sub AddColumnAvatarPlaceholder(name As String, title As String, ssize As String,
 	nc.title = title
 	nc.typeof = "avatarplaceholder"
 	nc.size = ssize
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	nc.color = Color
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
@@ -4407,7 +4408,7 @@ Sub AddColumnImage(name As String, title As String, width As Int, height As Int,
 	nc.typeof = "image"
 	nc.width = width
 	nc.height = height
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -4421,18 +4422,18 @@ Sub AddColumnImage(name As String, title As String, width As Int, height As Int,
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnAvatarTitle(colName As String, ssize As String, subtitle As String, mask As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatartitle"
 		nc.size = ssize
 		nc.subtitle = subtitle
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		Columns.Put(colName, nc)
 	End If
 End Sub
 Sub SetColumnIconTitle(colName As String, ssize As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "icontitle"
@@ -4443,7 +4444,7 @@ Sub SetColumnIconTitle(colName As String, ssize As String, subtitle As String, c
 	End If
 End Sub
 Sub SetColumnTitleIcon(colName As String, ssize As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "titleicon"
@@ -4466,7 +4467,7 @@ Sub AddColumnAvatarTitle(name As String, title As String, ssize As String, subti
 	nc.typeof = "avatartitle"
 	nc.size = ssize
 	nc.subtitle = subtitle
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -4556,7 +4557,7 @@ Sub AddColumnBadgeAvatarTitle(name As String, title As String, ssize As String, 
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnBadgeAvatarTitle(colName As String, ssize As String, subtitle As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "badgeavatartitle"
@@ -4567,14 +4568,14 @@ Sub SetColumnBadgeAvatarTitle(colName As String, ssize As String, subtitle As St
 	End If
 End Sub
 Sub SetColumnAvatarTitleSubTitle(colName As String, ssize As String, subtitle As String, subtitle1 As String, mask As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "avatartitlesubtitle"
 		nc.size = ssize
 		nc.subtitle = subtitle.tolowercase
 		nc.subtitle1 = subtitle1.tolowercase
-		nc.mask = modSD5.FixMask(mask)
+		nc.mask = UI.FixMask(mask)
 		Columns.Put(colName, nc)
 	End If
 End Sub
@@ -4591,7 +4592,7 @@ Sub AddColumnAvatarTitleSubTitle(name As String, title As String, ssize As Strin
 	nc.size = ssize
 	nc.subtitle = subtitle.tolowercase
 	nc.subtitle1 = subtitle1.tolowercase
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -4605,7 +4606,7 @@ Sub AddColumnAvatarTitleSubTitle(name As String, title As String, ssize As Strin
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
 Sub SetColumnTitleSubTitle(colName As String, subtitle As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "titlesubtitle"
@@ -4646,7 +4647,7 @@ Sub SetItemsPaginate(xItems As List)
 		'lastPage = 1
 		Originals = xItems
 		If bHasFilter Then ClearFilters
-		Dim paginater As Paginate = BANano.Await(modSD5.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
+		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
 		Dim yItems As List = paginater.items
 		iTotalPages = paginater.totalPages
 		If iCurrentPage = 1 Then
@@ -4703,7 +4704,7 @@ Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 		'setPrevPageDisabled(True)
 		iCurrentPage = BANano.parseInt(iCurrentPage) - 1
 		If iCurrentPage <= 0 Then iCurrentPage = 1
-		Dim paginater As Paginate = BANano.Await(modSD5.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
+		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xItems As List = paginater.items
 		If iCurrentPage = 1 Then
 			setPrevPageDisabled(True)
@@ -4732,7 +4733,7 @@ Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 		'setPrevPageDisabled(True)
 		iCurrentPage = BANano.parseInt(iCurrentPage) + 1
 		If iCurrentPage >= iTotalPages Then iCurrentPage = iTotalPages
-		Dim paginater As Paginate = BANano.Await(modSD5.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
+		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
 		If iCurrentPage = 1 Then
 			setPrevPageDisabled(True)
@@ -4764,7 +4765,7 @@ Sub ShowPage(pgNumber As Int)
 		iCurrentPage = pgNumber
 		If iCurrentPage >= iTotalPages Then iCurrentPage = iTotalPages
 		If iCurrentPage <= 0 Then iCurrentPage = 1
-		Dim paginater As Paginate = BANano.Await(modSD5.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
+		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
 		If iCurrentPage = 1 Then
 			setPrevPageDisabled(True)
@@ -4793,7 +4794,7 @@ End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
 	If bLowerCase Then
-		BANano.Await(modSD5.ListOfMapsKeysToLowerCase(xitems))
+		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
 	End If
 	Dim obj As BANanoObject
 	obj.Initialize("Object")
@@ -4807,11 +4808,11 @@ private Sub BuildClasses(nc As TableColumn) As String
 	Dim sbx As StringBuilder
 	sbx.Initialize
 	If nc.minwidth <> "" Then
-		Dim minw As String = modSD5.FixSize("min-w", nc.minwidth)
+		Dim minw As String = UI.FixSize("min-w", nc.minwidth)
 		sbx.Append($" ${minw} "$)
 	End If
 	If nc.maxwidth <> "" Then
-		Dim maxw As String = modSD5.FixSize("max-w", nc.maxwidth)
+		Dim maxw As String = UI.FixSize("max-w", nc.maxwidth)
 		sbx.Append($" ${maxw} "$)
 	End If
 	Dim classes As List = nc.classes
@@ -4819,7 +4820,7 @@ private Sub BuildClasses(nc As TableColumn) As String
 		sbx.Append($" ${c} "$)
 	Next
 	If nc.width <> "" Then
-		Dim ww As String = modSD5.FixSize("w", nc.width)
+		Dim ww As String = UI.FixSize("w", nc.width)
 		sbx.Append($" ${ww} "$)
 	End If
 	If nc.visible = False Then sbx.Append(" hide ")
@@ -4841,9 +4842,9 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 	If sicon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = modSD5.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sicon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		theicon = scolor
 	End If
 	'
@@ -4862,25 +4863,25 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = modSD5.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.fixsize("fa", tc.size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -4896,9 +4897,9 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	If sicon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = modSD5.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sicon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		theicon = scolor
 	End If
 	'
@@ -4917,25 +4918,25 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = modSD5.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.fixsize("fa", tc.size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor}  ${bgColor}" style="${BuildStyle(tc)}">
@@ -4954,9 +4955,9 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
 	If sicon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = modSD5.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sicon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		theicon = scolor
 	End If
 	'
@@ -4975,25 +4976,25 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = modSD5.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.fixsize("fa", tc.size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5022,23 +5023,23 @@ Private Sub BuildRowClickLink(Module As Object, fldName As String, fldValu As St
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("link", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5064,9 +5065,9 @@ Private Sub BuildRowLink(Module As Object, fldName As String, fldValu As String,
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("link", bColor, rowdata)
 	'
@@ -5074,14 +5075,14 @@ Private Sub BuildRowLink(Module As Object, fldName As String, fldValu As String,
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor}  ${bgColor}" style="${BuildStyle(tc)}">
@@ -5092,13 +5093,13 @@ End Sub
 Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String					'ignore
 	'get the value of the color field
 	Dim scolor As String = rowdata.GetDefault(fldName, "")
-	scolor = modSD5.CStr(scolor)
+	scolor = UI.CStr(scolor)
 	'
 	Dim btnColor As String = ""
 	If scolor.StartsWith("#") Then
 		btnColor = $"bg-[${scolor}]"$
 	Else
-		btnColor = modSD5.FixColor("bg", scolor)
+		btnColor = UI.FixColor("bg", scolor)
 	End If
 	'
 	If tc.ComputeColor <> "" Then
@@ -5106,7 +5107,7 @@ Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String
 		btnColor = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	'
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -5123,14 +5124,14 @@ Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -5160,9 +5161,9 @@ Private Sub BuildRowWebsite(Module As Object, fldName As String, fldValu As Stri
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("link", bColor, rowdata)
 	'
@@ -5170,14 +5171,14 @@ Private Sub BuildRowWebsite(Module As Object, fldName As String, fldValu As Stri
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5203,9 +5204,9 @@ Private Sub BuildRowEmail(Module As Object, fldName As String, fldValu As String
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("link", bColor, rowdata)
 	'
@@ -5213,14 +5214,14 @@ Private Sub BuildRowEmail(Module As Object, fldName As String, fldValu As String
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5246,30 +5247,30 @@ Private Sub BuildRowToggle(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("toggle", bColor, rowdata)
 	Dim creadonly As String = ""
 	If tc.readonly Then creadonly = $"disabled="disabled""$
-	Dim bchecked As Boolean = modSD5.CBool(fldValu)
+	Dim bchecked As Boolean = UI.CBool(fldValu)
 	Dim cchecked As String = ""
-	'Dim tsize As String = modSD5.FixSize("toggle", sComponentSize)
+	'Dim tsize As String = UI.FixSize("toggle", sComponentSize)
 	If bchecked Then cchecked = $"checked="checked""$
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="text-center ${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5295,14 +5296,14 @@ Private Sub BuildRowCheckBox(Module As Object, fldName As String, fldValu As Str
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("checkbox", bColor, rowdata)
 	Dim creadonly As String = ""
 	If tc.readonly Then creadonly = $"disabled="disabled""$
-	Dim bchecked As Boolean = modSD5.CBool(fldValu)
+	Dim bchecked As Boolean = UI.CBool(fldValu)
 	Dim cchecked As String = ""
 	If bchecked Then cchecked = $"checked="checked""$
 	'
@@ -5310,16 +5311,16 @@ Private Sub BuildRowCheckBox(Module As Object, fldName As String, fldValu As Str
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
-	'Dim tsize As String = modSD5.FixSize("checkbox", sComponentSize)
+	'Dim tsize As String = UI.FixSize("checkbox", sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="text-center ${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <input type="checkbox" id="${mName}_${RowCnt}_${fldName}_checkbox" ${creadonly} ${cchecked} class="checkbox ${btnColor} ${cClass}"></input>
@@ -5344,26 +5345,26 @@ Private Sub BuildRowRange(Module As Object, fldName As String, fldValu As String
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("range", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
-	Dim tsize As String = modSD5.FixSize("range", sComponentSize)
-	Dim txsize As String = modSD5.FixSize("text", sComponentSize)
+	Dim tsize As String = UI.FixSize("range", sComponentSize)
+	Dim txsize As String = UI.FixSize("text", sComponentSize)
 	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5391,22 +5392,22 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("progress", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim psize As String = "24px"
@@ -5422,14 +5423,14 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 	Case "xl"
 		psize = "40px"
 	End Select
-	Dim psize1 As String = modSD5.FixSize("h", psize)
-	Dim tsize As String = modSD5.FixSize("text", sComponentSize)
+	Dim psize1 As String = UI.FixSize("h", psize)
+	Dim tsize As String = UI.FixSize("text", sComponentSize)
 	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
 	<label class="flex items-center w-full gap-2">
     <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="${tsize} justify-start ${tc.TextColor}">${fldValu}%</span>
-    <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="rounded-full ${psize1} progress ${modSD5.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
+    <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="rounded-full ${psize1} progress ${UI.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
 	</label>
     </td>"$
 	Return act
@@ -5452,9 +5453,9 @@ Private Sub BuildRowRadial(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
@@ -5462,14 +5463,14 @@ Private Sub BuildRowRadial(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	
 	'
@@ -5497,13 +5498,13 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	Dim btnColor As String = GetColorFromField("radio", bColor, rowdata)
 	Dim creadonly As String = ""
 	If tc.readonly Then creadonly = $"disabled="disabled""$
-	'Dim tsize As String = modSD5.FixSize("radio", sComponentSize)
+	'Dim tsize As String = UI.FixSize("radio", sComponentSize)
 	'
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -5512,7 +5513,7 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 	For Each k As String In options.Keys
 		Dim v As String = options.Get(k)
 		Dim sbChecked As String = ""
-		If modSD5.CStr(fldValu) = modSD5.CStr(k) Then
+		If UI.CStr(fldValu) = UI.CStr(k) Then
 			sbChecked = $"checked="checked""$
 		End If
 		Dim sItem As String = $"<div class="form-control">
@@ -5528,13 +5529,13 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -5564,9 +5565,9 @@ Private Sub BuildRowSelect(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("select", bColor, rowdata)
 	Dim creadonly As String = ""
@@ -5593,13 +5594,13 @@ Private Sub BuildRowSelect(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5628,9 +5629,9 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -5649,13 +5650,13 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5689,9 +5690,9 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("select", bColor, rowdata)
@@ -5717,14 +5718,14 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5761,9 +5762,9 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -5782,13 +5783,13 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5823,9 +5824,9 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -5843,13 +5844,13 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5884,9 +5885,9 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -5903,13 +5904,13 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5942,9 +5943,9 @@ Private Sub BuildRowTextBox(Module As Object, fldName As String, fldValu As Stri
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -5963,13 +5964,13 @@ Private Sub BuildRowTextBox(Module As Object, fldName As String, fldValu As Stri
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5998,11 +5999,11 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
-	Dim btnsize As String = modSD5.FixSize("btn", tc.Size)
+	Dim btnsize As String = UI.FixSize("btn", tc.Size)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	'
@@ -6010,13 +6011,13 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6050,19 +6051,19 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnColor As String = GetColorFromField("btn", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim btnsize As String = modSD5.FixSize("btn", sButtonSize)
+	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
@@ -6094,34 +6095,34 @@ Private Sub BuildRowFile(Module As Object, fldName As String, fldValu As String,
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
 	Dim btnColor As String = ""
 	Dim creadonly As String = ""
 	If tc.readonly Then creadonly = $"disabled="disabled""$
 	If bColor.IndexOf(".") = -1 Then
-		btnColor = modSD5.FixColor("file-input", bColor)
+		btnColor = UI.FixColor("file-input", bColor)
 	Else
-		Dim fld2 As String = modSD5.MvField(bColor, 2, ".")
+		Dim fld2 As String = UI.MvField(bColor, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		scolor = scolor.ToLowerCase
-		btnColor = modSD5.FixColor("file-input", scolor)
+		btnColor = UI.FixColor("file-input", scolor)
 	End If
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6149,9 +6150,9 @@ Private Sub BuildRowPassword(Module As Object, fldName As String, fldValu As Str
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -6170,13 +6171,13 @@ Private Sub BuildRowPassword(Module As Object, fldName As String, fldValu As Str
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6204,9 +6205,9 @@ Private Sub BuildRowNumber(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -6222,13 +6223,13 @@ Private Sub BuildRowNumber(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6256,9 +6257,9 @@ Private Sub BuildRowDatePicker(Module As Object, fldName As String, fldValu As S
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -6278,13 +6279,13 @@ Private Sub BuildRowDatePicker(Module As Object, fldName As String, fldValu As S
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6312,9 +6313,9 @@ Private Sub BuildRowDateTimePicker(Module As Object, fldName As String, fldValu 
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -6332,13 +6333,13 @@ Private Sub BuildRowDateTimePicker(Module As Object, fldName As String, fldValu 
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -6367,9 +6368,9 @@ Private Sub BuildRowTimePicker(Module As Object, fldName As String, fldValu As S
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("input", bColor, rowdata)
@@ -6385,13 +6386,13 @@ Private Sub BuildRowTimePicker(Module As Object, fldName As String, fldValu As S
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -6421,11 +6422,11 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
-	Dim btnsize As String = modSD5.FixSize("btn", sButtonSize)
+	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	'
@@ -6458,14 +6459,14 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -6503,9 +6504,9 @@ Private Sub BuildRowButton(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnColor As String = GetColorFromField("btn", bColor, rowdata)
 	'
@@ -6513,15 +6514,15 @@ Private Sub BuildRowButton(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
-	Dim btnsize As String = modSD5.FixSize("btn", sButtonSize)
+	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
@@ -6550,49 +6551,49 @@ Private Sub BuildRowBadge(Module As Object, fldName As String, fldValu As String
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim boutline As String = ""
 	If bBadgesOutlined Then boutline = "badge-outline"
-	Dim btnsize As String = modSD5.FixSize("badge", sBadgesSize)
+	Dim btnsize As String = UI.FixSize("badge", sBadgesSize)
 	Dim btnColor As String = ""
 	If bColor.IndexOf(".") = -1 Then
 		If bColor.StartsWith("#") Then
 			btnColor = $"bg-[${bColor}]"$
 		Else
-			btnColor = modSD5.FixColor("badge", bColor)
+			btnColor = UI.FixColor("badge", bColor)
 		End If
 	Else
-		Dim fld2 As String = modSD5.MvField(bColor, 2, ".")
+		Dim fld2 As String = UI.MvField(bColor, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		If scolor.StartsWith("#") Then
 			btnColor = $"bg-[${scolor}]"$
 		Else
 			scolor = scolor.ToLowerCase
-			btnColor = modSD5.FixColor("badge", scolor)
+			btnColor = UI.FixColor("badge", scolor)
 		End If
 	End If
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
-	Dim sh As String = modSD5.FixSize("h", tc.height)
+	Dim sh As String = UI.FixSize("h", tc.height)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex flex-wrap break-words relative">
-    <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge py-2 px-2 ${sh} ${btnColor} ${btnsize} ${boutline} ${cClass}">
+    <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge rounded-full py-2 px-2 ${sh} ${btnColor} ${btnsize} ${boutline} ${cClass}">
     <span id="${mName}_${RowCnt}_${fldName}_badge_text" class="${tc.TextColor}">${fldValu}</span>
     </div>
     </div>
@@ -6618,9 +6619,9 @@ Private Sub BuildRowRating(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("bg", bColor, rowdata)
@@ -6629,20 +6630,20 @@ Private Sub BuildRowRating(Module As Object, fldName As String, fldValu As Strin
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim sbRating As StringBuilder
 	sbRating.Initialize
 	Dim rCnt As Int = 0
 	For rCnt = 1 To tc.size
 		Dim sbChecked As String = ""
-		If modSD5.CStr(fldValu) = modSD5.CStr(rCnt) Then
+		If UI.CStr(fldValu) = UI.CStr(rCnt) Then
 			sbChecked = $"checked="checked""$
 		End If
 		sbRating.Append($"<input id="${mName}_${RowCnt}_${fldName}_${rCnt}_rating" ${sbChecked} value="${rCnt}" type="radio" name="${mName}_${RowCnt}_${fldName}_rating" class="${tc.mask} ${btnColor} ${cClass} radio-${sComponentSize}"></input>"$)
@@ -6676,9 +6677,9 @@ Private Sub BuildRowTextArea(Module As Object, fldName As String, fldValu As Str
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'the color is sources from the item
 	Dim btnColor As String = GetColorFromField("textarea", bColor, rowdata)
@@ -6696,13 +6697,13 @@ Private Sub BuildRowTextArea(Module As Object, fldName As String, fldValu As Str
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6723,7 +6724,7 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 		Dim subName As String = tc.ComputeRing
 		bHasRing = BANano.CallSub(Module, subName, Array(rowdata))
 		sRingColor = rowdata.GetDefault("ringcolor", "")
-		bHasRing = modSD5.CBool(bHasRing)
+		bHasRing = UI.CBool(bHasRing)
 	End If
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -6741,20 +6742,20 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim acolor As String = ""
 	If bHasRing Then
 		If sRingColor.IndexOf(".") = -1 Then
-			acolor = modSD5.FixColor("ring", sRingColor)
+			acolor = UI.FixColor("ring", sRingColor)
 		Else
-			Dim fld2 As String = modSD5.MvField(sRingColor, 2, ".")
+			Dim fld2 As String = UI.MvField(sRingColor, 2, ".")
 			Dim scolor As String = rowdata.GetDefault(fld2, "")
-			scolor = modSD5.CStr(scolor)
+			scolor = UI.CStr(scolor)
 			scolor = scolor.ToLowerCase
-			acolor = modSD5.FixColor("ring", scolor)
+			acolor = UI.FixColor("ring", scolor)
 		End If
 		acolor = acolor & " ring ring-offset-base-100 ring-offset-2"
 	End If
@@ -6762,19 +6763,19 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 	Dim btnColor As String = GetColorFromField("bg", bColor, rowdata)
 	Dim xonline As String = ""
 	xonline = rowdata.GetDefault(tc.OnlineField, "")
-	xonline = modSD5.CStr(xonline)
+	xonline = UI.CStr(xonline)
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
@@ -6783,7 +6784,7 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 	Dim act As String =  $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${btnColor} ${modSD5.FixSize("w",tc.Size)} ${acolor}">
+    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${btnColor} ${UI.FixSize("w",tc.Size)} ${acolor}">
     <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt=""></img>
     </div>
     </div>
@@ -6800,7 +6801,7 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 		Dim subName As String = tc.ComputeRing
 		bHasRing = BANano.CallSub(Module, subName, Array(rowdata))
 		sRingColor = rowdata.GetDefault("ringcolor", "")
-		bHasRing = modSD5.CBool(bHasRing)
+		bHasRing = UI.CBool(bHasRing)
 	End If
 	'
 	If tc.ComputeValue <> "" Then
@@ -6819,41 +6820,41 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnColor As String = GetColorFromField("bg", bColor, rowdata)
 	'
 	Dim acolor As String = ""
 	If bHasRing Then
 		If sRingColor.IndexOf(".") = -1 Then
-			acolor = modSD5.FixColor("ring", sRingColor)
+			acolor = UI.FixColor("ring", sRingColor)
 		Else
-			Dim fld2 As String = modSD5.MvField(sRingColor, 2, ".")
+			Dim fld2 As String = UI.MvField(sRingColor, 2, ".")
 			Dim scolor As String = rowdata.GetDefault(fld2, "")
-			scolor = modSD5.CStr(scolor)
+			scolor = UI.CStr(scolor)
 			scolor = scolor.ToLowerCase
-			acolor = modSD5.FixColor("ring", scolor)
+			acolor = UI.FixColor("ring", scolor)
 		End If
 		acolor = acolor & " ring ring-offset-base-100 ring-offset-2"
 	End If
 	'
 	Dim xonline As String = ""
 	xonline = rowdata.GetDefault(tc.OnlineField, "")
-	xonline = modSD5.CStr(xonline)
+	xonline = UI.CStr(xonline)
 	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
@@ -6861,7 +6862,7 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} placeholder ${tc.TextColor}">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${modSD5.FixSize("w",tc.Size)} ${btnColor} ${acolor}">
+    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${UI.FixSize("w",tc.Size)} ${btnColor} ${acolor}">
     <span id="${mName}_${RowCnt}_${fldName}_span">${fldValu}</span>
     </div>
     </div>
@@ -6875,20 +6876,20 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 		fldValu = BANano.CallSub(Module, subName, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	Dim imgCnt As Int = 0
-	Dim images As List = modSD5.StrParse(tc.Delimiter, fldValu)
+	Dim images As List = UI.StrParse(tc.Delimiter, fldValu)
 	Dim timages As Int = images.size
 	For Each k As String In images
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_${imgCnt}" class="avatar">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
         <img id="${mName}_${RowCnt}_${fldName}_image_${imgCnt}" src="${k}" alt=""></img>
         </div>
         </div>"$
@@ -6900,7 +6901,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	If timages > 5 Then
 		Dim tOthers As Int = BANano.parseInt(timages) - 5
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_6" class="avatar avatar-placeholder">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
         <span id="${mName}_${RowCnt}_${fldName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -6911,13 +6912,13 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6947,29 +6948,29 @@ Private Sub BuildRowBadgeGroup(Module As Object, fldName As String, fldValu As S
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim boutline As String = ""
 	If bBadgesOutlined Then boutline = "badge-outline"
-	Dim sh As String = modSD5.FixSize("h", tc.height)
-	Dim bs As String = modSD5.FixSize("badge", sBadgesSize)
+	Dim sh As String = UI.FixSize("h", tc.height)
+	Dim bs As String = UI.FixSize("badge", sBadgesSize)
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	Dim imgCnt As Int = 0
-	Dim images As List = modSD5.StrParse(";", fldValu)
+	Dim images As List = UI.StrParse(";", fldValu)
 	For Each k As String In images
 		k = k.Trim
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
-		Dim badgeText As String = modSD5.MvField(k, 1, ":")
+		Dim badgeText As String = UI.MvField(k, 1, ":")
 		badgeText = badgeText.Trim
-		Dim badgeColor As String = modSD5.MvField(k, 2, ":")
+		Dim badgeColor As String = UI.MvField(k, 2, ":")
 		badgeColor = badgeColor.Trim
 		If badgeColor = badgeText Then badgeColor = ""
 		If bColor <> "" Then badgeColor = bColor
-		Dim btnColor As String = modSD5.FixColor("badge", badgeColor)
+		Dim btnColor As String = UI.FixColor("badge", badgeColor)
 		'
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_${imgCnt}_badge" class="mr-2 mb-2 py-2 px-4 badge ${sh} ${btnColor} ${boutline} ${cClass} ${bs}">${badgeText}</div>"$
 		sbOptions.Append(sItem)
@@ -6979,13 +6980,13 @@ Private Sub BuildRowBadgeGroup(Module As Object, fldName As String, fldValu As S
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim tcolor As String = tc.TextColor
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = modSD5.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -7004,7 +7005,7 @@ Private Sub BuildRowOther(Module As Object, fldName As String, fldValu As String
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -7026,20 +7027,20 @@ Private Sub BuildRowOther(Module As Object, fldName As String, fldValu As String
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	Select Case tc.typeof
 		Case "filesize"
-			fldValu = modSD5.FormatFileSize(originalValue)
+			fldValu = UI.FormatFileSize(originalValue)
 		Case "date"
-			fldValu = modSD5.FormatDisplayDate(originalValue, "ddd, DD MMM YYYY")
+			fldValu = UI.FormatDisplayDate(originalValue, "ddd, DD MMM YYYY")
 		Case "datetime"
-			fldValu = modSD5.FormatDisplayDate(originalValue, "ddd, DD MMM YYYY @ HH:mm:ss")
+			fldValu = UI.FormatDisplayDate(originalValue, "ddd, DD MMM YYYY @ HH:mm:ss")
 		Case "money"
-			fldValu = modSD5.FormatDisplayNumber(originalValue, "0,0.00")
+			fldValu = UI.FormatDisplayNumber(originalValue, "0,0.00")
 		Case "thousand"
-			fldValu = modSD5.FormatDisplayNumber(originalValue, "0,0")
+			fldValu = UI.FormatDisplayNumber(originalValue, "0,0")
 	End Select
 	'********
 	'the color is sources from the item
@@ -7051,13 +7052,13 @@ End Sub
 Sub GetColorFromField(prefix As String, bColor As String, rowData As Map) As String
 	Dim btnColor As String = ""
 	If bColor.IndexOf(".") = -1 Then
-		btnColor = modSD5.FixColor(prefix, bColor)
+		btnColor = UI.FixColor(prefix, bColor)
 	Else
-		Dim fld2 As String = modSD5.MvField(bColor, 2, ".")
+		Dim fld2 As String = UI.MvField(bColor, 2, ".")
 		Dim scolor As String = rowData.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		scolor = scolor.ToLowerCase
-		btnColor = modSD5.FixColor(prefix, scolor)
+		btnColor = UI.FixColor(prefix, scolor)
 	End If
 	Return btnColor
 End Sub
@@ -7080,19 +7081,19 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnColor As String = GetColorFromField("btn", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", $"${bgColor}-500"$)
+		bgColor = UI.FixColor("bg", $"${bgColor}-500"$)
 	End If
 	'
-	Dim btnsize As String = modSD5.FixSize("btn", sButtonSize)
+	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
@@ -7151,8 +7152,8 @@ Sub AddRow(rowdata As Map)
 	If bLowerCase Then
 		For Each k As String In rowdata.Keys
 			Dim v As String = rowdata.Get(k)
-			k = modSD5.cstr(k)
-			v = modSD5.cstr(v)
+			k = UI.cstr(k)
+			v = UI.cstr(v)
 			Dim nk As String = k.ToLowerCase
 			If k <> nk Then
 				rowdata.Put(nk, v)
@@ -7177,12 +7178,12 @@ Sub AddRow(rowdata As Map)
 		Dim fldName As String = Columns.GetKeyAt(colCnt)
 		Dim tc As TableColumn = Columns.Get(fldName)
 		Dim fldValu As String = rowdata.GetDefault(fldName, "")
-		fldValu = modSD5.CStr(fldValu)
+		fldValu = UI.CStr(fldValu)
 		'
 		Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-		subtitle = modSD5.CStr(subtitle)
+		subtitle = UI.CStr(subtitle)
 		Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-		subtitle1 = modSD5.CStr(subtitle1)
+		subtitle1 = UI.CStr(subtitle1)
 		'
 		Select Case tc.typeof
 			Case "titleicon"
@@ -7203,9 +7204,9 @@ Sub AddRow(rowdata As Map)
 				If sicon.indexof(".") = -1 Then
 					theicon = tc.icon
 				Else
-					Dim fld2 As String = modSD5.MvField(sicon, 2, ".")
+					Dim fld2 As String = UI.MvField(sicon, 2, ".")
 					Dim fld1 As String = rowdata.GetDefault(fld2, "")
-					fld1 = modSD5.CStr(fld1)
+					fld1 = UI.CStr(fld1)
 					theicon = fld1
 				End If
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, theicon)
@@ -7230,13 +7231,13 @@ Sub AddRow(rowdata As Map)
 				sbRow.Append(act)
 			Case "toggle"
 				Dim act As String = BuildRowToggle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
-				Dim bchecked As Boolean = modSD5.CBool(fldValu)
+				Dim bchecked As Boolean = UI.CBool(fldValu)
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, bchecked)
 				sbRow.Append(act)
 				changes.Put($"${mName}_${RowCnt}_${fldName}_toggle"$, "")
 			Case "checkbox"
 				Dim act As String = BuildRowCheckBox(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
-				Dim bchecked As Boolean = modSD5.CBool(fldValu)
+				Dim bchecked As Boolean = UI.CBool(fldValu)
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, bchecked)
 				sbRow.Append(act)
 				changes.Put($"${mName}_${RowCnt}_${fldName}_checkbox"$, "")
@@ -7480,7 +7481,7 @@ Sub AddRow(rowdata As Map)
 		Dim rtColor As String = BANano.CallSub(mCallBack, tblComputeRowColor, Array(rowdata))
 		If rtColor <> "" Then
 			Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${RowCnt}"$)
-			Dim xclass As String = modSD5.FixColor("text", rtColor)
+			Dim xclass As String = UI.FixColor("text", rtColor)
 			rowElement.AddClass(xclass)
 		End If
 	End If
@@ -7489,7 +7490,7 @@ Sub AddRow(rowdata As Map)
 		Dim rbgColor As String = BANano.CallSub(mCallBack, tblComputeBackgroundColor, Array(rowdata))
 		If rbgColor <> "" Then
 			Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${RowCnt}"$)
-			Dim xcol As String = modSD5.FixColor("bg", $"${rbgColor}-500"$)
+			Dim xcol As String = UI.FixColor("bg", $"${rbgColor}-500"$)
 			Dim xclass As String = $"[&>*]:${xcol}"$
 			rowElement.AddClass(xclass)
 		End If
@@ -7759,7 +7760,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 		Dim subName As String = tc.ComputeRing
 		bHasRing = BANano.CallSub(Module, subName, Array(rowdata))
 		sRingColor = rowdata.GetDefault("ringcolor", "")
-		bHasRing = modSD5.CBool(bHasRing)
+		bHasRing = UI.CBool(bHasRing)
 	End If
 	'
 	If tc.ComputeValue <> "" Then
@@ -7778,30 +7779,30 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim acolor As String = ""
 	If bHasRing Then
 		If sRingColor.IndexOf(".") = -1 Then
-			acolor = modSD5.FixColor("ring", sRingColor)
+			acolor = UI.FixColor("ring", sRingColor)
 		Else
-			Dim fld2 As String = modSD5.MvField(sRingColor, 2, ".")
+			Dim fld2 As String = UI.MvField(sRingColor, 2, ".")
 			Dim scolor As String = rowdata.GetDefault(fld2, "")
-			scolor = modSD5.CStr(scolor)
+			scolor = UI.CStr(scolor)
 			scolor = scolor.ToLowerCase
-			acolor = modSD5.FixColor("ring", scolor)
+			acolor = UI.FixColor("ring", scolor)
 		End If
 		acolor = acolor & " ring ring-offset-base-100 ring-offset-2"
 	End If
 	'
 	Dim xonline As String = ""
 	xonline = rowdata.GetDefault(tc.OnlineField, "")
-	xonline = modSD5.CStr(xonline)
+	xonline = UI.CStr(xonline)
 	'
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
-	subcontent = modSD5.CStr(subcontent)
+	subcontent = UI.CStr(subcontent)
 	'
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
@@ -7809,7 +7810,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
@@ -7818,7 +7819,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center space-x-3">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${modSD5.FixSize("w",tc.Size)} ${acolor} ${cClass}">
+    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${UI.FixSize("w",tc.Size)} ${acolor} ${cClass}">
     <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}"></img>
     </div>
     </div>
@@ -7842,7 +7843,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
 		Dim subName As String = tc.ComputeRing
 		bHasRing = BANano.CallSub(Module, subName, Array(rowdata))
 		sRingColor = rowdata.GetDefault("ringcolor", "")
-		bHasRing = modSD5.CBool(bHasRing)
+		bHasRing = UI.CBool(bHasRing)
 	End If
 	'
 	If tc.ComputeValue <> "" Then
@@ -7862,36 +7863,36 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	Dim acolor As String = ""
 	If bHasRing Then
 		If sRingColor.IndexOf(".") = -1 Then
-			acolor = modSD5.FixColor("ring", sRingColor)
+			acolor = UI.FixColor("ring", sRingColor)
 		Else
-			Dim fld2 As String = modSD5.MvField(sRingColor, 2, ".")
+			Dim fld2 As String = UI.MvField(sRingColor, 2, ".")
 			Dim scolor As String = rowdata.GetDefault(fld2, "")
-			scolor = modSD5.CStr(scolor)
+			scolor = UI.CStr(scolor)
 			scolor = scolor.ToLowerCase
-			acolor = modSD5.FixColor("ring", scolor)
+			acolor = UI.FixColor("ring", scolor)
 		End If
 		acolor = acolor & " ring ring-offset-base-100 ring-offset-2"
 	End If
 	'
 	Dim xonline As String = ""
 	xonline = rowdata.GetDefault(tc.OnlineField, "")
-	xonline = modSD5.CStr(xonline)
+	xonline = UI.CStr(xonline)
 	'
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
-	subcontent = modSD5.CStr(subcontent)
+	subcontent = UI.CStr(subcontent)
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
 	End If
@@ -7899,7 +7900,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <div class="flex items-center space-x-3">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${modSD5.FixSize("w",tc.Size)} ${acolor} ${cClass}">
+    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${UI.FixSize("w",tc.Size)} ${acolor} ${cClass}">
     <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}"></img>
     </div>
     </div>
@@ -7920,7 +7921,7 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
 		Dim subName As String = tc.ComputeRing
 		bHasRing = BANano.CallSub(Module, subName, Array(rowdata))
 		sRingColor = rowdata.GetDefault("ringcolor", "")
-		bHasRing = modSD5.CBool(bHasRing)
+		bHasRing = UI.CBool(bHasRing)
 	End If
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -7938,27 +7939,27 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'
 	Dim acolor As String = ""
 	If bHasRing Then
 		If sRingColor.IndexOf(".") = -1 Then
-			acolor = modSD5.FixColor("ring", sRingColor)
+			acolor = UI.FixColor("ring", sRingColor)
 		Else
-			Dim fld2 As String = modSD5.MvField(sRingColor, 2, ".")
+			Dim fld2 As String = UI.MvField(sRingColor, 2, ".")
 			Dim scolor As String = rowdata.GetDefault(fld2, "")
-			scolor = modSD5.CStr(scolor)
+			scolor = UI.CStr(scolor)
 			scolor = scolor.ToLowerCase
-			acolor = modSD5.FixColor("ring", scolor)
+			acolor = UI.FixColor("ring", scolor)
 		End If
 		acolor = acolor & " ring ring-offset-base-100 ring-offset-2"
 	End If
 	'
 	Dim xonline As String = ""
 	xonline = rowdata.GetDefault(tc.OnlineField, "")
-	xonline = modSD5.CStr(xonline)
+	xonline = UI.CStr(xonline)
 	'********
 	Dim boutline As String = ""
 	If bBadgesOutlined Then boutline = "badge-outline"
@@ -7967,32 +7968,32 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
 		If bColor.StartsWith("#") Then
 			btnColor = $"bg-[${bColor}]"$
 		Else
-			btnColor = modSD5.FixColor("badge", bColor)
+			btnColor = UI.FixColor("badge", bColor)
 		End If
 	Else
-		Dim fld2 As String = modSD5.MvField(bColor, 2, ".")
+		Dim fld2 As String = UI.MvField(bColor, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
-		scolor = modSD5.CStr(scolor)
+		scolor = UI.CStr(scolor)
 		If scolor.StartsWith("#") Then
 			btnColor = $"bg-[${scolor}]"$
 		Else
 			scolor = scolor.ToLowerCase
-			btnColor = modSD5.FixColor("badge", scolor)
+			btnColor = UI.FixColor("badge", scolor)
 		End If
 	End If
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
-	subcontent = modSD5.CStr(subcontent)
+	subcontent = UI.CStr(subcontent)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge ${modSD5.FixSize("h",tc.size)} ${btnColor} ${cClass} ${boutline}">
+    <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge rounded-full ${UI.FixSize("h",tc.size)} ${btnColor} ${cClass} ${boutline}">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} -ml-3">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="rounded-full ${tc.mask} ${acolor} ${modSD5.FixSize("w",tc.Size)}">
+    <div id="${mName}_${RowCnt}_${fldName}_host" class="rounded-full ${tc.mask} ${acolor} ${UI.FixSize("w",tc.Size)}">
     <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt="${subcontent}">
     </div>
     </div>
@@ -8006,8 +8007,8 @@ private Sub HandleRowClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
 	If SubExists(mCallBack, $"${mName}_rowclick"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8022,9 +8023,9 @@ private Sub HandleMenuRow(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src, 4, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src, 4, "_")
 	If SubExists(mCallBack, $"${mName}_menuitemrow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8040,8 +8041,8 @@ private Sub HandleSelection(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
 	If SubExists(mCallBack, $"${mName}_SelectRow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8057,10 +8058,10 @@ private Sub HandleChange(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_change"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8081,9 +8082,9 @@ private Sub HandleChangeS(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src, 3, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src, 3, "_")
 	Dim value As String = BANano.GetElement($"#${src}"$).GetValue
 	If SubExists(mCallBack, $"${mName}_change"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
@@ -8103,11 +8104,11 @@ private Sub HandleChangeR(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src, 3, "_")
-	Dim value As String = modSD5.MvField(src, 4, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src, 3, "_")
+	Dim value As String = UI.MvField(src, 4, "_")
 	If SubExists(mCallBack, $"${mName}_change"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
@@ -8126,10 +8127,10 @@ private Sub HandleChangeV(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_change"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8151,10 +8152,10 @@ private Sub HandleChangeF(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_change"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
@@ -8178,14 +8179,14 @@ private Sub Decrement(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	'
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowpos}_${action}_input"$)
-	Dim minvalue As Int = modSD5.CInt(el.GetAttr("min"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim minvalue As Int = UI.CInt(el.GetAttr("min"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) - BANano.parseInt(stpvalue)
 	If nxtvalue < minvalue Then
 		nxtvalue = minvalue
@@ -8212,14 +8213,14 @@ private Sub Increment(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	'
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowpos}_${action}_input"$)
-	Dim maxvalue As Int = modSD5.CInt(el.GetAttr("max"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim maxvalue As Int = UI.CInt(el.GetAttr("max"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) + BANano.parseInt(stpvalue)
 	If nxtvalue > maxvalue Then
 		nxtvalue = maxvalue
@@ -8245,10 +8246,10 @@ private Sub PrependClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_PrependClick"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
@@ -8261,10 +8262,10 @@ private Sub AppendClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_AppendClick"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
@@ -8277,10 +8278,10 @@ private Sub PasswordPrepend(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	If SubExists(mCallBack, $"${mName}_PasswordPrependClick"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
@@ -8289,7 +8290,7 @@ private Sub PasswordPrepend(event As BANanoEvent)     'ignoredeadcode
 	End If
 End Sub
 Sub SetRowColumnAppendIcon(colName As String, rowCnt As Int, iconName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 '	Dim AppendButton As SDUI5Button		'ignore
@@ -8297,7 +8298,7 @@ Sub SetRowColumnAppendIcon(colName As String, rowCnt As Int, iconName As String)
 '	AppendButton.IconName = iconName
 End Sub
 Sub SetRowColumnPrependIcon(colName As String, rowCnt As Int, iconName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 '	Dim AppendButton As SDUI5Button		'ignore
@@ -8305,7 +8306,7 @@ Sub SetRowColumnPrependIcon(colName As String, rowCnt As Int, iconName As String
 '	AppendButton.IconName = iconName
 End Sub
 Sub SetRowColumnAppendLoading(colName As String, rowCnt As Int, b As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	'
@@ -8323,7 +8324,7 @@ Sub SetRowColumnAppendLoading(colName As String, rowCnt As Int, b As Boolean)
 	End If
 End Sub
 Sub SetRowColumnPrependLoading(colName As String, rowCnt As Int, b As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	'
@@ -8341,7 +8342,7 @@ Sub SetRowColumnPrependLoading(colName As String, rowCnt As Int, b As Boolean)
 	End If
 End Sub
 Sub SetRowColumnBadgeAvatarTitle(fldName As String, rowCnt As Int, avatar As String, subtitle As String, badgeSize As String, badgeColor As String)
-	fldName = modSD5.CleanID(fldName)
+	fldName = UI.CleanID(fldName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(fldName) = False Then Return
 	Dim bColor As String = badgeColor
@@ -8352,15 +8353,15 @@ Sub SetRowColumnBadgeAvatarTitle(fldName As String, rowCnt As Int, avatar As Str
 	If bColor.StartsWith("#") Then
 		btnColor = $"bg-[${bColor}]"$
 	Else
-		btnColor = modSD5.FixColor("badge", bColor)
+		btnColor = UI.FixColor("badge", bColor)
 	End If
 	'
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${fldName}"$)
 	el.Empty
 	Dim act As String = $"[BANCLEAN]
-    <div id="${mName}_${rowCnt1}_${fldName}_badge" class="badge w-full ${modSD5.FixSize("h",badgeSize)} ${btnColor} ${boutline} relative">
+    <div id="${mName}_${rowCnt1}_${fldName}_badge" class="badge rounded-full w-full ${UI.FixSize("h",badgeSize)} ${btnColor} ${boutline} relative">
     <div id="${mName}_${rowCnt1}_${fldName}_avatar1" class="avatar -ml-3 absolute left-3">
-    <div id="${mName}_${rowCnt1}_${fldName}_host" class="rounded-full ${modSD5.FixSize("w",badgeSize)}">
+    <div id="${mName}_${rowCnt1}_${fldName}_host" class="rounded-full ${UI.FixSize("w",badgeSize)}">
     <img id="${mName}_${rowCnt1}_${fldName}_avatar" src="${avatar}" alt="">
     </div>
     </div>
@@ -8373,10 +8374,10 @@ private Sub PasswordAppend(event As BANanoEvent)     'ignore
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	rowpos = modSD5.CInt(rowpos)
-	Dim action As String = modSD5.MvField(src,3, "_")
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	rowpos = UI.CInt(rowpos)
+	Dim action As String = UI.MvField(src,3, "_")
 	'
 '	Dim AppendButton As SDUI5Button		'ignore
 '	AppendButton.AssignElement(mCallBack, $"${mName}_${rowpos}_${action}_append"$)
@@ -8407,10 +8408,10 @@ private Sub HandleClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	'Dim tblname As String = modSD5.MvField(src, 1, "_")
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	Dim action As String = modSD5.MvField(src,3, "_")
-	rowpos = modSD5.CInt(rowpos)
+	'Dim tblname As String = UI.MvField(src, 1, "_")
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,3, "_")
+	rowpos = UI.CInt(rowpos)
 	Dim ename As String = $"${mName}_${action}Row"$
 	If SubExists(mCallBack, $"${mName}_${action}"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
@@ -8430,9 +8431,9 @@ private Sub HandleFileClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim rowpos As Int = modSD5.MvField(src,2, "_")
-	Dim action As String = modSD5.MvField(src,3, "_")
-	rowpos = modSD5.CInt(rowpos)
+	Dim rowpos As Int = UI.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,3, "_")
+	rowpos = UI.CInt(rowpos)
 	'get the file element
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${rowpos}_${action}_input"$)
 	'clear the value
@@ -8524,11 +8525,11 @@ End Sub
 'save this page
 Sub setComponentSize(s As String)
 	CustProps.put("ComponentSize", s)
-	sComponentSize = modSD5.CStr(s)
+	sComponentSize = UI.CStr(s)
 End Sub
 Sub setButtonSize(s As String)
 	CustProps.put("ButtonSize", s)
-	sButtonSize = modSD5.CStr(s)
+	sButtonSize = UI.CStr(s)
 	If mElement = Null Then Return
 End Sub
 Sub getButtonSize As String
@@ -8536,7 +8537,7 @@ Sub getButtonSize As String
 End Sub
 Sub setBadgesSize(s As String)
 	CustProps.put("BadgesSize", s)
-	sBadgesSize = modSD5.CStr(s)
+	sBadgesSize = UI.CStr(s)
 	If mElement = Null Then Return
 End Sub
 Sub getBadgesSize As String
@@ -8559,7 +8560,7 @@ Sub AddColumnAvatarGroup(name As String, title As String, ssize As String, mask 
 	nc.title = title
 	nc.typeof = "avatargroup"
 	nc.size = ssize
-	nc.mask = modSD5.FixMask(mask)
+	nc.mask = UI.FixMask(mask)
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -8640,7 +8641,7 @@ Sub LoadJSON(jsonFile As String)
 	Dim r1 As Map = records.Get(0)
 	'create the columns from the keys of the map
 	For Each k As String In r1.Keys
-		Dim v As String = modSD5.ProperSubName(k, False)
+		Dim v As String = UI.ProperSubName(k, False)
 		AddColumn(k, v)
 	Next
 	AddDesignerColums
@@ -8669,11 +8670,11 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
-	Dim options1 As Map = modSD5.ListToSelectOptions(options)
+	Dim options1 As Map = UI.ListToSelectOptions(options)
 	SetSelectMapItems(colName, options1)
 End Sub
 Sub SetColumnItemsFromList(colName As String, options As List)
-	Dim options1 As Map = modSD5.ListToSelectOptions(options)
+	Dim options1 As Map = UI.ListToSelectOptions(options)
 	SetSelectMapItems(colName, options1)
 End Sub
 'total counted
@@ -8765,11 +8766,11 @@ Sub SetSelectMapItems(colName As String, options As Map)
 	End Select
 End Sub
 Sub SetSelectListItemsOfRow(colName As String, rowPos As Int, options As List)
-	Dim options1 As Map = modSD5.ListToSelectOptions(options)
+	Dim options1 As Map = UI.ListToSelectOptions(options)
 	SetSelectMapItemsOfRow(colName, rowPos, options1)
 End Sub
 Sub SetSelectListItemsOfRowSort(colName As String, rowPos As Int, options As List)
-	Dim options1 As Map = modSD5.ListToSelectOptionsSort(options)
+	Dim options1 As Map = UI.ListToSelectOptionsSort(options)
 	SetSelectMapItemsOfRow(colName, rowPos, options1)
 End Sub
 'visible
@@ -8854,7 +8855,7 @@ Sub GetRow(rowCnt As Int) As Map
 				Dim Itemx As BANanoElement
 				Itemx.Initialize($"input[name=${rname}]:checked"$)
 				Dim rowvalue As Object = Itemx.GetValue
-				rowvalue = modSD5.CInt(rowvalue)
+				rowvalue = UI.CInt(rowvalue)
 				rowdata.put(fldName, rowvalue)
 			Case "button"
 				Dim rowvalue As Object = BANano.GetElement($"#${mName}_${rowCnt1}_${fldName}_button"$).GetText
@@ -8874,7 +8875,7 @@ Sub GetRow(rowCnt As Int) As Map
 	Return rowdata
 End Sub
 Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim tc As TableColumn = Columns.Get(colName)
@@ -8906,7 +8907,7 @@ Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
 	End Select
 End Sub
 Sub SetRowColumnButtonEnabled(colName As String, rowCnt As Int, b As Boolean)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim tc As TableColumn = Columns.Get(colName)
@@ -8923,7 +8924,7 @@ Sub SetRowColumnButtonEnabled(colName As String, rowCnt As Int, b As Boolean)
 End Sub
 'add a class to a row/column at runtime
 Sub AddRowColumnClass(colName As String, rowCnt As Int, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	UI.AddClassByID($"#${mName}_${rowCnt1}_${colName}"$, className)
@@ -8935,7 +8936,7 @@ Sub AddRowClass(rowCnt As Int, className As String)
 End Sub
 'add a class to the heading at runtime
 Sub AddHeaderClass(colName As String, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	UI.AddClassByID($"#${mName}_${colName}_th"$, className)
 End Sub
@@ -8961,22 +8962,22 @@ Sub SetColumnHeaderSideWaysRL(cols As List)
 	Next
 End Sub
 Sub SetHeaderSideWaysLR(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:sideways-lr]")
 End Sub
 Sub SetHeaderSideWaysRL(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:sideways-rl]")
 End Sub
 Sub SetHeaderVerticalLR(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:vertical-lr]")
 End Sub
 Sub SetHeaderVerticalRL(colName As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:vertical-rl]")
 End Sub
@@ -8986,7 +8987,7 @@ Sub SetRowColumnItems(colName As String, rowCnt As Int, options As Map)
 	SetSelectMapItemsOfRow(colName, rowCnt, options)
 End Sub
 Sub SetRowColumnItemsFromList(colName As String, rowPos As Int, options As List)
-	Dim options1 As Map = modSD5.ListToSelectOptions(options)
+	Dim options1 As Map = UI.ListToSelectOptions(options)
 	SetSelectMapItemsOfRow(colName, rowPos, options1)
 End Sub
 'visible
@@ -9004,7 +9005,7 @@ Sub SetRowBy(rowKey As String, rowID As String,rowData As Map)
 	End If
 End Sub
 Sub SetRowColumnFileInput(colName As String, rowCnt As Int, fldVal As Object)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowdata As Map =  Rows.Get(rowCnt)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
@@ -9017,7 +9018,7 @@ Sub SetRowColumnFileInput(colName As String, rowCnt As Int, fldVal As Object)
 End Sub
 'get the field value of a file input in a table
 Sub GetRowColumnFileInput(colName As String, rowCnt As Int) As Object
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return Null
 	Dim tc As TableColumn = Columns.Get(colName)
@@ -9046,7 +9047,7 @@ End Sub
 'tb4.SetRowColumn("btnload", pos, "Loading")
 '</code>
 Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowdata As Map =  Rows.Get(rowCnt)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
@@ -9054,19 +9055,19 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 	rowdata.Put(colName, fldVal)
 	Select Case tc.typeof
 		Case "filesize"
-			fldVal = modSD5.FormatFileSize(fldVal)
+			fldVal = UI.FormatFileSize(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "date"
-			fldVal = modSD5.FormatDisplayDate(fldVal, "ddd, DD MMM YYYY")
+			fldVal = UI.FormatDisplayDate(fldVal, "ddd, DD MMM YYYY")
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "datetime"
-			fldVal = modSD5.FormatDisplayDate(fldVal, "ddd, DD MMM YYYY @ HH:mm:ss")
+			fldVal = UI.FormatDisplayDate(fldVal, "ddd, DD MMM YYYY @ HH:mm:ss")
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "money"
-			fldVal = modSD5.FormatDisplayNumber(fldVal, "0,0.00")
+			fldVal = UI.FormatDisplayNumber(fldVal, "0,0.00")
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "thousand"
-			fldVal = modSD5.FormatDisplayNumber(fldVal, "0,0")
+			fldVal = UI.FormatDisplayNumber(fldVal, "0,0")
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "icon"
 		Case "icontitle"
@@ -9079,21 +9080,21 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 		Case "button"
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).SetText(fldVal)
 		Case "toggle"
-			fldVal = modSD5.CBool(fldVal)
+			fldVal = UI.CBool(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_toggle"$).SetChecked(fldVal)
 		Case "checkbox"
-			fldVal = modSD5.CBool(fldVal)
+			fldVal = UI.CBool(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_checkbox"$).SetChecked(fldVal)
 		Case "range"
-			fldVal = modSD5.CInt(fldVal)
+			fldVal = UI.CInt(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_range"$).SetValue(fldVal)
 			UpdateRangeText(rowCnt1, colName, fldVal)
 		Case "progress"
-			fldVal = modSD5.CInt(fldVal)
+			fldVal = UI.CInt(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).SetValue(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress_text"$).SetText($"${fldVal}%"$)
 		Case "radial"
-			fldVal = modSD5.CInt(fldVal)
+			fldVal = UI.CInt(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_radial"$).SetText($"${fldVal}%"$)
 			UI.SetStyleByID($"#${mName}_${rowCnt1}_${colName}_radial"$, "--value", fldVal)
 		Case "select", "selectgroup"
@@ -9110,7 +9111,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 		Case "textarea"
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_textarea"$).SetValue(fldVal)
 		Case "rating"
-			fldVal = modSD5.CBool(fldVal)
+			fldVal = UI.CBool(fldVal)
 			Dim rname As String = $"${mName}_${rowCnt1}_${colName}_rating"$
 			Dim Itemx As BANanoElement
 			Itemx.Initialize($"input[name=${rname}][value=${fldVal}]"$)
@@ -9121,7 +9122,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$).SetText(fldVal)
 		Case "avatar"
 			Dim value As String = ""
-			If modSD5.CStr(fldVal).StartsWith("data:image") Then
+			If UI.CStr(fldVal).StartsWith("data:image") Then
 				value = fldVal
 			Else
 				value = $"${fldVal}?${DateTime.Now}"$
@@ -9131,7 +9132,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_span"$).SetText(fldVal)
 		Case "image"
 			Dim value As String = ""
-			If modSD5.CStr(fldVal).StartsWith("data:image") Then
+			If UI.CStr(fldVal).StartsWith("data:image") Then
 				value = fldVal
 			Else
 				value = $"${fldVal}?${DateTime.Now}"$
@@ -9153,12 +9154,12 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			Dim sbOptions As StringBuilder
 			sbOptions.Initialize
 			Dim imgCnt As Int = 0
-			Dim images As List = modSD5.StrParse(tc.Delimiter, fldVal)
+			Dim images As List = UI.StrParse(tc.Delimiter, fldVal)
 			For Each k As String In images
 				If k = "" Then Continue
 				imgCnt = BANano.parseInt(imgCnt) + 1
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_${imgCnt}" class="avatar">
-            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 ${tc.mask} ${modSD5.FixSize("w",tc.Size)}">
+            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
             <img id="${mName}_${rowCnt}_${colName}_image_${imgCnt}" src="${k}" alt=""></img>
             </div>
             </div>"$
@@ -9170,7 +9171,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			If imgCnt > 5 Then
 				Dim tOthers As Int = BANano.parseInt(imgCnt) - 5
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_6" class="avatar avatar-placeholder">
-        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${modSD5.FixSize("w",tc.Size)}">
+        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
         <span id="${mName}_${rowCnt}_${colName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -9184,24 +9185,24 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			el.Empty
 			Dim boutline As String = ""
 			If bBadgesOutlined Then boutline = "badge-outline"
-			Dim btnsize As String = modSD5.FixSize("badge", sBadgesSize)
-			Dim sh As String = modSD5.FixSize("h", tc.height)
+			Dim btnsize As String = UI.FixSize("badge", sBadgesSize)
+			Dim sh As String = UI.FixSize("h", tc.height)
 			Dim sbOptions As StringBuilder
 			sbOptions.Initialize
 			Dim imgCnt As Int = 0
-			Dim images As List = modSD5.StrParse(";", fldVal)
+			Dim images As List = UI.StrParse(";", fldVal)
 			For Each k As String In images
 				k = k.Trim
 				If k = "" Then Continue
 				imgCnt = BANano.parseInt(imgCnt) + 1
-				Dim badgeText As String = modSD5.MvField(k, 1, ":")
+				Dim badgeText As String = UI.MvField(k, 1, ":")
 				badgeText = badgeText.Trim
-				Dim badgeColor As String = modSD5.MvField(k, 2, ":")
+				Dim badgeColor As String = UI.MvField(k, 2, ":")
 				badgeColor = badgeColor.Trim
 				If badgeColor = badgeText Then badgeColor = ""
-				Dim btnColor As String = modSD5.FixColor("badge", badgeColor)
+				Dim btnColor As String = UI.FixColor("badge", badgeColor)
 				'
-				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_${imgCnt}_badge" class="mr-2 mb-2 py-2 px-4 badge ${btnColor} ${btnsize} ${boutline} ${sh}">${badgeText}</div>"$
+				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_${imgCnt}_badge" class="mr-2 mb-2 py-2 px-4 rounded-full badge ${btnColor} ${btnsize} ${boutline} ${sh}">${badgeText}</div>"$
 				sbOptions.Append(sItem)
 			Next
 			el.Append(sbOptions.ToString)
@@ -9209,7 +9210,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 	End Select
 End Sub
 Sub GetRowColumn(colName As String, rowCnt As Int) As String
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowdata As Map =  GetRow(rowCnt)
 	If Columns.ContainsKey(colName) = False Then Return ""
 	Dim fldVal As Object = rowdata.Get(colName)
@@ -9217,7 +9218,7 @@ Sub GetRowColumn(colName As String, rowCnt As Int) As String
 End Sub
 'search rows and return position
 Sub FindRowByColumn(colName As String, value As String) As Int
-	Dim idx As Int = modSD5.ListIndexOf(Rows, colName, value)
+	Dim idx As Int = UI.ListIndexOf(Rows, colName, value)
 	Return idx
 End Sub
 'update Row (list) and table content at that position
@@ -9238,7 +9239,7 @@ End Sub
 'app.Download(content, "table2csv.csv")
 '</code>
 Sub ExportToCSV(quotes As Boolean, delimiter As String, hasHeader As Boolean) As String
-	Dim res As String = modSD5.ListOfMapsToCSV(Originals, quotes, delimiter, hasHeader)
+	Dim res As String = UI.ListOfMapsToCSV(Originals, quotes, delimiter, hasHeader)
 	Return res
 End Sub
 'get field names of columns
@@ -9288,7 +9289,7 @@ Private Sub UpdateRangeText(r As Int, fldName As String, fldVal As Object)
 	End If
 End Sub
 Sub PositionOf(prop As String, value As String) As Int
-	Dim pos As Int = modSD5.ListIndexOf(Rows, prop, value)
+	Dim pos As Int = UI.ListIndexOf(Rows, prop, value)
 	Return pos
 End Sub
 '<code>
@@ -9297,14 +9298,14 @@ End Sub
 Sub SetRowBackgroundColor(rowCnt As Int, color As String)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}"$)
-	Dim xcol As String = modSD5.FixColor("bg", color)
+	Dim xcol As String = UI.FixColor("bg", color)
 	Dim xclass As String = $"[&>*]:${xcol}"$
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
 End Sub
 Sub SetHeaderBackgroundColor(color As String)
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_theadtr"$)
-	Dim xcol As String = modSD5.FixColor("bg", color)
+	Dim xcol As String = UI.FixColor("bg", color)
 	Dim xclass As String = $"[&>*]:${xcol}"$
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
@@ -9319,34 +9320,34 @@ Sub SetHeaderStyle(styles As Map)
 End Sub
 Sub SetHeaderTextColor(color As String)
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_theadtr"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 Sub SetHeaderColumnAddClass(colName As String, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_th"$)
 	rowElement.AddClass(className)
 End Sub
 '
 Sub SetHeaderColumnStyle(colName As String, styles As Map)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_th"$)
 	rowElement.SetStyle(BANano.ToJson(styles))
 End Sub
 Sub SetHeaderColumnTextColor(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_th"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 Sub SetHeaderColumnBackgroundColor(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_th"$)
-	Dim xclass As String = modSD5.FixColor("bg", color)
+	Dim xclass As String = UI.FixColor("bg", color)
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
 End Sub
@@ -9362,7 +9363,7 @@ End Sub
 'tb2.SetRowColumnAddClass("color", 1, "")
 '</code>
 Sub SetRowColumnAddClass(colName As String, rowCnt As Int, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$)
@@ -9390,7 +9391,7 @@ End Sub
 'tb.SetColumnStyle("id", createmap())
 '</code>
 Sub SetColumnStyle(colName As String, styles As Map)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim colPos As Int = GetColumnPosition(colName)
 	colPos = BANano.parseInt(colPos) + 1
@@ -9400,7 +9401,7 @@ Sub SetColumnStyle(colName As String, styles As Map)
 	rowElement.SetStyle(BANano.ToJson(styles))
 End Sub
 Sub SetColumnAddClass(colName As String, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim colPos As Int = GetColumnPosition(colName)
 	colPos = BANano.parseInt(colPos) + 1
@@ -9413,7 +9414,7 @@ End Sub
 'tb2.SetRowColumnStyle("color", 1, createmap())
 '</code>
 Sub SetRowColumnStyle(colName As String, rowCnt As Int, styles As Map)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$)
@@ -9425,29 +9426,29 @@ End Sub
 Sub SetRowTextColor(rowCnt As Int, color As String)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 '<code>
 'tb2.SetRowColumnTextColor("color", 1, "white")
 '</code>
 Sub SetRowColumnTextColor(colName As String, rowCnt As Int, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 '<code>
 'tb2.SetRowColumnBackgroundColor("color", 1, "red")
 '</code>
 Sub SetRowColumnBackgroundColor(colName As String, rowCnt As Int, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${rowCnt1}_${colName}"$)
-	Dim xclass As String = modSD5.FixColor("bg", color)
+	Dim xclass As String = UI.FixColor("bg", color)
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
 End Sub
@@ -9461,13 +9462,13 @@ Sub SetFooterColumn(colName As String, value As Object)
 	'
 	Select Case nc.typeof
 		Case "filesize"
-			Dim nv As String = modSD5.FormatFileSize(value)
+			Dim nv As String = UI.FormatFileSize(value)
 			BANano.GetElement($"#${mName}_${colName}_tf"$).SetText(nv)
 		Case "money"
-			Dim nv As String = modSD5.FormatDisplayNumber(value, "0,0.00")
+			Dim nv As String = UI.FormatDisplayNumber(value, "0,0.00")
 			BANano.GetElement($"#${mName}_${colName}_tf"$).SetText(nv)
 		Case "thousand"
-			Dim nv As String = modSD5.FormatDisplayNumber(value, "0,0")
+			Dim nv As String = UI.FormatDisplayNumber(value, "0,0")
 			BANano.GetElement($"#${mName}_${colName}_tf"$).SetText(nv)
 		Case Else
 			BANano.GetElement($"#${mName}_${colName}_tf"$).SetText(value)
@@ -9506,11 +9507,11 @@ End Sub
 '<code>
 'Dim summary As Map = tbl.SetFooterTotalSumCountColumns(Array("population"))
 'Dim srowcount As String = summary.Get("rowcount")
-'srowcount = modSD5.Thousands(srowcount)
+'srowcount = UI.Thousands(srowcount)
 'tbl.SetFooterColumn("country", $"Total (${srowcount})"$)
 '</code>
 Sub SetFooterTotalSumCountColumns(cols As List) As Map
-	cols = modSD5.ListTrimItems(cols)
+	cols = UI.ListTrimItems(cols)
 	Dim recs As List = Originals
 	Dim nm As Map = CreateMap()
 	nm.Put("rowcount", recs.Size)
@@ -9523,7 +9524,7 @@ Sub SetFooterTotalSumCountColumns(cols As List) As Map
 		For Each c As String In cols
 			If c = "" Then Continue
 			Dim v As String = r.GetDefault(c, 0)
-			v = modSD5.CDbl(v)
+			v = UI.CDbl(v)
 			Dim lv As Int = nm.GetDefault(c, 0)
 			lv = BANano.parsefloat(lv) + BANano.parsefloat(v)
 			nm.Put(c, lv)
@@ -9539,11 +9540,11 @@ Sub SetFooterTotalSumCountColumns(cols As List) As Map
 		'
 		Select Case nc.typeof
 			Case "filesize"
-				nv = modSD5.FormatFileSize(ov)
+				nv = UI.FormatFileSize(ov)
 			Case "money"
-				nv = modSD5.FormatDisplayNumber(ov, "0,0.00")
+				nv = UI.FormatDisplayNumber(ov, "0,0.00")
 			Case "thousand"
-				nv = modSD5.FormatDisplayNumber(ov, "0,0")
+				nv = UI.FormatDisplayNumber(ov, "0,0")
 			Case Else
 				nv = ov
 		End Select
@@ -9557,11 +9558,11 @@ End Sub
 '<code>
 'Dim summary As Map = tbl.SetFooterTotalSumCountColumnsOf(lst, Array("population"))
 'Dim srowcount As String = summary.Get("rowcount")
-'srowcount = modSD5.Thousands(srowcount)
+'srowcount = UI.Thousands(srowcount)
 'tbl.SetFooterColumn("country", $"Total (${srowcount})"$)
 '</code>
 Sub SetFooterTotalSumCountColumnsOf(recs As List, cols As List) As Map
-	cols = modSD5.ListTrimItems(cols)
+	cols = UI.ListTrimItems(cols)
 	Dim nm As Map = CreateMap()
 	nm.Put("rowcount", recs.Size)
 	'set everything to 0
@@ -9573,7 +9574,7 @@ Sub SetFooterTotalSumCountColumnsOf(recs As List, cols As List) As Map
 		For Each c As String In cols
 			If c = "" Then Continue
 			Dim v As String = r.GetDefault(c, 0)
-			v = modSD5.CDbl(v)
+			v = UI.CDbl(v)
 			Dim lv As Int = nm.GetDefault(c, 0)
 			lv = BANano.parsefloat(lv) + BANano.parsefloat(v)
 			nm.Put(c, lv)
@@ -9589,11 +9590,11 @@ Sub SetFooterTotalSumCountColumnsOf(recs As List, cols As List) As Map
 		'
 		Select Case nc.typeof
 			Case "filesize"
-				nv = modSD5.FormatFileSize(ov)
+				nv = UI.FormatFileSize(ov)
 			Case "money"
-				nv = modSD5.FormatDisplayNumber(ov, "0,0.00")
+				nv = UI.FormatDisplayNumber(ov, "0,0.00")
 			Case "thousand"
-				nv = modSD5.FormatDisplayNumber(ov, "0,0")
+				nv = UI.FormatDisplayNumber(ov, "0,0")
 			Case Else
 				nv = ov
 		End Select
@@ -9606,13 +9607,13 @@ End Sub
 '<code>
 'Sub table_FileChange(e As BANanoEvent)
 'e.PreventDefault
-'Dim sourceID As String = modSD5.GetIDFromEvent(e)
+'Dim sourceID As String = UI.GetIDFromEvent(e)
 'Select Case sourceID
 'Case "?"
 'Dim fileObj As Map = tblcollectionnames.GetFileFromEvent(e)
 'If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
 'tbl.ToolbarButtonLoading("?", True)
-'Dim props As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
+'Dim props As Map = BANano.Await(UI.readAsJsonWait(fileObj))
 'tbl.ToolbarButtonLoading("?", False)
 'Return
 'End Select
@@ -9621,23 +9622,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -9684,19 +9685,19 @@ Private Sub BuildRowImage(Module As Object, fldName As String, fldValu As String
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <img id="${mName}_${RowCnt}_${fldName}_image" class="border-1 ${tc.mask} ${modSD5.FixSize("w", tc.width)} ${modSD5.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
+    <img id="${mName}_${RowCnt}_${fldName}_image" class="border-1 ${tc.mask} ${UI.FixSize("w", tc.width)} ${UI.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
     </td>"$
 	'********
 	Return act
@@ -9707,7 +9708,7 @@ Private Sub BuildRowTitleSubtitle(Module As Object, fldName As String, fldValu A
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
-		bgColor = modSD5.FixColor("bg", bgColor)
+		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -9727,9 +9728,9 @@ Private Sub BuildRowTitleSubtitle(Module As Object, fldName As String, fldValu A
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
-	subtitle = modSD5.CStr(subtitle)
+	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
-	subtitle1 = modSD5.CStr(subtitle1)
+	subtitle1 = UI.CStr(subtitle1)
 	'********
 	'get the sub-title content
 	Dim act As String = $"[BANCLEAN]
@@ -9773,29 +9774,29 @@ End Sub
 Sub setGridLines(b As Boolean)
 	If b = False Then Return
 	Dim rKey2 As String = $"#${mName} table"$
-	modSD5.InsertCSSRule(rKey2, CreateMap("border-collapse": "collapse"))
+	UI.InsertCSSRule(rKey2, CreateMap("border-collapse": "collapse"))
 	Dim rKey As String = $"#${mName} th"$
-	modSD5.InsertCSSRule(rKey, CreateMap("border": "solid 1px black"))
+	UI.InsertCSSRule(rKey, CreateMap("border": "solid 1px black"))
 	Dim rKey1 As String = $"#${mName} td"$
-	modSD5.InsertCSSRule(rKey1, CreateMap("border": "solid 1px black"))
+	UI.InsertCSSRule(rKey1, CreateMap("border": "solid 1px black"))
 	setNoHeaderRadius(b)
 	setNoFooterRadius(b)
 End Sub
 Sub setNoHeaderRadius(b As Boolean)
 	If b = False Then Return
 	Dim rKey2 As String = $"#${mName} table *:first-child :where(th, td):first-child"$
-	modSD5.InsertCSSRule(rKey2, CreateMap("border-top-left-radius": "0px"))
+	UI.InsertCSSRule(rKey2, CreateMap("border-top-left-radius": "0px"))
 	'
 	Dim rKey As String = $"#${mName} table *:last-child :where(th, td):last-child"$
-	modSD5.InsertCSSRule(rKey, CreateMap("border-top-right-radius": "0px"))
+	UI.InsertCSSRule(rKey, CreateMap("border-top-right-radius": "0px"))
 End Sub
 Sub setNoFooterRadius(b As Boolean)
 	If b = False Then Return
 	Dim rKey2 As String = $"#${mName} table *:first-child :where(th, td):first-child"$
-	modSD5.InsertCSSRule(rKey2, CreateMap("border-bottom-left-radius": "0px"))
+	UI.InsertCSSRule(rKey2, CreateMap("border-bottom-left-radius": "0px"))
 	'
 	Dim rKey As String = $"#${mName} table *:last-child :where(th, td):last-child"$
-	modSD5.InsertCSSRule(rKey, CreateMap("border-bottom-right-radius": "0px"))
+	UI.InsertCSSRule(rKey, CreateMap("border-bottom-right-radius": "0px"))
 End Sub
 'set the top, right, bottom and left padding of each cell in the table
 Sub SetCellPadding(T As String, R As String, B As String, L As String)
@@ -9807,12 +9808,12 @@ Sub SetCellPadding(T As String, R As String, B As String, L As String)
 	'
 	If m.Size <> 0 Then
 		Dim rKey1 As String = $"#${mName} td"$
-		modSD5.InsertCSSRule(rKey1, m)
+		UI.InsertCSSRule(rKey1, m)
 	End If
 End Sub
 Sub SetFooterBackgroundColor(color As String)
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_footr"$)
-	Dim xcol As String = modSD5.FixColor("bg", color)
+	Dim xcol As String = UI.FixColor("bg", color)
 	Dim xclass As String = $"[&>*]:${xcol}"$
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
@@ -9827,34 +9828,34 @@ Sub SetFooterStyle(styles As Map)
 End Sub
 Sub SetFooterTextColor(color As String)
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_footr"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 Sub SetFooterColumnAddClass(colName As String, className As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_tf"$)
 	rowElement.AddClass(className)
 End Sub
 '
 Sub SetFooterColumnStyle(colName As String, styles As Map)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_tf"$)
 	rowElement.SetStyle(BANano.ToJson(styles))
 End Sub
 Sub SetFooterColumnTextColor(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_tf"$)
-	Dim xclass As String = modSD5.FixColor("text", color)
+	Dim xclass As String = UI.FixColor("text", color)
 	rowElement.AddClass(xclass)
 End Sub
 Sub SetFooterColumnBackgroundColor(colName As String, color As String)
-	colName = modSD5.CleanID(colName)
+	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	Dim rowElement As BANanoElement = BANano.GetElement($"#${mName}_${colName}_tf"$)
-	Dim xclass As String = modSD5.FixColor("bg", color)
+	Dim xclass As String = UI.FixColor("bg", color)
 	'rowElement.AddClass("[&>*]:bg-transparent")
 	rowElement.AddClass(xclass)
 End Sub
@@ -9901,46 +9902,46 @@ End Sub
 'set PDF Page Size
 'options: a0|a1|a10|a10|a2|a3|a4|a5|a6|a7|a8|a9|b0|b1|b10|b10|b2|b3|b4|b5|b6|b7|b8|b9|c0|c1|c10|c10|c2|c3|c4|c5|c6|c7|c8|c9|credit-card|dl|government-letter|junior-legal|ledger|legal|letter|tabloid
 Sub setPageSize(s As String)
-	sPageSize = modSD5.CStr(s)
+	sPageSize = UI.CStr(s)
 	CustProps.put("PageSize", s)
 End Sub
 '
 'set PDF Font Size
 Sub setFontSize(s As String)
-	sFontSize = modSD5.CStr(s)
+	sFontSize = UI.CStr(s)
 	CustProps.put("FontSize", s)
 End Sub
 '
 'set PDF Unit
 'options: cm|in|m|mm|pt|px
 Sub setUnit(s As String)
-	sUnit = modSD5.CStr(s)
+	sUnit = UI.CStr(s)
 	CustProps.put("Unit", s)
 End Sub
 '
 'set PDF Orientation
 'options: landscape|potrait
 Sub setOrientation(s As String)
-	sOrientation = modSD5.CStr(s)
+	sOrientation = UI.CStr(s)
 	CustProps.put("Orientation", s)
 End Sub
 '
 'set PDF PageBreakRepeat
 Sub setPageBreakRepeat(s As String)
-	sPageBreakRepeat = modSD5.CStr(s)
+	sPageBreakRepeat = UI.CStr(s)
 	CustProps.put("PageBreakRepeat", s)
 End Sub
 '
 'set PDF Theme
 'options: css|grid|none|plain|striped
 Sub setPdfTheme(s As String)
-	sPdfTheme = modSD5.CStr(s)
+	sPdfTheme = UI.CStr(s)
 	CustProps.put("PdfTheme", s)
 End Sub
 '
 'set Is Compact
 Sub setIsCompact(b As Boolean)			'ignoredeadcode
-	bIsCompact = modSD5.CBool(b)
+	bIsCompact = UI.CBool(b)
 	CustProps.put("IsCompact", b)
 	If mElement = Null Then Return
 	If b Then
@@ -9952,7 +9953,7 @@ End Sub
 '
 'set Is Normal
 Sub setIsNormal(b As Boolean)			'ignoredeadcode
-	bIsNormal = modSD5.CBool(b)
+	bIsNormal = UI.CBool(b)
 	CustProps.put("IsNormal", b)
 	If mElement = Null Then Return
 	If b Then
@@ -9964,7 +9965,7 @@ End Sub
 
 'set Is Zebra
 Sub setIsZebra(b As Boolean)				'ignoredeadcode
-	bIsZebra = modSD5.CBool(b)
+	bIsZebra = UI.CBool(b)
 	CustProps.put("IsZebra", b)
 	If mElement = Null Then Return
 	If b Then
@@ -9976,61 +9977,61 @@ End Sub
 '
 'set Select All
 Sub setSelectAll(b As Boolean)
-	bSelectAll = modSD5.CBool(b)
+	bSelectAll = UI.CBool(b)
 	CustProps.put("SelectAll", b)
 End Sub
 
 'set Allow Multiple Files
 Sub setMultipleFiles(b As Boolean)
-	bMultipleFiles = modSD5.CBool(b)
+	bMultipleFiles = UI.CBool(b)
 	CustProps.put("MultipleFiles", b)
 End Sub
 '
 'set Has Export Menu
 Sub setHasExportMenu(b As Boolean)
-	bHasExportMenu = modSD5.CBool(b)
+	bHasExportMenu = UI.CBool(b)
 	CustProps.put("HasExportMenu", b)
 End Sub
 '
 'set Export To Xls
 Sub setExportToXls(b As Boolean)
-	bExportToXls = modSD5.CBool(b)
+	bExportToXls = UI.CBool(b)
 	CustProps.put("ExportToXls", b)
 End Sub
 '
 'set Has Edit
 Sub setHasEdit(b As Boolean)
-	bHasEdit = modSD5.CBool(b)
+	bHasEdit = UI.CBool(b)
 	CustProps.put("HasEdit", b)
 End Sub
 '
 'set Has Clone
 Sub setHasClone(b As Boolean)
-	bHasClone = modSD5.CBool(b)
+	bHasClone = UI.CBool(b)
 	CustProps.put("HasClone", b)
 End Sub
 '
 'set Has Delete
 Sub setHasDelete(b As Boolean)
-	bHasDelete = modSD5.CBool(b)
+	bHasDelete = UI.CBool(b)
 	CustProps.put("HasDelete", b)
 End Sub
 '
 'set Has Upload
 Sub setHasUpload(b As Boolean)
-	bHasUpload = modSD5.CBool(b)
+	bHasUpload = UI.CBool(b)
 	CustProps.put("HasUpload", b)
 End Sub
 '
 'set Has Download
 Sub setHasDownload(b As Boolean)
-	bHasDownload = modSD5.CBool(b)
+	bHasDownload = UI.CBool(b)
 	CustProps.put("HasDownload", b)
 End Sub
 '
 'set Has Menu
 Sub setHasMenu(b As Boolean)
-	bHasMenu = modSD5.CBool(b)
+	bHasMenu = UI.CBool(b)
 	CustProps.put("HasMenu", b)
 End Sub
 
@@ -10200,13 +10201,13 @@ Sub SearchByAlphabet(item As String, columnName As String) As List
 		alphaSearch.Initialize
 		For Each rec As Map In Originals
 			Dim sname As String = rec.GetDefault(columnName, "")
-			sname = modSD5.CStr(sname)
+			sname = UI.CStr(sname)
 			sname = sname.Trim
 			If sname = "" Then Continue
 			sname = sname.ToLowerCase
 			Select Case item
 			Case "other"
-				Dim fpart As String = modSD5.Left1(sname, 1)
+				Dim fpart As String = UI.Left1(sname, 1)
 				If "abcdefghijklmnopqrstuvwxyz".IndexOf(fpart) = -1 Then alphaSearch.add(rec)
 			Case Else
 				If sname.StartsWith(item) Then alphaSearch.add(rec)
@@ -10218,7 +10219,7 @@ End Sub
 
 'set Export To Pdf
 Sub setExportToPdf(b As Boolean)
-	bExportToPdf = modSD5.CBool(b)
+	bExportToPdf = UI.CBool(b)
 	CustProps.put("ExportToPdf", b)
 End Sub
 
@@ -10240,23 +10241,23 @@ End Sub
 '<code>
 'Sub fi1_change(e As BANanoEvent)
 ''has the file been specified
-'Dim fileObj As Map = = modSD5.GetFileFromEvent(e)
+'Dim fileObj As Map = = UI.GetFileFromEvent(e)
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''**** UPLOAD
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 ''Dim fn As String = fileDet.FileName
 ''get the status of the upload
@@ -10268,10 +10269,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText
@@ -10285,7 +10286,7 @@ End Sub
 ''****for multiple files
 'Sub fi1_change(e As BANanoEvent)
 ''has the files been selected
-'Dim fileList As List = modSD5.GetFilesFromEvent(e)
+'Dim fileList As List = UI.GetFilesFromEvent(e)
 'If banano.IsNull(fileList) Or banano.IsUndefined(fileList) Then Return
 ''will store list of uploaded file
 'Dim uploads As List
@@ -10294,17 +10295,17 @@ End Sub
 'for each fileObj As Map in fileList
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''start uploading the file
-'fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+'fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''get the status of the upload

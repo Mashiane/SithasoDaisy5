@@ -80,11 +80,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -93,7 +94,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -104,7 +105,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -229,44 +230,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		'sBackgroundColor = Props.GetDefault("BackgroundColor", "base-100")
-		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = UI.CStr(sBackgroundColor)
 		'If sBackgroundColor = "base-100" Then sBackgroundColor = ""
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sContentBackgroundColor = Props.GetDefault("ContentBackgroundColor", "base-100")
-		sContentBackgroundColor = modSD5.CStr(sContentBackgroundColor)
+		sContentBackgroundColor = UI.CStr(sContentBackgroundColor)
 		sContentTextColor = Props.GetDefault("ContentTextColor", "")
-		sContentTextColor = modSD5.CStr(sContentTextColor)
+		sContentTextColor = UI.CStr(sContentTextColor)
 		sContentTextSize = Props.GetDefault("ContentTextSize", "sm")
-		sContentTextSize = modSD5.CStr(sContentTextSize)
+		sContentTextSize = UI.CStr(sContentTextSize)
 		If sContentTextSize = "none" Then sContentTextSize = ""
 		bJoinItem = Props.GetDefault("JoinItem", False)
-		bJoinItem = modSD5.CBool(bJoinItem)
+		bJoinItem = UI.CBool(bJoinItem)
 		sOpenClose = Props.GetDefault("OpenClose", "none")
-		sOpenClose = modSD5.CStr(sOpenClose)
+		sOpenClose = UI.CStr(sOpenClose)
 		If sOpenClose = "none" Then sOpenClose = ""
 		sRawContent = Props.GetDefault("RawContent", "Collapse Content")
-		sRawContent = modSD5.CStr(sRawContent)
+		sRawContent = UI.CStr(sRawContent)
 		sRightIcon = Props.GetDefault("RightIcon", "arrow")
-		sRightIcon = modSD5.CStr(sRightIcon)
+		sRightIcon = UI.CStr(sRightIcon)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTextColor = Props.GetDefault("TextColor", "")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		sTitle = Props.GetDefault("Title", "Collapse")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sTitleBackgroundColor = Props.GetDefault("TitleBackgroundColor", "")
-		sTitleBackgroundColor = modSD5.CStr(sTitleBackgroundColor)
+		sTitleBackgroundColor = UI.CStr(sTitleBackgroundColor)
 		sTitleTextColor = Props.GetDefault("TitleTextColor", "")
-		sTitleTextColor = modSD5.CStr(sTitleTextColor)
+		sTitleTextColor = UI.CStr(sTitleTextColor)
 		bActive = Props.GetDefault("Active", False)
-		bActive = modSD5.CBool(bActive)
+		bActive = UI.CBool(bActive)
 		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = modSD5.CStr(sGroupName)        
+		sGroupName = UI.CStr(sGroupName)        
 	End If
 	'
 	UI.AddClassDT("collapse")
@@ -308,7 +309,7 @@ End Sub
 
 private Sub itemchange(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
-	Dim itemName As String = modSD5.MvField(e.ID, 1, "_")
+	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sParentID}_change"$, Array(itemName))
 End Sub
 

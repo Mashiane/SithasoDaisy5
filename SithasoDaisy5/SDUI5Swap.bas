@@ -77,11 +77,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -100,7 +101,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -212,36 +213,36 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		bActive = Props.GetDefault("Active", False)
-		bActive = modSD5.CBool(bActive)
+		bActive = UI.CBool(bActive)
 		sHeight = Props.GetDefault("Height", "32px")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sIndeterminateIcon = Props.GetDefault("IndeterminateIcon", "")
-		sIndeterminateIcon = modSD5.CStr(sIndeterminateIcon)
+		sIndeterminateIcon = UI.CStr(sIndeterminateIcon)
 		sIndeterminateText = Props.GetDefault("IndeterminateText", "NA")
-		sIndeterminateText = modSD5.CStr(sIndeterminateText)
+		sIndeterminateText = UI.CStr(sIndeterminateText)
 		sIndeterminateTextColor = Props.GetDefault("IndeterminateTextColor", "")
-		sIndeterminateTextColor = modSD5.CStr(sIndeterminateTextColor)
+		sIndeterminateTextColor = UI.CStr(sIndeterminateTextColor)
 		sOffIcon = Props.GetDefault("OffIcon", "")
-		sOffIcon = modSD5.CStr(sOffIcon)
+		sOffIcon = UI.CStr(sOffIcon)
 		sOffText = Props.GetDefault("OffText", "OFF")
-		sOffText = modSD5.CStr(sOffText)
+		sOffText = UI.CStr(sOffText)
 		sOffTextColor = Props.GetDefault("OffTextColor", "")
-		sOffTextColor = modSD5.CStr(sOffTextColor)
+		sOffTextColor = UI.CStr(sOffTextColor)
 		sOnIcon = Props.GetDefault("OnIcon", "")
-		sOnIcon = modSD5.CStr(sOnIcon)
+		sOnIcon = UI.CStr(sOnIcon)
 		sOnText = Props.GetDefault("OnText", "ON")
-		sOnText = modSD5.CStr(sOnText)
+		sOnText = UI.CStr(sOnText)
 		sOnTextColor = Props.GetDefault("OnTextColor", "")
-		sOnTextColor = modSD5.CStr(sOnTextColor)
+		sOnTextColor = UI.CStr(sOnTextColor)
 		sSwapType = Props.GetDefault("SwapType", "text")
-		sSwapType = modSD5.CStr(sSwapType)
+		sSwapType = UI.CStr(sSwapType)
 		sTextSize = Props.GetDefault("TextSize", "9xl")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		sTypeOf = Props.GetDefault("TypeOf", "flip")
-		sTypeOf = modSD5.CStr(sTypeOf)
+		sTypeOf = UI.CStr(sTypeOf)
 		sTypeOf = sTypeOf.ToLowerCase
 		sWidth = Props.GetDefault("Width", "32px")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	If sParentID <> "" Then
@@ -406,7 +407,7 @@ End Sub
 'get Active
 Sub getActive As Boolean
 	bActive = UI.GetCheckedByID($"${mName}_check"$)
-	bActive = modSD5.CBool(bActive)
+	bActive = UI.CBool(bActive)
 	Return bActive
 End Sub
 'get Height

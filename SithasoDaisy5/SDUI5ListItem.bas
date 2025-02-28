@@ -62,11 +62,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -75,7 +76,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -86,7 +87,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -224,21 +225,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bCursorPointer = Props.GetDefault("CursorPointer", True)
-		bCursorPointer = modSD5.CBool(bCursorPointer)
+		bCursorPointer = UI.CBool(bCursorPointer)
 		bListRow = Props.GetDefault("ListRow", True)
-		bListRow = modSD5.CBool(bListRow)
+		bListRow = UI.CBool(bListRow)
 		iOpacity = Props.GetDefault("Opacity", 100)
-		iOpacity = modSD5.CInt(iOpacity)
+		iOpacity = UI.CInt(iOpacity)
 		sTextColor = Props.GetDefault("TextColor", "none")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		If sTextColor = "none" Then sTextColor = ""
 		sTextSize = Props.GetDefault("TextSize", "none")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		If sTextSize = "none" Then sTextSize = ""
 		sTracking = Props.GetDefault("Tracking", "none")
-		sTracking = modSD5.CStr(sTracking)
+		sTracking = UI.CStr(sTracking)
 		If sTracking = "none" Then sTracking = ""
 	End If
 	'

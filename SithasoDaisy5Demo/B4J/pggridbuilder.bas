@@ -35,13 +35,13 @@ Sub Show(MainApp As SDUI5App)
 	prefGrid.AddPropertyRadioGroup("ggridflow", "Flow Direction", "row", "success", "", _
 	CreateMap("row": "Row", "col": "Column", "dense":"Dense", "row-dense":"Row Dense", "col-dense":"Col Dense"))
 	prefGrid.SetPropertyToolTip("ggridflow", "Utilities for controlling how elements in a grid are auto-placed.")
-	Dim ljc As List = modSD5.StrParse("|", "around|baseline|between|center|end|evenly|none|normal|start|stretch")
-	Dim mjs As Map = modSD5.ListToSelectOptionsSort(ljc)
+	Dim ljc As List = app.UI.StrParse("|", "around|baseline|between|center|end|evenly|none|normal|start|stretch")
+	Dim mjs As Map = app.UI.ListToSelectOptionsSort(ljc)
 	prefGrid.AddPropertySelect("gjustifycontent", "Justify Content", "none", False, mjs)
 	prefGrid.SetPropertyToolTip("gjustifycontent", "Utilities for controlling how flex and grid items are positioned along a container's main axis.")
 	'
-	Dim lai As List = modSD5.StrParse("|", "baseline|center|end|none|start|stretch")
-	Dim mai As Map = modSD5.ListToSelectOptionsSort(lai)
+	Dim lai As List = app.UI.StrParse("|", "baseline|center|end|none|start|stretch")
+	Dim mai As Map = app.UI.ListToSelectOptionsSort(lai)
 	prefGrid.AddPropertySelect("galignitems", "Align Items", "none", False, mai)
 	prefGrid.SetPropertyToolTip("galignitems", "Utilities for controlling how flex and grid items are positioned along a container's cross axis.")
 
@@ -98,19 +98,19 @@ Sub Refresh(item As Map)
 	If sgridcolumns = "0" Then sgridcolumns = "1"
 	'
 	'how many items to add
-	Dim tMatrix As Int = modSD5.CInt(sgridcolumns) * modSD5.cint(sgridrows)
+	Dim tMatrix As Int = app.UI.CInt(sgridcolumns) * app.UI.cint(sgridrows)
 	'
 	Dim sb As StringBuilder
 	sb.Initialize
 	
 	Dim tDivs As Int = 0
 	For tDivs = 1 To tMatrix
-		Dim np As String = modSD5.PadRight(tDivs, 2, "0")
-		sb.Append($"<div class="relative bg-fuchsia-500 p-4 shadow-lg rounded-lg h-[56px]">${np}</div>"$)
+		Dim np As String = app.UI.PadRight(tDivs, 2, "0")
+		sb.Append($"<div class="flex items-center justify-center relative bg-fuchsia-500 text-center p-4 shadow-lg rounded-lg h-14">${np}</div>"$)
 	Next
 	gridPreview.Append(sb.ToString)
 	'show the grid class code
 	Dim gCode As String = gridPreview.GetAttr("class")
-	gCode = modSD5.MvRemoveItems(" ", gCode, "relative text-center font-mono text-white leading-6")
+	gCode = app.UI.MvRemoveItems(" ", gCode, "relative text-center font-mono text-white leading-6")
 	preCode.Content = gCode
 End Sub

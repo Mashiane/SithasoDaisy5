@@ -84,11 +84,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	items.Initialize 
 End Sub
 ' returns the element id
@@ -98,7 +99,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -109,7 +110,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -235,38 +236,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sActiveColor = Props.GetDefault("ActiveColor", "#22c55e")
-		sActiveColor = modSD5.CStr(sActiveColor)
+		sActiveColor = UI.CStr(sActiveColor)
 '		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-'		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+'		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = modSD5.CStr(sGroupName)
+		sGroupName = UI.CStr(sGroupName)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sLabel = Props.GetDefault("Label", "Group Select")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r")
-		sRawOptions = modSD5.CStr(sRawOptions)
+		sRawOptions = UI.CStr(sRawOptions)
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sSelected = Props.GetDefault("Selected", "")
-		sSelected = modSD5.CStr(sSelected)
+		sSelected = UI.CStr(sSelected)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		bSingleSelect = Props.GetDefault("SingleSelect", False)
-		bSingleSelect = modSD5.CBool(bSingleSelect)
+		bSingleSelect = UI.CBool(bSingleSelect)
 		sSize = Props.GetDefault("Size", "xs")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sChipColor = Props.GetDefault("ChipColor", "neutral")
-		sChipColor = modSD5.CStr(sChipColor)
+		sChipColor = UI.CStr(sChipColor)
 		bChipOutlined = Props.GetDefault("ChipOutlined", False)
-		bChipOutlined = modSD5.CBool(bChipOutlined)
+		bChipOutlined = UI.CBool(bChipOutlined)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -293,8 +294,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   			<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
   			<div id="${mName}_content" class="flex gap-2 flex-wrap"></div>
 		</fieldset>"$).Get("#" & mName)
-	BANano.Await(setOptions(sRawOptions))
-	BANano.Await(setSelected(sSelected))
+	setOptions(sRawOptions)
+	setSelected(sSelected)
 End Sub
 
 Sub Clear			'ignoredeadcode
@@ -368,7 +369,7 @@ Sub SetItemsChips(titems As Map)
 		sb.Append(v)
 		sb.Append(";")
 	Next
-	Dim sout As String = modSD5.remdelim(sb.ToString, ";")
+	Dim sout As String = UI.remdelim(sb.ToString, ";")
 	BANano.Await(setOptions(sout))
 End Sub
 
@@ -383,24 +384,24 @@ Sub setOptions(s As String)				'ignoredeadcode
 	Dim mItems As Map = UI.GetKeyValues(sRawOptions, False)
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = modSD5.FixSize("btn", sSize) 
+	Dim itemSize As String = UI.FixSize("btn", sSize) 
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
-	Dim itemColor As String = modSD5.FixColor("btn", sChipColor)
+	Dim itemColor As String = UI.FixColor("btn", sChipColor)
 	Dim soutline As String = ""
 	If bChipOutlined Then soutline = "btn-outline"
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
-		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
 		checkedColor = $"checked:${abg}"$
-		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
 	
 	For Each k As String In mItems.Keys
 		Dim v As String = mItems.Get(k)
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${k}_${mName}"$
 		sb.Append($"<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 		items.Put(nk, nk)
@@ -413,20 +414,20 @@ End Sub
 
 Sub AddItem(k As String, v As String)
 	If mElement = Null Then Return
-	k = modSD5.CleanID(k)
+	k = UI.CleanID(k)
 	Dim nk As String = $"${k}_${mName}"$
-	Dim itemSize As String = modSD5.FixSize("btn", sSize)
+	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
-	Dim itemColor As String = modSD5.FixColor("btn", sChipColor)
+	Dim itemColor As String = UI.FixColor("btn", sChipColor)
 	Dim soutline As String = ""
 	If bChipOutlined Then soutline = "btn-outline"
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
-		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
 		checkedColor = $"checked:${abg}"$
-		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
 	
@@ -541,11 +542,11 @@ Sub getSelected As String
 	For Each item As String In items.keys
 		Dim b As Boolean = UI.GetCheckedByID(item)
 		If b Then 
-			Dim ok As String = modSD5.MvField(item, 1, "_")
+			Dim ok As String = UI.MvField(item, 1, "_")
 			selectedItems.Add(ok)
 		End If
 	Next
-	sSelected = modSD5.Join(";", selectedItems)
+	sSelected = UI.Join(";", selectedItems)
 	Return sSelected
 End Sub
 
@@ -592,7 +593,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getSelected
-	v = modSD5.cstr(v)
+	v = UI.cstr(v)
 	If v = "" Then
 		setBorderColor("error")
 		Return True

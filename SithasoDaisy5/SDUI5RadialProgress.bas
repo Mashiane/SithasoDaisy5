@@ -54,11 +54,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -77,7 +78,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -205,18 +206,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sBorderColor = Props.GetDefault("BorderColor", "")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sBorderWidth = Props.GetDefault("BorderWidth", "")
-		sBorderWidth = modSD5.CStr(sBorderWidth)
+		sBorderWidth = UI.CStr(sBorderWidth)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sProgressSize = Props.GetDefault("ProgressSize", "")
-		sProgressSize = modSD5.CStr(sProgressSize)
+		sProgressSize = UI.CStr(sProgressSize)
 		sProgressThickness = Props.GetDefault("ProgressThickness", "")
-		sProgressThickness = modSD5.CStr(sProgressThickness)
+		sProgressThickness = UI.CStr(sProgressThickness)
 		sValue = Props.GetDefault("Value", "")
-		sValue = modSD5.CStr(sValue)
+		sValue = UI.CStr(sValue)
 	End If
 	'
 	If sParentID <> "" Then

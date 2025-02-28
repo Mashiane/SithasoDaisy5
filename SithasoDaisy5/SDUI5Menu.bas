@@ -107,11 +107,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	Items.Initialize
 End Sub
 ' returns the element id
@@ -131,7 +132,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -256,53 +257,53 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		'sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = UI.CStr(sBackgroundColor)
 		sDirection = Props.GetDefault("Direction", "vertical")
-		sDirection = modSD5.CStr(sDirection)
+		sDirection = UI.CStr(sDirection)
 		If sDirection = "" Then sDirection = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sLgDirection = Props.GetDefault("LgDirection", "none")
-		sLgDirection = modSD5.CStr(sLgDirection)
+		sLgDirection = UI.CStr(sLgDirection)
 		If sLgDirection = "none" Then sLgDirection = ""
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxHeight = UI.CStr(sMaxHeight)
 		sMaxWidth = Props.GetDefault("MaxWidth", "")
-		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMaxWidth = UI.CStr(sMaxWidth)
 		sMdDirection = Props.GetDefault("MdDirection", "none")
-		sMdDirection = modSD5.CStr(sMdDirection)
+		sMdDirection = UI.CStr(sMdDirection)
 		If sMdDirection = "none" Then sMdDirection = ""
 		sMinHeight = Props.GetDefault("MinHeight", "full")
-		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
+		sMinWidth = UI.CStr(sMinWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", True)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sSmDirection = Props.GetDefault("SmDirection", "none")
-		sSmDirection = modSD5.CStr(sSmDirection)
+		sSmDirection = UI.CStr(sSmDirection)
 		If sSmDirection = "none" Then sSmDirection = ""
 		'sTextColor = Props.GetDefault("TextColor", "")
-		'sTextColor = modSD5.CStr(sTextColor)
+		'sTextColor = UI.CStr(sTextColor)
 		sWidth = Props.GetDefault("Width", "56")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sXlDirection = Props.GetDefault("XlDirection", "none")
-		sXlDirection = modSD5.CStr(sXlDirection)
+		sXlDirection = UI.CStr(sXlDirection)
 		If sXlDirection = "none" Then sXlDirection = ""
 		bRoundedItems = Props.GetDefault("RoundedItems", True)
-		bRoundedItems = modSD5.CBool(bRoundedItems)
+		bRoundedItems = UI.CBool(bRoundedItems)
 		bDropdown = Props.GetDefault("Dropdown", False)
-		bDropdown = modSD5.CBool(bDropdown)
+		bDropdown = UI.CBool(bDropdown)
 		bDropdownContent = Props.GetDefault("DropdownContent", False)
-		bDropdownContent = modSD5.CBool(bDropdownContent)    
+		bDropdownContent = UI.CBool(bDropdownContent)    
 	End If
 	'
 	UI.AddClassDT("menu")
@@ -571,7 +572,7 @@ End Sub
 
 'add a title
 Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -585,7 +586,7 @@ End Sub
 
 'add a normal item
 Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -600,7 +601,7 @@ End Sub
 
 'add an icon
 Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -615,7 +616,7 @@ End Sub
 
 'add a icon text
 Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -630,7 +631,7 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 End Sub
 
 Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -647,10 +648,10 @@ End Sub
 'add an item to the menu that will be a parent
 'this can have child items
 Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
-	parentID = modSD5.CleanID(parentID)
-	itemKey = modSD5.CleanID(itemKey)
+	parentID = UI.CleanID(parentID)
+	itemKey = UI.CleanID(itemKey)
 	Dim item As SDUI5MenuItem
 	If parentID <> "" Then
 		item.Initialize(mCallBack, itemKey, itemKey)
@@ -671,10 +672,10 @@ End Sub
 'add an item to the menu that will be a child
 'this cannot have child items
 Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
-	parentID = modSD5.CleanID(parentID)
-	itemKey = modSD5.CleanID(itemKey)
+	parentID = UI.CleanID(parentID)
+	itemKey = UI.CleanID(itemKey)
 	Dim item As SDUI5MenuItem
 	If parentID <> "" Then
 		item.Initialize(mCallBack, itemKey, itemKey)
@@ -694,7 +695,7 @@ End Sub
 
 
 Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	Dim item As SDUI5MenuItem
 	item.Initialize(mCallBack, itemKey, itemKey)
@@ -734,12 +735,13 @@ End Sub
 'clear menu & child items
 Sub Clear			'ignoredeadcode
 	Items.Initialize
-	UI.Clear(mElement)
+	If mElement = Null Then Return
+	mElement.empty
 End Sub
 
 'set a single item
 Sub SetItemActive(itemKey As String)
-	itemKey = modSD5.CleanID(itemKey)
+	itemKey = UI.CleanID(itemKey)
 	If Items.ContainsKey(itemKey) = False Then Return
 	For Each k As String In Items.Keys
 		If k = itemKey Then

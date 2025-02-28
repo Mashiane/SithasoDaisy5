@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -50,14 +51,16 @@ Sub Class_Globals
 	Private sTextColor As String = ""
 	Private sWidth As String = ""
 	Private sTextSize As String = ""
+	Private sBackgroundImage As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -76,13 +79,14 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
 'empty the element and remove all children
 Sub Clear
-	UI.Clear(mElement)
+	If mElement = Null Then Return
+	mElement.empty
 End Sub
 'append the specified html to the element
 Sub Append(tmp As String)
@@ -191,7 +195,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -200,14 +204,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -221,7 +225,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -260,13 +264,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sTagName = Props.GetDefault("TagName", "div")
-		sTagName = modSD5.CStr(sTagName)
+		sTagName = UI.CStr(sTagName)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sTextSize = Props.GetDefault("TextSize", "")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
+		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
+		sBackgroundImage = UI.CStr(sBackgroundImage)
 	End If
 	'
 	If sParentID <> "" Then
@@ -277,6 +283,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	If sBackgroundImage <> "" Then UI.AddBackgroundImageDT(sBackgroundImage)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -289,6 +296,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<${sTagName} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</${sTagName}>"$).Get("#" & mName)
 '	setVisible(bVisible)
 End Sub
+
+
+'set Background Image
+Sub setBackgroundImage(s As String)
+	sBackgroundImage = s
+	CustProps.put("BackgroundImage", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundImage(mElement, s)
+End Sub
+
+'get Background Image
+Sub getBackgroundImage As String
+	Return sBackgroundImage
+End Sub
+
 
 Sub setTagName(s As String)
 	sTagName = s

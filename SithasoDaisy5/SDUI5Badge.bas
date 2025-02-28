@@ -19,16 +19,21 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
+#DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
 #DesignerProperty: Key: LeftIconSize, DisplayName: Left Icon Size, FieldType: String, DefaultValue: 16px, Description: Left Icon Size
-#DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
+#DesignerProperty: Key: LeftImage, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
+#DesignerProperty: Key: LeftImageSize, DisplayName: Left Image Size, FieldType: String, DefaultValue: 16px, Description: Left Image Size
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: RightIconSize, DisplayName: Right Icon Size, FieldType: String, DefaultValue: 16px, Description: Right Icon Size
-#DesignerProperty: Key: Round, DisplayName: Round, FieldType: Boolean, DefaultValue: False, Description: Round
+#DesignerProperty: Key: RightImage, DisplayName: Right Image, FieldType: String, DefaultValue: , Description: Right Image
+#DesignerProperty: Key: RightImageSize, DisplayName: Right Image Size, FieldType: String, DefaultValue: 16px, Description: Right Image Size
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: full, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
 #DesignerProperty: Key: IndicatorItem, DisplayName: Indicator Item, FieldType: Boolean, DefaultValue: False, Description: Indicator Item
 #DesignerProperty: Key: IndicatorPosition, DisplayName: Indicator Position, FieldType: String, DefaultValue: top-start, Description: Indicator Position, List: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
@@ -76,7 +81,6 @@ Sub Class_Globals
 	Private sRightIcon As String = ""
 	Private sRightIconColor As String = ""
 	Private sRightIconSize As String = "16px"
-	Private bRound As Boolean = False
 	Private sSize As String = "none"
 	Private bSoft As Boolean = False
 	Private sTextColor As String = ""
@@ -85,14 +89,21 @@ Sub Class_Globals
 	Private sWidth As String = ""
 	Private sIndicatorPosition As String = "top-start"
 	Private bIndicatorItem As Boolean = False
+	Private sLeftImage As String = ""
+	Private sLeftImageSize As String = "16px"
+	Private sRightImage As String = ""
+	Private sRightImageSize As String = "16px"
+	Private sRounded As String = "none"
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -111,7 +122,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -187,7 +198,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -244,45 +255,57 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "primary")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = modSD5.CBool(bDash)
+		bDash = UI.CBool(bDash)
 		bGhost = Props.GetDefault("Ghost", False)
-		bGhost = modSD5.CBool(bGhost)
+		bGhost = UI.CBool(bGhost)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
-		sLeftIcon = modSD5.CStr(sLeftIcon)
+		sLeftIcon = UI.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
-		sLeftIconColor = modSD5.CStr(sLeftIconColor)
+		sLeftIconColor = UI.CStr(sLeftIconColor)
 		sLeftIconSize = Props.GetDefault("LeftIconSize", "16px")
-		sLeftIconSize = modSD5.CStr(sLeftIconSize)
+		sLeftIconSize = UI.CStr(sLeftIconSize)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = modSD5.CBool(bOutline)
+		bOutline = UI.CBool(bOutline)
 		sRightIcon = Props.GetDefault("RightIcon", "")
-		sRightIcon = modSD5.CStr(sRightIcon)
+		sRightIcon = UI.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "")
-		sRightIconColor = modSD5.CStr(sRightIconColor)
+		sRightIconColor = UI.CStr(sRightIconColor)
 		sRightIconSize = Props.GetDefault("RightIconSize", "16px")
-		sRightIconSize = modSD5.CStr(sRightIconSize)
-		bRound = Props.GetDefault("Round", False)
-		bRound = modSD5.CBool(bRound)
+		sRightIconSize = UI.CStr(sRightIconSize)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = modSD5.CBool(bSoft)
+		bSoft = UI.CBool(bSoft)
 		sTextSize = Props.GetDefault("TextSize", "")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		bUseSpan = Props.GetDefault("UseSpan", False)
-		bUseSpan = modSD5.CBool(bUseSpan)
+		bUseSpan = UI.CBool(bUseSpan)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-start")
-		sIndicatorPosition = modSD5.CStr(sIndicatorPosition)
+		sIndicatorPosition = UI.CStr(sIndicatorPosition)
 		bIndicatorItem = Props.GetDefault("IndicatorItem", False)
-		bIndicatorItem = modSD5.CBool(bIndicatorItem)
+		bIndicatorItem = UI.CBool(bIndicatorItem)
+		sLeftImage = Props.GetDefault("LeftImage", "")
+		sLeftImage = UI.CStr(sLeftImage)
+		sLeftImageSize = Props.GetDefault("LeftImageSize", "16px")
+		sLeftImageSize = UI.CStr(sLeftImageSize)
+		sRightImage = Props.GetDefault("RightImage", "")
+		sRightImage = UI.CStr(sRightImage)
+		sRightImageSize = Props.GetDefault("RightImageSize", "16px")
+		sRightImageSize = UI.CStr(sRightImageSize)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	'
 	If sParentID <> "" Then
@@ -294,7 +317,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("badge")
+	UI.AddClassDT("badge flex-nowrap")
 	If sColor <> "" Then UI.AddColorDT("badge", sColor)
 	If bDash = True Then UI.AddClassDT("badge-dash")
 	If bGhost = True Then UI.AddClassDT("badge-ghost")
@@ -305,42 +328,151 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
-	If bRound Then UI.AddClassDT("rounded-full aspect-square")
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If bIndicatorItem Then
 		UI.AddClassDT("indicator-item")
 	End If	  
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
-	If bUseSpan Then
-		mElement = mTarget.Append($"[BANCLEAN]
-		<span id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}
-		<img id="${mName}_lefticon" src="${sLeftIcon}" alt="" class="hidden"></img>
-		<span id="${mName}_text">${sText}</span>
-		<img id="${mName}_righticon" src="${sRightIcon}" alt="" class="hidden"></img>
-		</span>"$).Get("#" & mName)
-	Else
-		mElement = mTarget.Append($"[BANCLEAN]
-		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<img id="${mName}_lefticon" src="${sLeftIcon}" alt="" class="hidden"></img>
-		<span id="${mName}_text">${sText}</span>
-		<img id="${mName}_righticon" src="${sRightIcon}" alt="" class="hidden"></img>		
-		</div>"$).Get("#" & mName)
+	Dim xtag As String = "div"
+	If bUseSpan Then xtag = "span"
+	mElement = mTarget.Append($"[BANCLEAN]
+	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
+		<i id="${mName}_lefticon" class="hidden hide inline-block rounded-full ${sLeftIcon}"></i>
+		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
+		<i id="${mName}_righticon" class="hidden hide inline-block rounded-full ${sRightIcon}"></i>
+		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
+	</${xtag}>"$).Get("#" & mName)
+	
+	If sLeftImage <> "" Then
+		setLeftImage(sLeftImage)
+		setLeftImageSize(sLeftImageSize)
 	End If
-	setLeftIcon(sLeftIcon)
-	setLeftIconColor(sLeftIconColor)
-	setLeftIconSize(sLeftIconSize)
-	setRightIcon(sRightIcon)
-	setRightIconColor(sRightIconColor)
+	
+	If sLeftIcon <> "" Then
+		setLeftIcon(sLeftIcon)
+		setLeftIconColor(sLeftIconColor)
+		setLeftIconSize(sLeftIconSize)
+	End If
+	
+	If sRightIcon <> "" Then
+		setRightIcon(sRightIcon)
+		setRightIconColor(sRightIconColor)
+		setRightIconSize(sRightIconSize)
+	End If
+	
+	If sRightImage <> "" Then
+		setRightImage(sRightImage)
+		setRightImageSize(sRightImageSize)
+	End If
+	
 	setTextColor(sTextColor)
-	setTextSize(sTextSize)
-	setRightIconSize(sRightIconSize)
+	setTextSize(sTextSize)	
 	setSize(sSize)
+	setShadow(sShadow)
+	setRounded(sRounded)
+	'
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	UI.OnChildEvent($"${mName}_lefticon"$, "click", mCallBack, $"${mName})_leftclick"$)
 	UI.OnChildEvent($"${mName}_righticon"$, "click", mCallBack, $"${mName})_rightclick"$)
+	UI.OnChildEvent($"${mName}_leftimage"$, "click", mCallBack, $"${mName})_leftclick"$)
+	UI.OnChildEvent($"${mName}_righimage"$, "click", mCallBack, $"${mName})_rightclick"$)
 	setIndicatorPosition(sIndicatorPosition)
 '	setVisible(bVisible)
+End Sub
+
+'set Left Image
+Sub setLeftImage(s As String)			'ignoredeadcode
+	sLeftImage = s
+	CustProps.put("LeftImage", s)
+	If mElement = Null Then Return
+	Dim icon As BANanoElement = BANano.GetElement($"#${mName}_leftimage"$)
+	UI.SetImage(icon, s)
+	If sLeftImage = "" Then
+		'hide
+		UI.SetVisible(icon, False)
+	Else
+		'show
+		UI.UpdateClass(mElement, "gap", "gap-2")
+		UI.SetVisible(icon, True)
+	End If
+End Sub
+'set Left Image Size
+'options: xs|none|sm|md|lg|xl
+Sub setLeftImageSize(s As String)			'ignoredeadcode
+	sLeftImageSize = s
+	CustProps.put("LeftImageSize", s)
+	If mElement = Null Then Return
+	UI.SetHeightByID($"${mName}_leftimage"$, s)
+	UI.SetWidthByID($"${mName}_leftimage"$, s)
+End Sub
+'set Right Image
+Sub setRightImage(s As String)				'ignoredeadcode
+	sRightImage = s
+	CustProps.put("RightImage", s)
+	If mElement = Null Then Return
+	Dim icon As BANanoElement = BANano.GetElement($"#${mName}_rightimage"$)
+	UI.SetImage(icon, s)
+	If sRightImage = "" Then
+		'hide
+		UI.SetVisible(icon, False)
+	Else
+		'show
+		UI.UpdateClass(mElement, "gap", "gap-2")
+		UI.SetVisible(icon, True)
+	End If
+End Sub
+'set Right Image Size
+'options: xs|none|sm|md|lg|xl
+Sub setRightImageSize(s As String)			'ignoredeadcode
+	sRightImageSize = s
+	CustProps.put("RightImageSize", s)
+	If mElement = Null Then Return
+	UI.SetHeightByID($"${mName}_rightimage"$, s)
+	UI.SetWidthByID($"${mName}_rightimage"$, s)
+End Sub
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)			'ignoredeadcode
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+'set Shadow
+'options: 2xl|inner|lg|md|none|shadow|sm|xl
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+'get Left Image
+Sub getLeftImage As String
+	Return sLeftImage
+End Sub
+'get Left Image Size
+Sub getLeftImageSize As String
+	Return sLeftImageSize
+End Sub
+'get Right Image
+Sub getRightImage As String
+	Return sRightImage
+End Sub
+'get Right Image Size
+Sub getRightImageSize As String
+	Return sRightImageSize
+End Sub
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub
 
 'set Background Color
@@ -392,15 +524,13 @@ Sub setLeftIcon(s As String)			'ignoredeadcode
 	sLeftIcon = s
 	CustProps.put("LeftIcon", s)
 	If mElement = Null Then Return
-	Dim icon As BANanoElement = BANano.GetElement($"#${mName}_lefticon"$)
-	UI.SetImage(icon, s)
+	UI.SetIconNameByID($"${mName}_lefticon"$, s)
 	If sLeftIcon = "" Then
 		'hide
-		UI.SetVisible(icon, False)
+		UI.SetVisibleByiD($"${mName}_lefticon"$, False)
 	Else
 		'show
-		UI.UpdateClass(mElement, "gap", "gap-2")
-		UI.SetVisible(icon, True)
+		UI.SetVisibleByID($"${mName}_lefticon"$, True)
 	End If
 End Sub
 'set Left Icon Color
@@ -436,15 +566,13 @@ Sub setRightIcon(s As String)		'ignoredeadcode
 	sRightIcon = s
 	CustProps.put("RightIcon", s)
 	If mElement = Null Then Return
-	Dim icon As BANanoElement = BANano.GetElement($"#${mName}_righticon"$)
-	UI.SetImage(icon, s)
+	UI.SetIconNameByID($"${mName}_righticon"$, s)
 	If sRightIcon = "" Then
 		'hide
-		UI.SetVisible(icon, False)
+		UI.SetVisibleByiD($"${mName}_righticon"$, False)
 	Else
 		'show
-		UI.UpdateClass(mElement, "gap", "gap-2")
-		UI.SetVisible(icon, True)
+		UI.SetVisibleByID($"${mName}_righticon"$, True)
 	End If
 End Sub
 'set Right Icon Color
@@ -462,17 +590,6 @@ Sub setRightIconSize(s As String)				'ignoredeadcode
 	If s = "" Then Return
 	UI.SetHeightByID($"${mName}_righticon"$, s)
 	UI.SetWidthByID($"${mName}_righticon"$, s)
-End Sub
-'set Round
-Sub setRound(b As Boolean)
-	bRound = b
-	CustProps.put("Round", b)
-	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "rounded-full aspect-square")
-	Else
-		UI.RemoveClass(mElement, "rounded-full aspect-square")
-	End If
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
@@ -571,10 +688,7 @@ End Sub
 Sub getRightIconSize As String
         Return sRightIconSize
 End Sub
-'get Round
-Sub getRound As Boolean
-        Return bRound
-End Sub
+
 'get Size
 Sub getSize As String
         Return sSize
@@ -608,8 +722,8 @@ Sub setIndicatorPosition(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If bIndicatorItem = False Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = modSD5.mvfield(s,1,"-")
-	Dim spart As String = modSD5.mvfield(s,2,"-")
+	Dim fpart As String = UI.mvfield(s,1,"-")
+	Dim spart As String = UI.mvfield(s,2,"-")
 	UI.UpdateClass(mElement, "badgeposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Item

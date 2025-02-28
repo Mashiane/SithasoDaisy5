@@ -27,6 +27,8 @@ Version=10
 #DesignerProperty: Key: Transform, DisplayName: Transform, FieldType: String, DefaultValue: none, Description: Transform, List: capitalize|lowercase|none|normal-case|uppercase
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
 #DesignerProperty: Key: AlignContent, DisplayName: Align Content, FieldType: String, DefaultValue: none, Description: Align Content, List: around|baseline|between|center|end|evenly|none|normal|start|stretch
 #DesignerProperty: Key: AlignItems, DisplayName: Align Items, FieldType: String, DefaultValue: none, Description: Align Items, List: baseline|center|end|none|start|stretch
@@ -147,14 +149,17 @@ Sub Class_Globals
 	Private sAlignSelf As String = ""
 	Private sHeight As String = ""
 	Private sWidth As String = ""
+	Private sBackgroundImage As String = ""
+	Private sBackgroundColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -173,7 +178,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -315,87 +320,89 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlignContent = Props.GetDefault("AlignContent", "none")
-		sAlignContent = modSD5.CStr(sAlignContent)
+		sAlignContent = UI.CStr(sAlignContent)
 		If sAlignContent = "none" Then sAlignContent = ""
 		sAlignItems = Props.GetDefault("AlignItems", "none")
-		sAlignItems = modSD5.CStr(sAlignItems)
+		sAlignItems = UI.CStr(sAlignItems)
 		If sAlignItems = "none" Then sAlignItems = ""
 		sAlignSelf = Props.GetDefault("AlignSelf", "none")
-		sAlignSelf = modSD5.CStr(sAlignSelf)
+		sAlignSelf = UI.CStr(sAlignSelf)
 		If sAlignSelf = "none" Then sAlignSelf = ""
 		sJustifyContent = Props.GetDefault("JustifyContent", "none")
-		sJustifyContent = modSD5.CStr(sJustifyContent)
+		sJustifyContent = UI.CStr(sJustifyContent)
 		If sJustifyContent = "none" Then sJustifyContent = ""
 		sJustifyItems = Props.GetDefault("JustifyItems", "none")
-		sJustifyItems = modSD5.CStr(sJustifyItems)
+		sJustifyItems = UI.CStr(sJustifyItems)
 		If sJustifyItems = "none" Then sJustifyItems = ""
 		sJustifySelf = Props.GetDefault("JustifySelf", "none")
-		sJustifySelf = modSD5.CStr(sJustifySelf)
+		sJustifySelf = UI.CStr(sJustifySelf)
 		If sJustifySelf = "none" Then sJustifySelf = ""
 		sPlaceContent = Props.GetDefault("PlaceContent", "none")
-		sPlaceContent = modSD5.CStr(sPlaceContent)
+		sPlaceContent = UI.CStr(sPlaceContent)
 		If sPlaceContent = "none" Then sPlaceContent = ""
 		sPlaceItems = Props.GetDefault("PlaceItems", "none")
-		sPlaceItems = modSD5.CStr(sPlaceItems)
+		sPlaceItems = UI.CStr(sPlaceItems)
 		If sPlaceItems = "none" Then sPlaceItems = ""
 		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
-		sPlaceSelf = modSD5.CStr(sPlaceSelf)
+		sPlaceSelf = UI.CStr(sPlaceSelf)
 		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		bApplyDefaults = Props.GetDefault("ApplyDefaults", True)
-		bApplyDefaults = modSD5.CBool(bApplyDefaults)
+		bApplyDefaults = UI.CBool(bApplyDefaults)
 		sDecoration = Props.GetDefault("Decoration", "none")
-		sDecoration = modSD5.CStr(sDecoration)
+		sDecoration = UI.CStr(sDecoration)
 		If sDecoration = "none" Then sDecoration = ""
 		sFontWeight = Props.GetDefault("FontWeight", "none")
-		sFontWeight = modSD5.CStr(sFontWeight)
+		sFontWeight = UI.CStr(sFontWeight)
 		If sFontWeight = "none" Then sFontWeight = ""
 		bItalic = Props.GetDefault("Italic", False)
-		bItalic = modSD5.CBool(bItalic)
+		bItalic = UI.CBool(bItalic)
 		sOverflow = Props.GetDefault("Overflow", "none")
-		sOverflow = modSD5.CStr(sOverflow)
+		sOverflow = UI.CStr(sOverflow)
 		If sOverflow = "none" Then sOverflow = ""
 		sTextAlign = Props.GetDefault("TextAlign", "none")
-		sTextAlign = modSD5.CStr(sTextAlign)
+		sTextAlign = UI.CStr(sTextAlign)
 		If sTextAlign = "none" Then sTextAlign = ""
 		'sTextColor = Props.GetDefault("TextColor", "")
-		'sTextColor = modSD5.CStr(sTextColor)
+		'sTextColor = UI.CStr(sTextColor)
 		sTextSize = Props.GetDefault("TextSize", "none")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		If sTextSize = "none" Then sTextSize = ""
 		sTextTag = Props.GetDefault("TextTag", "p")
-		sTextTag = modSD5.CStr(sTextTag)
+		sTextTag = UI.CStr(sTextTag)
 		sTransform = Props.GetDefault("Transform", "none")
-		sTransform = modSD5.CStr(sTransform)
+		sTransform = UI.CStr(sTransform)
 		If sTransform = "none" Then sTransform = ""
 		sWordBreak = Props.GetDefault("WordBreak", "none")
-		sWordBreak = modSD5.CStr(sWordBreak)
+		sWordBreak = UI.CStr(sWordBreak)
 		If sWordBreak = "none" Then sWordBreak = ""
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconSize = Props.GetDefault("IconSize", "")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		bLoremIpsum = Props.GetDefault("LoremIpsum", False)
-		bLoremIpsum = modSD5.CBool(bLoremIpsum)
+		bLoremIpsum = UI.CBool(bLoremIpsum)
 		iOpacity = Props.GetDefault("Opacity", 100)
-		iOpacity = modSD5.CInt(iOpacity)
+		iOpacity = UI.CInt(iOpacity)
 		sListCol = Props.GetDefault("ListCol", "none")
-		sListCol = modSD5.CStr(sListCol)
+		sListCol = UI.CStr(sListCol)
 		If sListCol = "none" Then sListCol = ""
 		sFontVariant = Props.GetDefault("FontVariant", "none")
-		sFontVariant = modSD5.CStr(sFontVariant)
+		sFontVariant = UI.CStr(sFontVariant)
 		If sFontVariant = "none" Then sFontVariant = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
-		bCenterChildren = modSD5.CBool(bCenterChildren)
+		bCenterChildren = UI.CBool(bCenterChildren)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
+		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
+		sBackgroundImage = UI.CStr(sBackgroundImage)
 	End If
 	'
 	If bApplyDefaults Then
@@ -421,6 +428,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End Select
 	End If
 	'
+	If sBackgroundImage <> "" Then UI.AddBackgroundImageDT(sBackgroundImage)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
@@ -438,7 +446,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	If sFontVariant <> "" Then UI.AddClassDT(sFontVariant)
 	If sListCol <> "" Then UI.AddClassDT("list-col-" & sListCol)
-	If bLoremIpsum Then sText = modSD5.LoremIpsum(1)
+	If bLoremIpsum Then sText = UI.LoremIpsum(1)
 	If sTextAlign <> "" Then UI.AddStyleDT("text-align", sTextAlign)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -470,6 +478,32 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If iOpacity <> 100 Then setOpacity(iOpacity)
 	setFontVariant(sFontVariant)
 '	setVisible(bVisible)
+End Sub
+
+
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+End Sub
+
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+
+'set Background Image
+Sub setBackgroundImage(s As String)
+	sBackgroundImage = s
+	CustProps.put("BackgroundImage", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundImage(mElement, s)
+End Sub
+
+'get Background Image
+Sub getBackgroundImage As String
+	Return sBackgroundImage
 End Sub
 
 'set Align Content

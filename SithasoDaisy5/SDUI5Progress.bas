@@ -92,11 +92,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -115,7 +116,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -245,7 +246,7 @@ End Sub
 'get value
 Sub getValue As Int
 	If mElement = Null Then Return 0
-	iValue = modSD5.CInt(mElement.getvalue)
+	iValue = UI.CInt(mElement.getvalue)
 	Return iValue
 End Sub
 'code to design the view
@@ -257,58 +258,58 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
-		bIndeterminate = modSD5.CBool(bIndeterminate)
+		bIndeterminate = UI.CBool(bIndeterminate)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
-		sLeftIcon = modSD5.CStr(sLeftIcon)
+		sLeftIcon = UI.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
-		sLeftIconColor = modSD5.CStr(sLeftIconColor)
+		sLeftIconColor = UI.CStr(sLeftIconColor)
 		iMaxValue = Props.GetDefault("MaxValue", 100)
-		iMaxValue = modSD5.CInt(iMaxValue)
+		iMaxValue = UI.CInt(iMaxValue)
 		iMinValue = Props.GetDefault("MinValue", 0)
-		iMinValue = modSD5.Cint(iMinValue)
+		iMinValue = UI.Cint(iMinValue)
 		sRightIcon = Props.GetDefault("RightIcon", "")
-		sRightIcon = modSD5.CStr(sRightIcon)
+		sRightIcon = UI.CStr(sRightIcon)
 		sRightIconColor = Props.GetDefault("RightIconColor", "")
-		sRightIconColor = modSD5.CStr(sRightIconColor)
+		sRightIconColor = UI.CStr(sRightIconColor)
 		iStepValue = Props.GetDefault("StepValue", 1)
-		iStepValue = modSD5.Cint(iStepValue)
+		iStepValue = UI.Cint(iStepValue)
 		sTicks = Props.GetDefault("Ticks", "")
-		sTicks = modSD5.CStr(sTicks)
+		sTicks = UI.CStr(sTicks)
 		iValue = Props.GetDefault("Value", 0)
-		iValue = modSD5.Cint(iValue)
+		iValue = UI.Cint(iValue)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sLabel = Props.GetDefault("Label", "")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sProgressType = Props.GetDefault("ProgressType", "normal")
-		sProgressType = modSD5.CStr(sProgressType)
+		sProgressType = UI.CStr(sProgressType)
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = "md"
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", True)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTextColor = Props.GetDefault("TextColor", "#ffffff")
-		sTextColor = modSD5.CStr(sTextColor)
+		sTextColor = UI.CStr(sTextColor)
 		sTextSize = Props.GetDefault("TextSize", "xs")
-		sTextSize = modSD5.CStr(sTextSize)
+		sTextSize = UI.CStr(sTextSize)
 		bTextVisible = Props.GetDefault("TextVisible", False)
-		bTextVisible = modSD5.CBool(bTextVisible)
+		bTextVisible = UI.CBool(bTextVisible)
 	End If
 	'
 	If sParentID <> "" Then

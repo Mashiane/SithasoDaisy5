@@ -63,11 +63,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -76,7 +77,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -87,7 +88,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -212,32 +213,32 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-100")
-		sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bBorder = Props.GetDefault("Border", False)
-		bBorder = modSD5.CBool(bBorder)
+		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
-		sBorderColor = modSD5.CStr(sBorderColor)
+		sBorderColor = UI.CStr(sBorderColor)
 		sDirection = Props.GetDefault("Direction", "vertical")
-		sDirection = modSD5.CStr(sDirection)
+		sDirection = UI.CStr(sDirection)
 		sLGDirection = Props.GetDefault("LGDirection", "none")
-		sLGDirection = modSD5.CStr(sLGDirection)
+		sLGDirection = UI.CStr(sLGDirection)
 		If sLGDirection = "none" Then sLGDirection = ""
 		sMDDirection = Props.GetDefault("MDDirection", "horizontal")
-		sMDDirection = modSD5.CStr(sMDDirection)
+		sMDDirection = UI.CStr(sMDDirection)
 		If sMDDirection = "none" Then sMDDirection = ""
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sSMDirection = Props.GetDefault("SMDirection", "none")
-		sSMDirection = modSD5.CStr(sSMDirection)
+		sSMDirection = UI.CStr(sSMDirection)
 		If sSMDirection = "none" Then sSMDirection = ""
 		sShadow = Props.GetDefault("Shadow", "shadow")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sXLDirection = Props.GetDefault("XLDirection", "none")
-		sXLDirection = modSD5.CStr(sXLDirection)
+		sXLDirection = UI.CStr(sXLDirection)
 		If sXLDirection = "none" Then sXLDirection = ""
 	End If
 	'

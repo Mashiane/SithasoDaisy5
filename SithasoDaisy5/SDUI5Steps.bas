@@ -5,8 +5,14 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Change (Value as String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: horizontal, Description: Direction, List: horizontal|vertical
+#DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: sm, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
+#DesignerProperty: Key: RawSteps, DisplayName: Steps, FieldType: String, DefaultValue: Register;Choose Plan;Purchase;Receive Product, Description: Steps
+#DesignerProperty: Key: ActiveStep, DisplayName: Active Step, FieldType: String, DefaultValue: 1, Description: Active Step
+#DesignerProperty: Key: StepsColor, DisplayName: Steps Color, FieldType: String, DefaultValue: primary, Description: Steps Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: SMDirection, DisplayName: SM Direction, FieldType: String, DefaultValue: none, Description: S m Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: MDDirection, DisplayName: MD Direction, FieldType: String, DefaultValue: none, Description: M d Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: LGDirection, DisplayName: LG Direction, FieldType: String, DefaultValue: none, Description: L g Direction, List: horizontal|none|vertical
@@ -15,6 +21,8 @@ Version=10
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: OverflowXAuto, DisplayName: Overflow X Auto, FieldType: Boolean, DefaultValue: False, Description: Overflow X Auto
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -55,32 +63,23 @@ Sub Class_Globals
 	Private sXLDirection As String = "none"
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
-	Public CONST ROUNDED_2XL As String = "2xl"
-	Public CONST ROUNDED_3XL As String = "3xl"
-	Public CONST ROUNDED_FULL As String = "full"
-	Public CONST ROUNDED_LG As String = "lg"
-	Public CONST ROUNDED_MD As String = "md"
-	Public CONST ROUNDED_NONE As String = "none"
-	Public CONST ROUNDED_ROUNDED As String = "rounded"
-	Public CONST ROUNDED_SM As String = "sm"
-	Public CONST ROUNDED_XL As String = "xl"
-	Public CONST SHADOW_2XL As String = "2xl"
-	Public CONST SHADOW_INNER As String = "inner"
-	Public CONST SHADOW_LG As String = "lg"
-	Public CONST SHADOW_MD As String = "md"
-	Public CONST SHADOW_NONE As String = "none"
-	Public CONST SHADOW_SHADOW As String = "shadow"
-	Public CONST SHADOW_SM As String = "sm"
-	Public CONST SHADOW_XL As String = "xl"
 	Private bOverflowXAuto As Boolean = False
+	Private sTextSize As String = "sm"
+	Private sRawSteps As String = "Register;Choose Plan;Purchase;Receive Product"
+	Private sStepsColor As String = "none"
+	Private items As List
+	Private sActiveStep As String = "1"
+	Private sHeight As String = ""
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -89,7 +88,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -100,7 +99,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -156,7 +155,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -165,14 +164,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -186,7 +185,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -226,32 +225,48 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sDirection = Props.GetDefault("Direction", "horizontal")
-		sDirection = modSD5.CStr(sDirection)
+		sDirection = UI.CStr(sDirection)
 		sLGDirection = Props.GetDefault("LGDirection", "none")
-		sLGDirection = modSD5.CStr(sLGDirection)
+		sLGDirection = UI.CStr(sLGDirection)
 		If sLGDirection = "none" Then sLGDirection = ""
 		sMDDirection = Props.GetDefault("MDDirection", "none")
-		sMDDirection = modSD5.CStr(sMDDirection)
+		sMDDirection = UI.CStr(sMDDirection)
 		If sMDDirection = "none" Then sMDDirection = ""
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sSMDirection = Props.GetDefault("SMDirection", "none")
-		sSMDirection = modSD5.CStr(sSMDirection)
+		sSMDirection = UI.CStr(sSMDirection)
 		If sSMDirection = "none" Then sSMDirection = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sXLDirection = Props.GetDefault("XLDirection", "none")
-		sXLDirection = modSD5.CStr(sXLDirection)
+		sXLDirection = UI.CStr(sXLDirection)
 		If sXLDirection = "none" Then sXLDirection = ""
 		bOverflowXAuto = Props.GetDefault("OverflowXAuto", False)
-		bOverflowXAuto = modSD5.CBool(bOverflowXAuto)        
+		bOverflowXAuto = UI.CBool(bOverflowXAuto)   
+		sTextSize = Props.GetDefault("TextSize", "sm")
+		sTextSize = UI.CStr(sTextSize)
+		If sTextSize = "none" Then sTextSize = ""
+		sActiveStep = Props.GetDefault("ActiveStep", "")
+		sActiveStep = UI.CStr(sActiveStep)
+		sRawSteps = Props.GetDefault("RawSteps", "Register;Choose Plan;Purchase;Receive Product")
+		sRawSteps = UI.CStr(sRawSteps)
+		sStepsColor = Props.GetDefault("StepsColor", "primary")
+		sStepsColor = UI.CStr(sStepsColor)
+		sHeight = Props.GetDefault("Height", "")
+		sHeight = UI.CStr(sHeight)
+		sWidth = Props.GetDefault("Width", "full")
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	UI.addclassdt("steps")
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
+	If sTextSize <> "" Then UI.AddSizeDT("text", sTextSize)
 	If sDirection <> "" Then UI.AddClassDT("steps-" & sDirection)
 	If sLGDirection <> "" Then UI.AddClassDT("lg:steps-" & sLGDirection)
 	If sMDDirection <> "" Then UI.AddClassDT("md:steps-" & sMDDirection)
@@ -278,7 +293,140 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Else
 		mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 	End If
-'	setVisible(bVisible)
+	'setVisible(bVisible)
+	BANano.Await(setSteps(sRawSteps))
+	BANano.Await(setActiveStep(sActiveStep))
+End Sub
+
+
+'set Height
+Sub setHeight(s As String)
+	sHeight = s
+	CustProps.put("Height", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetHeight(mElement, sHeight)
+End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+'get Height
+Sub getHeight As String
+	Return sHeight
+End Sub
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub
+
+'clear steps
+Sub Clear
+	If mElement = Null Then Return
+	mElement.Empty
+	items.Initialize
+End Sub
+
+'set Raw Steps
+Sub setSteps(s As String)				'ignoredeadcode
+	sRawSteps = s
+	CustProps.put("RawSteps", s)
+	If mElement = Null Then Return
+	BANano.Await(Clear)
+	If s = "" Then Return
+	
+	Dim nitems As List = UI.StrParse(";", s)
+	nitems = UI.ListTrimItems(nitems)
+	Dim stepCnt As Int = 0
+	Dim stepTot As Int = 0
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	
+	For stepCnt = 0 To nitems.Size - 1
+		Dim stepName As String = nitems.Get(stepCnt)
+		stepTot = BANano.parseInt(stepCnt) + 1
+		sb.Append($"<li id="${mName}_${stepTot}" class="step cursor-pointer"><span id="${mName}_${stepTot}_text">${stepName}</span></li>"$)
+		items.add($"${mName}_${stepTot}"$)
+	Next
+	mElement.Append(sb.ToString)
+	For Each k As String In items
+		UI.OnEventByID(k, "click", Me, "ChangeStep")
+	Next
+End Sub
+
+Sub AddStep(stepName As String)
+	Dim stepTot As Int = items.Size
+	Dim k As String = $"${mName}_${stepTot}"$
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	'
+	sb.Append($"<li id="${k}" class="step cursor-pointer"><span id="${k}_text">${stepName}</span></li>"$)
+	items.add(k)
+	mElement.Append(sb.ToString)
+	UI.OnEventByID(k, "click", Me, "ChangeStep")
+End Sub
+
+private Sub ChangeStep(e As BANanoEvent)		'ignoredeadcode
+	e.PreventDefault
+	Log(e.ID)
+	
+	Dim stepID As String = e.ID
+	Dim stepName As String = UI.MvField(stepID,2, "_")
+	If stepName <> "" Then
+		BANano.Await(setActiveStep(stepName))
+		BANano.CallSub(Me, $"${mName}_change"$, Array(stepName))
+	End If
+End Sub
+
+Sub getSteps As String
+	Return sRawSteps
+End Sub
+
+'set Active Step
+Sub setActiveStep(s As String)			'ignoredeadcode
+	sActiveStep = s
+	CustProps.put("ActiveStep", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	'
+	Dim stepCnt As Int = 0
+	Dim actualStep As Int = UI.CInt(s)
+	'
+	'hide all contents and remove step colors
+	For stepCnt = 0 To items.Size - 1
+		Dim k As String = items.Get(stepCnt)
+		'remove the color of the step
+		UI.RemoveClassByID(k, $"step-${sStepsColor}"$)
+	Next
+	'
+	For stepCnt = 1 To actualStep
+		UI.AddClassByID($"${mName}_${stepCnt}"$, $"step-${sStepsColor}"$)
+	Next
+End Sub
+
+Sub getActiveStep As String
+	Return sActiveStep
+End Sub
+
+
+'set Text Size
+'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl
+Sub setTextSize(s As String)
+	sTextSize = s
+	CustProps.put("TextSize", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextSize(mElement, sTextSize)
+End Sub
+
+'get Text Size
+Sub getTextSize As String
+	Return sTextSize
 End Sub
 
 'set Direction

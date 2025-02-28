@@ -57,11 +57,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -70,7 +71,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -81,7 +82,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -207,26 +208,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sDropdownPlacement = Props.GetDefault("DropdownPlacement", "")
-		sDropdownPlacement = modSD5.CStr(sDropdownPlacement)
+		sDropdownPlacement = UI.CStr(sDropdownPlacement)
 		sIconSize = Props.GetDefault("IconSize", "2xl")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		sOffIcon = Props.GetDefault("OffIcon", "fas fa-plus")
-		sOffIcon = modSD5.CStr(sOffIcon)
+		sOffIcon = UI.CStr(sOffIcon)
 		sOffTextColor = Props.GetDefault("OffTextColor", "none")
-		sOffTextColor = modSD5.CStr(sOffTextColor)
+		sOffTextColor = UI.CStr(sOffTextColor)
 		If sOffTextColor = "none" Then sOffTextColor = ""
 		sOnIcon = Props.GetDefault("OnIcon", "fas fa-times")
-		sOnIcon = modSD5.CStr(sOnIcon)
+		sOnIcon = UI.CStr(sOnIcon)
 		sOnTextColor = Props.GetDefault("OnTextColor", "none")
-		sOnTextColor = modSD5.CStr(sOnTextColor)
+		sOnTextColor = UI.CStr(sOnTextColor)
 		If sOnTextColor = "none" Then sOnTextColor = ""
 		sSize = Props.GetDefault("Size", "lg")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		sToastPlacement = Props.GetDefault("ToastPlacement", "")
-		sToastPlacement = modSD5.CStr(sToastPlacement)
+		sToastPlacement = UI.CStr(sToastPlacement)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes

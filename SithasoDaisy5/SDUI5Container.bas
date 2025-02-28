@@ -9,6 +9,7 @@ Version=10
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: Container, DisplayName: Container, FieldType: Boolean, DefaultValue: True, Description: Container
 #DesignerProperty: Key: ContainerFluid, DisplayName: Container Fluid, FieldType: Boolean, DefaultValue: False, Description: Container Fluid
 #DesignerProperty: Key: ContainerSm, DisplayName: SM Container, FieldType: Boolean, DefaultValue: False, Description: SM Container
@@ -97,14 +98,15 @@ Sub Class_Globals
 	Private sMaxWidth As String = ""
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
+	Private sBackgroundImage As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
-	mCallBack = Callback
-	CustProps.Initialize
 	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize	
 	GridRowsM.Initialize 
 	LastRow = 0
 	ntxRow = 0
@@ -128,7 +130,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -265,44 +267,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bContainerFluid = Props.GetDefault("ContainerFluid", False)
-		bContainerFluid = modSD5.CBool(bContainerFluid)
+		bContainerFluid = UI.CBool(bContainerFluid)
 		bContainerLg = Props.GetDefault("ContainerLg", False)
-		bContainerLg = modSD5.CBool(bContainerLg)
+		bContainerLg = UI.CBool(bContainerLg)
 		bContainerMd = Props.GetDefault("ContainerMd", False)
-		bContainerMd = modSD5.CBool(bContainerMd)
+		bContainerMd = UI.CBool(bContainerMd)
 		bContainerSm = Props.GetDefault("ContainerSm", False)
-		bContainerSm = modSD5.CBool(bContainerSm)
+		bContainerSm = UI.CBool(bContainerSm)
 		bContainerXl = Props.GetDefault("ContainerXl", False)
-		bContainerXl = modSD5.CBool(bContainerXl)
+		bContainerXl = UI.CBool(bContainerXl)
 		bContainerXxl = Props.GetDefault("ContainerXxl", False)
-		bContainerXxl = modSD5.CBool(bContainerXxl)
+		bContainerXxl = UI.CBool(bContainerXxl)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTextAlign = Props.GetDefault("TextAlign", "none")
-		sTextAlign = modSD5.CStr(sTextAlign)
+		sTextAlign = UI.CStr(sTextAlign)
 		If sTextAlign = "none" Then sTextAlign = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
-		bCenterChildren = modSD5.CBool(bCenterChildren)
+		bCenterChildren = UI.CBool(bCenterChildren)
 		bContainer = Props.GetDefault("Container", False)
-		bContainer = modSD5.CBool(bContainer)
+		bContainer = UI.CBool(bContainer)
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxHeight = UI.CStr(sMaxHeight)
 		sMaxWidth = Props.GetDefault("MaxWidth", "")
-		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMaxWidth = UI.CStr(sMaxWidth)
 		sMinHeight = Props.GetDefault("MinHeight", "")
-		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
+		sMinWidth = UI.CStr(sMinWidth)
+		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
+		sBackgroundImage = UI.CStr(sBackgroundImage)
 	End If
 	'
+	If sBackgroundImage <> "" Then UI.AddBackgroundImageDT(sBackgroundImage)
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
@@ -337,6 +342,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+
+'set Background Image
+Sub setBackgroundImage(s As String)
+	sBackgroundImage = s
+	CustProps.put("BackgroundImage", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundImage(mElement, s)
+End Sub
+
+'get Background Image
+Sub getBackgroundImage As String
+	Return sBackgroundImage
+End Sub
 
 Sub setCenterChildren(b As Boolean)
 	bCenterChildren = b
@@ -743,10 +761,10 @@ private Sub BuildOffsets(col As GridColumn) As String
 	Dim sb As StringBuilder
 	sb.Initialize
 	'If col.ofxs <> "" And col.gxs <> "0" Then sb.Append($"offset-xs-${col.ofxs} "$)
-	If col.ofsm <> "" And col.gsm <> "0" Then sb.Append($"sm:${modSD5.FixOffset(col.ofsm)} "$)
-	If col.ofmd <> "" And col.gmd <> "0" Then sb.Append($"md:${modSD5.FixOffset(col.ofmd)} "$)
-	If col.oflg <> "" And col.glg <> "0" Then sb.Append($"lg:${modSD5.FixOffset(col.oflg)} "$)
-	If col.ofxl <> "" And col.gxl <> "0" Then sb.Append($"xl:${modSD5.FixOffset(col.ofxl)} "$)
+	If col.ofsm <> "" And col.gsm <> "0" Then sb.Append($"sm:${UI.FixOffset(col.ofsm)} "$)
+	If col.ofmd <> "" And col.gmd <> "0" Then sb.Append($"md:${UI.FixOffset(col.ofmd)} "$)
+	If col.oflg <> "" And col.glg <> "0" Then sb.Append($"lg:${UI.FixOffset(col.oflg)} "$)
+	If col.ofxl <> "" And col.gxl <> "0" Then sb.Append($"xl:${UI.FixOffset(col.ofxl)} "$)
 	Dim sout As String = sb.ToString
 	sb.Initialize
 	sout = sout.trim

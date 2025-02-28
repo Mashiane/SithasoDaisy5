@@ -17,6 +17,7 @@ Version=10
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: CenterChildren, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
 #DesignerProperty: Key: Grid, DisplayName: Grid, FieldType: Boolean, DefaultValue: False, Description: Grid
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: , Description: Gap
@@ -136,14 +137,16 @@ Sub Class_Globals
 	Private sMDGap As String = ""
 	Private sSMGap As String = ""
 	Private sXLGap As String = ""
+	Private sBackgroundImage As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -162,7 +165,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -341,107 +344,110 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlignContent = Props.GetDefault("AlignContent", "none")
-		sAlignContent = modSD5.CStr(sAlignContent)
+		sAlignContent = UI.CStr(sAlignContent)
 		If sAlignContent = "none" Then sAlignContent = ""
 		sAlignItems = Props.GetDefault("AlignItems", "none")
-		sAlignItems = modSD5.CStr(sAlignItems)
+		sAlignItems = UI.CStr(sAlignItems)
 		If sAlignItems = "none" Then sAlignItems = ""
 		sAlignSelf = Props.GetDefault("AlignSelf", "none")
-		sAlignSelf = modSD5.CStr(sAlignSelf)
+		sAlignSelf = UI.CStr(sAlignSelf)
 		If sAlignSelf = "none" Then sAlignSelf = ""
 		sJustifyContent = Props.GetDefault("JustifyContent", "none")
-		sJustifyContent = modSD5.CStr(sJustifyContent)
+		sJustifyContent = UI.CStr(sJustifyContent)
 		If sJustifyContent = "none" Then sJustifyContent = ""
 		sJustifyItems = Props.GetDefault("JustifyItems", "none")
-		sJustifyItems = modSD5.CStr(sJustifyItems)
+		sJustifyItems = UI.CStr(sJustifyItems)
 		If sJustifyItems = "none" Then sJustifyItems = ""
 		sJustifySelf = Props.GetDefault("JustifySelf", "none")
-		sJustifySelf = modSD5.CStr(sJustifySelf)
+		sJustifySelf = UI.CStr(sJustifySelf)
 		If sJustifySelf = "none" Then sJustifySelf = ""
 		sPlaceContent = Props.GetDefault("PlaceContent", "none")
-		sPlaceContent = modSD5.CStr(sPlaceContent)
+		sPlaceContent = UI.CStr(sPlaceContent)
 		If sPlaceContent = "none" Then sPlaceContent = ""
 		sPlaceItems = Props.GetDefault("PlaceItems", "none")
-		sPlaceItems = modSD5.CStr(sPlaceItems)
+		sPlaceItems = UI.CStr(sPlaceItems)
 		If sPlaceItems = "none" Then sPlaceItems = ""
 		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
-		sPlaceSelf = modSD5.CStr(sPlaceSelf)
+		sPlaceSelf = UI.CStr(sPlaceSelf)
 		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
-		bCenterChildren = modSD5.CBool(bCenterChildren)
+		bCenterChildren = UI.CBool(bCenterChildren)
 		sColSpan = Props.GetDefault("ColSpan", "")
-		sColSpan = modSD5.CStr(sColSpan)
+		sColSpan = UI.CStr(sColSpan)
 		sColSpanLg = Props.GetDefault("ColSpanLg", "")
-		sColSpanLg = modSD5.CStr(sColSpanLg)
+		sColSpanLg = UI.CStr(sColSpanLg)
 		sColSpanMd = Props.GetDefault("ColSpanMd", "")
-		sColSpanMd = modSD5.CStr(sColSpanMd)
+		sColSpanMd = UI.CStr(sColSpanMd)
 		sColSpanSm = Props.GetDefault("ColSpanSm", "")
-		sColSpanSm = modSD5.CStr(sColSpanSm)
+		sColSpanSm = UI.CStr(sColSpanSm)
 		sColSpanXl = Props.GetDefault("ColSpanXl", "")
-		sColSpanXl = modSD5.CStr(sColSpanXl)
+		sColSpanXl = UI.CStr(sColSpanXl)
 		sColSpanXs = Props.GetDefault("ColSpanXs", "")
-		sColSpanXs = modSD5.CStr(sColSpanXs)
+		sColSpanXs = UI.CStr(sColSpanXs)
 		sFlex = Props.GetDefault("Flex", "none")
-		sFlex = modSD5.CStr(sFlex)
+		sFlex = UI.CStr(sFlex)
 		If sFlex = "none" Then sFlex = ""
 		sFlexBasis = Props.GetDefault("FlexBasis", "")
-		sFlexBasis = modSD5.CStr(sFlexBasis)
+		sFlexBasis = UI.CStr(sFlexBasis)
 		sFlexDirection = Props.GetDefault("FlexDirection", "none")
-		sFlexDirection = modSD5.CStr(sFlexDirection)
+		sFlexDirection = UI.CStr(sFlexDirection)
 		If sFlexDirection = "none" Then sFlexDirection = ""
 		sFlexGrow = Props.GetDefault("FlexGrow", "none")
-		sFlexGrow = modSD5.CStr(sFlexGrow)
+		sFlexGrow = UI.CStr(sFlexGrow)
 		If sFlexGrow = "none" Then sFlexGrow = ""
 		sFlexShrink = Props.GetDefault("FlexShrink", "none")
-		sFlexShrink = modSD5.CStr(sFlexShrink)
+		sFlexShrink = UI.CStr(sFlexShrink)
 		If sFlexShrink = "none" Then sFlexShrink = ""
 		sFlexWrap = Props.GetDefault("FlexWrap", "none")
-		sFlexWrap = modSD5.CStr(sFlexWrap)
+		sFlexWrap = UI.CStr(sFlexWrap)
 		If sFlexWrap = "none" Then sFlexWrap = ""
 		bFlexbox = Props.GetDefault("Flexbox", False)
-		bFlexbox = modSD5.CBool(bFlexbox)
+		bFlexbox = UI.CBool(bFlexbox)
 		sGap = Props.GetDefault("Gap", "")
-		sGap = modSD5.CStr(sGap)
+		sGap = UI.CStr(sGap)
 		bGrid = Props.GetDefault("Grid", False)
-		bGrid = modSD5.CBool(bGrid)
+		bGrid = UI.CBool(bGrid)
 		sGridCols = Props.GetDefault("GridCols", "")
-		sGridCols = modSD5.CStr(sGridCols)
+		sGridCols = UI.CStr(sGridCols)
 		sGridFlow = Props.GetDefault("GridFlow", "none")
-		sGridFlow = modSD5.CStr(sGridFlow)
+		sGridFlow = UI.CStr(sGridFlow)
 		If sGridFlow = "none" Then sGridFlow = ""
 		sGridRows = Props.GetDefault("GridRows", "")
-		sGridRows = modSD5.CStr(sGridRows)
+		sGridRows = UI.CStr(sGridRows)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sRowSpan = Props.GetDefault("RowSpan", "")
-		sRowSpan = modSD5.CStr(sRowSpan)
+		sRowSpan = UI.CStr(sRowSpan)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sTextAlign = Props.GetDefault("TextAlign", "none")
-		sTextAlign = modSD5.CStr(sTextAlign)
+		sTextAlign = UI.CStr(sTextAlign)
 		If sTextAlign = "none" Then sTextAlign = ""
 		sGapX = Props.GetDefault("GapX", "")
-		sGapX = modSD5.CStr(sGapX)
+		sGapX = UI.CStr(sGapX)
 		sGapY = Props.GetDefault("GapY", "")
-		sGapY = modSD5.CStr(sGapY)
+		sGapY = UI.CStr(sGapY)
 		sLGGap = Props.GetDefault("LGGap", "")
-		sLGGap = modSD5.CStr(sLGGap)
+		sLGGap = UI.CStr(sLGGap)
 		sMDGap = Props.GetDefault("MDGap", "")
-		sMDGap = modSD5.CStr(sMDGap)
+		sMDGap = UI.CStr(sMDGap)
 		sSMGap = Props.GetDefault("SMGap", "")
-		sSMGap = modSD5.CStr(sSMGap)
+		sSMGap = UI.CStr(sSMGap)
 		sXLGap = Props.GetDefault("XLGap", "")
-		sXLGap = modSD5.CStr(sXLGap)
+		sXLGap = UI.CStr(sXLGap)
+		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
+		sBackgroundImage = UI.CStr(sBackgroundImage)
 	End If
 	'
+	If sBackgroundImage <> "" Then UI.AddBackgroundImageDT(sBackgroundImage)
 	If sLGGap <> "" Then UI.AddClassDT("lg:gap-" & sLGGap)
 	If sMDGap <> "" Then UI.AddClassDT("md:gap-" & sMDGap)
 	If sSMGap <> "" Then UI.AddClassDT("sm:gap-" & sSMGap)
@@ -509,6 +515,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
 '	setVisible(bVisible)
 End Sub
+
+
+'set Background Image
+Sub setBackgroundImage(s As String)
+	sBackgroundImage = s
+	CustProps.put("BackgroundImage", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundImage(mElement, s)
+End Sub
+
+'get Background Image
+Sub getBackgroundImage As String
+	Return sBackgroundImage
+End Sub
+
 
 'set L g Gap
 Sub setLGGap(s As String)
@@ -1030,7 +1051,7 @@ End Sub
 Sub GetAttr(attr As String) As String
 	If mElement = Null Then Return ""
 	Dim ret As String = mElement.GetAttr(attr)
-	ret = modSD5.CStr(ret)
+	ret = UI.CStr(ret)
 	Return ret
 End Sub
 
@@ -1054,7 +1075,7 @@ End Sub
 
 Sub Clear			
 	If mElement = Null Then Return
-	UI.Clear(mElement)
+	mElement.empty
 End Sub
 
 Sub Append(s As String)

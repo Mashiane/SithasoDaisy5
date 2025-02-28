@@ -24,9 +24,9 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
-#DesignerProperty: Key: RawContentAttributes, DisplayName: Content Attributes, FieldType: String, DefaultValue: , Description: Raw Content Attributes
-#DesignerProperty: Key: RawContentClass, DisplayName: Content Class, FieldType: String, DefaultValue: , Description: Raw Content Class
-#DesignerProperty: Key: RawContentStyle, DisplayName: Content Style, FieldType: String, DefaultValue: , Description: Raw Content Style
+#DesignerProperty: Key: RawContentAttributes, DisplayName: Content Attributes, FieldType: String, DefaultValue: , Description: Content Attributes
+#DesignerProperty: Key: RawContentClass, DisplayName: Content Class, FieldType: String, DefaultValue: , Description: Content Class
+#DesignerProperty: Key: RawContentStyle, DisplayName: Content Style, FieldType: String, DefaultValue: , Description: Content Style
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -80,11 +80,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -103,7 +104,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -229,52 +230,52 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		'sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		'sBackgroundColor = modSD5.CStr(sBackgroundColor)
+		'sBackgroundColor = UI.CStr(sBackgroundColor)
 		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
-		sBackgroundImage = modSD5.CStr(sBackgroundImage)
+		sBackgroundImage = UI.CStr(sBackgroundImage)
 		sContentFlexDirection = Props.GetDefault("ContentFlexDirection", "flex-col")
-		sContentFlexDirection = modSD5.CStr(sContentFlexDirection)
+		sContentFlexDirection = UI.CStr(sContentFlexDirection)
 		If sContentFlexDirection = "none" Then sContentFlexDirection = ""
 		sContentTextAlign = Props.GetDefault("ContentTextAlign", "")
-		sContentTextAlign = modSD5.CStr(sContentTextAlign)
+		sContentTextAlign = UI.CStr(sContentTextAlign)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sLgContentFlexDirection = Props.GetDefault("LgContentFlexDirection", "flex-row")
-		sLgContentFlexDirection = modSD5.CStr(sLgContentFlexDirection)
+		sLgContentFlexDirection = UI.CStr(sLgContentFlexDirection)
 		If sLgContentFlexDirection = "none" Then sLgContentFlexDirection = ""
 		sMdContentFlexDirection = Props.GetDefault("MdContentFlexDirection", "none")
-		sMdContentFlexDirection = modSD5.CStr(sMdContentFlexDirection)
+		sMdContentFlexDirection = UI.CStr(sMdContentFlexDirection)
 		If sMdContentFlexDirection = "none" Then sMdContentFlexDirection = ""
 		sMinHeight = Props.GetDefault("MinHeight", "56")
-		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
+		sMinWidth = UI.CStr(sMinWidth)
 		bOverlay = Props.GetDefault("Overlay", False)
-		bOverlay = modSD5.CBool(bOverlay)
+		bOverlay = UI.CBool(bOverlay)
 		sRawContentAttributes = Props.GetDefault("RawContentAttributes", "")
-		sRawContentAttributes = modSD5.CStr(sRawContentAttributes)
+		sRawContentAttributes = UI.CStr(sRawContentAttributes)
 		sRawContentClass = Props.GetDefault("RawContentClass", "")
-		sRawContentClass = modSD5.CStr(sRawContentClass)
+		sRawContentClass = UI.CStr(sRawContentClass)
 		sRawContentStyle = Props.GetDefault("RawContentStyle", "")
-		sRawContentStyle = modSD5.CStr(sRawContentStyle)
+		sRawContentStyle = UI.CStr(sRawContentStyle)
 		sSmContentFlexDirection = Props.GetDefault("SmContentFlexDirection", "none")
-		sSmContentFlexDirection = modSD5.CStr(sSmContentFlexDirection)
+		sSmContentFlexDirection = UI.CStr(sSmContentFlexDirection)
 		If sSmContentFlexDirection = "none" Then sSmContentFlexDirection = ""
 		'sTextColor = Props.GetDefault("TextColor", "")
-		'sTextColor = modSD5.CStr(sTextColor)
+		'sTextColor = UI.CStr(sTextColor)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sXlContentFlexDirection = Props.GetDefault("XlContentFlexDirection", "none")
-		sXlContentFlexDirection = modSD5.CStr(sXlContentFlexDirection)
+		sXlContentFlexDirection = UI.CStr(sXlContentFlexDirection)
 		If sXlContentFlexDirection = "none" Then sXlContentFlexDirection = ""
 		sXxlContentFlexDirection = Props.GetDefault("XxlContentFlexDirection", "none")
-		sXxlContentFlexDirection = modSD5.CStr(sXxlContentFlexDirection)
+		sXxlContentFlexDirection = UI.CStr(sXxlContentFlexDirection)
 		If sXxlContentFlexDirection = "none" Then sXxlContentFlexDirection = ""
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""        
 	End If
 	'

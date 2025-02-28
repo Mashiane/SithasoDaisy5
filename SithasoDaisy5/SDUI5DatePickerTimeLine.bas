@@ -85,12 +85,13 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	dates.Initialize 
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -99,7 +100,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -110,7 +111,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -236,47 +237,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sActiveDates = Props.GetDefault("ActiveDates", "")
-		sActiveDates = modSD5.CStr(sActiveDates)
+		sActiveDates = UI.CStr(sActiveDates)
 		sDateColor = Props.GetDefault("DateColor", "#000000")
-		sDateColor = modSD5.CStr(sDateColor)
+		sDateColor = UI.CStr(sDateColor)
 		sDateFontSize = Props.GetDefault("DateFontSize", "24px")
-		sDateFontSize = modSD5.CStr(sDateFontSize)
+		sDateFontSize = UI.CStr(sDateFontSize)
 		sDateFontWeight = Props.GetDefault("DateFontWeight", "medium")
-		sDateFontWeight = modSD5.CStr(sDateFontWeight)
+		sDateFontWeight = UI.CStr(sDateFontWeight)
 		sDayColor = Props.GetDefault("DayColor", "#000000")
-		sDayColor = modSD5.CStr(sDayColor)
+		sDayColor = UI.CStr(sDayColor)
 		sDayFontSize = Props.GetDefault("DayFontSize", "11px")
-		sDayFontSize = modSD5.CStr(sDayFontSize)
+		sDayFontSize = UI.CStr(sDayFontSize)
 		sDayFontWeight = Props.GetDefault("DayFontWeight", "medium")
-		sDayFontWeight = modSD5.CStr(sDayFontWeight)
+		sDayFontWeight = UI.CStr(sDayFontWeight)
 		sDaysCount = Props.GetDefault("DaysCount", "31")
-		sDaysCount = modSD5.CStr(sDaysCount)
+		sDaysCount = UI.CStr(sDaysCount)
 		sDeActivatedColor = Props.GetDefault("DeActivatedColor", "#666666")
-		sDeActivatedColor = modSD5.CStr(sDeActivatedColor)
+		sDeActivatedColor = UI.CStr(sDeActivatedColor)
 		sDirection = Props.GetDefault("Direction", "horizontal")
-		sDirection = modSD5.CStr(sDirection)
+		sDirection = UI.CStr(sDirection)
 		sHeight = Props.GetDefault("Height", "content")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sInActiveDates = Props.GetDefault("InActiveDates", "")
-		sInActiveDates = modSD5.CStr(sInActiveDates)
+		sInActiveDates = UI.CStr(sInActiveDates)
 		sInitialSelectedDate = Props.GetDefault("InitialSelectedDate", "")
-		sInitialSelectedDate = modSD5.CStr(sInitialSelectedDate)
+		sInitialSelectedDate = UI.CStr(sInitialSelectedDate)
 		sItemWidth = Props.GetDefault("ItemWidth", "80px")
-		sItemWidth = modSD5.CStr(sItemWidth)
+		sItemWidth = UI.CStr(sItemWidth)
 		sItemHeight = Props.GetDefault("ItemHeight", "80px")
-		sItemHeight = modSD5.CStr(sItemHeight)
+		sItemHeight = UI.CStr(sItemHeight)
 		sMonthColor = Props.GetDefault("MonthColor", "#000000")
-		sMonthColor = modSD5.CStr(sMonthColor)
+		sMonthColor = UI.CStr(sMonthColor)
 		sMonthFontSize = Props.GetDefault("MonthFontSize", "11px")
-		sMonthFontSize = modSD5.CStr(sMonthFontSize)
+		sMonthFontSize = UI.CStr(sMonthFontSize)
 		sMonthFontWeight = Props.GetDefault("MonthFontWeight", "medium")
-		sMonthFontWeight = modSD5.CStr(sMonthFontWeight)
+		sMonthFontWeight = UI.CStr(sMonthFontWeight)
 		sSelectedTextColor = Props.GetDefault("SelectedTextColor", "none")
-		sSelectedTextColor = modSD5.CStr(sSelectedTextColor)
+		sSelectedTextColor = UI.CStr(sSelectedTextColor)
 		sSelectionColor = Props.GetDefault("SelectionColor", "#30000000")
-		sSelectionColor = modSD5.CStr(sSelectionColor)
+		sSelectionColor = UI.CStr(sSelectionColor)
 		sWidth = Props.GetDefault("Width", "full")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	UI.AddClassDT("carousel rounded-box gap-1")
@@ -381,34 +382,34 @@ Sub setInitialSelectedDate(s As String)			'ignoredeadcode
 	CustProps.put("InitialSelectedDate", s)
 	If mElement = Null Then Return
 	dates.Initialize 
-	Dim iDaysCount As Int = modSD5.CInt(sDaysCount)
-	Dim nDate As String = modSD5.DateAdd(s, iDaysCount)
-	Dim aDates As List = modSD5.GetDatesBetween(s, nDate)
-	Dim itemW As String = modSD5.FixSize("w", sItemWidth)
-	Dim itemH As String = modSD5.FixSize("h", sItemHeight)
-	Dim monColor As String = modSD5.FixColor("text", sMonthColor)
-	Dim monSize As String = modSD5.FixSize("text", sMonthFontSize)
-	Dim monFont As String = modSD5.FixSize("font", sMonthFontWeight)
+	Dim iDaysCount As Int = UI.CInt(sDaysCount)
+	Dim nDate As String = UI.DateAdd(s, iDaysCount)
+	Dim aDates As List = UI.GetDatesBetween(s, nDate)
+	Dim itemW As String = UI.FixSize("w", sItemWidth)
+	Dim itemH As String = UI.FixSize("h", sItemHeight)
+	Dim monColor As String = UI.FixColor("text", sMonthColor)
+	Dim monSize As String = UI.FixSize("text", sMonthFontSize)
+	Dim monFont As String = UI.FixSize("font", sMonthFontWeight)
 	'
-	Dim dateColor As String = modSD5.FixColor("text", sDateColor)
-	Dim dateSize As String = modSD5.FixSize("text", sDateFontSize)
-	Dim dateFont As String = modSD5.FixSize("font", sDateFontWeight)
+	Dim dateColor As String = UI.FixColor("text", sDateColor)
+	Dim dateSize As String = UI.FixSize("text", sDateFontSize)
+	Dim dateFont As String = UI.FixSize("font", sDateFontWeight)
 	'
-	Dim dayColor As String = modSD5.FixColor("text", sDayColor)
-	Dim daySize As String = modSD5.FixSize("text", sDayFontSize)
-	Dim dayFont As String = modSD5.FixSize("font", sDayFontWeight)
+	Dim dayColor As String = UI.FixColor("text", sDayColor)
+	Dim daySize As String = UI.FixSize("text", sDayFontSize)
+	Dim dayFont As String = UI.FixSize("font", sDayFontWeight)
 	'
-	Dim hColor As String = modSD5.FixColor("bg", sSelectionColor)
+	Dim hColor As String = UI.FixColor("bg", sSelectionColor)
 	
 	Dim sb As StringBuilder
 	sb.Initialize 
 	For Each sDate As String In aDates
 		dates.Put(sDate, sDate)
-		Dim monthName As String = modSD5.MvField(sDate,2,"-")
-		monthName = modSD5.GetMonthName3(monthName)
-		Dim dateName As String = modSD5.MvField(sDate,3,"-")
-		Dim dayName As String = modSD5.FormatDisplayDate(sDate, "dddd")
-		dayName = modSD5.Left1(dayName, 3)
+		Dim monthName As String = UI.MvField(sDate,2,"-")
+		monthName = UI.GetMonthName3(monthName)
+		Dim dateName As String = UI.MvField(sDate,3,"-")
+		Dim dayName As String = UI.FormatDisplayDate(sDate, "dddd")
+		dayName = UI.Left1(dayName, 3)
 		Dim block As String = $"[BANCLEAN]
 		<div id="item_${sDate}" class="carousel-item ${itemW} ${itemH} hover:${hColor} cursor-pointer rounded-box border items-center justify-center">
     		<div id="host_${sDate}" class="flex flex-col items-center justify-center gap-1">
@@ -439,7 +440,7 @@ End Sub
 
 private Sub dateselected(e As BANanoEvent)					'ignoredeadcode
 	e.PreventDefault
-	Dim xitem As String = modSD5.MvField(e.ID, 2, "_")
+	Dim xitem As String = UI.MvField(e.ID, 2, "_")
 	BANano.Await(UI.EnsureVisible($"item_${xitem}"$))
 	BANano.Await(MarkSelected(xitem))
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(xitem))

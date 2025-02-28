@@ -53,11 +53,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -76,7 +77,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -194,19 +195,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-start")
-		sIndicatorPosition = modSD5.CStr(sIndicatorPosition)
+		sIndicatorPosition = UI.CStr(sIndicatorPosition)
 		bIndicatorItem = Props.GetDefault("IndicatorItem", False)
-		bIndicatorItem = modSD5.CBool(bIndicatorItem)
+		bIndicatorItem = UI.CBool(bIndicatorItem)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	UI.AddClassDT("status")
@@ -264,8 +265,8 @@ Sub setIndicatorPosition(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If bIndicatorItem = False Then Return
 	'bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
-	Dim fpart As String = modSD5.mvfield(s,1,"-")
-	Dim spart As String = modSD5.mvfield(s,2,"-")
+	Dim fpart As String = UI.mvfield(s,1,"-")
+	Dim spart As String = UI.mvfield(s,2,"-")
 	UI.UpdateClass(mElement, "statusposition", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Item

@@ -13,14 +13,14 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: CheckedIcon, DisplayName: Checked Icon, FieldType: String, DefaultValue: , Description: Checked Icon
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
+#DesignerProperty: Key: UncheckedIcon, DisplayName: Un-Checked Icon, FieldType: String, DefaultValue: , Description: UnChecked Icon
+#DesignerProperty: Key: UncheckedColor, DisplayName: Un-Checked Color, FieldType: String, DefaultValue: , Description: UnChecked Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
-#DesignerProperty: Key: OffIcon, DisplayName: Off Icon, FieldType: String, DefaultValue: , Description: Off Icon
-#DesignerProperty: Key: OnIcon, DisplayName: On Icon, FieldType: String, DefaultValue: , Description: On Icon
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
-#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
-#DesignerProperty: Key: UncheckedColor, DisplayName: Unchecked Color, FieldType: String, DefaultValue: , Description: Unchecked Color
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -54,28 +54,29 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private bChecked As Boolean = False
-	Private sCheckedColor As String = ""
 	Private sColor As String = "none"
 	Private sHint As String = ""
 	Private bIndeterminate As Boolean = False
 	Private sLabel As String = "Turn On"
 	Private sLegend As String = "Toggle"
-	Private sOffIcon As String = ""
-	Private sOnIcon As String = ""
 	Private bRequired As Boolean = False
 	Private sSize As String = "none"
-	Private sUncheckedColor As String = ""
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sToggleType As String = "normal"
+	Private sCheckedColor As String = ""
+	Private sCheckedIcon As String = ""
+	Private sUncheckedColor As String = ""
+	Private sUncheckedIcon As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -84,7 +85,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -95,7 +96,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -225,39 +226,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bChecked = Props.GetDefault("Checked", False)
-		bChecked = modSD5.CBool(bChecked)
+		bChecked = UI.CBool(bChecked)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
-		sCheckedColor = modSD5.CStr(sCheckedColor)
+		sCheckedColor = UI.CStr(sCheckedColor)
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		sHint = Props.GetDefault("Hint", "")
-		sHint = modSD5.CStr(sHint)
+		sHint = UI.CStr(sHint)
 		bIndeterminate = Props.GetDefault("Indeterminate", False)
-		bIndeterminate = modSD5.CBool(bIndeterminate)
+		bIndeterminate = UI.CBool(bIndeterminate)
 		sLabel = Props.GetDefault("Label", "Turn On")
-		sLabel = modSD5.CStr(sLabel)
+		sLabel = UI.CStr(sLabel)
 		sLegend = Props.GetDefault("Legend", "Toggle")
-		sLegend = modSD5.CStr(sLegend)
-		sOffIcon = Props.GetDefault("OffIcon", "")
-		sOffIcon = modSD5.CStr(sOffIcon)
-		sOnIcon = Props.GetDefault("OnIcon", "")
-		sOnIcon = modSD5.CStr(sOnIcon)
+		sLegend = UI.CStr(sLegend)
 		bRequired = Props.GetDefault("Required", False)
-		bRequired = modSD5.CBool(bRequired)
+		bRequired = UI.CBool(bRequired)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sUncheckedColor = Props.GetDefault("UncheckedColor", "")
-		sUncheckedColor = modSD5.CStr(sUncheckedColor)
+		sUncheckedColor = UI.CStr(sUncheckedColor)
 		bValidator = Props.GetDefault("Validator", False)
-		bValidator = modSD5.CBool(bValidator)
+		bValidator = UI.CBool(bValidator)
 		sValidatorHint = Props.GetDefault("ValidatorHint", "")
-		sValidatorHint = modSD5.CStr(sValidatorHint)
+		sValidatorHint = UI.CStr(sValidatorHint)
 		sToggleType = Props.GetDefault("ToggleType", "normal")
-		sToggleType = modSD5.CStr(sToggleType)
+		sToggleType = UI.CStr(sToggleType)
+		sCheckedIcon = Props.GetDefault("CheckedIcon", "")
+		sCheckedIcon = UI.CStr(sCheckedIcon)
+		sUncheckedIcon = Props.GetDefault("UncheckedIcon", "")
+		sUncheckedIcon = UI.CStr(sUncheckedIcon)
 	End If
-	'
 	
 	If sParentID <> "" Then
 		'does the parent exist
@@ -311,6 +311,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setCheckedColor(sCheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+Sub Focus
+	Try
+		If mElement = Null Then Return
+		mElement.RunMethod("focus", Null)
+	Catch
+	End Try			'ignore
 End Sub
 
 private Sub changed(e As BANanoEvent)				'ignoredeadcode
@@ -388,20 +396,6 @@ Sub setLegend(s As String)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_legend"$, s)
 End Sub
-'set Off Icon
-Sub setOffIcon(s As String)
-	sOffIcon = s
-	CustProps.put("OffIcon", s)
-	If mElement = Null Then Return
-'	If s <> "" Then UI.SetAttr(mElement, "off-icon", s)
-End Sub
-'set On Icon
-Sub setOnIcon(s As String)
-	sOnIcon = s
-	CustProps.put("OnIcon", s)
-	If mElement = Null Then Return
-'	If s <> "" Then UI.SetAttr(mElement, "on-icon", s)
-End Sub
 'set Required
 Sub setRequired(b As Boolean)			'ignoredeadcode
 	bRequired = b
@@ -476,14 +470,6 @@ End Sub
 Sub getLegend As String
 	Return sLegend
 End Sub
-'get Off Icon
-Sub getOffIcon As String
-	Return sOffIcon
-End Sub
-'get On Icon
-Sub getOnIcon As String
-	Return sOnIcon
-End Sub
 'get Required
 Sub getRequired As Boolean
 	Return bRequired
@@ -508,7 +494,7 @@ End Sub
 'run validation
 Sub IsBlank As Boolean
 	Dim v As Boolean = getChecked
-	v = modSD5.CBool(v)
+	v = UI.CBool(v)
 	If v = False Then
 		setColor("error")
 		Return True

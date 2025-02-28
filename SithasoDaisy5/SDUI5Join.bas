@@ -44,11 +44,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -67,7 +68,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -111,27 +112,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sDirection = Props.GetDefault("Direction", "none")
-		sDirection = modSD5.CStr(sDirection)
+		sDirection = UI.CStr(sDirection)
 		If sDirection = "none" Then sDirection = ""
 		sDirectionOnLg = Props.GetDefault("DirectionOnLg", "none")
-		sDirectionOnLg = modSD5.CStr(sDirectionOnLg)
+		sDirectionOnLg = UI.CStr(sDirectionOnLg)
 		If sDirectionOnLg = "none" Then sDirectionOnLg = ""
 		sDirectionOnMd = Props.GetDefault("DirectionOnMd", "none")
-		sDirectionOnMd = modSD5.CStr(sDirectionOnMd)
+		sDirectionOnMd = UI.CStr(sDirectionOnMd)
 		If sDirectionOnMd = "none" Then sDirectionOnMd = ""
 		sDirectionOnSm = Props.GetDefault("DirectionOnSm", "none")
-		sDirectionOnSm = modSD5.CStr(sDirectionOnSm)
+		sDirectionOnSm = UI.CStr(sDirectionOnSm)
 		If sDirectionOnSm = "none" Then sDirectionOnSm = ""
 		sDirectionOnXl = Props.GetDefault("DirectionOnXl", "none")
-		sDirectionOnXl = modSD5.CStr(sDirectionOnXl)
+		sDirectionOnXl = UI.CStr(sDirectionOnXl)
 		If sDirectionOnXl = "none" Then sDirectionOnXl = ""
 		sDirectionOnXxl = Props.GetDefault("DirectionOnXxl", "none")
-		sDirectionOnXxl = modSD5.CStr(sDirectionOnXxl)
+		sDirectionOnXxl = UI.CStr(sDirectionOnXxl)
 		If sDirectionOnXxl = "none" Then sDirectionOnXxl = ""
 		bGrid = Props.GetDefault("Grid", False)
-		bGrid = modSD5.CBool(bGrid)
+		bGrid = UI.CBool(bGrid)
 		sGridCols = Props.GetDefault("GridCols", "")
-		sGridCols = modSD5.CStr(sGridCols)        
+		sGridCols = UI.CStr(sGridCols)        
 	End If
 	'
 	UI.AddClassDT("join")

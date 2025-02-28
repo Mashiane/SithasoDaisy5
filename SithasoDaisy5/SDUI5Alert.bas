@@ -78,11 +78,11 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
-	mCallBack = Callback
-	CustProps.Initialize
 	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
+	mCallBack = Callback
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -101,7 +101,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -237,34 +237,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		sAlignment = Props.GetDefault("Alignment", "")
-		sAlignment = modSD5.CStr(sAlignment)
+		sAlignment = UI.CStr(sAlignment)
 		If sAlignment = "none" Then sAlignment = ""
 		sColor = Props.GetDefault("Color", "none")
-		sColor = modSD5.CStr(sColor)
+		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
 		bDash = Props.GetDefault("Dash", False)
-		bDash = modSD5.CBool(bDash)
+		bDash = UI.CBool(bDash)
 		sIcon = Props.GetDefault("Icon", "")
-		sIcon = modSD5.CStr(sIcon)
+		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
-		sIconColor = modSD5.CStr(sIconColor)
+		sIconColor = UI.CStr(sIconColor)
 		bOutline = Props.GetDefault("Outline", False)
-		bOutline = modSD5.CBool(bOutline)
+		bOutline = UI.CBool(bOutline)
 		sSize = Props.GetDefault("Size", "none")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
-		bSoft = modSD5.CBool(bSoft)
+		bSoft = UI.CBool(bSoft)
 		sTitle = Props.GetDefault("Title", "")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sIconSize = Props.GetDefault("IconSize", "16px")
-		sIconSize = modSD5.CStr(sIconSize)
+		sIconSize = UI.CStr(sIconSize)
 		bHasActions = Props.GetDefault("HasActions", False)
-		bHasActions = modSD5.CBool(bHasActions)
+		bHasActions = UI.CBool(bHasActions)
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "96")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	If sParentID <> "" Then

@@ -107,11 +107,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -130,7 +131,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -267,71 +268,71 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlignContent = Props.GetDefault("AlignContent", "none")
-		sAlignContent = modSD5.CStr(sAlignContent)
+		sAlignContent = UI.CStr(sAlignContent)
 		If sAlignContent = "none" Then sAlignContent = ""
 		sAlignItems = Props.GetDefault("AlignItems", "none")
-		sAlignItems = modSD5.CStr(sAlignItems)
+		sAlignItems = UI.CStr(sAlignItems)
 		If sAlignItems = "none" Then sAlignItems = ""
 		sAlignSelf = Props.GetDefault("AlignSelf", "none")
-		sAlignSelf = modSD5.CStr(sAlignSelf)
+		sAlignSelf = UI.CStr(sAlignSelf)
 		If sAlignSelf = "none" Then sAlignSelf = ""
 		sJustifyContent = Props.GetDefault("JustifyContent", "none")
-		sJustifyContent = modSD5.CStr(sJustifyContent)
+		sJustifyContent = UI.CStr(sJustifyContent)
 		If sJustifyContent = "none" Then sJustifyContent = ""
 		sJustifyItems = Props.GetDefault("JustifyItems", "none")
-		sJustifyItems = modSD5.CStr(sJustifyItems)
+		sJustifyItems = UI.CStr(sJustifyItems)
 		If sJustifyItems = "none" Then sJustifyItems = ""
 		sJustifySelf = Props.GetDefault("JustifySelf", "none")
-		sJustifySelf = modSD5.CStr(sJustifySelf)
+		sJustifySelf = UI.CStr(sJustifySelf)
 		If sJustifySelf = "none" Then sJustifySelf = ""
 		sPlaceContent = Props.GetDefault("PlaceContent", "none")
-		sPlaceContent = modSD5.CStr(sPlaceContent)
+		sPlaceContent = UI.CStr(sPlaceContent)
 		If sPlaceContent = "none" Then sPlaceContent = ""
 		sPlaceItems = Props.GetDefault("PlaceItems", "none")
-		sPlaceItems = modSD5.CStr(sPlaceItems)
+		sPlaceItems = UI.CStr(sPlaceItems)
 		If sPlaceItems = "none" Then sPlaceItems = ""
 		sPlaceSelf = Props.GetDefault("PlaceSelf", "none")
-		sPlaceSelf = modSD5.CStr(sPlaceSelf)
+		sPlaceSelf = UI.CStr(sPlaceSelf)
 		If sPlaceSelf = "none" Then sPlaceSelf = ""
 		sHeight = Props.GetDefault("Height", "")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sOffsetLg = Props.GetDefault("OffsetLg", "")
-		sOffsetLg = modSD5.CStr(sOffsetLg)
+		sOffsetLg = UI.CStr(sOffsetLg)
 		sOffsetMd = Props.GetDefault("OffsetMd", "")
-		sOffsetMd = modSD5.CStr(sOffsetMd)
+		sOffsetMd = UI.CStr(sOffsetMd)
 		sOffsetSm = Props.GetDefault("OffsetSm", "")
-		sOffsetSm = modSD5.CStr(sOffsetSm)
+		sOffsetSm = UI.CStr(sOffsetSm)
 		sOffsetXl = Props.GetDefault("OffsetXl", "")
-		sOffsetXl = modSD5.CStr(sOffsetXl)
+		sOffsetXl = UI.CStr(sOffsetXl)
 		sOrder = Props.GetDefault("Order", "")
-		sOrder = modSD5.CStr(sOrder)
+		sOrder = UI.CStr(sOrder)
 		sSize = Props.GetDefault("Size", "12")
-		sSize = modSD5.CStr(sSize)
+		sSize = UI.CStr(sSize)
 		sSizeLg = Props.GetDefault("SizeLg", "")
-		sSizeLg = modSD5.CStr(sSizeLg)
+		sSizeLg = UI.CStr(sSizeLg)
 		sSizeMd = Props.GetDefault("SizeMd", "")
-		sSizeMd = modSD5.CStr(sSizeMd)
+		sSizeMd = UI.CStr(sSizeMd)
 		sSizeSm = Props.GetDefault("SizeSm", "")
-		sSizeSm = modSD5.CStr(sSizeSm)
+		sSizeSm = UI.CStr(sSizeSm)
 		sSizeXl = Props.GetDefault("SizeXl", "")
-		sSizeXl = modSD5.CStr(sSizeXl)
+		sSizeXl = UI.CStr(sSizeXl)
 		sSizeXxl = Props.GetDefault("SizeXxl", "")
-		sSizeXxl = modSD5.CStr(sSizeXxl)
+		sSizeXxl = UI.CStr(sSizeXxl)
 		sWidth = Props.GetDefault("Width", "")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		sOffsetXxl = Props.GetDefault("OffsetXxl", "")
-		sOffsetXxl = modSD5.CStr(sOffsetXxl)
+		sOffsetXxl = UI.CStr(sOffsetXxl)
 		sRounded = Props.GetDefault("Rounded", "none")
-		sRounded = modSD5.CStr(sRounded)
+		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTextAlign = Props.GetDefault("TextAlign", "none")
-		sTextAlign = modSD5.CStr(sTextAlign)
+		sTextAlign = UI.CStr(sTextAlign)
 		If sTextAlign = "none" Then sTextAlign = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
-		bCenterChildren = modSD5.CBool(bCenterChildren)
+		bCenterChildren = UI.CBool(bCenterChildren)
 	End If
 	'
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
@@ -357,11 +358,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sSizeSm <> "" Then UI.AddClassDT("sm:col-span-" & sSizeSm)
 	If sSizeXl <> "" Then UI.AddClassDT("xl:col-span-" & sSizeXl)
 	If sSizeXxl <> "" Then UI.AddClassDT("xxl:col-span-" & sSizeXxl)
-	If sOffsetLg <> "" Then UI.AddClassDT("lg:" & modSD5.FixOffset(sOffsetLg))
-	If sOffsetMd <> "" Then UI.AddClassDT("md:" & modSD5.FixOffset(sOffsetMd))
-	If sOffsetSm <> "" Then UI.AddClassDT("sm:" & modSD5.FixOffset(sOffsetSm))
-	If sOffsetXl <> "" Then UI.AddClassDT("xl:" & modSD5.FixOffset(sOffsetXl))
-	If sOffsetXxl <> "" Then UI.AddClassDT("xxl:" & modSD5.FixOffset(sOffsetXxl))
+	If sOffsetLg <> "" Then UI.AddClassDT("lg:" & UI.FixOffset(sOffsetLg))
+	If sOffsetMd <> "" Then UI.AddClassDT("md:" & UI.FixOffset(sOffsetMd))
+	If sOffsetSm <> "" Then UI.AddClassDT("sm:" & UI.FixOffset(sOffsetSm))
+	If sOffsetXl <> "" Then UI.AddClassDT("xl:" & UI.FixOffset(sOffsetXl))
+	If sOffsetXxl <> "" Then UI.AddClassDT("xxl:" & UI.FixOffset(sOffsetXxl))
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -519,28 +520,28 @@ Sub setOffsetLg(s As String)
 	sOffsetLg = s
 	CustProps.put("OffsetLg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "lg:" & modSD5.FixOffset(s))
+	If s <> "" Then UI.AddClass(mElement, "lg:" & UI.FixOffset(s))
 End Sub
 'set Offset Md
 Sub setOffsetMd(s As String)
 	sOffsetMd = s
 	CustProps.put("OffsetMd", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "md:" & modSD5.FixOffset(s))
+	If s <> "" Then UI.AddClass(mElement, "md:" & UI.FixOffset(s))
 End Sub
 'set Offset Sm
 Sub setOffsetSm(s As String)
 	sOffsetSm = s
 	CustProps.put("OffsetSm", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "sm:" & modSD5.FixOffset(s))
+	If s <> "" Then UI.AddClass(mElement, "sm:" & UI.FixOffset(s))
 End Sub
 'set Offset Xl
 Sub setOffsetXl(s As String)
 	sOffsetXl = s
 	CustProps.put("OffsetXl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "xl:" & modSD5.FixOffset(s))
+	If s <> "" Then UI.AddClass(mElement, "xl:" & UI.FixOffset(s))
 End Sub
 '
 'set Offset XXl
@@ -548,7 +549,7 @@ Sub setOffsetXxl(s As String)
 	sOffsetXxl = s
 	CustProps.put("OffsetXxl", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "xxl:" & modSD5.FixOffset(s))
+	If s <> "" Then UI.AddClass(mElement, "xxl:" & UI.FixOffset(s))
 End Sub
 
 Sub getOffsetXxl As String
@@ -762,7 +763,7 @@ End Sub
 
 Sub Clear			
 	If mElement = Null Then Return
-	UI.Clear(mElement)
+	mElement.empty
 End Sub
 
 Sub Append(s As String)

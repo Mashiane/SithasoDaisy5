@@ -102,11 +102,12 @@ Private Sub Class_Globals
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = CallBack
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 	propBagKeys.Initialize
 	propBagValues.Initialize
 	Types.Initialize
@@ -138,7 +139,7 @@ End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
-	sParentID = modSD5.CleanID(sParentID)
+	sParentID = UI.CleanID(sParentID)
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
@@ -150,7 +151,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -285,37 +286,37 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sButtonSize = Props.GetDefault("ButtonSize", "sm")
-		sButtonSize = modSD5.CStr(sButtonSize)
+		sButtonSize = UI.CStr(sButtonSize)
 		bButtonsOutlined = Props.GetDefault("ButtonsOutlined", False)
-		bButtonsOutlined = modSD5.CBool(bButtonsOutlined)
+		bButtonsOutlined = UI.CBool(bButtonsOutlined)
 		sComponentSize = Props.GetDefault("ComponentSize", "sm")
-		sComponentSize = modSD5.CStr(sComponentSize)
+		sComponentSize = UI.CStr(sComponentSize)
 		bIncludeProjectName = Props.GetDefault("IncludeProjectName", False)
-		bIncludeProjectName = modSD5.CBool(bIncludeProjectName)
+		bIncludeProjectName = UI.CBool(bIncludeProjectName)
 		bIncludeViewName = Props.GetDefault("IncludeViewName", False)
-		bIncludeViewName = modSD5.CBool(bIncludeViewName)
+		bIncludeViewName = UI.CBool(bIncludeViewName)
 		bIsZebra = Props.GetDefault("IsZebra", False)
-		bIsZebra = modSD5.CBool(bIsZebra)
+		bIsZebra = UI.CBool(bIsZebra)
 		sPropertyPadding = Props.GetDefault("PropertyPadding", "py-1")
-		sPropertyPadding = modSD5.CStr(sPropertyPadding)
+		sPropertyPadding = UI.CStr(sPropertyPadding)
 		sSearchSize = Props.GetDefault("SearchSize", "sm")
-		sSearchSize = modSD5.CStr(sSearchSize)
+		sSearchSize = UI.CStr(sSearchSize)
 		bSearchVisible = Props.GetDefault("SearchVisible", True)
-		bSearchVisible = modSD5.CBool(bSearchVisible)
+		bSearchVisible = UI.CBool(bSearchVisible)
 		sSearchWidth = Props.GetDefault("SearchWidth", "300px")
-		sSearchWidth = modSD5.CStr(sSearchWidth)
+		sSearchWidth = UI.CStr(sSearchWidth)
 		sTitle = Props.GetDefault("Title", "Property Bag")
-		sTitle = modSD5.CStr(sTitle)
+		sTitle = UI.CStr(sTitle)
 		sTooltipColor = Props.GetDefault("TooltipColor", "none")
-		sTooltipColor = modSD5.CStr(sTooltipColor)
+		sTooltipColor = UI.CStr(sTooltipColor)
 		If sTooltipColor = "none" Then sTooltipColor = ""
 		bWrapActions = Props.GetDefault("WrapActions", True)
-		bWrapActions = modSD5.CBool(bWrapActions)
+		bWrapActions = UI.CBool(bWrapActions)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "right")
-		sTooltipPosition = modSD5.CStr(sTooltipPosition)
+		sTooltipPosition = UI.CStr(sTooltipPosition)
 	End If
 	'
 	UI.AddClassDT("card-border card w-full bg-base-100")
@@ -656,13 +657,13 @@ End Sub
 '		Dim sproptitle As String = record.get("proptitle")
 '		Dim spropvalue As String = record.get("propvalue")
 '		Dim sproprequired As Boolean = record.get("proprequired")
-'		sproprequired = modSD5.CBool(sproprequired)
+'		sproprequired = UI.CBool(sproprequired)
 '		Dim spropreadonly As Boolean = record.get("propreadonly")
-'		spropreadonly = modSD5.CBool(spropreadonly)
+'		spropreadonly = UI.CBool(spropreadonly)
 '		Dim spropenabled As String = record.get("propenabled")
-'		spropenabled = modSD5.CBool(spropenabled)
+'		spropenabled = UI.CBool(spropenabled)
 '		Dim spropvisible As String = record.get("propvisible")
-'		spropvisible = modSD5.CBool(spropvisible)
+'		spropvisible = UI.CBool(spropvisible)
 '		Dim spropoptions As String = record.get("propoptions")
 '		Dim spropsize As String = record.get("propsize")
 '		Dim spropwidth As String = record.get("propwidth")
@@ -681,45 +682,45 @@ End Sub
 '		Dim sproplocale As String = record.Get("proplocale")
 '		Dim spropprefix As String = record.get("propprefix")
 '		Dim spropicon As String = record.get("propicon")
-'		spropicon = modSD5.CStr(spropicon)
+'		spropicon = UI.CStr(spropicon)
 '		Dim sPropBadgeTextColor As String = record.GetDefault("propbadgetextcolor", "")
-'		sPropBadgeTextColor = modSD5.CStr(sPropBadgeTextColor)
+'		sPropBadgeTextColor = UI.CStr(sPropBadgeTextColor)
 '		'
 '		Dim bPropBadgeRound As Boolean = record.GetDefault("propbadgeround", False)
-'		bPropBadgeRound = modSD5.CBool(bPropBadgeRound)
+'		bPropBadgeRound = UI.CBool(bPropBadgeRound)
 '		Dim sPropBadgeValue As String = record.GetDefault("propbadgevalue", "")
-'		sPropBadgeValue = modSD5.CStr(sPropBadgeValue)
+'		sPropBadgeValue = UI.CStr(sPropBadgeValue)
 '		Dim sPropHintId As String = record.getDefault("prophintid", "")
-'		sPropHintId = modSD5.CStr(sPropHintId)
+'		sPropHintId = UI.CStr(sPropHintId)
 '		Dim bPropMultiple As Boolean = record.GetDefault("propmultiple", False)
-'		bPropMultiple = modSD5.CBool(bPropMultiple)
+'		bPropMultiple = UI.CBool(bPropMultiple)
 '		Dim bPropSetHint As Boolean = record.getdefault("propsethint", False)
-'		bPropSetHint = modSD5.CBool(bPropSetHint)
+'		bPropSetHint = UI.CBool(bPropSetHint)
 '		Dim bPropSetTooltip As Boolean = record.GetDefault("propsettooltip", False)
-'		bPropSetTooltip = modSD5.CBool(bPropSetTooltip)
+'		bPropSetTooltip = UI.CBool(bPropSetTooltip)
 '		Dim sPropTextColor As String = record.GetDefault("proptextcolor", "")
-'		sPropTextColor = modSD5.CStr(sPropTextColor)
+'		sPropTextColor = UI.CStr(sPropTextColor)
 '		Dim sPropBadgeColor As String = record.GetDefault("propbadgecolor", "")
-'		sPropBadgeColor = modSD5.CStr(sPropBadgeColor)
+'		sPropBadgeColor = UI.CStr(sPropBadgeColor)
 '		Dim bPropSetBadge As Boolean = record.getdefault("propsetbadge", False)
-'		bPropSetBadge = modSD5.CBool(bPropSetBadge)
+'		bPropSetBadge = UI.CBool(bPropSetBadge)
 '		'
-'		spropprefix = modSD5.CStr(spropprefix)
+'		spropprefix = UI.CStr(spropprefix)
 '		Dim spropsuffix As String = record.get("propsuffix")
-'		spropsuffix = modSD5.CStr(spropsuffix)
+'		spropsuffix = UI.CStr(spropsuffix)
 '		Dim spropprepend As String = record.get("propprepend")
-'		spropprepend = modSD5.CStr(spropprepend)
+'		spropprepend = UI.CStr(spropprepend)
 '		Dim spropappend As String = record.get("propappend")
-'		spropappend = modSD5.CStr(spropappend)
-'		sproplocale = modSD5.CStr(sproplocale)
+'		spropappend = UI.CStr(spropappend)
+'		sproplocale = UI.CStr(sproplocale)
 '		If sproplocale = "" Then sproplocale = "en"
 '		'
 '		Dim spropmaxlen As String = record.getdefault("propmaxlen","")
-'		spropmaxlen = modSD5.CStr(spropmaxlen)
+'		spropmaxlen = UI.CStr(spropmaxlen)
 '		Dim sproprows As String = record.getdefault("proprows","")
-'		sproprows = modSD5.CStr(sproprows)
+'		sproprows = UI.CStr(sproprows)
 '		Dim spropalign As String = record.GetDefault("propalign", "left")
-'		spropalign = modSD5.CStr(spropalign)
+'		spropalign = UI.CStr(spropalign)
 '		'
 '		Select Case sproptype
 '			Case "ToolbarActionButton"
@@ -882,7 +883,7 @@ End Sub
 '					PropertyBuilder.Append($"${mName}.AddPropertyLink("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
 '				End If
 '			Case "DateTimePicker"
-'				sproptime24 = modSD5.CBool(sproptime24)
+'				sproptime24 = UI.CBool(sproptime24)
 '				AddPropertyDateTimePicker(spropname, sproptitle,spropvalue,spropdesc,sproprequired,sproptooltippos,spropdateformat,spropdisplayformat,sproptime24)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropdateformat}", "${spropdisplayformat}", ${sproptime24})"$).Append(CRLF)
@@ -893,7 +894,7 @@ End Sub
 '					PropertyBuilder.Append($"${mName}.AddPropertyDatePicker1("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}")"$).Append(CRLF)
 '				End If
 '			Case "TimePicker"
-'				sproptime24 = modSD5.CBool(sproptime24)
+'				sproptime24 = UI.CBool(sproptime24)
 '				AddPropertyTimePicker(spropname, sproptitle,spropvalue,spropdesc,sproprequired,sproptooltippos,sproptime24)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddPropertyTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}", ${sproptime24})"$).Append(CRLF)
@@ -999,10 +1000,10 @@ End Sub
 '				AddPropertyColor(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyColor("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
 '			Case "Number"
-'				spropvalue = modSD5.Val(spropvalue)
-'				spropstart = modSD5.CInt(spropstart)
-'				spropstep = modSD5.CInt(spropstep)
-'				spropmax = modSD5.CInt(spropmax)
+'				spropvalue = UI.Val(spropvalue)
+'				spropstart = UI.CInt(spropstart)
+'				spropstep = UI.CInt(spropstep)
+'				spropmax = UI.CInt(spropmax)
 '				AddPropertyNumber(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyNumber("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
 '				If BANano.parseInt(spropmax) > 0 Then
@@ -1054,17 +1055,17 @@ End Sub
 '				AddPropertyAvatarPlaceholder(spropname, sproptitle, spropvalue, spropdesc, spropsize, spropshape, spropcolor)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatarPlaceholder("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", "${spropsize}", "${spropshape}", "${spropcolor}")"$).Append(CRLF)
 '			Case "AvatarGroup"
-'				Dim imags As List = modSD5.StrParse(";", spropoptions)
-'				Dim simgs As String = modSD5.JoinQuote(";", imags)
+'				Dim imags As List = UI.StrParse(";", spropoptions)
+'				Dim simgs As String = UI.JoinQuote(";", imags)
 '				AddPropertyAvatarGroup(spropname, sproptitle, spropdesc, spropsize, spropshape, imags)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatarGroup("${spropname}", "${sproptitle}", "${spropdesc}", "${spropsize}", "${spropshape}", Array(${simgs}))"$).Append(CRLF)
 '			Case "Signature"
 '				AddPropertySignaturePad(spropname, sproptitle, spropdesc, sproprequired, sproptooltippos, spropwidth, spropheight, "jpeg")
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySignaturePad("${spropname}", "${sproptitle}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropwidth}", "${spropheight}", "jpeg")"$).Append(CRLF)
 '			Case "RollDate"
-'				spropstart = modSD5.CInt(spropstart)
-'				spropstep = modSD5.CInt(spropstep)
-'				spropmax = modSD5.CInt(spropmax)
+'				spropstart = UI.CInt(spropstart)
+'				spropstep = UI.CInt(spropstep)
+'				spropmax = UI.CInt(spropmax)
 '				'
 '				Dim d1Options As RollDateOptions
 '				d1Options.Initialize
@@ -1088,28 +1089,28 @@ End Sub
 '				AddPropertyImage(spropname, sproptitle, spropdesc, spropwidth, spropheight, spropshape, spropurl)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyImage("${spropname}", "${sproptitle}", "${spropdesc}", "${spropwidth}", "${spropheight}", "${spropshape}", "${spropurl}")"$).Append(CRLF)
 '			Case "Progress"
-'				spropvalue = modSD5.cint(spropvalue)
+'				spropvalue = UI.cint(spropvalue)
 '				AddPropertyProgress(spropname, sproptitle, spropvalue, spropcolor, spropstart, spropstep, spropmax,spropdesc, sproptooltippos)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyProgress("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}", "${spropdesc}", "${sproptooltippos}")"$).Append(CRLF)
 '			Case "Range"
-'				spropvalue = modSD5.CInt(spropvalue)
+'				spropvalue = UI.CInt(spropvalue)
 '				AddPropertyRange(spropname,sproptitle, spropvalue,spropcolor, spropstart, spropstep, spropmax, spropdesc, sproptooltippos)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRange("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}", "${spropdesc}", "${sproptooltippos}")"$).Append(CRLF)
 '			Case "Dialer"
-'				spropvalue = modSD5.CInt(spropvalue)
-'				spropstart = modSD5.CInt(spropstart)
-'				spropstep = modSD5.CInt(spropstep)
-'				spropmax = modSD5.CInt(spropmax)
+'				spropvalue = UI.CInt(spropvalue)
+'				spropstart = UI.CInt(spropstart)
+'				spropstep = UI.CInt(spropstep)
+'				spropmax = UI.CInt(spropmax)
 '				AddPropertyDialer(spropname,sproptitle, spropvalue,spropdesc, sproprequired, sproptooltippos, spropstart, spropstep, spropmax)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyDialer("${spropname}", "${sproptitle}", ${spropvalue}, "${spropdesc}", ${sproprequired}, "${sproptooltippos}", ${spropstart}, ${spropstep}, ${spropmax})"$).Append(CRLF)
 '			Case "CheckBox"
-'				spropvalue = modSD5.CBool(spropvalue)
+'				spropvalue = UI.CBool(spropvalue)
 '				AddPropertyCheckBox(spropname, sproptitle, spropvalue, spropcolor, spropdesc)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
 '				SetPropertyChecked(spropname, spropvalue)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
 '			Case "Toggle"
-'				spropvalue = modSD5.CBool(spropvalue)
+'				spropvalue = UI.CBool(spropvalue)
 '				AddPropertyToggle(spropname, sproptitle, spropvalue, spropcolor, spropdesc)
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
 '				SetPropertyChecked(spropname, spropvalue)
@@ -1197,8 +1198,8 @@ End Sub
 'convert multi value string to options
 private Sub OptionsToMap(opt As String) As Map
 	opt = opt.replace("|", ";")
-	Dim litems As List = modSD5.StrParse(";", opt)
-	litems = modSD5.ListTrimItems(litems)
+	Dim litems As List = UI.StrParse(";", opt)
+	litems = UI.ListTrimItems(litems)
 	Dim m As Map = CreateMap()
 	For Each item As String In litems
 		item = item.Trim
@@ -1207,9 +1208,9 @@ private Sub OptionsToMap(opt As String) As Map
 		If hascolon = -1 Then
 			m.Put(item, item)
 		Else
-			Dim fpart As String = modSD5.MvField(item, 1, ":")
+			Dim fpart As String = UI.MvField(item, 1, ":")
 			fpart = fpart.Trim
-			Dim spart As String = modSD5.MvField(item, 2, ":")
+			Dim spart As String = UI.MvField(item, 2, ":")
 			spart = spart.Trim
 			m.Put(fpart, spart)
 		End If
@@ -1539,7 +1540,7 @@ End Sub
 Sub AddActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
 	UI.Show($"${mName}_bottomdivider"$)
 	UI.Show($"${mName}_bottomactions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIButton
 '	btn.AddButton(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, btnCaption, "button")
 '	btn.On("click", mback, $"${mName}_${btnID}"$)
@@ -1551,14 +1552,14 @@ End Sub
 
 'set the button to loading state
 Sub SetActionButtonLoading(btnID As String, bLoading As Boolean)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIButton			'ignore
 '	btn.AssignElement(mback, $"${mName}_${btnID}"$)
 '	btn.Loading = bLoading
 End Sub
 
 Sub getToolBarButtonID(btnID As String) As String
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Return $"${mName}_${btnID}"$
 End Sub
 
@@ -1570,7 +1571,7 @@ End Sub
 Sub AddActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
 	UI.Show($"${mName}_bottomactions"$)
 	UI.Show($"${mName}_bottomdivider"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 '	Dim btn As SDUIButton
 '	btn.AddButtonIcon(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, "", sIcon)
 '	btn.On("click", mback, $"${mName}_${btnID}"$)
@@ -1648,11 +1649,11 @@ private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim action As String = modSD5.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,2, "_")
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${action}"$)
-	Dim minvalue As Int = modSD5.CInt(el.GetAttr("min"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim minvalue As Int = UI.CInt(el.GetAttr("min"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) - BANano.parseInt(stpvalue)
 	If nxtvalue < minvalue Then
 		nxtvalue = minvalue
@@ -1672,11 +1673,11 @@ private Sub PropertyIncrement(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim action As String = modSD5.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,2, "_")
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${action}"$)
-	Dim maxvalue As Int = modSD5.CInt(el.GetAttr("max"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim maxvalue As Int = UI.CInt(el.GetAttr("max"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) + BANano.parseInt(stpvalue)
 	If nxtvalue > maxvalue Then
 		nxtvalue = maxvalue
@@ -1693,9 +1694,9 @@ End Sub
 
 Sub SetPropertyDialerIncrement(Key As String)
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${Key}"$)
-	Dim maxvalue As Int = modSD5.CInt(el.GetAttr("max"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim maxvalue As Int = UI.CInt(el.GetAttr("max"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) + BANano.parseInt(stpvalue)
 	If nxtvalue > maxvalue Then
 		el.SetValue(maxvalue)
@@ -1706,9 +1707,9 @@ End Sub
 
 Sub SetPropertyDialerDecrement(Key As String)
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${Key}"$)
-	Dim minvalue As Int = modSD5.CInt(el.GetAttr("min"))
-	Dim stpvalue As Int = modSD5.CInt(el.GetAttr("step"))
-	Dim curvalue As Int = modSD5.CInt(el.GetValue)
+	Dim minvalue As Int = UI.CInt(el.GetAttr("min"))
+	Dim stpvalue As Int = UI.CInt(el.GetAttr("step"))
+	Dim curvalue As Int = UI.CInt(el.GetValue)
 	Dim nxtvalue As Int = BANano.parseInt(curvalue) - BANano.parseInt(stpvalue)
 	If nxtvalue < minvalue Then
 		el.SetValue(minvalue)
@@ -1896,7 +1897,7 @@ private Sub TogglePassword(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim action As String = modSD5.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,2, "_")
 	SetPropertyToggleEyes(action)
 	'
 	Dim e As BANanoEvent
@@ -1992,7 +1993,7 @@ Sub SetPropertyShowEyes(Key As String, b As Boolean)
 End Sub
 Sub SetPropertyToggleEyes(Key As String)
 	Dim cicon As String = BANano.GetElement($"#${mName}_${Key}_append_icon"$).GetData("icon")
-	cicon = modSD5.CStr(cicon)
+	cicon = UI.CStr(cicon)
 	Select Case cicon
 	Case "fa-solid fa-eye"
 		SetPropertyAppendIcon(Key, "fa-solid fa-eye-slash")
@@ -2357,7 +2358,7 @@ Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String,
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Color As String)
-	Dim xcolor As String = modSD5.FixColor("link", Color)
+	Dim xcolor As String = UI.FixColor("link", Color)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -2377,7 +2378,7 @@ Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Col
 	BANano.GetElement($"#${mName}_${Key}"$).SetText(BANano.SF(DefaultValue))
 End Sub
 Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Color As String)
-	Dim xcolor As String = modSD5.FixColor("text", Color)
+	Dim xcolor As String = UI.FixColor("text", Color)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -2397,7 +2398,7 @@ Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Col
 	BANano.GetElement($"#${mName}_${Key}"$).SetText(BANano.SF(DefaultValue))
 End Sub
 Sub AddPropertyLink(Key As String, Title As String, DefaultValue As String, Color As String)
-	Dim xcolor As String = modSD5.FixColor("link", Color)
+	Dim xcolor As String = UI.FixColor("link", Color)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -2482,7 +2483,7 @@ Sub PropertiesAreValid(props As List) As Boolean
 	For Each k As String In props
 		'get the value
 		Dim cv As String = values.GetDefault(k, "")
-		cv = modSD5.CStr(cv)
+		cv = UI.CStr(cv)
 		cv = cv.Trim
 		'if blank, we have an issue
 		If cv = "" Then
@@ -2511,7 +2512,7 @@ Sub PropertyBagIsValid As Boolean
 		If b Then
 			'get the value
 			Dim cv As String = values.GetDefault(k, "")
-			cv = modSD5.CStr(cv)
+			cv = UI.CStr(cv)
 			cv = cv.Trim
 			'if blank, we have an issue
 			If cv = "" Then
@@ -2529,9 +2530,9 @@ End Sub
 Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 	Dim v1 As String = GetPropertyValue(fld1)
 	Dim v2 As String = GetPropertyValue(fld2)
-	v1 = modSD5.CStr(v1)
+	v1 = UI.CStr(v1)
 	v1 = v1.Trim
-	v2 = modSD5.CStr(v2)
+	v2 = UI.CStr(v2)
 	v2 = v2.Trim
 	If v1 = v2 Then
 		SetPropertyColor(fld1, "success")
@@ -2595,7 +2596,7 @@ Sub SetPropertyCaption(Key As String, value As String)
 End Sub
 
 Sub SetPropertyToolTip(Key As String, value As String)
-	Dim tColor As String = modSD5.FixColor("tooltip", sTooltipColor)
+	Dim tColor As String = UI.FixColor("tooltip", sTooltipColor)
 	Dim tPos As String = $"tooltip-${sTooltipPosition}"$
 	If value = "" Then
 		UI.RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
@@ -2630,7 +2631,7 @@ Sub SetPropertyValue(Key As String, value As String)
 	Dim sComponentType As String = ComponentType.Get(Key)
 	Select Case sComponentType
 		Case "Avatar", "Image"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			If value.StartsWith("data:image") Then
 				Dim ni As String = value
 			Else
@@ -2642,7 +2643,7 @@ Sub SetPropertyValue(Key As String, value As String)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(Null)
 		Case "TextBox", "TextBoxGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password", "Color", "Number", _
         "Telephone", "TextArea", "Select", "SelectGroup", "Dialer"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			If value.Contains("</br>") Then
 				value = value.replace("</br>", CRLF)
 			End If
@@ -2658,7 +2659,7 @@ Sub SetPropertyValue(Key As String, value As String)
 				End Try			'ignore
 			End If
 		Case "RollDate"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
 		Case "Signature"
 			'Dim sig As SDUISignaturePad = signatures.Get($"${mName}_${Key}"$)
@@ -2667,55 +2668,55 @@ Sub SetPropertyValue(Key As String, value As String)
 			'	sig.fromDataURL(value)
 			'End If
 		Case "RadialProgress"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText($"${value}%"$)
 			BANano.GetElement($"#${mName}_${Key}"$).SetData("value", value)
 			UI.SetStyleByID($"#${mName}_${Key}"$,"--value", value)
 		Case "Rating"
 			BANano.GetElement($"#${mName}_${Key}_${value}"$).SetChecked(True)
 		Case "CheckBox", "Toggle"
-			value = modSD5.CBool(value)
+			value = UI.CBool(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetChecked(value)
 		Case "Progress"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
 			BANano.GetElement($"#${mName}_${Key}_text"$).SetText($"${value}%"$)
 		Case "Range"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
 			BANano.GetElement($"#${mName}_${Key}_text"$).SetText(value)
 		Case "Email"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetAttr("href", $"mailto:${value}"$)
 		Case "Link"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetAttr("href", value)
 		Case "Label"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText(value)
 		Case "AvatarPlaceholder"
-			value = modSD5.CStr(value)
+			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}_span"$).SetText(value)
 		Case "AvatarGroup"
 			Dim bo As Object = value
 			SetPropertyAvatarGroupItems(Key, bo)		'ignore
 		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup"
-			value = modSD5.CStr(value)
-			Dim lvalues As List = modSD5.StrParse(";", value)
-			lvalues = modSD5.ListTrimItems(lvalues)
+			value = UI.CStr(value)
+			Dim lvalues As List = UI.StrParse(";", value)
+			lvalues = UI.ListTrimItems(lvalues)
 			'get all items in the group select
 			'uncheck everything
 			Dim allitems As Map = RGOptions.Get(Key)
 			For Each k As String In allitems.Keys
-				k = modSD5.CleanID(k)
+				k = UI.CleanID(k)
 				Dim nk As String = $"${mName}_${Key}_${k}"$
 				BANano.Await(UI.SetCheckedByID(nk, False))
 			Next
 			'check the ones we have specified
 			For Each k As String In lvalues
-				k = modSD5.CleanID(k)
+				k = UI.CleanID(k)
 				Dim nk As String = $"${mName}_${Key}_${k}"$
 				BANano.Await(UI.SetCheckedByID(nk, True))
 			Next
@@ -2730,14 +2731,14 @@ Sub GetPropertyValue(Key As String) As String
 	Select Case sComponentType
 		Case "Avatar", "Image"
 			v = BANano.GetElement($"#${mName}_${Key}_src"$).GetAttr("data-src")
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 			If v.StartsWith("data:image") Then
 			Else
-				v = modSD5.MvField(v, 1, "?")
+				v = UI.MvField(v, 1, "?")
 			End If
 		Case "TextArea"
 			Dim v1 As String = BANano.GetElement($"#${mName}_${Key}"$).GetValue
-			v1 = modSD5.CStr(v1)
+			v1 = UI.CStr(v1)
 			If v1.Contains(CRLF) Then
 				v = v1.replace(CRLF, "<br/>")
 			Else
@@ -2745,32 +2746,32 @@ Sub GetPropertyValue(Key As String) As String
 			End If
 		Case "AvatarPlaceholder"
 			v = BANano.GetElement($"#${mName}_${Key}_span"$).GetText
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 		Case "RadialProgress"
 			v = UI.GetDataAttrByID($"#${mName}_${Key}"$, "value")
 			'v = UI.GetStyleByID(Key, "--value")
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 		Case "Rating"
 			Dim Itemx As BANanoElement
 			Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
 			v = Itemx.GetValue
-			v = modSD5.CInt(v)
+			v = UI.CInt(v)
 		'Case "RadioGroup"
 		'	Dim Itemx As BANanoElement
 		'	Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
 		'	v = Itemx.GetValue
-		'	v = modSD5.CStr(v)
+		'	v = UI.CStr(v)
 		Case "CheckBox", "Toggle"
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetChecked
-			v = modSD5.CBool(v)
+			v = UI.CBool(v)
 		Case "Email","Link", "Label"
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetText
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
 			v = GetPropertyFile(Key)		'ignore
 		Case "AvatarGroup"
 			v = BANano.GetElement($"#${mName}_${Key}_group"$).GetData("items")
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 		Case "Signature"
 			'Dim sig As SDUISignaturePad = signatures.Get($"${mName}_${Key}"$)
 			'v = sig.toDataURL
@@ -2786,10 +2787,10 @@ Sub GetPropertyValue(Key As String) As String
 					sItems.Add(k)
 				End If
 			Next
-			v = modSD5.Join(";", sItems)
+			v = UI.Join(";", sItems)
 		Case Else
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetValue
-			v = modSD5.CStr(v)
+			v = UI.CStr(v)
 			If v = "--Nothing Selected--" Then v = ""
 	End Select
 	Return v
@@ -2894,10 +2895,10 @@ Sub SetPropertySelectItemsList(Key As String, Options As List)
 End Sub
 
 Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
-	Dim xitems As String = modSD5.Join(";", Images)
+	Dim xitems As String = UI.Join(";", Images)
 	Dim sSize As String = BANano.GetElement($"#${mName}_${Key}_group"$).GetData("size")
 	Dim Shape As String = BANano.GetElement($"#${mName}_${Key}_group"$).GetData("shape")
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim imgCnt As Int = 0
 	Dim sbItems As StringBuilder
 	sbItems.Initialize
@@ -2905,7 +2906,7 @@ Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
-        <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${modSD5.FixSize("w",sSize)}">
+        <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${UI.FixSize("w",sSize)}">
         <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
         </div>
         </div>"$
@@ -2932,7 +2933,7 @@ Sub SetPropertySelectItemsListSort(Key As String, Options As List)
 End Sub
 
 Sub SetPropertySelectItemsOptions(Key As String, delim As String, bSort As Boolean, bAddNothingSelected As Boolean, sOptions As String)
-	Dim options As List = modSD5.StrParse(delim, sOptions)
+	Dim options As List = UI.StrParse(delim, sOptions)
 	If bSort Then options.Sort(True)
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2971,23 +2972,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -3036,23 +3037,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -3098,7 +3099,7 @@ private Sub FileButtonClick(event As BANanoEvent)     'ignoredeadcode
 	event.PreventDefault
 	Dim src As String = event.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim action As String = modSD5.MvField(src,2, "_")
+	Dim action As String = UI.MvField(src,2, "_")
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${action}"$)
 	el.SetValue(Null)
 	el.RunMethod("click", Null)
@@ -3122,23 +3123,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -3165,23 +3166,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -3208,23 +3209,23 @@ End Sub
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = modSD5.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = modSD5.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(modSD5.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(modSD5.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(modSD5.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(modSD5.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
-''fileDet = modSD5.UploadFileWait(fileObj)
-''fileDet = modSD5.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 'img.Src = fText
 'img.Tag = fText
 'End Sub
@@ -3277,7 +3278,7 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Avatar")
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
@@ -3287,7 +3288,7 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}_avatar" class="avatar">
-    <div id="${mName}_${Key}_host" class="${smask} ${modSD5.FixSize("w",sSize)}">
+    <div id="${mName}_${Key}_host" class="${smask} ${UI.FixSize("w",sSize)}">
     <img id="${mName}_${Key}_src" name="${mName}_${Key}" src="${Url}" alt=""></img>
     </div>
     </div>
@@ -3301,9 +3302,9 @@ Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarPlaceholder")
-	Dim smask As String = modSD5.FixMask(Shape)
-	Dim acolor As String = modSD5.FixColor("bg", Color) & " " & modSD5.FixColorIntensity("text", Color, "content")
-	Dim tsize As String = modSD5.FixSize("text", textSize)
+	Dim smask As String = UI.FixMask(Shape)
+	Dim acolor As String = UI.FixColor("bg", Color) & " " & UI.FixColorIntensity("text", Color, "content")
+	Dim tsize As String = UI.FixSize("text", textSize)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
@@ -3313,7 +3314,7 @@ Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}_avatar" class="avatar avatar-placeholder">
-    <div id="${mName}_${Key}_host" class="${acolor} ${smask} ${modSD5.FixSize("w",sSize)}">
+    <div id="${mName}_${Key}_host" class="${acolor} ${smask} ${UI.FixSize("w",sSize)}">
     <span id="${mName}_${Key}_span" class="${tsize}" name="${mName}_${Key}">${DefaultValue}</img>
     </div>
     </div>
@@ -3329,7 +3330,7 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 	propBagValues.Put(Key, "")
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarGroup")
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
@@ -3346,12 +3347,12 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 	Dim sbItems As StringBuilder
 	sbItems.Initialize
 	Dim imgCnt As Int = 0
-	Dim xitems As String = modSD5.Join(";", Images)
+	Dim xitems As String = UI.Join(";", Images)
 	For Each k As String In Images
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
-        <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${modSD5.FixSize("w",sSize)}">
+        <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${UI.FixSize("w",sSize)}">
         <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
         </div>
         </div>"$
@@ -3374,7 +3375,7 @@ End Sub
 Sub SetPropertyAvatarRing(Key As String, Status As Boolean, Color As String)
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${Key}_host"$)
 	Dim slastringcolor As String = el.GetData("ring")
-	slastringcolor = modSD5.CStr(slastringcolor)
+	slastringcolor = UI.CStr(slastringcolor)
 	'
 	Dim lst As List
 	lst.Initialize
@@ -3385,7 +3386,7 @@ Sub SetPropertyAvatarRing(Key As String, Status As Boolean, Color As String)
 	Next
 	If slastringcolor <> "" Then el.RemoveClass(slastringcolor)
 	If Status = False Then Return
-	slastringcolor = modSD5.FixColor("ring", Color)
+	slastringcolor = UI.FixColor("ring", Color)
 	el.SetData("ring", slastringcolor)
 	For Each c As String In lst
 		el.AddClass(c)
@@ -3393,9 +3394,9 @@ Sub SetPropertyAvatarRing(Key As String, Status As Boolean, Color As String)
 	el.AddClass(slastringcolor)
 End Sub
 Sub SetPropertyAvatarMask(Key As String, Shape As String)
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim smasks As String = "circle|rounded|squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|parallelogram|parallelogram-2|parallelogram-3|parallelogram-4|star|star-2|triangle|triangle-2|triangle-3|triangle-4|half-1|half-2|rounded-full|rounded"
-	Dim spItems As List = modSD5.strparse("|", smasks)
+	Dim spItems As List = UI.strparse("|", smasks)
 	For Each className As String In spItems
 		If BANano.GetElement($"#${mName}_${Key}_host"$).HasClass(className) Then
 			BANano.GetElement($"#${mName}_${Key}_host"$).RemoveClass(className)
@@ -3404,9 +3405,9 @@ Sub SetPropertyAvatarMask(Key As String, Shape As String)
 	BANano.GetElement($"#${mName}_${Key}_host"$).AddClass(smask)
 End Sub
 Sub SetPropertyImageMask(Key As String, Shape As String)
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim smasks As String = "circle|rounded|squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|parallelogram|parallelogram-2|parallelogram-3|parallelogram-4|star|star-2|triangle|triangle-2|triangle-3|triangle-4|half-1|half-2|rounded-full|rounded"
-	Dim spItems As List = modSD5.strparse("|", smasks)
+	Dim spItems As List = UI.strparse("|", smasks)
 	For Each className As String In spItems
 		If BANano.GetElement($"#${mName}_${Key}_src"$).HasClass(className) Then
 			BANano.GetElement($"#${mName}_${Key}_src"$).RemoveClass(className)
@@ -3420,7 +3421,7 @@ Sub AddPropertyImage(Key As String, Title As String, Width As String, Height As 
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "Image")
 	ComponentType.Put(Key, "Image")
-	Dim smask As String = modSD5.FixMask(Shape)
+	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
@@ -3465,7 +3466,7 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
 	Case "xl"
 		psize = "40px"	
 	End Select
-	Dim psize1 As String = modSD5.FixSize("h", psize)
+	Dim psize1 As String = UI.FixSize("h", psize)
 	
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
@@ -3507,7 +3508,7 @@ Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Col
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean, Color As String)
-	DefaultValue = modSD5.CBool(DefaultValue)
+	DefaultValue = UI.CBool(DefaultValue)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
@@ -3529,7 +3530,7 @@ End Sub
 'run validation
 Sub IsPropertyBlank(Key As String) As Boolean
 	Dim v As String = GetPropertyValue(Key)
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		SetPropertyColor(Key, "error")
@@ -3541,7 +3542,7 @@ End Sub
 'return 1 if blank else zero
 Sub PropertyOneIfBlankElseZero(Key As String) As Int
 	Dim v As String = GetPropertyValue(Key)
-	v = modSD5.CStr(v)
+	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
 		Return 1
@@ -3556,86 +3557,86 @@ Sub SetPropertyColor(Key As String, s As String)
 	Select Case pType
 		Case "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Password", "Color", "Number", "Telephone", "DatePicker", "TimePicker", "DateTimePicker", "Dialer"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("input", lcolor)
+				Dim llcolor As String = UI.FixColor("input", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("input", s)
+			Dim tcolor As String = UI.FixColor("input", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "TextArea"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("textarea", lcolor)
+				Dim llcolor As String = UI.FixColor("textarea", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("textarea", s)
+			Dim tcolor As String = UI.FixColor("textarea", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "Select", "SelectGroup"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("select", lcolor)
+				Dim llcolor As String = UI.FixColor("select", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("select", s)
+			Dim tcolor As String = UI.FixColor("select", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "FileInput"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("file-input", lcolor)
+				Dim llcolor As String = UI.FixColor("file-input", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("file-input", s)
+			Dim tcolor As String = UI.FixColor("file-input", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "Progress"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("progress", lcolor)
+				Dim llcolor As String = UI.FixColor("progress", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("progress", s)
+			Dim tcolor As String = UI.FixColor("progress", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "Range"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("range", lcolor)
+				Dim llcolor As String = UI.FixColor("range", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("range", s)
+			Dim tcolor As String = UI.FixColor("range", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "CheckBox"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("checkbox", lcolor)
+				Dim llcolor As String = UI.FixColor("checkbox", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("checkbox", s)
+			Dim tcolor As String = UI.FixColor("checkbox", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "Toggle"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("toggle", lcolor)
+				Dim llcolor As String = UI.FixColor("toggle", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("toggle", s)
+			Dim tcolor As String = UI.FixColor("toggle", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "RadialProgress"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("text", lcolor)
+				Dim llcolor As String = UI.FixColor("text", lcolor)
 				el.RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("text", s)
+			Dim tcolor As String = UI.FixColor("text", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
 		Case "Rating"
 			If lcolor <> "" Then
-				Dim llcolor As String = modSD5.FixColor("radio", lcolor)
+				Dim llcolor As String = UI.FixColor("radio", lcolor)
 				BANano.GetElement($"#${mName}_${Key}_1"$).RemoveClass(llcolor)
 				BANano.GetElement($"#${mName}_${Key}_2"$).RemoveClass(llcolor)
 				BANano.GetElement($"#${mName}_${Key}_3"$).RemoveClass(llcolor)
 				BANano.GetElement($"#${mName}_${Key}_4"$).RemoveClass(llcolor)
 				BANano.GetElement($"#${mName}_${Key}_5"$).RemoveClass(llcolor)
 			End If
-			Dim tcolor As String = modSD5.FixColor("radio", s)
+			Dim tcolor As String = UI.FixColor("radio", s)
 			BANano.GetElement($"#${mName}_${Key}_1"$).AddClass(tcolor)
 			BANano.GetElement($"#${mName}_${Key}_2"$).AddClass(tcolor)
 			BANano.GetElement($"#${mName}_${Key}_3"$).AddClass(tcolor)
@@ -3645,12 +3646,12 @@ Sub SetPropertyColor(Key As String, s As String)
 '		Case "RadioGroup"
 '			Dim opt As Map = RGOptions.Get(Key)
 '			If lcolor <> "" Then
-'				Dim llcolor As String = modSD5.FixColor("radio", lcolor)
+'				Dim llcolor As String = UI.FixColor("radio", lcolor)
 '				For Each k As String In opt.Keys
 '					BANano.GetElement($"#${mName}_${Key}_${k}"$).RemoveClass(llcolor)
 '				Next
 '			End If
-'			Dim tcolor As String = modSD5.FixColor("radio", s)
+'			Dim tcolor As String = UI.FixColor("radio", s)
 '			For Each k As String In opt.Keys
 '				BANano.GetElement($"#${mName}_${Key}_${k}"$).AddClass(tcolor)
 '			Next
@@ -3658,7 +3659,7 @@ Sub SetPropertyColor(Key As String, s As String)
 	End Select
 End Sub
 Sub SetPropertyChecked(Key As String, b As Boolean)
-	b = modSD5.CBool(b)
+	b = UI.CBool(b)
 	BANano.GetElement($"#${mName}_${Key}"$).SetChecked(b)
 End Sub
 Sub SetPropertyReadOnly(Key As String, b As Boolean)
@@ -3692,7 +3693,7 @@ Sub SetPropertyRows(Key As String, v As String)
 	BANano.GetElement($"#${mName}_${Key}"$).SetAttr("rows", v)
 End Sub
 Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, Color As String)
-	DefaultValue = modSD5.CBool(DefaultValue)
+	DefaultValue = UI.CBool(DefaultValue)
 	propBagKeys.Put(Key, False)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
@@ -3742,9 +3743,9 @@ Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Co
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Rating")
 	ComponentType.Put(Key, "Rating")
-	Dim rColor As String = modSD5.FixColor("bg", Color)
-	Dim rSize As String = modSD5.FixSize("rating", sComponentSize)
-	Dim rmask As String = modSD5.FixMask(mask)
+	Dim rColor As String = UI.FixColor("bg", Color)
+	Dim rSize As String = UI.FixSize("rating", sComponentSize)
+	Dim rmask As String = UI.FixMask(mask)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
@@ -3832,10 +3833,10 @@ Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As Strin
 	BANano.Await(SetPropertyGroupSelectItems(Key, Color, ActiveColor, bSingleSelect, Options))
 	'
 	If DefaultValue <> "" Then
-		Dim litems As List = modSD5.StrParse(";", DefaultValue)
-		litems = modSD5.ListTrimItems(litems)
+		Dim litems As List = UI.StrParse(";", DefaultValue)
+		litems = UI.ListTrimItems(litems)
 		For Each k As String In litems
-			k = modSD5.CleanID(k)
+			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
 			BANano.Await(UI.SetCheckedByID(nk, True))
 		Next
@@ -3862,10 +3863,10 @@ Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As Str
 	BANano.Await(SetPropertyCheckBoxGroupItems(Key, Color, ActiveColor, Options))
 	'
 	If DefaultValue <> "" Then
-		Dim litems As List = modSD5.StrParse(";", DefaultValue)
-		litems = modSD5.ListTrimItems(litems)
+		Dim litems As List = UI.StrParse(";", DefaultValue)
+		litems = UI.ListTrimItems(litems)
 		For Each k As String In litems
-			k = modSD5.CleanID(k)
+			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
 			BANano.Await(UI.SetCheckedByID(nk, True))
 		Next
@@ -3892,10 +3893,10 @@ Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As Strin
 	BANano.Await(SetPropertyToggleGroupItems(Key, Color, ActiveColor, Options))
 	'
 	If DefaultValue <> "" Then
-		Dim litems As List = modSD5.StrParse(";", DefaultValue)
-		litems = modSD5.ListTrimItems(litems)
+		Dim litems As List = UI.StrParse(";", DefaultValue)
+		litems = UI.ListTrimItems(litems)
 		For Each k As String In litems
-			k = modSD5.CleanID(k)
+			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
 			BANano.Await(UI.SetCheckedByID(nk, True))
 		Next
@@ -3922,7 +3923,7 @@ Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String
 	BANano.Await(SetPropertyRadioGroupItems(Key, Color, ActiveColor, Options))
 	'
 	If DefaultValue <> "" Then
-		DefaultValue = modSD5.CleanID(DefaultValue)
+		DefaultValue = UI.CleanID(DefaultValue)
 		Dim nk As String = $"${mName}_${Key}_${DefaultValue}"$
 		BANano.Await(UI.SetCheckedByID(nk, True))
 	End If
@@ -3934,20 +3935,20 @@ Sub SetPropertyRadioGroupItems(Key As String, sColor As String, sActiveColor As 
 	'
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = modSD5.FixSize("radio", sComponentSize)
-	Dim itemColor As String = modSD5.FixColor("radio", sColor)
+	Dim itemSize As String = UI.FixSize("radio", sComponentSize)
+	Dim itemColor As String = UI.FixColor("radio", sColor)
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	Dim checkedText As String = ""
 	If sActiveColor <> "" Then
-		checkedColor = modSD5.FixColor("checked:text", sActiveColor)
-'		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
-'		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+		checkedColor = UI.FixColor("checked:text", sActiveColor)
+'		checkedColor = UI.FixColor("checked:bg", sActiveColor)
+'		checkedBorder = UI.FixColor("checked:border", sActiveColor)
 	End If
 	
 	For Each k As String In xitems.Keys
 		Dim v As String = xitems.Get(k)
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		'
 		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
@@ -3958,7 +3959,7 @@ Sub SetPropertyRadioGroupItems(Key As String, sColor As String, sActiveColor As 
 	UI.ClearByID($"${mName}_${Key}_content"$)
 	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
@@ -3970,20 +3971,20 @@ Sub SetPropertyToggleGroupItems(Key As String, sColor As String, sActiveColor As
 	'
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = modSD5.FixSize("toggle", sComponentSize)
-	Dim itemColor As String = modSD5.FixColor("toggle", sColor)
+	Dim itemSize As String = UI.FixSize("toggle", sComponentSize)
+	Dim itemColor As String = UI.FixColor("toggle", sColor)
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	Dim checkedText As String = ""
 	If sActiveColor <> "" Then
-		checkedColor = modSD5.FixColor("checked:text", sActiveColor)
-'		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
-'		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+		checkedColor = UI.FixColor("checked:text", sActiveColor)
+'		checkedColor = UI.FixColor("checked:bg", sActiveColor)
+'		checkedBorder = UI.FixColor("checked:border", sActiveColor)
 	End If
 	
 	For Each k As String In xitems.Keys
 		Dim v As String = xitems.Get(k)
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		'
 		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
@@ -3994,7 +3995,7 @@ Sub SetPropertyToggleGroupItems(Key As String, sColor As String, sActiveColor As
 	UI.ClearByID($"${mName}_${Key}_content"$)
 	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
@@ -4008,20 +4009,20 @@ Sub SetPropertyCheckBoxGroupItems(Key As String, sColor As String, sActiveColor 
 	'
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = modSD5.FixSize("checkbox", sComponentSize)
-	Dim itemColor As String = modSD5.FixColor("checkbox", sColor)
+	Dim itemSize As String = UI.FixSize("checkbox", sComponentSize)
+	Dim itemColor As String = UI.FixColor("checkbox", sColor)
 	Dim checkedColor As String = ""
 	Dim checkedBorder As String = ""
 	Dim checkedText As String = ""
 	If sActiveColor <> "" Then
-'		checkedText = modSD5.FixColor("checked:text", sActiveColor)
-		checkedColor = modSD5.FixColor("checked:bg", sActiveColor)
-		checkedBorder = modSD5.FixColor("checked:border", sActiveColor)
+'		checkedText = UI.FixColor("checked:text", sActiveColor)
+		checkedColor = UI.FixColor("checked:bg", sActiveColor)
+		checkedBorder = UI.FixColor("checked:border", sActiveColor)
 	End If
 	
 	For Each k As String In xitems.Keys
 		Dim v As String = xitems.Get(k)
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		'
 		sb.Append($"<label id="${mName}_${Key}_${k}_host" class="flex gap-2 items-center cursor-pointer mb-2">
@@ -4032,7 +4033,7 @@ Sub SetPropertyCheckBoxGroupItems(Key As String, sColor As String, sActiveColor 
 	UI.ClearByID($"${mName}_${Key}_content"$)
 	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
@@ -4044,31 +4045,31 @@ Sub SetPropertyGroupSelectItems(Key As String, sColor As String, sActiveColor As
 	RGOptions.Put(Key, xitems)
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = modSD5.FixSize("btn", sComponentSize)
+	Dim itemSize As String = UI.FixSize("btn", sComponentSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
-	Dim itemColor As String = modSD5.FixColor("btn", sColor)
+	Dim itemColor As String = UI.FixColor("btn", sColor)
 	Dim soutline As String = ""
 	If bButtonsOutlined Then soutline = "btn-outline"
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
-		Dim abg As String = modSD5.FixColor("bg", sActiveColor)
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
 		checkedColor = $"checked:${abg}"$
-		Dim bbg As String = modSD5.FixColor("border", sActiveColor)
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
 	
 	For Each k As String In xitems.Keys
 		Dim v As String = xitems.Get(k)
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		sb.Append($"<input id="${nk}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${Key}" type="${iType}" aria-label="${v}">"$)
 	Next
 	UI.ClearByID($"${mName}_${Key}_content"$)
 	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
-		k = modSD5.CleanID(k)
+		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
@@ -4240,7 +4241,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "TextBox"
 						AddPropertyTextBox(skey, sdisplayname, sdefaultvalue,False)
 					Case "Dialer"
-						sdefaultvalue = modSD5.CInt(sdefaultvalue)
+						sdefaultvalue = UI.CInt(sdefaultvalue)
 						AddPropertyDialer(skey,sdisplayname, sdefaultvalue, False, 0, 1, 100)
 					Case "TextBoxGroup"
 						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,False)
@@ -4251,7 +4252,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Color"
 '						AddPropertyColor(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
 					Case "Number"
-						sdefaultvalue = modSD5.Val(sdefaultvalue)
+						sdefaultvalue = UI.Val(sdefaultvalue)
 						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
 					Case "Telephone"
 						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,False)
@@ -4279,7 +4280,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Avatar"
 						AddPropertyAvatar(skey, sdisplayname, "12", "rounded", sdefaultvalue)
 					Case "AvatarPlaceholder"
-						sdefaultvalue = modSD5.Val(sdefaultvalue)
+						sdefaultvalue = UI.Val(sdefaultvalue)
 						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "8xl")
 					Case "AvatarGroup"
 						Dim imags As List
@@ -4290,16 +4291,16 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Signature"
 						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
 					Case "Progress"
-						sdefaultvalue = modSD5.cint(sdefaultvalue)
+						sdefaultvalue = UI.cint(sdefaultvalue)
 						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100")
 					Case "Range"
-						sdefaultvalue = modSD5.CInt(sdefaultvalue)
+						sdefaultvalue = UI.CInt(sdefaultvalue)
 						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100")
 					Case "CheckBox"
-						sdefaultvalue = modSD5.CBool(sdefaultvalue)
+						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
 					Case "Toggle"
-						sdefaultvalue = modSD5.CBool(sdefaultvalue)
+						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success")
 					Case "RadialProgress"
 						AddPropertyRadialProgress(skey,sdisplayname, sdefaultvalue, "success", "", "")
@@ -4311,7 +4312,7 @@ Sub ShowDesign(designName As String, compName As String)
 			Else
 				Select Case sfieldtype
 					Case "String"
-						sdefaultvalue = modSD5.CStr(sdefaultvalue)
+						sdefaultvalue = UI.CStr(sdefaultvalue)
 						Select Case sList
 							Case ""
 								'this is not a dropdown
@@ -4326,20 +4327,20 @@ Sub ShowDesign(designName As String, compName As String)
 							Case Else
 								'this is a drop down
 								AddPropertySelect(skey, sdisplayname, sdefaultvalue, False, CreateMap())
-								Dim lstItems As List = modSD5.StrParse("|", sList)
+								Dim lstItems As List = UI.StrParse("|", sList)
 								SetPropertySelectItemsListSort(skey, lstItems)
 						End Select
 					Case "Boolean"
-						sdefaultvalue = modSD5.CBool(sdefaultvalue)
+						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
 					Case "Int"
-						sdefaultvalue = modSD5.CInt(sdefaultvalue)
-						'sMinRange = modSD5.CInt(sMinRange)
-						'sMaxRange = modSD5.CInt(sMaxRange)
+						sdefaultvalue = UI.CInt(sdefaultvalue)
+						'sMinRange = UI.CInt(sMinRange)
+						'sMaxRange = UI.CInt(sMaxRange)
 						'If sMaxRange = 0 Then sMaxRange = 100
 						AddPropertyNumber(skey, sdisplayname, sdefaultvalue, False)
 					Case "Color"
-						sdefaultvalue = modSD5.CStr(sdefaultvalue)
+						sdefaultvalue = UI.CStr(sdefaultvalue)
 '						AddPropertyColor(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
 				End Select
 			End If
@@ -4412,16 +4413,16 @@ Sub SetPropertiesDefaultValues(props As List)
 		'
 		Select Case sfieldtype
 			Case "Boolean"
-				sdefaultvalue = modSD5.CBool(sdefaultvalue)
+				sdefaultvalue = UI.CBool(sdefaultvalue)
 				SetPropertyValue(skey, sdefaultvalue)
 			Case "Int"
-				sdefaultvalue = modSD5.CInt(sdefaultvalue)
+				sdefaultvalue = UI.CInt(sdefaultvalue)
 				SetPropertyValue(skey, sdefaultvalue)
 			Case "Color"
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 				SetPropertyValue(skey, sdefaultvalue)
 			Case Else
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 				SetPropertyValue(skey, sdefaultvalue)
 		End Select
 	Next
@@ -4432,22 +4433,22 @@ Sub ExtractProperties(props As List) As Map
 	Dim nm As Map = CreateMap()
 	For Each rec As Map In  props
 		Dim skey As String = rec.Getdefault("Key","")
-		skey = modSD5.CStr(skey)
+		skey = UI.CStr(skey)
 		Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-		sdefaultvalue = modSD5.CStr(sdefaultvalue)
+		sdefaultvalue = UI.CStr(sdefaultvalue)
 		Dim sfieldtype As String = rec.getdefault("FieldType","")
-		sfieldtype = modSD5.CStr(sfieldtype)
+		sfieldtype = UI.CStr(sfieldtype)
 		'ignore all readmes
 		If skey.StartsWith("ReadMe") Then Continue
 		If skey = "" Then Continue
 		'
 		Select Case sfieldtype
 			Case "Boolean"
-				sdefaultvalue = modSD5.CBool(sdefaultvalue)
+				sdefaultvalue = UI.CBool(sdefaultvalue)
 			Case "Int"
-				sdefaultvalue = modSD5.CInt(sdefaultvalue)
+				sdefaultvalue = UI.CInt(sdefaultvalue)
 			Case Else
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 		End Select
 		rec.Put("DefaultValue",sdefaultvalue)
 		nm.Put(skey, rec)
@@ -4459,7 +4460,7 @@ Sub ExtractEvents(props As List) As Map
 	Dim nm As Map = CreateMap()
 	For Each rec As Map In  props
 		Dim skey As String = rec.Getdefault("name","")
-		skey = modSD5.CStr(skey)
+		skey = UI.CStr(skey)
 		Dim eveName As String = GetEventName(skey)
 		nm.put(eveName, eveName)
 	Next
@@ -4471,14 +4472,14 @@ private Sub GetEventName(strDeclaration As String) As String
 	Dim fBracket As Int
 	Dim sResult As String
 	strDeclaration = strDeclaration.trim
-	fBracket = modSD5.InStr1(strDeclaration, "(")
+	fBracket = UI.InStr1(strDeclaration, "(")
 	If fBracket > 0 Then
-		sResult = modSD5.Left1(strDeclaration, fBracket - 1)
+		sResult = UI.Left1(strDeclaration, fBracket - 1)
 	Else
 		sResult = strDeclaration
 	End If
 	sResult = sResult.trim
-	sResult = modSD5.MvField(sResult,1," ")
+	sResult = UI.MvField(sResult,1," ")
 	Return sResult
 End Sub
 
@@ -4487,22 +4488,22 @@ Sub ExtractPropertyBag(props As List) As Map
 	Dim nm As Map = CreateMap()
 	For Each rec As Map In  props
 		Dim skey As String = rec.Getdefault("Key","")
-		skey = modSD5.CStr(skey)
+		skey = UI.CStr(skey)
 		Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-		sdefaultvalue = modSD5.CStr(sdefaultvalue)
+		sdefaultvalue = UI.CStr(sdefaultvalue)
 		Dim sfieldtype As String = rec.getdefault("FieldType","")
-		sfieldtype = modSD5.CStr(sfieldtype)
+		sfieldtype = UI.CStr(sfieldtype)
 		'ignore all readmes
 		If skey.StartsWith("ReadMe") Then Continue
 		If skey = "" Then Continue
 		'
 		Select Case sfieldtype
 			Case "Boolean"
-				sdefaultvalue = modSD5.CBool(sdefaultvalue)
+				sdefaultvalue = UI.CBool(sdefaultvalue)
 			Case "Int"
-				sdefaultvalue = modSD5.CInt(sdefaultvalue)
+				sdefaultvalue = UI.CInt(sdefaultvalue)
 			Case Else
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 		End Select
 		nm.Put(skey, sdefaultvalue)
 	Next
@@ -4612,16 +4613,16 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 		'
 		Select Case sfieldtype
 			Case "Boolean"
-				sdefaultvalue = modSD5.CBool(sdefaultvalue)
+				sdefaultvalue = UI.CBool(sdefaultvalue)
 				AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes")
 			Case "Int"
-				sdefaultvalue = modSD5.CInt(sdefaultvalue)
+				sdefaultvalue = UI.CInt(sdefaultvalue)
 				AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
 			Case "Color"
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 '				AddPropertyColor(skey, sdisplayname,sdefaultvalue,"",False,"left")
 			Case Else
-				sdefaultvalue = modSD5.CStr(sdefaultvalue)
+				sdefaultvalue = UI.CStr(sdefaultvalue)
 				Select Case sList
 					Case ""
 						'does the key start with raw, make multi-line
@@ -4636,7 +4637,7 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 						End If
 					Case Else
 						AddPropertySelect(skey, sdisplayname, "", False, CreateMap())
-						Dim lstItems As List = modSD5.StrParse("|", sList)
+						Dim lstItems As List = UI.StrParse("|", sList)
 						lstItems.Sort(True)
 						SetPropertySelectItemsList(skey, lstItems)
 						SetPropertyValue(skey, sdefaultvalue)
@@ -4654,7 +4655,7 @@ End Sub
 Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	'
 	Dim btn As SDUI5Button
 	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
@@ -4679,7 +4680,7 @@ End Sub
 Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button
 	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
 	btn.ParentID = $"${mName}_actions"$
@@ -4694,9 +4695,9 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 End Sub
 
 Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
-	btnID = modSD5.CleanID(btnID)
-	Dim col As String = modSD5.FixColor("tooltip", color)
-	Dim pos As String = modSD5.FixSize("tooltip", position)
+	btnID = UI.CleanID(btnID)
+	Dim col As String = UI.FixColor("tooltip", color)
+	Dim pos As String = UI.FixSize("tooltip", position)
 	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
@@ -4710,7 +4711,7 @@ End Sub
 Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
-	btnID = modSD5.CleanID(btnID)
+	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
@@ -4725,7 +4726,7 @@ private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.StopPropagation
 	Dim src As String = e.OtherField("srcElement").GetField("id").Result
 	If src = "" Then Return
-	Dim p2 As String = modSD5.MvField(src, 2, "_")
+	Dim p2 As String = UI.MvField(src, 2, "_")
 	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${p2}_file"$)
 	'click the file input to fire change event
 	el.SetValue(Null)
@@ -4759,7 +4760,7 @@ Sub SetToolbarButtonVisible(btn As String, value As Boolean)
 End Sub
 
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
@@ -4770,7 +4771,7 @@ Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 End Sub
 
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
-	btn = modSD5.CleanID(btn)
+	btn = UI.CleanID(btn)
 	If b Then
 		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")

@@ -61,11 +61,12 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	mEventName = modSD5.CleanID(EventName)
-	mName = modSD5.CleanID(Name)
+	UI.Initialize(Me)
+	mEventName = UI.CleanID(EventName)
+	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	UI.Initialize(Me)
+	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -84,7 +85,7 @@ Public Sub Remove()
 End Sub
 'set the parent id
 Sub setParentID(s As String)
-	s = modSD5.CleanID(s)
+	s = UI.CleanID(s)
 	sParentID = s
 	CustProps.Put("ParentID", sParentID)
 End Sub
@@ -209,27 +210,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlt = Props.GetDefault("Alt", "Image")
-		sAlt = modSD5.CStr(sAlt)
+		sAlt = UI.CStr(sAlt)
 		sHeight = Props.GetDefault("Height", "12")
-		sHeight = modSD5.CStr(sHeight)
+		sHeight = UI.CStr(sHeight)
 		sMask = Props.GetDefault("Mask", "rounded")
-		sMask = modSD5.CStr(sMask)
+		sMask = UI.CStr(sMask)
 		sShadow = Props.GetDefault("Shadow", "none")
-		sShadow = modSD5.CStr(sShadow)
+		sShadow = UI.CStr(sShadow)
 		sSrc = Props.GetDefault("Src", "./assets/mashy.jpg")
-		sSrc = modSD5.CStr(sSrc)
+		sSrc = UI.CStr(sSrc)
 		sWidth = Props.GetDefault("Width", "12")
-		sWidth = modSD5.CStr(sWidth)
+		sWidth = UI.CStr(sWidth)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
-		bRoundedBox = modSD5.CBool(bRoundedBox)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = modSD5.CStr(sMaxHeight)
+		sMaxHeight = UI.CStr(sMaxHeight)
 		sMaxWidth = Props.GetDefault("MaxWidth", "")
-		sMaxWidth = modSD5.CStr(sMaxWidth)
+		sMaxWidth = UI.CStr(sMaxWidth)
 		sMinHeight = Props.GetDefault("MinHeight", "")
-		sMinHeight = modSD5.CStr(sMinHeight)
+		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
-		sMinWidth = modSD5.CStr(sMinWidth)
+		sMinWidth = UI.CStr(sMinWidth)
 	End If
 	'
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
