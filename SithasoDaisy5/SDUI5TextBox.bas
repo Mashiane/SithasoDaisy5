@@ -138,7 +138,7 @@ Sub Class_Globals
 	Private sAppendIconColor As String = "none"
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
-	private sDataTypeOf as string = ""
+	Private sDataTypeOf As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -395,7 +395,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden">
 							<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-							<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
+							<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 						</button>
 	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
@@ -403,7 +403,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden">
 							<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-							<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
+							<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 						</button>
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
@@ -421,7 +421,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
+						<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -429,7 +429,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
+						<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>"$).Get("#" & mName)
 			sDataTypeOf = $"${mName}_control"$
@@ -447,7 +447,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<i id="${mName}_prependicon" data-icon="${sPrependIcon}" class="hidden ${sPrependIcon}"></i>
+						<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<i id="${mName}_appendicon" data-icon="${sAppendIcon}" class="hidden ${sAppendIcon}"></i>
+						<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
       			</div>"$).Get("#" & mName)	
 			sDataTypeOf = $"${mName}_control"$
@@ -524,7 +524,7 @@ Sub setAppendIconColor(s As String)			'ignoredeadcode
 	sAppendIconColor = s
 	CustProps.put("AppendIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_appendicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_appendicon"$, s)
 End Sub
 'set Prepend Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -535,12 +535,11 @@ Sub setPrependColor(s As String)				'ignoredeadcode
 	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_prepend"$, s)
 End Sub
 'set Prepend Icon Color
-'options: primary|secondary|accent|neutral|info|success|warning|error|none
 Sub setPrependIconColor(s As String)			'ignoredeadcode
 	sPrependIconColor = s
 	CustProps.put("PrependIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_prependicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_prependicon"$, s)
 End Sub
 'get Append Color
 Sub getAppendColor As String
@@ -828,24 +827,23 @@ Sub setShowEyes(b As Boolean)				'ignoredeadcode
 	bAppendVisible = bShowEyes
 	Select Case sTypeOf
 	Case "password"
-		sAppendIcon = "fa-solid fa-eye"
+		sAppendIcon = "./assets/eye-solid.svg"
 	Case "text"
-		sAppendIcon = "fa-solid fa-eye-slash"
+		sAppendIcon = "./assets/eye-slash-solid.svg"
 	End Select
 	UI.OnEventByID($"${mName}_append"$, "click", Me, "TogglePassword")
 End Sub
 
 private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
-	Dim cicon As String = BANano.GetElement($"#${mName}_appendicon"$).GetData("icon")
-	cicon = UI.CStr(cicon)
+	Dim cicon As String = UI.GetAttr(mElement, "type")
 	Select Case cicon
-	Case "fa-solid fa-eye"
+	Case "password"
 		mElement.SetAttr("type", "text")
-		UI.SetIconNameByID($"${mName}_appendicon"$, "fa-solid fa-eye-slash")
-	Case "fa-solid fa-eye-slash"
+		UI.SetIconNameByID($"${mName}_appendicon"$, "./assets/eye-slash-solid.svg")
+	Case "text"
 		mElement.SetAttr("type", "password")
-		UI.SetIconNameByID($"${mName}_appendicon"$, "fa-solid fa-eye")
+		UI.SetIconNameByID($"${mName}_appendicon"$, "./assets/eye-solid.svg")
 	End Select
 End Sub
 
@@ -995,7 +993,7 @@ Sub setAppendIcon(s As String)				'ignoredeadcode
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_appendicon"$, False)
 	Else
-		UI.UpdateClassByID($"${mName}_appendicon"$, "icon", s)
+		UI.SetIconNameByID($"${mName}_appendicon"$ , s)
 		UI.SetVisibleByID($"${mName}_appendicon"$, True)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
@@ -1047,7 +1045,7 @@ Sub setPrependIcon(s As String)				'ignoredeadcode
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_prependicon"$, False)
 	Else
-		UI.UpdateClassByID($"${mName}_prependicon"$, "icon", s)
+		UI.SetIconNameByID($"${mName}_prependicon"$, s)
 		UI.SetVisibleByID($"${mName}_prependicon"$, True)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
@@ -1252,8 +1250,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-		BANano.Await(UI.SetIconSizeStyleByID($"${mName}_prependicon"$, sSize))
-		BANano.Await(UI.SetIconSizeStyleByID($"${mName}_appendicon"$, sSize))
+		BANano.Await(UI.SetIconSizeByID($"${mName}_prependicon"$, sSize))
+		BANano.Await(UI.SetIconSizeByID($"${mName}_appendicon"$, sSize))
 	End Select
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "input", sSize))
@@ -1288,8 +1286,8 @@ Sub setTypeOf(s As String)				'ignoredeadcode
 		UI.AddClass(mElement, "text-center tabular-nums")
 		sPrependImage = ""
 		sAppendImage = ""
-		sPrependIcon = "fa-solid fa-minus"
-		sAppendIcon = "fa-solid fa-plus"
+		sPrependIcon = "./assets/minus-solid.svg"
+		sAppendIcon = "./assets/plus-solid.svg"
 		bPrependVisible = True
 		bAppendVisible = True
 		UI.OnEventByID($"${mName}_prepend"$, "click", Me, "PropertyDecrement")

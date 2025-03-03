@@ -36,13 +36,11 @@ Version=10
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: none, Description: Icon Size
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
-#DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color, List: 
+#DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
-#DesignerProperty: Key: ImageColor, DisplayName: Left Image Color, FieldType: String, DefaultValue: , Description: Left Image Color
 #DesignerProperty: Key: ImageHeight, DisplayName: Left Image Height, FieldType: String, DefaultValue: 32px, Description: Left Image Height
 #DesignerProperty: Key: ImageWidth, DisplayName: Left Image Width, FieldType: String, DefaultValue: 32px, Description: Left Image Width
 #DesignerProperty: Key: RightImage, DisplayName: Right Image, FieldType: String, DefaultValue: , Description: Right Image
-#DesignerProperty: Key: RightImageColor, DisplayName: Right Image Color, FieldType: String, DefaultValue: , Description: Right Image Color
 #DesignerProperty: Key: RightImageHeight, DisplayName: Right Image Height, FieldType: String, DefaultValue: 32px, Description: Right Image Height
 #DesignerProperty: Key: RightImageWidth, DisplayName: Right Image Width, FieldType: String, DefaultValue: 32px, Description: Right Image Width
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -108,8 +106,6 @@ Sub Class_Globals
 	Private bSoft As Boolean = False
 	Private sTextColor As String = ""
 	Private bWide As Boolean = False
-	Private sImageColor As String = ""
-	Private sRightImageColor As String = ""
 	Private sRightImageHeight As String = "32px"
 	Private sRightImageWidth As String = "32px"
 	Private sBadge As String = ""
@@ -322,8 +318,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGhost = UI.CBool(bGhost)
 		sImage = Props.GetDefault("Image", "")
 		sImage = UI.CStr(sImage)
-		sImageColor = Props.GetDefault("ImageColor", "")
-		sImageColor = UI.CStr(sImageColor)        
 		sImageHeight = Props.GetDefault("ImageHeight", "32px")
 		sImageHeight = UI.CStr(sImageHeight)
 		sImageWidth = Props.GetDefault("ImageWidth", "32px")
@@ -355,8 +349,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bSoft = UI.CBool(bSoft)
 		bWide = Props.GetDefault("Wide", False)
 		bWide = UI.CBool(bWide)
-		sRightImageColor = Props.GetDefault("RightImageColor", "")
-		sRightImageColor = UI.CStr(sRightImageColor)
 		sRightImageHeight = Props.GetDefault("RightImageHeight", "32px")
 		sRightImageHeight = UI.CStr(sRightImageHeight)
 		sRightImageWidth = Props.GetDefault("RightImageWidth", "32px")
@@ -466,10 +458,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
-		<i id="${mName}_lefticon" class="hidden"></i>
+		<svg id="${mName}_lefticon" class="hidden hide"></svg>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
-		<i id="${mName}_righticon" class="hidden"></i>
+		<svg id="${mName}_righticon" class="hidden hide"></svg>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<div id="${mName}_badge" class="badge rounded-full hidden"></div>
 	</${sTag}>"$).Get("#" & mName)
@@ -477,11 +469,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setText(sText)
 	setTextColor(sTextColor)
 	setLeftImage(sImage)
-	setLeftImageColor(sImageColor)
 	setLeftImageHeight(sImageHeight)
 	setLeftImageWidth(sImageWidth)
 	setRightImage(sRightImage)
-	setRightImageColor(sRightImageColor)
 	setRightImageHeight(sRightImageHeight)
 	setRightImageWidth(sRightImageWidth)
 	setLoading(bLoading)
@@ -529,9 +519,9 @@ Sub setIconSize(s As String)				'ignoredeadcode
 	sIconSize = s
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
-	If sLeftIcon = "" Then Return
-	UI.SetTextSizeByID($"${mName}_lefticon"$, s)
-	UI.SetTextSizeByID($"${mName}_righticon"$, s)
+	If s = "" Then Return
+	If sLeftIcon <> "" And s <> "" Then UI.SetIconSizeByID($"${mName}_lefticon"$, s)
+	If sRightIcon <> "" And s <> "" Then UI.SetIconSizeByID($"${mName}_righticon"$, s)
 End Sub
 'set Left Icon
 Sub setLeftIcon(s As String)				'ignoredeadcode
@@ -541,7 +531,7 @@ Sub setLeftIcon(s As String)				'ignoredeadcode
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_lefticon"$, False)
 	Else
-		UI.UpdateClassByID($"${mName}_lefticon"$, "icon", s)
+		UI.SetIconNameByID($"${mName}_lefticon"$, s)
 		UI.SetVisibleByID($"${mName}_lefticon"$, True)
 	End If
 End Sub
@@ -550,7 +540,7 @@ Sub setLeftIconColor(s As String)			'ignoredeadcode
 	sLeftIconColor = s
 	CustProps.put("LeftIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_lefticon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_lefticon"$, s)
 End Sub
 'set Right Icon
 Sub setRightIcon(s As String)			'ignoredeadcode
@@ -560,7 +550,7 @@ Sub setRightIcon(s As String)			'ignoredeadcode
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_righticon"$, False)
 	Else
-		UI.UpdateClassByID($"${mName}_righticon"$, "icon", s)
+		UI.SetIconNameByID($"${mName}_righticon"$, s)
 		UI.SetVisibleByID($"${mName}_righticon"$, True)
 	End If
 End Sub
@@ -569,7 +559,7 @@ Sub setRightIconColor(s As String)			'ignoredeadcode
 	sRightIconColor = s
 	CustProps.put("RightIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_righticon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_righticon"$, s)
 End Sub
 
 'get Icon Size
@@ -1017,19 +1007,6 @@ Sub getWide As Boolean
 	Return bWide
 End Sub
 
-'set Image Color
-Sub setLeftImageColor(s As String)				'ignoredeadcode
-	sImageColor = s
-	CustProps.put("ImageColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_leftimage"$, s)
-End Sub
-
-'get Image Color
-Sub getImageColor As String
-	Return sImageColor
-End Sub
-
 'set Image Visibility
 Sub setLeftImageVisible(b As Boolean)
 	CustProps.put("ImageVisible", b)
@@ -1045,13 +1022,6 @@ Sub setRightImageVisible(b As Boolean)
 	UI.SetVisibleByID($"${mName}_rightimage"$, b)
 End Sub
 
-'set Right Image Color
-Sub setRightImageColor(s As String)			'ignoredeadcode
-	sRightImageColor = s
-	CustProps.put("RightImageColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_rightimage"$, s)
-End Sub
 'set Right Image Height
 Sub setRightImageHeight(s As String)			'ignoredeadcode
 	sRightImageHeight = s
@@ -1071,10 +1041,6 @@ Sub setRightImageWidth(s As String)			'ignoredeadcode
 	UI.SetWidthByID($"${mName}_rightimage"$, s)
 End Sub
 
-'get Right Image Color
-Sub getRightImageColor As String
-	Return sRightImageColor
-End Sub
 'get Right Image Height
 Sub getRightImageHeight As String
 	Return sRightImageHeight

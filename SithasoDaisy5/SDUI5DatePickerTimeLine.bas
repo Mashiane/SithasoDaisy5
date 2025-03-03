@@ -409,7 +409,7 @@ Sub setInitialSelectedDate(s As String)			'ignoredeadcode
 		monthName = UI.GetMonthName3(monthName)
 		Dim dateName As String = UI.MvField(sDate,3,"-")
 		Dim dayName As String = UI.FormatDisplayDate(sDate, "dddd")
-		dayName = UI.Left1(dayName, 3)
+		dayName = UI.Left(dayName, 3)
 		Dim block As String = $"[BANCLEAN]
 		<div id="item_${sDate}" class="carousel-item ${itemW} ${itemH} hover:${hColor} cursor-pointer rounded-box border items-center justify-center">
     		<div id="host_${sDate}" class="flex flex-col items-center justify-center gap-1">

@@ -404,11 +404,11 @@ Sub setIconColor(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If sIconColor <> "" Then
 		Select Case sInforType
-		Case "1","2","3"
-			UI.SetStyleByID($"${mName}_iconbox"$, "background-color", sIconColor)
-		Case "4", "5"
-			UI.SetStyleByID($"${mName}_icon"$, "color", sIconColor)
-			UI.SetStyleByID($"${mName}_iconbox"$, "top", "10px")
+			Case "1","2","3"
+				UI.SetStyleByID($"${mName}_iconbox"$, "background-color", sIconColor)
+			Case "4", "5"
+				UI.SetStyleByID($"${mName}_icon"$, "color", sIconColor)
+				UI.SetStyleByID($"${mName}_iconbox"$, "top", "10px")
 		End Select
 	End If
 End Sub
@@ -419,16 +419,16 @@ Sub setInforType(s As String)			'ignoredeadcode
 	CustProps.put("InforType", s)
 	If mElement = Null Then Return
 	Select Case sInforType
-	Case "1"
-		UI.UpdateClass(mElement, "type", "info-box")
-	Case "2"
-		UI.UpdateClass(mElement, "type", "info-box")
-	Case "3"
-		UI.UpdateClass(mElement, "type", "info-box-2")
-	Case "4"
-		UI.UpdateClass(mElement, "type", "info-box-3")
-	Case "5"
-		UI.UpdateClass(mElement, "type", "info-box-4")
+		Case "1"
+			UI.UpdateClass(mElement, "type", "info-box")
+		Case "2"
+			UI.UpdateClass(mElement, "type", "info-box")
+		Case "3"
+			UI.UpdateClass(mElement, "type", "info-box-2")
+		Case "4"
+			UI.UpdateClass(mElement, "type", "info-box-3")
+		Case "5"
+			UI.UpdateClass(mElement, "type", "info-box-4")
 	End Select
 End Sub
 

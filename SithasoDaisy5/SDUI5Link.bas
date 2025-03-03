@@ -154,7 +154,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -163,14 +163,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -184,7 +184,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -290,7 +290,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<li id="${mName}_li">
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<div id="${mName}_host" class="inline-flex items-center">
-						<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden mr-2"></img>
+						<svg id="${mName}_icon" fill="currentColor" data-src="${sIcon}" class="hidden mr-2"></svg>
 						<span id="${mName}_text"></span>
 					</div>	
 				</a>
@@ -356,7 +356,7 @@ Sub setIcon(s As String)			'ignoredeadcode
 	If s = "" Then
 		UI.RemoveElementByID($"${mName}_icon"$)
 	Else	
-		UI.SetImageByID($"${mName}_icon"$, s)
+		UI.SetIconNameByID($"${mName}_icon"$, s)
 		UI.SetVisibleByID($"${mName}_icon"$, True)
 	End If
 End Sub
@@ -366,7 +366,7 @@ Sub setIconColor(s As String)			'ignoredeadcode
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
 	If sIcon = "" Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_icon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
 End Sub
 'set Icon Size
 Sub setIconSize(s As String)				'ignoredeadcode
@@ -375,8 +375,7 @@ Sub setIconSize(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If sIcon = "" Then Return
 	If s <> "" Then 
-		UI.SetWidthByID($"${mName}_icon"$, s)
-		UI.SetHeightByID($"${mName}_icon"$, s)
+		UI.SetIconSizeByID($"${mName}_icon"$, s)
 	End If
 End Sub
 'set Target

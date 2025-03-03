@@ -16,6 +16,9 @@ Version=10
 #Event: Property_Click (e As BANanoEvent)
 #Event: Button_Click (e As BANanoEvent)
 #Event: Button_FileChange (e As BANanoEvent)
+#Event: Yes_Click (e As BANanoEvent)
+#Event: No_Click (e As BANanoEvent)
+#Event: Cancel_Click (e As BANanoEvent)
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Property Bag, Description: Title
@@ -33,6 +36,25 @@ Version=10
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: right, Description: Position, List: bottom|left|right|top
 #DesignerProperty: Key: WrapActions, DisplayName: Wrap Actions, FieldType: Boolean, DefaultValue: True, Description: Wrap Actions
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Actions Visible
+#DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel
+#DesignerProperty: Key: BottonsWidth, DisplayName: Bottons Width, FieldType: String, DefaultValue: 22, Description: Bottons Width
+#DesignerProperty: Key: ButtonsShadow, DisplayName: Buttons Shadow, FieldType: String, DefaultValue: md, Description: Buttons Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: ButtonsRounded, DisplayName: Buttons Rounded, FieldType: String, DefaultValue: md, Description: Buttons Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: YesCaption, DisplayName: Yes Caption, FieldType: String, DefaultValue: Yes, Description: Yes Caption
+#DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
+#DesignerProperty: Key: YesColor, DisplayName: Yes Color, FieldType: String, DefaultValue: success, Description: Yes Color
+#DesignerProperty: Key: YesLoading, DisplayName: Yes Loading, FieldType: Boolean, DefaultValue: False, Description: Yes Loading
+#DesignerProperty: Key: NoCaption, DisplayName: No Caption, FieldType: String, DefaultValue: No, Description: No Caption
+#DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
+#DesignerProperty: Key: NoColor, DisplayName: No Color, FieldType: String, DefaultValue: error, Description: No Color
+#DesignerProperty: Key: NoLoading, DisplayName: No Loading, FieldType: Boolean, DefaultValue: False, Description: No Loading
+#DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
+#DesignerProperty: Key: CancelCaption, DisplayName: Cancel Caption, FieldType: String, DefaultValue: Cancel, Description: Cancel Caption
+#DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: #ffffff, Description: Cancel Text Color
+#DesignerProperty: Key: CancelColor, DisplayName: Cancel Color, FieldType: String, DefaultValue: gray, Description: Cancel Color
+#DesignerProperty: Key: CancelLoading, DisplayName: Cancel Loading, FieldType: Boolean, DefaultValue: False, Description: Cancel Loading
+#DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -95,10 +117,37 @@ Private Sub Class_Globals
 	Public PropertyBuilder As StringBuilder
 	Private DPValue As Map
 	Private datepickers As Map
-	Private sSearchWidth As String = "300px"
 	Public IsLive As Boolean = True
 	Private sShadow As String = "none"
 	Private sTooltipPosition As String = "right"
+	Private bActionsVisible As Boolean = True
+	Private sActionType As String = "yes-no"
+	Private sCancelColor As String = "gray"
+	Private bCancelLoading As Boolean = False
+	Private sCancelTextColor As String = "#ffffff"
+	Private bCancelVisible As Boolean = True
+	Private sNoCaption As String = "No"
+	Private sNoColor As String = "error"
+	Private bNoLoading As Boolean = False
+	Private sNoTextColor As String = "#ffffff"
+	Private bNoVisible As Boolean = True
+	Private sYesCaption As String = "Yes"
+	Private sYesColor As String = "success"
+	Private bYesLoading As Boolean = False
+	Private sYesTextColor As String = "#ffffff"
+	Private bYesVisible As Boolean = True
+	Private sCancelCaption As String = "Cancel"
+	Public CONST ACTIONTYPE_CANCEL As String = "cancel"
+	Public CONST ACTIONTYPE_NO As String = "no"
+	Public CONST ACTIONTYPE_YES As String = "yes"
+	Public CONST ACTIONTYPE_YES_NO As String = "yes-no"
+	Public CONST ACTIONTYPE_YES_NO_CANCEL As String = "yes-no-cancel"
+	Public YesButton As SDUI5Button
+	Public NoButton As SDUI5Button
+	Public CancelButton As SDUI5Button
+	Private sBottonsWidth As String = "22"
+	Private sButtonsShadow As String = "md"
+	Private sButtonsRounded As String = "md"
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
@@ -107,7 +156,6 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = CallBack
 	CustProps.Initialize
-	
 	propBagKeys.Initialize
 	propBagValues.Initialize
 	Types.Initialize
@@ -317,6 +365,46 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "right")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
+		bActionsVisible = Props.GetDefault("ActionsVisible", True)
+		bActionsVisible = UI.CBool(bActionsVisible)		
+		sActionType = Props.GetDefault("ActionType", "yes-no")
+		sActionType = UI.CStr(sActionType)
+		sCancelColor = Props.GetDefault("CancelColor", "gray")
+		sCancelColor = UI.CStr(sCancelColor)
+		bCancelLoading = Props.GetDefault("CancelLoading", False)
+		bCancelLoading = UI.CBool(bCancelLoading)
+		sCancelTextColor = Props.GetDefault("CancelTextColor", "#ffffff")
+		sCancelTextColor = UI.CStr(sCancelTextColor)
+		bCancelVisible = Props.GetDefault("CancelVisible", True)
+		bCancelVisible = UI.CBool(bCancelVisible)
+		sNoCaption = Props.GetDefault("NoCaption", "No")
+		sNoCaption = UI.CStr(sNoCaption)
+		sNoColor = Props.GetDefault("NoColor", "error")
+		sNoColor = UI.CStr(sNoColor)
+		bNoLoading = Props.GetDefault("NoLoading", False)
+		bNoLoading = UI.CBool(bNoLoading)
+		sNoTextColor = Props.GetDefault("NoTextColor", "#ffffff")
+		sNoTextColor = UI.CStr(sNoTextColor)
+		bNoVisible = Props.GetDefault("NoVisible", True)
+		bNoVisible = UI.CBool(bNoVisible)
+		sYesCaption = Props.GetDefault("YesCaption", "Yes")
+		sYesCaption = UI.CStr(sYesCaption)
+		sYesColor = Props.GetDefault("YesColor", "success")
+		sYesColor = UI.CStr(sYesColor)
+		bYesLoading = Props.GetDefault("YesLoading", False)
+		bYesLoading = UI.CBool(bYesLoading)
+		sYesTextColor = Props.GetDefault("YesTextColor", "#ffffff")
+		sYesTextColor = UI.CStr(sYesTextColor)
+		bYesVisible = Props.GetDefault("YesVisible", True)
+		bYesVisible = UI.CBool(bYesVisible)
+		sCancelCaption = Props.GetDefault("CancelCaption", "Cancel")
+		sCancelCaption = UI.CStr(sCancelCaption)
+		sBottonsWidth = Props.GetDefault("BottonsWidth", "22")
+		sBottonsWidth = UI.CStr(sBottonsWidth)
+		sButtonsShadow = Props.GetDefault("ButtonsShadow", "md")
+		sButtonsShadow = UI.CStr(sButtonsShadow)
+		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
+		sButtonsRounded = UI.CStr(sButtonsRounded)
 	End If
 	'
 	UI.AddClassDT("card-border card w-full bg-base-100")
@@ -337,16 +425,12 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         	<div id="${mName}_toolbar" class="m-3 -mb-3 flex">
         		<h2 id="${mName}_title" class="ml-1 card-title w-full">${sTitle}</h2>
-        		<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
-  					<div id="${mName}_searchboxgroup" class="hide w-full">
-    					<label id="${mName}_searchboxlabel" class="m-0 p-0 input join-item w-full">
-      						<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input hide"></input>
-    					</label>
-  					</div>
-  					<button id="${mName}_searchbtn" class="btn btn-square hide join-item">
-    					<i id="${mName}_searchbtnicon" class="fa-solid fa-magnifying-glass hide"></i>
-  					</button>
-				</div>
+				<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
+	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
+	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
+						<svg id="${mName}_searchbtnicon" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+					</button>
+	    		</div>
 				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
         	</div>
 			<div id="${mName}_divider" class="m-0 divider"></div>
@@ -356,8 +440,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         				<tbody id="${mName}_body"></tbody>
         			</table>
         		</form>
-        		<div id="${mName}_bottomdivider" class="divider hide"></div>
-        		<div id="${mName}_bottomactions" class="card-actions hide justify-end"></div>
+        		<div id="${mName}_bottomdivider" class="divider hide m-0 p-0"></div>
+        		<div id="${mName}_bottomactions" class="card-actions hide justify-end p-2"></div>
         	</div>
         </div>"$).Get($"#${mName}"$)
 	setTitle(sTitle)	
@@ -366,12 +450,354 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bSearchVisible Then
 		setSearchWidth(sSearchWidth)
 		setSearchSize(sSearchSize)
-		BANano.GetElement($"#${mName}_searchbtn"$).On("click", mCallBack, $"${mName}_SearchClick"$)
+		BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
 		Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
-		txtsearch.On("keyup", mCallBack, $"${mName}_SearchKeyUp"$)
-		txtsearch.On("search", mCallBack, $"${mName}_SearchClear"$)
+		txtsearch.On("keyup", Me, "SearchKeyUp")
+		txtsearch.On("search", Me, "SearchClear")
 	End If
 	setSearchVisible(bSearchVisible)
+	setActionsVisible(bActionsVisible)
+	Select Case sActionType
+	Case "cancel"
+		BANano.Await(AddCancelButton)
+	Case "no"
+		BANano.Await(AddNoButton)
+	Case "yes"
+		BANano.Await(AddYesButton)
+	Case "yes-no"
+		BANano.Await(AddYesButton)
+		BANano.Await(AddNoButton)
+	Case "yes-no-cancel"
+		BANano.Await(AddYesButton)
+		BANano.Await(AddNoButton)
+		BANano.Await(AddCancelButton)
+	End Select
+End Sub
+
+private Sub SearchClick(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	BANano.Await(SearchPropertyBag)
+	Dim e1 As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(e1))
+End Sub
+
+private Sub SearchKeyUp(e As BANanoEvent)			'ignoredeadcode
+	Dim e1 As BANanoEvent
+	BANano.await(SearchPropertyBag)
+	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(e1))
+End Sub
+
+private Sub SearchPropertyBag
+	'get the current value
+	Dim curValue As String = UI.GetValueByID($"${mName}_search"$)
+	curValue = curValue.ToLowerCase.trim
+	'get all the properties listed
+	Dim bag As Map = BANano.Await(getPropertyBag)	'
+	'loop through each bag key
+	For Each bagKey As String In bag.Keys
+		'get the title
+		Dim bagTitle As String = propBagKeys.GetDefault(bagKey, "")
+		'find a match
+		Dim isFound As Int = 0
+		If bagKey.ToLowerCase.Contains(curValue) Then isFound = BANano.parseInt(isFound) + 1
+		If bagTitle.ToLowerCase.Contains(curValue) Then isFound = BANano.parseInt(isFound) + 1
+		'
+		If isFound = 0 Then
+			'hide
+			BANano.Await(SetPropertyVisible(bagKey, False))
+		Else
+			BANano.Await(SetPropertyVisible(bagKey, True))
+		End If
+	Next
+End Sub
+
+private Sub SearchClear(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	'get all the properties listed
+	Dim bag As Map = BANano.Await(getPropertyBag)	'
+	'loop through each bag key
+	For Each bagKey As String In bag.Keys
+		BANano.Await(SetPropertyVisible(bagKey, True))
+	Next
+	Dim e1 As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_searchclear"$, Array(e1))
+End Sub
+
+'set Buttons Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setButtonsRounded(s As String)
+	sButtonsRounded = s
+	CustProps.put("ButtonsRounded", s)
+	If mElement = Null Then Return
+	UI.SetRoundedByID($"${mName}_yes"$, s)
+	UI.SetRoundedByID($"${mName}_no"$, s)
+	UI.SetRoundedByID($"${mName}_cancel"$, s)
+End Sub
+
+'get Buttons Rounded
+Sub getButtonsRounded As String
+	Return sButtonsRounded
+End Sub
+
+'set Bottons Width
+Sub setBottonsWidth(s As String)
+	sBottonsWidth = s
+	CustProps.put("BottonsWidth", s)
+	If mElement = Null Then Return
+	UI.SetWidthByID($"${mName}_yes"$, s)
+	UI.SetWidthByID($"${mName}_no"$, s)
+	UI.SetWidthByID($"${mName}_cancel"$, s)
+End Sub
+
+'set Buttons Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setButtonsShadow(s As String)
+	sButtonsShadow = s
+	CustProps.put("ButtonsShadow", s)
+	If mElement = Null Then Return
+	UI.SetShadowByID($"${mName}_yes"$, s)
+	UI.SetShadowByID($"${mName}_no"$, s)
+	UI.SetShadowByID($"${mName}_cancel"$, s)
+End Sub
+
+'get Bottons Width
+Sub getBottonsWidth As String
+	Return sBottonsWidth
+End Sub
+
+'get Buttons Shadow
+Sub getButtonsShadow As String
+	Return sButtonsShadow
+End Sub
+
+private Sub AddYesButton				'ignoredeadcode
+	Dim yName As String = $"${mName}_yes"$
+	YesButton.Initialize(mCallBack, yName, yName)
+	YesButton.ParentID = $"${mName}_bottomactions"$
+	YesButton.BackgroundColor = sYesColor
+	YesButton.TextColor = sYesTextColor
+	YesButton.Text = sYesCaption
+	YesButton.Visible = bYesVisible
+	YesButton.Loading = bYesLoading
+	YesButton.Width = sBottonsWidth
+	YesButton.Shadow = sButtonsShadow
+	YesButton.Shape = sButtonsRounded
+	YesButton.AddComponent
+	UI.OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
+End Sub
+
+private Sub AddNoButton			'ignoredeadcode
+	Dim nName As String = $"${mName}_no"$
+	NoButton.Initialize(mCallBack, nName, nName)
+	NoButton.ParentID = $"${mName}_bottomactions"$
+	NoButton.BackgroundColor = sNoColor
+	NoButton.TextColor = sNoTextColor
+	NoButton.Text = sNoCaption
+	NoButton.Visible = bNoVisible
+	NoButton.Loading = bNoLoading
+	NoButton.Width = sBottonsWidth
+	NoButton.Shadow = sButtonsShadow
+	NoButton.Shape = sButtonsRounded
+	NoButton.AddComponent
+	UI.OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
+End Sub
+
+private Sub AddCancelButton				'ignoredeadcode	
+	Dim cName As String = $"${mName}_cancel"$
+	CancelButton.Initialize(mCallBack, cName, cName)
+	CancelButton.ParentID = $"${mName}_bottomactions"$
+	CancelButton.BackgroundColor = sCancelColor
+	CancelButton.TextColor = sCancelTextColor
+	CancelButton.Text = sCancelCaption
+	CancelButton.Visible = bCancelVisible
+	CancelButton.Loading = bCancelLoading
+	CancelButton.Width = sBottonsWidth
+	CancelButton.Shadow = sButtonsShadow
+	CancelButton.Shape = sButtonsRounded
+	CancelButton.AddComponent
+	UI.OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)
+End Sub
+
+'get Actions Visible
+Sub getActionsVisible As Boolean
+	Return bActionsVisible
+End Sub
+
+
+'set Cancel Caption
+Sub setCancelCaption(s As String)
+	sCancelCaption = s
+	CustProps.put("CancelCaption", s)
+	If mElement = Null Then Return
+	CancelButton.Text = s
+End Sub
+'set Cancel Color
+Sub setCancelColor(s As String)
+	sCancelColor = s
+	CustProps.put("CancelColor", s)
+	If mElement = Null Then Return
+	CancelButton.Color = s
+End Sub
+'set Cancel Loading
+Sub setCancelLoading(b As Boolean)
+	bCancelLoading = b
+	CustProps.put("CancelLoading", b)
+	If mElement = Null Then Return
+	CancelButton.Loading = b
+End Sub
+'set Cancel Text Color
+Sub setCancelTextColor(s As String)
+	sCancelTextColor = s
+	CustProps.put("CancelTextColor", s)
+	If mElement = Null Then Return
+	CancelButton.TextColor = s
+End Sub
+'set Cancel Visible
+Sub setCancelVisible(b As Boolean)
+	bCancelVisible = b
+	CustProps.put("CancelVisible", b)
+	If mElement = Null Then Return
+	CancelButton.Visible = b
+End Sub
+'set No Caption
+Sub setNoCaption(s As String)
+	sNoCaption = s
+	CustProps.put("NoCaption", s)
+	If mElement = Null Then Return
+	NoButton.Text = s
+End Sub
+'set No Color
+Sub setNoColor(s As String)
+	sNoColor = s
+	CustProps.put("NoColor", s)
+	If mElement = Null Then Return
+	NoButton.Color = s
+End Sub
+'set No Loading
+Sub setNoLoading(b As Boolean)
+	bNoLoading = b
+	CustProps.put("NoLoading", b)
+	If mElement = Null Then Return
+	NoButton.Loading = b
+End Sub
+'set No Text Color
+Sub setNoTextColor(s As String)
+	sNoTextColor = s
+	CustProps.put("NoTextColor", s)
+	If mElement = Null Then Return
+	NoButton.TextColor = s
+End Sub
+'set No Visible
+Sub setNoVisible(b As Boolean)
+	bNoVisible = b
+	CustProps.put("NoVisible", b)
+	If mElement = Null Then Return
+	NoButton.Visible = b
+End Sub
+'set Yes Caption
+Sub setYesCaption(s As String)
+	sYesCaption = s
+	CustProps.put("YesCaption", s)
+	If mElement = Null Then Return
+	YesButton.Text = s
+End Sub
+'set Yes Color
+Sub setYesColor(s As String)
+	sYesColor = s
+	CustProps.put("YesColor", s)
+	If mElement = Null Then Return
+	YesButton.Color = s
+End Sub
+'set Yes Loading
+Sub setYesLoading(b As Boolean)
+	bYesLoading = b
+	CustProps.put("YesLoading", b)
+	If mElement = Null Then Return
+	YesButton.Loading = b
+End Sub
+'set Yes Text Color
+Sub setYesTextColor(s As String)
+	sYesTextColor = s
+	CustProps.put("YesTextColor", s)
+	If mElement = Null Then Return
+	YesButton.TextColor = s
+End Sub
+'set Yes Visible
+Sub setYesVisible(b As Boolean)
+	bYesVisible = b
+	CustProps.put("YesVisible", b)
+	If mElement = Null Then Return
+	YesButton.Visible = b
+End Sub
+'get Cancel Caption
+Sub getCancelCaption As String
+	Return sCancelCaption
+End Sub
+'get Cancel Color
+Sub getCancelColor As String
+	Return sCancelColor
+End Sub
+'get Cancel Loading
+Sub getCancelLoading As Boolean
+	Return bCancelLoading
+End Sub
+'get Cancel Text Color
+Sub getCancelTextColor As String
+	Return sCancelTextColor
+End Sub
+'get Cancel Visible
+Sub getCancelVisible As Boolean
+	Return bCancelVisible
+End Sub
+'get No Caption
+Sub getNoCaption As String
+	Return sNoCaption
+End Sub
+'get No Color
+Sub getNoColor As String
+	Return sNoColor
+End Sub
+'get No Loading
+Sub getNoLoading As Boolean
+	Return bNoLoading
+End Sub
+'get No Text Color
+Sub getNoTextColor As String
+	Return sNoTextColor
+End Sub
+'get No Visible
+Sub getNoVisible As Boolean
+	Return bNoVisible
+End Sub
+'get Yes Caption
+Sub getYesCaption As String
+	Return sYesCaption
+End Sub
+'get Yes Color
+Sub getYesColor As String
+	Return sYesColor
+End Sub
+'get Yes Loading
+Sub getYesLoading As Boolean
+	Return bYesLoading
+End Sub
+'get Yes Text Color
+Sub getYesTextColor As String
+	Return sYesTextColor
+End Sub
+'get Yes Visible
+Sub getYesVisible As Boolean
+	Return bYesVisible
+End Sub
+
+
+'set Actions Visible
+Sub setActionsVisible(b As Boolean)			'ignoredeadcode
+	bActionsVisible = b
+	CustProps.put("ActionsVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_bottomdivider"$, b)
+	UI.SetVisibleByID($"${mName}_bottomactions"$, b)
 End Sub
 
 'set Shadow
@@ -444,7 +870,8 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	If s = "" Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
-	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+'	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+	UI.SetIconSizeByID($"${mName}_searchbtnicon"$, s)
 End Sub
 'set Search Visible
 Sub setSearchVisible(b As Boolean)		'ignoredeadcode
@@ -455,10 +882,10 @@ Sub setSearchVisible(b As Boolean)		'ignoredeadcode
 		'search is visible leave at zero
 		UI.SetVisibleByID($"#${mName}_searchbox"$, b)
 		UI.SetVisibleByID($"#${mName}_search"$, b)
-		UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+		'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
 		UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
 		UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-		UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+		'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
 	Else
 		UI.RemoveClassByID($"${mName}_divider"$, "m-0")
 	End If
@@ -591,7 +1018,7 @@ End Sub
 '	AddPropertyTextBox("propupdate", "Update Src Field", "", "", False, "left")
 '	AddPropertyTextArea("propoptions", "Options List (;)", "", "", False, "left")  'select/RadioGroup
 '	AddPropertySelectGroup("propforeigntable", "Foreign Table", "", "", False, "left", CreateMap())
-'	SetPropertyAppendIcon("propforeigntable", "fa-solid fa-magnifying-glass")
+'	SetPropertyAppendIcon("propforeigntable", "./assets/magnifying-glass-solid.svg")
 '	AddPropertySelect("propforeignfield", "Foreign Key", "", "", False, "left", CreateMap())
 '	AddPropertySelect("propforeigndisplayfield", "Foreign Display", "", "", False, "left", CreateMap())
 '	AddPropertySelect("propforeigndisplayfield1", "Foreign Display 1", "", "", False, "left", CreateMap())
@@ -1510,14 +1937,6 @@ Sub setSearchValue(s As String)
 	BANano.GetElement($"#${mName}_search"$).SetValue(s)
 End Sub
 
-Sub setActionsVisible(b As Boolean)
-	If b = True Then
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
-	Else
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
-	End If
-End Sub
-
 'change the search placeholder
 '<code>
 'tbl.SetSearchPlaceholder("Buscar")
@@ -1596,7 +2015,6 @@ End Sub
 'clear the property bag settings
 Sub Clear
 	BANano.GetElement($"#${mName}_body"$).Empty
-	BANano.GetElement($"#${mName}_bottomactions"$).Empty
 	propBagKeys.Initialize
 	propBagValues.Initialize
 	Types.Initialize
@@ -1637,8 +2055,8 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	SetPropertyMaxValue(Key, iMaxValue)
 	SetPropertyMinValue(Key, iMinValue)
 	SetPropertyStepValue(Key, iStepValue)
-	SetPropertyPrependIcon(Key, "fa-solid fa-minus")
-	SetPropertyAppendIcon(Key, "fa-solid fa-plus")
+	SetPropertyPrependIcon(Key, "./assets/minus-solid.svg")
+	SetPropertyAppendIcon(Key, "./assets/plus-solid.svg")
 	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
 	SetPropertyNoArrows(Key)
@@ -1731,7 +2149,7 @@ End Sub
 'End Sub
 
 Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextBox")
@@ -1739,13 +2157,15 @@ Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, R
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
     <td id="${mName}_${Key}_th" >
-			<span id="${mName}_${Key}_tooltip">
-				<span id="${mName}_${Key}_title">${Title}</span>
-			</span>
-		</td>		
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+		<span id="${mName}_${Key}_tooltip">
+			<span id="${mName}_${Key}_title">${Title}</span>
+		</span>
+	</td>		
+    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+		<div class="indicator w-full">
+    		<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    		<input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input>
+		</div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -1757,8 +2177,51 @@ Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, R
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
+
+Sub AddPropertyPlusMinus(Key As String, Title As String, DefaultValue As String, Required As Boolean, MinValue As String, StepValue As String, MaxValue As String)
+	propBagKeys.Put(Key, Title)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "String")
+	ComponentType.Put(Key, "TextBox")
+	If Required Then Compulsory.Put(Key, Key)
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <td id="${mName}_${Key}_th" >
+		<span id="${mName}_${Key}_tooltip">
+			<span id="${mName}_${Key}_title">${Title}</span>
+		</span>
+	</td>		
+    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+		<div class="indicator w-full">
+    		<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    		<div class="flex flex-col w-full">
+      			<div class="flex w-full overflow-hidden input pr-1 mr-1 input-${sComponentSize}">
+        			<input id="${mName}_${Key}" name="${mName}_${Key}" type="number" value="${DefaultValue}" min="${MinValue}" step="${StepValue}" max="${MaxValue}" class="text-center tabular-nums"></input>
+        			<div class="flex flex-col shrink-0 w-7 h-full">
+          				<button id="${mName}_${Key}_append" class="btn w-8 h-1/2 rounded-l-none">+</button>
+          				<button id="${mName}_${Key}_prepend" class="btn w-8 h-1/2 rounded-l-none">-</button>
+        			</div>
+      			</div>
+    		</div>
+  		</div>
+    </td>
+    </tr>"$
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	If Required Then
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+	Else
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+	End If
+	SetPropertyMaxValue(Key, MaxValue)
+	SetPropertyMinValue(Key, MinValue)
+	SetPropertyStepValue(Key, StepValue)
+	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
+	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
+	SetPropertyNoArrows(Key)
+End Sub
+
 Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextBoxGroup")
@@ -1776,10 +2239,10 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hide"></span>
-    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
-    					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize} input-bordered w-full tlradius blradius trradius brradius"></input>
+    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hide"></span>
-    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
+    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
     				</label>
     			</div>
     		</div>
@@ -1798,7 +2261,7 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
 End Sub
 
 Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "SelectGroup")
@@ -1816,11 +2279,11 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
     </label>
     </div>
     </div>
@@ -1851,7 +2314,7 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 End Sub
 
 Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "PasswordGroup")
@@ -1869,10 +2332,10 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
-    <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize} input-bordered w-full tlradius blradius trradius brradius"></input>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
     </label>
     </div>
     </div>
@@ -1910,6 +2373,7 @@ Sub SetPropertyPrependIcon(Key As String, picon As String)
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).Remove
 	UI.SetIconNameByID($"${mName}_${Key}_prepend_icon"$, picon)	'
 	UI.SetSizeByID($"${mName}_${Key}_prepend"$, "size", "btn", sComponentSize)
+	UI.SetIconSizeByID($"${mName}_${Key}_prepend_icon"$, sComponentSize)	'
 	UI.Show($"${mName}_${Key}_prepend"$)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
@@ -1956,7 +2420,8 @@ End Sub
 Sub SetPropertyAppendIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).Remove
-	UI.UpdateClassByID($"${mName}_${Key}_append_icon"$, "icon", picon)
+	UI.SetIconNameByID($"${mName}_${Key}_append_icon"$, picon)
+	UI.SetIconSizeByID($"${mName}_${Key}_append_icon"$, sComponentSize)
 	'
 	UI.UpdateClassByID($"${mName}_${Key}_append"$, "size", sComponentSize)
 	UI.Show($"${mName}_${Key}_append"$)
@@ -1985,24 +2450,23 @@ End Sub
 Sub SetPropertyShowEyes(Key As String, b As Boolean)
 	If b Then
 		SetPropertyTypePassword(Key, True)
-		BANano.GetElement($"#${mName}_${Key}_append_icon"$).RemoveClass("fa-solid fa-eye-slash")
-		SetPropertyAppendIcon(Key, "fa-solid fa-eye")
+		SetPropertyAppendIcon(Key, "./assets/eye-solid.svg")
 	Else
 		BANano.GetElement($"#${mName}_${Key}_append"$).AddClass("hide")
 	End If
 End Sub
 Sub SetPropertyToggleEyes(Key As String)
-	Dim cicon As String = BANano.GetElement($"#${mName}_${Key}_append_icon"$).GetData("icon")
+	Dim cicon As String = BANano.GetElement($"#${mName}_${Key}_append_icon"$).GetData("src")
 	cicon = UI.CStr(cicon)
 	Select Case cicon
-	Case "fa-solid fa-eye"
-		SetPropertyAppendIcon(Key, "fa-solid fa-eye-slash")
+	Case "./assets/eye-solid.svg"
+		SetPropertyAppendIcon(Key, "./assets/eye-slash-solid.svg")
 		SetPropertyTypePassword(Key, False)
 		If SubExists(mCallBack, $"${mName}_${Key}_toggle"$) Then
 			CallSub2(mCallBack, $"${mName}_${Key}_toggle"$, False)
 		End If
-	Case "fa-solid fa-eye-slash"
-		SetPropertyAppendIcon(Key, "fa-solid fa-eye")
+	Case "./assets/eye-slash-solid.svg"
+		SetPropertyAppendIcon(Key, "./assets/eye-solid.svg")
 		SetPropertyTypePassword(Key, True)
 		If SubExists(mCallBack, $"${mName}_${Key}_toggle"$) Then
 			CallSub2(mCallBack, $"${mName}_${Key}_toggle"$, False)
@@ -2013,7 +2477,7 @@ End Sub
 'DisplayDateFormat: "F j, Y"
 'https://flatpickr.js.org/formatting/
 Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, locale As String)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "DatePicker")
@@ -2027,7 +2491,7 @@ Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2069,7 +2533,7 @@ End Sub
 'AddPropertyRollDateTime("dt1", "Date of Birth", "", False, "left", dt1Options)
 '</code>
 'Sub AddPropertyRollDateTime(Key As String, Title As String, Description As String, Required As Boolean, TooltipPos As String, doptions As RollDateOptions)
-'	propBagKeys.Put(Key, Required)
+'	propBagKeys.Put(Key, Title)
 '	propBagValues.Put(Key, "")
 '	Types.Put(Key, "String")
 '	ComponentType.Put(Key, "RollDate")
@@ -2104,7 +2568,7 @@ End Sub
 '	rolldate.Put(cname, sig)
 'End Sub
 Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean, Width As String, Height As String, ImageType As String)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, "")
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Signature")
@@ -2145,7 +2609,7 @@ End Sub
 'DisplayDateFormat: "F j, Y H:i"
 'https://flatpickr.js.org/formatting/
 Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, Time24Hours As Boolean, locale As String)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "DateTimePicker")
@@ -2159,7 +2623,7 @@ Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As St
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2197,7 +2661,7 @@ End Sub
 'https://flatpickr.js.org/formatting/
 'locale = 'en
 Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, TimeFormat As String, DisplayFormat As String, Time24Hours As Boolean, locale As String)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TimePicker")
@@ -2211,7 +2675,7 @@ Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="text" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2248,7 +2712,7 @@ End Sub
 
 
 Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Password")
@@ -2262,7 +2726,7 @@ Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, 
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="password" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="password" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2275,7 +2739,7 @@ Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, 
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 'Sub AddPropertyColor(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
-'	propBagKeys.Put(Key, Required)
+'	propBagKeys.Put(Key, Title)
 '	propBagValues.Put(Key, DefaultValue)
 '	Types.Put(Key, "String")
 '	ComponentType.Put(Key, "Color")
@@ -2290,7 +2754,7 @@ End Sub
 '    <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
 '    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
 '    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
-'    <input id="${mName}_${Key}" name="${mName}_${Key}" type="color" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+'    <input id="${mName}_${Key}" name="${mName}_${Key}" type="color" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
 '    </div></td>
 '    </tr>"$
 '	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2304,7 +2768,7 @@ End Sub
 '	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 'End Sub
 Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Number")
@@ -2318,7 +2782,7 @@ Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Re
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="number" inputmode="numeric" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="number" inputmode="numeric" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2331,7 +2795,7 @@ Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Re
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Telephone")
@@ -2345,7 +2809,7 @@ Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String,
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <input id="${mName}_${Key}" name="${mName}_${Key}" type="tel" inputmode="tel" placeholder="${Title}" class="input input-${sComponentSize} input-bordered w-full"></input></div>
+    <input id="${mName}_${Key}" name="${mName}_${Key}" type="tel" inputmode="tel" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -2359,7 +2823,7 @@ Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String,
 End Sub
 Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Color As String)
 	Dim xcolor As String = UI.FixColor("link", Color)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Email")
@@ -2379,7 +2843,7 @@ Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Col
 End Sub
 Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Color As String)
 	Dim xcolor As String = UI.FixColor("text", Color)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Label")
@@ -2399,7 +2863,7 @@ Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Col
 End Sub
 Sub AddPropertyLink(Key As String, Title As String, DefaultValue As String, Color As String)
 	Dim xcolor As String = UI.FixColor("link", Color)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Link")
@@ -2419,7 +2883,7 @@ Sub AddPropertyLink(Key As String, Title As String, DefaultValue As String, Colo
 End Sub
 'empty div to place other controls
 Sub AddPropertyPlaceHolder(Key As String, Title As String, DefaultValue As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "PlaceHolder")
@@ -2499,33 +2963,7 @@ Sub PropertiesAreValid(props As List) As Boolean
 		Return False
 	End If
 End Sub
-'is the property bag valid
-Sub PropertyBagIsValid As Boolean
-	'get the pbag values
-	Dim values As Map = BANano.Await(getPropertyBag)
-	Dim iValid As Int = 0
-	'loop through each key
-	For Each k As String In propBagKeys.Keys
-		'is the key required
-		Dim b As Boolean = propBagKeys.Get(k)
-		'if the key is required
-		If b Then
-			'get the value
-			Dim cv As String = values.GetDefault(k, "")
-			cv = UI.CStr(cv)
-			cv = cv.Trim
-			'if blank, we have an issue
-			If cv = "" Then
-				iValid = BANano.parseint(iValid) + 1
-			End If
-		End If
-	Next
-	If iValid = 0 Then
-		Return True
-	Else
-		Return False
-	End If
-End Sub
+
 'check if propertues match
 Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 	Dim v1 As String = GetPropertyValue(fld1)
@@ -2545,7 +2983,7 @@ Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 	End If
 End Sub
 Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Required As Boolean)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextArea")
@@ -2563,10 +3001,10 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_prepend_icon"></i></btn>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${Key}_append_icon"></i></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
     </label>
     </div>
     </div>
@@ -2702,7 +3140,7 @@ Sub SetPropertyValue(Key As String, value As String)
 		Case "AvatarGroup"
 			Dim bo As Object = value
 			SetPropertyAvatarGroupItems(Key, bo)		'ignore
-		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup"
+		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup", "Filter"
 			value = UI.CStr(value)
 			Dim lvalues As List = UI.StrParse(";", value)
 			lvalues = UI.ListTrimItems(lvalues)
@@ -2775,7 +3213,7 @@ Sub GetPropertyValue(Key As String) As String
 		Case "Signature"
 			'Dim sig As SDUISignaturePad = signatures.Get($"${mName}_${Key}"$)
 			'v = sig.toDataURL
-		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup"
+		Case "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup", "Filter"
 			'get all items in the group select
 			Dim allitems As Map = RGOptions.Get(Key)
 			Dim sItems As List
@@ -2817,7 +3255,7 @@ Sub SetPropertyBadge(Key As String, value As Object)
 	BANano.GetElement($"#${mName}_${Key}badge"$).SetText(value)
 End Sub
 Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
-	propBagKeys.Put(Key, Required)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Select")
@@ -2994,7 +3432,7 @@ End Sub
 'End Sub
 '</code>
 Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInput")
@@ -3009,7 +3447,7 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean)
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
 			<div class="indicator w-full">
 				<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-${sComponentSize} file-input-bordered w-full"></input>
+    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-${sComponentSize} file- w-full"></input>
 			<div>
 		</td>
     </tr>"$
@@ -3059,8 +3497,8 @@ End Sub
 'End Sub
 '</code>
 Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String, xIcon As String, xColor As String)
-	If xIcon = "" Then xIcon = "fa-solid fa-arrow-up-from-bracket"
-	propBagKeys.Put(Key, False)
+	If xIcon = "" Then xIcon = "./assets/arrow-up-from-bracket-solid.svg"
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInputProgress")
@@ -3074,7 +3512,7 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
     			<button id="${mName}_${Key}_button" class="btn btn-circle btn-${xColor} w-[${xSize}] h-[${xSize}]">
-    				<i id="${mName}_${Key}_icon" data-icon="${xIcon}" class="${xIcon} fa-2xl"></i>
+    				<svg id="${mName}_${Key}_icon" fill="currentColor" data-src="${xIcon}" width="42px" height="42px"></svg>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
     			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
@@ -3236,11 +3674,11 @@ Sub AddPropertyMicrophone(Key As String, Title As String, xSize As String, xColo
 	ComponentType.Put(Key, "Microphone")
 End Sub
 private Sub SetPropertyFileInputProgressCamCorder(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "fa-solid fa-video")
+	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/video-solid.svg")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "video/*;capture=camcorder")
 End Sub
 private Sub SetPropertyFileInputProgressCamera(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "fa-solid fa-camera")
+	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/camera-solid.svg")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "image/*;capture=camera")
 	UI.SetAttrByID($"${mName}_${key}"$, "capture", "environment")
 End Sub
@@ -3248,7 +3686,7 @@ Sub SetPropertyFileInputAccept(key As String, saccept As String)
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", saccept)
 End Sub
 Sub SetPropertyFileInputProgressMicrophone(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "fa-solid fa-microphone")
+	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/microphone-solid.svg")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "audio/*;capture=microphone")
 End Sub
 Sub SetPropertyFileInputMultiple(key As String, b As Boolean)
@@ -3274,7 +3712,7 @@ Sub SetPropertyFileInputProgressLoading(key As String, Value As Int, Status As B
 End Sub
 
 Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As String, Url As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Avatar")
@@ -3298,7 +3736,7 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
 End Sub
 
 Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As String, sSize As String, Shape As String, Color As String, textSize As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarPlaceholder")
@@ -3326,7 +3764,7 @@ Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As
 End Sub
 
 Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shape As String, Images As List)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, "")
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarGroup")
@@ -3417,7 +3855,7 @@ Sub SetPropertyImageMask(Key As String, Shape As String)
 End Sub
 
 Sub AddPropertyImage(Key As String, Title As String, Width As String, Height As String, Shape As String, Url As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Url)
 	Types.Put(Key, "Image")
 	ComponentType.Put(Key, "Image")
@@ -3448,7 +3886,7 @@ Sub SetPropertyImage(Key As String, imgUrl As String)
 	BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("data-src", imgUrl)
 End Sub
 Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Progress")
@@ -3486,7 +3924,7 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
 End Sub
 
 Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Range")
@@ -3509,7 +3947,7 @@ Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Col
 End Sub
 Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean, Color As String)
 	DefaultValue = UI.CBool(DefaultValue)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "CheckBox")
@@ -3694,7 +4132,7 @@ Sub SetPropertyRows(Key As String, v As String)
 End Sub
 Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, Color As String)
 	DefaultValue = UI.CBool(DefaultValue)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "Toggle")
@@ -3713,7 +4151,7 @@ Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, C
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Boolean, Color As String, sSize As String, sThickNess As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "RadialProgress")
 	ComponentType.Put(Key, "RadialProgress")
@@ -3739,7 +4177,7 @@ Sub SetPropertyRadialProgress(Key As String, Value As Object)
 	UI.SetStyleByID($"#${mName}_${Key}"$,"--value", Value)
 End Sub
 Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Color As String, mask As String)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Rating")
 	ComponentType.Put(Key, "Rating")
@@ -3814,7 +4252,7 @@ End Sub
 
 
 Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As String, Color As String, bSingleSelect As Boolean, ActiveColor As String, Options As Map)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "GroupSelect")
 	ComponentType.Put(Key, "GroupSelect")
@@ -3826,7 +4264,7 @@ Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As Strin
 			</span>
 		</td>		
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-			<div id="${mName}_${Key}_content" class="flex gap-2 flex-wrap w-full"></div>
+			<div id="${mName}_${Key}_content" class="flex gap-2 flex-wrap w-full mt-1 mb-1"></div>
     	</td>
     </tr>"$	
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -3844,7 +4282,7 @@ Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As Strin
 End Sub
 
 Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "CheckBoxGroup")
 	ComponentType.Put(Key, "CheckBoxGroup")
@@ -3874,7 +4312,7 @@ Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As Str
 End Sub
 
 Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "ToggleGroup")
 	ComponentType.Put(Key, "ToggleGroup")
@@ -3904,7 +4342,7 @@ Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As Strin
 End Sub
 
 Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
-	propBagKeys.Put(Key, False)
+	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "RadioGroup")
 	ComponentType.Put(Key, "RadioGroup")
@@ -4039,6 +4477,85 @@ Sub SetPropertyCheckBoxGroupItems(Key As String, sColor As String, sActiveColor 
 	Next
 End Sub
 
+Sub AddPropertyFilter(Key As String, Title As String, DefaultValue As String, Color As String, ActiveColor As String, Options As Map)
+	propBagKeys.Put(Key, Title)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "Filter")
+	ComponentType.Put(Key, "Filter")
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+			<form id="${mName}_${Key}_content" class="filter gap-y-1 w-full mt-1 mb-1"></div>
+		</td>
+    </tr>"$	
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	BANano.Await(SetPropertyFilterItems(Key, Color, ActiveColor, Options))
+	'
+	If DefaultValue <> "" Then
+		Dim litems As List = UI.StrParse(";", DefaultValue)
+		litems = UI.ListTrimItems(litems)
+		For Each k As String In litems
+			k = UI.CleanID(k)
+			Dim nk As String = $"${mName}_${Key}_${k}"$
+			BANano.Await(UI.SetCheckedByID(nk, True))
+		Next
+	End If
+	UI.OnEventByID($"${mName}_${Key}_content"$, "reset", Me, "ResetPropertyForm")
+End Sub
+
+private Sub ResetPropertyForm(e As BANanoEvent)			'ignoredeadcode
+	Dim pID As String = e.ID
+	Dim k As String = UI.MvField(pID, 2, "_")
+	If k <> "" Then 
+		BANano.Await(SetPropertyValue(k, ""))
+		If SubExists(mCallBack, $"${mName}_Change"$) Then
+			Dim data As Map = BANano.Await(getPropertyBag)
+			CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
+		End If
+	End If
+End Sub
+
+Sub SetPropertyFilterItems(Key As String, sColor As String, sActiveColor As String, items As Map)
+	Dim xitems As Map = BANano.DeepClone(items)
+	RGOptions.Put(Key, xitems)
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim itemSize As String = UI.FixSize("btn", sComponentSize)
+	Dim itemColor As String = UI.FixColor("btn", sColor)
+	Dim soutline As String = ""
+	If bButtonsOutlined Then soutline = "btn-outline"
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
+	
+	'add a clearer button
+	sb.Append($"<input id="${mName}_${Key}_reset" class="btn btn-circle ${itemSize} ${soutline}" name="${Key}" type="reset" value="×"/>"$)
+	'add options
+	For Each k As String In xitems.Keys
+		Dim v As String = xitems.Get(k)
+		k = UI.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		sb.Append($"<input id="${nk}" value="${k}" class="btn rounded-full ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor}" name="${Key}" type="radio" aria-label="${v}">"$)
+	Next
+	UI.ClearByID($"${mName}_${Key}_content"$)
+	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	For Each k As String In xitems.Keys
+		k = UI.CleanID(k)
+		Dim nk As String = $"${mName}_${Key}_${k}"$
+		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+	Next
+End Sub
+
 
 Sub SetPropertyGroupSelectItems(Key As String, sColor As String, sActiveColor As String, bSingleSelect As Boolean, items As Map)
 	Dim xitems As Map = BANano.DeepClone(items)
@@ -4138,7 +4655,7 @@ Sub getPropertyBag As Map
 	Return values
 End Sub
 
-Private Sub OnPropChangeInternal(e As BANanoEvent)
+Private Sub OnPropChangeInternal(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	e.StopPropagation
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
@@ -4260,7 +4777,7 @@ Sub ShowDesign(designName As String, compName As String)
 						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False)
 						'AddPropertyTextArea(skey, sdisplayname, "","", False, "left")
 						'SetPropertyValue(skey, sdefaultvalue)
-						SetPropertyPrependIcon(skey, "fa-regular fa-paste")
+						SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 						SetPropertyOneColumn(skey)
 					Case "Select"
@@ -4270,7 +4787,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "FileInput"
 						AddPropertyFileInput(skey, sdisplayname,False)
 					Case "FileInputProgress"
-						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "fa-solid fa-arrow-up-from-bracket", "success")
+						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "./assets/arrow-up-from-bracket-solid.svg", "success")
 					Case "CamCorder"
 						AddPropertyCamCorder(skey, sdisplayname, "80px", "success")
 					Case "Camera"
@@ -4318,7 +4835,7 @@ Sub ShowDesign(designName As String, compName As String)
 								'this is not a dropdown
 								If skey.StartsWith("Raw") Then
 									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
-									SetPropertyPrependIcon(skey, "fa-regular fa-paste")
+									SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 									BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 									SetPropertyOneColumn(skey)
 								Else	
@@ -4474,7 +4991,7 @@ private Sub GetEventName(strDeclaration As String) As String
 	strDeclaration = strDeclaration.trim
 	fBracket = UI.InStr1(strDeclaration, "(")
 	If fBracket > 0 Then
-		sResult = UI.Left1(strDeclaration, fBracket - 1)
+		sResult = UI.Left(strDeclaration, fBracket - 1)
 	Else
 		sResult = strDeclaration
 	End If
@@ -4628,7 +5145,7 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 						'does the key start with raw, make multi-line
 						If skey.tolowercase.StartsWith("raw") Then
 							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
-							SetPropertyPrependIcon(skey, "fa-regular fa-paste")
+							SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 							BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 							SetPropertyOneColumn(skey)
 						Else
@@ -4652,7 +5169,7 @@ End Sub
 'Sub tblname_btnid_click (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -4666,6 +5183,8 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.Outline = bButtonsOutlined
 	btn.LeftIcon = sIcon
 	btn.Size = sButtonSize
+	btn.IconSize = sButtonSize
+	btn.LeftIconColor = iconColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
@@ -4677,7 +5196,7 @@ End Sub
 'Sub tblname_btnid_click (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
+Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String, textColor As String) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -4688,6 +5207,7 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 	btn.BackgroundColor = btnColor
 	btn.Outline = bButtonsOutlined
 	btn.Size = sButtonSize
+	btn.TextColor = textColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_click"$)
@@ -4712,7 +5232,7 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
@@ -4733,17 +5253,6 @@ private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	el.RunMethod("click", Null)
 End Sub
 
-Sub AddToolbarActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-	SetToolbarButtonTextColor(btnID, btnTextColor)
-	Return btn
-End Sub
-
-Sub AddToolbarButtonTextColor(btnID As String, btnCaption As String, btnColor As String, btnTextColor As String) As SDUI5Button
-	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
-	SetToolbarButtonTextColor(btnID, btnTextColor)
-	Return btn
-End Sub
 
 'change a toolbar button color
 Sub SetToolbarButtonColor(btn As String, value As String)
@@ -4752,6 +5261,10 @@ End Sub
 
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
 	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+End Sub
+
+Sub SetToolbarButtonIconColor(btn As String, value As String)		'ignoredeadcode
+	UI.SetIconColorByID($"#${mName}_${btn}_lefticon"$, value)
 End Sub
 
 'change the visibility of a button

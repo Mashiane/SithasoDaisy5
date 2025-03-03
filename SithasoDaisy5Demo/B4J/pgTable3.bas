@@ -33,12 +33,12 @@ Sub Show(MainApp As SDUI5App)
 		
 	'add columns for editing
 '	table1.AddDesignerColums
-	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
+'	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
 	table1.MoveBackButton
 	'
 	BANano.Await(table1.SetItemsPaginate(Items))
 	'Allow filtering records by an alphabet from column
-	table1.SetAlphaChooser(True, "8", "name")
+	'table1.SetAlphaChooser(True, "8", "name")
 '	For rCnt = 0 To tb3.RowCount - 1
 '		tb3.SetRowBackgroundColor(rCnt, "red")
 '		tb3.SetRowTextColor(rCnt, "white")
@@ -50,11 +50,31 @@ Sub Show(MainApp As SDUI5App)
 '	table1.SetRowColumnBackgroundColor("color", 1, "red")
 '	table1.SetRowColumnTextColor("color", 1, "white")
 	'sum the totals of each of these columns
-	Dim summary As Map = table1.SetFooterTotalSumCountColumns(Array("id"))
-	'get the total number of processed rows
-	sRowCount = summary.Get("rowcount")
-	'format the value to be a thousand
-	sRowCount = App.UI.Thousands(sRowCount)
-	'set the first column to show the total
-	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+'	Dim summary As Map = table1.SetFooterTotalSumCountColumns(Array("id"))
+'	'get the total number of processed rows
+'	sRowCount = summary.Get("rowcount")
+'	'format the value to be a thousand
+'	sRowCount = app.UI.Thousands(sRowCount)
+'	'set the first column to show the total
+'	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+End Sub
+
+Private Sub table1_AlphaClick (Item As String)
+'	app.PagePause
+'	Dim alphaSearch As List = table1.SearchByAlphabet(Item, "name")
+'	'Show all items filtered by alpha chooser
+'	BANano.Await(table1.SetItems(alphaSearch))
+'	BANano.Await(table1.UpdateColumnChooser)
+'	BANano.Await(table1.UpdateAlphaChooser(alphaSearch))
+'	BANano.Await(table1.ShowTotals(alphaSearch))
+''	'Calculate totals
+''	Dim summary As Map = table1.SetFooterTotalSumCountColumns(alphaSearch, Array("id"))
+''	
+''	'get the total number of processed rows
+''	sRowCount = summary.Get("rowcount")
+''	'format the value to be a thousand
+''	sRowCount = app.UI.Thousands(sRowCount)
+''	'set the first column to show the total
+''	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+'	app.PageResume
 End Sub

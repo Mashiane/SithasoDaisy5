@@ -16,7 +16,7 @@ Version=10
 #DesignerProperty: Key: LgOpen, DisplayName: LG Open, FieldType: Boolean, DefaultValue: False, Description: Lg Open
 #DesignerProperty: Key: XlOpen, DisplayName: XL Open, FieldType: Boolean, DefaultValue: False, Description: Xl Open
 #DesignerProperty: Key: Overlay, DisplayName: Overlay, FieldType: Boolean, DefaultValue: True, Description: Overlay
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 80, Description: Width
 #DesignerProperty: Key: RightSide, DisplayName: Right Side, FieldType: Boolean, DefaultValue: False, Description: Right Side
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -56,7 +56,7 @@ Sub Class_Globals
 	Private bRightSide As Boolean = False
 	Private bSmOpen As Boolean = False
 	Private bXlOpen As Boolean = False
-	Private sBackgroundColor As String = "base-200"
+	Private sBackgroundColor As String = "base-100"
 	Private sWidth As String = "80"
 End Sub
 'initialize the custom view class
@@ -228,7 +228,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 	End If
 	'
-	UI.AddClassDT("drawer")
+	UI.AddClassDT("drawer mx-auto max-w-[100rem]")
 	If bLgOpen Then UI.AddClassDT("lg:drawer-open")
 	If bMdOpen Then UI.AddClassDT("md:drawer-open")
 	If bOpen Then UI.AddClassDT("drawer-open")
@@ -248,7 +248,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
-		<div id="${mName}_content" class="drawer-content flex flex-col"></div>
+		<div id="${mName}_content" class="drawer-content"></div>
 		<div id="${mName}_side" class="drawer-side z-50">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 			<div id="${mName}_sidecontent" class="min-h-full"></div>

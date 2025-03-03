@@ -108,6 +108,15 @@ Version=10
 #DesignerProperty: Key: BackTooltip, DisplayName: Back Tooltip, FieldType: String, DefaultValue: , Description: Back Tooltip
 #DesignerProperty: Key: HasGrid, DisplayName: Has Grid, FieldType: Boolean, DefaultValue: False, Description: Has Grid
 #DesignerProperty: Key: GridTooltip, DisplayName: Grid Tooltip, FieldType: String, DefaultValue: , Description: Grid Tooltip
+#DesignerProperty: Key: HasAlphaChooser, DisplayName: Has Alpha Chooser, FieldType: Boolean, DefaultValue: True, Description: Has Alpha Chooser
+#DesignerProperty: Key: AlphaChooserTextColor, DisplayName: Alpha Chooser Text Color, FieldType: String, DefaultValue: #ffffff, Description: Alpha Chooser Text Color
+#DesignerProperty: Key: AlphaChooserColumn, DisplayName: Alpha Chooser Column, FieldType: String, DefaultValue: name, Description: Alpha Chooser Column
+#DesignerProperty: Key: AlphaChooserHeight, DisplayName: Alpha Chooser Height, FieldType: String, DefaultValue: 8, Description: Alpha Chooser Height
+#DesignerProperty: Key: HasColumnChooser, DisplayName: Has Column Chooser, FieldType: Boolean, DefaultValue: True, Description: Has Column Chooser
+#DesignerProperty: Key: ColumnChooserTextColor, DisplayName: Column Chooser Text Color, FieldType: String, DefaultValue: #ffffff, Description: Column Chooser Text Color
+#DesignerProperty: Key: ColumnChooserHeight, DisplayName: Column Chooser Height, FieldType: String, DefaultValue: 8, Description: Column Chooser Height
+#DesignerProperty: Key: ColumnChooserColor, DisplayName: Column Chooser Color, FieldType: String, DefaultValue: primary, Description: Column Chooser Color
+#DesignerProperty: Key: ShowTotalRecords, DisplayName: Show Total Records, FieldType: Boolean, DefaultValue: True, Description: Show Total Records
 #DesignerProperty: Key: HasEdit, DisplayName: Has Edit, FieldType: Boolean, DefaultValue: False, Description: Has Edit
 #DesignerProperty: Key: EditTooltip, DisplayName: Edit Tooltip, FieldType: String, DefaultValue: , Description: Edit Tooltip
 #DesignerProperty: Key: HasClone, DisplayName: Has Clone, FieldType: Boolean, DefaultValue: False, Description: Has Clone
@@ -154,7 +163,7 @@ Private Sub Class_Globals
 	Private bHasDeleteSingle As Boolean
 	Public Rows As List
 	Public Columns As Map
-	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String)
+	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -244,6 +253,16 @@ Private Sub Class_Globals
 	Private bPagination As Boolean = True
 	Private mEventName As String = ""
 	Private sShadow As String = "none"
+	Private sAlphaChooserColumn As String = "name"
+	Private sAlphaChooserHeight As String = "8"
+	Private bHasAlphaChooser As Boolean = True
+	Private sColumnChooserColor As String = "primary"
+	Private sColumnChooserHeight As String = "8"
+	Private bHasColumnChooser As Boolean = True
+	Private bShowTotalRecords As Boolean = True
+	Private sRowCount As String
+	Private sAlphaChooserTextColor As String = "#ffffff"
+	Private sColumnChooserTextColor As String = "#ffffff"
 End Sub
 
 ' returns the element id
@@ -514,6 +533,24 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sAlphaChooserColumn = Props.GetDefault("AlphaChooserColumn", "name")
+		sAlphaChooserColumn = UI.CStr(sAlphaChooserColumn)
+		sAlphaChooserHeight = Props.GetDefault("AlphaChooserHeight", "8")
+		sAlphaChooserHeight = UI.CStr(sAlphaChooserHeight)
+		bHasAlphaChooser = Props.GetDefault("HasAlphaChooser", True)
+		bHasAlphaChooser = UI.CBool(bHasAlphaChooser)
+		sColumnChooserColor = Props.GetDefault("ColumnChooserColor", "primary")
+		sColumnChooserColor = UI.CStr(sColumnChooserColor)
+		sColumnChooserHeight = Props.GetDefault("ColumnChooserHeight", "8")
+		sColumnChooserHeight = UI.CStr(sColumnChooserHeight)
+		bHasColumnChooser = Props.GetDefault("HasColumnChooser", True)
+		bHasColumnChooser = UI.CBool(bHasColumnChooser)
+		bShowTotalRecords = Props.GetDefault("ShowTotalRecords", True)
+		bShowTotalRecords = UI.CBool(bShowTotalRecords)
+		sAlphaChooserTextColor = Props.GetDefault("AlphaChooserTextColor", "#ffffff")
+		sAlphaChooserTextColor = UI.CStr(sAlphaChooserTextColor)
+		sColumnChooserTextColor = Props.GetDefault("ColumnChooserTextColor", "#ffffff")
+		sColumnChooserTextColor = UI.CStr(sColumnChooserTextColor)
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -535,14 +572,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
         	<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
-  				<div id="${mName}_searchboxgroup" class="hide w-full">
-    				<label id="${mName}_searchboxlabel" class="m-0 p-0 input join-item w-full">
-      					<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input hide"></input>
-    				</label>
-  				</div>
-  				<button id="${mName}_searchbtn" class="btn btn-square hide join-item">
-    				<i id="${mName}_searchbtnicon" class="fa-solid fa-magnifying-glass hide"></i>
-  				</button>
+	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
+	          	<button id="${mName}_searchbtn" class="btn join-item hidden">
+					<svg id="${mName}_searchbtnicon" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+				</button>
 			</div>
 			<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
         </div>
@@ -630,6 +663,68 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
 End Sub
 
+'set Alpha Chooser Text Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setAlphaChooserTextColor(s As String)
+	sAlphaChooserTextColor = s
+	CustProps.put("AlphaChooserTextColor", s)
+End Sub
+
+'set Column Chooser Text Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setColumnChooserTextColor(s As String)
+	sColumnChooserTextColor = s
+	CustProps.put("ColumnChooserTextColor", s)
+End Sub
+
+'get Alpha Chooser Text Color
+Sub getAlphaChooserTextColor As String
+	Return sAlphaChooserTextColor
+End Sub
+'get Column Chooser Text Color
+Sub getColumnChooserTextColor As String
+	Return sColumnChooserTextColor
+End Sub
+
+'set Show Total Records
+Sub setShowTotalRecords(b As Boolean)
+	bShowTotalRecords = b
+	CustProps.put("ShowTotalRecords", b)
+End Sub
+
+'get Show Total Records
+Sub getShowTotalRecords As Boolean
+	Return bShowTotalRecords
+End Sub
+
+'set Column Chooser Color
+Sub setColumnChooserColor(s As String)
+	sColumnChooserColor = s
+	CustProps.put("ColumnChooserColor", s)
+End Sub
+'set Column Chooser Height
+Sub setColumnChooserHeight(s As String)
+	sColumnChooserHeight = s
+	CustProps.put("ColumnChooserHeight", s)
+End Sub
+'set Has Column Chooser
+Sub setHasColumnChooser(b As Boolean)
+	bHasColumnChooser = b
+	CustProps.put("HasColumnChooser", b)
+End Sub
+'get Column Chooser Color
+Sub getColumnChooserColor As String
+	Return sColumnChooserColor
+End Sub
+'get Column Chooser Height
+Sub getColumnChooserHeight As String
+	Return sColumnChooserHeight
+End Sub
+'get Has Column Chooser
+Sub getHasColumnChooser As Boolean
+	Return bHasColumnChooser
+End Sub
+
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
 Sub setShadow(s As String)
@@ -680,7 +775,7 @@ Sub setSearchWidth(s As String)			'ignoredeadcode
 	sSearchWidth = s
 	CustProps.Put("SearchWidth", s)
 	If mElement = Null Then Return
-	UI.SetWidthByID($"${mName}_search"$, s)
+	If s <> "" Then UI.SetWidthByID($"${mName}_search"$, s)
 End Sub
 
 Sub getSearchWidth As String
@@ -1047,7 +1142,7 @@ End Sub
 '<code>
 'tbl.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
 '</code>
-Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
+private Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 	If Status = False Then
 		UI.Hide($"${mName}_columnchooser"$)
 		Return
@@ -1059,6 +1154,8 @@ Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 	If bBadgesOutlined Then boutline = "badge-outline"
 	Dim sh As String = UI.FixSize("h", Height)
 	Dim btnColor As String = UI.FixColor("badge", Color)
+	Dim iconsize As String = UI.FixIconSize("sm")
+	Dim iconColor As String = UI.FixColor("text", sColumnChooserTextColor)
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	'show column chooser
@@ -1077,8 +1174,8 @@ Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 			bcolor = "badge-neutral"
 		End If
 		'
-		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer">
-        <i id="${mName}_${tc.name}_icon" data-visible="${tc.visible}" class="mr-2 fa-solid fa-check ${shidden}"></i>${tc.title}</div>"$
+		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer">
+        <svg id="${mName}_${tc.name}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" height="${iconsize}" data-visible="${tc.visible}" data-src="./assets/check-solid.svg" class="mr-2 ${shidden}"></svg>${tc.title}</div>"$
 		sbOptions.Append(sItem)
 		clicks1.Add($"${mName}_${tc.name}_column"$)
 		clicks1.Add($"${mName}_${tc.name}_icon"$)
@@ -1097,6 +1194,7 @@ End Sub
 private Sub HandleAlphaClick(event As BANanoEvent)     ''ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
+	UI.ShowLoader
 	Dim src As String = event.ID
 	If src = "" Then Return
 	'get the column name
@@ -1107,6 +1205,14 @@ private Sub HandleAlphaClick(event As BANanoEvent)     ''ignoredeadcode
 	Next
 	UI.Hide($"${mName}_all_icon"$)
 	UI.Show($"${mName}_${colName}_icon"$)
+	'perform the search
+	Dim alphaSearch As List = SearchByAlphabet(colName, sAlphaChooserColumn)
+	'Show all items filtered by alpha chooser
+	BANano.Await(SetItems(alphaSearch))
+	BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+	BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, alphaSearch))
+	BANano.Await(ShowTotals(alphaSearch))
+	UI.hideloader
 	BANano.CallSub(mCallBack, $"${mName}_AlphaClick"$, Array(colName))
 End Sub
 private Sub HandleColumnClick(event As BANanoEvent)     ''ignoredeadcode
@@ -1162,7 +1268,7 @@ End Sub
 '<code>
 'tbl.SetAlphaChooser(True, "8", "column")
 '</code>
-Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
+private Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String, DataSet As List)
 	If Status = False Then
 		UI.Hide($"${mName}_aphabets"$)
 		Return
@@ -1180,50 +1286,46 @@ Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As String)
 	Dim el As BANanoElement = BANano.getelement($"#${mName}_alphanumeric"$)
 	el.Empty
 	Alphas.Initialize
-	For Each row As Map In Originals
+	For Each row As Map In DataSet
 		Dim cdata As String = row.GetDefault(ColumnName, "")
 		cdata = UI.CStr(cdata)
 		cdata = UI.Alpha(cdata)
 		cdata = cdata.Trim
 		If cdata = "" Then Continue
-		Dim slet As String = UI.Left1(cdata,1)
+		Dim slet As String = UI.Left(cdata,1)
 		slet = slet.ToLowerCase
 		Alphas.Put(slet, "")
 	Next
+	Dim iconsize As String = UI.FixIconSize("sm")
+	Dim iconColor As String = UI.FixColor("text", sAlphaChooserTextColor)
 	Dim xsort As List
 	xsort.Initialize
 	For Each col As String In Alphas.Keys
 		xsort.Add(col)
 	Next
 	xsort.Sort(True)
+	xsort.Add("Other")
+	xsort.Add("All")
 	For Each col As String In xsort
-		Dim initx As String = UI.Initials(col)
-		Dim initl As String = initx.ToLowerCase
-		Dim acolor As String = UI.GetAlphaColor(initx)
-		Dim bcolor As String = UI.FixColor("badge", acolor)
+		Select Case col.tolowercase
+		Case "other", "all"
+			Dim initx As String = col
+			Dim initl As String = initx.ToLowerCase
+			Dim acolor As String = UI.GetAlphaColor(initx)
+			Dim bcolor As String = UI.FixColor("badge", acolor)
+		Case Else	
+			Dim initx As String = UI.Initials(col)
+			Dim initl As String = initx.ToLowerCase
+			Dim acolor As String = UI.GetAlphaColor(initx)
+			Dim bcolor As String = UI.FixColor("badge", acolor)
+		End Select
 		'
-		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
-        <i id="${mName}_${initl}_icon" class="mr-2 fa-solid fa-check hide"></i>${initx}</div>"$
+		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer mr-2 mb-2 py-2 px-4">
+        <svg id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" width="${iconsize}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide"></svg>${initx}</div>"$
 		sbOptions.Append(sItem)
 		clicks.Add($"${mName}_${initl}_column"$)
 		clicks.Add($"${mName}_${initl}_icon"$)
 	Next
-	'add other
-	Dim bcolor As String = UI.FixColor("badge", "primary")
-	initx = "other"
-	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
-    <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>Other</div>"$
-	sbOptions.Append(sItem)
-	clicks.Add($"${mName}_${initx}_column"$)
-	clicks.Add($"${mName}_${initx}_icon"$)
-	'add all
-	Dim bcolor As String = UI.FixColor("badge", "primary")
-	initx = "all"
-	Dim sItem As String = $"<div id="${mName}_${initx}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} cursor-pointer mr-2 mb-2 py-2 px-4">
-    <i id="${mName}_${initx}_icon" class="mr-2 fa-solid fa-check hide"></i>All</div>"$
-	sbOptions.Append(sItem)
-	clicks.Add($"${mName}_${initx}_column"$)
-	clicks.Add($"${mName}_${initx}_icon"$)
 	el.Append(sbOptions.ToString)
 	sbOptions.Initialize
 	UI.Show($"${mName}_aphabets"$)
@@ -1284,10 +1386,10 @@ Sub setHasSearch(b As Boolean)			'ignoredeadcode
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
 	UI.SetVisibleByID($"#${mName}_search"$, b)
-	UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
 	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
 	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
 End Sub
 
 Sub getHasSearch As Boolean
@@ -1320,10 +1422,10 @@ Sub setToolbarVisible(b As Boolean)
 	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
 	UI.SetVisibleByID($"#${mName}_search"$, b)
 	UI.SetVisibleByID($"#${mName}_actions"$, b)
-	UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
 	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
 	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
 End Sub
 'change the search placeholder
 '<code>
@@ -1374,8 +1476,8 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
-Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, iconColor)
 	Return btn
 End Sub
 
@@ -1390,7 +1492,7 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
@@ -1411,22 +1513,12 @@ private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	el.RunMethod("click", Null)
 End Sub
 
-Sub AddToolbarActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor)
-	SetToolbarButtonTextColor(btnID, btnTextColor)
-	Return btn
-End Sub
-Sub AddToolbarButtonTextColor(btnID As String, btnCaption As String, btnColor As String, btnTextColor As String) As SDUI5Button
-	Dim btn As SDUI5Button = AddToolbarButton(btnID, btnCaption, btnColor)
-	SetToolbarButtonTextColor(btnID, btnTextColor)
-	Return btn
-End Sub
 'add an action button
 '<code>
 'Sub tblname_btnid (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button			'ignoredeadcode
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -1440,18 +1532,15 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.Outline = bButtonsOutlined
 	btn.LeftIcon = sIcon
 	btn.Size = sButtonSize
+	btn.IconSize = sButtonSize
+	btn.LeftIconColor = iconColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
 	Return btn
 End Sub
 
-Sub AddToolbarDropDownIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5DropDown
-'	Dim btn As SDUIDropDown = AddToolbarDropDownIcon(btnID, sIcon, btnColor)
-'	btn.MainButton.TextColor = btnTextColor
-'	Return btn
-End Sub
-Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5DropDown
+Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String, textColor As String) As SDUI5DropDown
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -1467,7 +1556,7 @@ Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String)
 '	btn.Root.mx("1")
 '	Return btn
 End Sub
-Sub AddToolbarDropDown(btnID As String, btnColor As String, btnLabel As String) As SDUI5DropDown
+Sub AddToolbarDropDown(btnID As String, btnColor As String, btnLabel As String, textColor As String) As SDUI5DropDown
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -1552,8 +1641,7 @@ Sub setHasExportToCsv(b As Boolean)			'ignoredeadcode
 	CustProps.put("ExportToCsv", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("exporttocsv", "fa-solid fa-file-csv", "#4e3188")
-	SetToolbarButtonTextColor("exporttocsv", "#ffffff")
+	AddToolbarActionButtonIcon("exporttocsv", "./assets/csv.svg", "#4e3188", "#ffffff")
 End Sub
 Sub SetExportToPDFTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToPdfTooltip", tooltip)
@@ -1565,8 +1653,7 @@ Sub setHasExportToPdf(b As Boolean)			'ignoredeadcode
 	CustProps.Put("ExportToPdf", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("exporttopdf", "fa-regular fa-file-excel", "#24babc")
-	SetToolbarButtonTextColor("exporttopdf", "#ffffff")
+	AddToolbarActionButtonIcon("exporttopdf", "./assets/pdf.svg", "#24babc", "#ffffff")
 End Sub
 Sub SetExportToXLSTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToXlsTooltip", tooltip)
@@ -1578,8 +1665,7 @@ Sub setHasExportToXls(b As Boolean)				'ignoredeadcode
 	bExportToXls = b
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("exporttoxls", "fa-regular fa-file-excel", "#9a3d64")
-	SetToolbarButtonTextColor("exporttoxls", "#ffffff")
+	AddToolbarActionButtonIcon("exporttoxls", "./assets/xls.svg", "#9a3d64", "#ffffff")
 End Sub
 Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("AddNewTooltip", tooltip)
@@ -1589,9 +1675,14 @@ Sub setHasAddNew(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasAddnew", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("add", "fa-solid fa-plus", "#418448")
-	SetToolbarButtonTextColor("add", "#ffffff")
+	AddToolbarActionButtonIcon("add", "./assets/plus-solid.svg", "#418448", "#ffffff")
 End Sub
+
+
+Sub SetToolbarButtonIconColor(btn As String, value As String)		'ignoredeadcode
+	UI.SetIconColorByID($"#${mName}_${btn}_lefticon"$, value)
+End Sub
+
 'set Grid Tooltip
 Sub setGridTooltip(s As String)
 	sGridTooltip = s
@@ -1603,8 +1694,7 @@ Sub setHasGrid(b As Boolean)		'ignoredeadcode
 	CustProps.put("HasGrid", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("gridview", "fa-brands fa-windows", "#ffa500")
-	SetToolbarButtonTextColor("gridview", "#ffffff")
+	AddToolbarActionButtonIcon("gridview", "./assets/windows-brands.svg", "#ffa500", "#ffffff")
 	If sGridTooltip <> "" Then
 		SetToolbarButtonToolTip("gridview", sGridTooltip, "primary", "left")
 	End If
@@ -1625,8 +1715,7 @@ Sub setHasSaveSingle(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasSaveSingle", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("savesingle", "fa-regular fa-floppy-disk", "#7289da")
-	SetToolbarButtonTextColor("savesingle", "#ffffff")
+	AddToolbarActionButtonIcon("savesingle", "./assets/floppy-disk-solid.svg", "#7289da", "#ffffff")
 End Sub
 Sub SetDeleteSingleTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteSingleTooltip", tooltip)
@@ -1636,8 +1725,7 @@ Sub setHasDeleteSingle(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasDeleteSingle", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("deletesingle", "fa-regular fa-trash-can", "#ff9900")
-	SetToolbarButtonTextColor("deletesingle", "#ffffff")
+	AddToolbarActionButtonIcon("deletesingle", "./assets/trash-solid.svg", "#ff9900", "#ffffff")
 End Sub
 Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteAllTooltip", tooltip)
@@ -1647,10 +1735,9 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasDeleteAll", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("deleteall", "fa-solid fa-trash-can", "#FF0000")
+	AddToolbarActionButtonIcon("deleteall", "./assets/trash-can-solid.svg", "#FF0000", "white")
 	SetToolbarButtonBadge("deleteall", "0")
 	SetToolbarButtonBadgeRound("deleteall")
-	SetToolbarButtonTextColor("deleteall", "white")
 	SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 End Sub
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
@@ -1661,8 +1748,7 @@ Sub setHasToolbarUpload(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasToolbarUpload", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("uploadtoolbar", "fa-solid fa-upload", "#2196f3")
-	SetToolbarButtonTextColor("uploadtoolbar", "#ffffff")
+	AddToolbarActionButtonIcon("uploadtoolbar", "./assets/upload-solid.svg", "#2196f3", "#ffffff")
 	BANano.GetElement($"#${mName}_uploadtoolbar"$).off("click")
 	BANano.GetElement($"#${mName}_uploadtoolbar"$).On("click", Me, "UploadToolbarHandler")
 	If bMultipleFiles Then
@@ -1685,8 +1771,7 @@ Sub setHasBack(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasBack", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("back", "fa-solid fa-arrow-right-from-bracket", "#3f51b5")
-	SetToolbarButtonTextColor("back", "#ffffff")
+	AddToolbarActionButtonIcon("back", "./assets/arrow-right-from-bracket-solid.svg", "#3f51b5", "#ffffff")
 End Sub
 
 'move the back button to the end
@@ -1708,8 +1793,7 @@ Sub setHasRefresh(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasRefresh", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("refresh", "fa-solid fa-arrows-rotate", "#2196f3")
-	SetToolbarButtonTextColor("refresh", "#ffffff")
+	AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#2196f3", "#ffffff")
 End Sub
 Sub setExportToCsvLoading(b As Boolean)
 	If b Then
@@ -2033,10 +2117,8 @@ Sub setPagination(b As Boolean)				'ignoredeadcode
 	CustProps.put("Pagination", b)
 	If b = False Then Return
 	If mElement = Null Then Return
-	AddToolbarActionButtonIcon("prevpage", "fa-solid fa-chevron-left", "primary")
-	AddToolbarActionButtonIcon("nextpage", "fa-solid fa-chevron-right", "primary")
-	SetToolbarButtonTextColor("prevpage", "#ffffff")
-	SetToolbarButtonTextColor("nextpage", "#ffffff")
+	AddToolbarActionButtonIcon("prevpage", "./assets/chevron-left-solid.svg", "primary", "#ffffff")
+	AddToolbarActionButtonIcon("nextpage", "./assets/chevron-right-solid.svg", "primary", "#ffffff")
 	UI.OnEventByID($"${mName}_prevpage"$, "click", Me, "ShowPreviousPage")
 	UI.OnEventByID($"${mName}_nextpage"$, "click", Me, "ShowNextPage")
 End Sub
@@ -2277,10 +2359,21 @@ Sub AddColumn(name As String, title As String)
 	Columns.Put(name, nc)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
+
+'get the first visible column of the table
 Sub FirstColumnName As String
 	If Columns.Size = 0 Then Return ""
-	Dim scol As String = Columns.GetKeyAt(0)
-	Return scol
+	Dim fColName As String = ""
+	Dim colTot As Int = Columns.Size - 1
+	Dim colCnt As Int = 0
+	For colCnt = 0 To colTot
+		Dim nc As TableColumn = Columns.GetValueAt(colCnt)
+		If nc.visible Then
+			fColName = nc.name
+			Exit
+		End If
+	Next
+	Return fColName
 End Sub
 'add a normal column
 '<code>
@@ -2365,8 +2458,7 @@ Sub setHasFilter(b As Boolean)			'ignoredeadcode
 	bHasFilter = b
 	CustProps.Put("HasFilter", b)
 	If b = False Then Return
-	AddToolbarActionButtonIcon("filter", "fa-solid fa-filter", "#ad7279")
-	SetToolbarButtonTextColor("filter", "#ffffff")
+	AddToolbarActionButtonIcon("filter", "./assets/filter-solid.svg", "#ad7279", "#ffffff")
 End Sub
 
 Sub getHasFilter As Boolean
@@ -2586,7 +2678,7 @@ End Sub
 '<code>
 'tbl.AddColumnAction("btnstart", "Start/Stop", "fa-solid fa-play", app.COLOR_FUCHSIA)
 '</code>
-Sub AddColumnAction(name As String, title As String, icon As String, color As String)
+Sub AddColumnAction(name As String, title As String, icon As String, color As String, textColor As String)
 	name = name.tolowercase
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
@@ -2596,6 +2688,7 @@ Sub AddColumnAction(name As String, title As String, icon As String, color As St
 	nc.color = color
 	nc.width = "5rem"
 	nc.alignment = "center"
+	nc.TextColor = textColor
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -3058,6 +3151,7 @@ Sub AddColumnIcon(name As String, title As String, ssize As String, color As Str
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 End Sub
+
 Sub SetColumnButton(colName As String, color As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
@@ -3068,6 +3162,53 @@ Sub SetColumnButton(colName As String, color As String)
 		Columns.Put(colName, nc)
 	End If
 End Sub
+
+'set Alpha Chooser Column
+Sub setAlphaChooserColumn(s As String)
+	sAlphaChooserColumn = s
+	CustProps.put("AlphaChooserColumn", s)
+End Sub
+
+'set Alpha Chooser Height
+Sub setAlphaChooserHeight(s As String)
+	sAlphaChooserHeight = s
+	CustProps.put("AlphaChooserHeight", s)
+End Sub
+'set Has Alpha Chooser
+Sub setHasAlphaChooser(b As Boolean)
+	bHasAlphaChooser = b
+	CustProps.put("HasAlphaChooser", b)
+End Sub
+'get Alpha Chooser Column
+Sub getAlphaChooserColumn As String
+	Return sAlphaChooserColumn
+End Sub
+'get Alpha Chooser Height
+Sub getAlphaChooserHeight As String
+	Return sAlphaChooserHeight
+End Sub
+'get Has Alpha Chooser
+Sub getHasAlphaChooser As Boolean
+	Return bHasAlphaChooser
+End Sub
+
+'set a number of columns to be summed etc
+Sub SetColumnsSumValues(b As Boolean, cols As List)
+	For Each k As String In cols
+		SetColumnSumValues(k, b)
+	Next
+End Sub
+
+'mark this column to be summed up
+Sub SetColumnSumValues(colName As String, b As Boolean)
+	colName = UI.CleanID(colName)
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn = Columns.Get(colName)
+		nc.SumValues = b
+		Columns.Put(colName, nc)
+	End If
+End Sub
+
 'add a button column
 '<code>
 'tb4.AddColumnButton("btnload", "Process", app.COLOR_INDIGO)
@@ -3523,7 +3664,7 @@ Sub SetColumnPasswordGroup(colName As String)
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "passwordgroup"
-		nc.AppendIcon = "fa-solid fa-eye"
+		nc.AppendIcon = "./assets/eye-solid.svg"
 		Columns.Put(colName, nc)
 	End If
 End Sub
@@ -3603,7 +3744,7 @@ Sub AddColumnPasswordGroup(name As String, title As String, readOnly As Boolean)
 	nc.color = ""
 	nc.readonly = readOnly
 	nc.width = ""
-	nc.AppendIcon = "fa-solid fa-eye"
+	nc.AppendIcon = "./assets/eye-solid.svg"
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -3631,8 +3772,8 @@ Sub AddColumnDialer(name As String, title As String, readOnly As Boolean, minVal
 	nc.maxvalue = maxValue
 	nc.StepValue = stepValue
 	nc.MinValue = minValue
-	nc.PrependIcon = "fa-solid fa-minus"
-	nc.AppendIcon = "fa-solid fa-plus"
+	nc.PrependIcon = "./assets/minus-solid.svg"
+	nc.AppendIcon = "./assets/plus-solid.svg"
 	nc.alignment = "center"
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
@@ -3651,8 +3792,8 @@ Sub SetColumnTextDialer(colName As String, minValue As Int, stepValue As Int, ma
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.typeof = "dialer"
-		nc.PrependIcon = "fa-solid fa-minus"
-		nc.AppendIcon = "fa-solid fa-plus"
+		nc.PrependIcon = "./assets/minus-solid.svg"
+		nc.AppendIcon = "./assets/plus-solid.svg"
 		nc.alignment = "center"
 		nc.maxvalue = maxValue
 		nc.StepValue = stepValue
@@ -3841,37 +3982,7 @@ End Sub
 '<code>
 'tb4.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d H:i", "F j, Y H:i", False, False, False)
 '</code>
-Sub AddColumnDatePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean)
-	name = name.tolowercase
-	Dim nc As TableColumn = NewColumn
-	nc.name = name
-	nc.title = title
-	nc.typeof = "datepicker"
-	nc.color = ""
-	nc.readonly = readOnly
-	nc.width = ""
-	nc.dateFormat = dateFormat
-	nc.altFormat = altFormat
-	nc.range = brange
-	nc.multiple = bmultiple
-	nc.noCalendar = bNoCalendar
-	nc.Locale = "en"
-	Dim hclass As String = ""
-	If bNormalCase Then hclass = "normal-case"
-	If bWrapHeadings Then hclass = hclass & " text-wrap"
-	'
-	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="cursor-pointer  ${hclass}">${title}</th>"$
-	UI.AppendByID($"${mName}_theadtr"$, hr)
-	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_${name}_tf"   style="${BuildStyle(nc)}" ></td>"$)
-	'
-	Columns.Put(name, nc)
-	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
-	If bHasFilter Then AddHeaderRowSelect("filters", name)
-End Sub
-'<code>
-'tb4.AddColumnDatePicker1("dob", "Date of Birth", False, "Y-m-d H:i", "F j, Y H:i", False, False, False, "en")
-'</code>
-Sub AddColumnDatePicker1(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
+Sub AddColumnDatePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
 	name = name.tolowercase
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
@@ -3898,6 +4009,7 @@ Sub AddColumnDatePicker1(name As String, title As String, readOnly As Boolean, d
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
+
 Sub SetColumnTimePicker(colName As String, dateFormat As String, bNoCalendar As Boolean)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
@@ -3911,7 +4023,7 @@ End Sub
 '<code>
 'tbl.AddColumnDateTimePicker("dod", "Date of Death", False, "d/m/Y H:i", "d/m/Y H:i", "es")
 '</code>
-Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, locale As String)
+Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
 	name = name.tolowercase
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
@@ -3922,40 +4034,13 @@ Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean
 	nc.width = ""
 	nc.dateFormat = dateFormat
 	nc.altFormat = altFormat
-	nc.range = False
-	nc.multiple = False
-	nc.noCalendar = False
 	nc.Locale = locale
-	Dim hclass As String = ""
-	If bNormalCase Then hclass = "normal-case"
-	If bWrapHeadings Then hclass = hclass & " text-wrap"
-	'
-	Dim hr As String = $"<th id="${mName}_${name}_th"   style="${BuildStyle(nc)}" class="cursor-pointer  ${hclass}">${title}</th>"$
-	UI.AppendByID($"${mName}_theadtr"$, hr)
-	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_${name}_tf"   style="${BuildStyle(nc)}" ></td>"$)
-	'
-	Columns.Put(name, nc)
-	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
-	If bHasFilter Then AddHeaderRowSelect("filters", name)
-End Sub
-'<code>
-'tb4.AddColumnDateTimePicker1("dob", "Date of Birth", False, "Y-m-d H:i", "F j, Y H:i", False, False, False, "es")
-'</code>
-Sub AddColumnDateTimePicker1(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
-	name = name.tolowercase
-	Dim nc As TableColumn = NewColumn
-	nc.name = name
-	nc.title = title
-	nc.typeof = "datetimepicker"
-	nc.color = ""
-	nc.readonly = readOnly
-	nc.width = ""
-	nc.dateFormat = dateFormat
 	nc.altFormat = altFormat
 	nc.range = brange
 	nc.multiple = bmultiple
 	nc.noCalendar = bNoCalendar
 	nc.Locale = locale
+	
 	Dim hclass As String = ""
 	If bNormalCase Then hclass = "normal-case"
 	If bWrapHeadings Then hclass = hclass & " text-wrap"
@@ -4137,45 +4222,40 @@ End Sub
 'tb4.AddColumnEdit(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnEdit(color As String)
-	AddColumnAction("edit", "Edit", "fa-solid fa-pencil", color)
-	SetColumnTextColor("edit", "#ffffff")
+	AddColumnAction("edit", "Edit", "./assets/pencil-solid.svg", color, "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnClone(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnClone(color As String)
-	AddColumnAction("clone", "Clone", "fa-solid fa-copy", color)
-	SetColumnTextColor("clone", "#ffffff")
+	AddColumnAction("clone", "Clone", "./assets/copy-solid.svg", color, "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnMenu(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnMenu(color As String)
-	AddColumnAction("menu", "Menu", "fa-solid fa-ellipsis-vertical", color)
-	SetColumnTextColor("menu", "#ffffff")
+	AddColumnAction("menu", "Menu", "./assets/ellipsis-vertical-solid.svg", color, "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnDownload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnDownload(color As String)
-	AddColumnAction("download", "Download", "fa-solid fa-download", color)
-	SetColumnTextColor("download", "#ffffff")
+	AddColumnAction("download", "Download", "./assets/download-solid.svg", color, "#ffffff")
 End Sub
 '<code>
 'tb4.AddColumnUpload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnUpload(color As String)
-	AddColumnAction("upload", "Upload", "fa-solid fa-upload", color)
-	SetColumnTextColor("upload", "#ffffff")
+	AddColumnAction("upload", "Upload", "./assets/upload-solid.svg", color, "#ffffff")
 End Sub
 'add delete action
 '<code>
 'tb4.AddColumnDelete(app.COLOR_SECONDARY)
 '</code>
 Sub AddColumnDelete(color As String)
-	AddColumnAction("delete", "Delete", "fa-solid fa-trash-can", color)
-	SetColumnTextColor("delete", "#ffffff")
+	AddColumnAction("delete", "Delete", "./assets/trash-can-solid.svg", color, "#ffffff")
 End Sub
+'set a column as a color and also the subtitle field to get the color name from
 Sub SetColumnColor(colName As String, subtitle As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
@@ -4664,11 +4744,45 @@ Sub SetItemsPaginate(xItems As List)
 		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
 		BANano.Await(SetItems(yItems))
+		'update the visible colums
+		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+			'Allow filtering records by an alphabet from column
+		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
+		If bShowTotalRecords Then
+			BANano.Await(ShowTotals(Originals))
+		Else
+			setFooterVisible(False)	
+		End If
 	Catch
 		Log($"SetItemsPaginate: "$ & LastException)
 	End Try
 End Sub
 
+Sub ShowTotals(DataSet As List)	
+	If bShowTotalRecords = False Then Return
+	'sum the totals of each of these columns
+	Dim colTots As List
+	colTots.Initialize
+	'get the first column name
+	Dim fCol As String = FirstColumnName
+	colTots.Add(fCol)
+	'get all columns to be summed
+	For Each k As String In Columns.Keys
+		Dim nc As TableColumn = Columns.Get(k)
+		'skip the first column
+		If nc.name = fCol Then Continue
+		'this has sum values, do it
+		If nc.SumValues Then colTots.Add(k)
+	Next
+	Dim summary As Map = SetFooterTotalSumCountColumns(DataSet, colTots)
+	'get the total number of processed rows
+	sRowCount = summary.Get("rowcount")
+	'format the value to be a thousand
+	sRowCount = UI.Thousands(sRowCount)
+	'set the first column to show the total
+	SetFooterColumn(fCol, $"Total (${sRowCount})"$)
+	setFooterVisible(True)
+End Sub
 
 Sub Find(sfind As String)
 	sfind = sfind.trim
@@ -4694,10 +4808,19 @@ Sub Find(sfind As String)
 		End If
 	Next
 	BANano.Await(SetItems(searchOn))
+	'update the visible colums
+	BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+	'Allow filtering records by an alphabet from column
+	BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, searchOn))
+	If bShowTotalRecords Then
+		BANano.Await(ShowTotals(searchOn))
+	Else
+		setFooterVisible(False)
+	End If
 	PageResume
 End Sub
 
-Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
+private Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 	event.PreventDefault
 	Try
 		'setNextPageDisabled(True)
@@ -4721,12 +4844,22 @@ Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
 		'lastPage = iCurrentPage
 		BANano.Await(SetItems(xItems))
+		'update the visible colums
+		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+		'Allow filtering records by an alphabet from column
+		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
+		If bShowTotalRecords Then
+			BANano.Await(ShowTotals(Originals))
+		Else
+			setFooterVisible(False)
+		End If
+		
 		BANano.CallSub(mCallBack, $"${mName}_NextPage"$, Array(event))
 	Catch
 		Log($"ShowPreviousPage: "$ &  LastException)
 	End Try
 End Sub
-Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
+private Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 	event.PreventDefault
 	Try
 		'setNextPageDisabled(True)
@@ -4750,6 +4883,15 @@ Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
 		'lastPage = iCurrentPage
 		BANano.Await(SetItems(xitems))
+		'update the visible colums
+		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+		'Allow filtering records by an alphabet from column
+		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
+		If bShowTotalRecords Then
+			BANano.Await(ShowTotals(Originals))
+		Else
+			setFooterVisible(False)
+		End If
 		BANano.CallSub(mCallBack, $"${mName}_NextPage"$, Array(event))
 	Catch
 		Log($"ShowNextPage: "$ & LastException)
@@ -4781,15 +4923,24 @@ Sub ShowPage(pgNumber As Int)
 		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
 		BANano.Await(SetItems(xitems))
+		'update the visible colums
+		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+		'Allow filtering records by an alphabet from column
+		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
+		If bShowTotalRecords Then
+			BANano.Await(ShowTotals(Originals))
+		Else
+			setFooterVisible(False)
+		End If
 	Catch
 		Log($"ShowPage: "$ & LastException)
 	End Try
 End Sub
+
 'set Lower Case
 Sub setLowerCase(b As Boolean)
 	CustProps.put("LowerCase", b)
 	bLowerCase = b
-	Return
 End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
@@ -4867,7 +5018,7 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
 	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = UI.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.FixIconSize(tc.Size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
@@ -4877,15 +5028,15 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
-	If tc.ComputeTextColor <> "" Then
-		Dim subName As String = tc.ComputeTextColor
-		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
-	End If
+'	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+'	If tc.ComputeTextColor <> "" Then
+'		Dim subName As String = tc.ComputeTextColor
+'		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+'		tcolor = UI.FixColor("text", tcolor)
+'	End If
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i>
+    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" style="${BuildIconColor(btnColor)}" data-src="${theicon}" fill="currentColor" width="${iconsize}" height="${iconsize}" class="${cClass}"></svg>
     </td>"$
 	Return act
 End Sub
@@ -4922,7 +5073,7 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
 	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = UI.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.FixIconSize(tc.size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
@@ -4932,16 +5083,16 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
-	If tc.ComputeTextColor <> "" Then
-		Dim subName As String = tc.ComputeTextColor
-		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
-	End If
+'	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+'	If tc.ComputeTextColor <> "" Then
+'		Dim subName As String = tc.ComputeTextColor
+'		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+'		tcolor = UI.FixColor("text", tcolor)
+'	End If
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor}  ${bgColor}" style="${BuildStyle(tc)}">
+    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor}  ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
-    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)}" class="${cClass}"></svg></div>
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
     </td>"$
@@ -4980,7 +5131,7 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
 	subtitle1 = UI.CStr(subtitle1)
 	'the color is sources from the item
-	Dim iconsize As String = UI.fixsize("fa", tc.size)
+	Dim iconsize As String = UI.FixIconSize(tc.size)
 	Dim btnColor As String = GetColorFromField("text", bColor, rowdata)
 	'
 	Dim bgColor As String = tc.BGColor
@@ -4990,17 +5141,17 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
-	If tc.ComputeTextColor <> "" Then
-		Dim subName As String = tc.ComputeTextColor
-		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
-	End If
+'	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+'	If tc.ComputeTextColor <> "" Then
+'		Dim subName As String = tc.ComputeTextColor
+'		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+'		tcolor = UI.FixColor("text", tcolor)
+'	End If
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
-    <div><i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${theicon}" class="${iconsize} ${tc.TextColor} ${theicon} ${btnColor} ${cClass}"></i></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)}" class="${cClass}"></svg></div>
     </div>
     </td>"$
 	Return act
@@ -5035,15 +5186,15 @@ Private Sub BuildRowClickLink(Module As Object, fldName As String, fldValu As St
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <a id="${mName}_${RowCnt}_${fldName}_clicklink" class="${tc.TextColor} link ${btnColor} ${cClass}">${subtitle}</a>
+    <a id="${mName}_${RowCnt}_${fldName}_clicklink" class="${tcolor} link ${btnColor} ${cClass}">${subtitle}</a>
     </td>"$
 	Return act
 End Sub
@@ -5078,15 +5229,15 @@ Private Sub BuildRowLink(Module As Object, fldName As String, fldValu As String,
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor}  ${bgColor}" style="${BuildStyle(tc)}">
-    <a id="${mName}_${RowCnt}_${fldName}_link" href="${fldValu}" target="_blank" class="${tc.TextColor} link ${btnColor} ${cClass}">${subtitle}</a>
+    <a id="${mName}_${RowCnt}_${fldName}_link" href="${fldValu}" target="_blank" class="${tcolor} link ${btnColor} ${cClass}">${subtitle}</a>
     </td>"$
 	Return act
 End Sub
@@ -5127,11 +5278,11 @@ Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
@@ -5174,15 +5325,15 @@ Private Sub BuildRowWebsite(Module As Object, fldName As String, fldValu As Stri
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <a id="${mName}_${RowCnt}_${fldName}_email" href="${fldValu}" class="${tc.TextColor} link ${btnColor} ${cClass}">${subtitle}</a>
+    <a id="${mName}_${RowCnt}_${fldName}_email" href="${fldValu}" class="${tcolor} link ${btnColor} ${cClass}">${subtitle}</a>
     </td>"$
 	Return act
 End Sub
@@ -5217,15 +5368,15 @@ Private Sub BuildRowEmail(Module As Object, fldName As String, fldValu As String
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <a id="${mName}_${RowCnt}_${fldName}_email" href="mailto:${fldValu}" class="${tc.TextColor} link ${btnColor} ${cClass}">${subtitle}</a>
+    <a id="${mName}_${RowCnt}_${fldName}_email" href="mailto:${fldValu}" class="${tcolor} link ${btnColor} ${cClass}">${subtitle}</a>
     </td>"$
 	Return act
 End Sub
@@ -5266,11 +5417,11 @@ Private Sub BuildRowToggle(Module As Object, fldName As String, fldValu As Strin
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="text-center ${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5314,11 +5465,11 @@ Private Sub BuildRowCheckBox(Module As Object, fldName As String, fldValu As Str
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'Dim tsize As String = UI.FixSize("checkbox", sComponentSize)
 	Dim act As String = $"[BANCLEAN]
@@ -5357,11 +5508,11 @@ Private Sub BuildRowRange(Module As Object, fldName As String, fldValu As String
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim tsize As String = UI.FixSize("range", sComponentSize)
 	Dim txsize As String = UI.FixSize("text", sComponentSize)
@@ -5369,7 +5520,7 @@ Private Sub BuildRowRange(Module As Object, fldName As String, fldValu As String
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <label class="flex items-center w-full gap-2">
-    <span id="${mName}_${RowCnt}_${fldName}_range_text" class="${txsize} bg-transparent ${tc.TextColor}">${fldValu}</span>
+    <span id="${mName}_${RowCnt}_${fldName}_range_text" class="${txsize} bg-transparent ${tcolor}">${fldValu}</span>
     <input type="range" id="${mName}_${RowCnt}_${fldName}_range" max="${tc.maxvalue}" value="${fldValu}" class="range ${tsize} ${btnColor} ${cClass}"></input>
     </label></td>"$
 	Return act
@@ -5403,11 +5554,11 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'
 	Dim psize As String = "24px"
@@ -5429,7 +5580,7 @@ Private Sub BuildRowProgress(Module As Object, fldName As String, fldValu As Str
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
 	<label class="flex items-center w-full gap-2">
-    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="${tsize} justify-start ${tc.TextColor}">${fldValu}%</span>
+    <span id="${mName}_${RowCnt}_${fldName}_progress_text" class="${tsize} justify-start ${tcolor}">${fldValu}%</span>
     <progress id="${mName}_${RowCnt}_${fldName}_progress" max="${tc.maxvalue}" value="${fldValu}" class="rounded-full ${psize1} progress ${UI.FixSize("w", tc.width)} ${btnColor} ${cClass}">${fldValu}</progress>
 	</label>
     </td>"$
@@ -5466,17 +5617,16 @@ Private Sub BuildRowRadial(Module As Object, fldName As String, fldValu As Strin
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
-	End If
-	
+		tcolor = UI.FixColor("text", tcolor)
+	End If	
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_radial" role="progressbar" style="--value:${fldValu};--size:${tc.size};" class="${tc.TextColor} radial-progress ${btnColor} ${cClass}">${fldValu}${tc.suffix}</div>
+    <div id="${mName}_${RowCnt}_${fldName}_radial" role="progressbar" style="--value:${fldValu};--size:${tc.size};" class="${tcolor} radial-progress ${btnColor} ${cClass}">${fldValu}${tc.suffix}</div>
     </td>"$
 	Return act
 End Sub
@@ -5506,6 +5656,13 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 	If tc.readonly Then creadonly = $"disabled="disabled""$
 	'Dim tsize As String = UI.FixSize("radio", sComponentSize)
 	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	'Dim rCnt As Int = 0
@@ -5519,7 +5676,7 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 		Dim sItem As String = $"<div class="form-control">
         <label class="label cursor-pointer p-2">
         <input id="${mName}_${RowCnt}_${fldName}_${k}_radio" ${sbChecked} "value="${k}" name="${mName}_${RowCnt}_${fldName}_radio" type="radio" ${creadonly} class="radio ${btnColor}">
-        <span class="label-text px-2 flex-no-shrink ${tc.TextColor}">${v}</span>
+        <span class="label-text px-2 flex-no-shrink ${tcolor}">${v}</span>
         </label>
         </div>"$
 		sbOptions.Append(sItem)
@@ -5531,12 +5688,7 @@ Private Sub BuildRowRadioGroup(Module As Object, fldName As String, fldValu As S
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
-	If tc.ComputeTextColor <> "" Then
-		Dim subName As String = tc.ComputeTextColor
-		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
-	End If
+	
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5596,11 +5748,11 @@ Private Sub BuildRowSelect(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -5652,21 +5804,26 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     </label>
     </div>
     </td>"$
@@ -5721,22 +5878,27 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     </label>
     </div>
     </td>"$
@@ -5785,21 +5947,26 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     </label>
     </div>
     </td>"$
@@ -5846,21 +6013,26 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     </label>
     </div>
     </td>"$
@@ -5906,19 +6078,24 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_prepend_icon"></i></btn>
-    <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor} input-bordered w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize}"><i id="${mName}_${RowCnt}_${fldName}_append_icon"></i></btn>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
+    <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize}">
+		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+	</btn>
     </label>
     </div>
     </td>"$
@@ -5966,15 +6143,15 @@ Private Sub BuildRowTextBox(Module As Object, fldName As String, fldValu As Stri
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </input>
     </td>"$
 	'********
@@ -6013,16 +6190,17 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconsize As String = UI.FixIconSize(tc.size)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i>
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    	<svg id="${mName}_${RowCnt}_${fldName}_icon" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
     </button>
     <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
     <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
@@ -6063,13 +6241,21 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
+	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i></button>
+    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" style="${BuildIconColor(tcolor)}" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
@@ -6118,15 +6304,15 @@ Private Sub BuildRowFile(Module As Object, fldName As String, fldValu As String,
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" type="file" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="file-input ${btnColor} ${cClass} file-input-bordered w-full file-input-${sComponentSize}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" type="file" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="file-input ${btnColor} ${cClass} file- w-full file-input-${sComponentSize}">
     </input>
     </td>"$
 	'********
@@ -6173,15 +6359,15 @@ Private Sub BuildRowPassword(Module As Object, fldName As String, fldValu As Str
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="password" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="password" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </input>
     </td>"$
 	'********
@@ -6225,15 +6411,15 @@ Private Sub BuildRowNumber(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" type="number" inputmode="numeric" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" type="number" inputmode="numeric" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </input>
     </td>"$
 	'********
@@ -6281,15 +6467,15 @@ Private Sub BuildRowDatePicker(Module As Object, fldName As String, fldValu As S
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </input>
     </td>"$
 	'********
@@ -6335,16 +6521,16 @@ Private Sub BuildRowDateTimePicker(Module As Object, fldName As String, fldValu 
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </div>
     </td>"$
 	'********
@@ -6388,16 +6574,16 @@ Private Sub BuildRowTimePicker(Module As Object, fldName As String, fldValu As S
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor} input-bordered w-full input-${sComponentSize} ${cClass} ${tAlign}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" type="text" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="input ${btnColor}  w-full input-${sComponentSize} ${cClass} ${tAlign}">
     </div>
     </td>"$
 	'********
@@ -6427,6 +6613,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
+	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	'
@@ -6447,7 +6634,8 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 				Dim sItem As String = $"[BANCLEAN]
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
-            <span class="flex-none"><i id="${mName}_${RowCnt}_${fldName}_${k}_i" data-icon="${i}" class="${i}"></i></span>
+            <span class="flex-none">
+				<svg id="${mName}_${RowCnt}_${fldName}_${k}_i" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6462,18 +6650,19 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
+	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
-    <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tc.TextColor} no-animation btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i>
+    <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -6516,18 +6705,18 @@ Private Sub BuildRowButton(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">${fldValu}</button>
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">${fldValu}</button>
     </td>"$
 	'********
 	Return act
@@ -6583,18 +6772,18 @@ Private Sub BuildRowBadge(Module As Object, fldName As String, fldValu As String
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim sh As String = UI.FixSize("h", tc.height)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex flex-wrap break-words relative">
     <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge rounded-full py-2 px-2 ${sh} ${btnColor} ${btnsize} ${boutline} ${cClass}">
-    <span id="${mName}_${RowCnt}_${fldName}_badge_text" class="${tc.TextColor}">${fldValu}</span>
+    <span id="${mName}_${RowCnt}_${fldName}_badge_text" class="${tcolor}">${fldValu}</span>
     </div>
     </div>
     </td>"$
@@ -6632,11 +6821,11 @@ Private Sub BuildRowRating(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim sbRating As StringBuilder
 	sbRating.Initialize
@@ -6699,11 +6888,11 @@ Private Sub BuildRowTextArea(Module As Object, fldName As String, fldValu As Str
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6771,11 +6960,11 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
@@ -6850,18 +7039,18 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} placeholder ${tc.TextColor}">
+    <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} placeholder ${tcolor}">
     <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${UI.FixSize("w",tc.Size)} ${btnColor} ${acolor}">
     <span id="${mName}_${RowCnt}_${fldName}_span">${fldValu}</span>
     </div>
@@ -6914,11 +7103,11 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -6982,11 +7171,11 @@ Private Sub BuildRowBadgeGroup(Module As Object, fldName As String, fldValu As S
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
-	Dim tcolor As String = tc.TextColor
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
-		tcolor = UI.FixColor("text", bgColor)
+		tcolor = UI.FixColor("text", tcolor)
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
@@ -7093,17 +7282,38 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 		bgColor = UI.FixColor("bg", $"${bgColor}-500"$)
 	End If
 	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
+	'
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
+	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tc.TextColor} no-animation btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <i id="${mName}_${RowCnt}_${fldName}_icon" data-icon="${tc.icon}" class="${tc.icon}"></i></button>
+    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" fill="currentColor" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
     </td>"$
 	'********
 	Return act
 End Sub
+
+private Sub BuildIconColor(nc As String) As String
+	If nc = "" Then Return ""
+	'
+	Dim ac As String = nc
+	If nc.Contains("-") Then ac = UI.MvField(nc, 2, "-")
+	ac = ac.Replace("[", "")
+	ac = ac.Replace("]", "")
+	Dim sout As String = $"color:${ac}"$
+	Return sout
+End Sub
+
 private Sub BuildStyle(nc As TableColumn) As String
 	Dim colStyle As StringBuilder
 	colStyle.Initialize
@@ -7815,6 +8025,14 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
 	End If
+	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center space-x-3">
@@ -7824,8 +8042,8 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
     </div>
     </div>
     <div id="${mName}_${RowCnt}_${fldName}_text">
-    <div id="${mName}_${RowCnt}_${fldName}_title" class="${tc.TextColor} ${btnColor}">${subtitle}</div>
-    <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="${tc.TextColor} ${btnColor} text-sm">${subtitle1}</div>
+    <div id="${mName}_${RowCnt}_${fldName}_title" class="${tcolor} ${btnColor}">${subtitle}</div>
+    <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="${tcolor} ${btnColor} text-sm">${subtitle1}</div>
     </div>
     </div>
     </td>"$
@@ -7896,6 +8114,14 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
 	If bHasRing = False Then
 		cClass = cClass & " border-1"
 	End If
+	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
     <div class="flex items-center space-x-3">
@@ -7905,7 +8131,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
     </div>
     </div>
     <div>
-    <div id="${mName}_${RowCnt}_${fldName}_title" class="${tc.TextColor} ${btnColor}">${subtitle}</div>
+    <div id="${mName}_${RowCnt}_${fldName}_title" class="${tcolor} ${btnColor}">${subtitle}</div>
     </div>
     </div>
     </td>"$
@@ -7987,6 +8213,14 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
 		bgColor = BANano.CallSub(Module, subName, Array(rowdata))
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
+	'
+	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
+	If tc.ComputeTextColor <> "" Then
+		Dim subName As String = tc.ComputeTextColor
+		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
+		tcolor = UI.FixColor("text", tcolor)
+	End If
+	
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
 	subcontent = UI.CStr(subcontent)
 	Dim act As String = $"[BANCLEAN]
@@ -7997,7 +8231,7 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
     <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt="${subcontent}">
     </div>
     </div>
-    <span id="${mName}_${RowCnt}_${fldName}_title" class="${tc.TextColor} ml-2">${subcontent}</span>
+    <span id="${mName}_${RowCnt}_${fldName}_title" class="${tcolor} ml-2">${subcontent}</span>
     </div>
     </td>"$
 	'*****************
@@ -8445,6 +8679,7 @@ private Sub NewColumn As TableColumn
 	Dim nc As TableColumn
 	nc.Initialize
 	nc.name = ""
+	nc.SumValues = False
 	nc.colWidth = ""
 	nc.colHeight = ""
 	nc.TextColor = ""
@@ -8667,7 +8902,8 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	If s = "" Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
-	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+	'UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+	UI.SetIconSizeByID($"${mName}_searchbtnicon"$, s)
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
 	Dim options1 As Map = UI.ListToSelectOptions(options)
@@ -9510,9 +9746,9 @@ End Sub
 'srowcount = UI.Thousands(srowcount)
 'tbl.SetFooterColumn("country", $"Total (${srowcount})"$)
 '</code>
-Sub SetFooterTotalSumCountColumns(cols As List) As Map
+Sub SetFooterTotalSumCountColumns(DataSet As List, cols As List) As Map
 	cols = UI.ListTrimItems(cols)
-	Dim recs As List = Originals
+	Dim recs As List = DataSet
 	Dim nm As Map = CreateMap()
 	nm.Put("rowcount", recs.Size)
 	'set everything to 0
@@ -9553,56 +9789,7 @@ Sub SetFooterTotalSumCountColumns(cols As List) As Map
 	UI.Show($"${mName}_foot"$)
 	Return nm
 End Sub
-'
-'sum the values of the columns and set them on foote
-'<code>
-'Dim summary As Map = tbl.SetFooterTotalSumCountColumnsOf(lst, Array("population"))
-'Dim srowcount As String = summary.Get("rowcount")
-'srowcount = UI.Thousands(srowcount)
-'tbl.SetFooterColumn("country", $"Total (${srowcount})"$)
-'</code>
-Sub SetFooterTotalSumCountColumnsOf(recs As List, cols As List) As Map
-	cols = UI.ListTrimItems(cols)
-	Dim nm As Map = CreateMap()
-	nm.Put("rowcount", recs.Size)
-	'set everything to 0
-	For Each c As String In cols
-		If c = "" Then Continue
-		nm.Put(c, 0)
-	Next
-	For Each r As Map In recs
-		For Each c As String In cols
-			If c = "" Then Continue
-			Dim v As String = r.GetDefault(c, 0)
-			v = UI.CDbl(v)
-			Dim lv As Int = nm.GetDefault(c, 0)
-			lv = BANano.parsefloat(lv) + BANano.parsefloat(v)
-			nm.Put(c, lv)
-		Next
-	Next
-	'
-	For Each c As String In cols
-		If c = "" Then Continue
-		If Columns.ContainsKey(c) = False Then Continue
-		Dim nc As TableColumn = Columns.Get(c)
-		Dim ov As String = nm.Get(c)
-		Dim nv As String = "0.00"
-		'
-		Select Case nc.typeof
-			Case "filesize"
-				nv = UI.FormatFileSize(ov)
-			Case "money"
-				nv = UI.FormatDisplayNumber(ov, "0,0.00")
-			Case "thousand"
-				nv = UI.FormatDisplayNumber(ov, "0,0")
-			Case Else
-				nv = ov
-		End Select
-		BANano.GetElement($"#${mName}_${c}_tf"$).SetText(nv)
-	Next
-	UI.Show($"${mName}_foot"$)
-	Return nm
-End Sub
+
 'this us used for the camera content without uploading
 '<code>
 'Sub table_FileChange(e As BANanoEvent)
@@ -10207,7 +10394,7 @@ Sub SearchByAlphabet(item As String, columnName As String) As List
 			sname = sname.ToLowerCase
 			Select Case item
 			Case "other"
-				Dim fpart As String = UI.Left1(sname, 1)
+				Dim fpart As String = UI.Left(sname, 1)
 				If "abcdefghijklmnopqrstuvwxyz".IndexOf(fpart) = -1 Then alphaSearch.add(rec)
 			Case Else
 				If sname.StartsWith(item) Then alphaSearch.add(rec)

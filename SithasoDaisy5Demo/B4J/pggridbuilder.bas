@@ -18,11 +18,12 @@ Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "gridbuilderview")
 	pgIndex.UpdateTitle("TailwindCSS Grid Builder")
-	prefGrid.AddToolbarActionButtonIcon("refresh", "fa-solid fa-arrows-rotate", "#ff00ff")
+	prefGrid.AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#ff00ff", "#ffffff")
 	prefGrid.SetToolbarButtonToolTip("refresh", "Refresh the properties to default values", "primary", "left")
 	prefGrid.AddPropertyDialer("gcolumns", "Columns", "2", False, 0, 1, 12)
 	prefGrid.SetPropertyToolTip("gcolumns", "Utilities for specifying the columns in a grid layout")
 	prefGrid.AddPropertyDialer("grows", "Rows", "2", False, 0, 1, 12)
+	
 	prefGrid.SetPropertyToolTip("grows", "Utilities for specifying the rows in a grid layout.")
 	prefGrid.AddPropertyDialer("ggapx", "Gap X", "2", False, 0, 1, 16)
 	prefGrid.SetPropertyToolTip("ggapx", "Utilities for controlling gutters / gap between grid items within a row.")

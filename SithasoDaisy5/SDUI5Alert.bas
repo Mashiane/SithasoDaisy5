@@ -293,7 +293,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden"></img>
+		<svg id="${mName}_icon" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 		<div id="${mName}_content">
 			<h3 id="${mName}_title" class="font-bold hidden">${sTitle}</h3>
 			<div id="${mName}_text">${sText}</div>
@@ -420,7 +420,7 @@ Sub setIcon(s As String)			'ignoredeadcode
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetImageByID($"${mName}_icon"$, s)
+	UI.SetIconNameByID($"${mName}_icon"$, s)
 	If sIcon = "" Then
 		UI.SetVisibleByID($"${mName}_icon"$, False)
 	Else
@@ -432,7 +432,7 @@ Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_icon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
 End Sub
 'set Outline
 Sub setOutline(b As Boolean)

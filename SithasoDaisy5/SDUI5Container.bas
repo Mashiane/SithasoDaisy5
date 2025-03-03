@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: BackgroundImage, DisplayName: Background Image, FieldType: String, DefaultValue: , Description: Background Image
 #DesignerProperty: Key: Container, DisplayName: Container, FieldType: Boolean, DefaultValue: True, Description: Container
+#DesignerProperty: Key: PageView, DisplayName: Page View, FieldType: Boolean, DefaultValue: False, Description: Page View
 #DesignerProperty: Key: ContainerFluid, DisplayName: Container Fluid, FieldType: Boolean, DefaultValue: False, Description: Container Fluid
 #DesignerProperty: Key: ContainerSm, DisplayName: SM Container, FieldType: Boolean, DefaultValue: False, Description: SM Container
 #DesignerProperty: Key: ContainerMd, DisplayName: MD Container, FieldType: Boolean, DefaultValue: False, Description: MD Container
@@ -99,6 +100,7 @@ Sub Class_Globals
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
 	Private sBackgroundImage As String = ""
+	Private bPageView As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -305,8 +307,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinWidth = UI.CStr(sMinWidth)
 		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
 		sBackgroundImage = UI.CStr(sBackgroundImage)
+		bPageView = Props.GetDefault("PageView", False)
+		bPageView = UI.CBool(bPageView)
 	End If
 	'
+	If bPageView Then UI.AddClassDT("max-w-[100vw] px-6 pb-16 xl:pe-2 relative")
 	If sBackgroundImage <> "" Then UI.AddBackgroundImageDT(sBackgroundImage)
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
@@ -342,6 +347,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 End Sub
 
+Sub setPageView(b As Boolean)
+	bPageView = b
+	CustProps.Put("PageView", bPageView)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "max-w-[100vw] px-6 pb-16 xl:pe-2 relative")
+	Else	
+		UI.RemoveClass(mElement, "max-w-[100vw] px-6 pb-16 xl:pe-2 relative")
+	End If
+End Sub
+
+Sub getPageView As Boolean
+	Return bPageView
+End Sub
 
 'set Background Image
 Sub setBackgroundImage(s As String)

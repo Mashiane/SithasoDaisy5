@@ -341,9 +341,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
-		<i id="${mName}_lefticon" class="hidden hide inline-block rounded-full ${sLeftIcon}"></i>
+		<svg id="${mName}_lefticon" class="hidden hide inline-block rounded-full" fill="currentColor" data-src="${sLeftIcon}"></svg>
 		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
-		<i id="${mName}_righticon" class="hidden hide inline-block rounded-full ${sRightIcon}"></i>
+		<svg id="${mName}_righticon" class="hidden hide inline-block rounded-full" fill="currentColor" data-src="${sRightIcon}"></svg>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
 	</${xtag}>"$).Get("#" & mName)
 	
@@ -538,7 +538,7 @@ Sub setLeftIconColor(s As String)  'ignoredeadcode
 	sLeftIconColor = s
 	CustProps.put("LeftIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_lefticon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_lefticon"$, s)
 End Sub
 'set Left Icon Size
 Sub setLeftIconSize(s As String)   'ignoredeadcode
@@ -546,8 +546,7 @@ Sub setLeftIconSize(s As String)   'ignoredeadcode
 	CustProps.put("LeftIconSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetWidthByID($"${mName}_lefticon"$, s)
-	UI.SetHeightByID($"${mName}_lefticon"$, s)
+	UI.SetIconSizeByID($"${mName}_lefticon"$, s)
 End Sub
 'set Outline
 Sub setOutline(b As Boolean)
@@ -580,7 +579,7 @@ Sub setRightIconColor(s As String)			'ignoredeadcode
 	sRightIconColor = s
 	CustProps.put("RightIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_righticon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_righticon"$, s)
 End Sub
 'set Right Icon Size
 Sub setRightIconSize(s As String)				'ignoredeadcode
@@ -588,8 +587,7 @@ Sub setRightIconSize(s As String)				'ignoredeadcode
 	CustProps.put("RightIconSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetHeightByID($"${mName}_righticon"$, s)
-	UI.SetWidthByID($"${mName}_righticon"$, s)
+	UI.SetIconSizeByID($"${mName}_righticon"$, s)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl

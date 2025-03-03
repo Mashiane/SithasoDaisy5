@@ -6,7 +6,7 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|ul|ol
+#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|ul|ol|section|nav
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text

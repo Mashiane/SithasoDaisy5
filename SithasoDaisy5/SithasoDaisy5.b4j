@@ -1,67 +1,123 @@
 ﻿AppType=JavaFX
 Build1=Default,b4j.example
 File1=250x300.png
-File10=fa-brands-400.woff2
-File11=fa-regular-400.woff2
-File12=fa-solid-900.woff2
-File13=fileSaver.min.js
-File14=flatpickr.min.css
-File15=flatpickr.min.js
-File16=FONT AWESOME LICENSE.txt
-File17=fontawesome.min.css
-File18=fplocale.min.js
-File19=infobox.min.css
+File10=chevron-left-solid.svg
+File11=chevron-right-solid.svg
+File12=clone-solid.svg
+File13=closemenu.svg
+File14=copy-solid.svg
+File15=countUp.umd.js
+File16=csv.svg
+File17=DAISYUI LICENSE.txt
+File18=daisyui.min.css
+File19=dayjs.min.js
 File2=600by600.jpg
-File20=insert-rule.min.js
-File21=loader-1.css
-File22=material_blue.css
-File23=mdtoast.min.css
-File24=mdtoast.min.js
-File25=menu.svg
-File26=numeral.min.js
-File27=placeholderimg.jpg
-File28=relativeTime.min.js
-File29=sweetalert2.all.min.js
-File3=BANANO LICENSE.TXT
-File30=sweetalert2.min.css
-File31=tailwind.min.js
-File4=checkblack.svg
-File5=closemenu.svg
-File6=countUp.umd.js
-File7=DAISYUI LICENSE.txt
-File8=daisyui.min.css
-File9=dayjs.min.js
+File20=download-solid.svg
+File21=ellipsis-vertical-solid.svg
+File22=eye-slash-solid.svg
+File23=eye-solid.svg
+File24=fileSaver.min.js
+File25=filter-solid.svg
+File26=flatpickr.min.css
+File27=flatpickr.min.js
+File28=floppy-disk-solid.svg
+File29=fplocale.min.js
+File3=arrow-right-from-bracket-solid.svg
+File30=grid.svg
+File31=infobox.min.css
+File32=insert-rule.min.js
+File33=loader-1.css
+File34=magnifying-glass-solid.svg
+File35=material_blue.css
+File36=mdtoast.min.css
+File37=mdtoast.min.js
+File38=menu.svg
+File39=microphone-solid.svg
+File4=arrows-rotate-solid.svg
+File40=minus-solid.svg
+File41=numeral.min.js
+File42=paste-solid.svg
+File43=pdf.svg
+File44=pencil-solid.svg
+File45=placeholderimg.jpg
+File46=plus-solid.svg
+File47=relativeTime.min.js
+File48=save.svg
+File49=svg-loader.min.js
+File5=arrow-up-from-bracket-solid.svg
+File50=sweetalert2.all.min.js
+File51=sweetalert2.min.css
+File52=tailwind.min.js
+File53=trash-can-solid.svg
+File54=trash-solid.svg
+File55=upload-solid.svg
+File56=user-solid.svg
+File57=video-solid.svg
+File58=windows-brands.svg
+File59=xls.svg
+File6=BANANO LICENSE.TXT
+File7=camera-solid.svg
+File8=checkblack.svg
+File9=check-solid.svg
 FileGroup1=Default Group\IMAGES
-FileGroup10=Default Group\FONTS
-FileGroup11=Default Group\FONTS
-FileGroup12=Default Group\FONTS
-FileGroup13=Default Group\JAVASCRIPT
-FileGroup14=Default Group\CSS
+FileGroup10=Default Group\IMAGES
+FileGroup11=Default Group\IMAGES
+FileGroup12=Default Group\IMAGES
+FileGroup13=Default Group\IMAGES
+FileGroup14=Default Group\IMAGES
 FileGroup15=Default Group\JAVASCRIPT
-FileGroup16=Default Group\LICENCES
-FileGroup17=Default Group\CSS
-FileGroup18=Default Group\JAVASCRIPT
-FileGroup19=Default Group\CSS
+FileGroup16=Default Group\IMAGES
+FileGroup17=Default Group\LICENCES
+FileGroup18=Default Group\CSS
+FileGroup19=Default Group\JAVASCRIPT
 FileGroup2=Default Group\IMAGES
-FileGroup20=Default Group\JAVASCRIPT
-FileGroup21=Default Group\CSS
-FileGroup22=Default Group\CSS
-FileGroup23=Default Group\CSS
+FileGroup20=Default Group\IMAGES
+FileGroup21=Default Group\IMAGES
+FileGroup22=Default Group\IMAGES
+FileGroup23=Default Group\IMAGES
 FileGroup24=Default Group\JAVASCRIPT
 FileGroup25=Default Group\IMAGES
-FileGroup26=Default Group\JAVASCRIPT
-FileGroup27=Default Group\IMAGES
-FileGroup28=Default Group\JAVASCRIPT
+FileGroup26=Default Group\CSS
+FileGroup27=Default Group\JAVASCRIPT
+FileGroup28=Default Group\IMAGES
 FileGroup29=Default Group\JAVASCRIPT
-FileGroup3=Default Group\LICENCES
-FileGroup30=Default Group\CSS
-FileGroup31=Default Group\JAVASCRIPT
+FileGroup3=Default Group\IMAGES
+FileGroup30=Default Group\IMAGES
+FileGroup31=Default Group\CSS
+FileGroup32=Default Group\JAVASCRIPT
+FileGroup33=Default Group\CSS
+FileGroup34=Default Group\IMAGES
+FileGroup35=Default Group\CSS
+FileGroup36=Default Group\CSS
+FileGroup37=Default Group\JAVASCRIPT
+FileGroup38=Default Group\IMAGES
+FileGroup39=Default Group\IMAGES
 FileGroup4=Default Group\IMAGES
+FileGroup40=Default Group\IMAGES
+FileGroup41=Default Group\JAVASCRIPT
+FileGroup42=Default Group\IMAGES
+FileGroup43=Default Group\IMAGES
+FileGroup44=Default Group\IMAGES
+FileGroup45=Default Group\IMAGES
+FileGroup46=Default Group\IMAGES
+FileGroup47=Default Group\JAVASCRIPT
+FileGroup48=Default Group\IMAGES
+FileGroup49=Default Group\JAVASCRIPT
 FileGroup5=Default Group\IMAGES
-FileGroup6=Default Group\JAVASCRIPT
-FileGroup7=Default Group\LICENCES
-FileGroup8=Default Group\CSS
-FileGroup9=Default Group\JAVASCRIPT
+FileGroup50=Default Group\JAVASCRIPT
+FileGroup51=Default Group\CSS
+FileGroup52=Default Group\JAVASCRIPT
+FileGroup53=Default Group\IMAGES
+FileGroup54=Default Group\IMAGES
+FileGroup55=Default Group\IMAGES
+FileGroup56=Default Group\IMAGES
+FileGroup57=Default Group\IMAGES
+FileGroup58=Default Group\IMAGES
+FileGroup59=Default Group\IMAGES
+FileGroup6=Default Group\LICENCES
+FileGroup7=Default Group\IMAGES
+FileGroup8=Default Group\IMAGES
+FileGroup9=Default Group\IMAGES
 Group=Default Group
 Library1=banano
 Library2=jcore
@@ -138,30 +194,31 @@ Module71=SDUI5StatItem
 Module72=SDUI5Status
 Module73=SDUI5Steps
 Module74=SDUI5StepsItem
-Module75=SDUI5Swal
-Module76=SDUI5Swap
-Module77=SDUI5Table
-Module78=SDUI5Tabs
-Module79=SDUI5TabsItem
+Module75=SDUI5Svg
+Module76=SDUI5Swal
+Module77=SDUI5Swap
+Module78=SDUI5Table
+Module79=SDUI5Tabs
 Module8=SDUI5Badge
-Module80=SDUI5Text
-Module81=SDUI5TextArea
-Module82=SDUI5TextBox
-Module83=SDUI5Timeline
-Module84=SDUI5TimelineItem
-Module85=SDUI5Toast
-Module86=SDUI5Toggle
-Module87=SDUI5ToolTip
-Module88=SDUI5Window
-Module89=SDUI5Wizard
+Module80=SDUI5TabsItem
+Module81=SDUI5Text
+Module82=SDUI5TextArea
+Module83=SDUI5TextBox
+Module84=SDUI5Timeline
+Module85=SDUI5TimelineItem
+Module86=SDUI5Toast
+Module87=SDUI5Toggle
+Module88=SDUI5ToolTip
+Module89=SDUI5Window
 Module9=SDUI5BottomDrawer
-Module90=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
-Module91=|relative|..\..\shared\SDUIMap
-Module92=SithasoDaisy5
-Module93=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
-NumberOfFiles=31
+Module90=SDUI5Wizard
+Module91=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
+Module92=|relative|..\..\shared\SDUIMap
+Module93=SithasoDaisy5
+Module94=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+NumberOfFiles=59
 NumberOfLibraries=3
-NumberOfModules=93
+NumberOfModules=94
 Version=10.1
 @EndOfDesignText@
 #Region Project Attributes 
@@ -169,12 +226,12 @@ Version=10.1
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 5.09
+	#LibraryVersion: 5.10
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "5.09"
+	Private LibVersion As String = "5.10"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)	
@@ -195,7 +252,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddCSSFile("material_blue.css")
 '	BANano.Header.AddCSSFile("roboto.min.css")
 	BANano.header.AddCSSFile("sweetalert2.min.css")
-	BANano.Header.AddCSSFile("fontawesome.min.css")
+'	BANano.Header.AddCSSFile("fontawesome.min.css")
 '	BANano.Header.AddCSSFile("bootstrap-grid.min.css")
 	BANano.Header.AddCSSFile("mdtoast.min.css")
 	
@@ -217,7 +274,8 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("insert-rule.min.js")
 '	BANano.Header.AddJavascriptFile("moment.min.js")
 	BANano.Header.AddJavascriptFile("countUp.umd.js")
-		
+	BANano.Header.AddJavascriptFile("svg-loader.min.js")
+	'
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version
 	ExitApplication

@@ -29,16 +29,16 @@ Sub Show(MainApp As SDUI5App)
 	countries.Add("South Africa")
 	countries.Add("USA")
 	countries.Add("Nigeria")
-	Dim options As Map = App.UI.ListToSelectOptions(countries)
+	Dim options As Map = app.UI.ListToSelectOptions(countries)
 	'
 	table1.AddColumn("id", "#")
 	table1.AddColumnTextBox("email", "Email", False)
 	table1.AddColumnSelect("country", "Country", False, True, options)
 	table1.AddColumnTextARea("job", "Job Title", False, 5)
-	table1.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d", "F j, Y", False, False, False)
+	table1.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d", "F j, Y", False, False, False, "en")
 	table1.AddColumnTimePicker("tob", "Time of Birth", False, "H:i", True)
-	table1.AddColumnDatePicker1("dod", "Date of Death", False, "Y-m-d", "d/m/Y", False, False, False, "it")
-	table1.AddColumnDateTimePicker1("doo", "Date of Opening", False, "Y-m-d H:i", "d/m/Y H:i", False, False, False, "es")
+	table1.AddColumnDatePicker("dod", "Date of Death", False, "Y-m-d", "d/m/Y", False, False, False, "it")
+	table1.AddColumnDateTimePicker("doo", "Date of Opening", False, "Y-m-d H:i", "d/m/Y H:i", False, False, False, "es")
 	table1.AddColumnRange("hours", "Hours", 8, app.COLOR_ACCENT)
 	table1.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
 	table1.AddColumnRating("rate", "Satisfaction", 3, "item.color", app.MASK_HEART)
@@ -46,12 +46,12 @@ Sub Show(MainApp As SDUI5App)
 		
 	'add columns for editing
 '	table1.AddDesignerColums
-	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
+'	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
 	table1.MoveBackButton
 	'
 	BANano.Await(table1.SetItemsPaginate(Items))
 	'Allow filtering records by an alphabet from column
-	table1.SetAlphaChooser(True, "8", "name")
+	'table1.SetAlphaChooser(True, "8", "name")
 	'change the select items for all rows
 '	BANano.Await(table1.SetSelectListItems("country", Array("Afghanistan", "Albania", "Australia", "USA", "Brazil", "Chile", "Guinea", "South Africa", "Nigeria")))
 '	'change the select items for row 2
@@ -62,16 +62,34 @@ Sub Show(MainApp As SDUI5App)
 	
 	
 	
-'	table1.SetRowBackgroundColor(0, "red")
-'	table1.SetRowTextColor(0, "white")
-'	table1.SetRowColumnBackgroundColor("color", 1, "red")
-'	table1.SetRowColumnTextColor("color", 1, "white")
-	'sum the totals of each of these columns
-	Dim summary As Map = table1.SetFooterTotalSumCountColumns(Array("id"))
-	'get the total number of processed rows
-	sRowCount = summary.Get("rowcount")
-	'format the value to be a thousand
-	sRowCount = App.UI.Thousands(sRowCount)
-	'set the first column to show the total
-	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+''	table1.SetRowBackgroundColor(0, "red")
+''	table1.SetRowTextColor(0, "white")
+''	table1.SetRowColumnBackgroundColor("color", 1, "red")
+''	table1.SetRowColumnTextColor("color", 1, "white")
+'	'sum the totals of each of these columns
+'	Dim summary As Map = table1.SetFooterTotalSumCountColumns(Array("id"))
+'	'get the total number of processed rows
+'	sRowCount = summary.Get("rowcount")
+'	'format the value to be a thousand
+'	sRowCount = app.UI.Thousands(sRowCount)
+'	'set the first column to show the total
+'	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+End Sub
+
+Private Sub table1_AlphaClick (Item As String)
+'	app.PagePause
+'	Dim alphaSearch As List = table1.SearchByAlphabet(Item, "name")
+'	'Show all items filtered by alpha chooser
+'	BANano.Await(table1.SetItems(alphaSearch))
+'	BANano.Await(table1.ShowTotals(alphaSearch))
+''	'Calculate totals
+''	Dim summary As Map = table1.SetFooterTotalSumCountColumns(alphaSearch, Array("id"))
+''	
+''	'get the total number of processed rows
+''	sRowCount = summary.Get("rowcount")
+''	'format the value to be a thousand
+''	sRowCount = app.UI.Thousands(sRowCount)
+''	'set the first column to show the total
+''	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+'	app.PageResume
 End Sub

@@ -13,7 +13,6 @@ Sub Process_Globals
 	Private appnavbar As SDUI5NavBar		'ignore
 	Private pageView As SDUI5Container	'ignore
 	Private drawermenu As SDUI5Menu
-	Private components As SDUI5MenuItem
 End Sub
 
 Sub Initialize					'ignoreDeadCode
@@ -42,12 +41,6 @@ End Sub
 Private Sub appdrawer_Opened (Status As Boolean)
 	'the hamburger is a swap so open / close it when overlay is clicked also
 	appnavbar.Hamburger.Active = Status
-End Sub
-
-'NB: use this to add pages that are not added to the side nav bar
-Sub AddPages
-	'example
-	'app.AddPage(pgHome.name, pgHome)
 End Sub
 
 'define the menu items fo dawe
@@ -81,14 +74,13 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat Item")
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
-	drawermenu.AddItemParent("display", "tables", "", "Tables")
+	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
+	'
+	drawermenu.AddItemParent("", "tables", "", "Tables")
 	drawermenu.AddItemChild("tables", "pg-table", "", "Table 1")
 	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
 	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
 	
-	
-	
-	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
 	'
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
 	drawermenu.AddItemChild("navigation", "pg-breadcrumbs", "", "Breadcrumbs")
@@ -99,7 +91,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("docks", "pg-dockcolor", "", "Dock (Color)")
 	drawermenu.AddItemChild("navigation", "pg-bottomdrawer", "", "Bottom Drawer")
 	drawermenu.AddItemChild("navigation", "pg-link", "", "Link")
-	drawermenu.SetItemBadge("pg-link", "wip", "secondary")
 	drawermenu.AddItemChild("navigation", "pg-menu", "", "Menu")
 	drawermenu.AddItemChild("navigation", "pg-menu1", "", "Menu (More)")
 	drawermenu.AddItemChild("navigation", "pg-navbar", "", "Navbar")
@@ -156,6 +147,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
 	drawermenu.AddItemChild("plugins", "pg-groupselect", "", "Group Select")
 	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
+	drawermenu.AddItemChild("plugins", "pg-svg", "", "SVG")
 End Sub
 
 
@@ -175,7 +167,7 @@ Private Sub drawermenu_ItemClick (item As String)
 	Select Case sprefix
 	Case "pg"
 		'only mark this item as active
-		BANano.Await(drawermenu.SetItemActive($"pg-${ssuffix}"$))
+		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
 			Case "infobox"
 				pgInfoBox.Show(App)
@@ -191,6 +183,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pggridbuilder.show(App)
 			Case "wizard"	
 				pgWizard.show(App)
+			Case "svg"
+				pgSVG.Show(App)		
 			End Select		
 		
 			Select Case ssuffix

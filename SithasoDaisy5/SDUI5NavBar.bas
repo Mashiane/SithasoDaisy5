@@ -14,17 +14,23 @@ Version=10
 #DesignerProperty: Key: Top, DisplayName: Top, FieldType: String, DefaultValue: 0, Description: Top
 #DesignerProperty: Key: ZIndex, DisplayName: Z Index, FieldType: String, DefaultValue: 30, Description: Z index
 #DesignerProperty: Key: HasBurger, DisplayName: Has Burger, FieldType: Boolean, DefaultValue: True, Description: Has burger
+#DesignerProperty: Key: HideHamburger, DisplayName: Hide Hamburger, FieldType: Boolean, DefaultValue: False, Description: Hide Hamburger
+#DesignerProperty: Key: HideHamburgerOnLargeScreen, DisplayName: LG - Hide Hamburger, FieldType: Boolean, DefaultValue: False, Description: Hide Hamburger On Large Screen
 #DesignerProperty: Key: HasLogo, DisplayName: Has Logo, FieldType: Boolean, DefaultValue: False, Description: Has Logo
+#DesignerProperty: Key: HideLogo, DisplayName: Hide Logo, FieldType: Boolean, DefaultValue: False, Description: Hide Logo
+#DesignerProperty: Key: HideLogoOnLargeScreen, DisplayName: LG - Hide Logo, FieldType: Boolean, DefaultValue: False, Description: Hide Logo On Large Screen
 #DesignerProperty: Key: LogoImage, DisplayName: Logo Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Logo Image
 #DesignerProperty: Key: LogoMask, DisplayName: Logo Mask, FieldType: String, DefaultValue: none, Description: Logo Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: LogoWidth, DisplayName: Logo Width, FieldType: String, DefaultValue: 10, Description: Logo Width
 #DesignerProperty: Key: LogoHeight, DisplayName: Logo Height, FieldType: String, DefaultValue: 10, Description: Logo Height
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: NavBar, Description: Title
+#DesignerProperty: Key: HideTitle, DisplayName: Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title
+#DesignerProperty: Key: HideTitleOnLargeScreen, DisplayName: LG - Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title On Large Screen
 #DesignerProperty: Key: TitlePosition, DisplayName: Title Position, FieldType: String, DefaultValue: left, Description: Title Position, List: center|left|right
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 16, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -60,7 +66,7 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sBackgroundColor As String = "base-100"
 	Private bGlass As Boolean = False
-	Private sHeight As String = ""
+	Private sHeight As String = "16"
 	Private sTextColor As String = ""
 	Private sWidth As String = "full"
 	Private sRounded As String = "none"
@@ -78,6 +84,12 @@ Sub Class_Globals
 	Private bSticky As Boolean = True
 	Private sTop As String = "0"
 	Private sZIndex As String = "30"
+	Private bHideHamburger As Boolean = False
+	Private bHideHamburgerOnLargeScreen As Boolean = False
+	Private bHideLogoOnLargeScreen As Boolean = False
+	Private bHideTitleOnLargeScreen As Boolean = False
+	Private bHideLogo As Boolean = False
+	Private bHideTitle As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,8 +97,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -227,7 +238,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		bGlass = Props.GetDefault("Glass", False)
 		bGlass = UI.CBool(bGlass)
-		sHeight = Props.GetDefault("Height", "")
+		sHeight = Props.GetDefault("Height", "16")
 		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = UI.CStr(sWidth)
@@ -259,6 +270,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTop = UI.CStr(sTop)
 		sZIndex = Props.GetDefault("ZIndex", "30")
 		sZIndex = UI.CStr(sZIndex)
+		bHideHamburger = Props.GetDefault("HideHamburger", False)
+		bHideHamburger = UI.CBool(bHideHamburger)
+		bHideHamburgerOnLargeScreen = Props.GetDefault("HideHamburgerOnLargeScreen", False)
+		bHideHamburgerOnLargeScreen = UI.CBool(bHideHamburgerOnLargeScreen)
+		bHideLogoOnLargeScreen = Props.GetDefault("HideLogoOnLargeScreen", False)
+		bHideLogoOnLargeScreen = UI.CBool(bHideLogoOnLargeScreen)
+		bHideTitleOnLargeScreen = Props.GetDefault("HideTitleOnLargeScreen", False)
+		bHideTitleOnLargeScreen = UI.CBool(bHideTitleOnLargeScreen)
+		bHideLogo = Props.GetDefault("HideLogo", False)
+		bHideLogo = UI.CBool(bHideLogo)
+		bHideTitle = Props.GetDefault("HideTitle", False)
+		bHideTitle = UI.CBool(bHideTitle)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
@@ -284,21 +307,109 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_left" class="navbar-start">
+	<nav id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}_left" class="navbar-start flex items-center gap-2">
 			<div id="${mName}_burger" class="hidden"></div>
 			<div id="${mName}_logo" class="hidden"></div>
 		</div>	
-		<div id="${mName}_center" class="navbar-center"></div>
-		<div id="${mName}_right" class="navbar-end"></div>
-	</div>"$).Get("#" & mName)
+		<div id="${mName}_center" class="navbar-center flex items-center"></div>
+		<div id="${mName}_right" class="navbar-end flex items-center"></div>
+	</nav>"$).Get("#" & mName)
 	'set the title position
 	setHasBurger(bHasBurger)
+	setHideHamburger(bHideHamburger)
+	setHideHamburgerOnLargeScreen(bHideHamburgerOnLargeScreen)
 	setHasLogo(bHasLogo)
+	setHideLogoOnLargeScreen(bHideLogoOnLargeScreen)
 	setTitlePosition(sTitlePosition)
 	setTitle(sTitle)
+	setHideTitleOnLargeScreen(bHideTitleOnLargeScreen)
+	setHideLogo(bHideLogo)
+	setHideTitle(bHideTitle)
 '	setVisible(bVisible)
 End Sub
+
+'set Hide Logo
+Sub setHideLogo(b As Boolean)					'ignoredeadcode
+	bHideLogo = b
+	CustProps.put("HideLogo", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_logo"$, Not(b))
+End Sub
+'set Hide Title
+Sub setHideTitle(b As Boolean)					'ignoredeadcode
+	bHideTitle = b
+	CustProps.put("HideTitle", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_title"$, Not(b))
+End Sub
+'get Hide Logo
+Sub getHideLogo As Boolean
+	Return bHideLogo
+End Sub
+'get Hide Title
+Sub getHideTitle As Boolean
+	Return bHideTitle
+End Sub
+
+'set Hide Hamburger
+Sub setHideHamburger(b As Boolean)				'ignoredeadcode
+	bHideHamburger = b
+	CustProps.put("HideHamburger", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_burger"$, Not(b))
+End Sub
+
+'set Hide Hamburger On Large Screen
+Sub setHideHamburgerOnLargeScreen(b As Boolean)			'ignoredeadcode
+	bHideHamburgerOnLargeScreen = b
+	CustProps.put("HideHamburgerOnLargeScreen", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_burger"$, "lg:hidden")
+	Else
+		UI.RemoveClassByID($"${mName}_burger"$, "lg:hidden")
+	End If
+End Sub
+'set Hide Logo On Large Screen
+Sub setHideLogoOnLargeScreen(b As Boolean)				'ignoredeadcode
+	bHideLogoOnLargeScreen = b
+	CustProps.put("HideLogoOnLargeScreen", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_logo"$, "lg:hidden")
+	Else
+		UI.RemoveClassByID($"${mName}_logo"$, "lg:hidden")
+	End If
+End Sub
+'set Hide Title On Large Screen
+Sub setHideTitleOnLargeScreen(b As Boolean)				'ignoredeadcode
+	bHideTitleOnLargeScreen = b
+	CustProps.put("HideTitleOnLargeScreen", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_title"$, "lg:hidden")
+	Else
+		UI.RemoveClassByID($"${mName}_title"$, "lg:hidden")
+	End If
+End Sub
+'get Hide Hamburger
+Sub getHideHamburger As Boolean
+	Return bHideHamburger
+End Sub
+'get Hide Hamburger On Large Screen
+Sub getHideHamburgerOnLargeScreen As Boolean
+	Return bHideHamburgerOnLargeScreen
+End Sub
+'get Hide Logo On Large Screen
+Sub getHideLogoOnLargeScreen As Boolean
+	Return bHideLogoOnLargeScreen
+End Sub
+'get Hide Title On Large Screen
+Sub getHideTitleOnLargeScreen As Boolean
+	Return bHideTitleOnLargeScreen
+End Sub
+
 
 'set Sticky
 Sub setSticky(b As Boolean)
@@ -348,7 +459,6 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	bHasBurger = b
 	CustProps.put("HasBurger", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_burger"$, b)
 	If bHasBurger = False Then Return
 	If BANano.Exists($"${mName}burger"$) = True Then Return
 	Hamburger.Initialize(mCallBack, $"${mName}burger"$, $"${mName}burger"$)
@@ -362,10 +472,10 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	Hamburger.Visible = True
 	Hamburger.Active = False
 	Hamburger.Enabled = True
-	Hamburger.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
+'	Hamburger.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
 	Hamburger.AddComponent
 	UI.OnChildEvent($"${mName}burger"$, "change", Me, "swapchange")
-	Hamburger.UI.AddClassByID($"${mName}_burger"$, "shrink-0")
+	Hamburger.UI.AddClassByID($"${mName}_burger"$, "shrink-0 ml-2")
 End Sub
 
 
@@ -374,7 +484,6 @@ Sub setHasLogo(b As Boolean)			'ignoredeadcode
 	bHasLogo = b
 	CustProps.put("HasLogo", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_logo"$, b)
 	If bHasLogo = False Then Return
 	If BANano.Exists($"${mName}logo"$) = True Then Return
 	Logo.Initialize(mCallBack, $"${mName}logo"$, $"${mName}logo"$)
@@ -385,9 +494,55 @@ Sub setHasLogo(b As Boolean)			'ignoredeadcode
 	Logo.mask = sLogoMask
 	Logo.Visible = True
 	Logo.Enabled = True
-	Logo.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
+'	Logo.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
 	Logo.AddComponent
 	Logo.UI.AddClassByID($"${mName}_logo"$, "shrink-0")
+End Sub
+
+'set Logo Height
+Sub setLogoHeight(s As String)
+	sLogoHeight = s
+	CustProps.put("LogoHeight", s)
+	If mElement = Null Then Return
+	Logo.Height = s
+End Sub
+'set Logo Image
+Sub setLogoImage(s As String)
+	sLogoImage = s
+	CustProps.put("LogoImage", s)
+	If mElement = Null Then Return
+	Logo.Src = s
+End Sub
+'set Logo Mask
+'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
+Sub setLogoMask(s As String)
+	sLogoMask = s
+	CustProps.put("LogoMask", s)
+	If mElement = Null Then Return
+	Logo.Mask = s
+End Sub
+'set Logo Width
+Sub setLogoWidth(s As String)
+	sLogoWidth = s
+	CustProps.put("LogoWidth", s)
+	If mElement = Null Then Return
+	Logo.Width = s
+End Sub
+'get Logo Height
+Sub getLogoHeight As String
+	Return sLogoHeight
+End Sub
+'get Logo Image
+Sub getLogoImage As String
+	Return sLogoImage
+End Sub
+'get Logo Mask
+Sub getLogoMask As String
+	Return sLogoMask
+End Sub
+'get Logo Width
+Sub getLogoWidth As String
+	Return sLogoWidth
 End Sub
 
 'get Has Logo

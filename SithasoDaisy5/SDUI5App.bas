@@ -399,15 +399,11 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
-	mElement.AddClass("relative")
-	mElement.AddClass("h-screen")
-	mElement.AddClass("w-screen")
-	mElement.AddClass("m-0")
+	mElement.Append($"<div id="app"></div>"$)
+	UI.AddClass(mElement, "relative h-screen w-screen m-0 p-0")
 	mback = mCallback
-	'empty the body of the page
-	mElement.Empty
 	AddLoader
-	UI.InitColors  
+	Banano.Await(modSD5.InitColors)
 	Themes.Initialize
 	templates.Initialize
 	templateViews.Initialize
@@ -415,12 +411,11 @@ Public Sub Initialize (mCallback As Object)
 	AllViews.Initialize
 	Designs.Initialize
 	DynamicEvents.Initialize
-'	UI.InitColors
 '	UI.InitLanguages
 '	UI.InitCountries
 	UserProfile.Initialize
-	UI.InitMonths
-	UI.InitDays
+	Banano.Await(modSD5.InitMonths)
+	Banano.Await(modSD5.InitDays)
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
@@ -778,7 +773,7 @@ End Sub
 
 'get the id of the component
 Sub getHere As String
-	Return $"#body"$
+	Return $"#app"$
 End Sub
 '
 ''return the cell id

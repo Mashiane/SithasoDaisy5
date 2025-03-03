@@ -246,8 +246,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     	<div id="${mName}_dropdown" class="dropdown ${xclasses}" ${xattrs} style="${xstyles}">
       		<label id="${mName}_button" tabindex="0" role="button" class="swap swap-rotate btn btn-circle shadow-xl m-1">
         		<input id="${mName}_checkbox" type="checkbox"></input>
-        		<i id="${mName}_off" class="swap-off"></i>
-        		<i id="${mName}_on" class="swap-on"></i>
+        		<svg id="${mName}_off" class="swap-off"></svg>
+        		<svg id="${mName}_on" class="swap-on"></svg>
       		</label>
       		<label id="${mName}_content" tabindex="0" class="dropdown-content z-1 flex flex-col"></label>
     	</div>
@@ -300,7 +300,7 @@ Sub setOffIcon(s As String)				'ignoredeadcode
 	sOffIcon = s
 	CustProps.put("OffIcon", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.UpdateClassByID($"${mName}_off"$, "officon", s)
+	If s <> "" Then UI.SetIconNameByID($"${mName}_off"$, s)
 End Sub
 'set Off Text Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -308,14 +308,14 @@ Sub setOffTextColor(s As String)				'ignoredeadcode
 	sOffTextColor = s
 	CustProps.put("OffTextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_off"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_off"$, s)
 End Sub
 'set On Icon
 Sub setOnIcon(s As String)				'ignoredeadcode
 	sOnIcon = s
 	CustProps.put("OnIcon", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.UpdateClassByID($"${mName}_on"$, "onicon", s)
+	If s <> "" Then UI.SetIconNameByID($"${mName}_on"$, s)
 End Sub
 'set On Text Color
 'options: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -323,7 +323,7 @@ Sub setOnTextColor(s As String)			'ignoredeadcode
 	sOnTextColor = s
 	CustProps.put("OnTextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorByID($"${mName}_on"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_on"$, s)
 End Sub
 'set Size
 'options: xs|none|sm|md|lg|xl
