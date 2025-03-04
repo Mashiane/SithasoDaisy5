@@ -374,8 +374,6 @@ End Sub
 
 private Sub ChangeStep(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
-	Log(e.ID)
-	
 	Dim stepID As String = e.ID
 	Dim stepName As String = UI.MvField(stepID,2, "_")
 	If stepName <> "" Then

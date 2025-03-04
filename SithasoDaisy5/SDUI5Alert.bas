@@ -293,8 +293,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<svg id="${mName}_icon" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
-		<div id="${mName}_content">
+		<svg id="${mName}_icon" fill="currentColor" data-src="${sIcon}" class="hidden" data-js="enabled"></svg>
+		<div id="${mName}_content" class="flex flex-col">
 			<h3 id="${mName}_title" class="font-bold hidden">${sTitle}</h3>
 			<div id="${mName}_text">${sText}</div>
 		</div>

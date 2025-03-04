@@ -228,7 +228,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 	End If
 	'
-	UI.AddClassDT("drawer mx-auto max-w-[100rem]")
+	UI.AddClassDT("drawer min-h-screen")
 	If bLgOpen Then UI.AddClassDT("lg:drawer-open")
 	If bMdOpen Then UI.AddClassDT("md:drawer-open")
 	If bOpen Then UI.AddClassDT("drawer-open")
@@ -246,13 +246,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+	mElement = mTarget.Append($"[BANCLEAN]
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
-		<div id="${mName}_content" class="drawer-content"></div>
-		<div id="${mName}_side" class="drawer-side z-50">
+		<main id="${mName}_content" class="drawer-content"></main>
+		<aside id="${mName}_side" class="drawer-side z-50 flex flex-col h-full overflow-y-auto">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
-			<div id="${mName}_sidecontent" class="min-h-full"></div>
-		</div>
+			<div id="${mName}_sidecontent" class="h-full"></div>
+		</aside>
 	</div>"$).Get("#" & mName)
 	setOverlay(bOverlay)
 	setBackgroundColor(sBackgroundColor)

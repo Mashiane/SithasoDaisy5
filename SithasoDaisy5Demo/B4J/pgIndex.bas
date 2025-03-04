@@ -119,10 +119,11 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-range", "", "Range")
 	drawermenu.AddItemChild("dinput", "pg-rating", "", "Rating")
 	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
+	drawermenu.AddItemChild("dinput", "pg-groupselect", "", "Group Select")
 	drawermenu.AddItemChild("dinput", "pg-input", "", "Text Box")
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
 	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
-	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validator")
+	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validation")
 	'
 	drawermenu.AddItemParent("components", "layout", "", "Layout")
 	drawermenu.AddItemChild("layout", "pg-grid", "", "Grid")
@@ -145,7 +146,6 @@ Sub CreateDrawerMenu
 	'
 	drawermenu.AddItemParent("", "plugins", "", "Plugins")
 	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
-	drawermenu.AddItemChild("plugins", "pg-groupselect", "", "Group Select")
 	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("plugins", "pg-svg", "", "SVG")
 End Sub
@@ -185,6 +185,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgWizard.show(App)
 			Case "svg"
 				pgSVG.Show(App)		
+			Case "validator"
+				pgValidation.Show(App)
 			End Select		
 		
 			Select Case ssuffix

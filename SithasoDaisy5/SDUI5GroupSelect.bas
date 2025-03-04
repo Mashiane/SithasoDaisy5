@@ -13,9 +13,9 @@ Version=10
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: SingleSelect, DisplayName: Single Select, FieldType: Boolean, DefaultValue: False, Description: Single Select
-#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #22c55e, Description: Active Color
 #DesignerProperty: Key: ChipColor, DisplayName: Chip Color, FieldType: String, DefaultValue: neutral, Description: Chip Color
-#DesignerProperty: Key: ChipOutlined, DisplayName: Chip Outlined, FieldType: Boolean, DefaultValue: False, Description: Chip Outlined
+#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #22c55e, Description: Active Color
+#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: #ffffff, Description: Text Color
 #DesignerProperty: Key: Size, DisplayName: Chip Size, FieldType: String, DefaultValue: xs, Description: Button Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
@@ -70,17 +70,7 @@ Sub Class_Globals
 	Private sWidth As String = "full"
 	Private items As Map
 	Private sChipColor As String = "neutral"
-	Private bChipOutlined As Boolean = False
-	Public CONST CHIPCOLOR_ACCENT As String = "accent"
-	Public CONST CHIPCOLOR_ERROR As String = "error"
-	Public CONST CHIPCOLOR_GHOST As String = "ghost"
-	Public CONST CHIPCOLOR_INFO As String = "info"
-	Public CONST CHIPCOLOR_NONE As String = "none"
-	Public CONST CHIPCOLOR_NUETRAL As String = "nuetral"
-	Public CONST CHIPCOLOR_PRIMARY As String = "primary"
-	Public CONST CHIPCOLOR_SECONDARY As String = "secondary"
-	Public CONST CHIPCOLOR_SUCCESS As String = "success"
-	Public CONST CHIPCOLOR_WARNING As String = "warning"
+	Private sTextColor As String = "#ffffff"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -266,8 +256,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		sChipColor = Props.GetDefault("ChipColor", "neutral")
 		sChipColor = UI.CStr(sChipColor)
-		bChipOutlined = Props.GetDefault("ChipOutlined", False)
-		bChipOutlined = UI.CBool(bChipOutlined)
+		sTextColor = Props.GetDefault("TextColor", "#ffffff")
+		sTextColor = UI.CStr(sTextColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -292,10 +282,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 		<fieldset id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   			<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-  			<div id="${mName}_content" class="flex gap-2 flex-wrap"></div>
+  			<div id="${mName}_content" class="flex gap-2 flex-wrap break-words relative"></div>
 		</fieldset>"$).Get("#" & mName)
 	setOptions(sRawOptions)
 	setSelected(sSelected)
+End Sub
+
+'set Text Color
+Sub setTextColor(s As String)
+	sTextColor = s
+	CustProps.put("TextColor", s)
+End Sub
+
+'get Text Color
+Sub getTextColor As String
+	Return sTextColor
 End Sub
 
 Sub Clear			'ignoredeadcode
@@ -382,14 +383,16 @@ Sub setOptions(s As String)				'ignoredeadcode
 	UI.ClearByID($"${mName}_content"$)
 	If s = "" Then Return
 	Dim mItems As Map = UI.GetKeyValues(sRawOptions, False)
+	
 	Dim sb As StringBuilder
 	sb.Initialize
 	Dim itemSize As String = UI.FixSize("btn", sSize) 
+	Dim iconsize As String = UI.FixIconSize(sSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
 	Dim itemColor As String = UI.FixColor("btn", sChipColor)
+	Dim iconColor As String = UI.FixColor("text", sTextColor)
 	Dim soutline As String = ""
-	If bChipOutlined Then soutline = "btn-outline"
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
@@ -403,13 +406,38 @@ Sub setOptions(s As String)				'ignoredeadcode
 		Dim v As String = mItems.Get(k)
 		k = UI.CleanID(k)
 		Dim nk As String = $"${k}_${mName}"$
-		sb.Append($"<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+		'sb.Append($"<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+		
+		sb.Append($"[BANCLEAN]
+		<div id="${k}_${mName}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-cache="disabled" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
+			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+		</div>"$)
 		items.Put(nk, nk)
 	Next
 	UI.AppendByID($"${mName}_content"$, sb.ToString)
 	For Each k As String In items.Keys
 		UI.OnEventByID(k, "change", Me, "changed")
+		UI.OnEventByID($"${k}_icon"$, "click", Me, "IconClick")
 	Next
+End Sub
+
+private Sub IconClick(e As BANanoEvent)		'ignoredeadcode
+	e.PreventDefault
+	Dim k As String = UI.MvField(e.ID, 1, "_")
+	UI.ToggleByID($"${k}_${mName}"$)
+	UpdateChanges(True)
+End Sub
+
+private Sub BuildIconColor(nc As String) As String
+	If nc = "" Then Return ""
+	'
+	Dim ac As String = nc
+	If nc.Contains("-") Then ac = UI.MvField(nc, 2, "-")
+	ac = ac.Replace("[", "")
+	ac = ac.Replace("]", "")
+	Dim sout As String = $"color:${ac}"$
+	Return sout
 End Sub
 
 Sub AddItem(k As String, v As String)
@@ -417,11 +445,12 @@ Sub AddItem(k As String, v As String)
 	k = UI.CleanID(k)
 	Dim nk As String = $"${k}_${mName}"$
 	Dim itemSize As String = UI.FixSize("btn", sSize)
+	Dim iconsize As String = UI.FixIconSize(sSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
 	Dim itemColor As String = UI.FixColor("btn", sChipColor)
 	Dim soutline As String = ""
-	If bChipOutlined Then soutline = "btn-outline"
+	Dim iconColor As String = UI.FixColor("text", sTextColor)
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
@@ -431,14 +460,51 @@ Sub AddItem(k As String, v As String)
 		borderColor = $"checked:${bbg}"$
 	End If
 	
-	UI.AppendByID($"${mName}_content"$, $"<input id="${nk}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+	'UI.AppendByID($"${mName}_content"$, $"<input id="${nk}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
+	
+	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
+		<div id="${k}_${mName}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-cache="disabled" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
+			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+		</div>"$)
+	
 	items.Put(nk, nk)
 	UI.OnEventByID(nk, "change", Me, "changed")
+	UI.OnEventByID($"${nk}_icon"$, "click", Me, "IconClick")
+End Sub
+
+private Sub UpdateChanges(fireEvent As Boolean)
+	'hide icons
+	Dim itemColor As String = UI.FixColor("btn", sChipColor)
+	Dim abg As String = UI.FixColor("bg", sActiveColor)
+	'
+	For Each item As String In items.keys
+		'remove the active color
+		If sActiveColor <> "" Then UI.RemoveClassByID($"${item}_host"$, abg)
+		'set the default color
+		If sChipColor <> "" Then UI.AddClassByID($"${item}_host"$, itemColor)
+		'hide the icon
+		UI.SetVisibleByID($"${item}_icon"$, False)
+	Next
+	'get the selected items
+	Dim nselected As String = getSelected
+	Dim selL As List = UI.StrParse(";", nselected)
+	For Each k As String In selL
+		'remove the item color
+		If sChipColor <> "" Then UI.RemoveClassByID($"${k}_${mName}_host"$, itemColor)
+		'add the active color
+		If sActiveColor <> "" Then UI.AddClassByID($"${k}_${mName}_host"$, abg)
+		'show the icon
+		UI.SetVisibleByID($"${k}_${mName}_icon"$, True)
+		UI.AddStyleByID($"${k}_${mName}"$, "outline-style", "none")
+	Next
+	If fireEvent Then
+		BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
+	End If
 End Sub
 
 private Sub changed(e As BANanoEvent)		'ignoredeadcode
-	Dim nselected As String = getSelected
-	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
+	UpdateChanges(True)
 End Sub
 
 'set Rounded Box
@@ -468,6 +534,7 @@ Sub setSelected(s As String)					'ignoredeadcode
 		Dim npart As String = $"${item}_${mName}"$
 		UI.SetCheckedByID(npart, True)
 	Next
+	UpdateChanges(False)
 End Sub
 
 'set Shadow
@@ -574,20 +641,9 @@ Sub setChipColor(s As String)
 	CustProps.put("ChipColor", s)
 End Sub
 
-'set Chip Outlined
-Sub setChipOutlined(b As Boolean)
-	bChipOutlined = b
-	CustProps.put("ChipOutlined", b)
-End Sub
-
 'get Chip Color
 Sub getChipColor As String
 	Return sChipColor
-End Sub
-
-'get Chip Outlined
-Sub getChipOutlined As Boolean
-	Return bChipOutlined
 End Sub
 
 'run validation

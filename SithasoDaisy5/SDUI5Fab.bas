@@ -246,8 +246,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     	<div id="${mName}_dropdown" class="dropdown ${xclasses}" ${xattrs} style="${xstyles}">
       		<label id="${mName}_button" tabindex="0" role="button" class="swap swap-rotate btn btn-circle shadow-xl m-1">
         		<input id="${mName}_checkbox" type="checkbox"></input>
-        		<svg id="${mName}_off" class="swap-off"></svg>
-        		<svg id="${mName}_on" class="swap-on"></svg>
+        		<svg id="${mName}_off" fill="currentColor" data-js="enabled" class="swap-off"></svg>
+        		<svg id="${mName}_on" fill="currentColor" data-js="enabled" class="swap-on"></svg>
       		</label>
       		<label id="${mName}_content" tabindex="0" class="dropdown-content z-1 flex flex-col"></label>
     	</div>

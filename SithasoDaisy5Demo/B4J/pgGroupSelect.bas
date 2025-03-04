@@ -25,5 +25,5 @@ End Sub
 
 
 Private Sub SDUI5GroupSelect2_Change (Selected As String)
-	app.ShowSwalSuccess(Selected)
+	app.ShowToastSuccess(Selected)
 End Sub

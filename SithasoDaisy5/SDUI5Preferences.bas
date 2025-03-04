@@ -428,7 +428,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
-						<svg id="${mName}_searchbtnicon" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+						<svg id="${mName}_searchbtnicon" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
 					</button>
 	    		</div>
 				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
@@ -2239,10 +2239,14 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hide"></span>
-    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+							<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hide"></span>
-    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
+    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+							<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+						</btn>
     				</label>
     			</div>
     		</div>
@@ -2279,11 +2283,15 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     </label>
     </div>
     </div>
@@ -2332,10 +2340,14 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     </label>
     </div>
     </div>
@@ -3001,10 +3013,14 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_prepend_icon"></svg></btn>
+    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}"><svg id="${mName}_${Key}_append_icon"></svg></btn>
+    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+	</btn>
     </label>
     </div>
     </div>
@@ -3512,7 +3528,7 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
     			<button id="${mName}_${Key}_button" class="btn btn-circle btn-${xColor} w-[${xSize}] h-[${xSize}]">
-    				<svg id="${mName}_${Key}_icon" fill="currentColor" data-src="${xIcon}" width="42px" height="42px"></svg>
+    				<svg id="${mName}_${Key}_icon" fill="currentColor" data-js="enabled" data-src="${xIcon}" width="42px" height="42px"></svg>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
     			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>

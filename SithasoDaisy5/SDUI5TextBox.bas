@@ -395,7 +395,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden">
 							<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-							<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+							<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 						</button>
 	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
@@ -403,7 +403,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden">
 							<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-							<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+							<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 						</button>
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
@@ -421,7 +421,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -429,7 +429,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>"$).Get("#" & mName)
 			sDataTypeOf = $"${mName}_control"$
@@ -447,7 +447,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
       			</div>"$).Get("#" & mName)	
 			sDataTypeOf = $"${mName}_control"$

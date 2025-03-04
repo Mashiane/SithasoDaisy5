@@ -1829,12 +1829,14 @@ End Sub
 Sub SetImageByID(sID As String, s As String)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
 	SetImage(mElement, s)
 End Sub
 
 Sub GetCheckedByID(sID As String) As Boolean
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return False
 	Dim b As Boolean = mElement.GetChecked
 	b = CBool(b)
 	Return b
@@ -1843,7 +1845,22 @@ End Sub
 Sub SetCheckedByID(sID As String, b As Boolean)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
 	mElement.SetChecked(b)
+End Sub
+
+Sub ToggleByID(sID As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	Dim b As Boolean = CBool(mElement.GetChecked)
+	mElement.SetChecked(Not(b))
+End Sub
+
+Sub Toggle(mElement As BANanoElement)
+	If mElement = Null Then Return
+	Dim b As Boolean = CBool(mElement.GetChecked)
+	mElement.SetChecked(Not(b))
 End Sub
 
 Sub SetText(mElement As BANanoElement, hx As String)
