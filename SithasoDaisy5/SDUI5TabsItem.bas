@@ -109,9 +109,6 @@ Sub getVisible As Boolean
 	bVisible = UI.GetVisible(mElement)
 	Return bVisible
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)

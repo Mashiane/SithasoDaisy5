@@ -112,10 +112,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-'use to add an event to the element
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -230,7 +226,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-  		<label id="${mName}_box" class="relative block rounded-box w-full pt-3 flex align-center justify-center">
+  		<label id="${mName}_box" class="relative block rounded-box w-full pt-3 flex items-center justify-center">
     		<div id="${mName}_indicator" class="h-2 bg-white w-[200px] rounded-box mx-auto"></div>
     		<input id="${mName}_chooser" type="checkbox" class="border-none absolute inset-0 cursor-pointer appearance-none" />
   		</label>

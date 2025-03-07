@@ -130,9 +130,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -149,7 +146,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -266,7 +263,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<hr id="${mName}_startprefix" class="hidden"/>
 		<div id="${mName}_start" class="timeline-start hidden">${sStartText}</div>
 		<div id="${mName}_middle" class="timeline-middle hidden">
-			<img id="${mName}_middleicon" src="${sMiddleIcon}" alt="" class="hidden"></img>
+			<svg id="${mName}_middleicon" data-js="enabled" data-unique-ids="disabled" data-id="${mName}_middleicon" fill="currentColor" data-src="${sMiddleIcon}" class="hide hidden"></svg>
 		</div>
 		<div id="${mName}_end" class="timeline-end hidden">${sEndText}</div>
 		<hr id="${mName}_endsuffix" class="hidden"/>
@@ -376,7 +373,7 @@ Sub setMiddleIcon(s As String)				'ignoredeadcode
 		UI.SetVisibleByID($"${mName}_middleicon"$, False)
 	Else
 		UI.SetVisibleByID($"${mName}_middleicon"$, True)
-		UI.SetImageByID($"${mName}_middleicon"$, s)
+		UI.SetIconNameByID($"${mName}_middleicon"$, s)
 	End If
 End Sub
 'set Middle Icon Size
@@ -386,8 +383,7 @@ Sub setMiddleIconSize(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If bMiddle = False Then Return
 	If s = "" Then Return
-	UI.SetWidthByID($"${mName}_middleicon"$, s)
-	UI.SetHeightByID($"${mName}_middleicon"$, s)
+	UI.SetIconSizeByID($"${mName}_middleicon"$, s)
 End Sub
 'set Middle Text
 Sub setMiddleText(s As String)				'ignoredeadcode

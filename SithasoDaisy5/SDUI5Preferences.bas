@@ -38,23 +38,24 @@ Version=10
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Actions Visible
 #DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel
+#DesignerProperty: Key: YesVisible, DisplayName: Yes Visible, FieldType: Boolean, DefaultValue: True, Description: Yes Visible
+#DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
+#DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
 #DesignerProperty: Key: BottonsWidth, DisplayName: Bottons Width, FieldType: String, DefaultValue: 22, Description: Bottons Width
 #DesignerProperty: Key: ButtonsShadow, DisplayName: Buttons Shadow, FieldType: String, DefaultValue: md, Description: Buttons Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ButtonsRounded, DisplayName: Buttons Rounded, FieldType: String, DefaultValue: md, Description: Buttons Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: YesCaption, DisplayName: Yes Caption, FieldType: String, DefaultValue: Yes, Description: Yes Caption
-#DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
 #DesignerProperty: Key: YesColor, DisplayName: Yes Color, FieldType: String, DefaultValue: success, Description: Yes Color
+#DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
 #DesignerProperty: Key: YesLoading, DisplayName: Yes Loading, FieldType: Boolean, DefaultValue: False, Description: Yes Loading
 #DesignerProperty: Key: NoCaption, DisplayName: No Caption, FieldType: String, DefaultValue: No, Description: No Caption
-#DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
 #DesignerProperty: Key: NoColor, DisplayName: No Color, FieldType: String, DefaultValue: error, Description: No Color
+#DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
 #DesignerProperty: Key: NoLoading, DisplayName: No Loading, FieldType: Boolean, DefaultValue: False, Description: No Loading
-#DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
 #DesignerProperty: Key: CancelCaption, DisplayName: Cancel Caption, FieldType: String, DefaultValue: Cancel, Description: Cancel Caption
-#DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: #ffffff, Description: Cancel Text Color
 #DesignerProperty: Key: CancelColor, DisplayName: Cancel Color, FieldType: String, DefaultValue: gray, Description: Cancel Color
+#DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: #ffffff, Description: Cancel Text Color
 #DesignerProperty: Key: CancelLoading, DisplayName: Cancel Loading, FieldType: Boolean, DefaultValue: False, Description: Cancel Loading
-#DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -111,12 +112,11 @@ Private Sub Class_Globals
 	Private RGOptions As Map
 	Private Compulsory As Map
 	Private datesFP As Map
+	Private colorPicker As Map
 	Private signatures As Map
 	Private rolldate As Map
 	Private propList As List
 	Public PropertyBuilder As StringBuilder
-	Private DPValue As Map
-	Private datepickers As Map
 	Public IsLive As Boolean = True
 	Private sShadow As String = "none"
 	Private sTooltipPosition As String = "right"
@@ -164,6 +164,7 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	RGOptions.Initialize
 	Compulsory.Initialize
 	datesFP.Initialize
+	colorPicker.Initialize 
 	signatures.Initialize
 	rolldate.Initialize
 	Overwrites.Initialize
@@ -171,12 +172,13 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	PropertyBuilder.Initialize
 	CustProps.Initialize
 	validations.Initialize
-	DPValue.Initialize
-	datepickers.Initialize
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
 	BANano.DependsOnAsset("fplocale.min.js")
+	BANano.DependsOnAsset("reinvented-color-wheel.min.css")
+	BANano.DependsOnAsset("reinvented-color-wheel.min.js")
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 
 ' returns the element id
@@ -238,11 +240,6 @@ End Sub
 Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
-End Sub
-
-'use to add an event to the element
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 
 'set Position Style
@@ -428,7 +425,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
-						<svg id="${mName}_searchbtnicon" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+						<svg id="${mName}_searchbtnicon" data-unique-ids="disabled" data-id="${mName}_searchbtnicon" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
 					</button>
 	    		</div>
 				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
@@ -979,178 +976,209 @@ Sub getWrapActions As Boolean
 	Return bWrapActions
 End Sub
 
-'Sub PropertyConfig
-'	ClearPropertyBag
-'	AddPropertyTextBox("id", "#", "", "", True, "left")
-'	AddPropertySelect("collectionid", "Collection", "", "", True, "left", CreateMap())
-'	AddPropertySelect("proptype", "Type", "TextBox", "", True, "left", CreateMap())
-'	SetPropertyItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Color","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "Signature", "RollDate","TextAreaChipGroup"))
-'	AddPropertyTextBox("proppos", "Position", "01", "", True, "left")
-'	AddPropertyTextBox("propname", "Name", "", "", True, "left")
-'	AddPropertyTextBox("proptitle", "Title", "", "", True, "left")
-'	AddPropertyTextBox("propvalue", "Default Value", "", "", False, "")
-'	AddPropertyTextBox("propplaceholder", "Place Holder", "", "", False, "")
-'	AddPropertyTextBox("prophinttext", "Hint Text", "", "", False, "")
-'	AddPropertyTextBox("properrortext", "Error Text", "", "", False, "")
-'	AddPropertySelect("propalign", "Alignment", "left", "", False, "left", CreateMap("left":"Left","center":"Center", "right":"Right"))
-'	AddPropertySelect("propdatatype", "Data Type", "String", "", True, "left", CreateMap())
-'	SetPropertyItemsListSort("propdatatype", Array("String","Int","Double","Blob","Bool","Date"))
-'	AddPropertySelect("propcolumntype", "Column Type", "Normal", "", False, "left", CreateMap())
-'	SetPropertyItemsListSort("propcolumntype", Array("Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
-'	AddPropertyTextBox("propsubtitle1", "Sub Title", "", "", False, "")
-'	AddPropertyTextBox("propsubtitle2", "Sub Title 1", "", "", False, "")
-'	AddPropertyToggle("propactive", "Active", True, "success", "")
-'	AddPropertyToggle("proprequired", "Required", False, "success", "")
-'	AddPropertyToggle("propreadonly", "Read Only", False, "success", "")
-'	AddPropertyToggle("propenabled", "Enabled", True, "success", "")
-'	AddPropertyToggle("propvisible", "Visible", True, "success", "")
-'	AddPropertyToggle("propcolumnvisible", "Column Visible", True, "success", "")
-'	AddPropertyToggle("propmerge", "Merge Column", False, "success", "")
-'	AddPropertyToggle("propsortby", "Sort By", False, "success", "")
-'	AddPropertyToggle("proptotal", "Total (Footer)", False, "success", "")
-'	AddPropertyDialer("proprow", "Grid Row Pos", "1", "", False, "left", 1, 1, 100)
-'	AddPropertyDialer("propcol", "Grid Col Pos", "1", "", False, "left", 1, 1, 100)
-'	AddPropertyTextBox("propsizeondevice", "Size on Device (xs=?; sm=?; md=?; lg=?; xl=?)", "xs=?; sm=?; md=?; lg=?; xl=?", "", False, "")
-'	AddPropertyTextBox("propmargin", "Margin (a=?; x=?; y=?; t=?; b=?; l=?; r=?)", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", "", False, "")
-'	AddPropertyTextBox("proppadding", "Padding (a=?; x=?; y=?; t=?; b=?; l=?; r=?)", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", "", False, "")
-'	AddPropertyToggle("propcenterchildren", "Center Children", False, "success", "")
-'	AddPropertySelect("proponchange", "On Change Event", "nothing", "", False, "", CreateMap("upload":"Upload File","update":"Update Image","excel":"Upload Excel","other":"Other Event","nothing":"Do Nothing"))
-'	AddPropertyTextBox("propupdate", "Update Src Field", "", "", False, "left")
-'	AddPropertyTextArea("propoptions", "Options List (;)", "", "", False, "left")  'select/RadioGroup
-'	AddPropertySelectGroup("propforeigntable", "Foreign Table", "", "", False, "left", CreateMap())
-'	SetPropertyAppendIcon("propforeigntable", "./assets/magnifying-glass-solid.svg")
-'	AddPropertySelect("propforeignfield", "Foreign Key", "", "", False, "left", CreateMap())
-'	AddPropertySelect("propforeigndisplayfield", "Foreign Display", "", "", False, "left", CreateMap())
-'	AddPropertySelect("propforeigndisplayfield1", "Foreign Display 1", "", "", False, "left", CreateMap())
-'	AddPropertySelect("propforeigndisplayfield2", "Foreign Display 2", "", "", False, "left", CreateMap())
-'	AddPropertyTextBox("propsize", "Size", "", "", False, "left")
-'	AddPropertyTextBox("propicon", "Icon", "", "", False, "left")
-'	AddPropertyTextBox("propmaxlen", "Max Length", "", "", False, "left")
-'	AddPropertyTextBox("proprows", "TextArea Rows", "", "", False, "left")
-'	AddPropertyTextBox("propwidth", "Width", "", "", False, "left")
-'	AddPropertyTextBox("propheight", "Height", "", "", False, "left")					  'avatar
-'	AddPropertySelect("propshape", "Shape", "rounded", "", False, "left", CreateMap())	  'avatar
-'	SetPropertyItemsOptions("propshape", "|", True, False, "none|circle|rounded|squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|parallelogram|parallelogram-2|parallelogram-3|parallelogram-4|star|star-2|triangle|triangle-2|triangle-3|triangle-4|half-1|half-2")
-'	AddPropertyTextBox("propurl", "URL", "", "", False, "left")					  'avatar
-'	AddPropertyTextBox("propcolor", "Color", "", "", False, "left")					  'progress/range/checkbox/RadialProgress/Rating/RadioGroup
-'	AddPropertyTextBox("proptextcolor", "Text Color", "", "", False, "left")
-'	AddPropertyTextBox("propbgcolor", "BG Color", "", "", False, "left")
-'	AddPropertyTextBox("propstart", "Start Value", "0", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propstep", "Step Value", "1", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propmax", "Max Value", "100", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propprefix", "Prefix", "", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propsuffix", "Suffix", "", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propprepend", "Prepend Icon", "", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propappend", "Append Icon", "", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propdateformat", "Date Format", "Y-m-d H:i", "", False, "left")					  'progress/range
-'	AddPropertyTextBox("propdisplayformat", "Date Display Format", "D, d M Y H:i", "", False, "left")					  'progress/range
-'	AddPropertyToggle("proptime24", "24 Hour Time", False, "success", "")
-'	AddPropertyTextBox("proplocale", "Locale", "en", "", False, "left")
-'	AddPropertyTextArea("propdesc", "Description", "", "", False, "left")
-'	AddPropertySelect("proptooltippos", "ToolTip Pos", "left", "", False, "", CreateMap())
-'	SetPropertyItemsList("proptooltippos", Array("left","bottom", "none", "right", "top"))
-'	AddPropertyToggle("propcomputevalue", "Compute Value", False, "success", "")
-'	AddPropertyToggle("propcomputering", "Compute Ring", False, "success", "")
-'	AddPropertyToggle("propcomputecolor", "Compute Color", False, "success", "")
-'	AddPropertyToggle("propcomputebgcolor", "Compute BG Color", False, "success", "")
-'	AddPropertyToggle("propcomputetextcolor", "Compute Text Color", False, "success", "")
-'	AddPropertyToggle("propcomputeclass", "Compute Class", False, "success", "")
-'	ShowPropOnCondition
-'End Sub
+'preference builder fields
+Sub PropertyConfig
+	BANano.Await(Clear)
+	AddPropertyTextBox("id", "#", "", True)
+	SetPropertyVisible("id", False)
+	AddPropertySelect("collectionid", "Collection", "", True, CreateMap())
+	SetPropertyVisible("collectionid", False)
+	AddPropertyTextBox("proppos", "Position", "01", True)
+	AddPropertyTextBox("propname", "Field Name", "", True)
+	AddPropertyTextBox("proptitle", "Title", "", True)
+	AddPropertySelect("proptype", "Type", "TextBox", True, CreateMap())
+	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(Array("String","Int","Double","Blob","Bool","Date")))
+	AddPropertyTextBox("propvalue", "Default Value", "", False)
+	AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
+	AddPropertyTextBox("prophinttext", "Hint Text", "", False)
+	AddPropertyTextBox("properrortext", "Error Text", "", False)
+	AddPropertySelect("propalign", "Alignment", "left", False, CreateMap("left":"Left","center":"Center", "right":"Right"))	
+	AddPropertySelect("propcolumntype", "Column Type", "Normal", False, CreateMap())
+	SetPropertySelectItemsListSort("propcolumntype", Array("Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
+	AddPropertySelect("propsubtitle1", "Sub Title Field", "", False, CreateMap())
+	AddPropertySelect("propsubtitle2", "Sub Title 1 Field", "", False, CreateMap())
+	AddPropertyCheckBox("propactive", "Active", True, "success")
+	AddPropertyCheckBox("proprequired", "Required", False, "success")
+	AddPropertyCheckBox("propreadonly", "Read Only", False, "success")
+	AddPropertyCheckBox("propenabled", "Enabled", True, "success")
+	AddPropertyCheckBox("propvisible", "Visible", True, "success")
+	AddPropertyCheckBox("propcolumnvisible", "Column Visible", True, "success")
+	AddPropertyCheckBox("propmerge", "Merge Column", False, "success")
+	AddPropertyCheckBox("propsortby", "Sort By", False, "success")
+	AddPropertyCheckBox("proptotal", "Total (Footer)", False, "success")
+	AddPropertyDialer("proprow", "Row Pos", "1", False, 1, 1, 100)
+	AddPropertyDialer("propcol", "Col Pos", "1", False, 1, 1, 12)
+	AddPropertyTextBox("propsizeondevice", "Size on Device (xs=?; sm=?; md=?; lg=?; xl=?)", "xs=?; sm=?; md=?; lg=?; xl=?", False)
+	AddPropertyTextBox("propmargin", "Margin (a=?; x=?; y=?; t=?; b=?; l=?; r=?)", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", False)
+	AddPropertyTextBox("proppadding", "Padding (a=?; x=?; y=?; t=?; b=?; l=?; r=?)", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", False)
+	AddPropertyCheckBox("propcenterchildren", "Center Children", False, "success")
+	AddPropertySelect("proponchange", "On Change Event", "nothing", False, CreateMap("upload":"Upload File","update":"Update Image","excel":"Upload Excel","other":"Other Event","nothing":"Do Nothing"))
+	AddPropertySelect("propupdate", "Update Image Field", "", False, CreateMap())
+	AddPropertyCheckBox("propmultiple", "Multiple Files", False, "success")
+	AddPropertyTextArea("propoptions", "Options List (JSON)", "", False, "")  'select/RadioGroup
+	AddPropertySelectGroup("propforeigntable", "Foreign Table", "", False, CreateMap())
+	SetPropertyAppendIcon("propforeigntable", "./assets/magnifying-glass-solid.svg")
+	AddPropertySelect("propforeignfield", "Foreign Key", "id", False, CreateMap())
+	AddPropertySelect("propforeigndisplayfield", "Foreign Display", "", False, CreateMap())
+	AddPropertySelect("propforeigndisplayfield1", "Foreign Display 1", "", False, CreateMap())
+	AddPropertySelect("propforeigndisplayfield2", "Foreign Display 2", "", False, CreateMap())
+	AddPropertyTextBox("propsize", "Size", "", False)
+	AddPropertyTextBox("propthickness", "Thickness", "", False)
+	AddPropertyTextBox("propicon", "Icon", "", False)
+	AddPropertyTextBox("propiconsize", "Icon Size", "42px", False)
+	AddPropertyTextBox("propmaxlen", "Max Length", "", False)
+	AddPropertyTextBox("proprows", "TextArea Rows", "", False)
+	AddPropertyTextBox("propwidth", "Width", "", False)
+	AddPropertyTextBox("propheight", "Height", "", False)					  'avatar
+	AddPropertySelect("propshape", "Shape", "rounded", False, CreateMap())	  'avatar
+	SetPropertySelectItemsOptions("propshape", "|", True, False, "none|circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|rounded-none|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4")
+	AddPropertyTextBox("propurl", "URL", "", False)					  'avatar
+	AddPropertyTextBox("propcolor", "Color", "", False)					  'progress/range/checkbox/RadialProgress/Rating/RadioGroup
+	AddPropertyTextBox("propactivecolor", "Active Color", "", False)
+	AddPropertyTextBox("proptextcolor", "Text Color", "", False)
+	AddPropertyTextBox("proptextsize", "Text Size", "", False)
+	AddPropertyTextBox("propbgcolor", "Background Color", "", False)
+	AddPropertyTextBox("propstart", "Min Value", "0", False)					  'progress/range
+	AddPropertyTextBox("propstep", "Step Value", "1", False)					  'progress/range
+	AddPropertyTextBox("propmax", "Max Value", "100", False)					  'progress/range
+	AddPropertyTextBox("propaccept", "File Accept", "", False)					  
+	AddPropertyCheckBox("propmultiple", "File Multiple", False, "success")					  'progress/range
+'	AddPropertyTextBox("propprefix", "Prefix", "", False)					  'progress/range
+'	AddPropertyTextBox("propsuffix", "Suffix", "", False)					  'progress/range
+	AddPropertyTextBox("propprepend", "Prepend Icon", "", False)					  'progress/range
+	AddPropertyTextBox("propappend", "Append Icon", "", False)					  'progress/range
+	AddPropertyTextBox("propdateformat", "Date Format", "Y-m-d H:i", False)					  'progress/range
+	AddPropertyTextBox("propdisplayformat", "Date Display Format", "D, d M Y H:i", False)					  'progress/range
+	AddPropertyCheckBox("proptime24", "24 Hour Time", False, "success")
+	AddPropertyTextBox("proplocale", "Locale", "en", False)
+	AddPropertyTextArea("propdesc", "Description", "", False, "")
+'	AddPropertySelect("proptooltippos", "ToolTip Pos", "left", False, CreateMap())
+'	SetPropertySelectItemsList("proptooltippos", Array("left","bottom", "none", "right", "top"))
+	AddPropertyCheckBox("propcomputevalue", "Compute Value", False, "success")
+	AddPropertyCheckBox("propcomputering", "Compute Ring", False, "success")
+	AddPropertyCheckBox("propcomputecolor", "Compute Color", False, "success")
+	AddPropertyCheckBox("propcomputebgcolor", "Compute BG Color", False, "success")
+	AddPropertyCheckBox("propcomputetextcolor", "Compute Text Color", False, "success")
+	AddPropertyCheckBox("propcomputeclass", "Compute Class", False, "success")
+	BANano.Await(ShowPropOnCondition)
+End Sub
 
 Sub PropertyBagFromAsset(fileURL As String)
 	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
 	Dim pl As List = BANano.FromJson(fContents)
-'	PropertyBagFromList(pl)
+	PropertyBagFromList(pl)
 End Sub
 
 Sub PropertyBagFromJSON(fContents As String)
 	Dim pl As List = BANano.FromJson(fContents)
-'	PropertyBagFromList(pl)
+	PropertyBagFromList(pl)
 End Sub
 
 'refresh the internal property bag
 Sub Refresh
-'	PropertyBagFromList(propList)
+	PropertyBagFromList(propList)
 End Sub
 
 'load prop bag from records from a database
-'Sub PropertyBagFromList(fContents As List)
-'	ClearPropertyBag
-'	PropertyBuilder.Initialize
-'	For Each record As Map In fContents
-'		Dim sproptype As String = record.get("proptype")
-'		Dim spropname As String = record.get("propname")
-'		Dim sproptitle As String = record.get("proptitle")
-'		Dim spropvalue As String = record.get("propvalue")
-'		Dim sproprequired As Boolean = record.get("proprequired")
-'		sproprequired = UI.CBool(sproprequired)
-'		Dim spropreadonly As Boolean = record.get("propreadonly")
-'		spropreadonly = UI.CBool(spropreadonly)
-'		Dim spropenabled As String = record.get("propenabled")
-'		spropenabled = UI.CBool(spropenabled)
-'		Dim spropvisible As String = record.get("propvisible")
-'		spropvisible = UI.CBool(spropvisible)
-'		Dim spropoptions As String = record.get("propoptions")
-'		Dim spropsize As String = record.get("propsize")
-'		Dim spropwidth As String = record.get("propwidth")
-'		Dim spropheight As String = record.get("propheight")
-'		Dim spropshape As String = record.get("propshape")
-'		Dim spropurl As String = record.get("propurl")
-'		Dim spropcolor As String = record.get("propcolor")
-'		Dim spropstart As String = record.get("propstart")
-'		Dim spropstep As String = record.get("propstep")
-'		Dim spropmax As String = record.get("propmax")
-'		Dim spropdesc As String = record.get("propdesc")
-'		Dim sproptooltippos As String = record.get("proptooltippos")
-'		Dim spropdateformat As String = record.Get("propdateformat")
-'		Dim spropdisplayformat As String = record.Get("propdisplayformat")
-'		Dim sproptime24 As String = record.Get("proptime24")
-'		Dim sproplocale As String = record.Get("proplocale")
-'		Dim spropprefix As String = record.get("propprefix")
-'		Dim spropicon As String = record.get("propicon")
-'		spropicon = UI.CStr(spropicon)
-'		Dim sPropBadgeTextColor As String = record.GetDefault("propbadgetextcolor", "")
-'		sPropBadgeTextColor = UI.CStr(sPropBadgeTextColor)
-'		'
-'		Dim bPropBadgeRound As Boolean = record.GetDefault("propbadgeround", False)
-'		bPropBadgeRound = UI.CBool(bPropBadgeRound)
-'		Dim sPropBadgeValue As String = record.GetDefault("propbadgevalue", "")
-'		sPropBadgeValue = UI.CStr(sPropBadgeValue)
-'		Dim sPropHintId As String = record.getDefault("prophintid", "")
-'		sPropHintId = UI.CStr(sPropHintId)
-'		Dim bPropMultiple As Boolean = record.GetDefault("propmultiple", False)
-'		bPropMultiple = UI.CBool(bPropMultiple)
-'		Dim bPropSetHint As Boolean = record.getdefault("propsethint", False)
-'		bPropSetHint = UI.CBool(bPropSetHint)
-'		Dim bPropSetTooltip As Boolean = record.GetDefault("propsettooltip", False)
-'		bPropSetTooltip = UI.CBool(bPropSetTooltip)
-'		Dim sPropTextColor As String = record.GetDefault("proptextcolor", "")
-'		sPropTextColor = UI.CStr(sPropTextColor)
-'		Dim sPropBadgeColor As String = record.GetDefault("propbadgecolor", "")
-'		sPropBadgeColor = UI.CStr(sPropBadgeColor)
-'		Dim bPropSetBadge As Boolean = record.getdefault("propsetbadge", False)
-'		bPropSetBadge = UI.CBool(bPropSetBadge)
-'		'
-'		spropprefix = UI.CStr(spropprefix)
-'		Dim spropsuffix As String = record.get("propsuffix")
-'		spropsuffix = UI.CStr(spropsuffix)
-'		Dim spropprepend As String = record.get("propprepend")
-'		spropprepend = UI.CStr(spropprepend)
-'		Dim spropappend As String = record.get("propappend")
-'		spropappend = UI.CStr(spropappend)
-'		sproplocale = UI.CStr(sproplocale)
-'		If sproplocale = "" Then sproplocale = "en"
-'		'
-'		Dim spropmaxlen As String = record.getdefault("propmaxlen","")
-'		spropmaxlen = UI.CStr(spropmaxlen)
-'		Dim sproprows As String = record.getdefault("proprows","")
-'		sproprows = UI.CStr(sproprows)
-'		Dim spropalign As String = record.GetDefault("propalign", "left")
-'		spropalign = UI.CStr(spropalign)
-'		'
-'		Select Case sproptype
-'			Case "ToolbarActionButton"
+Sub PropertyBagFromList(fContents As List)
+	BANano.await(Clear)
+	PropertyBuilder.Initialize
+	For Each record As Map In fContents
+		Dim sproptype As String = record.get("proptype")
+		Dim spropname As String = record.get("propname")
+		Dim sproptitle As String = record.get("proptitle")
+		Dim spropvalue As String = record.get("propvalue")
+		Dim sproprequired As Boolean = record.get("proprequired")
+		sproprequired = UI.CBool(sproprequired)
+		Dim spropreadonly As Boolean = record.get("propreadonly")
+		spropreadonly = UI.CBool(spropreadonly)
+		Dim spropenabled As String = record.get("propenabled")
+		spropenabled = UI.CBool(spropenabled)
+		Dim spropvisible As String = record.get("propvisible")
+		spropvisible = UI.CBool(spropvisible)
+		Dim spropoptions As String = record.get("propoptions")
+		Dim spropsize As String = record.get("propsize")
+		Dim spropthickness As String = record.Get("propthickness")
+		Dim spropwidth As String = record.get("propwidth")
+		Dim spropheight As String = record.get("propheight")
+		Dim spropshape As String = record.get("propshape")
+		Dim spropurl As String = record.get("propurl")
+		Dim spropcolor As String = record.get("propcolor")
+		Dim spropactivecolor As String = record.Get("propactivecolor")
+		Dim bpropsingleselect As Boolean = record.GetDefault("propsingleselect", False)
+		bpropsingleselect = UI.CBool(bpropsingleselect)
+		Dim spropstart As String = record.get("propstart")
+		Dim spropstep As String = record.get("propstep")
+		Dim spropmax As String = record.get("propmax")
+		Dim spropdateformat As String = record.Get("propdateformat")
+		Dim spropdisplayformat As String = record.Get("propdisplayformat")
+		Dim sproptime24 As String = record.Get("proptime24")
+		Dim sproplocale As String = record.Get("proplocale")
+		Dim spropprefix As String = record.get("propprefix")
+		Dim spropicon As String = record.get("propicon")
+		spropicon = UI.CStr(spropicon)
+		Dim sPropBadgeTextColor As String = record.GetDefault("propbadgetextcolor", "")
+		sPropBadgeTextColor = UI.CStr(sPropBadgeTextColor)
+		Dim spropiconsize As String = record.Get("propiconsize")
+		spropiconsize = UI.CStr(spropiconsize)
+		'
+		Dim bPropBadgeRound As Boolean = record.GetDefault("propbadgeround", False)
+		bPropBadgeRound = UI.CBool(bPropBadgeRound)
+		Dim sPropBadgeValue As String = record.GetDefault("propbadgevalue", "")
+		sPropBadgeValue = UI.CStr(sPropBadgeValue)
+		Dim sPropHintId As String = record.getDefault("prophintid", "")
+		sPropHintId = UI.CStr(sPropHintId)
+		Dim bPropMultiple As Boolean = record.GetDefault("propmultiple", False)
+		bPropMultiple = UI.CBool(bPropMultiple)
+		Dim bPropSetHint As Boolean = record.getdefault("propsethint", False)
+		bPropSetHint = UI.CBool(bPropSetHint)
+		Dim bPropSetTooltip As Boolean = record.GetDefault("propsettooltip", False)
+		bPropSetTooltip = UI.CBool(bPropSetTooltip)
+		Dim sPropTextColor As String = record.GetDefault("proptextcolor", "")
+		sPropTextColor = UI.CStr(sPropTextColor)
+		Dim sPropBadgeColor As String = record.GetDefault("propbadgecolor", "")
+		sPropBadgeColor = UI.CStr(sPropBadgeColor)
+		Dim bPropSetBadge As Boolean = record.getdefault("propsetbadge", False)
+		bPropSetBadge = UI.CBool(bPropSetBadge)
+		Dim sproptextsize As String = record.GetDefault("proptextsize", "")
+		sproptextsize = UI.CStr(sproptextsize)
+		Dim spropsingleselect As String = record.GetDefault("propsingleselect", False)
+		spropsingleselect = UI.CBool(spropsingleselect)
+		Dim spropaccept As String = record.GetDefault("propaccept", "")
+		spropaccept = UI.CStr(spropaccept)
+		Dim bpropring As Boolean = record.GetDefault("propring", False)
+		bpropring = UI.CBool(bpropring)
+		Dim spropringcolor As String = record.GetDefault("propringcolor", "")
+		spropringcolor = UI.CStr(spropringcolor)
+		Dim spropringoffset As String = record.GetDefault("propringoffset", "")
+		spropringoffset = UI.CStr(spropringoffset)
+		Dim spropringoffsetcolor As String = record.GetDefault("propringoffsetcolor", "")
+		spropringoffsetcolor = UI.CStr(spropringoffsetcolor)
+		Dim bproponlinestatus As Boolean = record.GetDefault("proponlinestatus", False)
+		bproponlinestatus = UI.CBool(bproponlinestatus)
+		Dim bproponline As Boolean = record.GetDefault("proponline", False)
+		bproponline = UI.CBool(bproponline)
+		
+		spropprefix = UI.CStr(spropprefix)
+		Dim spropsuffix As String = record.get("propsuffix")
+		spropsuffix = UI.CStr(spropsuffix)
+		Dim spropprepend As String = record.get("propprepend")
+		spropprepend = UI.CStr(spropprepend)
+		Dim spropappend As String = record.get("propappend")
+		spropappend = UI.CStr(spropappend)
+		sproplocale = UI.CStr(sproplocale)
+		If sproplocale = "" Then sproplocale = "en"
+		'
+		Dim spropmaxlen As String = record.getdefault("propmaxlen","")
+		spropmaxlen = UI.CStr(spropmaxlen)
+		Dim sproprows As String = record.getdefault("proprows","")
+		sproprows = UI.CStr(sproprows)
+		Dim spropalign As String = record.GetDefault("propalign", "left")
+		spropalign = UI.CStr(spropalign)
+		'
+		Select Case sproptype
+			Case "ToolbarActionButton"
 '				AddToolbarActionButton(spropname, sproptitle, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarActionButton("${spropname}", "${sproptitle}", "${spropcolor}")"$).Append(CRLF)
@@ -1159,7 +1187,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarFileUpload"
+			Case "ToolbarFileUpload"
 '				AddToolbarFileUpload(spropname, spropicon, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarFileUpload("${spropname}", "${spropicon}", "${spropcolor}")"$).Append(CRLF)
@@ -1168,7 +1196,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarActionButtonIcon"
+			Case "ToolbarActionButtonIcon"
 '				AddToolbarActionButtonIcon(spropname, spropicon, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarActionButtonIcon("${spropname}", "${spropicon}", "${spropcolor}")"$).Append(CRLF)
@@ -1177,7 +1205,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarDropDown"
+			Case "ToolbarDropDown"
 '				AddToolbarDropDown(spropname, spropcolor, sproptitle)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarDropDown("${spropname}", "${spropcolor}", "${sproptitle}")"$).Append(CRLF)
@@ -1186,7 +1214,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarSelect"
+			Case "ToolbarSelect"
 '				Dim optm As Map = OptionsToMap(spropoptions)
 '				AddToolbarSelect(spropname, spropprepend, spropappend, optm)
 '				If IsLive = False Then
@@ -1197,7 +1225,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarTextBox"
+			Case "ToolbarTextBox"
 '				AddToolbarTextBox(spropname, spropprepend, spropappend)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarTextBox("${spropname}", "${spropprepend}", "${spropappend}")"$).Append(CRLF)
@@ -1206,7 +1234,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarFileUpload1"
+			Case "ToolbarFileUpload1"
 '				AddToolbarFileUpload1(spropname, spropicon, spropcolor, bPropMultiple)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarFileUpload1("${spropname}", "${spropicon}", "${spropcolor}", ${bPropMultiple})"$).Append(CRLF)
@@ -1215,7 +1243,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarActionButtonIconTextColor"
+			Case "ToolbarActionButtonIconTextColor"
 '				AddToolbarActionButtonIconTextColor(spropname, spropicon, spropcolor, sPropTextColor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarActionButtonIconTextColor("${spropname}", "${spropicon}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
@@ -1224,7 +1252,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarDropDownIconTextColor"
+			Case "ToolbarDropDownIconTextColor"
 '				AddToolbarDropDownIconTextColor(spropname, spropicon, spropcolor, sPropTextColor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarDropDownIconTextColor("${spropname}", "${spropicon}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
@@ -1233,7 +1261,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarDropDownIcon"
+			Case "ToolbarDropDownIcon"
 '				AddToolbarDropDownIcon(spropname, spropicon, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarDropDownIcon("${spropname}", "${spropicon}", "${spropcolor}")"$).Append(CRLF)
@@ -1242,7 +1270,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarDropDownAvatar"
+			Case "ToolbarDropDownAvatar"
 '				AddToolbarDropDownAvatar(spropname, spropsize, spropurl)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarDropDownAvatar("${spropname}", "${spropsize}", "${spropurl}")"$).Append(CRLF)
@@ -1251,7 +1279,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarSelectNormal"
+			Case "ToolbarSelectNormal"
 '				Dim optm As Map = OptionsToMap(spropoptions)
 '				AddToolbarSelectNormal(spropname, optm)
 '				If IsLive = False Then
@@ -1262,7 +1290,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ToolbarTextBoxNormal"
+			Case "ToolbarTextBoxNormal"
 '				AddToolbarTextBoxNormal(spropname)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddToolbarTextBoxNormal("${spropname}")"$).Append(CRLF)
@@ -1271,7 +1299,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "Button"
+			Case "Button"
 '				AddPropertyActionButton(spropname, sproptitle, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddPropertyActionButton("${spropname}", "${sproptitle}", "${spropcolor}")"$).Append(CRLF)
@@ -1280,7 +1308,7 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "ButtonIcon"
+			Case "ButtonIcon"
 '				AddPropertyActionButtonIcon(spropname, spropicon, spropcolor)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"${mName}.AddPropertyActionButtonIcon("${spropname}", "${spropicon}", "${spropcolor}")"$).Append(CRLF)
@@ -1289,59 +1317,60 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetToolbarButtonTextColor("${spropname}", "${sPropTextColor}")"$).Append(CRLF)
 '					End If
 '				End If
-'			Case "Placeholder"
-'				AddPropertyPlaceHolder(spropname, sproptitle, spropvalue)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyPlaceHolder("${spropname}", "${sproptitle}", "${spropvalue}")"$).Append(CRLF)
-'				End If
-'			Case "Label"
-'				AddPropertyLabel(spropname,sproptitle,spropvalue,spropcolor)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyLabel("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
-'				End If
-'			Case "Email"
-'				AddPropertyEmail(spropname,sproptitle,spropvalue,spropcolor)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyEmail("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
-'				End If
-'			Case "Link"
-'				AddPropertyLink(spropname,sproptitle,spropvalue,spropcolor)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyLink("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
-'				End If
-'			Case "DateTimePicker"
-'				sproptime24 = UI.CBool(sproptime24)
-'				AddPropertyDateTimePicker(spropname, sproptitle,spropvalue,spropdesc,sproprequired,sproptooltippos,spropdateformat,spropdisplayformat,sproptime24)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropdateformat}", "${spropdisplayformat}", ${sproptime24})"$).Append(CRLF)
-'				End If
-'			Case "DatePicker"
-'				AddPropertyDatePicker1(spropname, sproptitle,spropvalue,spropdesc,sproprequired,sproptooltippos,spropdateformat,spropdisplayformat, sproplocale)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyDatePicker1("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}")"$).Append(CRLF)
-'				End If
-'			Case "TimePicker"
-'				sproptime24 = UI.CBool(sproptime24)
-'				AddPropertyTimePicker(spropname, sproptitle,spropvalue,spropdesc,sproprequired,sproptooltippos,sproptime24)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}", ${sproptime24})"$).Append(CRLF)
-'				End If
-'			Case "TextBox"
-'				AddPropertyTextBox(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyTextBox("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				End If
-'				If spropmaxlen <> "" Then
-'					SetPropertyMaxLength(spropname, spropmaxlen)
-'					If IsLive = False Then
-'						PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
-'					End If
-'				End If
-'			Case "TextBoxGroup"
-'				AddPropertyTextBoxGroup(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyTextBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				End If
+			Case "Placeholder"
+				AddPropertyPlaceHolder(spropname, sproptitle, spropvalue)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyPlaceHolder("${spropname}", "${sproptitle}", "${spropvalue}")"$).Append(CRLF)
+				End If
+			Case "Label"
+				AddPropertyLabel(spropname,sproptitle,spropvalue,spropcolor)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyLabel("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
+				End If
+			Case "Email"
+				AddPropertyEmail(spropname,sproptitle,spropvalue,spropcolor)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyEmail("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
+				End If
+			Case "Link"
+				AddPropertyLink(spropname,sproptitle,spropvalue,spropcolor)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyLink("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}")"$).Append(CRLF)
+				End If
+			Case "DatePicker"
+				AddPropertyDatePicker(spropname, sproptitle,spropvalue,sproprequired,spropdateformat,spropdisplayformat, sproplocale)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyDatePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}", )"$).Append(CRLF)
+				End If			
+			Case "DateTimePicker"
+				sproptime24 = UI.CBool(sproptime24)
+				AddPropertyDateTimePicker(spropname, sproptitle,spropvalue,sproprequired,spropdateformat,spropdisplayformat,sproptime24, sproplocale)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}", )"$).Append(CRLF)
+				End If
+			Case "TimePicker"
+				sproptime24 = UI.CBool(sproptime24)
+				AddPropertyTimePicker(spropname, sproptitle,spropvalue, sproprequired,spropdateformat, spropdisplayformat,sproptime24,sproplocale)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired},"${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}")"$).Append(CRLF)
+				End If
+			Case "TextBox"
+				AddPropertyTextBox(spropname, sproptitle, spropvalue,sproprequired)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyTextBox("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+				End If
+				If spropmaxlen <> "" Then
+					SetPropertyMaxLength(spropname, spropmaxlen)
+					If IsLive = False Then
+						PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
+					End If
+				End If
+			case "ColorWheel"
+			Case "TextBoxGroup"
+				AddPropertyTextBoxGroup(spropname, sproptitle, spropvalue,sproprequired)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyTextBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+				End If
 '				If spropprefix <> "" Then
 '					SetPropertyPrefix(spropname, spropprefix)
 '					If IsLive = False Then
@@ -1354,25 +1383,25 @@ End Sub
 '						PropertyBuilder.Append($"${mName}.SetPropertySuffix("${spropname}", "${spropsuffix}")"$).Append(CRLF)
 '					End If
 '				End If
-'				If spropprepend <> "" Then
-'					SetPropertyPrependIcon(spropname, spropprepend)
-'					If IsLive = False Then
-'						PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
-'					End If
-'				End If
-'				If spropappend <> "" Then
-'					SetPropertyAppendIcon(spropname, spropappend)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
-'				End If
-'				If spropmaxlen <> "" Then
-'					SetPropertyMaxLength(spropname, spropmaxlen)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
-'				End If
-'			Case "PasswordGroup"
-'				AddPropertyPasswordGroup(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then
-'					PropertyBuilder.Append($"${mName}.AddPropertyPasswordGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				End If
+				If spropprepend <> "" Then
+					SetPropertyPrependIcon(spropname, spropprepend)
+					If IsLive = False Then
+						PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
+					End If
+				End If
+				If spropappend <> "" Then
+					SetPropertyAppendIcon(spropname, spropappend)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
+				End If
+				If spropmaxlen <> "" Then
+					SetPropertyMaxLength(spropname, spropmaxlen)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
+				End If
+			Case "PasswordGroup"
+				AddPropertyPasswordGroup(spropname, sproptitle, spropvalue,sproprequired)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyPasswordGroup("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+				End If
 '				If spropprefix <> "" Then
 '					SetPropertyPrefix(spropname, spropprefix)
 '					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrefix("${spropname}", "${spropprefix}")"$).Append(CRLF)
@@ -1381,25 +1410,25 @@ End Sub
 '					SetPropertySuffix(spropname, spropsuffix)
 '					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertySuffix("${spropname}", "${spropsuffix}")"$).Append(CRLF)
 '				End If
-'				If spropprepend <> "" Then
-'					SetPropertyPrependIcon(spropname, spropprepend)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
-'				End If
-'				If spropappend <> "" Then
-'					SetPropertyAppendIcon(spropname, spropappend)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
-'				End If
-'				If spropmaxlen <> "" Then
-'					SetPropertyMaxLength(spropname, spropmaxlen)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
-'				End If
-'			Case "SelectGroup"
-'				Dim optm As Map = OptionsToMap(spropoptions)
-'				AddPropertySelectGroup(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos, optm)
-'				If IsLive = False Then
-'					PropertyBuilderMap(PropertyBuilder, spropname, optm)
-'					PropertyBuilder.Append($"${mName}.AddPropertySelectGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}", ${spropname}options)"$).Append(CRLF)
-'				End If
+				If spropprepend <> "" Then
+					SetPropertyPrependIcon(spropname, spropprepend)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
+				End If
+				If spropappend <> "" Then
+					SetPropertyAppendIcon(spropname, spropappend)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
+				End If
+				If spropmaxlen <> "" Then
+					SetPropertyMaxLength(spropname, spropmaxlen)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
+				End If
+			Case "SelectGroup"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertySelectGroup(spropname, sproptitle, spropvalue,sproprequired, optm)
+				If IsLive = False Then
+					PropertyBuilderMap(PropertyBuilder, spropname, optm)
+					PropertyBuilder.Append($"${mName}.AddPropertySelectGroup("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, ${spropname}options)"$).Append(CRLF)
+				End If
 '				If spropprefix <> "" Then
 '					SetPropertyPrefix(spropname, spropprefix)
 '					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrefix("${spropname}", "${spropprefix}")"$).Append(CRLF)
@@ -1408,87 +1437,104 @@ End Sub
 '					SetPropertySuffix(spropname, spropsuffix)
 '					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertySuffix("${spropname}", "${spropsuffix}")"$).Append(CRLF)
 '				End If
-'				If spropprepend <> "" Then
-'					SetPropertyPrependIcon(spropname, spropprepend)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
-'				End If
-'				If spropappend <> "" Then
-'					SetPropertyAppendIcon(spropname, spropappend)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
-'				End If
-'			Case "Password"
-'				AddPropertyPassword(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyPassword("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				If spropmaxlen <> "" Then
-'					SetPropertyMaxLength(spropname, spropmaxlen)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
-'				End If
-'			Case "Color"
-'				AddPropertyColor(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyColor("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'			Case "Number"
-'				spropvalue = UI.Val(spropvalue)
-'				spropstart = UI.CInt(spropstart)
-'				spropstep = UI.CInt(spropstep)
-'				spropmax = UI.CInt(spropmax)
-'				AddPropertyNumber(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyNumber("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				If BANano.parseInt(spropmax) > 0 Then
-'					SetPropertyMinValue(spropname, spropstart)
-'					SetPropertyMaxValue(spropname, spropmax)
-'					SetPropertyStepValue(spropname, spropstep)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMinValue("${spropname}", ${spropstart})"$).Append(CRLF)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxValue("${spropname}", ${spropmax})"$).Append(CRLF)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyStepValue("${spropname}", ${spropstep})"$).Append(CRLF)
-'				End If
-'			Case "Telephone"
-'				AddPropertyTelephone(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyTelephone("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'			Case "TextArea"
-'				AddPropertyTextArea(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyTextArea("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}")"$).Append(CRLF)
-'				If spropmaxlen <> "" Then
-'					SetPropertyMaxLength(spropname, spropmaxlen)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
-'				End If
-'				If sproprows <> "" Then
-'					SetPropertyRows(spropname, sproprows)
-'					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyRows("${spropname}", "${sproprows}")"$).Append(CRLF)
-'				End If
-'			Case "Select"
-'				Dim optm As Map = OptionsToMap(spropoptions)
-'				AddPropertySelect(spropname, sproptitle, spropvalue,spropdesc,sproprequired,sproptooltippos, optm)
-'				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySelect("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", ${sproprequired},"${sproptooltippos}", ${spropname}options)"$).Append(CRLF)
-'			Case "FileInput"
-'				AddPropertyFileInput(spropname, sproptitle, spropdesc,sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFileInput("${spropname}", "${sproptitle}", "${spropdesc}", "${sproptooltippos}")"$).Append(CRLF)
-'			Case "FileInputProgress"
-'				AddPropertyFileInputProgress(spropname, sproptitle, spropdesc, sproptooltippos, spropsize, spropicon , spropcolor)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFileInputProgress("${spropname}", "${sproptitle}", "${spropdesc}", "${sproptooltippos}", "${spropsize}", "${spropicon}", "${spropcolor}")"$).Append(CRLF)
-'			Case "CamCorder"
-'				AddPropertyCamCorder(spropname, sproptitle, spropdesc, sproptooltippos, spropsize, spropcolor)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCamCorder("${spropname}", "${sproptitle}", "${spropdesc}", "${sproptooltippos}", "${spropsize}", "${spropcolor}")"$).Append(CRLF)
-'			Case "Camera"
-'				AddPropertyCamera(spropname, sproptitle, spropdesc, sproptooltippos, spropsize, spropcolor)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCamera("${spropname}", "${sproptitle}", "${spropdesc}", "${sproptooltippos}", "${spropsize}", "${spropcolor}")"$).Append(CRLF)
-'			Case "Microphone"
-'				AddPropertyMicrophone(spropname, sproptitle, spropdesc, sproptooltippos, spropsize, spropcolor)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyMicrophone("${spropname}", "${sproptitle}", "${spropdesc}", "${sproptooltippos}", "${spropsize}", "${spropcolor}")"$).Append(CRLF)
-'			Case "Avatar"
-'				AddPropertyAvatar(spropname, sproptitle, spropdesc, spropsize, spropshape, spropurl)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatar("${spropname}", "${sproptitle}", "${spropdesc}", "${spropsize}", "${spropshape}", "${spropurl}")"$).Append(CRLF)
-'			Case "AvatarPlaceholder"
-'				AddPropertyAvatarPlaceholder(spropname, sproptitle, spropvalue, spropdesc, spropsize, spropshape, spropcolor)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatarPlaceholder("${spropname}", "${sproptitle}", "${spropvalue}", "${spropdesc}", "${spropsize}", "${spropshape}", "${spropcolor}")"$).Append(CRLF)
-'			Case "AvatarGroup"
-'				Dim imags As List = UI.StrParse(";", spropoptions)
-'				Dim simgs As String = UI.JoinQuote(";", imags)
-'				AddPropertyAvatarGroup(spropname, sproptitle, spropdesc, spropsize, spropshape, imags)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatarGroup("${spropname}", "${sproptitle}", "${spropdesc}", "${spropsize}", "${spropshape}", Array(${simgs}))"$).Append(CRLF)
-'			Case "Signature"
-'				AddPropertySignaturePad(spropname, sproptitle, spropdesc, sproprequired, sproptooltippos, spropwidth, spropheight, "jpeg")
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySignaturePad("${spropname}", "${sproptitle}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", "${spropwidth}", "${spropheight}", "jpeg")"$).Append(CRLF)
+				If spropprepend <> "" Then
+					SetPropertyPrependIcon(spropname, spropprepend)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyPrependIcon("${spropname}", "${spropprepend}")"$).Append(CRLF)
+				End If
+				If spropappend <> "" Then
+					SetPropertyAppendIcon(spropname, spropappend)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAppendIcon("${spropname}", "${spropappend}")"$).Append(CRLF)
+				End If
+			Case "Password"
+				AddPropertyPassword(spropname, sproptitle, spropvalue,sproprequired)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyPassword("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+				If spropmaxlen <> "" Then
+					SetPropertyMaxLength(spropname, spropmaxlen)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
+				End If
+			Case "Color"
+'				AddPropertyColor(spropname, sproptitle, spropvalue,,sproprequired,)
+'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyColor("${spropname}", "${sproptitle}", "${spropvalue}", "${}", ${sproprequired},"${}")"$).Append(CRLF)
+			Case "Number"
+				spropvalue = UI.Val(spropvalue)
+				spropstart = UI.CInt(spropstart)
+				spropstep = UI.CInt(spropstep)
+				spropmax = UI.CInt(spropmax)
+				AddPropertyNumber(spropname, sproptitle, spropvalue, sproprequired)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyNumber("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+				If BANano.parseInt(spropmax) > 0 Then
+					SetPropertyMinValue(spropname, spropstart)
+					SetPropertyMaxValue(spropname, spropmax)
+					SetPropertyStepValue(spropname, spropstep)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMinValue("${spropname}", ${spropstart})"$).Append(CRLF)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxValue("${spropname}", ${spropmax})"$).Append(CRLF)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyStepValue("${spropname}", ${spropstep})"$).Append(CRLF)
+				End If
+			Case "PlusMinus"
+				spropvalue = UI.Val(spropvalue)
+				spropstart = UI.CInt(spropstart)
+				spropstep = UI.CInt(spropstep)
+				spropmax = UI.CInt(spropmax)
+				AddPropertyPlusMinus(spropname, sproptitle, spropvalue, sproprequired, spropstart, spropstep, spropmax)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyPlusMinus("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropstart}", "${spropstep}", "${spropmax}")"$).Append(CRLF)
+			Case "Telephone"
+				AddPropertyTelephone(spropname, sproptitle, spropvalue,sproprequired)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyTelephone("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
+			Case "TextArea"
+				AddPropertyTextArea(spropname, sproptitle, spropvalue,sproprequired, sproprows)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyTextArea("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${sproprows}")"$).Append(CRLF)
+				If spropmaxlen <> "" Then
+					SetPropertyMaxLength(spropname, spropmaxlen)
+					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
+				End If
+			Case "Select"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertySelect(spropname, sproptitle, spropvalue,sproprequired,optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySelect("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, ${spropname}options)"$).Append(CRLF)
+			Case "FileInput"
+				AddPropertyFileInput(spropname, sproptitle, sproprequired, spropaccept, bPropMultiple)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFileInput("${spropname}", "${sproptitle}", ${sproprequired}, "${spropaccept}", ${bPropMultiple})"$).Append(CRLF)
+			Case "FileInputProgress"
+				AddPropertyFileInputProgress(spropname, sproptitle, spropsize, spropicon, spropiconsize, spropcolor, sPropTextColor)
+				If spropaccept <> "" Then SetPropertyFileInputAccept(spropname, spropaccept)
+				If bPropMultiple Then SetPropertyFileInputMultiple(spropname, bPropMultiple)
+				If IsLive = False Then 
+					PropertyBuilder.Append($"${mName}.AddPropertyFileInputProgress("${spropname}", "${sproptitle}", "${spropsize}", "${spropicon}", "${spropiconsize}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
+					If spropaccept <> "" Then PropertyBuilder.Append($"${mName}.SetPropertyFileInputAccept("${spropname}", "${spropaccept}")"$).Append(CRLF)
+					If bPropMultiple <> "" Then PropertyBuilder.Append($"${mName}.SetPropertyFileInputMultiple("${spropname}", ${bPropMultiple})"$).Append(CRLF)
+				End If
+			Case "CamCorder"
+				AddPropertyCamCorder(spropname, sproptitle, spropsize, spropiconsize, spropcolor, sPropTextColor)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCamCorder("${spropname}", "${sproptitle}", "${spropsize}", "${spropiconsize}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
+			Case "Camera"
+				AddPropertyCamera(spropname, sproptitle, spropsize, spropiconsize, spropcolor, sPropTextColor)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCamera("${spropname}", "${sproptitle}", "${spropsize}", "${spropiconsize}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
+			Case "Microphone"
+				AddPropertyMicrophone(spropname, sproptitle, spropsize, spropiconsize, spropcolor, sPropTextColor)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyMicrophone("${spropname}", "${sproptitle}", "${spropsize}", "${spropiconsize}", "${spropcolor}", "${sPropTextColor}")"$).Append(CRLF)
+			Case "Avatar"
+				AddPropertyAvatar(spropname, sproptitle, spropsize, spropshape, spropurl)
+				SetPropertyAvatarRing(spropname, bpropring, spropringcolor, spropringoffset, spropringoffsetcolor)
+				SetPropertyAvatarOnline(spropname, bproponlinestatus, bproponline)
+				If IsLive = False Then 
+					PropertyBuilder.Append($"${mName}.AddPropertyAvatar("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}", "${spropurl}")"$).Append(CRLF)
+					PropertyBuilder.Append($"${mName}.SetPropertyAvatarRing("${spropname}", ${bpropring}, "${spropringcolor}", "${spropringoffset}", "${spropringoffsetcolor}")"$).Append(CRLF)
+					PropertyBuilder.Append($"${mName}.SetPropertyAvatarOnline("${spropname}", ${bproponlinestatus}, ${bproponline})"$).Append(CRLF)
+				End If
+			Case "AvatarPlaceholder"
+				AddPropertyAvatarPlaceholder(spropname, sproptitle, spropvalue, spropsize, spropshape, spropcolor, sPropTextColor, sproptextsize)
+				If IsLive = False Then 
+					PropertyBuilder.Append($"${mName}.AddPropertyAvatarPlaceholder("${spropname}", "${sproptitle}", "${spropvalue}", "${spropsize}", "${spropshape}", "${spropcolor}", "${sPropTextColor}", "${sproptextsize}")"$).Append(CRLF)
+				End If
+			Case "AvatarGroup"
+				Dim imags As List = UI.StrParse(";", spropoptions)
+				Dim simgs As String = UI.JoinQuote(";", imags)
+				AddPropertyAvatarGroup(spropname, sproptitle, spropsize, spropshape, imags)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyAvatarGroup("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}", Array(${simgs}))"$).Append(CRLF)
+			Case "Signature"
+'				AddPropertySignaturePad(spropname, sproptitle, , sproprequired, , spropwidth, spropheight, "jpeg")
+'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySignaturePad("${spropname}", "${sproptitle}", "${}", ${sproprequired}, "${}", "${spropwidth}", "${spropheight}", "jpeg")"$).Append(CRLF)
 '			Case "RollDate"
 '				spropstart = UI.CInt(spropstart)
 '				spropstep = UI.CInt(spropstep)
@@ -1501,7 +1547,7 @@ End Sub
 '				If spropstep <> 0 Then d1Options.MinStep = spropstep
 '				If spropvalue <> "" Then d1Options.Value = spropvalue
 '				If spropdateformat <> "" Then d1Options.DateTimeFormat = spropdateformat
-'				AddPropertyRollDateTime(spropname, sproptitle, spropdesc, sproprequired, sproptooltippos, d1Options)
+'				AddPropertyRollDateTime(spropname, sproptitle, , sproprequired, , d1Options)
 '				If IsLive = False Then
 '					PropertyBuilder.Append($"Dim ${spropname}options As RollDateOptions"$).append(CRLF)
 '					PropertyBuilder.Append($"${spropname}options.Initialize"$).append(CRLF)
@@ -1510,73 +1556,103 @@ End Sub
 '					If spropstep <> 0 Then PropertyBuilder.Append($"${spropname}options.MinStep = ${spropstep}"$).append(CRLF)
 '					If spropvalue <> "" Then PropertyBuilder.Append($"${spropname}options.Value = ${spropvalue}"$).append(CRLF)
 '					If spropdateformat <> "" Then PropertyBuilder.Append($"${spropname}options.DateTimeFormat = "${spropdateformat}""$).append(CRLF)
-'					PropertyBuilder.Append($"${mName}.AddPropertyRollDateTime("${spropname}", "${sproptitle}", "${spropdesc}", ${sproprequired}, "${sproptooltippos}", ${spropname}options)"$).Append(CRLF)
+'					PropertyBuilder.Append($"${mName}.AddPropertyRollDateTime("${spropname}", "${sproptitle}", "${}", ${sproprequired}, "${}", ${spropname}options)"$).Append(CRLF)
 '				End If
-'			Case "Image"
-'				AddPropertyImage(spropname, sproptitle, spropdesc, spropwidth, spropheight, spropshape, spropurl)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyImage("${spropname}", "${sproptitle}", "${spropdesc}", "${spropwidth}", "${spropheight}", "${spropshape}", "${spropurl}")"$).Append(CRLF)
-'			Case "Progress"
-'				spropvalue = UI.cint(spropvalue)
-'				AddPropertyProgress(spropname, sproptitle, spropvalue, spropcolor, spropstart, spropstep, spropmax,spropdesc, sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyProgress("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}", "${spropdesc}", "${sproptooltippos}")"$).Append(CRLF)
-'			Case "Range"
-'				spropvalue = UI.CInt(spropvalue)
-'				AddPropertyRange(spropname,sproptitle, spropvalue,spropcolor, spropstart, spropstep, spropmax, spropdesc, sproptooltippos)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRange("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}", "${spropdesc}", "${sproptooltippos}")"$).Append(CRLF)
-'			Case "Dialer"
-'				spropvalue = UI.CInt(spropvalue)
-'				spropstart = UI.CInt(spropstart)
-'				spropstep = UI.CInt(spropstep)
-'				spropmax = UI.CInt(spropmax)
-'				AddPropertyDialer(spropname,sproptitle, spropvalue,spropdesc, sproprequired, sproptooltippos, spropstart, spropstep, spropmax)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyDialer("${spropname}", "${sproptitle}", ${spropvalue}, "${spropdesc}", ${sproprequired}, "${sproptooltippos}", ${spropstart}, ${spropstep}, ${spropmax})"$).Append(CRLF)
-'			Case "CheckBox"
-'				spropvalue = UI.CBool(spropvalue)
-'				AddPropertyCheckBox(spropname, sproptitle, spropvalue, spropcolor, spropdesc)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
-'				SetPropertyChecked(spropname, spropvalue)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
-'			Case "Toggle"
-'				spropvalue = UI.CBool(spropvalue)
-'				AddPropertyToggle(spropname, sproptitle, spropvalue, spropcolor, spropdesc)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
-'				SetPropertyChecked(spropname, spropvalue)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
-'			Case "RadialProgress"
-'				AddPropertyRadialProgress(spropname,sproptitle, spropvalue, spropcolor, spropdesc)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRadialProgress("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
-'			Case "Rating"
-'				AddPropertyRating(spropname,sproptitle, spropvalue, spropcolor, spropdesc)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRating("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropdesc}")"$).Append(CRLF)
-'			Case "RadioGroup"
-'				Dim optm As Map = OptionsToMap(spropoptions)
-'				AddPropertyRadioGroup(spropname, sproptitle, spropvalue, spropcolor, spropdesc, sproptooltippos, optm)
-'				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRadioGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropdesc}", "${sproptooltippos}", ${spropname}options)"$).Append(CRLF)
-'		End Select
-'		SetPropertyRequired(spropname, sproprequired)
-'		SetPropertyAlignment(spropname, spropalign)
-'		If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyRequired("${spropname}", ${sproprequired})"$).Append(CRLF)
-'		If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyAlignment("${spropname}", "${spropalign}")"$).Append(CRLF)
-'		If spropreadonly Then
-'			SetPropertyReadOnly(spropname, True)
-'			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyReadOnly("${spropname}", True)"$).Append(CRLF)
-'		End If
-'		If spropenabled = False Then
-'			SetPropertyEnabled(spropname, False)
-'			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyEnabled("${spropname}", False)"$).Append(CRLF)
-'		End If
-'		If spropvisible = False Then
-'			SetPropertyVisible(spropname, False)
-'			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyVisible("${spropname}", False)"$).Append(CRLF)
-'		End If
+			Case "Image"
+				AddPropertyImage(spropname, sproptitle, spropwidth, spropheight, spropshape, spropurl)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyImage("${spropname}", "${sproptitle}", "${spropwidth}", "${spropheight}", "${spropshape}", "${spropurl}")"$).Append(CRLF)
+			Case "Progress"
+				spropvalue = UI.cint(spropvalue)
+				AddPropertyProgress(spropname, sproptitle, spropvalue, spropcolor, spropstart, spropstep, spropmax)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyProgress("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}")"$).Append(CRLF)
+			Case "Range"
+				spropvalue = UI.CInt(spropvalue)
+				AddPropertyRange(spropname,sproptitle, spropvalue,spropcolor, spropstart, spropstep, spropmax)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRange("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropstart}", "${spropstep}", "${spropmax}")"$).Append(CRLF)
+			Case "Dialer"
+				spropvalue = UI.CInt(spropvalue)
+				spropstart = UI.CInt(spropstart)
+				spropstep = UI.CInt(spropstep)
+				spropmax = UI.CInt(spropmax)
+				AddPropertyDialer(spropname,sproptitle, spropvalue, sproprequired, spropstart, spropstep, spropmax)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyDialer("${spropname}", "${sproptitle}", ${spropvalue}, ${sproprequired}, ${spropstart}, ${spropstep}, ${spropmax})"$).Append(CRLF)
+			Case "CheckBox"
+				spropvalue = UI.CBool(spropvalue)
+				AddPropertyCheckBox(spropname, sproptitle, spropvalue, spropcolor)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
+				SetPropertyChecked(spropname, spropvalue)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
+			Case "Toggle"
+				spropvalue = UI.CBool(spropvalue)
+				AddPropertyToggle(spropname, sproptitle, spropvalue, spropcolor)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
+				SetPropertyChecked(spropname, spropvalue)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
+			Case "RadialProgress"
+				AddPropertyRadialProgress(spropname,sproptitle, spropvalue, spropcolor, spropsize, spropthickness)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRadialProgress("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropsize}", "${spropthickness}")"$).Append(CRLF)
+			Case "Rating"
+				AddPropertyRating(spropname,sproptitle, spropvalue, spropcolor, spropshape)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRating("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropshape}")"$).Append(CRLF)
+			Case "RadioGroup"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertyRadioGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRadioGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+			Case "GroupSelect"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertyGroupSelect(spropname, sproptitle, spropvalue, spropcolor, bpropsingleselect, spropactivecolor, optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyGroupSelect("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", ${bpropsingleselect}, "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+			Case "CheckBoxGroup"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertyCheckBoxGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+			Case "ToggleGroup"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertyToggleGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggleGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+			Case "Filter"
+				Dim optm As Map = OptionsToMap(spropoptions)
+				AddPropertyFilter(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
+				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
+				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFilter("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+		End Select
+		If record.ContainsKey("proprequired") Then SetPropertyRequired(spropname, sproprequired)
+		If record.ContainsKey("propalign") Then SetPropertyAlignment(spropname, spropalign)
+		If IsLive = False Then 
+			If record.ContainsKey("proprequired") Then PropertyBuilder.Append($"${mName}.SetPropertyRequired("${spropname}", ${sproprequired})"$).Append(CRLF)
+		End If
+		If IsLive = False Then 
+			If record.ContainsKey("propalign") Then PropertyBuilder.Append($"${mName}.SetPropertyAlignment("${spropname}", "${spropalign}")"$).Append(CRLF)
+		End If
+		If spropreadonly Then
+			If record.ContainsKey("propreadonly") Then SetPropertyReadOnly(spropname, True)
+			If IsLive = False Then 
+				If record.ContainsKey("propreadonly") Then PropertyBuilder.Append($"${mName}.SetPropertyReadOnly("${spropname}", True)"$).Append(CRLF)
+			End If
+		End If
+		If spropenabled = False Then
+			If record.ContainsKey("propenabled") Then SetPropertyEnabled(spropname, False)
+			If IsLive = False Then 
+				If record.ContainsKey("propenabled") Then PropertyBuilder.Append($"${mName}.SetPropertyEnabled("${spropname}", False)"$).Append(CRLF)
+			End If
+		End If
+		If spropvisible = False Then
+			If record.ContainsKey("propvisible") Then SetPropertyVisible(spropname, False)
+			If IsLive = False Then 
+				If record.ContainsKey("propvisible") Then PropertyBuilder.Append($"${mName}.SetPropertyVisible("${spropname}", False)"$).Append(CRLF)
+			End If
+		End If
 '		If spropenabled = False Then
 '			SetToolbarButtonEnable(spropname, False)
 '			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetToolbarButtonEnable("${spropname}", False)"$).Append(CRLF)
 '		End If
 '		If bPropSetTooltip Then
-'			SetToolbarButtonToolTip(spropname, spropdesc, sTooltipColor, "left", True)
-'			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetToolbarButtonToolTip("${spropname}", "${spropdesc}", "${sTooltipColor}", "left", true)"$).Append(CRLF)
+'			SetToolbarButtonToolTip(spropname, , sTooltipColor, "left", True)
+'			If IsLive = False Then PropertyBuilder.Append($"${mName}.SetToolbarButtonToolTip("${spropname}", "${}", "${sTooltipColor}", "left", true)"$).Append(CRLF)
 '		End If
 '		If bPropSetBadge Then
 '			If sPropBadgeValue <> "" Then
@@ -1596,14 +1672,22 @@ End Sub
 '				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetToolbarButtonBadgeTextColor("${spropname}", "${sPropBadgeTextColor}")"$).Append(CRLF)
 '			End If
 '		End If
-'	Next
+	Next
 '	If IsLive = False Then
 '		If sPropertyPadding <> "" Then
 '			UpdatePropertyPadding(sPropertyPadding)
 '			PropertyBuilder.Append($"${mName}.UpdatePropertyPadding("${sPropertyPadding}")"$).Append(CRLF)
 '		End If
 '	End If
-'End Sub
+End Sub
+
+'hide all properties
+Sub HideAllProperties
+	For Each k As String In propBagKeys.Keys
+		SetPropertyVisible(k, False)
+	Next
+End Sub
+
 
 'for each property update the padding
 Sub UpdatePropertyPadding(pClass As String)
@@ -1660,256 +1744,261 @@ Sub SetPropertyRequired(Key As String, status As Boolean)
 	End If
 End Sub
 
-'show props based on type
-'Sub ShowPropOnCondition
-'	Dim sproptype As String = GetPropertyValue("proptype")
-'	BANano.Await(HideMostProperties)
-'	SetPropertyVisible("propvalue", True)
-'	SetPropertyVisible("proprequired", True)
+'show props based on Type
+Sub ShowPropOnCondition
+	Dim sproptype As String = GetPropertyValue("proptype")
+	BANano.Await(HideMostProperties)
+	SetPropertyVisible("propvalue", True)
+	SetPropertyVisible("proprequired", True)
 '	SetPropertyVisible("proptooltippos", True)
-'	SetPropertyVisible("propdatatype", True)
-'	SetPropertyVisible("propprepend", True)
-'	SetPropertyVisible("propappend", True)
-'	SetPropertyVisible("prophinttext", True)
-'	SetPropertyVisible("properrortext", True)
-'	Select Case sproptype
-'		Case "DatePicker"
-'			SetPropertyVisible("propdateformat", True)
-'			SetPropertyVisible("propdisplayformat", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "DateTimePicker"
-'			SetPropertyVisible("propdateformat", True)
-'			SetPropertyVisible("propdisplayformat", True)
-'			SetPropertyVisible("proptime24", True)
-'			SetPropertyVisible("proplocale", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "TimePicker"
-'			SetPropertyVisible("proptime24", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "TextBox"
-'			SetPropertyVisible("propmaxlen", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Password"
-'			SetPropertyVisible("propmaxlen", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Color"
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "RollDate"
-'			SetPropertyVisible("propdateformat", True)
-'			SetPropertyVisible("propdisplayformat", True)
-'			SetPropertyVisible("propstart", True)
-'			SetPropertyVisible("propstep", True)
-'			SetPropertyVisible("propmax", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Number"
-'			SetPropertyVisible("propstart", True)
-'			SetPropertyVisible("propstep", True)
-'			SetPropertyVisible("propmax", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Telephone"
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "TextArea"
-'			SetPropertyVisible("propmaxlen", True)
-'			SetPropertyVisible("proprows",True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "PasswordGroup"
-'			SetPropertyVisible("propmaxlen", True)
-'			SetPropertyVisible("propprefix", True)
-'			SetPropertyVisible("propsuffix", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "TextBoxGroup"
-'			SetPropertyVisible("propmaxlen", True)
-'			SetPropertyVisible("propprefix", True)
-'			SetPropertyVisible("propsuffix", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "SelectGroup",  "TextAreaChipGroup"
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propheight", True)
-'			SetPropertyVisible("propoptions", True)
-'			SetPropertyVisible("propforeigntable", True)
-'			SetPropertyVisible("propforeignfield", True)
-'			SetPropertyVisible("propforeigndisplayfield", True)
-'			SetPropertyVisible("propforeigndisplayfield1", True)
-'			SetPropertyVisible("propforeigndisplayfield2", True)
-'			SetPropertyVisible("propprefix", True)
-'			SetPropertyVisible("propsuffix", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Select"
-'			SetPropertyVisible("propoptions", True)
-'			SetPropertyVisible("propforeigntable", True)
-'			SetPropertyVisible("propforeignfield", True)
-'			SetPropertyVisible("propforeigndisplayfield", True)
-'			SetPropertyVisible("propforeigndisplayfield1", True)
-'			SetPropertyVisible("propforeigndisplayfield2", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "FileInput"
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propupdate", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "FileInputProgress"
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propsize", True)
-'			SetPropertyVisible("propicon", True)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propupdate", True)
-'		Case "CamCorder", "Camera", "Microphone"
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propsize", True)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propupdate", True)
-'		Case "AvatarPlaceholder"
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propvalue", True)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propsize", True)
-'			SetPropertyVisible("propshape", True)
-'			SetPropertyVisible("propcolor", True)
-'		Case "Avatar"
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propsize", True)
-'			SetPropertyVisible("propshape", True)
-'			SetPropertyVisible("propurl", True)
-'		Case "AvatarGroup"
-'			SetPropertyVisible("propoptions", True)
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propsize", True)
-'			SetPropertyVisible("propshape", True)
-'			SetPropertyVisible("propurl", False)
-'		Case "Progress"
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propstart", True)
-'			SetPropertyVisible("propstep", True)
-'			SetPropertyVisible("propmax", True)
-'			SetPropertyRequired("propstart",True)
-'			SetPropertyRequired("propstep",True)
-'			SetPropertyRequired("propmax",True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Dialer"
-'			SetPropertyVisible("propstart", True)
-'			SetPropertyVisible("propstep", True)
-'			SetPropertyVisible("propmax", True)
-'			SetPropertyRequired("propstart",True)
-'			SetPropertyRequired("propstep",True)
-'			SetPropertyRequired("propmax",True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Range"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propstart", True)
-'			SetPropertyVisible("propstep", True)
-'			SetPropertyVisible("propmax", True)
-'			SetPropertyRequired("propstart",True)
-'			SetPropertyRequired("propstep",True)
-'			SetPropertyRequired("propmax",True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Email", "Link"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propsize", False)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Label"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propsize", False)
-'		Case "CheckBox"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'		Case "Toggle"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'		Case "RadialProgress"
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'		Case "Rating"
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propplaceholder", True)
-'		Case "Signature"
-'			SetPropertyVisible("propwidth", True)
-'			SetPropertyVisible("propheight", True)
-'			SetPropertyRequired("propwidth", True)
-'			SetPropertyRequired("propheight", True)
-'		Case "RadioGroup"
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propcolor", True)
-'			SetPropertyVisible("propoptions", True)
-'		Case "Image"
-'			SetPropertyVisible("propenabled", False)
-'			SetPropertyVisible("propreadonly", False)
-'			SetPropertyVisible("propvalue", False)
-'			SetPropertyVisible("proprequired", False)
-'			SetPropertyVisible("propsize", False)
-'			SetPropertyVisible("propshape", True)
-'			SetPropertyVisible("propurl", True)
-'			SetPropertyVisible("propwidth", True)
-'			SetPropertyVisible("propheight", True)
-'			SetPropertyRequired("propwidth",True)
-'			SetPropertyRequired("propheight",True)
-'	End Select
-'End Sub
-'private Sub HideMostProperties
-'	SetPropertyVisible("id", False)
-'	SetPropertyVisible("propvalue", True)
-'	SetPropertyVisible("propreadonly", True)
-'	SetPropertyVisible("propenabled", True)
-'	SetPropertyVisible("propvisible", True)
-'	SetPropertyVisible("proprequired", True)
-'	SetPropertyVisible("propoptions", False)
-'	SetPropertyVisible("propsize", False)
-'	SetPropertyVisible("propshape", False)
-'	SetPropertyVisible("propurl", False)
-'	SetPropertyVisible("propcolor", False)
-'	SetPropertyVisible("propstart", False)
-'	SetPropertyVisible("propstep", False)
-'	SetPropertyVisible("propmax", False)
-'	SetPropertyVisible("proptooltippos", True)
-'	SetPropertyVisible("propwidth", False)
-'	SetPropertyVisible("propheight", False)
-'	SetPropertyVisible("propdateformat", False)
-'	SetPropertyVisible("propdisplayformat", False)
-'	SetPropertyVisible("proptime24", False)
-'	SetPropertyVisible("proplocale", False)
-'	SetPropertyVisible("propprefix", False)
-'	SetPropertyVisible("propsuffix", False)
-'	SetPropertyVisible("propprepend", False)
-'	SetPropertyVisible("propappend", False)
-'	SetPropertyVisible("propforeigntable", False)
-'	SetPropertyVisible("propforeignfield", False)
-'	SetPropertyVisible("propforeigndisplayfield", False)
-'	SetPropertyVisible("propforeigndisplayfield1", False)
-'	SetPropertyVisible("propforeigndisplayfield2", False)
-'	SetPropertyVisible("propmaxlen", False)
-'	SetPropertyVisible("proprows",False)
-'	SetPropertyVisible("propicon", False)
-'	SetPropertyVisible("propupdate", False)
-'	SetPropertyVisible("propplaceholder", False)
-'	SetPropertyVisible("prophinttext", False)
-'	SetPropertyVisible("properrortext", False)
-'	'SetPropertyVisible("propsubtitle1", False)
-'	'SetPropertyVisible("propsubtitle2", False)
-'End Sub
+	SetPropertyVisible("propdatatype", True)
+	SetPropertyVisible("propprepend", True)
+	SetPropertyVisible("propappend", True)
+	SetPropertyVisible("prophinttext", True)
+	SetPropertyVisible("properrortext", True)
+	Select Case sproptype
+		Case "DatePicker"
+			SetPropertyVisible("propdateformat", True)
+			SetPropertyVisible("propdisplayformat", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "DateTimePicker"
+			SetPropertyVisible("propdateformat", True)
+			SetPropertyVisible("propdisplayformat", True)
+			SetPropertyVisible("proptime24", True)
+			SetPropertyVisible("proplocale", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "TimePicker"
+			SetPropertyVisible("proptime24", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "TextBox"
+			SetPropertyVisible("propmaxlen", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Password"
+			SetPropertyVisible("propmaxlen", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Color"
+			SetPropertyVisible("propplaceholder", True)
+		Case "RollDate"
+			SetPropertyVisible("propdateformat", True)
+			SetPropertyVisible("propdisplayformat", True)
+			SetPropertyVisible("propstart", True)
+			SetPropertyVisible("propstep", True)
+			SetPropertyVisible("propmax", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Number"
+			SetPropertyVisible("propstart", True)
+			SetPropertyVisible("propstep", True)
+			SetPropertyVisible("propmax", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Telephone"
+			SetPropertyVisible("propplaceholder", True)
+		Case "TextArea"
+			SetPropertyVisible("propmaxlen", True)
+			SetPropertyVisible("proprows",True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "PasswordGroup"
+			SetPropertyVisible("propmaxlen", True)
+			SetPropertyVisible("propprefix", True)
+			SetPropertyVisible("propsuffix", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "ColorWheel"
+		Case "TextBoxGroup"
+			SetPropertyVisible("propmaxlen", True)
+			SetPropertyVisible("propprefix", True)
+			SetPropertyVisible("propsuffix", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "SelectGroup",  "GroupSelect", "CheckBoxGroup", "ToggleGroup", "RadioGroup", "Filter"
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propheight", True)
+			SetPropertyVisible("propoptions", True)
+			SetPropertyVisible("propforeigntable", True)
+			SetPropertyVisible("propforeignfield", True)
+			SetPropertyVisible("propforeigndisplayfield", True)
+			SetPropertyVisible("propforeigndisplayfield1", True)
+			SetPropertyVisible("propforeigndisplayfield2", True)
+			SetPropertyVisible("propprefix", True)
+			SetPropertyVisible("propsuffix", True)
+			SetPropertyVisible("propplaceholder", True)
+			SetPropertyVisible("propactivecolor", True)
+		Case "Select"
+			SetPropertyVisible("propoptions", True)
+			SetPropertyVisible("propforeigntable", True)
+			SetPropertyVisible("propforeignfield", True)
+			SetPropertyVisible("propforeigndisplayfield", True)
+			SetPropertyVisible("propforeigndisplayfield1", True)
+			SetPropertyVisible("propforeigndisplayfield2", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "FileInput"
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propupdate", True)
+			SetPropertyVisible("propplaceholder", True)
+			SetPropertyVisible("propmultiple", True)
+		Case "FileInputProgress"
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propsize", True)
+			SetPropertyVisible("propicon", True)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propupdate", True)
+		Case "CamCorder", "Camera", "Microphone"
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propsize", True)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propupdate", True)
+		Case "AvatarPlaceholder"
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propvalue", True)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propsize", True)
+			SetPropertyVisible("propshape", True)
+			SetPropertyVisible("propcolor", True)
+		Case "Avatar"
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propsize", True)
+			SetPropertyVisible("propshape", True)
+			SetPropertyVisible("propurl", True)
+		Case "AvatarGroup"
+			SetPropertyVisible("propoptions", True)
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propsize", True)
+			SetPropertyVisible("propshape", True)
+			SetPropertyVisible("propurl", False)
+		Case "Progress"
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propstart", True)
+			SetPropertyVisible("propstep", True)
+			SetPropertyVisible("propmax", True)
+			SetPropertyRequired("propstart",True)
+			SetPropertyRequired("propstep",True)
+			SetPropertyRequired("propmax",True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Dialer"
+			SetPropertyVisible("propstart", True)
+			SetPropertyVisible("propstep", True)
+			SetPropertyVisible("propmax", True)
+			SetPropertyRequired("propstart",True)
+			SetPropertyRequired("propstep",True)
+			SetPropertyRequired("propmax",True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Range"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propstart", True)
+			SetPropertyVisible("propstep", True)
+			SetPropertyVisible("propmax", True)
+			SetPropertyRequired("propstart",True)
+			SetPropertyRequired("propstep",True)
+			SetPropertyRequired("propmax",True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Email", "Link"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propsize", False)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Label"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propsize", False)
+		Case "CheckBox"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+		Case "Toggle"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+		Case "RadialProgress"
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+		Case "Rating"
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propplaceholder", True)
+		Case "Signature"
+			SetPropertyVisible("propwidth", True)
+			SetPropertyVisible("propheight", True)
+			SetPropertyRequired("propwidth", True)
+			SetPropertyRequired("propheight", True)
+		Case "RadioGroup"
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propcolor", True)
+			SetPropertyVisible("propoptions", True)
+		Case "Image"
+			SetPropertyVisible("propenabled", False)
+			SetPropertyVisible("propreadonly", False)
+			SetPropertyVisible("propvalue", False)
+			SetPropertyVisible("proprequired", False)
+			SetPropertyVisible("propsize", False)
+			SetPropertyVisible("propshape", True)
+			SetPropertyVisible("propurl", True)
+			SetPropertyVisible("propwidth", True)
+			SetPropertyVisible("propheight", True)
+			SetPropertyRequired("propwidth",True)
+			SetPropertyRequired("propheight",True)
+	End Select
+End Sub
+private Sub HideMostProperties
+	SetPropertyVisible("id", False)
+	SetPropertyVisible("propvalue", True)
+	SetPropertyVisible("propreadonly", True)
+	SetPropertyVisible("propenabled", True)
+	SetPropertyVisible("propvisible", True)
+	SetPropertyVisible("proprequired", True)
+	SetPropertyVisible("propoptions", False)
+	SetPropertyVisible("propsize", False)
+	SetPropertyVisible("propshape", False)
+	SetPropertyVisible("propurl", False)
+	SetPropertyVisible("propcolor", False)
+	SetPropertyVisible("propstart", False)
+	SetPropertyVisible("propstep", False)
+	SetPropertyVisible("propmax", False)
+	SetPropertyVisible("proptooltippos", True)
+	SetPropertyVisible("propwidth", False)
+	SetPropertyVisible("propheight", False)
+	SetPropertyVisible("propdateformat", False)
+	SetPropertyVisible("propdisplayformat", False)
+	SetPropertyVisible("proptime24", False)
+	SetPropertyVisible("proplocale", False)
+	SetPropertyVisible("propprefix", False)
+	SetPropertyVisible("propsuffix", False)
+	SetPropertyVisible("propprepend", False)
+	SetPropertyVisible("propappend", False)
+	SetPropertyVisible("propforeigntable", False)
+	SetPropertyVisible("propforeignfield", False)
+	SetPropertyVisible("propforeigndisplayfield", False)
+	SetPropertyVisible("propforeigndisplayfield1", False)
+	SetPropertyVisible("propforeigndisplayfield2", False)
+	SetPropertyVisible("propmaxlen", False)
+	SetPropertyVisible("proprows",False)
+	SetPropertyVisible("propicon", False)
+	SetPropertyVisible("propupdate", False)
+	SetPropertyVisible("propplaceholder", False)
+	SetPropertyVisible("prophinttext", False)
+	SetPropertyVisible("properrortext", False)
+	SetPropertyVisible("propmultiple", False)
+	SetPropertyVisible("propactivecolor", False)
+	'SetPropertyVisible("propsubtitle1", False)
+	'SetPropertyVisible("propsubtitle2", False)
+End Sub
 
 'add a property
 Sub AddProperty(options As Map)
@@ -2023,6 +2112,7 @@ Sub Clear
 	RGOptions.Initialize
 	Compulsory.Initialize
 	datesFP.Initialize
+	colorPicker.Initialize 
 	signatures.Initialize
 	rolldate.Initialize
 	Overwrites.Initialize
@@ -2030,8 +2120,6 @@ Sub Clear
 	PropertyBuilder.Initialize
 	CustProps.Initialize
 	validations.Initialize
-	DPValue.Initialize
-	datepickers.Initialize
 End Sub
 
 Sub ClearOverwrites
@@ -2059,6 +2147,8 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	SetPropertyAppendIcon(Key, "./assets/plus-solid.svg")
 	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
+	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", Me, "PropertyDecrement")
+	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "PropertyIncrement")
 	SetPropertyNoArrows(Key)
 End Sub
 '
@@ -2155,7 +2245,7 @@ Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, R
 	ComponentType.Put(Key, "TextBox")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 		<span id="${mName}_${Key}_tooltip">
 			<span id="${mName}_${Key}_title">${Title}</span>
@@ -2185,7 +2275,7 @@ Sub AddPropertyPlusMinus(Key As String, Title As String, DefaultValue As String,
 	ComponentType.Put(Key, "TextBox")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 		<span id="${mName}_${Key}_tooltip">
 			<span id="${mName}_${Key}_title">${Title}</span>
@@ -2227,7 +2317,7 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
 	ComponentType.Put(Key, "TextBoxGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2240,12 +2330,12 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hide"></span>
     					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hide"></span>
     					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     				</label>
     			</div>
@@ -2262,6 +2352,8 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 
 Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
@@ -2271,7 +2363,7 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	ComponentType.Put(Key, "SelectGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2284,13 +2376,13 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -2318,6 +2410,8 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 	sbOptions.Initialize
 End Sub
 
@@ -2328,7 +2422,7 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
 	ComponentType.Put(Key, "PasswordGroup")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2341,12 +2435,12 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -2364,7 +2458,9 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "TogglePassword")
+	UI.OnEventByID($"#${mName}_${Key}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
 private Sub TogglePassword(event As BANanoEvent)     'ignoredeadcode
@@ -2390,6 +2486,7 @@ Sub SetPropertyPrependIcon(Key As String, picon As String)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
 	SetPropertyBottomLeftRadius(Key, "0px")
+	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 '
 Sub SetPropertyTopLeftRadius(Key As String, v As String)
@@ -2429,6 +2526,17 @@ Sub SetPropertyAppendIconLoading(Key As String, bLoading As Boolean)
 	End If
 End Sub
 
+Sub SetPropertyAppendIconColor(Key As String, iColor As String)
+	If iColor = "" Then Return
+	UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, iColor)
+End Sub
+
+Sub SetPropertyPrependIconColor(Key As String, iColor As String)
+	If iColor = "" Then Return
+	UI.SetIconColorByID($"${mName}_${Key}_prepend_icon"$, iColor)
+End Sub
+
+
 Sub SetPropertyAppendIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).Remove
@@ -2440,6 +2548,7 @@ Sub SetPropertyAppendIcon(Key As String, picon As String)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "trradius brradius")
 	SetPropertyTopRightRadius(Key, "0px")
 	SetPropertyBottomRightRadius(Key, "0px")
+	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 End Sub
 Sub SetPropertyPrefix(Key As String,l As String)
 	If l = "" Then Return
@@ -2495,7 +2604,7 @@ Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String
 	ComponentType.Put(Key, "DatePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2537,6 +2646,109 @@ Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String
 	Dim fp As BANanoObject = BANano.RunJavascriptMethod("flatpickr", Array(xkey, dopt))
 	datesFP.Put($"${mName}_${Key}"$, fp)
 End Sub
+'
+'HandleDiameter = 16
+'WheelDiameter = 200
+'WheelThickness = 20
+'WheelPlacement = bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
+Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String, Required As Boolean, iHandleDiameter As Int, iWheelDiameter As Int, iWheelThickness As Int, sWheelPlacement As String)
+	If DefaultValue = "" Then DefaultValue = "#ff0000"
+	propBagKeys.Put(Key, Title)
+	propBagValues.Put(Key, DefaultValue)
+	Types.Put(Key, "String")
+	ComponentType.Put(Key, "ColorWheel")
+	If Required Then Compulsory.Put(Key, Key)
+	Dim scode As String = $"[BANCLEAN]
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
+    	<td id="${mName}_${Key}_th" >
+			<span id="${mName}_${Key}_tooltip">
+				<span id="${mName}_${Key}_title">${Title}</span>
+			</span>
+		</td>		
+    	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+    		<div class="indicator w-full">
+    			<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+    			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
+    				<label id="${mName}_${Key}_inputgroup" class="input-group">
+    					<span id="${mName}_${Key}_prefix" class="hide"></span>
+    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+							<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+						</btn>
+    					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
+    					<span id="${mName}_${Key}_suffix" class="hide"></span>
+    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+							<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+						</btn>
+    				</label>
+					<ul id="${mName}_${Key}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
+						<div class="card-body">
+							<div id="${mName}_${Key}_rcw"></div>
+						</div>
+    				</ul>
+    			</div>
+    		</div>
+    	</td>
+    </tr>"$
+	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	SetPropertyAppendIcon(Key, "./assets/palette-solid.svg")
+	UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, DefaultValue)
+	If Required Then
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+	Else
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+	End If
+	UI.AddAttrByID($"${mName}_${Key}_append"$, "popovertarget", $"${mName}_${Key}_popover"$)
+	UI.AddStyleByID($"${mName}_${Key}_append"$, "anchor-name", $"--${mName}_${Key}_anchor"$)
+	UI.SetPlacementByID($"${mName}_${Key}_popover"$, "dropdown", sWheelPlacement)
+	UI.Show($"${mName}_${Key}_popover"$)
+	'
+	Dim cwOptions As Map = CreateMap()
+	cwOptions.Put("appendTo", BANano.GetElement($"#${mName}_${Key}_rcw"$).ToObject)
+	If DefaultValue <> "" Then cwOptions.Put("hex", DefaultValue)
+	cwOptions.Put("wheelDiameter", iWheelDiameter)
+	cwOptions.Put("wheelThickness", iWheelThickness)
+	cwOptions.Put("handleDiameter", iHandleDiameter)
+	cwOptions.Put("wheelReflectsSaturation", True)
+	Dim color As Object
+	Dim cbColor As BANanoObject = BANano.CallBack(Me, "ColorChange", Array(color))
+	cwOptions.Put("onChange", cbColor)
+	Dim rcw As BANanoObject
+	rcw.Initialize2("ReinventedColorWheel", cwOptions)
+	'store the color picker for later
+	colorPicker.Put(Key, rcw)
+		
+	'the color picker will be opened when a button is clicked
+	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "ToggleColorPicker")
+	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "ToggleColorPicker")
+	'
+	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
+	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
+	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+End Sub
+
+private Sub ToggleColorPicker(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	e.StopPropagation
+	Dim skey As String = UI.MvField(e.ID, 2, "_")
+	BANano.GetElement($"#${mName}_${skey}_popover"$).ToggleClass("dropdown-open")
+End Sub
+
+
+Private Sub ColorChange(color As BANanoObject)			'ignoredeadcode
+	Dim sid As String = UI.GetRecursive(color, "options.appendTo.id")
+	Dim eID As String = UI.MvField(sid, 2, "_")
+	Dim xValue As String = color.getfield("hex").Result
+	BANano.GetElement($"#${mName}_${eID}"$).SetValue(xValue)
+	UI.SetIconColorByID($"${mName}_${eID}_append_icon"$, xValue)
+	'
+	If SubExists(mCallBack, $"${mName}_Change"$) Then
+		Dim data As Map = BANano.Await(getPropertyBag)
+		CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
+	End If
+End Sub
+
+
 '<code>
 'Dim dt1Options As RollDateOptions = app.InitRollDateTime
 'dt1Options.beginYear = 2000
@@ -2586,7 +2798,7 @@ Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean,
 	ComponentType.Put(Key, "Signature")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2627,7 +2839,7 @@ Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As St
 	ComponentType.Put(Key, "DateTimePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2679,7 +2891,7 @@ Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String
 	ComponentType.Put(Key, "TimePicker")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2730,7 +2942,7 @@ Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, 
 	ComponentType.Put(Key, "Password")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2757,7 +2969,7 @@ End Sub
 '	ComponentType.Put(Key, "Color")
 '	If Required Then Compulsory.Put(Key, Key)
 '	Dim scode As String = $"[BANCLEAN]
-'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
 '<td id="${mName}_${Key}_th" >
 '			<span id="${mName}_${Key}_tooltip">
 '				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2786,7 +2998,7 @@ Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Re
 	ComponentType.Put(Key, "Number")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2813,7 +3025,7 @@ Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String,
 	ComponentType.Put(Key, "Telephone")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2840,7 +3052,7 @@ Sub AddPropertyEmail(Key As String, Title As String, DefaultValue As String, Col
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Email")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2860,7 +3072,7 @@ Sub AddPropertyLabel(Key As String, Title As String, DefaultValue As String, Col
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Label")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2880,7 +3092,7 @@ Sub AddPropertyLink(Key As String, Title As String, DefaultValue As String, Colo
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Link")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2900,7 +3112,7 @@ Sub AddPropertyPlaceHolder(Key As String, Title As String, DefaultValue As Strin
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "PlaceHolder")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -2994,14 +3206,14 @@ Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 		Return False
 	End If
 End Sub
-Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Required As Boolean)
+Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Required As Boolean, sRows As String)
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "TextArea")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3014,12 +3226,12 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -3034,9 +3246,13 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
 		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
+	If sRows <> "" Then BANano.GetElement($"#${mName}_${Key}"$).SetAttr("rows", sRows)
+	BANano.GetElement($"#${mName}_${Key}row"$).RemoveClass("sm:grid-cols-2")
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 Sub SetPropertyRangeText(Key As String, value As String)
 	BANano.GetElement($"#${mName}_${Key}_text"$).SetText(value)
@@ -3095,6 +3311,12 @@ Sub SetPropertyValue(Key As String, value As String)
 			BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("data-src", value)
 		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(Null)
+		Case "ColorWheel"
+			UI.SetIconColorByID($"${mName}_append_icon"$, value)
+			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
+			Dim cp As BANanoObject = colorPicker.Get(Key)
+			cp.SetField("hex", value)
+			cp.RunMethod("redraw", Null)
 		Case "TextBox", "TextBoxGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password", "Color", "Number", _
         "Telephone", "TextArea", "Select", "SelectGroup", "Dialer"
 			value = UI.CStr(value)
@@ -3277,7 +3499,7 @@ Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Re
 	ComponentType.Put(Key, "Select")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3361,7 +3583,7 @@ Sub SetPropertyAvatarGroupItems(Key As String, Images As List)
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
         <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${UI.FixSize("w",sSize)}">
-        <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
+        <img id="${mName}_${Key}_src_${imgCnt}" class="bg-cover bg-center bg-no-repeat" src="${k}" alt=""></img>
         </div>
         </div>"$
 		sbItems.Append(sItem)
@@ -3447,14 +3669,14 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean)
+Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean, sAccept As String, bMultiple As Boolean)
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInput")
 	If Required Then Compulsory.Put(Key, Key)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3468,6 +3690,8 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean)
 		</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
+	If bMultiple Then UI.SetAttrByID($"${mName}_${Key}"$, "multiple", "multiple")
+	If sAccept <> "" Then UI.SetAttrByID($"${mName}_${Key}"$, "accept", sAccept)
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
 	Else
@@ -3512,14 +3736,17 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String, xIcon As String, xColor As String)
+Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String, xIcon As String, xIconSize As String, xColor As String, xTextColor As String)
 	If xIcon = "" Then xIcon = "./assets/arrow-up-from-bracket-solid.svg"
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, Null)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "FileInputProgress")
+	Dim btnColor As String = UI.FixColor("bg", xColor)
+	Dim btnW As String = UI.FixSize("w", xSize)
+	Dim btnH As String = UI.FixSize("h", xSize)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3527,8 +3754,8 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 		</td>		
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
-    			<button id="${mName}_${Key}_button" class="btn btn-circle btn-${xColor} w-[${xSize}] h-[${xSize}]">
-    				<svg id="${mName}_${Key}_icon" fill="currentColor" data-js="enabled" data-src="${xIcon}" width="42px" height="42px"></svg>
+    			<button id="${mName}_${Key}_button" class="btn btn-circle ${btnColor} ${btnW} ${btnH}">
+    				<svg id="${mName}_${Key}_icon" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
     			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
@@ -3539,7 +3766,10 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 	BANano.GetElement($"#${mName}_${Key}_button"$).RemoveClass("hide")
 	BANano.GetElement($"#${mName}_${Key}_progress"$).AddClass("hide")
 	BANano.GetElement($"#${mName}_${Key}_icon"$).RemoveClass("hide")
+	UI.SetIconColorByID($"#${mName}_${Key}_icon"$, xTextColor)
+	UI.SetIconSizeByID($"#${mName}_${Key}_icon"$, xIconSize)
 	UI.OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
+	UI.OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
 	'
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
@@ -3598,8 +3828,8 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyCamCorder(Key As String, Title As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
+Sub AddPropertyCamCorder(Key As String, Title As String, xSize As String, xIconSize As String, xColor As String, xTextColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xIconSize, xColor, xTextColor)
 	SetPropertyFileInputProgressCamCorder(Key)
 	ComponentType.Put(Key, "CamCorder")
 End Sub
@@ -3641,8 +3871,8 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyCamera(Key As String, Title As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
+Sub AddPropertyCamera(Key As String, Title As String, xSize As String, xIconSize As String, xColor As String, xTextColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xIconSize, xColor, xTextColor)
 	SetPropertyFileInputProgressCamera(Key)
 	ComponentType.Put(Key, "Camera")
 End Sub
@@ -3684,8 +3914,8 @@ End Sub
 'img.Tag = fText
 'End Sub
 '</code>
-Sub AddPropertyMicrophone(Key As String, Title As String, xSize As String, xColor As String)
-	AddPropertyFileInputProgress(Key, Title, xSize, "", xColor)
+Sub AddPropertyMicrophone(Key As String, Title As String, xSize As String, xIconSize As String, xColor As String, xTextColor As String)
+	AddPropertyFileInputProgress(Key, Title, xSize, "", xIconSize, xColor, xTextColor)
 	SetPropertyFileInputProgressMicrophone(Key)
 	ComponentType.Put(Key, "Microphone")
 End Sub
@@ -3693,6 +3923,7 @@ private Sub SetPropertyFileInputProgressCamCorder(key As String)
 	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/video-solid.svg")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "video/*;capture=camcorder")
 End Sub
+
 private Sub SetPropertyFileInputProgressCamera(key As String)
 	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/camera-solid.svg")
 	UI.SetAttrByID($"${mName}_${key}"$, "accept", "image/*;capture=camera")
@@ -3722,6 +3953,7 @@ Sub SetPropertyFileInputProgressLoading(key As String, Value As Int, Status As B
 		'hide the icon
 		UI.Hide($"${mName}_${key}_icon"$)
 		UI.Show($"${mName}_${key}_progress"$)
+		UI.SetAttrByID($"${mName}_${key}_progress"$, "aria-valuenow", Value)
 		UI.SetTextByID($"${mName}_${key}_progress"$, $"${Value}%"$)
 		UI.SetStyleByID($"${mName}_${key}_progress"$, "--value", Value)
 	End If
@@ -3734,7 +3966,7 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
 	ComponentType.Put(Key, "Avatar")
 	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3743,7 +3975,7 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}_avatar" class="avatar">
     <div id="${mName}_${Key}_host" class="${smask} ${UI.FixSize("w",sSize)}">
-    <img id="${mName}_${Key}_src" name="${mName}_${Key}" src="${Url}" alt=""></img>
+    <img id="${mName}_${Key}_src" class="bg-cover bg-center bg-no-repeat" name="${mName}_${Key}" src="${Url}" alt=""></img>
     </div>
     </div>
     </td>
@@ -3751,16 +3983,36 @@ Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As 
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 End Sub
 
-Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As String, sSize As String, Shape As String, Color As String, textSize As String)
+Sub SetPropertyAvatarRing(Key As String, bHasRing As Boolean, ringColor As String, ringOffset As String, ringOffsetColor As String)
+	Dim xKey As String = $"${mName}_${Key}_host"$
+	Select Case bHasRing
+	Case True
+		Dim rcolor As String = UI.FixColor("ring", ringColor)
+		Dim roffset As String = $"ring-offset-${ringOffset}"$
+		Dim rocolor As String = UI.FixColor("ring-offset", ringOffsetColor)
+		UI.AddClassByID(xKey, "ring")
+		UI.UpdateClassByID(xKey, "ringcolor", rcolor)
+		UI.UpdateClassByID(xKey, "ringoffset", roffset)
+		UI.UpdateClassByID(xKey, "ringoffsetcolor", rocolor)
+	Case False
+		UI.RemoveClassByID(xKey, "ring")
+		UI.RemoveLastClassByID(xKey, "ringcolor")
+		UI.RemoveLastClassByID(xKey, "ringoffset")
+		UI.RemoveLastClassByID(xKey, "ringoffsetcolor")
+	End Select
+End Sub
+
+
+Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As String, sSize As String, Shape As String, Color As String, textColor As String, textSize As String)
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "AvatarPlaceholder")
 	Dim smask As String = UI.FixMask(Shape)
-	Dim acolor As String = UI.FixColor("bg", Color) & " " & UI.FixColorIntensity("text", Color, "content")
+	Dim acolor As String = UI.FixColor("bg", Color) & " " & UI.FixColor("text", textColor)
 	Dim tsize As String = UI.FixSize("text", textSize)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3786,7 +4038,7 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 	ComponentType.Put(Key, "AvatarGroup")
 	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3807,7 +4059,7 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${Key}_avatar_${imgCnt}" class="avatar">
         <div id="${mName}_${Key}_host_${imgCnt}" class="border-2 ${smask} ${UI.FixSize("w",sSize)}">
-        <img id="${mName}_${Key}_src_${imgCnt}" src="${k}" alt=""></img>
+        <img id="${mName}_${Key}_src_${imgCnt}" class="bg-cover bg-center bg-no-repeat" src="${k}" alt=""></img>
         </div>
         </div>"$
 		sbItems.Append(sItem)
@@ -3816,37 +4068,21 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 	BANano.GetElement($"#${mName}_${Key}_group"$).SetData("items", xitems)
 	sbItems.Initialize
 End Sub
-Sub SetPropertyAvatarOnline(Key As String, Status As Boolean, IsVisible As Boolean)
-	BANano.GetElement($"#${mName}_${Key}_avatar"$).RemoveClass("offline")
-	BANano.GetElement($"#${mName}_${Key}_avatar"$).RemoveClass("online")
-	If IsVisible = False Then Return
-	If Status Then
-		BANano.GetElement($"#${mName}_${Key}_avatar"$).AddClass("online")
-	Else
-		BANano.GetElement($"#${mName}_${Key}_avatar"$).AddClass("offline")
-	End If
+Sub SetPropertyAvatarOnline(Key As String, bOnlineStatus As Boolean, bStatus As Boolean)
+	Dim xKey As String = $"${mName}_${Key}_avatar"$
+	Select Case bOnlineStatus
+	Case True
+		If bStatus Then
+			UI.UpdateClassByID(xKey, "status", "avatar-online")
+		Else	
+			UI.UpdateClassByID(xKey, "status", "avatar-offline")
+		End If
+	Case False
+		UI.RemoveLastClassByID(xKey, "status")
+		UI.RemoveClassByID(xKey, "avatar-online avatar-offline")
+	End Select
 End Sub
-Sub SetPropertyAvatarRing(Key As String, Status As Boolean, Color As String)
-	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${Key}_host"$)
-	Dim slastringcolor As String = el.GetData("ring")
-	slastringcolor = UI.CStr(slastringcolor)
-	'
-	Dim lst As List
-	lst.Initialize
-	lst.AddAll(Array("ring", "ring-offset-base-100", "ring-offset-1"))
-	'
-	For Each c As String In lst
-		el.RemoveClass(c)
-	Next
-	If slastringcolor <> "" Then el.RemoveClass(slastringcolor)
-	If Status = False Then Return
-	slastringcolor = UI.FixColor("ring", Color)
-	el.SetData("ring", slastringcolor)
-	For Each c As String In lst
-		el.AddClass(c)
-	Next
-	el.AddClass(slastringcolor)
-End Sub
+
 Sub SetPropertyAvatarMask(Key As String, Shape As String)
 	Dim smask As String = UI.FixMask(Shape)
 	Dim smasks As String = "circle|rounded|squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|parallelogram|parallelogram-2|parallelogram-3|parallelogram-4|star|star-2|triangle|triangle-2|triangle-3|triangle-4|half-1|half-2|rounded-full|rounded"
@@ -3877,14 +4113,14 @@ Sub AddPropertyImage(Key As String, Title As String, Width As String, Height As 
 	ComponentType.Put(Key, "Image")
 	Dim smask As String = UI.FixMask(Shape)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
 			</span>
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <img id="${mName}_${Key}_src" class="${smask}" name="${mName}_${Key}" src="${Url}" alt=""></img>
+    <img id="${mName}_${Key}_src" class="${smask} bg-cover bg-center bg-no-repeat" name="${mName}_${Key}" src="${Url}" alt=""></img>
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
@@ -3923,7 +4159,7 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
 	Dim psize1 As String = UI.FixSize("h", psize)
 	
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3945,7 +4181,7 @@ Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Col
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Range")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -3968,7 +4204,7 @@ Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean,
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "CheckBox")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4009,7 +4245,7 @@ Sub SetPropertyColor(Key As String, s As String)
 	Dim pType As String = ComponentType.get(Key)
 	Dim lcolor As String = LastColors.GetDefault(Key, "")
 	Select Case pType
-		Case "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Password", "Color", "Number", "Telephone", "DatePicker", "TimePicker", "DateTimePicker", "Dialer"
+		Case "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Password", "Color", "Number", "Telephone", "DatePicker", "TimePicker", "DateTimePicker", "Dialer", "ColorWheel"
 			If lcolor <> "" Then
 				Dim llcolor As String = UI.FixColor("input", lcolor)
 				el.RemoveClass(llcolor)
@@ -4153,7 +4389,7 @@ Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, C
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "Toggle")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4172,7 +4408,7 @@ Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Bo
 	Types.Put(Key, "RadialProgress")
 	ComponentType.Put(Key, "RadialProgress")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4201,7 +4437,7 @@ Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Co
 	Dim rSize As String = UI.FixSize("rating", sComponentSize)
 	Dim rmask As String = UI.FixMask(mask)
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4266,6 +4502,11 @@ Sub SetPropertyVisible(Key As String, bStatus As Boolean)
 	End If
 End Sub
 
+Sub RequireProperty(status As Boolean, keys As List)
+	For Each k As String In keys
+		SetPropertyRequired(k, status)
+	Next
+End Sub
 
 Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As String, Color As String, bSingleSelect As Boolean, ActiveColor As String, Options As Map)
 	propBagKeys.Put(Key, Title)
@@ -4273,7 +4514,7 @@ Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As Strin
 	Types.Put(Key, "GroupSelect")
 	ComponentType.Put(Key, "GroupSelect")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4303,7 +4544,7 @@ Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As Str
 	Types.Put(Key, "CheckBoxGroup")
 	ComponentType.Put(Key, "CheckBoxGroup")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4333,7 +4574,7 @@ Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As Strin
 	Types.Put(Key, "ToggleGroup")
 	ComponentType.Put(Key, "ToggleGroup")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4363,7 +4604,7 @@ Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String
 	Types.Put(Key, "RadioGroup")
 	ComponentType.Put(Key, "RadioGroup")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4499,7 +4740,7 @@ Sub AddPropertyFilter(Key As String, Title As String, DefaultValue As String, Co
 	Types.Put(Key, "Filter")
 	ComponentType.Put(Key, "Filter")
 	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2">
+    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     	<td id="${mName}_${Key}_th" >
 			<span id="${mName}_${Key}_tooltip">
 				<span id="${mName}_${Key}_title">${Title}</span>
@@ -4694,7 +4935,7 @@ End Sub
 Sub LoadPropertyBagFromJSON(fileURL As String)
 	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
 	Dim pl As List = BANano.FromJson(fContents)
-'	PropertyBagFromList(pl)
+	PropertyBagFromList(pl)
 End Sub
 'add a property overwrite for type
 Sub SetPropertyOverwrite(Key As String, NewType As String)
@@ -4778,6 +5019,7 @@ Sub ShowDesign(designName As String, compName As String)
 						AddPropertyDialer(skey,sdisplayname, sdefaultvalue, False, 0, 1, 100)
 					Case "TextBoxGroup"
 						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,False)
+					Case "ColorWheel"
 					Case "PasswordGroup"
 						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,False)
 					Case "Password"
@@ -4790,31 +5032,30 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Telephone"
 						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,False)
 					Case "TextArea"
-						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False)
+						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False,"")
 						'AddPropertyTextArea(skey, sdisplayname, "","", False, "left")
 						'SetPropertyValue(skey, sdefaultvalue)
 						SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
-						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
-						SetPropertyOneColumn(skey)
+						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")						
 					Case "Select"
 						AddPropertySelect(skey, sdisplayname, sdefaultvalue,False,CreateMap())
 					Case "SelectGroup"
 						AddPropertySelectGroup(skey, sdisplayname, sdefaultvalue,False,CreateMap())
 					Case "FileInput"
-						AddPropertyFileInput(skey, sdisplayname,False)
+						AddPropertyFileInput(skey, sdisplayname,False, "", False)
 					Case "FileInputProgress"
-						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "./assets/arrow-up-from-bracket-solid.svg", "success")
+						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "./assets/arrow-up-from-bracket-solid.svg", "42px", "success", "#ffffff")
 					Case "CamCorder"
-						AddPropertyCamCorder(skey, sdisplayname, "80px", "success")
+						AddPropertyCamCorder(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
 					Case "Camera"
-						AddPropertyCamera(skey, sdisplayname, "80px", "success")
+						AddPropertyCamera(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
 					Case "Microphone"
-						AddPropertyMicrophone(skey, sdisplayname, "80px", "success")
+						AddPropertyMicrophone(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
 					Case "Avatar"
 						AddPropertyAvatar(skey, sdisplayname, "12", "rounded", sdefaultvalue)
 					Case "AvatarPlaceholder"
 						sdefaultvalue = UI.Val(sdefaultvalue)
-						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "8xl")
+						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "white", "8xl")
 					Case "AvatarGroup"
 						Dim imags As List
 						imags.Initialize
@@ -4850,10 +5091,9 @@ Sub ShowDesign(designName As String, compName As String)
 							Case ""
 								'this is not a dropdown
 								If skey.StartsWith("Raw") Then
-									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
+									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,"")
 									SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 									BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
-									SetPropertyOneColumn(skey)
 								Else	
 									AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
 								End If
@@ -4883,7 +5123,7 @@ End Sub
 
 
 'load a component from a json file
-Sub LoadComponentJson(designName As String)
+Sub LoadComponentFromJson(designName As String)
 	CustProps = BANano.Await(BANano.GetFileAsJSON($"./assets/${designName}.json?${DateTime.Now}"$, Null))
 End Sub
 
@@ -5016,32 +5256,6 @@ private Sub GetEventName(strDeclaration As String) As String
 	Return sResult
 End Sub
 
-'get Key and Default value from properies list
-Sub ExtractPropertyBag(props As List) As Map
-	Dim nm As Map = CreateMap()
-	For Each rec As Map In  props
-		Dim skey As String = rec.Getdefault("Key","")
-		skey = UI.CStr(skey)
-		Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-		sdefaultvalue = UI.CStr(sdefaultvalue)
-		Dim sfieldtype As String = rec.getdefault("FieldType","")
-		sfieldtype = UI.CStr(sfieldtype)
-		'ignore all readmes
-		If skey.StartsWith("ReadMe") Then Continue
-		If skey = "" Then Continue
-		'
-		Select Case sfieldtype
-			Case "Boolean"
-				sdefaultvalue = UI.CBool(sdefaultvalue)
-			Case "Int"
-				sdefaultvalue = UI.CInt(sdefaultvalue)
-			Case Else
-				sdefaultvalue = UI.CStr(sdefaultvalue)
-		End Select
-		nm.Put(skey, sdefaultvalue)
-	Next
-	Return nm
-End Sub
 Sub SetPropertyComponentName(value As String)
 	SetPropertyValue("ComponentName", value)
 End Sub
@@ -5160,10 +5374,9 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 					Case ""
 						'does the key start with raw, make multi-line
 						If skey.tolowercase.StartsWith("raw") Then
-							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False)
+							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,"")
 							SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 							BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
-							SetPropertyOneColumn(skey)
 						Else
 							'this is not a dropdown
 							AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
@@ -5308,4 +5521,11 @@ Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
 		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
 	End If
+End Sub
+
+Sub SetPropertyValues(m As Map)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		SetPropertyValue(k, v)
+	Next
 End Sub

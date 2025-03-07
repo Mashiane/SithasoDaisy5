@@ -5,6 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+'https://luncheon.github.io/reinvented-color-wheel/
 #Event: Append (e As BANanoEvent)
 #Event: Prepend (e As BANanoEvent)
 #Event: Change (Value As String)
@@ -12,7 +13,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
-#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url
+#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url|color-wheel
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
@@ -42,6 +43,11 @@ Version=10
 #DesignerProperty: Key: DPShowMonths, DisplayName: D P Show Months, FieldType: Int, DefaultValue: 1, Description: D p Show Months
 #DesignerProperty: Key: DPLocale, DisplayName: DP Locale, FieldType: String, DefaultValue: en, Description: Date Picker Locale
 #DesignerProperty: Key: DPPosition, DisplayName: DP Position, FieldType: String, DefaultValue: auto, Description: Date Picker Position, List: auto|above|below|auto left|auto center|auto right|above left|above center|above right|below left|below center|below right
+#DesignerProperty: Key: HandleDiameter, DisplayName: Handle Diameter, FieldType: Int, DefaultValue: 16, Description: Handle Diameter
+#DesignerProperty: Key: WheelDiameter, DisplayName: Wheel Diameter, FieldType: Int, DefaultValue: 200, Description: Wheel Diameter
+#DesignerProperty: Key: WheelThickness, DisplayName: Wheel Thickness, FieldType: Int, DefaultValue: 20, Description: Wheel Thickness
+#DesignerProperty: Key: WheelPlacement, DisplayName: Wheel Placement, FieldType: String, DefaultValue: top-end, Description: Placement, List: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
+#DesignerProperty: Key: ToggleColorPicker, DisplayName: Toggle Color Picker, FieldType: Boolean, DefaultValue: False, Description: Toggle Color Picker
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: PrependColor, DisplayName: Prepend Color, FieldType: String, DefaultValue: none, Description: Prepend Color
@@ -139,6 +145,13 @@ Sub Class_Globals
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
 	Private sDataTypeOf As String = ""
+	Public ColorWheel As BANanoObject
+	Private iHandleDiameter As String = 16
+	Private iWheelDiameter As Int = 200
+	Private iWheelThickness As Int = 20
+	Private cwOptions As Map
+	Private sWheelPlacement As String = "top-end"
+	Private bToggleColorPicker As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -147,12 +160,16 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	cwOptions.Initialize 
 	
 	options.Initialize
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
 	BANano.DependsOnAsset("fplocale.min.js")
+	BANano.DependsOnAsset("reinvented-color-wheel.min.css")
+	BANano.DependsOnAsset("reinvented-color-wheel.min.js")
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -183,9 +200,6 @@ End Sub
 'return the #ID of the element
 Public Sub getHere() As String
 	Return $"#${mName}"$
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -374,8 +388,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPrependIconColor = Props.GetDefault("PrependIconColor", "none")
 		sPrependIconColor = UI.CStr(sPrependIconColor)
 		If sPrependIconColor = "none" Then sPrependIconColor = ""
+		iHandleDiameter = Props.GetDefault("HandleDiameter", 16)
+		iHandleDiameter = UI.Cint(iHandleDiameter)
+		iWheelDiameter = Props.GetDefault("WheelDiameter", 200)
+		iWheelDiameter = UI.CInt(iWheelDiameter)
+		iWheelThickness = Props.GetDefault("WheelThickness", 20)
+		iWheelThickness = UI.CInt(iWheelThickness)
+		sWheelPlacement = Props.GetDefault("WheelPlacement", "top-end")
+		sWheelPlacement = UI.CStr(sWheelPlacement)
+		bToggleColorPicker = Props.GetDefault("ToggleColorPicker", False)
+		bToggleColorPicker = UI.CBool(bToggleColorPicker)
 		End If
-        '
+        'we have a color wheel
+		If sTypeOf = "color-wheel" Then 
+			sAppendIcon = "./assets/palette-solid.svg"
+			sAppendImage = ""
+			If sValue = "" Then sValue = "#ff0000"
+			sAppendIconColor = sValue
+			bAppendVisible = True
+		End If	
+		'
 		Dim xattrs As String = UI.BuildExAttributes
         Dim xstyles As String = UI.BuildExStyle
         Dim xclasses As String = UI.BuildExClass
@@ -394,19 +426,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden">
-							<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-							<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+							<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+							<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 						</button>
-	          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
+	          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden">
-							<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-							<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+							<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+							<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 						</button>
 	        		</div>          
-	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>					
+					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+						<div class="card-body">
+							<div id="${mName}_rcw"></div>
+						</div>
+    				</ul>
 	      		</fieldset>"$).Get("#" & mName)
 				setBackgroundColor(sBackgroundColor)
 				setBorder(bBorder)
@@ -415,26 +452,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				setShadow(sShadow)
 				sDataTypeOf = $"${mName}_control"$
 				If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-				If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+				If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "buttons"
 			mElement = mTarget.Append($"[BANCLEAN]			
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
-          			<input id="${mName}" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
+          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
+					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+						<div class="card-body">
+							<div id="${mName}_rcw"></div>
+						</div>
+    				</ul>
         		</div>"$).Get("#" & mName)
 			sDataTypeOf = $"${mName}_control"$
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
@@ -446,26 +488,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
-						<input id="${mName}" class="tlradius ${mName}"></input>          				
+						<input id="${mName}" type="text" class="tlradius ${mName}"></input>          				
         			</label>
 					<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
+					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+						<div class="card-body">
+							<div id="${mName}_rcw"></div>
+						</div>
+    				</ul>
       			</div>"$).Get("#" & mName)	
 			sDataTypeOf = $"${mName}_control"$
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "normal"
-			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="text" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 			sDataTypeOf = ""
 		End Select
 		setTypeOf(sTypeOf)
@@ -498,17 +545,134 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setAppendIconColor(sAppendIconColor)
 	End Select
 	setWidth(sWidth)
-	setValue(sValue)
 	
+	'set anchors for the color picker
+	Select Case sTypeOf
+	Case "color-wheel"
+		UI.AddAttrByID($"${mName}_append"$, "popovertarget", $"${mName}_popover"$)
+		UI.AddStyleByID($"${mName}_append"$, "anchor-name", $"--${mName}_anchor"$)
+		setWheelPlacement(sWheelPlacement)
+		UI.Show($"${mName}_popover"$)
+	End Select
+
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 	UI.OnEvent(mElement, "input", Me, "changed1")
 	'
 	Select Case sTypeOf
 	Case "date-picker", "date-time-picker", "time-picker"
-			BANano.Await(RefreshDatePicker)
+		BANano.Await(RefreshDatePicker)
+	Case "color-wheel"
+		BANano.Await(RefreshColorWheel)
+		If bToggleColorPicker Then
+			'the color picker will be opened when a button is clicked
+			UI.OnEventByID($"${mName}_append"$, "click", Me, "ToggleColorPicker1")
+		End If
 	End Select
+	'
+	setValue(sValue)
 End Sub
+'
+Sub setToggleColorPicker(b As Boolean)
+	bToggleColorPicker = b
+	CustProps.Put("ToggleColorPicker", b)
+End Sub
+
+Sub getToggleColorPicker As Boolean
+	Return bToggleColorPicker
+End Sub
+
+private Sub ToggleColorPicker1(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	e.StopPropagation
+	BANano.GetElement($"#${mName}_popover"$).ToggleClass("dropdown-open")
+End Sub
+
+'close the color picker with code
+public Sub CloseColorPicker
+	BANano.GetElement($"#${mName}_popover"$).RemoveClass("dropdown-open")
+End Sub
+
+public Sub OpenColorPicker
+	BANano.GetElement($"#${mName}_popover"$).AddClass("dropdown-open")
+End Sub
+
+'set Placement
+'options: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
+Sub setWheelPlacement(s As String)			'ignoredeadcode
+	sWheelPlacement = s
+	CustProps.put("WheelPlacement", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetPlacementByID($"${mName}_popover"$, "dropdown", s)
+End Sub
+
+'get Wheel Placement
+Sub getWheelPlacement As String
+	Return sWheelPlacement
+End Sub
+
+Sub RefreshColorWheel			'ignoredeadcode
+	Try
+		cwOptions.Initialize
+		cwOptions.Put("appendTo", BANano.GetElement($"#${mName}_rcw"$).ToObject)
+		If sValue <> "" Then cwOptions.Put("hex", sValue)
+		cwOptions.Put("wheelDiameter", iWheelDiameter)
+		cwOptions.Put("wheelThickness", iWheelThickness)
+		cwOptions.Put("handleDiameter", iHandleDiameter)
+		cwOptions.Put("wheelReflectsSaturation", True)
+		Dim color As Object
+		Dim cbColor As BANanoObject = BANano.CallBack(Me, "ColorChange", Array(color))
+		cwOptions.Put("onChange", cbColor)
+		Dim rcw As BANanoObject
+		rcw.Initialize2("ReinventedColorWheel", cwOptions)
+		ColorWheel = rcw
+	Catch
+	End Try			'ignore
+End Sub
+
+Private Sub ColorChange(color As BANanoObject)			'ignoredeadcode
+	Dim sid As String = UI.GetRecursive(color, "options.appendTo.id")
+	Dim eID As String = UI.MvField(sid, 1, "_")
+	Dim xValue As String = color.getfield("hex").Result
+	BANano.GetElement($"#${eID}"$).SetValue(xValue)
+	UI.SetIconColorByID($"${mName}_append_icon"$, xValue)
+	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(xValue))
+End Sub
+
+'set Handle Diameter
+Sub setHandleDiameter(i As Int)
+	iHandleDiameter = i
+	CustProps.put("HandleDiameter", i)
+End Sub
+
+'set Wheel Diameter
+Sub setWheelDiameter(i As Int)
+	iWheelDiameter = i
+	CustProps.put("WheelDiameter", i)
+End Sub
+
+'set Wheel Thickness
+Sub setWheelThickness(i As Int)
+	iWheelThickness = i
+	CustProps.put("WheelThickness", i)
+End Sub
+
+'get Handle Diameter
+Sub getHandleDiameter As Int
+	Return iHandleDiameter
+End Sub
+
+'get Wheel Diameter
+Sub getWheelDiameter As Int
+	Return iWheelDiameter
+End Sub
+
+'get Wheel Thickness
+Sub getWheelThickness As Int
+	Return iWheelThickness
+End Sub
+
 
 'set Append Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -524,7 +688,7 @@ Sub setAppendIconColor(s As String)			'ignoredeadcode
 	sAppendIconColor = s
 	CustProps.put("AppendIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetIconColorByID($"${mName}_appendicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_append_icon"$, s)
 End Sub
 'set Prepend Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -539,7 +703,7 @@ Sub setPrependIconColor(s As String)			'ignoredeadcode
 	sPrependIconColor = s
 	CustProps.put("PrependIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetIconColorByID($"${mName}_prependicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_prepend_icon"$, s)
 End Sub
 'get Append Color
 Sub getAppendColor As String
@@ -840,11 +1004,12 @@ private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
 	Select Case cicon
 	Case "password"
 		mElement.SetAttr("type", "text")
-		UI.SetIconNameByID($"${mName}_appendicon"$, "./assets/eye-slash-solid.svg")
+		UI.SetIconNameByID($"${mName}_append_icon"$, "./assets/eye-slash-solid.svg")
 	Case "text"
 		mElement.SetAttr("type", "password")
-		UI.SetIconNameByID($"${mName}_appendicon"$, "./assets/eye-solid.svg")
+		UI.SetIconNameByID($"${mName}_append_icon"$, "./assets/eye-solid.svg")
 	End Select
+	UI.OnEventByID($"${mName}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
 'get Show Eyes
@@ -991,10 +1156,11 @@ Sub setAppendIcon(s As String)				'ignoredeadcode
 	CustProps.put("AppendIcon", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_appendicon"$, False)
+		UI.SetVisibleByID($"${mName}_append_icon"$, False)
 	Else
-		UI.SetIconNameByID($"${mName}_appendicon"$ , s)
-		UI.SetVisibleByID($"${mName}_appendicon"$, True)
+		UI.SetIconNameByID($"${mName}_append_icon"$ , s)
+		UI.SetVisibleByID($"${mName}_append_icon"$, True)
+		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
@@ -1043,10 +1209,11 @@ Sub setPrependIcon(s As String)				'ignoredeadcode
 	CustProps.put("PrependIcon", s)
 	If mElement = Null Then Return	
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_prependicon"$, False)
+		UI.SetVisibleByID($"${mName}_prepend_icon"$, False)
 	Else
-		UI.SetIconNameByID($"${mName}_prependicon"$, s)
-		UI.SetVisibleByID($"${mName}_prependicon"$, True)
+		UI.SetIconNameByID($"${mName}_prepend_icon"$, s)
+		UI.SetVisibleByID($"${mName}_prepend_icon"$, True)
+		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
@@ -1094,6 +1261,10 @@ Sub setValue(text As String)			'ignoredeadcode
 			FP.RunMethod("setDate", Array(text))
 		Catch
 		End Try				'ignore
+	Case "color-wheel"
+		UI.SetIconColorByID($"${mName}_append_icon"$, text)
+		ColorWheel.SetField("hex", text)
+		ColorWheel.RunMethod("redraw", Null)
 	End Select
 End Sub
 'get value
@@ -1250,8 +1421,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-		BANano.Await(UI.SetIconSizeByID($"${mName}_prependicon"$, sSize))
-		BANano.Await(UI.SetIconSizeByID($"${mName}_appendicon"$, sSize))
+		BANano.Await(UI.SetIconSizeByID($"${mName}_prepend_icon"$, sSize))
+		BANano.Await(UI.SetIconSizeByID($"${mName}_append_icon"$, sSize))
 	End Select
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "input", sSize))
@@ -1297,6 +1468,8 @@ Sub setTypeOf(s As String)				'ignoredeadcode
 	Case "date-time-picker"
 		UI.SetAttr(mElement, "type", "text")
 	Case "time-picker"
+		UI.SetAttr(mElement, "type", "text")
+	Case "color-wheel"
 		UI.SetAttr(mElement, "type", "text")
 	End Select
 End Sub

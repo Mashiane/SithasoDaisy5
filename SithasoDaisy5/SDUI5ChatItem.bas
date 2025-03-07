@@ -120,9 +120,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -139,7 +136,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -255,7 +252,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
       		<div class="flex items-center space-x-4">
         		<div id="${mName}_avatar" class="avatar">
           			<div id="${mName}_avatarhost">
-            			<img id="${mName}_image" src="${sAvatar}" alt="">
+            			<img id="${mName}_image" src="${sAvatar}" alt="" class="bg-cover bg-center bg-no-repeat">
           			</div>
         		</div>
         		<div id="${mName}_titles">

@@ -214,9 +214,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -461,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<img id="${mName}_icon" class="hidden mr-2"></img>
+		<svg id="${mName}_icon" data-js="enabled" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
 		<span id="${mName}_text"></span>
 	</${sTextTag}>"$).Get("#" & mName)
 	setFontWeight(sFontWeight)
@@ -835,7 +832,7 @@ Sub setIcon(s As String)			'ignoredeadcode
 	Else
 		UI.SetVisibleByID($"${mName}_icon"$, True)
 		UI.AddClass(mElement, "inline-flex items-center")
-		UI.SetImageByID($"${mName}_icon"$, sIcon)
+		UI.SetIconNameByID($"${mName}_icon"$, sIcon)
 	End If	
 End Sub
 
@@ -846,8 +843,7 @@ Sub setIconSize(s As String)			'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If sIcon = "" Then Return
-	UI.SetWidthByID($"${mName}_icon"$, s)
-	UI.SetHeightByID($"${mName}_icon"$, s)
+	UI.SetIconSizeByID($"${mName}_icon"$, s)
 End Sub
 
 'get Icon

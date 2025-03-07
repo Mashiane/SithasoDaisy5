@@ -144,10 +144,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-'use to add an event to the element
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -689,14 +685,4 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
-End Sub
-
-
-Sub ListToSelectOptionsSort(lst As List) As Map
-	lst.Sort(True)
-	Dim m As Map = CreateMap()
-	For Each item As String In lst
-		m.Put(item, item)
-	Next
-	Return m
 End Sub

@@ -274,9 +274,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setTextSize(sTextSize)
 	Case "icon"
 		mElement.Append($"[BANCLEAN]
-		<div id="${mName}_indeterminate" class="swap-indeterminate"><img id="${mName}_indeterminateicon" src="${sIndeterminateIcon}" alt=""></img></div>
-		<div id="${mName}_on" class="swap-on"><img id="${mName}_onicon" src="${sOnIcon}" alt=""></img></div>
-  		<div id="${mName}_off" class="swap-off"><img id="${mName}_officon" src="${sOffIcon}" alt=""></img></div>"$)
+		<div id="${mName}_indeterminate" class="swap-indeterminate">
+			<img id="${mName}_indeterminateicon" src="${sIndeterminateIcon}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
+		</div>
+		<div id="${mName}_on" class="swap-on"><img id="${mName}_onicon" src="${sOnIcon}" alt="" class="bg-cover bg-center bg-no-repeat"></img></div>
+  		<div id="${mName}_off" class="swap-off"><img id="${mName}_officon" src="${sOffIcon}" alt="" class="bg-cover bg-center bg-no-repeat"></img></div>"$)
 		setWidth(sWidth)
 		setHeight(sHeight)
 	End Select

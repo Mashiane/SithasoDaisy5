@@ -172,10 +172,6 @@ End Sub
 Sub getEnabled As Boolean
 	Return UI.GetEnabled(mElement)
 End Sub
-'use to add an event to the element
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)

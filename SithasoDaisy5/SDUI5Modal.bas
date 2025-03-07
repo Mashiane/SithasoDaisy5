@@ -186,9 +186,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -371,7 +368,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
 	<div id="${mName}" role="dialog" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_box" class="modal-box relative sm:w-full sm:h-full">
+		<div id="${mName}_box" class="modal-box relative">
 			<form id="${mName}_closeform">
       			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
     		</form>
@@ -398,16 +395,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setActionsVisible(bActionsVisible)
 	setBackdrop(bBackdrop)
 	setClosable(bClosable)
-	If bFullScreen = False Then
-		setHeight(sHeight)
-		setWidth(sWidth)
-	Else
-		UI.SetWidthByID($"${mName}_box"$, "full")
-		UI.SetHeightByID($"${mName}_box"$, "full")
-		UI.SetMaxWidthByID($"${mName}_box"$, "full")
-		UI.SetMaxHeightByID($"${mName}_box"$, "full")
-		UI.RemoveClassByID($"${mName}_box"$, "sm:w-full sm:h-full")
-	End If
+	If bFullScreen = False Then setHeight(sHeight)
+	If bFullScreen = False Then setWidth(sWidth)
+	setFullScreen(bFullScreen)
 	setTitle(sTitle)
 	'sort action buttons
 	Select Case sActionType
@@ -475,16 +465,17 @@ Sub getButtonsShadow As String
 	Return sButtonsShadow
 End Sub
 
-Sub setFullScreen(b As Boolean)
+Sub setFullScreen(b As Boolean)		'ignoredeadcode
 	bFullScreen = b
 	CustProps.Put("FullScreen", b)
 	If mElement = Null Then Return
+	UI.RemoveClassByID($"${mName}_box"$, "rounded-none")
 	If b = False Then Return
+	UI.AddClassByID($"${mName}_box"$, "rounded-none")
 	UI.SetWidthByID($"${mName}_box"$, "full")
 	UI.SetHeightByID($"${mName}_box"$, "full")
-	UI.SetMaxWidthByID($"${mName}_box"$, "full")
-	UI.SetMaxHeightByID($"${mName}_box"$, "full")
-	UI.RemoveClassByID($"${mName}_box"$, "sm:w-full sm:h-full")
+	UI.SetMaxWidthByID($"${mName}_box"$, "screen")
+	UI.SetMaxHeightByID($"${mName}_box"$, "screen")
 End Sub
 
 'set Raw Html

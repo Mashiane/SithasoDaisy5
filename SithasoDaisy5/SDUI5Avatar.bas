@@ -322,7 +322,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<span id="${mName}_badge" class="hidden indicator-item rounded-full badge">${sBadge}</span>
   			<div id="${mName}_host">
-    			<img id="${mName}_image" src="${sImage}" alt=""></img>
+    			<img id="${mName}_image" class="bg-cover bg-center bg-no-repeat" src="${sImage}" alt=""></img>
   			</div>
 		</div>"$).Get("#" & mName)		
 	Case "placeholder"

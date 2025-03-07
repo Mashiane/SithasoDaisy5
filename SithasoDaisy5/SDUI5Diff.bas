@@ -132,9 +132,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -151,7 +148,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -278,10 +275,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<figure id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   			<div id="${mName}_item1" class="diff-item-1" role="img">
-    			<img id="${mName}_image1" alt="" src="${sImage1}" />
+    			<img id="${mName}_image1" alt="" src="${sImage1}" class="bg-cover bg-center bg-no-repeat" />
   			</div>
   			<div id="${mName}_item2" class="diff-item-2" role="img" tabindex="0">
-    			<img id="${mName}_image2" alt="" src="${sImage2}" />
+    			<img id="${mName}_image2" alt="" src="${sImage2}" class="bg-cover bg-center bg-no-repeat"/>
   			</div>
   			<div id="${mName}_diff" class="diff-resizer"></div>
 		</figure>"$).Get("#" & mName)

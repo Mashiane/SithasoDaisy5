@@ -168,9 +168,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -187,7 +184,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -196,14 +193,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -217,7 +214,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -306,7 +303,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bDropdownContent = UI.CBool(bDropdownContent)    
 	End If
 	'
-	UI.AddClassDT("menu")
+	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
 	If bDropdown = True Then 
 		UI.AddClassDT("dropdown")
 	End If
@@ -671,6 +668,7 @@ End Sub
 
 'add an item to the menu that will be a child
 'this cannot have child items
+'leaving the parent id will add to the root of the menu
 Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
 	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)

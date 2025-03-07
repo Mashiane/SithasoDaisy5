@@ -143,9 +143,13 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 End Sub
+'
+Sub OnEvent(event As String, MethodName As String)
+	UI.OnEvent(mElement, event, mCallBack, MethodName)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -533,6 +537,7 @@ Sub setLeftIcon(s As String)				'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_lefticon"$, s)
 		UI.SetVisibleByID($"${mName}_lefticon"$, True)
+		UI.OnEventByID($"${mName}_lefticon"$, "click", mCallBack, $"${mName}_click"$)
 	End If
 End Sub
 'set Left Icon Color
@@ -552,6 +557,7 @@ Sub setRightIcon(s As String)			'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_righticon"$, s)
 		UI.SetVisibleByID($"${mName}_righticon"$, True)
+		UI.OnEventByID($"${mName}_righticon"$, "click", mCallBack, $"${mName}_click"$)
 	End If
 End Sub
 'set Right Icon Color
@@ -1178,9 +1184,6 @@ Sub getRoundedField As Boolean
 	Return bRoundedField
 End Sub
 
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 
 'set Left Icon Visible
 Sub setLeftIconVisible(b As Boolean)

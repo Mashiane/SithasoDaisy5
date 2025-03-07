@@ -177,9 +177,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -358,16 +355,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
@@ -378,25 +375,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</img></button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 		Case "label-input"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
@@ -407,8 +404,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
-						<img id="${mName}_prependimage" class="hidden" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prependicon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
+						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label textarea join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -418,12 +415,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
-						<img id="${mName}_appendimage" class="hidden" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_appendicon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
+						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
       			</div>"$).Get("#" & mName)	
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
-			If sAppendIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
+			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<textarea id="${mName}" class="${xclasses} textarea" ${xattrs} style="${xstyles}"></textarea>"$).Get("#" & mName)
 	End Select
@@ -473,7 +470,7 @@ Sub setAppendIconColor(s As String)			'ignoredeadcode
 	sAppendIconColor = s
 	CustProps.put("AppendIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetIconColorByID($"${mName}_appendicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_append_icon"$, s)
 End Sub
 'set Prepend Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -489,7 +486,7 @@ Sub setPrependIconColor(s As String)			'ignoredeadcode
 	sPrependIconColor = s
 	CustProps.put("PrependIconColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetIconColorByID($"${mName}_prependicon"$, s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_prepend_icon"$, s)
 End Sub
 'get Append Color
 Sub getAppendColor As String
@@ -780,10 +777,11 @@ Sub setAppendIcon(s As String)				'ignoredeadcode
 	CustProps.put("AppendIcon", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_appendicon"$, False)
+		UI.SetVisibleByID($"${mName}_append_icon"$, False)
 	Else
-		UI.SetIconNameByID($"${mName}_appendicon"$, s)
-		UI.SetVisibleByID($"${mName}_appendicon"$, True)
+		UI.SetIconNameByID($"${mName}_append_icon"$, s)
+		UI.SetVisibleByID($"${mName}_append_icon"$, True)
+		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
 '			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
@@ -825,10 +823,11 @@ Sub setPrependIcon(s As String)				'ignoredeadcode
 	CustProps.put("PrependIcon", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_prependicon"$, False)
+		UI.SetVisibleByID($"${mName}_prepend_icon"$, False)
 	Else
-		UI.SetIconNameByID($"${mName}_prependicon"$,  s)
-		UI.SetVisibleByID($"${mName}_prependicon"$, True)
+		UI.SetIconNameByID($"${mName}_prepend_icon"$,  s)
+		UI.SetVisibleByID($"${mName}_prepend_icon"$, True)
+		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
 '			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
@@ -920,8 +919,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_prependicon"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_appendicon"$, sSize))
+			BANano.Await(UI.SetIconSizeByID($"${mName}_prepend_icon"$, sSize))
+			BANano.Await(UI.SetIconSizeByID($"${mName}_append_icon"$, sSize))
 	End Select
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "textarea", sSize))

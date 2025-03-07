@@ -133,9 +133,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -152,7 +149,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -278,7 +275,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_figure" class="stat-figure hidden">
-      		<img id="${mName}_image" src="${sIcon}" alt="" class="hidden"></img>
+      		<img id="${mName}_image" src="${sIcon}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 	  	</div>
 		<div id="${mName}_title" class="stat-title hidden">${sTitle}</div>
     	<div id="${mName}_value" class="stat-value hidden">${sValue}</div>

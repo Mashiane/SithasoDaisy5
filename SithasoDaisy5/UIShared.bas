@@ -18,6 +18,24 @@ Sub Class_Globals
 	Public ExcludePosition As Boolean = False
 End Sub
 
+'join list to mv string
+Sub JoinQuote(delimiter As String, lst As List) As String
+	If lst.Size = 0 Then Return ""
+	Dim i As Int
+	Dim sbx As StringBuilder
+	Dim fld As String
+	sbx.Initialize
+	fld = lst.Get(0)
+	sbx.Append(QUOTE).Append(fld).Append(QUOTE)
+	For i = 1 To lst.size - 1
+		Dim fld As String = lst.Get(i)
+		sbx.Append(delimiter).Append(QUOTE).Append(fld).Append(QUOTE)
+	Next
+	Dim sout As String = sbx.ToString
+	sbx.Initialize
+	Return sout
+End Sub
+
 'double
 Sub CDbl(o As String) As Double
 	o = Val(o)
@@ -1036,6 +1054,12 @@ Sub OnEventMethod(mElement As BANanoElement, event As String, Module As Object, 
 	mElement.RunMethod("on", Array(event, cb))
 End Sub
 
+Sub OnEventMethodByID(sID As String, event As String, CallBack As Object, MethodName As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	OnEventMethod(mElement, event, CallBack, MethodName)
+End Sub
+
 Sub OnEventByID(sID As String, event As String, CallBack As Object, MethodName As String)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -1167,7 +1191,7 @@ Sub GetStyleByID(sID As String, k As String) As String
 End Sub
 
 'add a styles to the element
-Sub AddStyle(mElement As BANanoElement, k As String, v As String)
+Sub AddStyle(mElement As BANanoElement, k As String, v As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	k = DeCamelCase(k)
 	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
@@ -1179,7 +1203,7 @@ Sub AddClassByID(sID As String, k As String)
 	AddClass(mElement, k)
 End Sub
 
-Sub AddStyleByID(sID As String, k As String, v As String)
+Sub AddStyleByID(sID As String, k As String, v As String)			'ignoredeadcode
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	AddStyle(mElement, k, v)
@@ -1194,7 +1218,7 @@ Sub AddAttr(mElement As BANanoElement, attr As String, text As String)
 	mElement.SetAttr(attr, text)
 End Sub
 
-Sub AddAttrByID(sID As String, k As String, v As String)
+Sub AddAttrByID(sID As String, k As String, v As String)			'ignoredeadcode
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	SetAttr(mElement, k, v)
@@ -1302,6 +1326,12 @@ Sub SetIconNameByID(elName As String, scontent As String)
 	elName = CleanID(elName)
 	Dim el As BANanoElement = BANano.GetElement($"#${elName}"$)
 	SetSVGSrc(el, scontent)
+End Sub
+
+Sub RemoveLastClassByID(sID As String, xClass As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	RemoveLastClass(mElement, xClass)
 End Sub
 
 Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
@@ -2673,7 +2703,7 @@ Sub StrParseTrim(delim As String, inputString As String) As List
 	End Try
 End Sub
 
-Sub DeCamelCase(st As String) As String
+Sub DeCamelCase(st As String) As String			'ignoredeadcode
 	If st.Length = 0 Then Return ""
 	Dim k As Int
 	Dim s As String

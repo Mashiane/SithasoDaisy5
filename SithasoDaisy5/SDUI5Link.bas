@@ -132,9 +132,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -290,7 +287,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<li id="${mName}_li">
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<div id="${mName}_host" class="inline-flex items-center">
-						<svg id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden mr-2"></svg>
+						<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden mr-2"></svg>
 						<span id="${mName}_text"></span>
 					</div>	
 				</a>
@@ -309,7 +306,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<div id="${mName}_host" class="inline-flex items-center">
-						<img id="${mName}_icon" src="${sIcon}" alt="" class="hidden mr-2"></img>
+						<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hide mr-2 hidden"></svg>
 						<span id="${mName}_text"></span>
 					</div>	
 				</a>"$).Get("#" & mName)

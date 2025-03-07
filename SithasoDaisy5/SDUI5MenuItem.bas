@@ -11,7 +11,7 @@ Version=10
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 5, Description: Icon Width & Height
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Width & Height
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
 #DesignerProperty: Key: Parent, DisplayName: Parent, FieldType: Boolean, DefaultValue: False, Description: Parent
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
@@ -85,7 +85,7 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
 	Private sMenuName As String = ""
-	Private sIconSize As String = "5"
+	Private sIconSize As String = "20px"
 	Private bOpen As Boolean = False
 	Private Items As Map
 End Sub
@@ -160,9 +160,6 @@ End Sub
 'get Enabled
 Sub getEnabled As Boolean
 	Return bEnabled
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -299,7 +296,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
 		sMenuName = Props.GetDefault("MenuName", "")
 		sMenuName = UI.CStr(sMenuName)
-		sIconSize = Props.GetDefault("IconSize", "5")
+		sIconSize = Props.GetDefault("IconSize", "20px")
 		sIconSize = UI.CStr(sIconSize)
 		bBadgeVisible = Props.GetDefault("BadgeVisible", False)
 		bBadgeVisible = UI.CBool(bBadgeVisible)    
@@ -347,7 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<h2 id="${mName}_text">${sText}</h2>
-			<ul id="${mName}_items" class="hidden"></ul>
+			<ul id="${mName}_items" class="hidden flex-nowrap"></ul>
 		</li>"$).Get("#" & mName)
 		UI.AddClassByID($"${mName}_text"$, "menu-title")
 	Case "collapse-item"
@@ -355,24 +352,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<details id="${mName}_details">
-				<summary id="${mName}_anchor">
-					<img id="${mName}_icon" alt="" src="${sIcon}" class="hidden"></img>
+				<summary id="${mName}_anchor" class="items-center">
+					<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
 					<span id="${mName}_text">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</summary>	
-				<ul id="${mName}_items" class="hidden"></ul>
+				<ul id="${mName}_items" class="hidden flex-nowrap"></ul>
 			</details>
 		</li>"$).Get("#" & mName)
 		setOpen(bOpen)
 	Case Else	
 		mElement = mTarget.Append($"[BANCLEAN]
 			<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-				<a id="${mName}_anchor">
-					<img id="${mName}_icon" alt="" src="${sIcon}" class="hidden"></img>
+				<a id="${mName}_anchor" class="items-center">
+					<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
 					<span id="${mName}_text" class="hidden">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>
-				<ul id="${mName}_items" class="hidden"></ul>
+				<ul id="${mName}_items" class="hidden flex-nowrap"></ul>
 		</li>"$).Get("#" & mName)
 	End Select
 	'
@@ -380,6 +377,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "title"
 	Case Else
 		setIcon(sIcon)
+		setIconColor(sIconColor)
+		setIconSize(sIconSize)
 		setHref(sHref)
 		setTarget(sTarget)
 		setActive(bActive)
@@ -390,7 +389,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setBadge(sBadge)
 		setBadgeColor(sBadgeColor)
 		setBadgeSize(sBadgeSize)
-		setIconSize(sIconSize)
 		setBadgeVisible(bBadgeVisible)
 	End Select
 	setParent(bParent)
@@ -478,17 +476,18 @@ Sub setIcon(s As String)		'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.SetVisibleByID($"${mName}_icon"$, True)
-		UI.SetImageByID($"${mName}_icon"$, s)
+		UI.SetIconNameByID($"${mName}_icon"$, s)
+		UI.OnEventByID($"${mName}_icon"$, "click", Me, "itemclick")
 	Else
 		UI.SetVisibleByID($"${mName}_icon"$, False)
 	End If
 End Sub
 'set Icon Color
-Sub setIconColor(s As String)
+Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
-	'If s <> "" Then UI.AddClass(mElement, "icon-color-" & s)
+	If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
 End Sub
 'set Item Type
 'options: icon|icon-text|normal|title
@@ -599,8 +598,7 @@ Sub setIconSize(s As String)			'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If sIconSize = "" Then Return
-	UI.SetHeightByID($"${mName}_icon"$, s)
-	UI.SetWidthByID($"${mName}_icon"$, s)
+	UI.SetIconSizeByID($"${mName}_icon"$, s)
 End Sub
 'get Icon Size
 Sub getIconSize As String

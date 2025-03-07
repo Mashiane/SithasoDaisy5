@@ -46,6 +46,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "play", "", "PlayGround")
+	drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
 	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
 	
 	drawermenu.AddItemChild("", "pg-typography", "", "Typography")
@@ -121,6 +122,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-select", "", "Select")
 	drawermenu.AddItemChild("dinput", "pg-groupselect", "", "Group Select")
 	drawermenu.AddItemChild("dinput", "pg-input", "", "Text Box")
+	drawermenu.AddItemChild("dinput", "pg-colorpicker", "", "Text Box - ColorPicker")
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
 	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
 	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validation")
@@ -159,6 +161,9 @@ End Sub
 Private Sub drawermenu_ItemClick (item As String)
 	'close the drawer
 	appdrawer.OpenDrawer(False)
+	'ensure the drawer is open on medium and up
+	'we are forcing it closed on the pref builder
+	appdrawer.MdOpen = True
 	'close the swap button
 	appnavbar.Hamburger.Active = False
 
@@ -181,12 +186,18 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgPreferences.Show(App)
 			Case "gridbuilder"
 				pggridbuilder.show(App)
+			Case "prefbuilder"
+				'ensure that the drawer is closed
+				appdrawer.ForceClose
+				pgPreferenceBuilder.Show(App)		
 			Case "wizard"	
 				pgWizard.show(App)
 			Case "svg"
 				pgSVG.Show(App)		
 			Case "validator"
 				pgValidation.Show(App)
+			Case "colorpicker"
+				pgColorPicker.Show(App)
 			End Select		
 		
 			Select Case ssuffix

@@ -317,7 +317,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("badge flex-nowrap")
+	UI.AddClassDT("badge flex-nowrap inline-flex items-center")
 	If sColor <> "" Then UI.AddColorDT("badge", sColor)
 	If bDash = True Then UI.AddClassDT("badge-dash")
 	If bGhost = True Then UI.AddClassDT("badge-ghost")
@@ -340,11 +340,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bUseSpan Then xtag = "span"
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
-		<svg id="${mName}_lefticon" class="hidden hide inline-block rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg>
+		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden hide rounded-full bg-cover bg-center bg-no-repeat"></img>
+		<svg id="${mName}_lefticon" data-unique-ids="disabled" data-id="${mName}_lefticon" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg>
 		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
-		<svg id="${mName}_righticon" class="hidden hide inline-block rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg>
-		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden hide inline-block rounded-full bg-cover bg-center bg-no-repeat"></img>
+		<svg id="${mName}_righticon" data-unique-ids="disabled" data-id="${mName}_righticon" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg>
+		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden hide rounded-full bg-cover bg-center bg-no-repeat"></img>
 	</${xtag}>"$).Get("#" & mName)
 	
 	If sLeftImage <> "" Then

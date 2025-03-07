@@ -128,9 +128,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -147,7 +144,7 @@ Sub setPosition(s As String)
 	sPosition = s
 	CustProps.Put("Position", sPosition)
 	If mElement = Null Then Return
-	if s <> "" then UI.SetPosition(mElement, sPosition)
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
 End Sub
 Sub getPosition As String
 	Return sPosition
@@ -264,7 +261,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   		<div id="${mName}_avatar" class="chat-image avatar">
 			<div id="${mName}_avatar_host" class="${imgW} rounded-full">
-    			<img id="${mName}_avatar_image" src="${sImage}" alt=""></img>
+    			<img id="${mName}_avatar_image" src="${sImage}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
   			</div>
 		</div>		
   		<div id="${mName}_header" class="chat-header">

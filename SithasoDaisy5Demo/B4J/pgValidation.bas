@@ -23,6 +23,7 @@ Sub Process_Globals
 	Private txtfirstname As SDUI5TextBox			'ignore
 	Private txtlastname As SDUI5TextBox				'ignore
 	Private txtPersonalDetails As SDUI5TextArea		'ignore
+	Private txtColor As SDUI5TextBox
 End Sub
 
 
@@ -49,6 +50,7 @@ Private Sub btnSave_Click (e As BANanoEvent)
 	app.Validate(txtPersonalDetails.IsBlank)
 	app.Validate(chkAgree.IsBlank)
 	app.Validate(fpImage.IsBlank)
+	app.Validate(txtColor.IsBlank)
 	
 '	app.Validate(txtEmail.IsBlank)
 '	app.Validate(txtTelephone.IsBlank)
@@ -73,6 +75,7 @@ Private Sub btnSave_Click (e As BANanoEvent)
 	rec.Put("personal_details", txtPersonalDetails.Value)
 	rec.Put("agree", chkAgree.Checked)
 	rec.Put("profile_image", fpImage.GetFile)
+	rec.Put("color", txtColor.Value)
 	Log(rec)
 End Sub
 

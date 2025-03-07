@@ -5,6 +5,8 @@ Type=Class
 Version=10.1
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Src, DisplayName: Src, FieldType: String, DefaultValue: , Description: Src
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
@@ -17,7 +19,7 @@ Version=10.1
 #DesignerProperty: Key: CacheDisabled, DisplayName: Cache Disabled, FieldType: Boolean, DefaultValue: True, Description: Cache Disabled
 #DesignerProperty: Key: DisableCssScoping, DisplayName: Disable Css Scoping, FieldType: Boolean, DefaultValue: False, Description: Disable Css Scoping
 #DesignerProperty: Key: DisableUniqueId, DisplayName: Disable Unique Id, FieldType: Boolean, DefaultValue: False, Description: Disable Unique Id
-#DesignerProperty: Key: JSEnabled, DisplayName: J S Enabled, FieldType: Boolean, DefaultValue: False, Description: J s Enabled
+#DesignerProperty: Key: JSEnabled, DisplayName: JS Enabled, FieldType: Boolean, DefaultValue: False, Description: JS Enabled
 #DesignerProperty: Key: LazyLoading, DisplayName: Lazy Loading, FieldType: Boolean, DefaultValue: False, Description: Lazy Loading
 'global variables in this module
 Sub Class_Globals
@@ -85,11 +87,6 @@ Public Sub getHere() As String
 	Return $"#${mName}"$
 End Sub
 
-'use to add an event to the element
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
-
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -136,7 +133,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.AddStyleDT("color", sColor)
 	End If
 	If bDisableCssScoping = True Then UI.AddAttrDT("disable-css-scoping", "disabled")
-	If bDisableUniqueId = True Then UI.AddAttrDT("disable-unique-ids", "disabled")
+	If bDisableUniqueId = True Then 
+		UI.AddAttrDT("disable-unique-ids", "disabled")
+		UI.AddAttrDT("data-id", mName)
+	End If
 	
 	If sHeight <> "" Then UI.AddAttrDT("height", sHeight)
 	If bJSEnabled = True Then UI.AddAttrDT("data-js", "enabled")
@@ -157,6 +157,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<svg id="${mName}" ${xattrs} style="${xstyles}"></svg>"$).Get("#" & mName)
+'	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 End Sub
 
 'set Cache

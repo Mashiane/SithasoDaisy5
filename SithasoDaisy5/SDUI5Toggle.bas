@@ -13,10 +13,10 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: CheckedIcon, DisplayName: Checked Icon, FieldType: String, DefaultValue: , Description: Checked Icon
+'#DesignerProperty: Key: CheckedIcon, DisplayName: Checked Icon, FieldType: String, DefaultValue: , Description: Checked Icon
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
-#DesignerProperty: Key: UncheckedIcon, DisplayName: Un-Checked Icon, FieldType: String, DefaultValue: , Description: UnChecked Icon
-#DesignerProperty: Key: UncheckedColor, DisplayName: Un-Checked Color, FieldType: String, DefaultValue: , Description: UnChecked Color
+'#DesignerProperty: Key: UncheckedIcon, DisplayName: Un-Checked Icon, FieldType: String, DefaultValue: , Description: UnChecked Icon
+'#DesignerProperty: Key: UncheckedColor, DisplayName: Un-Checked Color, FieldType: String, DefaultValue: , Description: UnChecked Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
@@ -136,9 +136,6 @@ End Sub
 Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -279,8 +276,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
 				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
-  					<input id="${mName}" type="checkbox" class="toggle"></input>
-  					<span id="${mName}_label">${sLabel}</span>
+  					<input id="${mName}" type="checkbox" class="toggle">
+						<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+  					</input>
+					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</fieldset>"$).Get("#" & mName)
 	Case "normal"
@@ -292,12 +292,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     				<span id="${mName}_label">${sLabel}</span>
   				</label>
     			<input id="${mName}" type="checkbox" class="toggle">
+					<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+					<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+				</input>	
 			</div>"$).Get("#" & mName)
 	Case "right-label"
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
 				<label id="${mName}_labelhost" class="flex gap-2 items-center cursor-pointer">
-			 		<input id="${mName}" type="checkbox" class="toggle"></input>
+			 		<input id="${mName}" type="checkbox" class="toggle">
+						<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+					</input>
 					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</div>"$).Get("#" & mName)
@@ -308,7 +314,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setSize(sSize)
 	setChecked(bChecked)
 	setIndeterminate(bIndeterminate)
+'	setCheckedIcon(sCheckedIcon)
+'	setUncheckedIcon(sUncheckedIcon)
 	setCheckedColor(sCheckedColor)
+'	setUncheckedColor(sUncheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
 End Sub
@@ -349,7 +358,12 @@ Sub setCheckedColor(s As String)			'ignoredeadcode
 	sCheckedColor = s
 	CustProps.put("CheckedColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetCheckedTextColor(mElement, s)
+	If s <> "" Then 
+		UI.SetCheckedTextColor(mElement, s)
+		If sCheckedIcon <> "" Then
+			UI.SetIconColorByID($"${mName}_checkedicon"$, s)
+		End If
+	End If
 End Sub
 'set Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -417,11 +431,13 @@ Sub setSize(s As String)				'ignoredeadcode
 	UI.SetSize(mElement, "size", "toggle", sSize)
 End Sub
 'set Unchecked Color
-Sub setUncheckedColor(s As String)
+Sub setUncheckedColor(s As String)			'ignoredeadcode
 	sUncheckedColor = s
 	CustProps.put("UncheckedColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.SetAttr(mElement, "unchecked-color", s)
+	If sUncheckedIcon <> "" Then
+		UI.SetIconColorByID($"${mName}_uncheckedicon"$, s)
+	End If
 End Sub
 'set Validator
 Sub setValidator(b As Boolean)
@@ -509,4 +525,40 @@ Sub ResetValidation
 	Catch
 		
 	End Try		'ignore
+End Sub
+
+'set Checked Icon
+Sub setCheckedIcon(s As String)			'ignoredeadcode
+	sCheckedIcon = s
+	CustProps.put("CheckedIcon", s)
+	If mElement = Null Then Return
+	If s <> "" Then
+		UI.SetIconNameByID($"${mName}_checkedicon"$, s)
+		UI.SetIconSizeByID($"${mName}_checkedicon"$, sSize)
+		UI.SetVisibleByID($"${mName}_checkedicon"$, True)
+	Else
+		UI.SetVisibleByID($"${mName}_checkedicon"$, False)
+	End If
+End Sub
+'set Unchecked Icon
+Sub setUncheckedIcon(s As String)				'ignoredeadcode
+	sUncheckedIcon = s
+	CustProps.put("UncheckedIcon", s)
+	If mElement = Null Then Return
+	If s <> "" Then
+		UI.SetIconNameByID($"${mName}_uncheckedicon"$, s)
+		UI.SetIconSizeByID($"${mName}_uncheckedicon"$, sSize)
+		UI.SetVisibleByID($"${mName}_uncheckedicon"$, True)
+	Else
+		UI.SetVisibleByID($"${mName}_uncheckedicon"$, False)
+	End If
+End Sub
+
+'get Checked Icon
+Sub getCheckedIcon As String
+	Return sCheckedIcon
+End Sub
+'get Unchecked Icon
+Sub getUncheckedIcon As String
+	Return sUncheckedIcon
 End Sub

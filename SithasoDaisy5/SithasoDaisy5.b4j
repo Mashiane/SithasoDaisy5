@@ -36,26 +36,29 @@ File39=microphone-solid.svg
 File4=arrows-rotate-solid.svg
 File40=minus-solid.svg
 File41=numeral.min.js
-File42=paste-solid.svg
-File43=pdf.svg
-File44=pencil-solid.svg
-File45=placeholderimg.jpg
-File46=plus-solid.svg
-File47=relativeTime.min.js
-File48=save.svg
-File49=svg-loader.min.js
+File42=palette-solid.svg
+File43=paste-solid.svg
+File44=pdf.svg
+File45=pencil-solid.svg
+File46=placeholderimg.jpg
+File47=plus-solid.svg
+File48=reinvented-color-wheel.min.css
+File49=reinvented-color-wheel.min.js
 File5=arrow-up-from-bracket-solid.svg
-File50=sweetalert2.all.min.js
-File51=sweetalert2.min.css
-File52=tailwind.min.js
-File53=trash-can-solid.svg
-File54=trash-solid.svg
-File55=upload-solid.svg
-File56=user-solid.svg
-File57=video-solid.svg
-File58=windows-brands.svg
-File59=xls.svg
+File50=relativeTime.min.js
+File51=save.svg
+File52=svg-loader.min.js
+File53=sweetalert2.all.min.js
+File54=sweetalert2.min.css
+File55=tailwind.min.js
+File56=trash-can-solid.svg
+File57=trash-solid.svg
+File58=upload-solid.svg
+File59=user-solid.svg
 File6=BANANO LICENSE.TXT
+File60=video-solid.svg
+File61=windows-brands.svg
+File62=xls.svg
 File7=camera-solid.svg
 File8=checkblack.svg
 File9=check-solid.svg
@@ -100,21 +103,24 @@ FileGroup43=Default Group\IMAGES
 FileGroup44=Default Group\IMAGES
 FileGroup45=Default Group\IMAGES
 FileGroup46=Default Group\IMAGES
-FileGroup47=Default Group\JAVASCRIPT
-FileGroup48=Default Group\IMAGES
+FileGroup47=Default Group\IMAGES
+FileGroup48=Default Group\CSS
 FileGroup49=Default Group\JAVASCRIPT
 FileGroup5=Default Group\IMAGES
 FileGroup50=Default Group\JAVASCRIPT
-FileGroup51=Default Group\CSS
+FileGroup51=Default Group\IMAGES
 FileGroup52=Default Group\JAVASCRIPT
-FileGroup53=Default Group\IMAGES
-FileGroup54=Default Group\IMAGES
-FileGroup55=Default Group\IMAGES
+FileGroup53=Default Group\JAVASCRIPT
+FileGroup54=Default Group\CSS
+FileGroup55=Default Group\JAVASCRIPT
 FileGroup56=Default Group\IMAGES
 FileGroup57=Default Group\IMAGES
 FileGroup58=Default Group\IMAGES
 FileGroup59=Default Group\IMAGES
 FileGroup6=Default Group\LICENCES
+FileGroup60=Default Group\IMAGES
+FileGroup61=Default Group\IMAGES
+FileGroup62=Default Group\IMAGES
 FileGroup7=Default Group\IMAGES
 FileGroup8=Default Group\IMAGES
 FileGroup9=Default Group\IMAGES
@@ -216,7 +222,7 @@ Module91=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
 Module92=|relative|..\..\shared\SDUIMap
 Module93=SithasoDaisy5
 Module94=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
-NumberOfFiles=59
+NumberOfFiles=62
 NumberOfLibraries=3
 NumberOfModules=94
 Version=10.1
@@ -276,6 +282,9 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("countUp.umd.js")
 	BANano.Header.AddJavascriptFile("svg-loader.min.js")
 	'
+	BANano.Header.AddCSSFile("reinvented-color-wheel.min.css")
+	BANano.Header.AddJavascriptFile("reinvented-color-wheel.min.js")
+	
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version
 	ExitApplication

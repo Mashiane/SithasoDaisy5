@@ -8,9 +8,9 @@ Version=10
 #Event: Change (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|microphone|progress|camera|camcorder
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
-#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: HideSelectorButton, DisplayName: Hide Selector Button, FieldType: Boolean, DefaultValue: False, Description: Hide Selector Button
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
@@ -24,6 +24,14 @@ Version=10
 #DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: Accept, DisplayName: Accept, FieldType: String, DefaultValue: , Description: Accept
+#DesignerProperty: Key: Capture, DisplayName: Capture, FieldType: String, DefaultValue: none, Description: Capture, List: environment|none|user
+#DesignerProperty: Key: Multiple, DisplayName: Multiple, FieldType: Boolean, DefaultValue: False, Description: Multiple
+#DesignerProperty: Key: ButtonSize, DisplayName: Button Size, FieldType: String, DefaultValue: 80px, Description: Button Size
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: #ffffff, Description: Icon Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 42px, Description: Icon Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: ProgressValue, DisplayName: Progress Value, FieldType: String, DefaultValue: , Description: Progress Value
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -70,6 +78,17 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
+	Private sAccept As String = ""
+	Private sButtonSize As String = "80px"
+	Private sIcon As String = ""
+	Private sIconColor As String = "#ffffff"
+	Private sIconSize As String = "42px"
+	Private bMultiple As Boolean = False
+	Private sProgressValue As String = ""
+	Private sCapture As String = "none"
+	Public CONST CAPTURE_ENVIRONMENT As String = "environment"
+	Public CONST CAPTURE_NONE As String = "none"
+	Public CONST CAPTURE_USER As String = "user"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -138,9 +157,6 @@ End Sub
 Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -264,6 +280,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sAccept = Props.GetDefault("Accept", "")
+		sAccept = UI.CStr(sAccept)
+		sButtonSize = Props.GetDefault("ButtonSize", "80px")
+		sButtonSize = UI.CStr(sButtonSize)
+		sIcon = Props.GetDefault("Icon", "")
+		sIcon = UI.CStr(sIcon)
+		sIconColor = Props.GetDefault("IconColor", "#ffffff")
+		sIconColor = UI.CStr(sIconColor)
+		sIconSize = Props.GetDefault("IconSize", "42px")
+		sIconSize = UI.CStr(sIconSize)
+		bMultiple = Props.GetDefault("Multiple", False)
+		bMultiple = UI.CBool(bMultiple)
+		sProgressValue = Props.GetDefault("ProgressValue", "")
+		sProgressValue = UI.CStr(sProgressValue)
+		sCapture = Props.GetDefault("Capture", "none")
+		sCapture = UI.CStr(sCapture)
+		If sCapture = "none" Then sCapture = ""
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -311,16 +344,179 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</div>"$).Get("#" & mName)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+	Case "microphone", "progress", "camera", "camcorder"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="${xclasses} flex items-center w-full" ${xattrs} style="${xstyles}">
+    			<button id="${mName}_button" class="btn btn-circle">
+    				<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg>
+    				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden hide" style="--size:${sButtonSize};"></div>
+    			</button>
+    			<input id="${mName}" name="${mName}" type="file" class="file-input hidden hide"/>
+    		</div>"$).Get("#" & mName)
 	End Select
+	'
+	Select Case sInputType
+	Case "microphone", "progress", "camera", "camcorder"
+		Select Case sInputType
+		Case "microphone"
+			If sIcon = "" Then sIcon = "./assets/microphone-solid.svg"
+			If sAccept = "" Then sAccept = "audio/*;capture=microphone"
+		Case "progress"
+			If sIcon = "" Then sIcon = "./assets/upload-solid.svg"
+		Case "camera"
+			If sAccept = "" Then sAccept = "image/*;capture=camera"
+			If sIcon = "" Then sIcon = "./assets/camera-solid.svg"
+			If sCapture = "" Then sCapture = "environment" 
+		Case "camcorder"
+			If sIcon = "" Then sIcon = "./assets/video-solid.svg"
+			If sAccept = "" Then sAccept = "video/*;capture=camcorder"
+		End Select
+		'
+		setButtonSize(sButtonSize)
+		setIcon(sIcon)
+		setIconColor(sIconColor)
+		setIconSize(sIconSize)
+		setProgressValue(sProgressValue)
+		UI.OnEventByID($"${mName}_button"$, "click", Me, "FileButtonClick")
+	Case Else	
+		setGhost(bGhost)
+		setRequired(bRequired)
+		setSize(sSize)
+		setWidth(sWidth)
+		setHideSelectorButton(bHideSelectorButton)
+	End Select
+	'
 	setColor(sColor)
-	setGhost(bGhost)
-	setRequired(bRequired)
-	setSize(sSize)
-	setWidth(sWidth)
-	setHideSelectorButton(bHideSelectorButton)
+	setAccept(sAccept)
+	setMultiple(bMultiple)
+	setCapture(sCapture)
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 '	setVisible(bVisible)
 End Sub
+
+'fire the file select method
+private Sub FileButtonClick(event As BANanoEvent)     'ignoredeadcode
+	event.StopPropagation
+	event.PreventDefault
+	mElement.SetValue(Null)
+	mElement.RunMethod("click", Null)
+End Sub
+
+'set Capture
+'options: environment|none|user
+Sub setCapture(s As String)			'ignoredeadcode
+	sCapture = s
+	CustProps.put("Capture", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "capture", s)
+End Sub
+
+'get Capture
+Sub getCapture As String
+	Return sCapture
+End Sub
+
+'set Accept
+Sub setAccept(s As String)			'ignoredeadcode
+	sAccept = s
+	CustProps.put("Accept", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "accept", s)
+End Sub
+
+'set Button Size
+'options: xs|none|sm|md|lg|xl
+Sub setButtonSize(s As String)			'ignoredeadcode
+	sButtonSize = s
+	CustProps.put("ButtonSize", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.SetWidthByID($"${mName}_button"$, s)
+		UI.SetHeightByID($"${mName}_button"$, s)		
+	End If
+End Sub
+
+'set Icon
+Sub setIcon(s As String)			'ignoredeadcode
+	sIcon = s
+	CustProps.put("Icon", s)
+	If mElement = Null Then Return
+	If s <> "" Then 
+		UI.SetIconNameByID($"${mName}_icon"$, s)
+		UI.OnEventByID($"${mName}_icon"$, "click", Me, "FileButtonClick")
+	End If
+End Sub
+
+'set Icon Color
+Sub setIconColor(s As String)				'ignoredeadcode
+	sIconColor = s
+	CustProps.put("IconColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
+End Sub
+'set Icon Size
+Sub setIconSize(s As String)				'ignoredeadcode
+	sIconSize = s
+	CustProps.put("IconSize", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetIconSizeByID($"${mName}_icon"$, s)
+End Sub
+'set Multiple
+Sub setMultiple(b As Boolean)			'ignoredeadcode
+	bMultiple = b
+	CustProps.put("Multiple", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "multiple", b)
+	Else
+		UI.RemoveAttr(mElement, "multiple")
+	End If
+End Sub
+'set Progress Value
+Sub setProgressValue(s As String)			'ignoredeadcode
+	sProgressValue = s
+	CustProps.put("ProgressValue", s)
+	If mElement = Null Then Return
+	If s <> "" Then 		
+		UI.AddAttrByID($"${mName}_progress"$, "aria-valuenow", s)
+		UI.AddStyleByID($"${mName}_progress"$, "--value", s)
+		UI.SetTextByID($"${mName}_progress"$, $"${s}%"$)
+		UI.SetVisibleByID($"${mName}_button"$, False)
+		UI.SetVisibleByID($"${mName}_progress"$, True)
+	Else
+		UI.SetVisibleByID($"${mName}_button"$, True)
+		UI.SetVisibleByID($"${mName}_progress"$, False)	
+	End If
+End Sub
+'get Accept
+Sub getAccept As String
+	Return sAccept
+End Sub
+'get Button Size
+Sub getButtonSize As String
+	Return sButtonSize
+End Sub
+'get Icon
+Sub getIcon As String
+	Return sIcon
+End Sub
+'get Icon Color
+Sub getIconColor As String
+	Return sIconColor
+End Sub
+'get Icon Size
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+'get Multiple
+Sub getMultiple As Boolean
+	Return bMultiple
+End Sub
+'get Progress Value
+Sub getProgressValue As String
+	Return sProgressValue
+End Sub
+
 
 
 Sub Focus
@@ -457,7 +653,13 @@ Sub setColor(s As String)     'ignoredeadcode
 	sColor = s
 	CustProps.put("Color", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColor(mElement, "color", "file-input", sColor)
+	If s = "" Then Return
+	Select Case sInputType
+	Case "microphone", "progress", "camera", "camcorder"
+		UI.SetBackgroundColorByID($"${mName}_button"$, s)
+	Case Else
+		UI.SetColor(mElement, "color", "file-input", sColor)
+	End Select
 End Sub
 'set Ghost
 Sub setGhost(b As Boolean)			'ignoredeadcode

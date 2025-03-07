@@ -67,8 +67,12 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 End Sub
+'
+Sub OnEvent(event As String, MethodName As String)
+	UI.OnEvent(mElement, event, mCallBack, MethodName)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -122,9 +126,6 @@ End Sub
 Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none

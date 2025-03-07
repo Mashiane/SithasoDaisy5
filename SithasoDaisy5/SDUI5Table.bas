@@ -304,9 +304,6 @@ Sub getVisible As Boolean
 	Return bVisible
 End Sub
 
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 
 Sub setAttributes(s As String)
 	sRawAttributes = s
@@ -574,7 +571,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         	<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          	<button id="${mName}_searchbtn" class="btn join-item hidden">
-					<svg id="${mName}_searchbtnicon" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+					<svg id="${mName}_searchbtnicon" data-unique-ids="disabled" data-id="${mName}_searchbtnicon" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
 				</button>
 			</div>
 			<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
@@ -1175,7 +1172,7 @@ private Sub SetColumnChooser(Status As Boolean, Height As String, Color As Strin
 		End If
 		'
 		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer">
-        <svg id="${mName}_${tc.name}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" height="${iconsize}" data-visible="${tc.visible}" data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
+        <svg id="${mName}_${tc.name}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" height="${iconsize}" data-visible="${tc.visible}" data-unique-ids="disabled" data-id="${mName}_${tc.name}_icon" data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
 		</svg>${tc.title}</div>"$
 		sbOptions.Append(sItem)
 		clicks1.Add($"${mName}_${tc.name}_column"$)
@@ -1322,7 +1319,7 @@ private Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As S
 		End Select
 		'
 		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer mr-2 mb-2 py-2 px-4">
-        <svg id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" width="${iconsize}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide">
+        <svg id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)}" width="${iconsize}" height="${iconsize}" data-unique-ids="disabled" data-id="${mName}_${initl}_icon" data-src="./assets/check-solid.svg" class="mr-2 hide">
 		</svg>${initx}</div>"$
 		sbOptions.Append(sItem)
 		clicks.Add($"${mName}_${initl}_column"$)
@@ -5038,7 +5035,7 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 '	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(btnColor)}" data-src="${theicon}" fill="currentColor" width="${iconsize}" height="${iconsize}" class="${cClass}"></svg>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(btnColor)}" data-src="${theicon}" fill="currentColor" width="${iconsize}" height="${iconsize}" class="${cClass}"></svg>
     </td>"$
 	Return act
 End Sub
@@ -5094,7 +5091,7 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor}  ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
-    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)}" data-js="enabled" class="${cClass}"></svg></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)}" data-js="enabled" class="${cClass}"></svg></div>
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
     </td>"$
@@ -5153,7 +5150,7 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
-    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)}" class="${cClass}"></svg></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)}" class="${cClass}"></svg></div>
     </div>
     </td>"$
 	Return act
@@ -6202,7 +6199,7 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    	<svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
+    	<svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
     </button>
     <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
     <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
@@ -6257,7 +6254,7 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
     </td>"$
 	'********
@@ -6637,7 +6634,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
             <span class="flex-none">
-				<svg id="${mName}_${RowCnt}_${fldName}_${k}_i" data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg></span>
+				<svg id="${mName}_${RowCnt}_${fldName}_${k}_i" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_${k}_i" data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6664,7 +6661,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -6976,7 +6973,7 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
     <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${btnColor} ${UI.FixSize("w",tc.Size)} ${acolor}">
-    <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt=""></img>
+    <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
     </div>
     </div>
     </td>"$
@@ -7081,7 +7078,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_${imgCnt}" class="avatar">
         <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
-        <img id="${mName}_${RowCnt}_${fldName}_image_${imgCnt}" src="${k}" alt=""></img>
+        <img id="${mName}_${RowCnt}_${fldName}_image_${imgCnt}" src="${k}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
         </div>
         </div>"$
 		sbOptions.Append(sItem)
@@ -7299,7 +7296,7 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)}" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
     </td>"$
 	'********
 	Return act
@@ -8040,7 +8037,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center space-x-3">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
     <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${UI.FixSize("w",tc.Size)} ${acolor} ${cClass}">
-    <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}"></img>
+    <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}" class="bg-cover bg-center bg-no-repeat"></img>
     </div>
     </div>
     <div id="${mName}_${RowCnt}_${fldName}_text">
@@ -8129,7 +8126,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
     <div class="flex items-center space-x-3">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline}">
     <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${UI.FixSize("w",tc.Size)} ${acolor} ${cClass}">
-    <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}"></img>
+    <img id="${mName}_${RowCnt}_${fldName}_avatar" alt="" src="${fldValu}" alt="${subcontent}" class="bg-cover bg-center bg-no-repeat"></img>
     </div>
     </div>
     <div>
@@ -8230,7 +8227,7 @@ Private Sub BuildRowBadgeAvatarTitle(Module As Object, fldName As String, fldVal
     <div id="${mName}_${RowCnt}_${fldName}_badge" class="badge rounded-full ${UI.FixSize("h",tc.size)} ${btnColor} ${cClass} ${boutline}">
     <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} -ml-3">
     <div id="${mName}_${RowCnt}_${fldName}_host" class="rounded-full ${tc.mask} ${acolor} ${UI.FixSize("w",tc.Size)}">
-    <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt="${subcontent}">
+    <img id="${mName}_${RowCnt}_${fldName}_avatar" src="${fldValu}" alt="${subcontent}" class="bg-cover bg-center bg-no-repeat">
     </div>
     </div>
     <span id="${mName}_${RowCnt}_${fldName}_title" class="${tcolor} ml-2">${subcontent}</span>
@@ -8598,7 +8595,7 @@ Sub SetRowColumnBadgeAvatarTitle(fldName As String, rowCnt As Int, avatar As Str
     <div id="${mName}_${rowCnt1}_${fldName}_badge" class="badge rounded-full w-full ${UI.FixSize("h",badgeSize)} ${btnColor} ${boutline} relative">
     <div id="${mName}_${rowCnt1}_${fldName}_avatar1" class="avatar -ml-3 absolute left-3">
     <div id="${mName}_${rowCnt1}_${fldName}_host" class="rounded-full ${UI.FixSize("w",badgeSize)}">
-    <img id="${mName}_${rowCnt1}_${fldName}_avatar" src="${avatar}" alt="">
+    <img id="${mName}_${rowCnt1}_${fldName}_avatar" src="${avatar}" alt="" class="bg-cover bg-center bg-no-repeat">
     </div>
     </div>
     <span id="${mName}_${rowCnt1}_${fldName}_title" class="ml-2">${subtitle}</span>
@@ -9398,7 +9395,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 				imgCnt = BANano.parseInt(imgCnt) + 1
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_${imgCnt}" class="avatar">
             <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
-            <img id="${mName}_${rowCnt}_${colName}_image_${imgCnt}" src="${k}" alt=""></img>
+            <img id="${mName}_${rowCnt}_${colName}_image_${imgCnt}" src="${k}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
             </div>
             </div>"$
 				sbOptions.Append(sItem)
@@ -9886,7 +9883,7 @@ Private Sub BuildRowImage(Module As Object, fldName As String, fldValu As String
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <img id="${mName}_${RowCnt}_${fldName}_image" class="border-1 ${tc.mask} ${UI.FixSize("w", tc.width)} ${UI.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
+    <img id="${mName}_${RowCnt}_${fldName}_image" class="bg-cover bg-center bg-no-repeat border-1 ${tc.mask} ${UI.FixSize("w", tc.width)} ${UI.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
     </td>"$
 	'********
 	Return act

@@ -5,6 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _legend|_content|_label, Description: Child Item _legend|_content|_label
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Legend, Description: Legend
 #DesignerProperty: Key: LegendVisible, DisplayName: Legend Visible, FieldType: Boolean, DefaultValue: True, Description: Legend Visible
@@ -124,9 +125,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -245,6 +243,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle

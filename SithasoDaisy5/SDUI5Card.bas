@@ -164,9 +164,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -358,7 +355,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<figure id="${mName}_figure" class="hidden">
-    		<img id="${mName}_image" src="${sImage}" alt="" class="hidden"></img>
+    		<img id="${mName}_image" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
   		</figure>
   		<div id="${mName}_body" class="card-body">
 			<h2 id="${mName}_title" class="card-title hidden">${sTitle}</h2>
@@ -366,7 +363,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     		<div id="${mName}_actions" class="card-actions justify-end hidden"></div>
   		</div>
 		<figure id="${mName}_figure1" class="hidden">
-    		<img id="${mName}_image1" src="${sImage}" alt="" class="hidden"></img>
+    		<img id="${mName}_image1" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
   		</figure>
 	</div>"$).Get("#" & mName)
 	'

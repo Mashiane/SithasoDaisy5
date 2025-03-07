@@ -185,10 +185,6 @@ Sub getVisible As Boolean
 	bVisible = UI.GetVisible(mElement)
 	Return bVisible
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
-
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target

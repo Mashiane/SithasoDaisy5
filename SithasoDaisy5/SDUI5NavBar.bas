@@ -31,7 +31,7 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 16, Description: Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -68,7 +68,7 @@ Sub Class_Globals
 	Private bGlass As Boolean = False
 	Private sHeight As String = "16"
 	Private sTextColor As String = ""
-	Private sWidth As String = "full"
+	Private sWidth As String = ""
 	Private sRounded As String = "none"
 	Private sShadow As String = "sm"
 	Private sTitle As String = "NavBar"
@@ -147,9 +147,6 @@ End Sub
 Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
-End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
@@ -240,7 +237,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGlass = UI.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "16")
 		sHeight = UI.CStr(sHeight)
-		sWidth = Props.GetDefault("Width", "full")
+		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
@@ -285,7 +282,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("navbar")
+	UI.AddClassDT("navbar justify-center")
 	If bGlass = True Then UI.AddClassDT("glass")
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If bSticky = True Then UI.AddClassDT("sticky")

@@ -25,6 +25,7 @@ Sub Process_Globals
 	Private chkAgree As SDUI5CheckBox
 	Private fpImage As SDUI5FileInput
 	Private pgTasks As SDUI5Progress
+	Private txtColor As SDUI5TextBox
 End Sub
 
 
@@ -133,4 +134,8 @@ End Sub
 
 Private Sub inputmodal_No_Click (e As BANanoEvent)
 	inputmodal.Close
+End Sub
+
+Private Sub txtColor_Change (Value As String)
+	
 End Sub

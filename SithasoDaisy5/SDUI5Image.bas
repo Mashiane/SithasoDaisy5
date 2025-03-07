@@ -121,9 +121,6 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
-Sub OnEvent(event As String, methodName As String)
-	UI.OnEvent(mElement, event, mCallBack, methodName)
-End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
@@ -233,6 +230,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinWidth = UI.CStr(sMinWidth)
 	End If
 	'
+	UI.AddClassDT("bg-cover bg-center bg-no-repeat")
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)

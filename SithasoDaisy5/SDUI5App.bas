@@ -399,7 +399,7 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
-	mElement.Append($"<div id="app"></div>"$)
+	mElement.Append($"<div id="app" class="min-h-screen"></div>"$)
 	UI.AddClass(mElement, "relative h-screen w-screen m-0 p-0")
 	mback = mCallback
 	AddLoader
