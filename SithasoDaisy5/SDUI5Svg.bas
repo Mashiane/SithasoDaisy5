@@ -135,7 +135,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bDisableCssScoping = True Then UI.AddAttrDT("disable-css-scoping", "disabled")
 	If bDisableUniqueId = True Then 
 		UI.AddAttrDT("disable-unique-ids", "disabled")
-		UI.AddAttrDT("data-id", mName)
 	End If
 	
 	If sHeight <> "" Then UI.AddAttrDT("height", sHeight)

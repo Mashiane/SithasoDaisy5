@@ -339,7 +339,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<Select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
@@ -349,7 +349,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
@@ -366,7 +366,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden ${sPrependIcon}"></svg>
+						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden ${sPrependIcon}"></svg>
 					</button>
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
@@ -376,7 +376,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -394,7 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label select join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -407,7 +407,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
       			</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -801,7 +801,7 @@ Sub setAppendIcon(s As String)				'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_append_icon"$, s)
 		UI.SetVisibleByID($"${mName}_append_icon"$, True)
-		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
+'		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
@@ -851,7 +851,7 @@ Sub setPrependIcon(s As String)				'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_prepend_icon"$, s)
 		UI.SetVisibleByID($"${mName}_prepend_icon"$, True)
-		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
+'		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "blradius")

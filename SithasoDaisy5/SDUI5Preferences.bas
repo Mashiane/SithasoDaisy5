@@ -116,7 +116,7 @@ Private Sub Class_Globals
 	Private signatures As Map
 	Private rolldate As Map
 	Private propList As List
-	Public PropertyBuilder As StringBuilder
+	Private PropertyBuilder As StringBuilder
 	Public IsLive As Boolean = True
 	Private sShadow As String = "none"
 	Private sTooltipPosition As String = "right"
@@ -148,6 +148,15 @@ Private Sub Class_Globals
 	Private sBottonsWidth As String = "22"
 	Private sButtonsShadow As String = "md"
 	Private sButtonsRounded As String = "md"
+'	Type EachProperty(id As String, proppos As String, proptype As String,propname As String, proptitle As String, _
+'	propdatatype As String, propplaceholder As String, propvalue As String, proprequired As Boolean, propstart As String, propstep As String, _
+'	propmax As String,propoptions As String,propprepend As String, propappend As String,propdateformat As String,propdisplayformat As String, proptime24 As Boolean, _
+'	proplocale As String,propsingleselect As Boolean, propcolor As String, propactivecolor As String, propsize As String,propthickness As String, _
+'	propicon As String,propiconsize As String,propmaxlen As String,proprows As String,prophandlediameter As String,propwheeldiameter As String, _
+'	propwheelthickness As String,propwheelposition As String,propwidth As String,propheight As String,propshape As String,propurl As String, _
+'	propring As Boolean,propringcolor As String, propringoffset As String,propringoffsetcolor As String,proponlinestatus As Boolean,proponline As Boolean, _
+'	proptextcolor As String, proptextsize As String,propaccept As String,propmultiple As Boolean, propalign As String, propvisible As Boolean,propenabled As Boolean, _
+'	propreadonly As Boolean)
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
@@ -425,7 +434,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
-						<svg id="${mName}_searchbtnicon" data-unique-ids="disabled" data-id="${mName}_searchbtnicon" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+						<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
 					</button>
 	    		</div>
 				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
@@ -987,7 +996,7 @@ Sub PropertyConfig
 	AddPropertyTextBox("propname", "Field Name", "", True)
 	AddPropertyTextBox("proptitle", "Title", "", True)
 	AddPropertySelect("proptype", "Type", "TextBox", True, CreateMap())
-	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "ColorWheel", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(Array("String","Int","Double","Blob","Bool","Date")))
 	AddPropertyTextBox("propvalue", "Default Value", "", False)
 	AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
@@ -1064,13 +1073,13 @@ Sub PropertyConfig
 	BANano.Await(ShowPropOnCondition)
 End Sub
 
-Sub PropertyBagFromAsset(fileURL As String)
+Sub LoadFromJSON(fileURL As String)
 	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
 	Dim pl As List = BANano.FromJson(fContents)
 	PropertyBagFromList(pl)
 End Sub
 
-Sub PropertyBagFromJSON(fContents As String)
+Sub LoadFromJSONString(fContents As String)
 	Dim pl As List = BANano.FromJson(fContents)
 	PropertyBagFromList(pl)
 End Sub
@@ -1078,6 +1087,10 @@ End Sub
 'refresh the internal property bag
 Sub Refresh
 	PropertyBagFromList(propList)
+End Sub
+
+Sub ToString As String
+	Return PropertyBuilder.tostring
 End Sub
 
 'load prop bag from records from a database
@@ -1159,7 +1172,15 @@ Sub PropertyBagFromList(fContents As List)
 		bproponlinestatus = UI.CBool(bproponlinestatus)
 		Dim bproponline As Boolean = record.GetDefault("proponline", False)
 		bproponline = UI.CBool(bproponline)
-		
+		Dim sprophandlediameter As String = record.GetDefault("prophandlediameter", "16")
+		sprophandlediameter = UI.CStr(sprophandlediameter)
+		Dim spropwheeldiameter As String = record.GetDefault("propwheeldiameter", "200")
+		spropwheeldiameter = UI.CStr(spropwheeldiameter)
+		Dim spropwheelthickness As String = record.GetDefault("propwheelthickness", "20")
+		spropwheelthickness = UI.CStr(spropwheelthickness)
+		Dim spropwheelposition As String = record.GetDefault("propwheelposition", "top-end")
+		spropwheelposition = UI.CStr(spropwheelposition)
+		'
 		spropprefix = UI.CStr(spropprefix)
 		Dim spropsuffix As String = record.get("propsuffix")
 		spropsuffix = UI.CStr(spropsuffix)
@@ -1365,7 +1386,11 @@ Sub PropertyBagFromList(fContents As List)
 						PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
 					End If
 				End If
-			case "ColorWheel"
+			Case "ColorWheel", "Color"
+				AddPropertyColorWheel(spropname, sproptitle, spropvalue, sproprequired, sprophandlediameter, spropwheeldiameter, spropwheelthickness, spropwheelposition)
+				If IsLive = False Then
+					PropertyBuilder.Append($"${mName}.AddPropertyColorWheel("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${sprophandlediameter}", ${spropwheeldiameter}, ${spropwheelthickness}, "${spropwheelposition}")"$).Append(CRLF)
+				End If
 			Case "TextBoxGroup"
 				AddPropertyTextBoxGroup(spropname, sproptitle, spropvalue,sproprequired)
 				If IsLive = False Then
@@ -1452,9 +1477,6 @@ Sub PropertyBagFromList(fContents As List)
 					SetPropertyMaxLength(spropname, spropmaxlen)
 					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
 				End If
-			Case "Color"
-'				AddPropertyColor(spropname, sproptitle, spropvalue,,sproprequired,)
-'				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyColor("${spropname}", "${sproptitle}", "${spropvalue}", "${}", ${sproprequired},"${}")"$).Append(CRLF)
 			Case "Number"
 				spropvalue = UI.Val(spropvalue)
 				spropstart = UI.CInt(spropstart)
@@ -1620,30 +1642,32 @@ Sub PropertyBagFromList(fContents As List)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFilter("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 		End Select
-		If record.ContainsKey("proprequired") Then SetPropertyRequired(spropname, sproprequired)
-		If record.ContainsKey("propalign") Then SetPropertyAlignment(spropname, spropalign)
+'		If record.ContainsKey("proprequired") Then SetPropertyRequired(spropname, sproprequired)
+		If spropalign <> "left" Then
+			SetPropertyAlignment(spropname, spropalign)
+		End If	
+'		If IsLive = False Then
+'			If spropalign <> "left" Then PropertyBuilder.Append($"${mName}.SetPropertyRequired("${spropname}", ${sproprequired})"$).Append(CRLF)
+'		End If
 		If IsLive = False Then 
-			If record.ContainsKey("proprequired") Then PropertyBuilder.Append($"${mName}.SetPropertyRequired("${spropname}", ${sproprequired})"$).Append(CRLF)
-		End If
-		If IsLive = False Then 
-			If record.ContainsKey("propalign") Then PropertyBuilder.Append($"${mName}.SetPropertyAlignment("${spropname}", "${spropalign}")"$).Append(CRLF)
+			If spropalign <> "left" Then PropertyBuilder.Append($"${mName}.SetPropertyAlignment("${spropname}", "${spropalign}")"$).Append(CRLF)
 		End If
 		If spropreadonly Then
-			If record.ContainsKey("propreadonly") Then SetPropertyReadOnly(spropname, True)
+			SetPropertyReadOnly(spropname, True)
 			If IsLive = False Then 
-				If record.ContainsKey("propreadonly") Then PropertyBuilder.Append($"${mName}.SetPropertyReadOnly("${spropname}", True)"$).Append(CRLF)
+				If spropreadonly Then PropertyBuilder.Append($"${mName}.SetPropertyReadOnly("${spropname}", True)"$).Append(CRLF)
 			End If
 		End If
 		If spropenabled = False Then
-			If record.ContainsKey("propenabled") Then SetPropertyEnabled(spropname, False)
+			SetPropertyEnabled(spropname, False)
 			If IsLive = False Then 
-				If record.ContainsKey("propenabled") Then PropertyBuilder.Append($"${mName}.SetPropertyEnabled("${spropname}", False)"$).Append(CRLF)
+				If spropenabled = False Then PropertyBuilder.Append($"${mName}.SetPropertyEnabled("${spropname}", False)"$).Append(CRLF)
 			End If
 		End If
 		If spropvisible = False Then
-			If record.ContainsKey("propvisible") Then SetPropertyVisible(spropname, False)
+			SetPropertyVisible(spropname, False)
 			If IsLive = False Then 
-				If record.ContainsKey("propvisible") Then PropertyBuilder.Append($"${mName}.SetPropertyVisible("${spropname}", False)"$).Append(CRLF)
+				If spropvisible = False Then PropertyBuilder.Append($"${mName}.SetPropertyVisible("${spropname}", False)"$).Append(CRLF)
 			End If
 		End If
 '		If spropenabled = False Then
@@ -2147,8 +2171,8 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	SetPropertyAppendIcon(Key, "./assets/plus-solid.svg")
 	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
-	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", Me, "PropertyDecrement")
-	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "PropertyIncrement")
+'	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", Me, "PropertyDecrement")
+'	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "PropertyIncrement")
 	SetPropertyNoArrows(Key)
 End Sub
 '
@@ -2330,12 +2354,12 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hide"></span>
     					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hide"></span>
     					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     				</label>
     			</div>
@@ -2352,8 +2376,8 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
-	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 
 Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As String, Required As Boolean, Options As Map)
@@ -2376,13 +2400,13 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -2410,8 +2434,8 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
-	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 	sbOptions.Initialize
 End Sub
 
@@ -2435,12 +2459,12 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -2458,9 +2482,9 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "TogglePassword")
-	UI.OnEventByID($"#${mName}_${Key}_append_icon"$, "click", Me, "TogglePassword")
+'	UI.OnEventByID($"#${mName}_${Key}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
 private Sub TogglePassword(event As BANanoEvent)     'ignoredeadcode
@@ -2486,7 +2510,7 @@ Sub SetPropertyPrependIcon(Key As String, picon As String)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
 	SetPropertyBottomLeftRadius(Key, "0px")
-	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 '
 Sub SetPropertyTopLeftRadius(Key As String, v As String)
@@ -2548,7 +2572,7 @@ Sub SetPropertyAppendIcon(Key As String, picon As String)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "trradius brradius")
 	SetPropertyTopRightRadius(Key, "0px")
 	SetPropertyBottomRightRadius(Key, "0px")
-	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+'	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 End Sub
 Sub SetPropertyPrefix(Key As String,l As String)
 	If l = "" Then Return
@@ -2672,12 +2696,12 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hide"></span>
     					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hide"></span>
     					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-							<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+							<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     				</label>
 					<ul id="${mName}_${Key}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
@@ -2719,12 +2743,11 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
 		
 	'the color picker will be opened when a button is clicked
 	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "ToggleColorPicker")
-	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "ToggleColorPicker")
 	'
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 
 private Sub ToggleColorPicker(e As BANanoEvent)			'ignoredeadcode
@@ -2962,35 +2985,7 @@ Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, 
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
-'Sub AddPropertyColor(Key As String, Title As String, DefaultValue As String, Description As String, Required As Boolean, TooltipPos As String)
-'	propBagKeys.Put(Key, Title)
-'	propBagValues.Put(Key, DefaultValue)
-'	Types.Put(Key, "String")
-'	ComponentType.Put(Key, "Color")
-'	If Required Then Compulsory.Put(Key, Key)
-'	Dim scode As String = $"[BANCLEAN]
-'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
-'<td id="${mName}_${Key}_th" >
-'			<span id="${mName}_${Key}_tooltip">
-'				<span id="${mName}_${Key}_title">${Title}</span>
-'			</span>
-'		</td>		
-'    <td id="${mName}_${Key}_td" class="${sPropertyPadding}"><div class="indicator w-full">
-'    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-'    <div id="${mName}_${Key}_tooltip" class="tooltip w-full ${ttColor} tooltip-${TooltipPos}" data-tip="${Description}">
-'    <input id="${mName}_${Key}" name="${mName}_${Key}" type="color" placeholder="${Title}" class="input input-${sComponentSize}  w-full"></input></div>
-'    </div></td>
-'    </tr>"$
-'	BANano.GetElement($"#${mName}_body"$).Append(scode)
-'	SetPropertyDescription(Key, Description)
-'	If Required Then
-'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
-'	Else
-'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
-'	End If
-'	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
-'	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
-'End Sub
+
 Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
@@ -3226,12 +3221,12 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hide"></span>
     <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
     <span id="${mName}_${Key}_suffix" class="hide"></span>
     <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
-		<svg id="${mName}_${Key}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor"></svg>
+		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
     </div>
@@ -3251,8 +3246,8 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_append"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
-	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_append_icon"$).On("click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+'	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 Sub SetPropertyRangeText(Key As String, value As String)
 	BANano.GetElement($"#${mName}_${Key}_text"$).SetText(value)
@@ -3755,7 +3750,7 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
     			<button id="${mName}_${Key}_button" class="btn btn-circle ${btnColor} ${btnW} ${btnH}">
-    				<svg id="${mName}_${Key}_icon" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg>
+    				<svg id="${mName}_${Key}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
     			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
@@ -3769,7 +3764,7 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 	UI.SetIconColorByID($"#${mName}_${Key}_icon"$, xTextColor)
 	UI.SetIconSizeByID($"#${mName}_${Key}_icon"$, xIconSize)
 	UI.OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
-	UI.OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
+'	UI.OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
 	'
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
@@ -5024,8 +5019,8 @@ Sub ShowDesign(designName As String, compName As String)
 						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,False)
 					Case "Password"
 						AddPropertyPassword(skey, sdisplayname, sdefaultvalue,False)
-					Case "Color"
-'						AddPropertyColor(skey, sdisplayname, sdefaultvalue,sdescription,False,"left")
+					Case "Color", "ColorWheel"
+						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
 					Case "Number"
 						sdefaultvalue = UI.Val(sdefaultvalue)
 						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
@@ -5112,9 +5107,9 @@ Sub ShowDesign(designName As String, compName As String)
 						'sMaxRange = UI.CInt(sMaxRange)
 						'If sMaxRange = 0 Then sMaxRange = 100
 						AddPropertyNumber(skey, sdisplayname, sdefaultvalue, False)
-					Case "Color"
+					Case "Color", "ColorWheel"
 						sdefaultvalue = UI.CStr(sdefaultvalue)
-'						AddPropertyColor(skey, sdisplayname, sdefaultvalue, sdescription, False, "left")
+						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
 				End Select
 			End If
 		Next
@@ -5367,7 +5362,7 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 				AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
 			Case "Color"
 				sdefaultvalue = UI.CStr(sdefaultvalue)
-'				AddPropertyColor(skey, sdisplayname,sdefaultvalue,"",False,"left")
+				AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
 			Case Else
 				sdefaultvalue = UI.CStr(sdefaultvalue)
 				Select Case sList

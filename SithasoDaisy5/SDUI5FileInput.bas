@@ -348,7 +348,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
-    				<svg id="${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg>
+    				<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden hide" style="--size:${sButtonSize};"></div>
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden hide"/>
@@ -443,7 +443,7 @@ Sub setIcon(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.SetIconNameByID($"${mName}_icon"$, s)
-		UI.OnEventByID($"${mName}_icon"$, "click", Me, "FileButtonClick")
+'		UI.OnEventByID($"${mName}_icon"$, "click", Me, "FileButtonClick")
 	End If
 End Sub
 

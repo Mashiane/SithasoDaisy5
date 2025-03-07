@@ -13,12 +13,14 @@ Sub Process_Globals
 	Private appnavbar As SDUI5NavBar		'ignore
 	Private pageView As SDUI5Container	'ignore
 	Private drawermenu As SDUI5Menu
+	Private drawerNav As SDUI5NavBar
 End Sub
 
 Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
+	drawerNav.Title = Main.AppVersion
 	BANano.Await(pgTypography.Show(App))
 
 '	BANano.Await(App.UsesFlatPickDateTime)

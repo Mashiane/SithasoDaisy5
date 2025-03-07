@@ -277,8 +277,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
 				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
   					<input id="${mName}" type="checkbox" class="toggle">
-						<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
-						<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_checkedicon" style="pointer-events:none;" data-unique-ids="disabled" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_uncheckedicon" style="pointer-events:none;" data-unique-ids="disabled" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
   					</input>
 					<span id="${mName}_label">${sLabel}</span>
 				</label>
@@ -292,8 +292,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     				<span id="${mName}_label">${sLabel}</span>
   				</label>
     			<input id="${mName}" type="checkbox" class="toggle">
-					<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
-					<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+					<svg id="${mName}_checkedicon" style="pointer-events:none;" data-unique-ids="disabled" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+					<svg id="${mName}_uncheckedicon" style="pointer-events:none; "data-unique-ids="disabled" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
 				</input>	
 			</div>"$).Get("#" & mName)
 	Case "right-label"
@@ -301,8 +301,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
 				<label id="${mName}_labelhost" class="flex gap-2 items-center cursor-pointer">
 			 		<input id="${mName}" type="checkbox" class="toggle">
-						<svg id="${mName}_checkedicon" data-unique-ids="disabled" data-id="${mName}_checkedicon" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
-						<svg id="${mName}_uncheckedicon" data-unique-ids="disabled" data-id="${mName}_uncheckedicon" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_checkedicon" style="pointer-events:none;" data-unique-ids="disabled" aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hide hidden"></svg>
+						<svg id="${mName}_uncheckedicon" style="pointer-events:none;" data-unique-ids="disabled" aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hide hidden"></svg>
 					</input>
 					<span id="${mName}_label">${sLabel}</span>
 				</label>

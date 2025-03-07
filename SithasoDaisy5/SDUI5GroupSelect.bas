@@ -406,7 +406,7 @@ Sub setOptions(s As String)				'ignoredeadcode
 		
 		sb.Append($"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg id="${k}_${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" width="${iconsize}" data-cache="disabled" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
 			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
@@ -460,7 +460,7 @@ Sub AddItem(k As String, v As String)
 	
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg id="${k}_${mName}_icon" data-unique-ids="disabled" data-id="${mName}_icon" width="${iconsize}" data-cache="disabled" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
 			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	

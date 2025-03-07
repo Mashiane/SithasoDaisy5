@@ -263,7 +263,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<hr id="${mName}_startprefix" class="hidden"/>
 		<div id="${mName}_start" class="timeline-start hidden">${sStartText}</div>
 		<div id="${mName}_middle" class="timeline-middle hidden">
-			<svg id="${mName}_middleicon" data-js="enabled" data-unique-ids="disabled" data-id="${mName}_middleicon" fill="currentColor" data-src="${sMiddleIcon}" class="hide hidden"></svg>
+			<svg id="${mName}_middleicon" style="pointer-events:none;" data-js="enabled" data-unique-ids="disabled" fill="currentColor" data-src="${sMiddleIcon}" class="hide hidden"></svg>
 		</div>
 		<div id="${mName}_end" class="timeline-end hidden">${sEndText}</div>
 		<hr id="${mName}_endsuffix" class="hidden"/>

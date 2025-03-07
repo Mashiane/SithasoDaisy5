@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: , Description: Content
+#DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: none, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
@@ -46,6 +47,7 @@ Sub Class_Globals
 	Private sHeight As String = ""
 	Private sTextColor As String = ""
 	Private sWidth As String = "full"
+	Private sTextSize As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -200,9 +202,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = UI.CStr(sWidth)
+		sTextSize = Props.GetDefault("TextSize", "")
+		sTextSize = UI.CStr(sTextSize)
 	End If
 	'
 	UI.AddClassDT("mockup-code")
+	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 '	If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -225,6 +230,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</pre>
 	</div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+End Sub
+
+'set Text Size
+'options: xs|none|sm|md|lg|xl|base|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl
+Sub setTextSize(s As String)				'ignoredeadcode
+	sTextSize = s
+	CustProps.put("TextSize", s)
+	If mElement = Null Then Return
+	UI.SetTextSizeByID($"${mName}_text"$, s)
+End Sub
+
+Sub getTextSize As String
+	Return sTextSize
 End Sub
 
 'set Background Color

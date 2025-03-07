@@ -341,9 +341,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden hide rounded-full bg-cover bg-center bg-no-repeat"></img>
-		<svg id="${mName}_lefticon" data-unique-ids="disabled" data-id="${mName}_lefticon" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg>
+		<svg id="${mName}_lefticon" style="pointer-events:none;" data-unique-ids="disabled" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg>
 		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
-		<svg id="${mName}_righticon" data-unique-ids="disabled" data-id="${mName}_righticon" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg>
+		<svg id="${mName}_righticon" style="pointer-events:none;" data-unique-ids="disabled" class="hidden hide rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden hide rounded-full bg-cover bg-center bg-no-repeat"></img>
 	</${xtag}>"$).Get("#" & mName)
 	

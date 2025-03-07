@@ -427,7 +427,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden">
 							<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-							<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+							<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 						</button>
 	          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
@@ -435,7 +435,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden">
 							<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-							<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+							<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 						</button>
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>					
@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
           			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -466,7 +466,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
 					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -489,7 +489,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" data-unique-ids="disabled" data-id="${mName}_prepend_icon" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -500,7 +500,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
 					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -1009,7 +1009,7 @@ private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
 		mElement.SetAttr("type", "password")
 		UI.SetIconNameByID($"${mName}_append_icon"$, "./assets/eye-solid.svg")
 	End Select
-	UI.OnEventByID($"${mName}_append_icon"$, "click", Me, "TogglePassword")
+'	UI.OnEventByID($"${mName}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
 'get Show Eyes
@@ -1160,7 +1160,7 @@ Sub setAppendIcon(s As String)				'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_append_icon"$ , s)
 		UI.SetVisibleByID($"${mName}_append_icon"$, True)
-		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
+'		UI.OnEventByID($"${mName}_append_icon"$, "click", mCallBack, $"${mName}_append"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "trradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "brradius")
@@ -1213,7 +1213,7 @@ Sub setPrependIcon(s As String)				'ignoredeadcode
 	Else
 		UI.SetIconNameByID($"${mName}_prepend_icon"$, s)
 		UI.SetVisibleByID($"${mName}_prepend_icon"$, True)
-		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
+'		UI.OnEventByID($"${mName}_prepend_icon"$, "click", mCallBack, $"${mName}_prepend"$)
 		If sInputType = "buttons-floating" Then
 			UI.RemoveClassByID($"${mName}_floating"$, "tlradius")
 			UI.RemoveClassByID($"${mName}_floating"$, "blradius")
