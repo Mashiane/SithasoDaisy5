@@ -7,20 +7,24 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _figure|_actions, Description: Child Item _figure|_actions
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: FigureType, DisplayName: Figure Type, FieldType: String, DefaultValue: none, Description: Figure Type, List: avatar|icon|image|none|radial-progress
+#DesignerProperty: Key: AvatarShape, DisplayName: Image/Avatar Shape, FieldType: String, DefaultValue: circle, Description: Avatar Shape, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: PlaceItemsCenter, DisplayName: Center Children, FieldType: Boolean, DefaultValue: False, Description: Center Children
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Total Page Views, Description: Title
 #DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 89 400, Description: Value
 #DesignerProperty: Key: ValueTextColor, DisplayName: Value Text Color, FieldType: String, DefaultValue: , Description: Value Text Color
-#DesignerProperty: Key: FigureColor, DisplayName: Figure Color, FieldType: String, DefaultValue: , Description: Figure Color
-#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
-#DesignerProperty: Key: IconHeight, DisplayName: Icon Height, FieldType: String, DefaultValue: 12, Description: Icon Height
-#DesignerProperty: Key: IconWidth, DisplayName: Icon Width, FieldType: String, DefaultValue: 12, Description: Icon Width
-#DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: Desc, DisplayName: Desc, FieldType: String, DefaultValue: 21% more than last month, Description: Desc
 #DesignerProperty: Key: DescTextColor, DisplayName: Desc Text Color, FieldType: String, DefaultValue: , Description: Desc Text Color
+#DesignerProperty: Key: FigureColor, DisplayName: Figure Color, FieldType: String, DefaultValue: , Description: Figure Color (Icon/Radial)
+#DesignerProperty: Key: Icon, DisplayName: Icon/Image/Avatar URL, FieldType: String, DefaultValue: , Description: Icon/Image/Avatar
+#DesignerProperty: Key: IconHeight, DisplayName: Icon/Image/Avatar Height, FieldType: String, DefaultValue: 32px, Description: Icon/Image/Avatar Height
+#DesignerProperty: Key: IconWidth, DisplayName: Icon/Image/Avatar Width, FieldType: String, DefaultValue: 32px, Description: Icon/Image/Avatar Width
+#DesignerProperty: Key: RadialValue, DisplayName: Radial Value, FieldType: String, DefaultValue: 60, Description: Radial Value
+#DesignerProperty: Key: RadialSize, DisplayName: Radial Size, FieldType: String, DefaultValue: 3rem, Description: Radial Size
+#DesignerProperty: Key: RadialThickness, DisplayName: Radial Thickness, FieldType: String, DefaultValue: 5px, Description: Radial Thickness
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: False, Description: Actions Visible
-#DesignerProperty: Key: PlaceItemsCenter, DisplayName: Place Items Center, FieldType: Boolean, DefaultValue: False, Description: Place Items Center
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -58,9 +62,9 @@ Sub Class_Globals
 	Private sDescTextColor As String = ""
 	Private sFigureColor As String = ""
 	Private sIcon As String = ""
-	Private sIconHeight As String = "12"
+	Private sIconHeight As String = "32px"
 	Private bIconVisible As Boolean = False
-	Private sIconWidth As String = "12"
+	Private sIconWidth As String = "32px"
 	Private bPlaceItemsCenter As Boolean = False
 	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = False
@@ -69,6 +73,11 @@ Sub Class_Globals
 	Private sTitleTextColor As String = ""
 	Private sValue As String = "89 400"
 	Private sValueTextColor As String = ""
+	Private sAvatarShape As String = "circle"
+	Private sFigureType As String = "none"
+	Private sRadialSize As String = "3rem"
+	Private sRadialThickness As String = "5px"
+	Private sRadialValue As String = "60"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -76,8 +85,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -158,14 +166,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -179,7 +187,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -229,11 +237,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sFigureColor = UI.CStr(sFigureColor)
 		sIcon = Props.GetDefault("Icon", "")
 		sIcon = UI.CStr(sIcon)
-		sIconHeight = Props.GetDefault("IconHeight", "12")
+		sIconHeight = Props.GetDefault("IconHeight", "32px")
 		sIconHeight = UI.CStr(sIconHeight)
 		bIconVisible = Props.GetDefault("IconVisible", False)
 		bIconVisible = UI.CBool(bIconVisible)
-		sIconWidth = Props.GetDefault("IconWidth", "12")
+		sIconWidth = Props.GetDefault("IconWidth", "32px")
 		sIconWidth = UI.CStr(sIconWidth)
 		bPlaceItemsCenter = Props.GetDefault("PlaceItemsCenter", False)
 		bPlaceItemsCenter = UI.CBool(bPlaceItemsCenter)
@@ -253,6 +261,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValue = UI.CStr(sValue)
 		sValueTextColor = Props.GetDefault("ValueTextColor", "")
 		sValueTextColor = UI.CStr(sValueTextColor)
+		sAvatarShape = Props.GetDefault("AvatarShape", "")
+		sAvatarShape = UI.CStr(sAvatarShape)
+		sFigureType = Props.GetDefault("FigureType", "none")
+		sFigureType = UI.CStr(sFigureType)
+		sRadialSize = Props.GetDefault("RadialSize", "3rem")
+		sRadialSize = UI.CStr(sRadialSize)
+		sRadialThickness = Props.GetDefault("RadialThickness", "5px")
+		sRadialThickness = UI.CStr(sRadialThickness)
+		sRadialValue = Props.GetDefault("RadialValue", "60")
+		sRadialValue = UI.CStr(sRadialValue)
 	End If
 	'
 	UI.AddClassDT("stat")
@@ -275,7 +293,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_figure" class="stat-figure hidden">
-      		<img id="${mName}_image" src="${sIcon}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
+			<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" class="hidden hide" data-js="enabled"></svg>
+      		<img id="${mName}_image" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
+			<div id="${mName}_avatar" class="avatar hidden hide">
+        		<div id="${mName}_avatar_host">
+          			<img id="${mName}_avatar_image" alt="" class="bg-cover bg-center bg-no-repeat"></img>
+        		</div>
+      		</div>
+			<div id="${mName}_radial" class="radial-progress hidden hide" style="--value:${sRadialValue};" aria-valuenow="${sRadialValue}" role="progressbar">${sRadialValue}%</div>
 	  	</div>
 		<div id="${mName}_title" class="stat-title hidden">${sTitle}</div>
     	<div id="${mName}_value" class="stat-value hidden">${sValue}</div>
@@ -283,11 +308,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}_actions" class="stat-actions hidden"></div>
 	</div>"$).Get("#" & mName)
 	'
+	setAvatarShape(sAvatarShape)
 	setFigureColor(sFigureColor)
 	setIcon(sIcon)
 	setIconHeight(sIconHeight)
 	setIconWidth(sIconWidth)
-	setIconVisible(bIconVisible)
 	setTitle(sTitle)
 	setTitleTextColor(sTitleTextColor)
 	setValue(sValue)
@@ -295,7 +320,108 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setDesc(sDesc)
 	setDescTextColor(sDescTextColor)
 	setActionsVisible(bActionsVisible)
+	setRadialThickness(sRadialThickness)
+	setRadialSize(sRadialSize)
+	If sFigureType = "radial-progress" Then
+		UI.Hide($"${mName}_icon"$)
+		UI.Hide($"${mName}_avatar"$)
+		UI.Show($"${mName}_radial"$)
+		UI.Hide($"${mName}_image"$)
+		UI.Show($"${mName}_figure"$)
+	End If
 '	setVisible(bVisible)
+End Sub
+
+'set Radial Size
+'options: xs|none|sm|md|lg|xl
+Sub setRadialSize(s As String)				'ignoredeadcode
+	sRadialSize = s
+	CustProps.put("RadialSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	If sFigureType <> "radial-progress" Then Return
+	UI.SetStyleByID($"${mName}_radial"$, "--size", s)
+End Sub
+
+'set Radial Thickness
+Sub setRadialThickness(s As String)			'ignoredeadcode
+	sRadialThickness = s
+	CustProps.put("RadialThickness", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	If sFigureType <> "radial-progress" Then Return
+	UI.SetStyleByID($"${mName}_radial"$, "--thickness", s)
+End Sub
+
+'set Radial Value
+Sub setRadialValue(s As String)
+	sRadialValue = s
+	CustProps.put("RadialValue", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	If sFigureType <> "radial-progress" Then Return
+	UI.SetStyleByID($"${mName}_radial"$, "--value", s)
+	UI.SetTextByID($"${mName}_radial"$, $"${s}%"$)
+End Sub
+
+'get Radial Size
+Sub getRadialSize As String
+	Return sRadialSize
+End Sub
+
+'get Radial Thickness
+Sub getRadialThickness As String
+	Return sRadialThickness
+End Sub
+'get Radial Value
+Sub getRadialValue As String
+	Return sRadialValue
+End Sub
+
+'set Avatar Shape
+Sub setAvatarShape(s As String)			'ignoredeadcode
+	sAvatarShape = s
+	CustProps.put("AvatarShape", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sFigureType
+	Case "avatar"
+		UI.SetMaskByID($"${mName}_avatar_host"$, s)
+	Case "image"
+		UI.SetMaskByID($"${mName}_image"$, s)
+	End Select
+End Sub
+'set Figure Type
+'options: avatar|icon|image|none
+Sub setFigureType(s As String)
+	sFigureType = s
+	CustProps.put("FigureType", s)
+End Sub
+'set Icon Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setFigureColor(s As String)		'ignoredeadcode
+	sFigureColor = s
+	CustProps.put("FigureColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sFigureType
+	Case "icon"
+		UI.SetIconColorByID($"${mName}_icon"$, s)
+	Case "radial-progress"
+		UI.SetTextColorByID($"${mName}_radial"$, s)
+	End Select
+End Sub
+'get Avatar Shape
+Sub getAvatarShape As String
+	Return sAvatarShape
+End Sub
+'get Figure Type
+Sub getFigureType As String
+	Return sFigureType
+End Sub
+'get Figure Color
+Sub getFigureColor As String
+	Return sFigureColor
 End Sub
 
 'set value
@@ -351,13 +477,6 @@ Sub setDescTextColor(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetTextColorbyid($"${mName}_desc"$, s)
 End Sub
-'set Figure Color
-Sub setFigureColor(s As String)				'ignoredeadcode
-	sFigureColor = s
-	CustProps.put("FigureColor", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColorbyid($"${mName}_figure"$, s)
-End Sub
 'set Icon
 Sub setIcon(s As String)				'ignoredeadcode
 	sIcon = s
@@ -365,35 +484,60 @@ Sub setIcon(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_figure"$, False)
-		UI.SetVisibleByID($"${mName}_image"$, False)
 		Return
 	End If
-	UI.SetImageByID($"${mName}_image"$, s)
 	UI.SetVisibleByID($"${mName}_figure"$, True)
-	UI.SetVisibleByID($"${mName}_image"$, True)
+	Select Case sFigureType
+	Case "avatar"
+		UI.SetImageByID($"${mName}_avatar_image"$, s)
+		UI.Hide($"${mName}_icon"$)
+		UI.Hide($"${mName}_image"$)
+		UI.Show($"${mName}_avatar"$)
+		UI.Hide($"${mName}_radial"$)
+	Case "icon"
+		UI.SetIconNameByID($"${mName}_icon"$, s)
+		UI.Hide($"${mName}_avatar"$)
+		UI.Hide($"${mName}_image"$)
+		UI.Show($"${mName}_icon"$)
+		UI.Hide($"${mName}_radial"$)
+	Case "image"
+		UI.SetImageByID($"${mName}_image"$, s)
+		UI.Hide($"${mName}_icon"$)
+		UI.Hide($"${mName}_avatar"$)
+		UI.Show($"${mName}_image"$)
+		UI.Hide($"${mName}_radial"$)
+	End Select
 End Sub
+
 'set Icon Height
 Sub setIconHeight(s As String)				'ignoredeadcode
 	sIconHeight = s
 	CustProps.put("IconHeight", s)
 	If mElement = Null Then Return
-	If sIcon = "" Then Return
-	If s <> "" Then UI.SetHeightByID($"${mName}_image"$, s)
-End Sub
-'set Icon Visible
-Sub setIconVisible(b As Boolean)				'ignoredeadcode
-	bIconVisible = b
-	CustProps.put("IconVisible", b)
-	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_icon"$, b)
+	If s = "" Then Return
+	Select Case sFigureType
+	Case "avatar"
+		UI.SetHeightByID($"${mName}_avatar_host"$, s)
+	Case "icon"
+		UI.SetIconHeightByID($"${mName}_icon"$, s)
+	Case "image"
+		UI.SetHeightByID($"${mName}_image"$, s)
+	End Select
 End Sub
 'set Icon Width
 Sub setIconWidth(s As String)				'ignoredeadcode
 	sIconWidth = s
 	CustProps.put("IconWidth", s)
 	If mElement = Null Then Return
-	If sIcon = "" Then Return
-	If s <> "" Then UI.SetWidthByID($"${mName}_image"$, s)
+	If s = "" Then Return
+	Select Case sFigureType
+	Case "avatar"
+		UI.SetWidthByID($"${mName}_avatar_host"$, s)
+	Case "icon"
+		UI.SetIconWidthByID($"${mName}_icon"$, s)
+	Case "image"
+		UI.SetWidthByID($"${mName}_image"$, s)
+	End Select
 End Sub
 'set Place Items Center
 Sub setPlaceItemsCenter(b As Boolean)
@@ -464,10 +608,6 @@ End Sub
 'get Desc Text Color
 Sub getDescTextColor As String
 	Return sDescTextColor
-End Sub
-'get Figure Color
-Sub getFigureColor As String
-	Return sFigureColor
 End Sub
 'get Icon
 Sub getIcon As String

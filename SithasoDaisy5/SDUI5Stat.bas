@@ -239,7 +239,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sXLDirection = "none" Then sXLDirection = ""
 	End If
 	'
-	UI.AddClassDT("stats")
+	UI.AddClassDT("stats overflow-hidden")
 	If bBorder = True Then UI.AddClassDT("border")
 	If sBorderColor <> "" Then UI.AddBorderColorDT(sBorderColor)
 	If sDirection <> "" Then UI.AddClassDT("stats-" & sDirection)

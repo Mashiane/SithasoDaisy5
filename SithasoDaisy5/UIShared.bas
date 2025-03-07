@@ -1739,6 +1739,58 @@ Sub SetIconSizeByID(sID As String, s As String)
 	SetIconSize(mElement, s)
 End Sub
 
+Sub SetIconWidth(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim actualSize As String = ""
+	Select Case s
+	Case "xs"
+		actualSize = "14px"   '"24px"
+	Case "sm"
+		actualSize = "18px"  ' "32px"
+	Case "md"
+		actualSize = "24px" ' "40px"
+	Case "lg"
+		actualSize =  "32px" ' "48px"
+	Case "xl"
+		actualSize = "40px" ' "56px"
+	Case Else
+		actualSize = s
+	End Select
+	mElement.SetAttr("width", actualSize)
+End Sub
+
+Sub SetIconHeight(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	Dim actualSize As String = ""
+	Select Case s
+	Case "xs"
+		actualSize = "14px"   '"24px"
+	Case "sm"
+		actualSize = "18px"  ' "32px"
+	Case "md"
+		actualSize = "24px" ' "40px"
+	Case "lg"
+		actualSize =  "32px" ' "48px"
+	Case "xl"
+		actualSize = "40px" ' "56px"
+	Case Else
+		actualSize = s
+	End Select
+	mElement.SetAttr("height", actualSize)
+End Sub
+
+Sub SetIconWidthByID(sID As String, s As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetIconWidth(mElement, s)
+End Sub
+
+Sub SetIconHeightByID(sID As String, s As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetIconHeight(mElement, s)
+End Sub
+
 Sub SetAttrWidthByID(sID As String, s As String)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
