@@ -310,13 +310,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '			setBorderColor(sBorderColor)
 '			setRoundedBox(bRoundedBox)
 '			setShadow(sShadow)
+
 			mElement = mTarget.Append($"[BANCLEAN]
 				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 					<div id="${mName}_tooltip" class="tooltip" data-tip="${sValue}">
-						<input id="${mName}" step="${sStepValue}" max="${sMaxValue}" min="${sMinValue}" value="${sValue}" class="range join-item w-full" type="range"></input>
+						<label id="${mName}_host" class="flex items-center w-full gap-2">
+							<div id="${mName}_value" class="bg-transparent">${sValue}</div>
+							<input id="${mName}" step="${sStepValue}" max="${sMaxValue}" min="${sMinValue}" value="${sValue}" class="range w-full" type="range"></input>
+						</label>
 					</div>
-	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
 			setBackgroundColor(sBackgroundColor)
 			setBorder(bBorder)
@@ -471,6 +475,7 @@ private Sub changed(e As BANanoEvent)			'ignoredeadcode
 	Case "legend"
 '		UI.SetTextByID($"${mName}_endlabel"$, iValue)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
+		UI.SetTextByID($"${mName}_value"$, sValue)
 	Case "tooltip"
 		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${cvalue}%"$)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
@@ -582,6 +587,9 @@ Sub setSize(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s = "" Then sSize = "md"
 	UI.SetSize(mElement, "size", "range", sSize)
+	If sRangeType = "legend" Then
+		UI.SetSizebyid($"${mName}_value"$, "text", "text", sSize)
+	End If
 End Sub
 'set Step Value
 Sub setStepValue(s As String)			'ignoredeadcode
@@ -614,6 +622,7 @@ Sub setValue(s As String)				'ignoredeadcode
 	Case "legend"
 '		UI.SetTextByID($"${mName}_endlabel"$, iValue)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)
+		UI.SetTextByID($"${mName}_value"$, sValue)
 	Case "tooltip"
 		UI.SetStyleByID($"${mName}_tooltip"$, "inset-inline-start", $"${sValue}%"$)
 		UI.SetAttrByID($"${mName}_tooltip"$, "data-tip", sValue)

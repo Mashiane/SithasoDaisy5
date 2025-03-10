@@ -133,14 +133,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -154,7 +154,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -223,7 +223,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>
     		<div id="${mName}_content" class="flex-grow overflow-y-auto p-4 space-y-4"></div>
 		</div>"$).Get("#" & mName)	
 '	setVisible(bVisible)
@@ -276,5 +276,5 @@ Sub getRounded As String
 End Sub
 'get Shadow
 Sub getShadow As String
-	return sShadow
+	Return sShadow
 End Sub

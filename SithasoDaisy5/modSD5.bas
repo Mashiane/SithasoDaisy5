@@ -414,7 +414,10 @@ End Sub
 
 
 
-#if css
+#if css	
+	.hidden {
+		display: none !important
+	}
 	.unselectable {
     	-webkit-touch-callout: none;
     	-webkit-user-select: none;
@@ -443,12 +446,6 @@ End Sub
 	} 
 	input[type=search]::-webkit-search-cancel-	button {
 		-webkit-appearance: searchfield-cancel-button !important;
-	}
-	.flatpickr-wrapper {
-		width:100%
-	}
-	.hide {
-		display: none !important
 	}
 	.input-group {
     	display: flex;
@@ -491,84 +488,7 @@ End Sub
   		--tw-text-opacity: 1;
   		color: var(--fallback-bc, oklch(var(--bc) / var(--tw-text-opacity)));
 	}
-	.container,
-.container-fluid,
-.container-lg,
-.container-md,
-.container-sm,
-.container-xl,
-.container-xxl {
-  --bs-gutter-x: 1.5rem;
-  --bs-gutter-y: 0;
-  width: 100%;
-  padding-right: calc(var(--bs-gutter-x) * 0.5);
-  padding-left: calc(var(--bs-gutter-x) * 0.5);
-  margin-right: auto;
-  margin-left: auto;
-}
-
-
-@media (min-width: 576px) {
-  .container,
-  .container-sm {
-    max-width: 540px;
-  }
-}
-@media (min-width: 768px) {
-  .container,
-  .container-md,
-  .container-sm {
-    max-width: 720px;
-  }
-}
-@media (min-width: 992px) {
-  .container,
-  .container-lg,
-  .container-md,
-  .container-sm {
-    max-width: 960px;
-  }
-}
-@media (min-width: 1200px) {
-  .container,
-  .container-lg,
-  .container-md,
-  .container-sm,
-  .container-xl {
-    max-width: 1140px;
-  }
-}
-@media (min-width: 1400px) {
-  .container,
-  .container-lg,
-  .container-md,
-  .container-sm,
-  .container-xl,
-  .container-xxl {
-    max-width: 1320px;
-  }
-}
-
-.row {
-  --bs-gutter-x: 1.5rem;
-  --bs-gutter-y: 0;
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: calc(-1 * var(--bs-gutter-y));
-  margin-right: calc(-0.5 * var(--bs-gutter-x));
-  margin-left: calc(-0.5 * var(--bs-gutter-x));
-}
-.row > * {
-  flex-shrink: 0;
-  width: 100%;
-  max-width: 100%;
-  padding-right: calc(var(--bs-gutter-x) * 0.5);
-  padding-left: calc(var(--bs-gutter-x) * 0.5);
-  margin-top: var(--bs-gutter-y);
-}
-.col {
-  flex: 1 0 0%;
-}
+	
 
 .progress::-webkit-progress-value {
   border-radius: 9999px;

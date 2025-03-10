@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<svg id="${mName}_icon" data-js="enabled" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
+		<svg id="${mName}_icon" data-js="enabled" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 		<span id="${mName}_text"></span>
 	</${sTextTag}>"$).Get("#" & mName)
 	setFontWeight(sFontWeight)

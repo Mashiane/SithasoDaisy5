@@ -568,19 +568,19 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
-        	<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
+        	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          	<button id="${mName}_searchbtn" class="btn join-item hidden">
-					<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+					<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg>
 				</button>
 			</div>
-			<div id="${mName}_actions" class="hide flex flex-1 m-4 mr-0 justify-end gap-1"></div>
+			<div id="${mName}_actions" class="hidden flex flex-1 m-4 mr-0 justify-end gap-1"></div>
         </div>
 		<div id="${mName}_divider1" class="m-0 divider"></div>
-        <div id="${mName}_aphabets" class="mt-4 mx-4 card bg-base-100 hide">
+        <div id="${mName}_aphabets" class="mt-4 mx-4 card bg-base-100 hidden">
         	<div id="${mName}_alphanumeric" class="flex flex-wrap break-words relative"></div>
         </div>
-		<div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hide">
+		<div id="${mName}_columnchooser" class="mt-4 mx-4 card bg-base-100 hidden">
         	<div id="${mName}_columnnames" class="flex flex-wrap break-words relative"></div>
         </div>
 		<div id="${mName}_divider2" class="m-0 divider"></div>
@@ -590,11 +590,11 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         			<tr id="${mName}_theadtr" class="tblheading"></tr>
         		</thead>
         		<tbody id="${mName}_body"></tbody>
-        		<tfoot id="${mName}_foot" class="hide">
+        		<tfoot id="${mName}_foot" class="hidden">
         			<tr id="${mName}_footr" class="tblfoot"></tr>
         		</tfoot>
         	</table>
-        	<input id="${mName}_file" type="file" class="hide"></input>
+        	<input id="${mName}_file" type="file" class="hidden"></input>
         </div>
     </div>"$).Get($"#${mName}"$)
 	
@@ -1167,7 +1167,7 @@ private Sub SetColumnChooser(Status As Boolean, Height As String, Color As Strin
 		Dim bcolor As String = btnColor
 		Dim shidden As String = ""
 		If tc.visible = False Then
-			shidden = "hide"
+			shidden = "hidden"
 			bcolor = "badge-neutral"
 		End If
 		'
@@ -1319,7 +1319,7 @@ private Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As S
 		End Select
 		'
 		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer mr-2 mb-2 py-2 px-4">
-        <svg id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};pointer-events:none;" width="${iconsize}" height="${iconsize}" data-unique-ids="disabled" data-src="./assets/check-solid.svg" class="mr-2 hide">
+        <svg id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};pointer-events:none;" width="${iconsize}" height="${iconsize}" data-unique-ids="disabled" data-src="./assets/check-solid.svg" class="mr-2 hidden">
 		</svg>${initx}</div>"$
 		sbOptions.Append(sItem)
 		clicks.Add($"${mName}_${initl}_column"$)
@@ -1408,9 +1408,9 @@ End Sub
 Sub setActionsVisible(b As Boolean)
 	If mElement = Null Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).AddClass("hidden")
 	End If
 End Sub
 'set Title Visible
@@ -1492,7 +1492,7 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
-	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
+	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
 	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
@@ -1796,38 +1796,38 @@ Sub setHasRefresh(b As Boolean)			'ignoredeadcode
 End Sub
 Sub setExportToCsvLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttocsv_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_exporttocsv_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_exporttocsv"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttocsv_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_exporttocsv_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setExportToPdfLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttopdf_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_exporttopdf_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_exporttopdf"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttopdf_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_exporttopdf_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setExportToXlsLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttoxls_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_exporttoxls_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_exporttoxls"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_exporttoxls_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_exporttoxls_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setRefreshLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_refresh_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_refresh_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_refresh"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_refresh"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_refresh_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_refresh_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setRefreshDisabled(b As Boolean)
@@ -1907,21 +1907,21 @@ End Sub
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub ToolbarButtonLoading(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub SetToolbarSelectAllChecked(value As Boolean)
@@ -1992,39 +1992,39 @@ Sub setAddDisabled(b As Boolean)
 End Sub
 Sub setAddLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_add_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_add_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_add"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_add"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_add_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_add_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setDeleteAllLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_deleteall_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_deleteall_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_deleteall"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_deleteall"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_deleteall_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_deleteall_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setSaveSingleLoading(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_savesingle_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_savesingle_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_savesingle"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_savesingle"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_savesingle_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_savesingle_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setToolbarUploadLoading(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_uploadtoolbar_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setToolbarUploadDisabled(b As Boolean)
@@ -2040,11 +2040,11 @@ End Sub
 Sub setDeleteSingleLoading(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_deletesingle_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_deletesingle_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_deletesingle"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_deletesingle"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_deletesingle_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_deletesingle_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 Sub setDeleteAllDisabled(b As Boolean)
@@ -2082,9 +2082,9 @@ Sub setToolbarActions(b As Boolean)
 	If mElement = Null Then Return
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return
 	If b = True Then
-		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_actions"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_actions"$).AddClass("hidden")
 	End If
 End Sub
 Sub ClearToolbarActions
@@ -4973,7 +4973,7 @@ private Sub BuildClasses(nc As TableColumn) As String
 		Dim ww As String = UI.FixSize("w", nc.width)
 		sbx.Append($" ${ww} "$)
 	End If
-	If nc.visible = False Then sbx.Append(" hide ")
+	If nc.visible = False Then sbx.Append(" hidden ")
 	'
 	Select Case nc.alignment
 		Case "center", "right"
@@ -5814,13 +5814,13 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -5888,14 +5888,14 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -5957,13 +5957,13 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -6023,13 +6023,13 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
-    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hide"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -6201,8 +6201,8 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
     <button id="${mName}_${RowCnt}_${fldName}_button" class="btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     	<svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
     </button>
-    <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hide radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
-    <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
+    <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hidden radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
+    <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
 	'********
 	Return act
@@ -6255,7 +6255,7 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
-	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hide"/>
+	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
 	'********
 	Return act
@@ -7717,7 +7717,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hide")
+			elPrepend.RemoveClass("hidden")
 			elPrepend.SetData("icon", tc.PrependIcon)
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrependIcon.SetData("icon", tc.PrependIcon)
@@ -7731,7 +7731,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hide")
+			elAppend.RemoveClass("hidden")
 			elAppend.SetData("icon", tc.AppendIcon)
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppendIcon.SetData("icon", tc.AppendIcon)
@@ -7785,7 +7785,7 @@ Sub AddRow(rowdata As Map)
 		If tc.Prefix = "" Then
 			elPrefix.Remove
 		Else
-			elPrefix.RemoveClass("hide")
+			elPrefix.RemoveClass("hidden")
 			elPrefix.SetText(BANano.SF(tc.Prefix))
 			elPrefix.RemoveClass("tlradius")
 			elPrefix.RemoveClass("blradius")
@@ -7796,7 +7796,7 @@ Sub AddRow(rowdata As Map)
 		If tc.suffix = "" Then
 			elSuffix.Remove
 		Else
-			elSuffix.RemoveClass("hide")
+			elSuffix.RemoveClass("hidden")
 			elSuffix.SetText(BANano.SF(tc.suffix))
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elSelect.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
@@ -7807,7 +7807,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hide")
+			elPrepend.RemoveClass("hidden")
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrepend.SetData("icon", tc.PrependIcon)
 			elPrependIcon.SetData("icon", tc.PrependIcon)
@@ -7821,7 +7821,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hide")
+			elAppend.RemoveClass("hidden")
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppend.SetData("icon", tc.AppendIcon)
 			elAppendIcon.SetData("icon", tc.AppendIcon)
@@ -7846,7 +7846,7 @@ Sub AddRow(rowdata As Map)
 		If tc.Prefix = "" Then
 			elPrefix.Remove
 		Else
-			elPrefix.RemoveClass("hide")
+			elPrefix.RemoveClass("hidden")
 			elPrefix.SetText(BANano.SF(tc.Prefix))
 			elPrefix.RemoveClass("tlradius")
 			elPrefix.RemoveClass("blradius")
@@ -7857,7 +7857,7 @@ Sub AddRow(rowdata As Map)
 		If tc.suffix = "" Then
 			elSuffix.Remove
 		Else
-			elSuffix.RemoveClass("hide")
+			elSuffix.RemoveClass("hidden")
 			elSuffix.SetText(BANano.SF(tc.suffix))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 			'elInput.SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
@@ -7868,7 +7868,7 @@ Sub AddRow(rowdata As Map)
 		If tc.PrependIcon = "" Then
 			elPrepend.Remove
 		Else
-			elPrepend.RemoveClass("hide")
+			elPrepend.RemoveClass("hidden")
 			elPrependIcon.AddClass(tc.PrependIcon)
 			elPrepend.SetData("icon", tc.PrependIcon)
 			elPrependIcon.SetData("icon", tc.PrependIcon)
@@ -7882,7 +7882,7 @@ Sub AddRow(rowdata As Map)
 		If tc.AppendIcon = "" Then
 			elAppend.Remove
 		Else
-			elAppend.RemoveClass("hide")
+			elAppend.RemoveClass("hidden")
 			elAppendIcon.AddClass(tc.AppendIcon)
 			elAppend.SetData("icon", tc.AppendIcon)
 			elAppendIcon.SetData("icon", tc.AppendIcon)
@@ -8548,11 +8548,11 @@ Sub SetRowColumnAppendLoading(colName As String, rowCnt As Int, b As Boolean)
 	'
 	If b Then
 		'hide the icon
-		bicon.AddClass("hide")
+		bicon.AddClass("hidden")
 		abutton.AddClass("loading")
 	Else
 		'show the icon
-		bicon.RemoveClass("hide")
+		bicon.RemoveClass("hidden")
 		abutton.removeClass("loading")
 	End If
 End Sub
@@ -8566,11 +8566,11 @@ Sub SetRowColumnPrependLoading(colName As String, rowCnt As Int, b As Boolean)
 	'
 	If b Then
 		'hide the icon
-		bicon.AddClass("hide")
+		bicon.AddClass("hidden")
 		abutton.AddClass("loading")
 	Else
 		'show the icon
-		bicon.RemoveClass("hide")
+		bicon.RemoveClass("hidden")
 		abutton.removeClass("loading")
 	End If
 End Sub
@@ -9118,12 +9118,12 @@ Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
 		Case "fileinputprogress"
 			If b Then
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hide")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hidden")
 			Else
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).removeClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hide")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_progress"$).AddClass("hidden")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hidden")
 			End If
 		Case "button"
 			If b Then
@@ -9134,10 +9134,10 @@ Sub SetRowColumnButtonLoading(colName As String, rowCnt As Int, b As Boolean)
 		Case "action", "menu"
 			If b Then
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).AddClass("hidden")
 			Else
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).removeClass("loading")
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hide")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_icon"$).removeClass("hidden")
 			End If
 	End Select
 End Sub

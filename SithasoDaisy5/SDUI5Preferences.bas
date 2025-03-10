@@ -411,6 +411,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsShadow = UI.CStr(sButtonsShadow)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
+		if sButtonsRounded = "none" then sButtonsRounded = ""
 	End If
 	'
 	UI.AddClassDT("card-border card w-full bg-base-100")
@@ -431,13 +432,13 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         	<div id="${mName}_toolbar" class="m-3 -mb-3 flex">
         		<h2 id="${mName}_title" class="ml-1 card-title w-full">${sTitle}</h2>
-				<div id="${mName}_searchbox" class="join hide justify-end py-4 mx-2">
+				<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
-						<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hide"></svg>
+						<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg>
 					</button>
 	    		</div>
-				<div id="${mName}_actions" class="hide flex flex-1 mr-0 justify-end gap-1"></div>
+				<div id="${mName}_actions" class="hidden flex flex-1 mr-0 justify-end gap-1"></div>
         	</div>
 			<div id="${mName}_divider" class="m-0 divider"></div>
         	<div id="${mName}_card" class="overflow-x-auto">
@@ -446,8 +447,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         				<tbody id="${mName}_body"></tbody>
         			</table>
         		</form>
-        		<div id="${mName}_bottomdivider" class="divider hide m-0 p-0"></div>
-        		<div id="${mName}_bottomactions" class="card-actions hide justify-end p-2"></div>
+        		<div id="${mName}_bottomdivider" class="divider hidden m-0 p-0"></div>
+        		<div id="${mName}_bottomactions" class="card-actions hidden justify-end p-2"></div>
         	</div>
         </div>"$).Get($"#${mName}"$)
 	setTitle(sTitle)	
@@ -1758,12 +1759,12 @@ Sub SetPropertyRequired(Key As String, status As Boolean)
 	If status Then
 		Compulsory.Put(Key,Key)
 		If BANano.Exists($"#${mName}_${Key}badge"$) Then
-			BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+			BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 		End If
 	Else
 		Compulsory.Remove(Key)
 		If BANano.Exists($"#${mName}_${Key}badge"$) Then
-			BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+			BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 		End If
 	End If
 End Sub
@@ -2284,9 +2285,9 @@ Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, R
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2322,9 +2323,9 @@ Sub AddPropertyPlusMinus(Key As String, Title As String, DefaultValue As String,
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	SetPropertyMaxValue(Key, MaxValue)
 	SetPropertyMinValue(Key, MinValue)
@@ -2352,13 +2353,13 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     			<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
-    					<span id="${mName}_${Key}_prefix" class="hide"></span>
-    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+    					<span id="${mName}_${Key}_prefix" class="hidden"></span>
+    					<btn id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
 							<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
-    					<span id="${mName}_${Key}_suffix" class="hide"></span>
-    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+    					<span id="${mName}_${Key}_suffix" class="hidden"></span>
+    					<btn id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
 							<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     				</label>
@@ -2368,9 +2369,9 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2398,14 +2399,14 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
-    <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_prefix" class="hidden"></span>
+    <btn id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
-    <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_suffix" class="hidden"></span>
+    <btn id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
@@ -2416,9 +2417,9 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	'
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -2457,13 +2458,13 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
-    <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_prefix" class="hidden"></span>
+    <btn id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
-    <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_suffix" class="hidden"></span>
+    <btn id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
@@ -2475,9 +2476,9 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
 	SetPropertyShowEyes(Key, True)
 	
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2532,20 +2533,20 @@ End Sub
 
 Sub SetPropertyPrependIconLoading(Key As String, bLoading As Boolean)
 	If bLoading Then
-		BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_${Key}_prepend"$).AddClass("loading")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).RemoveClass("hidden")
 		BANano.GetElement($"#${mName}_${Key}_prepend"$).RemoveClass("loading")
 	End If
 End Sub
 
 Sub SetPropertyAppendIconLoading(Key As String, bLoading As Boolean)
 	If bLoading Then
-		BANano.GetElement($"#${mName}_${Key}_append_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}_append_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_${Key}_append"$).AddClass("loading")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_append_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}_append_icon"$).RemoveClass("hidden")
 		BANano.GetElement($"#${mName}_${Key}_append"$).RemoveClass("loading")
 	End If
 End Sub
@@ -2576,7 +2577,7 @@ Sub SetPropertyAppendIcon(Key As String, picon As String)
 End Sub
 Sub SetPropertyPrefix(Key As String,l As String)
 	If l = "" Then Return
-	BANano.GetElement($"#${mName}_${Key}_prefix"$).RemoveClass("hide")
+	BANano.GetElement($"#${mName}_${Key}_prefix"$).RemoveClass("hidden")
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).SetText(l)
 	'BANano.GetElement($"#${mName}_${Key}"$).SetStyle(BANano.ToJson(CreateMap("border-top-left-radius": "0px")))
 	'BANano.GetElement($"#${mName}_${Key}"$).SetStyle(BANano.ToJson(CreateMap("border-bottom-left-radius": "0px")))
@@ -2585,7 +2586,7 @@ Sub SetPropertyPrefix(Key As String,l As String)
 End Sub
 Sub SetPropertySuffix(Key As String,l As String)
 	If l = "" Then Return
-	BANano.GetElement($"#${mName}_${Key}_suffix"$).RemoveClass("hide")
+	BANano.GetElement($"#${mName}_${Key}_suffix"$).RemoveClass("hidden")
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).SetText(l)
 	'BANano.GetElement($"#${mName}_${Key}"$).SetStyle(BANano.ToJson(CreateMap("border-top-right-radius": "0px")))
 	'BANano.GetElement($"#${mName}_${Key}"$).SetStyle(BANano.ToJson(CreateMap("border-bottom-right-radius": "0px")))
@@ -2597,7 +2598,7 @@ Sub SetPropertyShowEyes(Key As String, b As Boolean)
 		SetPropertyTypePassword(Key, True)
 		SetPropertyAppendIcon(Key, "./assets/eye-solid.svg")
 	Else
-		BANano.GetElement($"#${mName}_${Key}_append"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}_append"$).AddClass("hidden")
 	End If
 End Sub
 Sub SetPropertyToggleEyes(Key As String)
@@ -2641,9 +2642,9 @@ Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2694,17 +2695,17 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
     			<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     			<div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
-    					<span id="${mName}_${Key}_prefix" class="hide"></span>
-    					<btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+    					<span id="${mName}_${Key}_prefix" class="hidden"></span>
+    					<btn id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
 							<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
-    					<span id="${mName}_${Key}_suffix" class="hide"></span>
-    					<btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+    					<span id="${mName}_${Key}_suffix" class="hidden"></span>
+    					<btn id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
 							<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 						</btn>
     				</label>
-					<ul id="${mName}_${Key}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
+					<ul id="${mName}_${Key}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
 						<div class="card-body">
 							<div id="${mName}_${Key}_rcw"></div>
 						</div>
@@ -2717,9 +2718,9 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
 	SetPropertyAppendIcon(Key, "./assets/palette-solid.svg")
 	UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, DefaultValue)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	UI.AddAttrByID($"${mName}_${Key}_append"$, "popovertarget", $"${mName}_${Key}_popover"$)
 	UI.AddStyleByID($"${mName}_${Key}_append"$, "anchor-name", $"--${mName}_${Key}_anchor"$)
@@ -2802,9 +2803,9 @@ End Sub
 '	BANano.GetElement($"#${mName}_body"$).Append(scode)
 '	SetPropertyDescription(Key, Description)
 '	If Required Then
-'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 '	Else
-'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 '	End If
 '	'
 '	Dim cname As String = $"${mName}_${Key}"$
@@ -2836,9 +2837,9 @@ Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean,
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	'
 	Dim cname As String = $"${mName}_${Key}"$
@@ -2875,9 +2876,9 @@ Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As St
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2927,9 +2928,9 @@ Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -2978,9 +2979,9 @@ Sub AddPropertyPassword(Key As String, Title As String, DefaultValue As String, 
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -3006,9 +3007,9 @@ Sub AddPropertyNumber(Key As String, Title As String, DefaultValue As String, Re
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -3033,9 +3034,9 @@ Sub AddPropertyTelephone(Key As String, Title As String, DefaultValue As String,
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
@@ -3219,13 +3220,13 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
     <div id="${mName}_${Key}_formcontrol" class="form-control w-full">
     <label id="${mName}_${Key}_inputgroup" class="input-group">
-    <span id="${mName}_${Key}_prefix" class="hide"></span>
-    <btn id="${mName}_${Key}_prepend" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_prefix" class="hidden"></span>
+    <btn id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
-    <span id="${mName}_${Key}_suffix" class="hide"></span>
-    <btn id="${mName}_${Key}_append" class="btn hide btn-${sComponentSize}">
+    <span id="${mName}_${Key}_suffix" class="hidden"></span>
+    <btn id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
 		<svg id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor"></svg>
 	</btn>
     </label>
@@ -3236,9 +3237,9 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
 		
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	If sRows <> "" Then BANano.GetElement($"#${mName}_${Key}"$).SetAttr("rows", sRows)
@@ -3507,9 +3508,9 @@ Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Re
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
@@ -3689,8 +3690,6 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean, sA
 	If sAccept <> "" Then UI.SetAttrByID($"${mName}_${Key}"$, "accept", sAccept)
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
-	Else
-		BANano.Console.Warn($"AddPropertyFileInput.${Key}, missing '${mName}_${Key}_FileChange' change event, please add."$)
 	End If
 End Sub
 'this us used for the camera content without uploading
@@ -3753,14 +3752,14 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
     				<svg id="${mName}_${Key}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
-    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hide"/>
+    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hidden"/>
     		</div>
     	</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	BANano.GetElement($"#${mName}_${Key}_button"$).RemoveClass("hide")
-	BANano.GetElement($"#${mName}_${Key}_progress"$).AddClass("hide")
-	BANano.GetElement($"#${mName}_${Key}_icon"$).RemoveClass("hide")
+	BANano.GetElement($"#${mName}_${Key}_button"$).RemoveClass("hidden")
+	BANano.GetElement($"#${mName}_${Key}_progress"$).AddClass("hidden")
+	BANano.GetElement($"#${mName}_${Key}_icon"$).RemoveClass("hidden")
 	UI.SetIconColorByID($"#${mName}_${Key}_icon"$, xTextColor)
 	UI.SetIconSizeByID($"#${mName}_${Key}_icon"$, xIconSize)
 	UI.OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
@@ -3768,8 +3767,6 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 	'
 	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
 		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
-	Else
-		BANano.Console.Warn($"AddPropertyFileInputProgress.${Key}, missing '${mName}_${Key}_FileChange' change event, please add."$)
 	End If
 End Sub
 
@@ -4440,7 +4437,7 @@ Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Co
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}" class="rating gap-1 ${rSize}">
-	<input id="${mName}_${Key}_0" type="radio" name="${mName}_${Key}" value="0" class="rating-hidden hide ${rmask} ${rColor}" aria-label="0 star"/>
+	<input id="${mName}_${Key}_0" type="radio" name="${mName}_${Key}" value="0" class="rating-hidden ${rmask} ${rColor}" aria-label="0 star"/>
     <input id="${mName}_${Key}_1" type="radio" name="${mName}_${Key}" value="1" class="${rmask} ${rColor}" aria-label="1 star"/>
     <input id="${mName}_${Key}_2" type="radio" name="${mName}_${Key}" value="2" class="${rmask} ${rColor}" aria-label="2 star"/>
     <input id="${mName}_${Key}_3" type="radio" name="${mName}_${Key}" value="3" class="${rmask} ${rColor}" aria-label="3 star"/>
@@ -4488,9 +4485,9 @@ Sub ShowProperty(Keys As List)
 End Sub
 Sub SetPropertyVisible(Key As String, bStatus As Boolean)
 	If bStatus Then
-		BANano.GetElement($"#${mName}_${Key}row"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${Key}row"$).RemoveClass("hidden")
 	Else
-		BANano.GetElement($"#${mName}_${Key}row"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${Key}row"$).AddClass("hidden")
 	End If
 	If bStatus = False Then
 		SetPropertyRequired(Key, False)
@@ -4779,8 +4776,6 @@ Sub SetPropertyFilterItems(Key As String, sColor As String, sActiveColor As Stri
 	sb.Initialize
 	Dim itemSize As String = UI.FixSize("btn", sComponentSize)
 	Dim itemColor As String = UI.FixColor("btn", sColor)
-	Dim soutline As String = ""
-	If bButtonsOutlined Then soutline = "btn-outline"
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
 	If sActiveColor <> "" Then
@@ -4791,13 +4786,13 @@ Sub SetPropertyFilterItems(Key As String, sColor As String, sActiveColor As Stri
 	End If
 	
 	'add a clearer button
-	sb.Append($"<input id="${mName}_${Key}_reset" class="btn btn-circle ${itemSize} ${soutline}" name="${Key}" type="reset" value="×"/>"$)
+	sb.Append($"<input id="${mName}_${Key}_reset" class="btn btn-circle ${itemSize} filter-reset" aria-label="Reset" name="${Key}" type="reset" value="×"/>"$)
 	'add options
 	For Each k As String In xitems.Keys
 		Dim v As String = xitems.Get(k)
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		sb.Append($"<input id="${nk}" value="${k}" class="btn rounded-full ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor}" name="${Key}" type="radio" aria-label="${v}">"$)
+		sb.Append($"<input id="${nk}" value="${k}" class="btn rounded-full ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" name="${Key}" type="radio" aria-label="${v}">"$)
 	Next
 	UI.ClearByID($"${mName}_${Key}_content"$)
 	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
@@ -5457,7 +5452,7 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
 	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
-	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hide"/>"$)
+	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
 	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_FileChange"$)
@@ -5510,11 +5505,11 @@ End Sub
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
 		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
 	Else
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hide")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
 	End If
 End Sub
 

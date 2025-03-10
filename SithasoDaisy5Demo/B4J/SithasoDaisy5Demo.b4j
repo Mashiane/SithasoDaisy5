@@ -754,7 +754,7 @@ Module9=pgButtons
 NumberOfFiles=332
 NumberOfLibraries=6
 NumberOfModules=80
-Version=10.1
+Version=10.13
 @EndOfDesignText@
 #Region Project Attributes 
 	#MergeLibraries: True

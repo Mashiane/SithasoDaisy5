@@ -406,8 +406,8 @@ Sub setOptions(s As String)				'ignoredeadcode
 		
 		sb.Append($"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
-			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg>
+			<input id="${k}_${mName}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
 	Next
@@ -436,7 +436,7 @@ private Sub BuildIconColor(nc As String) As String
 	Return sout
 End Sub
 
-Sub AddItem(k As String, v As String)
+Sub AddOption(k As String, v As String)
 	If mElement = Null Then Return
 	k = UI.CleanID(k)
 	Dim nk As String = $"${k}_${mName}"$
@@ -460,8 +460,8 @@ Sub AddItem(k As String, v As String)
 	
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hide hidden"></svg>
-			<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+			<svg id="${k}_${mName}_icon" width="${iconsize}" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg>
+			<input id="${k}_${mName}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	
 	items.Put(nk, nk)
@@ -492,7 +492,8 @@ private Sub UpdateChanges(fireEvent As Boolean)
 		If sActiveColor <> "" Then UI.AddClassByID($"${k}_${mName}_host"$, abg)
 		'show the icon
 		UI.SetVisibleByID($"${k}_${mName}_icon"$, True)
-		UI.AddStyleByID($"${k}_${mName}"$, "outline-style", "none")
+'		UI.AddStyleByID($"${k}_${mName}"$, "outline-style", "none")
+		'used class checked:outline-none!
 	Next
 	If fireEvent Then
 		BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))

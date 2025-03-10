@@ -266,7 +266,7 @@ Sub setOptions(s As String)			'ignoredeadcode
 	Dim m As Map = UI.GetKeyValues(s, False)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		AddItem(k, v)
+		AddOption(k, v)
 	Next
 End Sub
 
@@ -280,7 +280,7 @@ Sub getOptions As String
 	Return sRawOptions
 End Sub
 
-Sub AddItem(sKey As String, sText As String)
+Sub AddOption(sKey As String, sText As String)
 	sKey = UI.CleanID(sKey)
 	Dim nKey As String = $"${sKey}_${mName}"$
 	Dim ni As SDUI5TabsItem

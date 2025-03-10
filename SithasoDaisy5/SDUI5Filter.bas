@@ -8,6 +8,10 @@ Version=10
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color
+#DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #00ff00, Description: Active Color
+#DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: full, Description: Shape, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -40,6 +44,10 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
+	Private sActiveColor As String = "#00ff00"
+	Private sColor As String = "primary"
+	Private sShape As String = "full"
+	Private sSize As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -191,6 +199,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 		sRawOptions = UI.CStr(sRawOptions)
+		sActiveColor = Props.GetDefault("ActiveColor", "none")
+		sActiveColor = UI.CStr(sActiveColor)
+		sColor = Props.GetDefault("Color", "primary")
+		sColor = UI.CStr(sColor)
+		sShape = Props.GetDefault("Shape", "")
+		sShape = UI.CStr(sShape)
+		sSize = Props.GetDefault("Size", "none")
+		sSize = UI.CStr(sSize)
+		If sSize = "none" Then sSize = ""
 	End If
 	'
 	UI.AddClassDT("filter")
@@ -213,13 +230,27 @@ End Sub
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.empty
-	mElement.Append($"<input id="reset_${mName}" class="btn filter-reset" value="reset" type="radio" name="${mName}" aria-label="All"></input>"$)
+	Dim itemShape As String = UI.FixRounded(sShape)
+	Dim itemSize As String = UI.FixSize("btn", sSize)
+	mElement.Append($"<input id="reset_${mName}" class="btn ${itemShape} ${itemSize} filter-reset" value="reset" type="radio" name="${mName}"></input>"$)
 End Sub
 
 Sub AddOption(sKey As String, sValue As String)
 	If mElement = Null Then Return
 	sKey = UI.CleanID(sKey)
-	mElement.Append($"<input id="${sKey}_${mName}" class="btn" type="radio" value="${sKey}" name="${mName}" aria-label="${sValue}"></input>"$)
+	Dim itemShape As String = UI.FixRounded(sShape)
+	Dim itemSize As String = UI.FixSize("btn", sSize)
+	Dim itemColor As String = UI.FixColor("btn", sColor)
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
+	mElement.Append($"<input id="${sKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${sValue}"></input>"$)
+	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "changed")
 End Sub
 
 'set Raw Options
@@ -229,19 +260,30 @@ Sub setOptions(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	Clear
 	If s = "" Then Return
+	Dim itemShape As String = UI.FixRounded(sShape)
+	Dim itemSize As String = UI.FixSize("btn", sSize)
+	Dim itemColor As String = UI.FixColor("btn", sColor)
+	Dim checkedColor As String = ""
+	Dim borderColor As String = ""
+	If sActiveColor <> "" Then
+		Dim abg As String = UI.FixColor("bg", sActiveColor)
+		checkedColor = $"checked:${abg}"$
+		Dim bbg As String = UI.FixColor("border", sActiveColor)
+		borderColor = $"checked:${bbg}"$
+	End If
 	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
 	sb.Initialize 
-	Dim items As List
-	items.Initialize 
+	Dim itemS As List
+	itemS.Initialize 
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<input id="${sk}_${mName}" class="btn" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
-		items.Add($"${sk}_${mName}"$)
+		sb.Append($"<input id="${sk}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
+		itemS.Add($"${sk}_${mName}"$)
 	Next
 	mElement.Append(sb.ToString)
-	For Each item As String In items
+	For Each item As String In itemS
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next
 End Sub
@@ -255,4 +297,50 @@ End Sub
 'get Raw Options
 Sub getOptions As String
 	Return sRawOptions
+End Sub
+
+'set Active Color
+Sub setActiveColor(s As String)
+	sActiveColor = s
+	CustProps.put("ActiveColor", s)
+End Sub
+
+'set Color
+Sub setColor(s As String)
+	sColor = s
+	CustProps.put("Color", s)
+End Sub
+
+'set Shape
+'options: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setShape(s As String)
+	sShape = s
+	CustProps.put("Shape", s)
+End Sub
+
+'get Active Color
+Sub getActiveColor As String
+	Return sActiveColor
+End Sub
+
+'get Color
+Sub getColor As String
+	Return sColor
+End Sub
+
+'get Shape
+Sub getShape As String
+	Return sShape
+End Sub
+
+'set Size
+'options: xs|none|sm|md|lg|xl
+Sub setSize(s As String)
+    sSize = s
+    CustProps.put("Size", s)
+End Sub
+
+'get Size
+Sub getSize As String
+        Return sSize
 End Sub

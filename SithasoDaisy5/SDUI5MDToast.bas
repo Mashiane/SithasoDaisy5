@@ -132,7 +132,7 @@ Sub Show
 End Sub
 
 Sub Hide
-	MDToastObject.RunMethod("hide", Null)
+	MDToastObject.RunMethod("hidden", Null)
 End Sub
 
 'set Action Text

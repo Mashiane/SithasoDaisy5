@@ -343,6 +343,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsShadow = UI.CStr(sButtonsShadow)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
+		if sbuttonsrounded = "none" then sButtonsRounded = ""
 	End If
 	'
 	UI.AddClassDT("modal")

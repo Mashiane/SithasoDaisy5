@@ -258,9 +258,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<fieldset id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<legend id="${mName}_legend" class="fieldset-legend hidden hide">${sLegend}</legend>
+		<legend id="${mName}_legend" class="fieldset-legend hidden">${sLegend}</legend>
 		<div id="${mName}_content"></div>
-		<p id="${mName}_label" class="fieldset-label hidden hide">${sLabel}</p>
+		<p id="${mName}_label" class="fieldset-label hidden">${sLabel}</p>
 	</fieldset>"$).Get("#" & mName)
 	setLabelVisible(bLabelVisible)
 	setLegendVisible(bLegendVisible)

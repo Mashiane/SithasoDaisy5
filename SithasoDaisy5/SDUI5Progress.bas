@@ -349,7 +349,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '  					<span id="${mName}_start">${iMinValue}</span>
 '					<span id="${mName}_end">${iMaxValue}</span>
 '				</div>
-'				<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
+'				<label id="${mName}_hint" class="fieldset-label hidden">${sHint}</label>
 '			</fieldset>"$).Get("#" & mName)
 			
 			
@@ -360,7 +360,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<progress id="${mName}" step="${iStepValue}" max="${iMaxValue}" min="${iMinValue}" value="${iValue}" class="progress rounded-full w-full"></progress>
 						<div id="${mName}_value" class="absolute inset-0 flex -top-2 items-center font-bold justify-center">${iValue}%</div>
 					</div>
-	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
 				
 			setBackgroundColor(sBackgroundColor)

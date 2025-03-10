@@ -353,7 +353,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<details id="${mName}_details">
 				<summary id="${mName}_anchor" class="items-center">
-					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"  data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
+					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"  data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 					<span id="${mName}_text">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</summary>	
@@ -365,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<a id="${mName}_anchor" class="items-center">
-					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"   data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hide hidden"></svg>
+					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"   data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 					<span id="${mName}_text" class="hidden">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>

@@ -292,9 +292,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<label id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
   			<span id="${mName}_prefix" class="label whitespace-nowrap">${sLabel}</span>
   			<${sTag} id="${mName}_input"></${sTag}>
-			<span id="${mName}_suffix" class="label hide whitespace-nowrap">${sSuffix}</span>
+			<span id="${mName}_suffix" class="label hidden whitespace-nowrap">${sSuffix}</span>
 		</label>
-		<div id="${mName}_validatorhint" class="validator-hint hide">${sValidatorHint}</div>"$).Get("#" & mName)
+		<div id="${mName}_validatorhint" class="validator-hint hidden">${sValidatorHint}</div>"$).Get("#" & mName)
 	'
 	Select Case sInputType
 	Case "input"
@@ -555,7 +555,7 @@ Sub Clear			'ignoredeadcode
 	End Select
 End Sub
 
-Sub AddItem(iKey As String, iValue As String)
+Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
 	Select Case sInputType
 	Case "select"

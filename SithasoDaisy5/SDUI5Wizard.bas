@@ -267,6 +267,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
+		If sButtonsRounded = "none" Then sButtonsRounded = ""
 	End If
 	'
 	UI.AddClassDT("card")
@@ -540,7 +541,7 @@ Sub setSteps(s As String)				'ignoredeadcode
 		Dim stepName As String = nitems.Get(stepCnt)
 		stepTot = BANano.parseInt(stepCnt) + 1
 		sb.Append($"<li id="${mName}_${stepTot}" class="step cursor-pointer"><span id="${mName}_${stepTot}_text">${stepName}</span></li>"$)
-		sbContent.Append($"<div id="${mName}_${stepTot}_content" class="hidden hide"></div>"$)
+		sbContent.Append($"<div id="${mName}_${stepTot}_content" class="hidden"></div>"$)
 		items.add($"${mName}_${stepTot}"$)
 	Next
 	UI.AppendByID($"${mName}_steps"$, sb.ToString)
@@ -560,7 +561,7 @@ Sub AddStep(stepName As String)
 	sbContent.Initialize
 	'
 	sb.Append($"<li id="${k}" class="step cursor-pointer"><span id="${k}_text">${stepName}</span></li>"$)
-	sbContent.Append($"<div id="${k}_content" class="hidden hide"></div>"$)
+	sbContent.Append($"<div id="${k}_content" class="hidden"></div>"$)
 	items.add(k)
 	UI.AppendByID($"${mName}_steps"$, sb.ToString)
 	UI.AppendByID($"${mName}_content"$, sbContent.ToString)

@@ -352,7 +352,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>          
-        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
       		</fieldset>"$).Get("#" & mName)
 			setBackgroundColor(sBackgroundColor)
 			setBorder(bBorder)
@@ -694,7 +694,7 @@ Sub Clear			'ignoredeadcode
 	mElement.Append($"<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>"$)
 End Sub
 
-Sub AddItem(iKey As String, iValue As String)
+Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
 	iKey = UI.CleanID(iKey)
 	Dim scode As String = $"<option id="${iKey}_${mName}" value="${iKey}">${iValue}</option>"$

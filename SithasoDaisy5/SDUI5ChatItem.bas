@@ -5,16 +5,24 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: Avatar, DisplayName: Avatar, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Avatar
+#DesignerProperty: Key: FromAvatar, DisplayName: From Avatar, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: From Avatar
+#DesignerProperty: Key: FromName, DisplayName: From Name, FieldType: String, DefaultValue: From Name, Description: From Name
+#DesignerProperty: Key: Message, DisplayName: Message, FieldType: String, DefaultValue: Message, Description: Message
+#DesignerProperty: Key: DeliveryTime, DisplayName: Delivery Time, FieldType: String, DefaultValue: 10:00 AM, Description: Delivery Time
+#DesignerProperty: Key: TimeAgo, DisplayName: Time Ago, FieldType: Boolean, DefaultValue: True, Description: Time Ago
+#DesignerProperty: Key: Unread, DisplayName: Unread, FieldType: String, DefaultValue: 2, Description: Unread
+#DesignerProperty: Key: UnreadColor, DisplayName: Unread Color, FieldType: String, DefaultValue: primary, Description: Unread Color
+#DesignerProperty: Key: UnreadVisible, DisplayName: Unread Visible, FieldType: Boolean, DefaultValue: True, Description: Unread Visible
+#DesignerProperty: Key: HelpAvatar, DisplayName: Help Avatar, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Help Avatar
+#DesignerProperty: Key: HelpVisible, DisplayName: Help Visible, FieldType: Boolean, DefaultValue: False, Description: Help Visible
+#DesignerProperty: Key: AvatarShape, DisplayName: Avatar Shape, FieldType: String, DefaultValue: circle, Description: Avatar Shape, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: AvatarSize, DisplayName: Avatar Size, FieldType: String, DefaultValue: 12, Description: Avatar Size
-#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: none, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
-#DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Chat Title, Description: Title
-#DesignerProperty: Key: SubTitle, DisplayName: Sub Title, FieldType: String, DefaultValue: Chat Subtitle, Description: Sub Title
-#DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: 12, Description: Badge
-#DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: none, Description: Badge Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: TimeAgo, DisplayName: Time Ago, FieldType: String, DefaultValue: Time Ago, Description: Time Ago
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -46,16 +54,22 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sAvatar As String = ""
+	Private sAvatarShape As String = "circle"
 	Private sAvatarSize As String = "12"
-	Private sBadge As String = ""
-	Private sBadgeColor As String = "none"
-	Private sMask As String = "none"
+	Private sBackgroundColor As String = "none"
+	Private sDeliveryTime As String = "10:00 AM"
+	Private sFromAvatar As String = ""
+	Private sFromName As String = "From Name"
+	Private sHelpAvatar As String = ""
+	Private bHelpVisible As Boolean = False
+	Private sMessage As String = "Message"
 	Private sRounded As String = "none"
+	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
-	Private sSubTitle As String = "Chat Subtitle"
-	Private sTimeAgo As String = "Time Ago"
-	Private sTitle As String = "Chat Title"
+	Private bTimeAgo As Boolean = True
+	Private sUnread As String = "2"
+	Private sUnreadColor As String = "primary"
+	Private bUnreadVisible As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -64,7 +78,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -120,13 +133,17 @@ Sub getEnabled As Boolean
 	bEnabled = UI.GetEnabled(mElement)
 	Return bEnabled
 End Sub
+'use to add an event to the element
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
+End Sub
 'set Position Style
 'options: static|relative|fixed|absolute|sticky|none
 Sub setPositionStyle(s As String)
 	sPositionStyle = s
 	CustProps.put("PositionStyle", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetStyle(mElement, "position", s)
+	If s <> "" Then UI.AddStyle(mElement, "position", s)
 End Sub
 Sub getPositionStyle As String
 	Return sPositionStyle
@@ -145,14 +162,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -166,7 +183,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -205,37 +222,43 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sAvatar = Props.GetDefault("Avatar", "")
-		sAvatar = UI.CStr(sAvatar)
+		sAvatarShape = Props.GetDefault("AvatarShape", "circle")
+		sAvatarShape = UI.CStr(sAvatarShape)
 		sAvatarSize = Props.GetDefault("AvatarSize", "12")
 		sAvatarSize = UI.CStr(sAvatarSize)
-		sBadge = Props.GetDefault("Badge", "")
-		sBadge = UI.CStr(sBadge)
-		sBadgeColor = Props.GetDefault("BadgeColor", "none")
-		sBadgeColor = UI.CStr(sBadgeColor)
-		If sBadgeColor = "none" Then sBadgeColor = ""
-		sMask = Props.GetDefault("Mask", "none")
-		sMask = UI.CStr(sMask)
-		If sMask = "none" Then sMask = ""
+		sDeliveryTime = Props.GetDefault("DeliveryTime", "10:00 AM")
+		sDeliveryTime = UI.CStr(sDeliveryTime)
+		sFromAvatar = Props.GetDefault("FromAvatar", "./assets/mashy.jpg")
+		sFromAvatar = UI.CStr(sFromAvatar)
+		sFromName = Props.GetDefault("FromName", "From Name")
+		sFromName = UI.CStr(sFromName)
+		sHelpAvatar = Props.GetDefault("HelpAvatar", "")
+		sHelpAvatar = UI.CStr(sHelpAvatar)
+		bHelpVisible = Props.GetDefault("HelpVisible", False)
+		bHelpVisible = UI.CBool(bHelpVisible)
+		sMessage = Props.GetDefault("Message", "Message")
+		sMessage = UI.CStr(sMessage)
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
+		bRoundedBox = Props.GetDefault("RoundedBox", True)
+		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
-		If sShadow = "none" Then sShadow = ""
-		sSubTitle = Props.GetDefault("SubTitle", "Chat Subtitle")
-		sSubTitle = UI.CStr(sSubTitle)
-		sTimeAgo = Props.GetDefault("TimeAgo", "Time Ago")
-		sTimeAgo = UI.CStr(sTimeAgo)
-		sTitle = Props.GetDefault("Title", "Chat Title")
-		sTitle = UI.CStr(sTitle)
+		bTimeAgo = Props.GetDefault("TimeAgo", True)
+		bTimeAgo = UI.CBool(bTimeAgo)
+		sUnread = Props.GetDefault("Unread", "2")
+		sUnread = UI.CStr(sUnread)
+		sUnreadColor = Props.GetDefault("UnreadColor", "primary")
+		sUnreadColor = UI.CStr(sUnreadColor)
+		bUnreadVisible = Props.GetDefault("UnreadVisible", True)
+		bUnreadVisible = UI.CBool(bUnreadVisible)
 	End If
 	'
-	UI.AddClassDT("flex items-center justify-between p-4 hover:bg-gray-100")
+	UI.AddClassDT("list-row flex items-center gap-3 p-2 hover:bg-base-200 cursor-pointer")
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	UI.AddClassDT("cursor-pointer")
-
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -247,76 +270,112 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	Dim avtsize As String = UI.FixSize("w", sAvatarSize)
+	Dim avtshape As String = UI.FixMask(sAvatarShape)
+	Dim unreadcolor As String = UI.FixColor("badge", sUnreadColor)
+	Dim sunreadvisible As String = ""
+	If bUnreadVisible = False Then sunreadvisible = "hidden"
+	Dim shelpvisible As String = ""
+	If bHelpVisible = False Then shelpvisible = "hidden"
+	
 	mElement = mTarget.Append($"[BANCLEAN]
-		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-      		<div class="flex items-center space-x-4">
-        		<div id="${mName}_avatar" class="avatar">
-          			<div id="${mName}_avatarhost">
-            			<img id="${mName}_image" src="${sAvatar}" alt="" class="bg-cover bg-center bg-no-repeat">
-          			</div>
-        		</div>
-        		<div id="${mName}_titles">
-          			<p id="${mName}_title" class="font-semibold">${sTitle}</p>
-          			<p id="${mName}_subtitle" class="text-sm text-gray-500">${sSubTitle}</p>
-        		</div>
-      		</div>
-      		<div id="${mName}_rights" class="text-right">
-        		<div id="${mName}_badge" class="badge rounded-full">${sBadge}</div>
-        		<p id="${mName}_time" class="text-sm text-gray-400">${sTimeAgo}</p>
-      		</div>
-    	</div>"$).Get("#" & mName)
-		setBadgeColor(sBadgeColor)
-		setAvatarSize(sAvatarSize)
-		setBadge(sBadge)
-		setMask(sMask)
-'	setVisible(bVisible)
+	<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}fromavt" class="avatar">
+        	<div id="${mName}fromhost" class="${avtsize} ${avtshape}">
+          		<img id="${mName}fromimg" src="${sFromAvatar}" alt="${sFromName}">
+        	</div>
+      	</div>
+      	<div class="flex-1">
+        	<div class="flex justify-between">
+          		<span id="${mName}fromname" class="font-semibold text-base">${sFromName}</span>
+          		<span id="${mName}time" class="text-xs text-gray-500">${sDeliveryTime}</span>
+        	</div>
+        	<div class="flex justify-between">
+          		<p id="${mName}message" class="text-sm text-gray-500 truncate">${sMessage}</p>
+          		<div id="${mName}unread" class="badge ${unreadcolor} ${sunreadvisible} rounded-full w-5 h-5 badge-sm">${sUnread}</div>
+        	</div>
+      	</div>
+      	<div id="${mName}helpavt" class="avatar ${shelpvisible}">
+        	<div id="${mName}helphost" class="${avtsize} ${avtshape}">
+          		<img id="${mName}helpimg" src="${sHelpAvatar}" alt="">
+        	</div>
+      	</div>
+	</li>"$).Get("#" & mName)
 End Sub
 
-'set Avatar
-Sub setAvatar(s As String)
-	sAvatar = s
-	CustProps.put("Avatar", s)
+'set Avatar Shape
+'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
+Sub setAvatarShape(s As String)
+	sAvatarShape = s
+	CustProps.put("AvatarShape", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetImageByID($"${mName}_image"$, s)
+	If s <> "" Then 
+		UI.SetMaskByID($"${mName}fromhost"$, s)
+		UI.SetMaskByID($"${mName}helphost"$, s)
+	End If
 End Sub
 'set Avatar Size
-'options: xs|none|sm|md|lg|xl
-Sub setAvatarSize(s As String)				'ignoredeadcode
+Sub setAvatarSize(s As String)
 	sAvatarSize = s
 	CustProps.put("AvatarSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetWidthByID($"${mName}_avatarhost"$, s)
-		UI.SetHeightByID($"${mName}_avatarhost"$, s)
+		UI.SetWidthByID($"${mName}fromhost"$, s)
+		UI.SetWidthByID($"${mName}helphost"$, s)
 	End If
 End Sub
-'set Badge
-Sub setBadge(s As String)			'ignoredeadcode
-	sBadge = s
-	CustProps.put("Badge", s)
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_badge"$, s)
-	If s = "" Then 
-		UI.SetVisibleByID($"${mName}_badge"$, False)
-	Else
-		UI.SetVisibleByID($"${mName}_badge"$, True)
+	If s = "" Then Return
+	UI.SetBackgroundColor(mElement, s)
+End Sub
+'set Delivery Time
+Sub setDeliveryTime(s As String)
+	sDeliveryTime = s
+	CustProps.put("DeliveryTime", s)
+	If mElement = Null Then Return
+	If bTimeAgo Then
+	Else	
+		UI.SetTextByID($"${mName}time"$, s)
 	End If
 End Sub
-'set Badge Color
-'options: accent|error|info|neutral|none|primary|secondary|success|warning
-Sub setBadgeColor(s As String)				'ignoredeadcode
-	sBadgeColor = s
-	CustProps.put("BadgeColor", s)
+'set From Avatar
+Sub setFromAvatar(s As String)
+	sFromAvatar = s
+	CustProps.put("FromAvatar", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColorByID($"${mName}_badge"$, "color", "badge", s)
+	If s <> "" Then UI.SetImageByID($"${mName}fromimg"$, s)
 End Sub
-'set Mask
-'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
-Sub setMask(s As String)			'ignoredeadcode
-	sMask = s
-	CustProps.put("Mask", s)
+'set From Name
+Sub setFromName(s As String)
+	sFromName = s
+	CustProps.put("FromName", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetMaskByID($"${mName}_avatarhost"$, sMask)
+	UI.SetTextByID($"${mName}fromname"$, s)
+End Sub
+'set Help Avatar
+Sub setHelpAvatar(s As String)
+	sHelpAvatar = s
+	CustProps.put("HelpAvatar", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetImageByID($"${mName}helpimg"$, s)
+End Sub
+'set Help Visible
+Sub setHelpVisible(b As Boolean)
+	bHelpVisible = b
+	CustProps.put("HelpVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}helpavt"$, b)
+End Sub
+'set Message
+Sub setMessage(s As String)
+	sMessage = s
+	CustProps.put("Message", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}message"$, s)
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -326,6 +385,17 @@ Sub setRounded(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetRounded(mElement, sRounded)
 End Sub
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
 Sub setShadow(s As String)
@@ -334,64 +404,98 @@ Sub setShadow(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
-'set Sub Title
-Sub setSubTitle(s As String)
-	sSubTitle = s
-	CustProps.put("SubTitle", s)
-	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_subtitle"$, s)
+'set Time Ago
+Sub setTimeAgo(b As Boolean)
+	bTimeAgo = b
+	CustProps.put("TimeAgo", b)
 End Sub
-'set Timeago
-Sub setTimeAgo(s As String)
-	sTimeAgo = s
-	CustProps.put("TimeAgo", s)
+'set Unread
+Sub setUnread(s As String)
+	sUnread = s
+	CustProps.put("Unread", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_time"$, s)
+	UI.SetTextByID($"${mName}unread"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}unread"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}unread"$, True)
+	End If
 End Sub
-'set Title
-Sub setTitle(s As String)
-	sTitle = s
-	CustProps.put("Title", s)
+'set Unread Color
+Sub setUnreadColor(s As String)
+	sUnreadColor = s
+	CustProps.put("UnreadColor", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_title"$, s)
+	If s <> "" Then UI.SetColorByID($"${mName}unread"$, "badge", "badge", s)
 End Sub
-'get Avatar
-Sub getAvatar As String
-	Return sAvatar
+'set Unread Visible
+Sub setUnreadVisible(b As Boolean)
+	bUnreadVisible = b
+	CustProps.put("UnreadVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}unread"$, b)
+End Sub
+'get Avatar Shape
+Sub getAvatarShape As String
+	Return sAvatarShape
 End Sub
 'get Avatar Size
 Sub getAvatarSize As String
 	Return sAvatarSize
 End Sub
-'get Badge
-Sub getBadge As String
-	Return sBadge
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
 End Sub
-'get Badge Color
-Sub getBadgeColor As String
-	Return sBadgeColor
+'get Delivery Time
+Sub getDeliveryTime As String
+	Return sDeliveryTime
 End Sub
-'get Mask
-Sub getMask As String
-	Return sMask
+'get From Avatar
+Sub getFromAvatar As String
+	Return sFromAvatar
+End Sub
+'get From Name
+Sub getFromName As String
+	Return sFromName
+End Sub
+'get Help Avatar
+Sub getHelpAvatar As String
+	Return sHelpAvatar
+End Sub
+'get Help Visible
+Sub getHelpVisible As Boolean
+	Return bHelpVisible
+End Sub
+'get Message
+Sub getMessage As String
+	Return sMessage
 End Sub
 'get Rounded
 Sub getRounded As String
 	Return sRounded
 End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
 'get Shadow
 Sub getShadow As String
 	Return sShadow
 End Sub
-'get Sub Title
-Sub getSubTitle As String
-	Return sSubTitle
+'get Time Ago
+Sub getTimeAgo As Boolean
+	Return bTimeAgo
 End Sub
-'get Timeago
-Sub getTimeago As String
-	Return sTimeAgo
+'get Unread
+Sub getUnread As String
+	Return sUnread
 End Sub
-'get Title
-Sub getTitle As String
-	Return sTitle
+'get Unread Color
+Sub getUnreadColor As String
+	Return sUnreadColor
+End Sub
+'get Unread Visible
+Sub getUnreadVisible As Boolean
+	Return bUnreadVisible
 End Sub

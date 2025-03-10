@@ -293,7 +293,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}" class="rating"></div>
-				<div id="${mName}_hint" class="fieldset-label hide">${sHint}</div>
+				<div id="${mName}_hint" class="fieldset-label hidden">${sHint}</div>
 			</fieldset>"$).Get("#" & mName)
 			setBackgroundColor(sBackgroundColor)
 			setBorder(bBorder)
@@ -445,7 +445,7 @@ Sub Refresh			'ignoredeadcode
 		mElement.Append(sb.ToString)
 	Case False
 		If bFirstHidden Then
-			sb.Append($"<input id="${mName}_0" type="radio" value="0" name="${mName}" class="rating-hidden hidden hide" aria-label="Clear"></input>"$)
+			sb.Append($"<input id="${mName}_0" type="radio" value="0" name="${mName}" class="rating-hidden hidden" aria-label="Clear"></input>"$)
 		End If		
 		Dim itemClasses As List
 		For fCount = 1 To tCount

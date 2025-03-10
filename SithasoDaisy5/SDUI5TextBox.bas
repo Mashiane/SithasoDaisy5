@@ -438,8 +438,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 						</button>
 	        		</div>          
-	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>					
-					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>					
+					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
 							<div id="${mName}_rcw"></div>
 						</div>
@@ -468,7 +468,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
-					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
 							<div id="${mName}_rcw"></div>
 						</div>
@@ -502,7 +502,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
-					<ul id="${mName}_popover" class="hide hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
+					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
 							<div id="${mName}_rcw"></div>
 						</div>

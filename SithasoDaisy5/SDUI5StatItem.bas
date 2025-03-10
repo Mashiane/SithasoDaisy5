@@ -293,14 +293,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_figure" class="stat-figure hidden">
-			<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" class="hidden hide" data-js="enabled"></svg>
+			<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" class="hidden" data-js="enabled"></svg>
       		<img id="${mName}_image" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
-			<div id="${mName}_avatar" class="avatar hidden hide">
+			<div id="${mName}_avatar" class="avatar hidden">
         		<div id="${mName}_avatar_host">
           			<img id="${mName}_avatar_image" alt="" class="bg-cover bg-center bg-no-repeat"></img>
         		</div>
       		</div>
-			<div id="${mName}_radial" class="radial-progress hidden hide" style="--value:${sRadialValue};" aria-valuenow="${sRadialValue}" role="progressbar">${sRadialValue}%</div>
+			<div id="${mName}_radial" class="radial-progress hidden" style="--value:${sRadialValue};" aria-valuenow="${sRadialValue}" role="progressbar">${sRadialValue}%</div>
 	  	</div>
 		<div id="${mName}_title" class="stat-title hidden">${sTitle}</div>
     	<div id="${mName}_value" class="stat-value hidden">${sValue}</div>

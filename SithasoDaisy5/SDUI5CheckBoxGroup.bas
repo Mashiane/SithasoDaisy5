@@ -292,7 +292,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options"></div>
-	      		<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
+	      		<label id="${mName}_hint" class="fieldset-label hidden">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
 		Case Else
 			'row view
@@ -300,7 +300,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options" class="grid grid-cols-3 gap-4 w-fit"></div>
-	      		<label id="${mName}_hint" class="fieldset-label hide">${sHint}</label>
+	      		<label id="${mName}_hint" class="fieldset-label hidden">${sHint}</label>
 			</fieldset>"$).Get("#" & mName)
 			UI.UpdateClassByID($"${mName}_options"$, "cols", "grid-cols-3")
 	End Select
@@ -340,7 +340,7 @@ Sub setSelected(s As String)					'ignoredeadcode
 	Next
 End Sub
 
-Sub AddItem(k As String, v As String)
+Sub AddOption(k As String, v As String)
 	If mElement = Null Then Return
 	k = UI.CleanID(k)
 	Dim rSize As String = UI.FixSize(sTypeOf, sSize)

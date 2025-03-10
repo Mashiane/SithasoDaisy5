@@ -321,7 +321,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          		</div>          
-	        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
 	      		</fieldset>"$).Get("#" & mName)
 			setBackgroundColor(sBackgroundColor)
 			setBorder(bBorder)
@@ -349,9 +349,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<div id="${mName}_control" class="${xclasses} flex items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
     				<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg>
-    				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden hide" style="--size:${sButtonSize};"></div>
+    				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
     			</button>
-    			<input id="${mName}" name="${mName}" type="file" class="file-input hidden hide"/>
+    			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>
     		</div>"$).Get("#" & mName)
 	End Select
 	'

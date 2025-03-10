@@ -367,7 +367,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
         		</div>          
-        		<p id="${mName}_hint" class="fieldset-label hide">${sHint}</p>
+        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
       		</fieldset>"$).Get("#" & mName)
 			setBackgroundColor(sBackgroundColor)
 			setBorder(bBorder)

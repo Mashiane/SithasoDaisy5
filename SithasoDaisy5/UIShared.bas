@@ -393,7 +393,7 @@ public Sub BuildExClass() As String
 	'
 	If ExcludeVisible = False Then
 		Dim bVisible As Boolean = CBool(GetVisibleDT)
-		If bVisible = False Then AddClassDT("hidden hide")
+		If bVisible = False Then AddClassDT("hidden")
 	End If
 	'
 	Dim sClasses As String = GetClasses
@@ -1016,9 +1016,9 @@ public Sub SetVisible(mElement As BANanoElement, bVisible As Boolean)
 	BANano.SetP(mSelf, "bVisible", bVisible)
 	If mElement = Null Then Return
 	If bVisible Then
-		RemoveClass(mElement, "hide hidden")
+		RemoveClass(mElement, "hidden")
 	Else
-		AddClass(mElement, "hide hidden")
+		AddClass(mElement, "hidden")
 	End If
 End Sub
 
@@ -1075,8 +1075,6 @@ Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, Meth
 	If SubExists(CallBack, MethodName) Then
 		mElement.Off(event)
 		mElement.On(event, CallBack, MethodName)
-	Else
-		BANano.Console.Error($"${event}.${MethodName} event DOES NOT exist!"$)
 	End If
 End Sub
 
