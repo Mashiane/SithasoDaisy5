@@ -643,33 +643,6 @@ Sub RedirectFollow
 End Sub
 
 'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
-public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
+private Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
 	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
 End Sub
-#if JavaScript
-function BANano_r2fFIX(number, decimals, minf) {
-var decimals2=minf;
-if (decimals2<decimals) {decimals2=decimals}
-if (decimals2>decimals) {decimals=decimals2}
-let v = +(Math.round(number + "e+" + decimals) + "e-" + decimals2);
-var s = +v.toFixed(decimals2);
-if (s.countDecimals()<=minf) {
-return v.toFixed(minf);
-} else {
-return v.toFixed(decimals2);
-}
-};
-Number.prototype.countDecimals = function () {
-if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
-var str = this.toString();
-if (str.indexOf(".") !== -1 && str.indexOf("-") !== -1) {
-return str.split("-")[1] || 0;
-} else if (str.indexOf(".") !== -1) {
-return str.split(".")[1].length || 0;
-}
-return str.split("-")[1] || 0;
-};
-function NumberFormat2(number, minimumIntegers, maximumFractions, minimumFractions,groupingUsed) {
-return BANano_nf2(BANano_r2fFIX(number,maximumFractions,minimumFractions),minimumIntegers,groupingUsed);
-}
-#End If

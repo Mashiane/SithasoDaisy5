@@ -878,7 +878,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 '	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.SetIconSizeByID($"${mName}_searchbtnicon"$, s)
+	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "70")
 End Sub
 'set Search Visible
 Sub setSearchVisible(b As Boolean)		'ignoredeadcode
@@ -1770,8 +1770,9 @@ Sub SetPropertyRequired(Key As String, status As Boolean)
 End Sub
 
 'show props based on Type
+'wrap with banano.await
 Sub ShowPropOnCondition
-	Dim sproptype As String = GetPropertyValue("proptype")
+	Dim sproptype As String = BANano.Await(GetPropertyValue("proptype"))
 	BANano.Await(HideMostProperties)
 	SetPropertyVisible("propvalue", True)
 	SetPropertyVisible("proprequired", True)
@@ -2506,7 +2507,7 @@ Sub SetPropertyPrependIcon(Key As String, picon As String)
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).Remove
 	UI.SetIconNameByID($"${mName}_${Key}_prepend_icon"$, picon)	'
 	UI.SetSizeByID($"${mName}_${Key}_prepend"$, "size", "btn", sComponentSize)
-	UI.SetIconSizeByID($"${mName}_${Key}_prepend_icon"$, sComponentSize)	'
+	UI.ResizeIconByID($"${mName}_${Key}_prepend_icon"$, "70")	'
 	UI.Show($"${mName}_${Key}_prepend"$)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
@@ -2566,9 +2567,8 @@ Sub SetPropertyAppendIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).Remove
 	UI.SetIconNameByID($"${mName}_${Key}_append_icon"$, picon)
-	UI.SetIconSizeByID($"${mName}_${Key}_append_icon"$, sComponentSize)
-	'
-	UI.UpdateClassByID($"${mName}_${Key}_append"$, "size", sComponentSize)
+	UI.ResizeIconByID($"${mName}_${Key}_append_icon"$, "70")
+	UI.SetSizeByID($"${mName}_${Key}_append"$, "size", "btn", sComponentSize)
 	UI.Show($"${mName}_${Key}_append"$)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "trradius brradius")
 	SetPropertyTopRightRadius(Key, "0px")
@@ -3185,9 +3185,10 @@ Sub PropertiesAreValid(props As List) As Boolean
 End Sub
 
 'check if propertues match
+'wrap it with banano.await
 Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
-	Dim v1 As String = GetPropertyValue(fld1)
-	Dim v2 As String = GetPropertyValue(fld2)
+	Dim v1 As String = BANano.Await(GetPropertyValue(fld1))
+	Dim v2 As String = BANano.Await(GetPropertyValue(fld2))
 	v1 = UI.CStr(v1)
 	v1 = v1.Trim
 	v2 = UI.CStr(v2)
@@ -3397,6 +3398,8 @@ End Sub
 Sub GetPropertyHintID(Key As String) As String
 	Return $"${mName}_${Key}row"$
 End Sub
+
+'wrap with banano.await
 Sub GetPropertyValue(Key As String) As String
 	Dim sComponentType As String = ComponentType.Get(Key)
 	Dim v As String = ""
@@ -3467,20 +3470,25 @@ Sub GetPropertyValue(Key As String) As String
 	End Select
 	Return v
 End Sub
-Sub GetPropertyFiles(Key As String) As List
-	'get the selected files, if any
-	Dim files As Object = BANano.GetElement($"#${mName}_${Key}"$).GetField("files").Result
-	Dim res As List = files.As(List)
-	Return res
+
+Sub GetPropertyFile(Key As String) As Object
+	Dim xmultiple As String = BANano.GetElement($"#${mName}_${Key}"$).GetAttr("multiple")
+	xmultiple = UI.CStr(xmultiple)
+	Select Case xmultiple
+	Case "multiple"
+		Dim files As Object = BANano.GetElement($"#${mName}_${Key}"$).GetField("files").Result
+		Dim res As List = files.As(List)
+		Return res
+	Case Else		
+		If BANano.GetElement($"#${mName}_${Key}"$).GetField("files").GetField("length").Result = 0 Then 'ignore
+			Return Null
+		Else
+			Dim obj() As BANanoObject = BANano.GetElement($"#${mName}_${Key}"$).GetField("files").Result
+			Return obj(0)
+		End If
+	End Select	
 End Sub
-Sub GetPropertyFile(Key As String) As Map
-	If BANano.GetElement($"#${mName}_${Key}"$).GetField("files").GetField("length").Result = 0 Then 'ignore
-		Return Null
-	Else
-		Dim obj() As BANanoObject = BANano.GetElement($"#${mName}_${Key}"$).GetField("files").Result
-		Return obj(0)
-	End If
-End Sub
+
 Sub GetPropertyImage(Key As String) As String
 	Dim imgLink As String = BANano.GetElement($"#${mName}_${Key}_src"$).GetData("src")
 	Return imgLink
@@ -3688,9 +3696,8 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean, sA
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	If bMultiple Then UI.SetAttrByID($"${mName}_${Key}"$, "multiple", "multiple")
 	If sAccept <> "" Then UI.SetAttrByID($"${mName}_${Key}"$, "accept", sAccept)
-	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
-		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
-	End If
+'	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
+	BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
 End Sub
 'this us used for the camera content without uploading
 '<code>
@@ -3765,9 +3772,8 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 	UI.OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
 '	UI.OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
 	'
-	If SubExists(mCallBack, $"${mName}_${Key}_FileChange"$) Then
-		BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
-	End If
+'	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
+	BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
 End Sub
 
 private Sub FileButtonClick(event As BANanoEvent)     'ignoredeadcode
@@ -3935,6 +3941,7 @@ Sub SetPropertyFileInputMultiple(key As String, b As Boolean)
 		UI.RemoveAttrByID($"${mName}_${key}"$, "multiple")
 	End If
 End Sub
+
 Sub SetPropertyFileInputProgressLoading(key As String, Value As Int, Status As Boolean)
 	If Status = False Then
 		'hide the progress
@@ -4210,11 +4217,12 @@ Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean,
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 End Sub
 'run validation
+'wrap it with banano.await
 Sub IsPropertyBlank(Key As String) As Boolean
-	Dim v As String = GetPropertyValue(Key)
+	Dim v As String = BANano.Await(GetPropertyValue(Key))
 	v = UI.CStr(v)
 	v = v.Trim
-	If v = "" Then
+	If v.length = 0 Then
 		SetPropertyColor(Key, "error")
 		Return True
 	End If
@@ -4222,8 +4230,9 @@ Sub IsPropertyBlank(Key As String) As Boolean
 	Return False
 End Sub
 'return 1 if blank else zero
+'wrap it with banano.await
 Sub PropertyOneIfBlankElseZero(Key As String) As Int
-	Dim v As String = GetPropertyValue(Key)
+	Dim v As String = BANano.Await(GetPropertyValue(Key))
 	v = UI.CStr(v)
 	v = v.Trim
 	If v = "" Then
@@ -4893,6 +4902,7 @@ Sub setPropertyBag(values As Map)
 	Next
 End Sub
 
+'wrap with banano.await
 Sub getPropertyBag As Map
 	Dim values As Map = CreateMap()
 	For Each k As String In ComponentType.Keys
@@ -5121,7 +5131,7 @@ End Sub
 Sub IsPropertyBagValid As Boolean
 	validations.Initialize
 	For Each k As String In Compulsory.Keys
-		Dim v As Boolean = IsPropertyBlank(k)
+		Dim v As Boolean = BANano.Await(IsPropertyBlank(k))
 		validations.Put(v, v)
 	Next
 	Dim hastrue As Boolean = validations.ContainsKey(True)
@@ -5518,4 +5528,92 @@ Sub SetPropertyValues(m As Map)
 		Dim v As String = m.Get(k)
 		SetPropertyValue(k, v)
 	Next
+End Sub
+
+'<code>
+'Sub propbag_propertyname_change(e As BANanoEvent)
+''has the file been specified
+'Dim fileObj As Map = = SDUIShared.GetFileFromEvent(e)
+'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
+''get file details
+'Dim fileDet As FileObject
+'fileDet = SDUIShared.GetFileDetails(fileObj)
+''get the file name
+'Dim fn As String = fileDet.FileName
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''**** UPLOAD
+''fileDet = SDUIShared.UploadFileWait(fileObj)
+''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+''Dim fn As String = fileDet.FileName
+''get the status of the upload
+''Dim sstatus As String = fileDet.Status
+''Select Case sstatus
+''Case "error"
+''Case "success"
+''End Select
+''the the full upload path of the file
+''Dim fp As String = fileDet.FullPath
+''**** UPLOAD
+''Dim fJSON As Map = BANano.Await(SDUIShared.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(SDUIShared.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(SDUIShared.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(SDUIShared.readAsDataURLWait(fileObj))
+''update state of some element like an image
+''for vfield use SetValue
+''vimage.src = fText
+''clear the file input
+''fil1.Value = ""
+'End Sub
+'</code>
+Sub FileChangeSingle
+End Sub
+'<code>
+''****for multiple files
+'Sub propbag_propertyname_change(e As BANanoEvent)
+''has the files been selected
+'Dim fileList As List = GetFilesFromEvent(e)
+'If banano.IsNull(fileList) Or banano.IsUndefined(fileList) Then Return
+''will store list of uploaded file
+'Dim uploads As List
+'uploads.Initialize
+''loop through each selected file
+'for each fileObj As Map in fileList
+''get file details
+'Dim fileDet As FileObject
+'fileDet = SDUIShared.GetFileDetails(fileObj)
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''start uploading the file
+'fileDet = SDUIShared.UploadFileWait(fileObj)
+''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+'Dim fn As String = fileDet.FileName
+''get the status of the upload
+'Dim sstatus As String = fileDet.Status
+'Select Case sstatus
+'Case "error"
+'Case "success"
+'End Select
+''the the full upload path of the file
+'Dim fp As String = fileDet.FullPath
+''update the lists of uploaded file with the path
+''uploads.Add(fp)
+'next
+''clear the file input
+'fil1.Value = ""
+'End Sub
+'</code>
+Sub FileChangeMultiple
 End Sub

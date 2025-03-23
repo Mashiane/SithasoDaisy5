@@ -379,6 +379,7 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("numeral.min.js")
 	BANano.DependsOnAsset("dayjs.min.js")
 	BANano.DependsOnAsset("relativeTime.min.js")
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 
 Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -570,7 +571,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
         	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
-	          	<button id="${mName}_searchbtn" class="btn join-item hidden">
+	          	<button id="${mName}_searchbtn" class="btn join-item hidden ">
 					<svg id="${mName}_searchbtnicon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg>
 				</button>
 			</div>
@@ -1142,6 +1143,7 @@ End Sub
 private Sub SetColumnChooser(Status As Boolean, Height As String, Color As String)
 	If Status = False Then
 		UI.Hide($"${mName}_columnchooser"$)
+		UI.Hide($"${mName}_divider2"$)
 		Return
 	End If
 	Dim clicks1 As List
@@ -1181,6 +1183,7 @@ private Sub SetColumnChooser(Status As Boolean, Height As String, Color As Strin
 	el.Append(sbOptions.ToString)
 	sbOptions.Initialize
 	UI.Show($"${mName}_columnchooser"$)
+	UI.Show($"${mName}_divider2"$)
 	UI.SetDataAttrByID($"${mName}_columnchooser"$, "color", btnColor)
 	For Each clickevent As String In clicks1
 		Dim rowEL As BANanoElement
@@ -1205,11 +1208,18 @@ private Sub HandleAlphaClick(event As BANanoEvent)     ''ignoredeadcode
 	UI.Show($"${mName}_${colName}_icon"$)
 	'perform the search
 	Dim alphaSearch As List = SearchByAlphabet(colName, sAlphaChooserColumn)
-	'Show all items filtered by alpha chooser
-	BANano.Await(SetItems(alphaSearch))
-	BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
-	BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, alphaSearch))
-	BANano.Await(ShowTotals(alphaSearch))
+	Select Case colName.tolowercase
+	Case "all"
+		'Show all items filtered by alpha chooser
+		BANano.Await(SetItemsPaginate(alphaSearch))
+	Case Else
+		'Show all items filtered by alpha chooser
+		BANano.Await(SetItems(alphaSearch))
+		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, alphaSearch))
+		BANano.Await(ShowTotals(alphaSearch))
+	End Select
+	
 	UI.hideloader
 	BANano.CallSub(mCallBack, $"${mName}_AlphaClick"$, Array(colName))
 End Sub
@@ -1535,6 +1545,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.LeftIconColor = iconColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
+	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "60")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
 	Return btn
 End Sub
@@ -2130,8 +2141,10 @@ End Sub
 
 private Sub SearchClear(e As BANanoEvent)
 	e.PreventDefault
+	PagePause
 	BANano.await(ClearRows)
 	BANano.await(SetItemsPaginate(Originals))
+	PageResume
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)
@@ -4386,6 +4399,7 @@ Sub SetColumnHeight(colName As String, height As String)
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.height = height
 		Columns.Put(colName, nc)
+		UI.SetHeightByID($"${mName}_${colName}_th"$, height)
 	End If
 End Sub
 Sub SetColumnWidthMultiple(width As String, colNames As List)
@@ -4399,6 +4413,8 @@ Sub SetColumnWidth(colName As String, width As String)
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.width = width
 		Columns.Put(colName, nc)
+		'adjust on the header
+		UI.SetWidthByID($"${mName}_${colName}_th"$, width)
 	End If
 End Sub
 'set the actual table height
@@ -5815,12 +5831,12 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -5889,13 +5905,13 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -5958,12 +5974,12 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -6024,12 +6040,12 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -6088,11 +6104,11 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_prepend" class="btn  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_prepend_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
-    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize}">
+    <btn id="${mName}_${RowCnt}_${fldName}_append" class="btn  btn-${sComponentSize}">
 		<svg id="${mName}_${RowCnt}_${fldName}_append_icon" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
 	</btn>
     </label>
@@ -6198,7 +6214,7 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 	Dim iconsize As String = UI.FixIconSize(tc.size)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     	<svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg>
     </button>
     <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hidden radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
@@ -6253,7 +6269,7 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
@@ -7295,7 +7311,7 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
     </td>"$
 	'********
@@ -8902,7 +8918,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 	'UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.SetIconSizeByID($"${mName}_searchbtnicon"$, s)
+	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "70")
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
 	Dim options1 As Map = UI.ListToSelectOptions(options)

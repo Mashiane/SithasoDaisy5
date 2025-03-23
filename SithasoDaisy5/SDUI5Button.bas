@@ -28,13 +28,14 @@ Version=10
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
+#DesignerProperty: Key: PopOverTarget, DisplayName: Pop Over Target, FieldType: String, DefaultValue: , Description: Pop Over Target
 #DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
 #DesignerProperty: Key: Link, DisplayName: Link, FieldType: Boolean, DefaultValue: False, Description: Link
 #DesignerProperty: Key: Loading, DisplayName: Loading, FieldType: Boolean, DefaultValue: False, Description: Loading
 #DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: none, Description: Icon Size
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size Percentage, FieldType: String, DefaultValue: 70, Description: Icon Size Percentage
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
@@ -128,7 +129,7 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_LEFT As String = "left"
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
-	Private sIconSize As String = "none"
+	Private sIconSize As String = "70"
 	Private sLeftIcon As String = ""
 	Private sLeftIconColor As String = "none"
 	Private sRightIcon As String = ""
@@ -136,6 +137,7 @@ Sub Class_Globals
 	Private bLeftIconVisible As Boolean = False
 	Private bRightIconVisible As Boolean = False
 	Private sShadow As String = "md"
+	Private sPopOverTarget As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -144,6 +146,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 '
 Sub OnEvent(event As String, MethodName As String)
@@ -386,9 +389,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
-		sIconSize = Props.GetDefault("IconSize", "none")
+		sIconSize = Props.GetDefault("IconSize", "70")
 		sIconSize = UI.CStr(sIconSize)
-		If sIconSize = "none" Then sIconSize = ""
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
 		sLeftIcon = UI.CStr(sLeftIcon)
 		sLeftIconColor = Props.GetDefault("LeftIconColor", "none")
@@ -402,6 +404,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "md")
 		sShadow = UI.CStr(sShadow)
 		sShadow = sShadow.ToLowerCase
+		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
+		sPopOverTarget = UI.CleanID(sPopOverTarget)
 	End If
 	'
 	If sParentID <> "" Then
@@ -493,6 +497,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setLeftIconColor(sLeftIconColor)
 	setRightIcon(sRightIcon)
 	setRightIconColor(sRightIconColor)
+	setPopOverTarget(sPopOverTarget)
+End Sub
+
+
+'set Pop Over Target
+Sub setPopOverTarget(s As String)				'ignoredeadcode
+	s = UI.CleanID(s)
+	sPopOverTarget = s
+	CustProps.put("PopOverTarget", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.AddAttr(mElement, "popovertarget", sPopOverTarget)
+	UI.AddStyle(mElement, "anchor-name", $"--${sPopOverTarget}_anchor"$)
+End Sub
+
+'get Pop Over Target
+Sub getPopOverTarget As String					'ignoredeadcode
+	Return sPopOverTarget
 End Sub
 
 Sub Focus
@@ -524,8 +546,8 @@ Sub setIconSize(s As String)				'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	If sLeftIcon <> "" And s <> "" Then UI.SetIconSizeByID($"${mName}_lefticon"$, s)
-	If sRightIcon <> "" And s <> "" Then UI.SetIconSizeByID($"${mName}_righticon"$, s)
+	If sLeftIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_lefticon"$, s)
+	If sRightIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_righticon"$, s)
 End Sub
 'set Left Icon
 Sub setLeftIcon(s As String)				'ignoredeadcode
@@ -593,14 +615,17 @@ Sub getRightIconColor As String
 	Return sRightIconColor
 End Sub
 
-
 'set Tooltip
 Sub setTooltip(s As String)			'ignoredeadcode
 	sTooltip = s
 	CustProps.put("Tooltip", s)
 	If mElement = Null Then Return
-	If s <> "" Then 
+	If s = "" Then
+		UI.RemoveClass(mElement, "tooltip")
+		UI.RemoveAttr(mElement, "data-tip")
+	Else	
 		UI.AddClass(mElement, "tooltip")
+		UI.AddAttr(mElement, "data-tip", s)
 	End If
 End Sub
 'set Tooltip Color
@@ -609,6 +634,7 @@ Sub setTooltipColor(s As String)				'ignoredeadcode
 	sTooltipColor = s
 	CustProps.put("TooltipColor", s)
 	If mElement = Null Then Return
+	If sTooltip = "" Then Return
 	If s <> "" Then UI.SetColor(mElement, "tooltipcolor", "tooltip", s)
 End Sub
 'set Tooltip Open
@@ -628,6 +654,7 @@ Sub setTooltipPosition(s As String)			'ignoredeadcode
 	sTooltipPosition = s
 	CustProps.put("TooltipPosition", s)
 	If mElement = Null Then Return
+	If sTooltip = "" Then Return
 	If s <> "" Then UI.AddClass(mElement, "tooltip-" & s)
 End Sub
 'get Tooltip

@@ -5,6 +5,8 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Src, DisplayName: Src, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Src
 #DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
@@ -17,6 +19,7 @@ Version=10
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: rounded, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: PopOverTarget, DisplayName: Pop Over Target, FieldType: String, DefaultValue: , Description: Pop Over Target
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -58,6 +61,7 @@ Sub Class_Globals
 	Private sMaxWidth As String = ""
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
+	Private sPopOverTarget As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -228,6 +232,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinHeight = UI.CStr(sMinHeight)
 		sMinWidth = Props.GetDefault("MinWidth", "")
 		sMinWidth = UI.CStr(sMinWidth)
+		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
+		sPopOverTarget = UI.CleanID(sPopOverTarget)
 	End If
 	'
 	UI.AddClassDT("bg-cover bg-center bg-no-repeat")
@@ -255,7 +261,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<img id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></img>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	setPopOverTarget(sPopOverTarget)
+	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
+	If SubExists(mCallBack, $"${mName}_click"$) Then
+		UI.SetCursorPointer(mElement)
+	End If
 End Sub
+
+'set Pop Over Target
+Sub setPopOverTarget(s As String)				'ignoredeadcode
+	s = UI.CleanID(s)
+	sPopOverTarget = s
+	CustProps.put("PopOverTarget", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.AddAttr(mElement, "popovertarget", sPopOverTarget)
+	UI.AddStyle(mElement, "anchor-name", $"--${sPopOverTarget}_anchor"$)
+End Sub
+
+'get Pop Over Target
+Sub getPopOverTarget As String					'ignoredeadcode
+	Return sPopOverTarget
+End Sub
+
 
 'set Rounded Box
 Sub setRoundedBox(b As Boolean)

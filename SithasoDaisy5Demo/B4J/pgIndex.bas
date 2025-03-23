@@ -74,7 +74,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-diff", "", "Diff")
 	drawermenu.AddItemChild("display", "pg-kbd", "", "Kbd")
 	drawermenu.AddItemChild("display", "pg-list", "", "List")
-	drawermenu.AddItemChild("display", "pg-chatlist", "", "Chat Item")
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
@@ -152,6 +151,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
 	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("plugins", "pg-svg", "", "SVG")
+	drawermenu.AddItemChild("plugins", "pg-whatsapp", "", "WhatsApp")
 End Sub
 
 
@@ -161,6 +161,7 @@ Private Sub appnavbar_BurgerClick (value As Boolean)
 End Sub
 
 Private Sub drawermenu_ItemClick (item As String)
+	appnavbar.Visible = True
 	'close the drawer
 	appdrawer.OpenDrawer(False)
 	'ensure the drawer is open on medium and up
@@ -176,6 +177,9 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "whatsapp"
+				pgWhatsApp.Show(App)
+				appnavbar.Visible = False
 			Case "infobox"
 				pgInfoBox.Show(App)
 			Case "groupselect"
@@ -272,8 +276,6 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgDiff.Show(App)
 		Case "kbd"
 			pgKbd.Show(App)
-		Case "chatlist"
-			pgChatList.Show(App)			
 		Case "list"
 			pgList.Show(App)
 		Case "stat"

@@ -7,6 +7,7 @@ Version=10
 'https://github.com/dmuy/Material-Toast
 #IgnoreWarnings:12
 #Event: Action (e As BANanoEvent)
+'
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: default, Description: Type Of, List: default|error|info|success|warning
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: , Description: Text
@@ -110,36 +111,48 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTypeOf = UI.CStr(sTypeOf)
 	End If
 	'
-	Options.put("actionText", sActionText)
+	'bottom_center|bottom_left|bottom_right|top_center|top_left|top_right
+	Options.Initialize 
+	Options.put("text", sText)
+'	Options.put("actionText", sActionText)
 	Options.put("duration", iDuration)
-	Options.put("init", False)
-	Options.put("interaction", bInteraction)
-	Options.put("interactionTimeout", sInteractionTimeout)
-	Options.put("modal", bModal)
+'	Options.put("init", False)
+'	Options.put("interaction", bInteraction)
+'	Options.put("interactionTimeout", sInteractionTimeout)
+'	Options.put("modal", bModal)
 	setPosition(sPosition)
-	Options.put("type", sTypeOf)
+	setTypeOf(sTypeOf)
+'	Options.Put("close", True)
 End Sub
 
 Sub Show
-	If SubExists(mCallBack, $"${mName}_action"$) Then
-		Dim e As BANanoEvent
-		Dim cbAction As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_action"$, Array(e))
-		Options.Put("action", cbAction)
-	End If
-	Options.Put("init", False)
-	'get the toast from window object
-	MDToastObject = BANano.RunJavascriptMethod("mdtoast", Array(sText, Options))
-End Sub
+	Dim e As BANanoEvent
+	Dim cbAction As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_action"$, Array(e))
+	Options.Put("onClick", cbAction)
+	Options.Put("stopOnFocus", True)
+	Dim oToastify As BANanoObject
+	oToastify.Initialize("Toastify")
+	Dim obj As BANanoObject = BANano.RunJavascriptMethod("Toastify", Array(Options))
+	obj.RunMethod("showToast", Null)
+	
+'	If SubExists(mCallBack, $"${mName}_action"$) Then
 
+'		Options.Put("action", cbAction)
+'	End If
+'	Options.Put("init", False)
+'	'get the toast from window object
+'	MDToastObject = BANano.RunJavascriptMethod("mdtoast", Array(sText, Options))
+End Sub
+'
 Sub Hide
-	MDToastObject.RunMethod("hidden", Null)
+'	MDToastObject.RunMethod("hidden", Null)
 End Sub
 
 'set Action Text
 Sub setActionText(s As String)
 	sActionText = s
 	CustProps.put("ActionText", s)
-	Options.put("actionText", s)
+'	Options.put("actionText", s)
 End Sub
 'set Duration
 Sub setDuration(i As Int)
@@ -151,30 +164,33 @@ End Sub
 Sub setInteraction(b As Boolean)
 	bInteraction = b
 	CustProps.put("Interaction", b)
-	Options.put("interaction", b)
+'	Options.put("interaction", b)
 End Sub
 'set Interaction Timeout
 Sub setInteractionTimeout(s As String)
 	sInteractionTimeout = s
 	CustProps.put("InteractionTimeout", s)
-	Options.put("interactionTimeout", s)
+'	Options.put("interactionTimeout", s)
 End Sub
 'set Modal
 Sub setModal(b As Boolean)
 	bModal = b
 	CustProps.put("Modal", b)
-	Options.put("modal", b)
+'	Options.put("modal", b)
 End Sub
 'set Position
 'options: bottom_left|top_left|top_center|top_right|bottom_left|bottom_center|bottom_right
 Sub setPosition(s As String)
 	sPosition = s
 	CustProps.put("Position", s)
-	s = s.replace("_"," ")
-	Options.put("position", s)
+	Dim sgravity As String = UI.MvField(s, 1, "_")
+	Dim xpos As String = UI.MvField(s,2, "_")	
+	Options.Put("gravity", sgravity)
+	Options.Put("position", xpos)
 End Sub
 'set Text
 Sub setText(s As String)
+	Options.Put("text", s)
 	sText = s
 	CustProps.put("Text", s)
 End Sub
@@ -183,7 +199,18 @@ End Sub
 Sub setTypeOf(s As String)
 	sTypeOf = s
 	CustProps.put("TypeOf", s)
-	Options.put("type", s)
+	Select Case s
+	Case "default", ""
+	Case "info"
+		UI.PutRecursive(Options, "style.background-color", "#00BAFE")
+	Case "warning"
+		UI.PutRecursive(Options, "style.background-color", "#FCB700")
+	Case "success"
+		UI.PutRecursive(Options, "style.background-color", "#00D390")
+	Case "error"		
+		UI.PutRecursive(Options, "style.background-color", "FF637D")
+	End Select
+'	Options.put("type", s)
 End Sub
 'get Action Text
 Sub getActionText As String

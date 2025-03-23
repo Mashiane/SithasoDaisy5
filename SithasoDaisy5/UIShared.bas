@@ -36,6 +36,27 @@ Sub JoinQuote(delimiter As String, lst As List) As String
 	Return sout
 End Sub
 
+'extract first number of words from a string
+Sub ExtractFirstWords(input As String, numwords As Int) As String			'ignoredeadcode
+	' Split the string into an array of words
+	Dim words As List = StrParse(" ", input)
+	
+	' Check if the input has fewer than number of words
+	If words.size <= numwords Then
+		Return input.Trim
+	End If
+    
+	' Join the first 5 words and return the result
+	Dim result As StringBuilder
+	result.Initialize
+	For i = 0 To (numwords - 1)
+		result.Append(words.Get(i))
+		result.Append(" ")
+	Next
+	' Return the trimmed result
+	Return result.ToString.trim
+End Sub
+
 'double
 Sub CDbl(o As String) As Double
 	o = Val(o)
@@ -48,37 +69,9 @@ Sub CDbl(o As String) As Double
 End Sub
 
 'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
-public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
+private Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
 	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
 End Sub
-#if JavaScript
-function BANano_r2fFIX(number, decimals, minf) {
-var decimals2=minf;
-if (decimals2<decimals) {decimals2=decimals}
-if (decimals2>decimals) {decimals=decimals2}
-let v = +(Math.round(number + "e+" + decimals) + "e-" + decimals2);
-var s = +v.toFixed(decimals2);
-if (s.countDecimals()<=minf) {
-return v.toFixed(minf);
-} else {
-return v.toFixed(decimals2);
-}
-};
-Number.prototype.countDecimals = function () {
-if (Math.floor(this.valueOf()) === this.valueOf()) return 0;
-var str = this.toString();
-if (str.indexOf(".") !== -1 && str.indexOf("-") !== -1) {
-return str.split("-")[1] || 0;
-} else if (str.indexOf(".") !== -1) {
-return str.split(".")[1].length || 0;
-}
-return str.split("-")[1] || 0;
-};
-function NumberFormat2(number, minimumIntegers, maximumFractions, minimumFractions,groupingUsed) {
-return BANano_nf2(BANano_r2fFIX(number,maximumFractions,minimumFractions),minimumIntegers,groupingUsed);
-}
-#End If
-
 
 'get the length of the string
 Sub Len(Text As String) As Int
@@ -1730,6 +1723,17 @@ private Sub SetSVGSrcByID(sID As String, s As String)
 	mElement.SetAttr("data-src", s)
 End Sub
 
+Sub ResizeIconByID(sID As String, sPercentage As String)
+	sID = CleanID(sID)
+	Dim sPerc As String = Val(sPercentage) & "%"
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	Dim m As Map = CreateMap("width": sPerc, "height":sPerc)
+	mElement.SetStyle(BANano.ToJson(m))
+	mElement.SetAttr("preserveAspectRatio", "xMidYMid meet")
+	mElement.RemoveAttr("width")
+	mElement.RemoveAttr("height")	
+End Sub
+
 'set width and height of icon
 Sub SetIconSizeByID(sID As String, s As String)
 	sID = CleanID(sID)
@@ -1929,6 +1933,30 @@ Sub SetCheckedByID(sID As String, b As Boolean)
 	mElement.SetChecked(b)
 End Sub
 
+Sub ToggleDropDownByID(sID As String)
+	ToggleClassByID(sID, "dropdown-open")
+End Sub
+
+Sub CloseDropDownByID(sID As String)
+	RemoveClassByID(sID, "dropdown-open")
+End Sub
+
+Sub OpenDropDownByID(sID As String)
+	AddClassByID(sID, "dropdown-open")
+End Sub
+
+Sub ToggleClassByID(sID As String, sClass As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.ToggleClass(sClass)
+End Sub
+
+Sub ToggleClass(mElement As BANanoElement, sClass As String)
+	If mElement = Null Then Return
+	mElement.ToggleClass(sClass)
+End Sub
+
 Sub ToggleByID(sID As String)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -2025,7 +2053,7 @@ Sub AddSizeDT(prefix As String, tc As String)
 	AddClassDT(s)
 End Sub
 
-Sub AddCenterChildrenDT
+Sub AddCenterChildrenDT				'ignoredeadcode
 	AddClassDT("flex justify-center items-center")
 End Sub
 
@@ -2100,7 +2128,7 @@ Sub AddBackgroundImageDT(s As String)				'ignoredeadcode
 	AddStyleDT("background-repeat", "no-repeat")
 End Sub
 
-Sub SetBackgroundImage(mElement As BANanoElement, s As String)
+Sub SetBackgroundImage(mElement As BANanoElement, s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	Dim m As Map = CreateMap()
 	m.Put("background-image", $"url('${s}')"$)
@@ -2112,7 +2140,7 @@ Sub SetBackgroundImage(mElement As BANanoElement, s As String)
 	AddStyleMap(mElement, m)
 End Sub
 
-Sub SetBackgroundImageByID(sID As String, s As String)
+Sub SetBackgroundImageByID(sID As String, s As String)			'ignoredeadcode
 	sID = CStr(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	SetBackgroundImage(mElement, s)
@@ -2140,6 +2168,18 @@ Sub SetPlacement(mElement As BANanoElement, sprefix As String, sPlacement As Str
 		Dim spart As String = MvField(sPlacement,2,"-")
 		AddClass(mElement, $"${sprefix}-${fpart} ${sprefix}-${spart}"$)
 	End If
+End Sub
+
+Sub SetIconFillByID(sID As String, s As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.SetAttr("fill", s)
+End Sub
+
+Sub SetIconFill(mElement As BANanoElement, s As String)
+	If mElement = Null Then Return
+	mElement.SetAttr("fill", s)
 End Sub
 
 Sub SetPlacementByID(sID As String, sprefix As String, splacement As String)
@@ -2224,6 +2264,42 @@ Sub ProperCase(myStr As String) As String
 	End Try
 End Sub
 
+'get file details, this implements a blob
+Sub GetFileDetails(fileObj As Map) As FileObject
+	Dim ff As FileObject
+	ff.Initialize
+	ff.FileOK = False
+	If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return ff
+	Dim sname As String = fileObj.Get("name")
+	Dim lmd As Object = fileObj.Get("lastModified")
+	Dim ssize As String = fileObj.Get("size")
+	Dim stype As String = fileObj.Get("type")
+	Dim swebkitRelativePath As String = fileObj.Get("webkitRelativePath")
+	'
+	Dim slastModifiedDate As BANanoObject
+	slastModifiedDate.Initialize2("Date", lmd)    '
+	Dim yyyy As String = slastModifiedDate.RunMethod("getFullYear", Null).Result
+	Dim dd As String = slastModifiedDate.RunMethod("getDate", Null).Result
+	Dim mm As String = slastModifiedDate.RunMethod("getMonth", Null).Result
+	Dim hh As String = slastModifiedDate.RunMethod("getHours", Null).Result
+	Dim minutes As String = slastModifiedDate.RunMethod("getMinutes", Null).Result
+	'pad the details
+	dd = modSD5.PadRight(dd, 2, "0")
+	mm = modSD5.PadRight(mm, 2, "0")
+	hh = modSD5.PadRight(hh, 2, "0")
+	minutes = modSD5.PadRight(minutes, 2, "0")
+	'
+	Dim fd As String = $"${yyyy}-${mm}-${dd} ${hh}:${minutes}"$
+	ff.FileName = sname
+	ff.FileDate = fd
+	ff.FileDateOnly = $"${yyyy}-${mm}-${dd}"$
+	ff.FileSize = ssize
+	ff.FileType = stype
+	ff.FileOK = True
+	ff.Extension = MvLast(".", sname)
+	ff.webkitRelativePath = swebkitRelativePath
+	Return ff
+End Sub
 
 'count mv string
 Sub MvCount(strMV As String, Delimiter As String) As Int
@@ -3277,4 +3353,87 @@ Sub GetWorkingDates(startDate As String, endDate As String) As List
 	Next
 
 	Return workingDates
+End Sub
+
+'open a url on a blank window
+Sub OpenURLTab(url As String)			'ignoredeadcode
+	Dim bo As BANanoObject = BANano.Window.RunMethod("open", Array(url, "_blank"))
+	bo.RunMethod("focus", Null)
+End Sub
+
+Sub OpenURLTarget(url As String, target As String)
+	Dim bo As BANanoObject = BANano.Window.RunMethod("open", Array(url, target))
+	bo.RunMethod("focus", Null)
+End Sub
+
+'open whatsapp using the telephone number
+'include country code with + on number
+Sub OpenURLWhatsApp(tel As String)
+	OpenURLTab($"https://api.whatsapp.com/send?phone=${tel}"$)
+End Sub
+
+Sub OpenURLWhatsAppText(tel As String, text As String)
+	OpenURLTab($"https://api.whatsapp.com/send?phone=${tel}&text=${text}"$)
+End Sub
+
+'place a call using a number
+'include country code with + on number
+Sub OpenURLTel(tel As String)
+	OpenURLTab($"tel:${tel}"$)
+End Sub
+
+Sub GeneratePassword(plength As Int, includeLowercase As Boolean,  includeUppercase As Boolean, includeNumbers As Boolean, includeSpecialChars As Boolean) As String				'ignoredeadcode
+	Dim uppercaseArray() As String = Array As String ("A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z")
+	Dim lowercaseArray() As String = Array As String ("a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z")
+	Dim numbersArray()   As String = Array As String ("0","1","2","3","4","5","6","7","8","9")
+	Dim symbolsArray() As String = Array As String ("@", "#", "$", "!", "^", "*", "(", ")", "_", "+", "[", "]", "{", "}", "|", ";", ":", ".")
+	'
+	Dim charList As List
+	charList.Initialize
+  
+	If includeNumbers  Then charList.AddAll(numbersArray)
+	If includeLowercase Then charList.AddAll(lowercaseArray)
+	If includeUppercase Then charList.AddAll(uppercaseArray)
+	If includeSpecialChars Then charList.AddAll(symbolsArray)
+
+	Dim newPassword As StringBuilder
+	newPassword.Initialize
+  
+	For i = 1 To plength
+		newPassword.Append(charList.Get(Rnd(0, charList.Size)))
+	Next
+	Return newPassword.ToString
+End Sub
+
+Sub RunMethodByID(sID As String, sEvent As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return
+	mElement.RunMethod(sEvent, Null)
+End Sub
+
+Sub SetToolTipByID(sID As String, tooltip As String, tooltipPosition As String)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#{sid}"$)
+	If mElement = Null Then Return
+	mElement.SetAttr("data-tip", tooltip)
+	AddClass(mElement, $"tooltip tooltip-${tooltipPosition}"$)
+End Sub
+
+Sub SetToolTip(mElement As BANanoElement, tooltip As String, tooltipPosition As String)
+	If mElement = Null Then Return
+	mElement.SetAttr("data-tip", tooltip)
+	AddClass(mElement, $"tooltip tooltip-${tooltipPosition}"$)
+End Sub
+
+'KB
+Sub ToKiloBytes(kbSize As Int) As Int
+	Dim maxs As Int = BANano.parseInt(kbSize) * 1024
+	Return maxs
+End Sub
+
+'b
+Sub ToBytes(kbSize As Int) As Long
+	Dim maxs As Long = (BANano.parseInt(kbSize) * 1024) * 1024
+	Return maxs
 End Sub

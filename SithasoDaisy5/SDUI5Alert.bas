@@ -82,7 +82,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize	
+	CustProps.Initialize
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String

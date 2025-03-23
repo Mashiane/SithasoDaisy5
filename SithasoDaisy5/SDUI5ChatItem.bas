@@ -255,7 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bUnreadVisible = UI.CBool(bUnreadVisible)
 	End If
 	'
-	UI.AddClassDT("list-row flex items-center gap-3 p-2 hover:bg-base-200 cursor-pointer")
+	UI.AddClassDT("list-row flex items-center gap-3 p-2 hover:bg-base-200 cursor-pointer wa-sidebar-chat")
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -280,27 +280,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	mElement = mTarget.Append($"[BANCLEAN]
 	<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}fromavt" class="avatar">
-        	<div id="${mName}fromhost" class="${avtsize} ${avtshape}">
-          		<img id="${mName}fromimg" src="${sFromAvatar}" alt="${sFromName}">
+		<div id="${mName}_fromavt" class="avatar">
+        	<div id="${mName}_fromhost" class="${avtsize} ${avtshape}">
+          		<img id="${mName}_fromimg" src="${sFromAvatar}" alt="${sFromName}">
         	</div>
       	</div>
-      	<div class="flex-1">
-        	<div class="flex justify-between">
-          		<span id="${mName}fromname" class="font-semibold text-base">${sFromName}</span>
-          		<span id="${mName}time" class="text-xs text-gray-500">${sDeliveryTime}</span>
+      	<div id="${mName}_flex1" class="flex-1">
+        	<div id="${mName}_flex2" class="flex justify-between">
+          		<span id="${mName}_fromname" class="font-semibold text-base">${sFromName}</span>
+          		<span id="${mName}_time" class="text-xs text-gray-500">${sDeliveryTime}</span>
         	</div>
-        	<div class="flex justify-between">
-          		<p id="${mName}message" class="text-sm text-gray-500 truncate">${sMessage}</p>
-          		<div id="${mName}unread" class="badge ${unreadcolor} ${sunreadvisible} rounded-full w-5 h-5 badge-sm">${sUnread}</div>
+        	<div id="${mName}_flex3" class="flex justify-between">
+          		<p id="${mName}_message" class="text-sm text-gray-500 truncate">${sMessage}</p>
+          		<div id="${mName}_unread" class="badge ${unreadcolor} ${sunreadvisible} rounded-full w-5 h-5 badge-sm">${sUnread}</div>
         	</div>
       	</div>
-      	<div id="${mName}helpavt" class="avatar ${shelpvisible}">
-        	<div id="${mName}helphost" class="${avtsize} ${avtshape}">
-          		<img id="${mName}helpimg" src="${sHelpAvatar}" alt="">
+      	<div id="${mName}_helpavt" class="avatar ${shelpvisible}">
+        	<div id="${mName}_helphost" class="${avtsize} ${avtshape}">
+          		<img id="${mName}_helpimg" src="${sHelpAvatar}" alt="">
         	</div>
       	</div>
 	</li>"$).Get("#" & mName)
+	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 End Sub
 
 'set Avatar Shape
@@ -310,8 +311,8 @@ Sub setAvatarShape(s As String)
 	CustProps.put("AvatarShape", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetMaskByID($"${mName}fromhost"$, s)
-		UI.SetMaskByID($"${mName}helphost"$, s)
+		UI.SetMaskByID($"${mName}_fromhost"$, s)
+		UI.SetMaskByID($"${mName}_helphost"$, s)
 	End If
 End Sub
 'set Avatar Size
@@ -320,8 +321,8 @@ Sub setAvatarSize(s As String)
 	CustProps.put("AvatarSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetWidthByID($"${mName}fromhost"$, s)
-		UI.SetWidthByID($"${mName}helphost"$, s)
+		UI.SetWidthByID($"${mName}_fromhost"$, s)
+		UI.SetWidthByID($"${mName}_helphost"$, s)
 	End If
 End Sub
 'set Background Color
@@ -337,45 +338,42 @@ Sub setDeliveryTime(s As String)
 	sDeliveryTime = s
 	CustProps.put("DeliveryTime", s)
 	If mElement = Null Then Return
-	If bTimeAgo Then
-	Else	
-		UI.SetTextByID($"${mName}time"$, s)
-	End If
+	UI.SetTextByID($"${mName}_time"$, s)
 End Sub
 'set From Avatar
 Sub setFromAvatar(s As String)
 	sFromAvatar = s
 	CustProps.put("FromAvatar", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetImageByID($"${mName}fromimg"$, s)
+	If s <> "" Then UI.SetImageByID($"${mName}_fromimg"$, s)
 End Sub
 'set From Name
 Sub setFromName(s As String)
 	sFromName = s
 	CustProps.put("FromName", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}fromname"$, s)
+	UI.SetTextByID($"${mName}_fromname"$, s)
 End Sub
 'set Help Avatar
 Sub setHelpAvatar(s As String)
 	sHelpAvatar = s
 	CustProps.put("HelpAvatar", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetImageByID($"${mName}helpimg"$, s)
+	If s <> "" Then UI.SetImageByID($"${mName}_helpimg"$, s)
 End Sub
 'set Help Visible
 Sub setHelpVisible(b As Boolean)
 	bHelpVisible = b
 	CustProps.put("HelpVisible", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}helpavt"$, b)
+	UI.SetVisibleByID($"${mName}_helpavt"$, b)
 End Sub
 'set Message
 Sub setMessage(s As String)
 	sMessage = s
 	CustProps.put("Message", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}message"$, s)
+	UI.SetTextByID($"${mName}_message"$, s)
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -414,11 +412,16 @@ Sub setUnread(s As String)
 	sUnread = s
 	CustProps.put("Unread", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}unread"$, s)
-	If s = "" Then
-		UI.SetVisibleByID($"${mName}unread"$, False)
+	Dim iUnread As Int = UI.CInt(s)
+	If iUnread > 9 Then
+		UI.SetTextByID($"${mName}_unread"$, "+9")
 	Else
-		UI.SetVisibleByID($"${mName}unread"$, True)
+		UI.SetTextByID($"${mName}_unread"$, iUnread)
+	End If
+	If iUnread = 0 Then
+		UI.SetVisibleByID($"${mName}_unread"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_unread"$, True)
 	End If
 End Sub
 'set Unread Color
@@ -426,14 +429,14 @@ Sub setUnreadColor(s As String)
 	sUnreadColor = s
 	CustProps.put("UnreadColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetColorByID($"${mName}unread"$, "badge", "badge", s)
+	If s <> "" Then UI.SetColorByID($"${mName}_unread"$, "badge", "badge", s)
 End Sub
 'set Unread Visible
 Sub setUnreadVisible(b As Boolean)
 	bUnreadVisible = b
 	CustProps.put("UnreadVisible", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}unread"$, b)
+	UI.SetVisibleByID($"${mName}_unread"$, b)
 End Sub
 'get Avatar Shape
 Sub getAvatarShape As String

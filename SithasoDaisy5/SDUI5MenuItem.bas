@@ -24,6 +24,7 @@ Version=10
 #DesignerProperty: Key: Target, DisplayName: Target, FieldType: String, DefaultValue: none, Description: Target, List: _blank|_parent|_self|_top|none
 #DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|none|right|top
+#DesignerProperty: Key: PopOverTarget, DisplayName: Pop Over Target, FieldType: String, DefaultValue: , Description: Pop Over Target
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -88,6 +89,7 @@ Sub Class_Globals
 	Private sIconSize As String = "20px"
 	Private bOpen As Boolean = False
 	Private Items As Map
+	Private sPopOverTarget As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -95,9 +97,9 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 	Items.Initialize 
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 
 Sub LinkExisting
@@ -302,6 +304,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bBadgeVisible = UI.CBool(bBadgeVisible)    
 		bOpen = Props.GetDefault("Open", False)
 		bOpen = UI.CBool(bOpen)            
+		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
+		sPopOverTarget = UI.CleanID(sPopOverTarget)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -390,6 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setBadgeColor(sBadgeColor)
 		setBadgeSize(sBadgeSize)
 		setBadgeVisible(bBadgeVisible)
+		setPopOverTarget(sPopOverTarget)
 	End Select
 	setParent(bParent)
 	setText(sText)
@@ -399,6 +404,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sItemType = "title" Then Return
 	'
 	UI.OnEvent(mElement, "click", Me, "itemclick")
+End Sub
+
+'set Pop Over Target
+Sub setPopOverTarget(s As String)				'ignoredeadcode
+	s = UI.CleanID(s)
+	sPopOverTarget = s
+	CustProps.put("PopOverTarget", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.AddAttr(mElement, "popovertarget", sPopOverTarget)
+	UI.AddStyle(mElement, "anchor-name", $"--${sPopOverTarget}_anchor"$)
+End Sub
+
+'get Pop Over Target
+Sub getPopOverTarget As String					'ignoredeadcode
+	Return sPopOverTarget
 End Sub
 
 'set Menu Name
@@ -413,7 +434,7 @@ Sub getMenuName As String
 End Sub
 
 private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
-	e.PreventDefault
+'	e.PreventDefault
 	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
 End Sub

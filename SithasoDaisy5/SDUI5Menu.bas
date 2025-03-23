@@ -26,7 +26,12 @@ Version=10
 #DesignerProperty: Key: MdDirection, DisplayName: MD Direction, FieldType: String, DefaultValue: none, Description: Md Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: LgDirection, DisplayName: LG Direction, FieldType: String, DefaultValue: none, Description: Lg Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: XlDirection, DisplayName: XL Direction, FieldType: String, DefaultValue: none, Description: Xl Direction, List: horizontal|none|vertical
+#DesignerProperty: Key: PopOver, DisplayName: Pop Over, FieldType: Boolean, DefaultValue: False, Description: Pop Over
+#DesignerProperty: Key: Card, DisplayName: Card, FieldType: Boolean, DefaultValue: False, Description: Card
 #DesignerProperty: Key: Dropdown, DisplayName: Dropdown, FieldType: Boolean, DefaultValue: False, Description: Dropdown
+#DesignerProperty: Key: DropdownOpen, DisplayName: Dropdown Open, FieldType: Boolean, DefaultValue: False, Description: Dropdown Open
+#DesignerProperty: Key: DropDownHover, DisplayName: Dropdown Hover, FieldType: Boolean, DefaultValue: False, Description: Hover
+#DesignerProperty: Key: DropdownPlacement, DisplayName: Dropdown Placement, FieldType: String, DefaultValue: bottom, Description: Dropdown Placement, , List: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end|none
 #DesignerProperty: Key: DropdownContent, DisplayName: Dropdown Content, FieldType: Boolean, DefaultValue: False, Description: Dropdown Content
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -77,33 +82,31 @@ Sub Class_Globals
 	Private sXlDirection As String = "none"
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
-	Public CONST ROUNDED_NONE As String = "none"
-	Public CONST ROUNDED_ROUNDED As String = "rounded"
-	Public CONST ROUNDED_ROUNDED_2XL As String = "rounded-2xl"
-	Public CONST ROUNDED_ROUNDED_3XL As String = "rounded-3xl"
-	Public CONST ROUNDED_ROUNDED_FULL As String = "rounded-full"
-	Public CONST ROUNDED_ROUNDED_LG As String = "rounded-lg"
-	Public CONST ROUNDED_ROUNDED_MD As String = "rounded-md"
-	Public CONST ROUNDED_ROUNDED_SM As String = "rounded-sm"
-	Public CONST ROUNDED_ROUNDED_XL As String = "rounded-xl"
-	Public CONST SHADOW_2XL As String = "2xl"
-	Public CONST SHADOW_INNER As String = "inner"
-	Public CONST SHADOW_LG As String = "lg"
-	Public CONST SHADOW_MD As String = "md"
-	Public CONST SHADOW_NONE As String = "none"
-	Public CONST SHADOW_SHADOW As String = "shadow"
-	Public CONST SHADOW_SM As String = "sm"
-	Public CONST SHADOW_XL As String = "xl"
-	Public CONST SIZE_LG As String = "lg"
-	Public CONST SIZE_MD As String = "md"
-	Public CONST SIZE_NONE As String = "none"
-	Public CONST SIZE_SM As String = "sm"
-	Public CONST SIZE_XL As String = "xl"
-	Public CONST SIZE_XS As String = "xs"
 	Private bRoundedItems As Boolean = True
 	Private bDropdown As Boolean = False
 	Private bDropdownContent As Boolean = False
 	Private Items As Map
+	Private bDropDownHover As Boolean
+	Private bCard As Boolean = False
+	Private bDropdownOpen As Boolean = False
+	Private sDropdownPlacement As String = "bottom"
+	Private bPopOver As Boolean = False
+	Public CONST PLACEMENT_BOTTOM As String = "bottom"
+	Public CONST PLACEMENT_BOTTOM_CENTER As String = "bottom-center"
+	Public CONST PLACEMENT_BOTTOM_END As String = "bottom-end"
+	Public CONST PLACEMENT_CENTER As String = "center"
+	Public CONST PLACEMENT_END As String = "end"
+	Public CONST PLACEMENT_LEFT As String = "left"
+	Public CONST PLACEMENT_LEFT_CENTER As String = "left-center"
+	Public CONST PLACEMENT_LEFT_END As String = "left-end"
+	Public CONST PLACEMENT_RIGHT As String = "right"
+	Public CONST PLACEMENT_RIGHT_CENTER As String = "right-center"
+	Public CONST PLACEMENT_RIGHT_END As String = "right-end"
+	Public CONST PLACEMENT_START As String = "start"
+	Public CONST PLACEMENT_TOP As String = "top"
+	Public CONST PLACEMENT_TOP_CENTER As String = "top-center"
+	Public CONST PLACEMENT_TOP_END As String = "top-end"
+	Private sAnchorName As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -111,10 +114,15 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 	Items.Initialize
 End Sub
+
+'link to an existing element
+Sub LinkExisting			'ignoredeadcode
+	mElement = BANano.GetElement($"#${mName}"$)	
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -300,13 +308,35 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bDropdown = Props.GetDefault("Dropdown", False)
 		bDropdown = UI.CBool(bDropdown)
 		bDropdownContent = Props.GetDefault("DropdownContent", False)
-		bDropdownContent = UI.CBool(bDropdownContent)    
+		bDropdownContent = UI.CBool(bDropdownContent)
+		bCard = Props.GetDefault("Card", False)
+		bCard = UI.CBool(bCard)
+		bDropdownOpen = Props.GetDefault("DropdownOpen", False)
+		bDropdownOpen = UI.CBool(bDropdownOpen)
+		sDropdownPlacement = Props.GetDefault("DropdownPlacement", "bottom")
+		sDropdownPlacement = UI.CStr(sDropdownPlacement)
+		If sDropdownPlacement = "none" Then sDropdownPlacement = ""
+		bPopOver = Props.GetDefault("PopOver", False)
+		bPopOver = UI.CBool(bPopOver)
+		bDropDownHover = Props.GetDefault("DropDownHover", False)
+		bDropDownHover = UI.CBool(bDropDownHover)
 	End If
 	'
 	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
 	If bDropdown = True Then 
 		UI.AddClassDT("dropdown")
+		If bDropdownOpen = True Then UI.AddClassDT("dropdown-open")
+		If sDropdownPlacement <> "" Then UI.AddPlacementDT("dropdown", sDropdownPlacement)
+		If bDropDownHover Then UI.AddClassDT("dropdown-hover")
 	End If
+	If bCard = True Then UI.addclassdt("card")
+	If bPopOver = True Then 
+		UI.AddAttrDT("popover", "popover")
+		UI.addclassdt("card z-1")
+		sAnchorName = $"${mName}_anchor"$
+		UI.AddStyleDT("position-anchor", $"--${sAnchorName}"$)
+	End If
+	'
 	If bDropdownContent = True Then 
 		UI.AddClassDT("dropdown-content")
 		UI.AddClassDT("z-1")
@@ -348,6 +378,94 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 '	setVisible(bVisible)
+End Sub
+
+'set Card
+Sub setCard(b As Boolean)
+	bCard = b
+	CustProps.put("Card", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "card")
+	Else
+		UI.RemoveClass(mElement, "card")
+	End If
+End Sub
+
+'set Dropdown Open
+Sub setDropdownOpen(b As Boolean)
+	bDropdownOpen = b
+	CustProps.put("DropdownOpen", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "dropdown-open")
+	Else
+		UI.RemoveClass(mElement, "dropdown-open")
+	End If
+End Sub
+'set Dropdown Placement
+'options: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
+Sub setDropdownPlacement(s As String)
+	sDropdownPlacement = s
+	CustProps.put("DropdownPlacement", s)
+	If mElement = Null Then Return
+	If s = "none" Then s = ""
+	If s <> "" Then UI.SetPlacement(mElement, "dropdown", s)
+End Sub
+
+'set Pop Over
+Sub setPopOver(b As Boolean)
+	bPopOver = b
+	CustProps.put("PopOver", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "pop-over", b)
+	Else
+		UI.RemoveAttr(mElement, "pop-over")
+	End If
+End Sub
+
+'set Hover
+Sub setDropDownHover(b As Boolean)
+	bDropDownHover = b
+	CustProps.put("DropDownHover", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "dropdown-hover")
+	Else
+		UI.RemoveClass(mElement, "dropdown-hover")
+	End If
+End Sub
+
+'get Hover
+Sub getDropDownHover As Boolean
+	Return bDropDownHover
+End Sub
+
+'get Card
+Sub getCard As Boolean
+	Return bCard
+End Sub
+
+'get Dropdown Open
+Sub getDropdownOpen As Boolean
+	Return bDropdownOpen
+End Sub
+'get Dropdown Placement
+Sub getDropdownPlacement As String
+	Return sDropdownPlacement
+End Sub
+'get Pop Over
+Sub getPopOver As Boolean
+	Return bPopOver
+End Sub
+
+Sub getAnchorName As String
+	Return sAnchorName
+End Sub
+
+Sub setAnchorName(s As String)
+	sAnchorName = s
 End Sub
 
 'set Background Color
@@ -775,4 +893,23 @@ End Sub
 'get Dropdown Content
 Sub getDropdownContent As Boolean
 	Return bDropdownContent
+End Sub
+
+Sub SetIconFillByID(item As String, s As String)
+	UI.SetIconFillByID($"${item}_icon"$, s)
+End Sub
+
+Sub ShowPopOver
+	If mElement = Null Then Return
+	mElement.RunMethod("showPopover", Null)
+End Sub
+
+Sub HidePopover
+	If mElement = Null Then Return
+	mElement.RunMethod("hidePopover", Null)
+End Sub
+
+Sub TogglePopover
+	If mElement = Null Then Return
+	mElement.RunMethod("togglePopover", Null)
 End Sub

@@ -97,7 +97,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -402,6 +402,12 @@ private Sub FileButtonClick(event As BANanoEvent)     'ignoredeadcode
 	mElement.RunMethod("click", Null)
 End Sub
 
+public Sub TriggerClick
+	If mElement = Null Then Return
+	mElement.SetValue(Null)
+	mElement.Trigger("click", Null)
+End Sub
+
 'set Capture
 'options: environment|none|user
 Sub setCapture(s As String)			'ignoredeadcode
@@ -689,7 +695,10 @@ Sub setLabel(s As String)
 	sLabel = s
 	CustProps.put("Label", s)
 	If mElement = Null Then Return
-	UI.SetAttr(mElement, "label", s)
+	Select Case sInputType
+	Case "legend", "label-input"
+		UI.SetTextByID($"${mName}_legend"$, s)
+	End Select
 End Sub
 'set Required
 Sub setRequired(b As Boolean)				'ignoredeadcode
@@ -910,4 +919,54 @@ Sub ResetValidation
 	Catch
 		
 	End Try		'ignore
+End Sub
+
+Sub CamCorder
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, "accept", "video/*;capture=camcorder")
+End Sub
+Sub Microphone
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", "audio/*;capture=microphone")
+End Sub
+'set to camera to take using back
+Sub BackCamera
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", "image/*;capture=camera")
+	UI.AddAttr(mElement, "capture", "environment")
+End Sub
+'take selfie photo
+Sub FrontCamera
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", "image/*;capture=camera")
+	UI.AddAttr(mElement, "capture", "user")
+End Sub
+
+Sub AcceptVideosOnly
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", "video/mp4,video/x-m4v,video/*")
+End Sub
+
+Sub AcceptImagesOnly
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", "image/*")
+End Sub
+Sub AcceptJSON
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, "accept", ".json")
+End Sub
+
+Sub AcceptExcel
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", ".xls, .xlsx")
+End Sub
+
+Sub AcceptPDF
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", ".pdf")
+End Sub
+
+Sub AccectWord
+	If mElement = Null Then Return
+	UI.AddAttr(mElement,"accept", ".doc, .docx")
 End Sub

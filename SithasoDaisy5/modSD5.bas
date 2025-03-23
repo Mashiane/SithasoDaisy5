@@ -16,6 +16,7 @@ Sub Process_Globals
 	Public ColorMap As Map
 	Public Months As Map
 	Public Days As Map
+	Public EmojiData As Map
 End Sub
 
 

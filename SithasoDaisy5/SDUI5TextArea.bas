@@ -116,7 +116,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -354,7 +354,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
-          			<button id="${mName}_prepend" class="btn join-item hidden">
+          			<button id="${mName}_prepend" class="btn join-item hidden ">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
 						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
@@ -362,7 +362,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden">
+          			<button id="${mName}_append" class="btn join-item hidden ">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
@@ -379,7 +379,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
-          			<button id="${mName}_prepend" class="btn join-item hidden">
+          			<button id="${mName}_prepend" class="btn join-item hidden ">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
 						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
@@ -387,7 +387,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden">
+          			<button id="${mName}_append" class="btn join-item hidden ">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</img></button>
@@ -403,7 +403,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "buttons-floating"
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
-					<button id="${mName}_prepend" class="btn join-item hidden">
+					<button id="${mName}_prepend" class="btn join-item hidden ">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
 						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
 					</button>
@@ -414,7 +414,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden">
+          			<button id="${mName}_append" class="btn join-item hidden ">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
 						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
 					</button>
@@ -919,8 +919,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_prepend_icon"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_append_icon"$, sSize))
+		BANano.Await(UI.ResizeIconByID($"${mName}_prepend_icon"$, "70"))
+		BANano.Await(UI.ResizeIconByID($"${mName}_append_icon"$, "70"))
 	End Select
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "textarea", sSize))

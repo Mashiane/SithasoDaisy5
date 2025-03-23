@@ -8,11 +8,12 @@ Version=10
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #00ff00, Description: Active Color
 #DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: full, Description: Shape, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -48,6 +49,8 @@ Sub Class_Globals
 	Private sColor As String = "primary"
 	Private sShape As String = "full"
 	Private sSize As String = "none"
+	Private sValue As String = ""
+	Private items As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -55,8 +58,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
+	items.Initialize
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -208,6 +211,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
+		sValue = Props.GetDefault("Value", "")
+		sValue = UI.CStr(sValue)
 	End If
 	'
 	UI.AddClassDT("filter")
@@ -225,17 +230,43 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
 	setOptions(sRawOptions)
+	setValue(sValue)
 End Sub
+
+'set Value
+Sub setValue(s As String)			'ignoredeadcode
+	sValue = s
+	CustProps.put("Value", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetCheckedByID($"${sValue}_${mName}"$, True)
+End Sub
+
+'get Value
+Sub getValue As String
+	Dim selectedItems As List
+	selectedItems.Initialize
+	For Each item As String In items.keys
+		Dim b As Boolean = UI.GetCheckedByID(item)
+		If b Then
+			Dim ok As String = UI.MvField(item, 1, "_")
+			selectedItems.Add(ok)
+		End If
+	Next
+	sValue = UI.Join(";", selectedItems)
+	Return sValue
+End Sub
+
 
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
 	mElement.empty
+	items.Initialize
 	Dim itemShape As String = UI.FixRounded(sShape)
 	Dim itemSize As String = UI.FixSize("btn", sSize)
 	mElement.Append($"<input id="reset_${mName}" class="btn ${itemShape} ${itemSize} filter-reset" value="reset" type="radio" name="${mName}"></input>"$)
 End Sub
 
-Sub AddOption(sKey As String, sValue As String)
+Sub AddOption(sKey As String, xValue As String)
 	If mElement = Null Then Return
 	sKey = UI.CleanID(sKey)
 	Dim itemShape As String = UI.FixRounded(sShape)
@@ -249,7 +280,8 @@ Sub AddOption(sKey As String, sValue As String)
 		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
-	mElement.Append($"<input id="${sKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${sValue}"></input>"$)
+	mElement.Append($"<input id="${sKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${xValue}"></input>"$)
+	items.put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "changed")
 End Sub
 
@@ -274,16 +306,14 @@ Sub setOptions(s As String)			'ignoredeadcode
 	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
 	sb.Initialize 
-	Dim itemS As List
-	itemS.Initialize 
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
 		sb.Append($"<input id="${sk}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
-		itemS.Add($"${sk}_${mName}"$)
+		items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 	Next
 	mElement.Append(sb.ToString)
-	For Each item As String In itemS
+	For Each item As String In items.keys
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next
 End Sub
@@ -342,5 +372,16 @@ End Sub
 
 'get Size
 Sub getSize As String
-        Return sSize
+	Return sSize
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	If v = "" Then
+		Return True
+	End If
+	Return False
 End Sub

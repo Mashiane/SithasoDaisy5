@@ -30,6 +30,7 @@ Version=10
 #DesignerProperty: Key: RingOffset, DisplayName: Ring Offset, FieldType: String, DefaultValue: 2, Description: Ring Offset
 #DesignerProperty: Key: RingOffsetColor, DisplayName: Ring Offset Color, FieldType: String, DefaultValue: base-100, Description: Ring Offset Color
 #DesignerProperty: Key: Activator, DisplayName: Activator, FieldType: Boolean, DefaultValue: False, Description: Activator
+#DesignerProperty: Key: PopOverTarget, DisplayName: Pop Over Target, FieldType: String, DefaultValue: , Description: Pop Over Target
 #DesignerProperty: Key: RoundedField, DisplayName: Rounded Field, FieldType: Boolean, DefaultValue: False, Description: Rounded Field
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -104,6 +105,7 @@ Sub Class_Globals
 	Private bChatImage As Boolean = False
 	Private sSize As String = "12"
 	Private sShadow As String = "none"
+	Private sPopOverTarget As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -288,6 +290,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bChatImage = UI.CBool(bChatImage)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
+		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
+		sPopOverTarget = UI.CleanID(sPopOverTarget)
 	End If
 	'
 	If sParentID <> "" Then
@@ -351,8 +355,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadgeVisible(bBadgeVisible)
 	setShadow(sShadow)
 '	setVisible(bVisible)
+	setPopOverTarget(sPopOverTarget)
+	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
+	If SubExists(mCallBack, $"${mName}_click"$) Then
+		UI.SetCursorPointer(mElement)
+	End If
 End Sub
 
+'set Pop Over Target
+Sub setPopOverTarget(s As String)				'ignoredeadcode
+	s = UI.CleanID(s)
+	sPopOverTarget = s
+	CustProps.put("PopOverTarget", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.AddAttr(mElement, "popovertarget", sPopOverTarget)
+	UI.AddStyle(mElement, "anchor-name", $"--${sPopOverTarget}_anchor"$)
+End Sub
+
+'get Pop Over Target
+Sub getPopOverTarget As String					'ignoredeadcode
+	Return sPopOverTarget
+End Sub
 
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none

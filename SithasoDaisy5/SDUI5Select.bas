@@ -106,7 +106,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	BANano.DependsOnAsset("svg-loader.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -876,8 +876,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_prepend_icon"$, sSize))
-			BANano.Await(UI.SetIconSizeByID($"${mName}_append_icon"$, sSize))
+		BANano.Await(UI.ResizeIconByID($"${mName}_prepend_icon"$, "70"))
+		BANano.Await(UI.ResizeIconByID($"${mName}_append_icon"$, "70"))
 	End Select	
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "select", sSize))

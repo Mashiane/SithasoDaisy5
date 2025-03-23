@@ -197,6 +197,7 @@ Private Sub Class_Globals
 	Private templates As Map
 	Type profileType(id As String, name As String, verified As Boolean, email As String, token As String, avatar As String, UserName As String, size As Int)
 	Public UserProfile As profileType
+	Type FileObject(FileName As String, FileDate As String, FileSize As Long, FileType As String, Status As String, FullPath As String, FileDateOnly As String, FileOK As Boolean, FO As BANanoObject, Extension As String, webkitRelativePath As String)
 	'
 	'Private sApiKey As String = ""
 	'Private sDatabaseType As String = "pocketbase"
@@ -382,8 +383,8 @@ Private Sub Class_Globals
 	Public CONST GRIDFLOW_NONE As String = "none"
 	Public CONST GRIDFLOW_ROW As String = "row"
 	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
-	Public EmojiData As Map
 End Sub
+
 
 
 
@@ -1627,11 +1628,6 @@ Sub UsesPDFLib
 	Banano.Await(LoadAssetsOnDemand("PDFLib", Array("pdf-lib.min.js")))
 End Sub
 
-Sub UsesEmojiMart
-	Banano.Await(LoadAssetsOnDemand("EmojiMart", Array("emojimart.js")))
-	EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
-End Sub
-
 Sub UsesSQLite
 	Banano.Await(LoadAssetsOnDemand("SQLite", Array("sql-browser.min.js")))
 End Sub
@@ -2240,4 +2236,182 @@ End Sub
 Sub IndexFromEventID(eID As String) As String
 	Dim pos As String = UI.MvField(eID, 2, "_")
 	Return pos
+End Sub
+'
+'Sub UsesEmojiMart
+'	modSD5.EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
+'End Sub
+
+'read as text
+Sub readAsText(fr As Map) As BANanoPromise
+	Dim promise As BANanoPromise 'ignore
+	' calling a single upload
+	promise.CallSub(Me, "ReadFile", Array(fr, "readAsText"))
+	Return promise
+End Sub
+'read as binary string
+Sub readAsBinaryString(fr As Map) As BANanoPromise
+	Dim promise As BANanoPromise 'ignore
+	' calling a single upload
+	promise.CallSub(Me, "ReadFile", Array(fr, "readAsBinaryString"))
+	Return promise
+End Sub
+'read as data url
+Sub readAsDataURL(fr As Map) As BANanoPromise
+	Dim promise As BANanoPromise 'ignore
+	' calling a single upload
+	promise.CallSub(Me, "ReadFile", Array(fr, "readAsDataURL"))
+	Return promise
+End Sub
+'read as array buffer
+Sub readAsArrayBuffer(fr As Map) As BANanoPromise
+	Dim promise As BANanoPromise 'ignore
+	' calling a single upload
+	promise.CallSub(Me, "ReadFile", Array(fr, "readAsArrayBuffer"))
+	Return promise
+End Sub
+'read as data url
+Sub readAsDataURLFromBlob(blb As Map) As BANanoPromise
+	Dim promise As BANanoPromise 'ignore
+	' calling a single upload
+	promise.CallSub(Me, "ReadBlob", Array(blb))
+	Return promise
+End Sub
+Sub GetBase64ImageFromURLWait(url As String) As String
+	Dim dataUrl As String = BANano.Await(BANano.GetFileAsDataURL(url, Null))
+	Return dataUrl
+End Sub
+'read blob
+private Sub ReadBlob(blb As Object)
+	' make a filereader
+	Dim FileReader As BANanoObject
+	FileReader.Initialize2("FileReader", Null)
+	' make a callback for the onload event
+	' an onload of a FileReader requires a 'event' param
+	Dim event As Map
+	FileReader.SetField("onload", BANano.CallBack(Me, "OnLoad1", Array(event)))
+	FileReader.SetField("onerror", BANano.CallBack(Me, "OnError1", Array(event)))
+	' start reading the DataURL
+	FileReader.RunMethod("readAsBinaryString", blb)
+End Sub
+'read file
+private Sub ReadFile(FileToRead As Object, MethodName As String)
+	' make a filereader
+	Dim FileReader As BANanoObject
+	FileReader.Initialize2("FileReader", Null)
+	' attach the file (to get the name later)
+	FileReader.SetField("file", FileToRead)
+	' make a callback for the onload event
+	' an onload of a FileReader requires a 'event' param
+	Dim event As Map
+	FileReader.SetField("onload", BANano.CallBack(Me, "OnLoad", Array(event)))
+	FileReader.SetField("onerror", BANano.CallBack(Me, "OnError", Array(event)))
+	' start reading the DataURL
+	FileReader.RunMethod(MethodName, FileToRead)
+End Sub
+private Sub OnLoad(event As Map) As String 'IgnoreDeadCode
+	' getting our file again (set in UploadFileAndGetDataURL)
+	Dim FileReader As BANanoObject = event.Get("target")
+	Dim UploadedFile As BANanoObject = FileReader.GetField("file")
+	' return to the then of the UploadFileAndGetDataURL
+	BANano.ReturnThen(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.Getfield("result")))
+End Sub
+private Sub OnError(event As Map) As String 'IgnoreDeadCode
+	Dim FileReader As BANanoObject = event.Get("target")
+	Dim UploadedFile As BANanoObject = FileReader.GetField("file")
+	Dim Abort As Boolean = False
+	' uncomment this if you want to abort the whole operatio
+	' Abort = true
+	' FileReader.RunMethod("abort", Null)
+	BANano.ReturnElse(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.GetField("error"), "abort": Abort))
+End Sub
+'
+private Sub OnLoad1(event As Map) As String 'IgnoreDeadCode
+	' getting our file again (set in UploadFileAndGetDataURL)
+	Dim FileReader As BANanoObject = event.Get("target")
+	Dim result As Object = FileReader.Getfield("result")
+	' return to the then of the UploadFileAndGetDataURL
+	Banano.ReturnThen(result)
+End Sub
+
+private Sub OnError1(event As Map) As String 'IgnoreDeadCode
+	Dim FileReader As BANanoObject = event.Get("target")
+	Dim result As Object = FileReader.GetField("error")
+	' uncomment this if you want to abort the whole operatio
+	' Abort = true
+	' FileReader.RunMethod("abort", Null)
+	Banano.ReturnElse(result)
+End Sub
+
+'get the file contents
+Sub readAsJsonWait(fr As Map) As Object
+	Try
+		Dim fd As Map = Banano.Await(readAsText(fr))
+		Dim sname As String = fd.Get("name")			'ignore
+		Dim sresult As String = fd.Get("result")
+		Return Banano.FromJson(sresult)
+	Catch
+		Return ""
+	End Try
+End Sub
+
+'get the file contents
+Sub readAsTextWait(fr As Map) As String
+	Try
+		Dim fd As Map = Banano.Await(readAsText(fr))
+		Dim sname As String = fd.Get("name")			'ignore
+		Dim sresult As String = fd.Get("result")
+		Return sresult
+	Catch
+		Return ""
+	End Try
+End Sub
+
+'get the file contents
+Sub readAsBinaryStringWait(fr As Map) As String
+	Try
+		Dim fd As Map = Banano.Await(readAsBinaryString(fr))
+		Dim sname As String = fd.Get("name")			'ignore
+		Dim sresult As String = fd.Get("result")
+		Return sresult
+	Catch
+		Return ""
+	End Try
+End Sub
+
+'get the file contents
+Sub readAsDataURLWait(fr As Map) As String
+	Try
+		Dim fd As Map = Banano.Await(readAsDataURL(fr))
+		Dim sname As String = fd.Get("name")			'ignore
+		Dim sresult As String = fd.Get("result")
+		Return sresult
+	Catch
+		Return ""
+	End Try
+End Sub
+
+'get the file contents
+Sub readAsArrayBufferWait(fr As Map) As String
+	Try
+		Dim fd As Map = Banano.Await(readAsArrayBuffer(fr))
+		Dim sname As String = fd.Get("name")		'ignore
+		Dim sresult As String = fd.Get("result")
+		Return sresult
+	Catch
+		Return ""
+	End Try
+End Sub
+
+'calculate the progress done
+Sub ProgressDone(currentCount As Long, totalCount As Long) As Int
+	Dim pd As Int = (currentCount / totalCount) * 100
+	pd = NumberFormat2Fix(pd, 0,0, 0, False)
+	pd = UI.CInt(pd)
+	Return pd
+End Sub
+
+'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
+private Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
+	Return Banano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
 End Sub
