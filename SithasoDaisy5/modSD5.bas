@@ -19,7 +19,10 @@ Sub Process_Globals
 	Public EmojiData As Map
 End Sub
 
-
+'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
+public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
+	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
+End Sub
 
 'code for DOMContentLoaded
 Sub DOMContentLoaded As String

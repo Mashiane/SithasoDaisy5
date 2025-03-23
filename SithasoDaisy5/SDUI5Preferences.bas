@@ -3309,7 +3309,7 @@ Sub SetPropertyValue(Key As String, value As String)
 		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(Null)
 		Case "ColorWheel"
-			UI.SetIconColorByID($"${mName}_append_icon"$, value)
+			UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
 			Dim cp As BANanoObject = colorPicker.Get(Key)
 			cp.SetField("hex", value)

@@ -144,7 +144,7 @@ Sub Class_Globals
 	Private sAppendIconColor As String = "none"
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
-	Private sDataTypeOf As String = ""
+	Private sDataTypeOf As String = ""			'ignore
 	Public ColorWheel As BANanoObject
 	Private iHandleDiameter As String = 16
 	Private iWheelDiameter As Int = 200

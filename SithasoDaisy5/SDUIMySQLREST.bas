@@ -2,7 +2,7 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=10.13
+Version=9.8
 @EndOfDesignText@
 #IgnoreWarnings:12
 '
@@ -73,19 +73,19 @@ Private Sub Class_Globals
 	Private sSize As String = ""
 	Private joinL As List
 	Public ErrorMessage As String = ""
-	Public UseApiKey As Boolean = False
+	Public UseApiKey As Boolean = True
 	Public ApiFile As String = "api"
 End Sub
 
 '<code>
 ''initialize the connection to mysql with a collection to access
-'Dim pb As SDUI5MySQLRESTNative
-'pb.Initialize(Me, "pb", "http://localhost/sdmysqlapi", "projects")
-'pb.SetSchemaFromDataModel(app.DataModels)
+'Dim pb As SDUIMySQLREST
+'pb.Initialize(Me, "pb", "https://localhost/sdmysqlapi", "projects")
+'pb.SchemaAddText(Array("id", "name"))
 'pb.PrimaryKey = "id"
 'pb.AutoIncrement = "id"
 '</code>
-Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String)
+Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String) As SDUIMySQLREST
 	TableName = sTableName
 	mCallBack = Module
 	whereField.Initialize
@@ -105,81 +105,82 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	sApiKey = ""
 	SchemaAddText1(PrimaryKey)
 	sSize = ""
-	joinL.Initialize
-	UseApiKey = False
+	joinL.Initialize 
+	UseApiKey = True
+	Return Me
 End Sub
 
 Sub SetLimit(s As String)
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SetLimit(${s})"$)
+		Log($"SDUIMySQLREST.${TableName}.SetLimit(${s})"$)
 	End If
 	sSize = s
 End Sub
 
 'required
-'Sub setApiKey(s As String)
-'	If ShowLog Then
-'		Log($"SDUI5MySQLRESTNative.${mEvent}.setApiKey(${s})"$)
-'	End If
-'	sApiKey = s
-'End Sub
+Sub setApiKey(s As String)
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.setApiKey(${s})"$)
+	End If
+	sApiKey = s
+End Sub
 
 'prepare for new table definition
-Sub SchemaClear As SDUI5MySQLRESTNative
+Sub SchemaClear As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SchemaClear"$)
+		Log($"SDUIMySQLREST.${TableName}SchemaClear"$)
 	End If
 	Schema.clear
 	Return Me
 End Sub
 
 'schema add boolean
-Sub SchemaAddBoolean(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddBoolean(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_BOOL)
 	Next
 	Return Me
 End Sub
-Sub SchemaAddBoolean1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddBoolean1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_BOOL)
 	Return Me
 End Sub
-Sub SchemaAddDouble1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddDouble1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_DOUBLE)
 	Return Me
 End Sub
 'add double fields
-Sub SchemaAddDouble(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddDouble(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_DOUBLE)
 	Next
 	Return Me
 End Sub
-Sub SchemaAddFloat1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddFloat1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_FLOAT)
 	Return Me
 End Sub
-Sub SchemaAddFloat(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddFloat(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_FLOAT)
 	Next
 	Return Me
 End Sub
-Sub SchemaAddText1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddText1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_TEXT)
 	Return Me
 End Sub
-Sub SchemaAddText(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddText(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_TEXT)
 	Next
 	Return Me
 End Sub
-Sub SchemaAddInt1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddInt1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_INT)
 	Return Me
 End Sub
-Sub SchemaAddInt(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddInt(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_INT)
 	Next
@@ -259,7 +260,7 @@ End Sub
 
 Sub SetSchemaFromDataModel(models As Map)
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SetSchemaFromDataModel"$)
+		Log($"SDUIMySQLREST.${TableName}.SetSchemaFromDataModel"$)
 	End If
 	If models.ContainsKey(TableName) = False Then
 		BANano.Throw($"SetSchemaFromDataModel.${TableName} data-model does NOT exist!"$)
@@ -293,38 +294,38 @@ Sub SetSchemaFromDataModel(models As Map)
 	End If
 End Sub
 
-Sub SchemaAddBlob(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddBlob(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_BLOB)
 	Next
 	Return Me
 End Sub
 
-Sub SchemaAddFile(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddFile(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_FILE)
 	Next
 	Return Me
 End Sub
 
-Sub SchemaAddFile1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddFile1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_FILE)
 	Return Me
 End Sub
 
-Sub SchemaAddBlob1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddBlob1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_BLOB)
 	Return Me
 End Sub
 
-Sub SchemaAddNumber(bools As List) As SDUI5MySQLRESTNative
+Sub SchemaAddNumber(bools As List) As SDUIMySQLREST
 	For Each b As String In bools
 		Schema.Put(b, DB_NUMBER)
 	Next
 	Return Me
 End Sub
 
-Sub SchemaAddNumber1(b As String) As SDUI5MySQLRESTNative
+Sub SchemaAddNumber1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_NUMBER)
 	Return Me
 End Sub
@@ -340,54 +341,52 @@ End Sub
 Sub SELECT_ALL As List
 	result.Initialize
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SELECT_ALL"$)
+		Log($"SDUIMySQLREST.${TableName}.SELECT_ALL"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.SELECT_ALL. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.SELECT_ALL. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return result
 	End If
 	If UseApiKey Then
 		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.SELECT_ALL - The ApiKey has not been specified!"$)
+			BANano.Throw($"SDUIMySQLREST.SELECT_ALL - The ApiKey has not been specified!"$)
 			Return result
 		End If
 	End If
 	'
 	Dim qflds As String = Join(",", flds)
 	qflds = RemDelim(qflds, ",")
-'	
+	
 	Dim qsort As String = Join("&", orderByL)
 	qsort = RemDelim(qsort, "&")
-'	'
-'	Dim qjoin As String = Join("&", joinL)
-'	qjoin = RemDelim(qjoin, "&")
-'	
+	'
+	Dim qjoin As String = Join("&", joinL)
+	qjoin = RemDelim(qjoin, "&")
+	
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
+	If qflds <> "" Then xcommand.add(qflds)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)
-'	If qjoin <> "" Then xcommand.Add(qjoin)
-'	'
-	Dim scommand As String = ""
+	If qjoin <> "" Then xcommand.Add(qjoin)
+	'
 	Dim scommand As String = Join("&", xcommand)
 	scommand = RemDelim(scommand, "&")
-	lastPosition = -1
+	
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 	fetch.NoCache = True
-'	fetch.NoCors = True
 	If scommand = "" Then
-		fetch.SetURL($"/records/${TableName}"$)
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.SELECT_ALL.(${baseURL}/records/${TableName}?${scommand})"$)
+			Log($"SDUIMySQLREST.SELECT_ALL.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
 		End If
 	Else
-		fetch.SetURL($"/records/${TableName}?${scommand}"$)
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.SELECT_ALL.(${baseURL}/records/${TableName}?${scommand})"$)
+			Log($"SDUIMySQLREST.SELECT_ALL.${baseURL}/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		End If
 	End If
 	BANano.Await(fetch.GetWait)
@@ -396,7 +395,10 @@ Sub SELECT_ALL As List
 		If Response.ContainsKey("records") Then
 			result = Response.Get("records")
 		End If
+	Else
+		Log(fetch.ErrorMessage)	
 	End If
+	lastPosition = -1
 	RowCount = result.size
 	Return result
 End Sub
@@ -430,17 +432,17 @@ End Sub
 '</code>
 Sub CREATE As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.CREATE"$)
+		Log($"SDUIMySQLREST.${TableName}.CREATE"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.CREATE. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.CREATE. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.CREATE - The ApiKey has not been specified!"$)
-			Return ""
-		End If
+	If sApiKey = "" Then
+		BANano.Throw($"SDUIMySQLREST.CREATE - The ApiKey has not been specified!"$)
+		Return ""
+	End If
 	End If
 	Try
 		RemoveField(AutoIncrement)
@@ -449,20 +451,23 @@ Sub CREATE As String
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.SetURL($"/records/${TableName}"$)
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
+		If ShowLog Then
+			Log($"SDUIMySQLREST.CREATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
+			Log(BANano.ToJson(Record))
+		End If
 		fetch.SetData(Record)
 		fetch.NoCache = True
-		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.CREATE.(${baseURL}/records/${TableName}?${BANano.ToJson(Record)})"$)
-		End If
-'		fetch.NoCors = True
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			output = Response
+		Else
+			Log(fetch.ErrorMessage)	
 		End If
 		Return output
 	Catch
+		Log(LastException.Message)
 		Return ""
 	End Try
 End Sub
@@ -470,132 +475,148 @@ End Sub
 '<code>
 'dim b As Boolean = BANano.Await(pb.USER_CREATE("user1", "user1"))
 '</code>
-'Sub USER_CREATE(username As String, password As String) As Boolean
-'	If ShowLog Then
-'		Log($"SDUI5MySQLRESTNative.${mEvent}.USER_CREATE"$)
-'	End If
-'	ErrorMessage = ""
-'	Try
-'		Record.Initialize
-'		Record.Put("username", username)
-'		Record.Put("password", password)
-'		Dim fetch As SDUIFetch
-'		fetch.Initialize(baseURL)
-'		fetch.SetURL($"/assets/${ApiFile}.php/register"$)
-'		fetch.SetData(Record)
-'		fetch.NoCache = True
-'		BANano.Await(fetch.PostWait)
-'		If fetch.Success Then
-'			Dim Response As Map = fetch.response
-'			If Response.ContainsKey("code") Then
-'				ErrorMessage = Response.Get("message")
-'				Return False
-'			Else
-'				Return True
-'			End If
-'		End If
-'		Return False
-'	Catch
-'		Return False
-'	End Try
-'End Sub
+Sub USER_CREATE(username As String, password As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.USER_CREATE"$)
+	End If
+	ErrorMessage = ""
+	Try
+		Record.Initialize 
+		Record.Put("username", username)
+		Record.Put("password", password)
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.SetContentTypeApplicationJSON
+		fetch.SetURL($"/assets/${ApiFile}.php/register"$)
+		fetch.SetData(Record)
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		If fetch.Success Then
+			Dim Response As Map = fetch.response
+			If Response.ContainsKey("code") Then
+				ErrorMessage = Response.Get("message")
+				Return False
+			Else
+				Return True
+			End If
+		Else
+			Log(fetch.ErrorMessage)	
+		End If
+		Return False
+	Catch
+		Log(LastException.Message)
+		Return False
+	End Try
+End Sub
 
 '<code>
 'dim b As Boolean = BANano.Await(pb.USER_CHANGE_PASSWORD("user1", "user1"))
 '</code>
-'Sub USER_CHANGE_PASSWORD(username As String, password As String, newPassword As String) As Boolean
-'	If ShowLog Then
-'		Log($"SDUI5MySQLRESTNative.${mEvent}.USER_CHANGE_PASSWORD"$)
-'	End If
-'	ErrorMessage = ""
-'	Try
-'		Record.Initialize
-'		Record.Put("username", username)
-'		Record.Put("password", password)
-'		Record.Put("newPassword", newPassword)
-'		Dim fetch As SDUIFetch
-'		fetch.Initialize(baseURL)
-'		fetch.SetURL($"/assets/${ApiFile}.php/password"$)
-'		fetch.SetData(Record)
-'		fetch.NoCache = True
-'		BANano.Await(fetch.PostWait)
-'		If fetch.Success Then
-'			Dim Response As Map = fetch.response
-'			If Response.ContainsKey("code") Then
-'				ErrorMessage = Response.Get("message")
-'				Return False
-'			Else
-'				Return True
-'			End If
-'		End If
-'		Return False
-'	Catch
-'		Return False
-'	End Try
-'End Sub
+Sub USER_CHANGE_PASSWORD(username As String, password As String, newPassword As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.USER_CHANGE_PASSWORD"$)
+	End If
+	ErrorMessage = ""
+	Try
+		Record.Initialize 
+		Record.Put("username", username)
+		Record.Put("password", password)
+		Record.Put("newPassword", newPassword)
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.SetContentTypeApplicationJSON
+		fetch.SetURL($"/assets/${ApiFile}.php/password"$)
+		fetch.SetData(Record)
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		If fetch.Success Then
+			Dim Response As Map = fetch.response
+			If Response.ContainsKey("code") Then
+				ErrorMessage = Response.Get("message")
+				Return False
+			Else
+				Return True
+			End If
+		Else
+			Log(fetch.ErrorMessage)	
+		End If
+		Return False
+	Catch
+		Log(LastException.Message)
+		Return False
+	End Try
+End Sub
 
 
 '<code>
 'dim b As Boolean = BANano.Await(pb.USER_LOGIN("user1", "user1"))
 '</code>
-'Sub USER_LOGIN(username As String, password As String) As Boolean
-'	If ShowLog Then
-'		Log($"SDUI5MySQLRESTNative.${mEvent}.USER_LOGIN"$)
-'	End If
-'	ErrorMessage = ""
-'	Try
-'		Record.Initialize
-'		Record.Put("username", username)
-'		Record.Put("password", password)
-'		Dim fetch As SDUIFetch
-'		fetch.Initialize(baseURL)
-'		fetch.SetURL($"/assets/${ApiFile}.php/login"$)
-'		fetch.SetData(Record)
-'		fetch.NoCache = True
-'		BANano.Await(fetch.PostWait)
-'		If fetch.Success Then
-'			Dim Response As Map = fetch.response
-'			If Response.ContainsKey("code") Then
-'				ErrorMessage = Response.Get("message")
-'				Return False
-'			Else
-'				Return True
-'			End If
-'		End If
-'		Return False
-'	Catch
-'		Return False
-'	End Try
-'End Sub
+Sub USER_LOGIN(username As String, password As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.USER_LOGIN"$)
+	End If
+	ErrorMessage = ""
+	Try
+		Record.Initialize 
+		Record.Put("username", username)
+		Record.Put("password", password)
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.SetContentTypeApplicationJSON
+		fetch.SetURL($"/assets/${ApiFile}.php/login"$)
+		fetch.SetData(Record)
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		If fetch.Success Then
+			Dim Response As Map = fetch.response
+			If Response.ContainsKey("code") Then
+				ErrorMessage = Response.Get("message")
+				Return False
+			Else
+				Return True
+			End If
+		Else
+			Log(fetch.ErrorMessage)	
+		End If
+		Return False
+	Catch
+		Log(LastException.Message)
+		Return False
+	End Try
+End Sub
 
 '<code>
 'dim b As Boolean = BANano.Await(pb.USER_LOGOUT)
 '</code>
-'Sub USER_LOGOUT As Boolean
-'	If ShowLog Then
-'		Log($"SDUI5MySQLRESTNative.${mEvent}.USER_LOGOUT"$)
-'	End If
-'	ErrorMessage = ""
-'	Try
-'		Dim fetch As SDUIFetch
-'		fetch.Initialize(baseURL)
-'		fetch.SetURL($"/assets/${ApiFile}.php/logout"$)
-'		fetch.NoCache = True
-'		BANano.Await(fetch.PostWait)
-'		If fetch.Success Then
-'			Dim Response As Map = fetch.response
-'			If Response.ContainsKey("code") Then
-'				ErrorMessage = Response.Get("message")
-'				Return False
-'			Else
-'				Return True
-'			End If
-'		End If
-'		Return False
-'	Catch
-'		Return False
-'	End Try
-'End Sub
+Sub USER_LOGOUT As Boolean
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.USER_LOGOUT"$)
+	End If
+	ErrorMessage = ""
+	Try
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.SetContentTypeApplicationJSON
+		fetch.SetURL($"/assets/${ApiFile}.php/logout"$)
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		If fetch.Success Then
+			Dim Response As Map = fetch.response
+			If Response.ContainsKey("code") Then
+				ErrorMessage = Response.Get("message")
+				Return False
+			Else
+				Return True
+			End If
+		Else
+			Log(fetch.ErrorMessage)	
+		End If
+		Return False
+	Catch
+		Log(LastException.Message)
+		Return False
+	End Try
+End Sub
 
 
 'Removes the key and value mapped to this key.
@@ -604,17 +625,17 @@ End Sub
 '</code>
 Sub DELETE(id As String) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.DELETE(${id})"$)
+		Log($"SDUIMySQLREST.${TableName}.DELETE(${id})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.DELETE. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.DELETE. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return False
 	End If
 	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.DELETE - The ApiKey has not been specified!"$)
-			Return False
-		End If
+	If sApiKey = "" Then
+		BANano.Throw($"SDUIMySQLREST.DELETE - The ApiKey has not been specified!"$)
+		Return False
+	End If
 	End If
 	Try
 		Dim output As Object
@@ -622,21 +643,21 @@ Sub DELETE(id As String) As Boolean
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.SetURL($"/records/${TableName}/${id}"$)
-		fetch.NoCache = True
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.DELETE.(${baseURL}/records/${TableName}/${id})"$)
+			Log($"SDUIMySQLREST.DELETE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
-'		fetch.NoCors = True
 		BANano.Await(fetch.DeleteWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			output = Response
 			Return True
 		Else
+			Log(fetch.ErrorMessage)
 			Return False
 		End If
 	Catch
+		Log(LastException.Message)
 		Return False
 	End Try
 End Sub
@@ -647,10 +668,10 @@ End Sub
 '</code>
 Sub DELETE_MULTIPLE(items As List) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.DELETE_MULTIPLE()"$)
+		Log($"SDUIMySQLREST.${TableName}.DELETE_MULTIPLE()"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.DELETE_MULTIPLE. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.DELETE_MULTIPLE. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return False
 	End If
 	Try
@@ -673,24 +694,24 @@ End Sub
 '</code>
 Sub UPDATE As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.UPDATE"$)
+		Log($"SDUIMySQLREST.${TableName}.UPDATE"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.UPDATE. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.UPDATE. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.UPDATE - The ApiKey has not been specified!"$)
-			Return ""
-		End If
+	If sApiKey = "" Then
+		BANano.Throw($"SDUIMySQLREST.UPDATE - The ApiKey has not been specified!"$)
+		Return ""
+	End If
 	End If
 	Try
 		'update an existing record by primary key
 		Dim pkValue As String = Record.GetDefault(PrimaryKey, "")
 		If pkValue = "" Then
 			If ShowLog Then
-				Log($"SDUI5MySQLRESTNative.${TableName}.UPDATE Error - No Primary Key Found"$)
+				Log($"SDUIMySQLREST.${TableName}.UPDATE - NO PRIMARY KEY"$)
 			End If
 			Return ""
 		End If
@@ -700,88 +721,32 @@ Sub UPDATE As String
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		'this is a post
-		fetch.SetURL($"/records/${TableName}/${pkValue}"$)
-		RemoveField(AutoIncrement)
-		fetch.SetData(Record)
-		fetch.NoCache = True
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.UPDATE.(${baseURL}/records/${TableName}/${pkValue}?${BANano.ToJson(Record)})"$)
+			Log($"SDUIMySQLREST.UPDATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
+			Log(BANano.ToJson(Record))
 		End If
-'		fetch.NoCors = True
+		fetch.SetData(Record)
 		BANano.Await(fetch.PutWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			output = Response
-		End If
-		Return output
-	Catch
-		Return ""
-	End Try
-End Sub
-
-'execute an update where, uses a filter
-Sub UPDATE_WHERE As String
-	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.UPDATE_WHERE"$)
-	End If
-	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.UPDATE_WHERE. Please execute SchemaAdd?? first to define your table schema!"$)
-		Return ""
-	End If
-	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.UPDATE_WHERE - The ApiKey has not been specified!"$)
-			Return ""
-		End If
-	End If
-	Try
-		'we build the filter
-		Dim sb As StringBuilder
-		sb.Initialize
-		Dim i As Int
-		Dim iWhere As Int = whereField.Size - 1
-		For i = 0 To iWhere
-			Dim col As String = whereField.GetKeyAt(i)
-			col = MvField(col, 1,".")
-			Dim xVal As String = whereField.GetValueAt(i)
-			Dim opr As String = ops.Get(i)
-			sb.Append($"filter="$).Append(col).Append(",")
-			sb.Append(opr).Append(",").Append(xVal).Append("&")
-		Next
-		'
-		Dim qfilter As String = sb.tostring
-		Dim afilter As String = RemDelim(qfilter, "&")
-		qfilter = afilter.Trim
-		
-		Dim output As Object
-		Dim fetch As SDUIFetch
-		fetch.Initialize(baseURL)
-		fetch.SetContentTypeApplicationJSON
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		'this is a post
-		If qfilter = "" Then
-			fetch.SetURL($"/records/${TableName}"$)
+			If ShowLog Then
+				Log($"SDUIMySQLREST.${TableName}.UPDATE SUCCESS.${output}"$)
+			End If
 		Else
-			fetch.SetURL($"/records/${TableName}?${qfilter}"$)
+			Log(fetch.ErrorMessage)
+			If ShowLog Then
+				Log($"SDUIMySQLREST.${TableName}.UPDATE ERROR.${fetch.ErrorMessage}"$)
+			End If
 		End If
-		RemoveField(AutoIncrement)
-		fetch.SetData(Record)
-		fetch.NoCache = True
-		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.UPDATE_WHERE.(${baseURL}/records/${TableName}/${qfilter}?${BANano.ToJson(Record)})"$)
-		End If
-'		fetch.NoCors = True
-		BANano.Await(fetch.PutWait)
-		If fetch.Success Then
-			Dim Response As Map = fetch.response
-			output = Response
-		End If
-		Return output
+		
+		Return CInt(output)
 	Catch
+		Log(LastException.Message)
 		Return ""
 	End Try
 End Sub
-
 
 'get a value using key
 '<code>
@@ -791,17 +756,17 @@ Sub READ(id As String) As Map
 	Dim m As Map = CreateMap()
 	Record = m
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.READ(${id})"$)
+		Log($"SDUIMySQLREST.${TableName}.READ(${id})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.READ. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.READ. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return m
 	End If
 	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.READ - The ApiKey has not been specified!"$)
-			Return m
-		End If
+	If sApiKey = "" Then
+		BANano.Throw($"SDUIMySQLREST.READ - The ApiKey has not been specified!"$)
+		Return m
+	End If
 	End If
 	Dim m As Map = CreateMap()
 	Try
@@ -810,19 +775,21 @@ Sub READ(id As String) As Map
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.SetURL($"/records/${TableName}/${id}"$)
-		fetch.NoCache = True
-'		fetch.NoCors = True
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.READ.(${baseURL}/records/${TableName}/${id})"$)
+			Log($"SDUIMySQLREST.READ.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
+		fetch.NoCache = True
 		BANano.Await(fetch.GetWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			Record = Response
+		Else
+			Log(fetch.ErrorMessage)	
 		End If
 		Return Record
 	Catch
+		Log(LastException.Message)
 		Record = m
 		Return m
 	End Try
@@ -833,7 +800,7 @@ End Sub
 '</code>
 Sub READ_BY(fldName As String, fldValue As Object) As Map
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.READ_BY(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.READ_BY(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_WHERE(fldName, "=", fldValue)
@@ -849,7 +816,7 @@ End Sub
 
 Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.READ_BY_STRING(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.READ_BY_STRING(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_WHERE(fldName, "=", fldValue)
@@ -865,7 +832,7 @@ End Sub
 
 Sub READ_ID_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.READ_ID_BY_STRING(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.READ_ID_BY_STRING(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(PrimaryKey)
@@ -887,10 +854,10 @@ End Sub
 '</code>
 Sub ContainsKey(id As String) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ContainsKey(${id})"$)
+		Log($"SDUIMySQLREST.${TableName}.ContainsKey(${id})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.ContainsKey. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.ContainsKey. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	CLEAR_WHERE
@@ -909,10 +876,10 @@ End Sub
 '</code>
 Sub ContainsField(fldName As String, id As String) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ContainsField(${fldName},${id})"$)
+		Log($"SDUIMySQLREST.${TableName}.ContainsField(${fldName},${id})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.ContainsField. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.ContainsField. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	CLEAR_WHERE
@@ -932,10 +899,10 @@ End Sub
 '</code>
 Public Sub ListKeys As List
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ListKeys"$)
+		Log($"SDUIMySQLREST.${TableName}.ListKeys"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.ListKeys. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.ListKeys. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
 	CLEAR_WHERE
@@ -956,7 +923,7 @@ End Sub
 '</code>
 Sub DELETE_ALL
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.DELETE_ALL"$)
+		Log($"SDUIMySQLREST.${TableName}.DELETE_ALL"$)
 	End If
 	Dim keys As List = BANano.Await(ListKeys)
 	If keys.size = 0 Then Return
@@ -971,7 +938,7 @@ End Sub
 '</code>
 Sub GetKeyValues(bHasNothing As Boolean, k As String, v As String) As Map
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.GetKeyValues(${bHasNothing},${k},${v})"$)
+		Log($"SDUIMySQLREST.${TableName}.GetKeyValues(${bHasNothing},${k},${v})"$)
 	End If
 	Dim mx As Map = CreateMap()
 	If bHasNothing Then
@@ -1014,10 +981,10 @@ End Sub
 '</code>
 Sub CREATE_OR_UPDATE As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.CREATE_OR_UPDATE"$)
+		Log($"SDUIMySQLREST.${TableName}.CREATE_OR_UPDATE"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.CREATE_OR_UPDATE. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.CREATE_OR_UPDATE. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	Try
@@ -1030,7 +997,7 @@ Sub CREATE_OR_UPDATE As String
 		If Key <> "" Then
 			bThere = BANano.Await(ContainsKey(Key))
 			If ShowLog Then
-				Log($"SDUI5MySQLRESTNative.CREATE_OR_UPDATE:ContainsKey(id,${Key},${bThere})"$)
+				Log($"SDUIMySQLREST.CREATE_OR_UPDATE:${TableName}.ContainsKey(id,${Key},${bThere})"$)
 			End If
 		End If
 		'does not exit
@@ -1053,10 +1020,10 @@ End Sub
 '</code>
 Sub CREATE_OR_UPDATE_BY_FIELD(fldName As String) As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.CREATE_OR_UPDATE_BY_FIELD(${fldName})"$)
+		Log($"SDUIMySQLREST.${TableName}.CREATE_OR_UPDATE_BY_FIELD(${fldName})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.CREATE_OR_UPDATE_BY_FIELD. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.CREATE_OR_UPDATE_BY_FIELD. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return ""
 	End If
 	Try
@@ -1068,8 +1035,7 @@ Sub CREATE_OR_UPDATE_BY_FIELD(fldName As String) As String
 		Dim bThere As Boolean = False
 		Dim id As String = ""
 		If sKey <> "" Then
-			Dim rec As Map = BANano.Await(READ_BY(fldName, sKey))
-			id = rec.GetDefault(PrimaryKey, "")
+			id = BANano.Await(READ_ID_BY_STRING(fldName, sKey))
 			If id <> "" Then bThere = True
 		End If
 		'does not exit
@@ -1087,21 +1053,57 @@ Sub CREATE_OR_UPDATE_BY_FIELD(fldName As String) As String
 	End Try			' ignore
 End Sub
 
+'record is saved as json string
+'returns the record id
+'<code>
+'BANano.Await(pb.CREATE_IF_NOT_EXISTING_BY_FIELD("email"))
+'</code>
+Sub CREATE_IF_NOT_EXISTING_BY_FIELD(fldName As String) As String
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.CREATE_IF_NOT_EXISTING_BY_FIELD(${fldName})"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIMySQLREST.CREATE_IF_NOT_EXISTING_BY_FIELD. Please execute SchemaAdd?? first to define your table schema!"$)
+		Return ""
+	End If
+	Try
+		'does the record exist
+		Dim sKey As String = Record.GetDefault(fldName, "")
+		DisplayValue = Record.GetDEfault(DisplayField, "")
+		'this will be blank if we are using PB own keys
+		'if we use our keys, those need to be 15 in length
+		Dim bThere As Boolean = False
+		Dim id As String = ""
+		If sKey <> "" Then
+			id = BANano.Await(READ_ID_BY_STRING(fldName, sKey))
+			If id <> "" Then bThere = True
+		End If
+		'does not exit
+		If bThere = False Then
+			Dim ar As String = BANano.Await(CREATE)
+			Return ar
+		Else
+			Return id	
+		End If
+	Catch
+		Return ""
+	End Try			' ignore
+End Sub
+
 Sub GET_ID_BY_FIELD(fldName As String, fldValue As String) As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.GET_ID_BY_FIELD(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.GET_ID_BY_FIELD(${fldName},${fldValue})"$)
 	End If
-	Dim rec As Map = BANano.Await(READ_BY(fldName, fldValue))
-	Dim sid As String = rec.GetDefault(PrimaryKey, "")
+	Dim sid As String = BANano.Await(READ_ID_BY_STRING(fldName, fldValue))
 	Return sid
 End Sub
 
 Sub UPDATE_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.UPDATE_BY_STRING(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.UPDATE_BY_STRING(${fldName},${fldValue})"$)
 	End If
-	Dim rec As Map = BANano.Await(READ_BY_STRING(fldName, fldValue))
-	Dim sid As String = rec.GetDefault(PrimaryKey, "")
+	Dim sid As String = BANano.Await(READ_ID_BY_STRING(fldName, fldValue))
+	If sid = "" Then Return ""
 	Record.Put(PrimaryKey, sid)
 	Dim nid As String = BANano.Await(UPDATE)
 	Return nid
@@ -1109,19 +1111,19 @@ End Sub
 
 Sub UPDATE_BY(fldName As String, fldValue As String) As String
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.UPDATE_BY(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.UPDATE_BY(${fldName},${fldValue})"$)
 	End If
-	Dim rec As Map = BANano.Await(READ_BY(fldName, fldValue))
-	Dim sid As String = rec.GetDefault(PrimaryKey, "")
+	Dim sid As String = BANano.Await(READ_ID_BY_STRING(fldName, fldValue))
+	If sid = "" Then Return ""
 	Record.Put(PrimaryKey, sid)
 	Dim nid As String = BANano.Await(UPDATE)
 	Return nid
 End Sub
 
 'to delete the file set the fldValue = null
-Sub SetField(fldName As String, fldValue As Object) As SDUI5MySQLRESTNative
+Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SetField(${fldName}, ${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.SetField(${fldName}, ${fldValue})"$)
 	End If
 	Dim dt As String = Schema.Get(fldName)
 	Select Case dt
@@ -1148,7 +1150,7 @@ End Sub
 
 Sub RemoveField(fldName As String)
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.RemoveField(${fldName})"$)
+		Log($"SDUIMySQLREST.${TableName}.RemoveField(${fldName})"$)
 	End If
 	If fldName = "" Then Return
 	If Record.ContainsKey(fldName) Then
@@ -1159,7 +1161,7 @@ End Sub
 'double
 private Sub CDbl(o As String) As Double
 	o = Val(o)
-	Dim out As Double = NumberFormat2Fix(o,0,2,2,False)
+	Dim out As Double = modSD5.NumberFormat2Fix(o,0,2,2,False)
 	Dim nvalue As String = CStr(out)
 	nvalue = nvalue.replace(",", ".")
 	nvalue = Val(nvalue)
@@ -1171,11 +1173,6 @@ End Sub
 private Sub CInt(o As Object) As Int
 	o = Val(o)
 	Return BANano.parseInt(o)
-End Sub
-
-'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
-private Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
-	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
 End Sub
 
 'check if value isNaN
@@ -1247,22 +1244,22 @@ Sub RecordFromMap(sm As Map)
 End Sub
 
 'clear where clause
-Sub CLEAR_WHERE As SDUI5MySQLRESTNative
+Sub CLEAR_WHERE As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.CLEAR_WHERE"$)
+		Log($"SDUIMySQLREST.${TableName}.CLEAR_WHERE"$)
 	End If
 	whereField.Initialize
 	ops.Initialize
 	orderByL.Initialize
 	flds.Initialize
 	combineL.Initialize
-	joinL.Initialize
+	joinL.Initialize 
 	Return Me
 End Sub
 
-Sub Reset As SDUI5MySQLRESTNative
+Sub Reset As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.Reset"$)
+		Log($"SDUIMySQLREST.${TableName}.Reset"$)
 	End If
 	whereField.Initialize
 	ops.Initialize
@@ -1284,30 +1281,30 @@ Sub Reset As SDUI5MySQLRESTNative
 	AutoIncrement = ""
 	SchemaAddText1("id")
 	joinL.Initialize
-	sSize = ""
+	sSize = "" 
 	Return Me
 End Sub
 
-Sub ADD_FIELD(fld As String) As SDUI5MySQLRESTNative
+Sub ADD_FIELD(fld As String) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_FIELD(${fld})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_FIELD(${fld})"$)
 	End If
 	flds.Add($"include=${fld}"$)
 	Return Me
 End Sub
 
 'join on table
-Sub ADD_JOIN(fld As String) As SDUI5MySQLRESTNative
+Sub ADD_JOIN(fld As String) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_JOIN(${fld})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_JOIN(${fld})"$)
 	End If
 	joinL.Add($"join=${fld}"$)
 	Return Me
 End Sub
 
-Sub ADD_FIELDS(fields As List) As SDUI5MySQLRESTNative
+Sub ADD_FIELDS(fields As List) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_FIELDS(${BANano.ToJson(fields)})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_FIELDS(${BANano.ToJson(fields)})"$)
 	End If
 	For Each fld As String In fields
 		ADD_FIELD(fld)
@@ -1320,29 +1317,29 @@ End Sub
 'cs - contains
 'sw - starts with
 'ew - ends with
-Sub ADD_WHERE(fld As String, operator As String, value As Object) As SDUI5MySQLRESTNative
+Sub ADD_WHERE(fld As String, operator As String, value As Object) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_WHERE(${fld},${operator},${value})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_WHERE(${fld},${operator},${value})"$)
 	End If
 	Select Case operator
-		Case ">"
-			operator = "gt"
-		Case ">="
-			operator = "ge"
-		Case "<"
-			operator = "lt"
-		Case "<="
-			operator = "le"
-		Case "="
-			operator = "eq"
-		Case "<>"
-			operator = "neq"
-		Case "like"
-			operator = "cs"
-		Case "between"
-			operator = "bt"
-		Case "in"
-			operator = "in"
+	Case ">"
+		operator = "gt"
+	Case ">="
+		operator = "ge"
+	Case "<"
+		operator = "lt"
+	Case "<="	
+		operator = "le"
+	Case "="
+		operator = "eq"
+	Case "<>"
+		operator = "neq"
+	Case "like"
+		operator = "cs"
+	Case "between"
+		operator = "bt"
+	Case "in"
+		operator = "in"
 	End Select
 	whereField.Put(fld, value)
 	ops.Add(operator)
@@ -1350,44 +1347,44 @@ Sub ADD_WHERE(fld As String, operator As String, value As Object) As SDUI5MySQLR
 	Return Me
 End Sub
 
-Sub ADD_WHERE_STRING(fld As String, operator As String, value As Object) As SDUI5MySQLRESTNative
+Sub ADD_WHERE_STRING(fld As String, operator As String, value As Object) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_WHERE_STRING(${fld},${operator},${value})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_WHERE_STRING(${fld},${operator},${value})"$)
 	End If
 	ADD_WHERE(fld, operator, value)
 	Return Me
 End Sub
 
 'change the selection at position from AND to OR
-Sub WHERE_OR(pos As Int) As SDUI5MySQLRESTNative
+Sub WHERE_OR(pos As Int) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.WHERE_OR(${pos})"$)
+		Log($"SDUIMySQLREST.${TableName}.WHERE_OR(${pos})"$)
 	End If
 	combineL.Set(pos, "2")
 	Return Me
 End Sub
 
 'change the selection at position to AND
-Sub WHERE_AND(pos As Int) As SDUI5MySQLRESTNative
+Sub WHERE_AND(pos As Int) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.WHERE_AND(${pos})"$)
+		Log($"SDUIMySQLREST.${TableName}.WHERE_AND(${pos})"$)
 	End If
 	combineL.Set(pos, "")
 	Return Me
 End Sub
 
 'add a sort field
-Sub ADD_ORDER_BY(fld As String) As SDUI5MySQLRESTNative
+Sub ADD_ORDER_BY(fld As String) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_ORDER_BY(${fld})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_ORDER_BY(${fld})"$)
 	End If
 	orderByL.Add($"order=${fld}"$)
 	Return Me
 End Sub
 
-Sub ADD_ORDER_BY_DESC(fld As String) As SDUI5MySQLRESTNative
+Sub ADD_ORDER_BY_DESC(fld As String) As SDUIMySQLREST
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ADD_ORDER_BY_DESC(${fld})"$)
+		Log($"SDUIMySQLREST.${TableName}.ADD_ORDER_BY_DESC(${fld})"$)
 	End If
 	orderByL.Add($"order=${fld},desc"$)
 	Return Me
@@ -1400,6 +1397,9 @@ End Sub
 Sub NextRow As Boolean
 	lastPosition = lastPosition + 1
 	Dim realSize As Int = RowCount - 1
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.NextRow(${lastPosition}/${realSize})"$)
+	End If
 	If lastPosition > realSize Then
 		Return False
 	Else
@@ -1440,14 +1440,14 @@ Sub SetRecord(rec As Map)
 	Next
 	DisplayValue = Record.GetDEfault(DisplayField, "")
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SetRecord(${BANano.ToJson(Record)})"$)
+		Log($"SDUIMySQLREST.${TableName}.SetRecord(${BANano.ToJson(Record)})"$)
 	End If
 End Sub
 
 
 Sub DELETE_BY(fldName As String, fldValue As String)
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}DELETE_BY(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}DELETE_BY(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
@@ -1460,7 +1460,7 @@ End Sub
 '</code>
 Sub DELETE_BY_STRING(fldName As String, fldValue As String)
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.DELETE_BY_STRING(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.DELETE_BY_STRING(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
@@ -1470,7 +1470,7 @@ End Sub
 
 Sub DELETE_WHERE
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.DELETE_WHERE"$)
+		Log($"SDUIMySQLREST.${TableName}.DELETE_WHERE"$)
 	End If
 	BANano.Await(deleteWhere(PrimaryKey, whereField, ops))
 End Sub
@@ -1480,7 +1480,7 @@ End Sub
 '</code>
 Sub ExistsByString(fldName As String, fldValue As Object) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ExistsByString(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.ExistsByString(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
@@ -1500,7 +1500,7 @@ End Sub
 '</code>
 Sub Exists(fldName As String, fldValue As Object) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.Exists(${fldName},${fldValue})"$)
+		Log($"SDUIMySQLREST.${TableName}.Exists(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
@@ -1518,7 +1518,7 @@ End Sub
 '</code>
 Sub ExistsWhere(where As Map) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.ExistsWhere(${BANano.ToJson(where)})"$)
+		Log($"SDUIMySQLREST.${mEvent}.ExistsWhere(${BANano.ToJson(where)})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(PrimaryKey)
@@ -1545,7 +1545,7 @@ End Sub
 '</code>
 Sub SELECT_WHERE As List
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SELECT_WHERE"$)
+		Log($"SDUIMySQLREST.${TableName}.SELECT_WHERE"$)
 	End If
 	Dim res As List = BANano.Await(findWhereOrderBy(whereField, ops, orderByL))
 	Return res
@@ -1563,11 +1563,11 @@ End Sub
 '</code>
 Sub SELECT_WHERE1 As List
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SELECT_WHERE1"$)
+		Log($"SDUIMySQLREST.${TableName}.SELECT_WHERE1"$)
 	End If
 	result = BANano.Await(findWhereOrderBy(whereField, ops, orderByL))
-	lastPosition = -1
 	RowCount = result.Size
+	lastPosition = -1
 	Return result
 End Sub
 
@@ -1601,7 +1601,7 @@ function generateUniqueId(len) {
 'prepare a new record
 Sub PrepareRecord
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${mEvent}.PrepareRecord"$)
+		Log($"SDUIMySQLREST.${TableName}.PrepareRecord"$)
 	End If
 	Record.Initialize
 	CLEAR_WHERE
@@ -1661,7 +1661,7 @@ Sub GetImage(fld As String) As String
 End Sub
 
 'get a boolean from the current record
-Sub GetBoolean(fld As String) As Boolean
+Sub GetBoolean(fld As String) As Boolean 
 	fld = fld.tolowercase
 	If BANano.IsUndefined(Record) Then Return False
 	If Record.ContainsKey(fld) Then
@@ -1746,10 +1746,10 @@ End Sub
 '</code>
 Sub deleteWhere(priKey As String, whereMap As Map, whereOps As List) As Boolean
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.deleteWhere(${priKey},${BANano.ToJson(whereMap)},${whereOps})"$)
+		Log($"SDUIMySQLREST.${TableName}.deleteWhere(${priKey},${BANano.ToJson(whereMap)},${whereOps})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.deleteWhere. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.deleteWhere. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
 	'get all the records
@@ -1768,7 +1768,7 @@ End Sub
 '</code>
 Sub findWhere(whereMap As Map, whereOps As List) As List
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.findWhere(${BANano.ToJson(whereMap)},${whereOps})"$)
+		Log($"SDUIMySQLREST.${TableName}.findWhere(${BANano.ToJson(whereMap)},${whereOps})"$)
 	End If
 	Dim res As List = BANano.Await(findWhereOrderBy(whereMap, whereOps, Null))
 	Return res
@@ -1781,17 +1781,17 @@ End Sub
 '</code>
 Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderBy})"$)
+		Log($"SDUIMySQLREST.${TableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderBy})"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUI5MySQLRESTNative.findWhereOrderBy. Please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIMySQLREST.findWhereOrderBy. Please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
 	If UseApiKey Then
-		If sApiKey = "" Then
-			BANano.Throw($"SDUI5MySQLRESTNative.findWhereOrderBy - The ApiKey has not been specified!"$)
-			Return Null
-		End If
+	If sApiKey = "" Then
+		BANano.Throw($"SDUIMySQLREST.findWhereOrderBy - The ApiKey has not been specified!"$)
+		Return Null
+	End If
 	End If
 	'we build the filter
 	Dim sb As StringBuilder
@@ -1827,7 +1827,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	'
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
+	If qflds <> "" Then xcommand.add(qflds)
 	If qfilter <> "" Then xcommand.add(qfilter)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)
@@ -1838,31 +1838,32 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 
 	Dim nresult As List
 	nresult.Initialize
-	'
+	' 
 	'this is a get
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 	If scommand = "" Then
-		fetch.SetURL($"/records/${TableName}"$)
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.findWhereOrderBy.(${baseURL}/records/${TableName})"$)
+			Log($"SDUIMySQLREST.findWhereOrderBy.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
 		End If
 	Else
-		fetch.SetURL($"/records/${TableName}?${scommand}"$)
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		If ShowLog Then
-			Log($"SDUI5MySQLRESTNative.findWhereOrderBy.(${baseURL}/records/${TableName}?${scommand})"$)
+			Log($"SDUIMySQLREST.findWhereOrderBy.${baseURL}/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		End If
 	End If
 	fetch.NoCache = True
-'	fetch.NoCors = True
 	BANano.Await(fetch.GetWait)
 	If fetch.Success Then
 		Dim Response As Map = fetch.response
 		If Response.ContainsKey("records") Then
 			nresult = Response.Get("records")
 		End If
+	Else
+		Log(fetch.ErrorMessage)	
 	End If
 	Return nresult
 End Sub
@@ -1885,7 +1886,7 @@ private Sub RemDelim(sValue As String, Delim As String) As String
 End Sub
 
 Sub SetRecordAsIs(rec As Map)
-	Record.Initialize
+	Record.Initialize 
 	'only process schema fields
 	For Each k As String In rec.Keys
 		Dim v As Object = rec.get(k)
@@ -1893,16 +1894,16 @@ Sub SetRecordAsIs(rec As Map)
 	Next
 	DisplayValue = Record.GetDEfault(DisplayField, "")
 	If ShowLog Then
-		Log($"SDUI5MySQLRESTNative.${TableName}.SetRecordAsIs(${BANano.ToJson(Record)})"$)
+		Log($"SDUIMySQLREST.${TableName}.SetRecordAsIs(${BANano.ToJson(Record)})"$)
 	End If
 End Sub
 
-Sub ADD_ORDER_BY_UPDATED_AT As SDUI5MySQLRESTNative
+Sub ADD_ORDER_BY_UPDATED_AT As SDUIMySQLREST
 	ADD_ORDER_BY("updated")
 	Return Me
 End Sub
 
-Sub ADD_ORDER_BY_CREATED_AT As SDUI5MySQLRESTNative
+Sub ADD_ORDER_BY_CREATED_AT As SDUIMySQLREST
 	ADD_ORDER_BY("created")
 	Return Me
 End Sub

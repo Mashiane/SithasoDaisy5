@@ -274,11 +274,12 @@ Module93=SDUI5Window
 Module94=SDUI5Wizard
 Module95=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
 Module96=|relative|..\..\shared\SDUIMap
-Module97=SithasoDaisy5
-Module98=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+Module97=SDUIMySQLREST
+Module98=SithasoDaisy5
+Module99=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
 NumberOfFiles=87
 NumberOfLibraries=3
-NumberOfModules=98
+NumberOfModules=99
 Version=10.2
 @EndOfDesignText@
 #Region Project Attributes 
