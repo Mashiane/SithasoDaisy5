@@ -1691,9 +1691,9 @@ End Sub
 '	Banano.Await(LoadAssetsOnDemand("FormToJSON", Array("form-data-json.min.js")))
 'End Sub
 
-Sub UsesPocketBase
-	Banano.Await(LoadAssetsOnDemand("PocketBase", Array("pocketbase.umd.js")))
-End Sub
+'Sub UsesPocketBase
+'	Banano.Await(LoadAssetsOnDemand("PocketBase", Array("pocketbase.umd.js")))
+'End Sub
 
 Sub UsesCouchDB
 	Banano.Await(LoadAssetsOnDemand("CouchDB", Array("pouchdb-8.0.1.min.js", "pouchdb.find.min.js")))

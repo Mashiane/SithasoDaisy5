@@ -361,6 +361,7 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
+	BANano.DependsOnAsset("math.min.js")
 	UI.Initialize(Me)
 	mName = UI.CleanID(Name)
 	mEventName = UI.CleanID(EventName)
@@ -6766,7 +6767,7 @@ Private Sub BuildRowBadge(Module As Object, fldName As String, fldValu As String
 	Dim btnColor As String = ""
 	If bColor.IndexOf(".") = -1 Then
 		If bColor.StartsWith("#") Then
-			btnColor = $"bg-[${bColor}]"$
+			btnColor = UI.FixColor("bg", bColor)
 		Else
 			btnColor = UI.FixColor("badge", bColor)
 		End If
@@ -6775,7 +6776,7 @@ Private Sub BuildRowBadge(Module As Object, fldName As String, fldValu As String
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
 		scolor = UI.CStr(scolor)
 		If scolor.StartsWith("#") Then
-			btnColor = $"bg-[${scolor}]"$
+			btnColor = UI.FixColor("bg", scolor)
 		Else
 			scolor = scolor.ToLowerCase
 			btnColor = UI.FixColor("badge", scolor)

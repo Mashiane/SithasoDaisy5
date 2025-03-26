@@ -411,7 +411,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsShadow = UI.CStr(sButtonsShadow)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
-		if sButtonsRounded = "none" then sButtonsRounded = ""
+		If sButtonsRounded = "none" Then sButtonsRounded = ""
 	End If
 	'
 	UI.AddClassDT("card-border card w-full bg-base-100")
@@ -431,7 +431,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
         <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         	<div id="${mName}_toolbar" class="m-3 -mb-3 flex">
-        		<h2 id="${mName}_title" class="ml-1 card-title w-full">${sTitle}</h2>
+        		<h2 id="${mName}_toolbartitle" class="ml-1 card-title w-full">${sTitle}</h2>
 				<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
@@ -910,10 +910,10 @@ Sub setTitle(s As String)				'ignoredeadcode
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_title"$, False)
+		UI.SetVisibleByID($"${mName}_toolbartitle"$, False)
 	Else
-		UI.SetVisibleByID($"${mName}_title"$, True)
-		UI.SetTextByID($"${mName}_title"$, s)
+		UI.SetVisibleByID($"${mName}_toolbartitle"$, True)
+		UI.SetTextByID($"${mName}_toolbartitle"$, s)
 	End If
 End Sub
 'set Tooltip Color
@@ -5616,4 +5616,16 @@ End Sub
 'End Sub
 '</code>
 Sub FileChangeMultiple
+End Sub
+
+'</code>
+'Private Sub prefPersonal_imagechooser_FileChange (e As BANanoEvent)
+'Dim fileObj As Map = prefPersonal.GetPropertyFile("imagechooser")
+'If BANano.IsNull(fileObj) Then Return
+'Dim fd As FileObject = app.UI.GetFileDetails(fileObj)
+'Dim fileURI As String = BANano.Await(app.readAsDataURLWait(fileObj))
+'prefPersonal.SetPropertyValue("image", fileURI)
+'End Sub
+'</code>
+Sub FileChange
 End Sub

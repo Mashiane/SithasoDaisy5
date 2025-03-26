@@ -1446,8 +1446,8 @@ Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
 	For Each mtx As String In mxItems
 		mtx = mtx.Trim
 		If mtx = "" Then Continue
-		Dim k As String = mvfield(mtx,1,"=")
-		Dim v As String = mvfield(mtx,2,"=")
+		Dim k As String = MvField(mtx,1,"=")
+		Dim v As String = MvField(mtx,2,"=")
 		v = CStr(v)
 		k = CStr(k)
 		k = k.trim
@@ -3436,4 +3436,164 @@ End Sub
 Sub ToBytes(kbSize As Int) As Long
 	Dim maxs As Long = (BANano.parseInt(kbSize) * 1024) * 1024
 	Return maxs
+End Sub
+
+#if javascript
+function dataURLToBlob(dataURL) {
+  // Code taken from https://github.com/ebidel/filer.js
+  var parts = dataURL.split(';base64,');
+  var contentType = parts[0].split(":")[1];
+  var raw = window.atob(parts[1]);
+  var rawLength = raw.length;
+  var uInt8Array = new Uint8Array(rawLength);
+  for (var i = 0; i < rawLength; ++i) {
+    uInt8Array[i] = raw.charCodeAt(i);
+  }
+  return new Blob([uInt8Array], { type: contentType });
+}
+#End If
+
+Sub dataURLToBlob(dataURL As String) As Object
+	Dim blob As Object = BANano.Await(BANano.RunJavascriptMethod("dataURLToBlob", Array(dataURL)))
+	Return blob
+End Sub
+
+'get start and end dates of a month based on date
+Sub GetMonthStartEnd(dateString As String) As List
+	dateString = dateString.trim
+	' Parse the input date string to extract year, month, and day
+	Dim syear As String = MvField(dateString,1,"-")
+	Dim smonth As String = MvField(dateString,2,"-")
+	
+	' Set the calendar to the first day of the given month
+	Dim startDate As Long
+	DateTime.DateFormat = "yyyy-MM-dd"
+	startDate = DateTime.DateParse(syear & "-" & smonth & "-01")
+    
+	' Calculate the end date by finding the first day of the next month, then subtracting one day
+	Dim nextMonth As Int = BANano.parseInt(smonth) + 1
+	Dim nextYear As Int = BANano.parseInt(syear)
+    
+	If nextMonth > 12 Then
+		nextMonth = 1
+		nextYear = BANano.parseInt(syear) + 1
+	End If
+    
+	Dim endDate As Long
+	endDate = DateTime.DateParse(nextYear & "-" & nextMonth & "-01") - DateTime.TicksPerDay
+    
+	' Format the start and end dates back to "yyyy-MM-dd" format
+	Dim startDateString As String = DateTime.Date(startDate)
+	Dim endDateString As String = DateTime.Date(endDate)
+    
+	' Create a list to return the start and end dates
+	Dim result As List
+	result.Initialize
+	result.Add(startDateString)
+	result.Add(endDateString)
+    
+	Return result
+End Sub
+
+Sub StrMid1(Text As String, Start As Int, iLength As Int) As String
+	Return Text.SubString2(Start-1,Start+iLength-1)
+End Sub
+
+Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
+	If idNumber.Length <> 13 Then
+		idNumber = PadRight(idNumber, 13, "0")
+	End If
+	Dim iyear As Int = Left(idNumber,2)
+	Dim imonth As Int = StrMid1(idNumber,3,2)
+	Dim iday As Int = StrMid1(idNumber,5,2)
+	'
+	Dim formulajs As BANanoObject
+	formulajs.Initialize("formulajs")
+	Dim dob As BANanoObject = formulajs.RunMethod("DATE", Array(iyear, imonth, iday))
+	Dim ndob As BANanoObject
+	ndob.Initialize2("Date", dob)
+	Dim yyyy As String = ndob.RunMethod("getFullYear", Null).result
+	Dim mm As Int = ndob.RunMethod("getMonth", Null).result
+	Dim dd As String = ndob.RunMethod("getDate", Null).result
+	mm = BANano.parseInt(mm) + 1
+	mm = PadRight(mm, 2, "0")
+	dd = PadRight(dd, 2, "0")
+	'
+	Select Case yyyy
+		Case "1900"
+			yyyy = "2000"
+		Case "1901"
+			yyyy = "2001"
+		Case "1902"
+			yyyy = "2002"
+		Case "1903"
+			yyyy = "2003"
+		Case "1904"
+			yyyy = "2004"
+		Case "1905"
+			yyyy = "2005"
+		Case "1906"
+			yyyy = "2006"
+		Case "1907"
+			yyyy = "2007"
+		Case "1908"
+			yyyy = "2008"
+		Case "1909"
+			yyyy = "2009"
+	End Select
+	Dim nDate As String = $"${yyyy}-${mm}-${dd}"$
+	Return nDate
+End Sub
+
+Sub CalculateAge(birthDateString As String) As Int
+	If birthDateString = "" Then Return 0
+	Dim sToday As String = DateNow
+	Dim dyears As Int = YearDiff(sToday, birthDateString)
+	dyears = CInt(dyears)
+	dyears = Abs(dyears)
+	Return dyears
+End Sub
+
+'date difference
+Sub DateDiff(currentDate As String, otherDate As String) As Int
+	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+	'
+	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "day")).Result
+	Return rslt
+End Sub
+
+'year difference
+Sub YearDiff(currentDate As String, otherDate As String) As Int
+	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+	'
+	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "year")).Result
+	Return rslt
+End Sub
+
+'month difference
+Sub MonthDiff(currentDate As String, otherDate As String) As Int
+	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+	'
+	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "month")).Result
+	Return rslt
+End Sub
+
+'minute difference
+Sub MinuteDiff(currentDate As String, otherDate As String) As Int
+	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+	'
+	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "minute")).Result
+	Return rslt
 End Sub
