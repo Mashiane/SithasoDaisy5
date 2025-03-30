@@ -47,6 +47,7 @@ Sub Class_Globals
 	Private sWidth As String = "500px"
 	Private jEditor As BANanoObject
 	Private sJson As Object
+	Private sJsonString As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -56,7 +57,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
-	BANano.DependsOnAsset("jsoneditor.min.css")
 	BANano.DependsOnAsset("jsoneditor.min.js")
 End Sub
 ' returns the element id
@@ -228,10 +228,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 Sub Refresh
-	If jEditor <> Null Then
-		jEditor.RunMethod("destroy", Null)
-	End If
-	'
 	Dim err As Object
 	Dim cbError As BANanoObject = BANano.CallSub(mCallBack, mName & "_onerror", Array(err))
 	'
@@ -243,8 +239,24 @@ Sub Refresh
 	Options.Initialize 
 	Options.put("mode", sMode)
 	Options.Put("modes", Array("code", "form", "preview", "text", "tree", "view"))
-	Options.put("onError", cbError)	
-	jEditor.Initialize2("JSONEditor", Array(mElement.ToObject, Options, jsonObj))
+	Options.put("onError", cbError)
+	Options.Put("target", mElement.ToObject)
+	UI.PutRecursive(Options, "props.content.json", jsonObj)
+	UI.PutRecursive(Options, "props.content.text", BANano.undefined)
+	'
+	jEditor = BANano.ImportWait("jsoneditor.min.js")
+	jEditor.RunMethod("createJSONEditor", Array(Options))
+End Sub
+
+
+Sub setJsonString(s As String)
+	sJsonString = s
+	Dim x As Map = BANano.FromJson(s)
+	setJson(x)
+End Sub
+
+Sub getJsonString As String
+	Return sJsonString
 End Sub
 
 'set Json
@@ -257,12 +269,14 @@ Sub getJson As Object
 	Return sJson
 End Sub
 
+'get the json content of the editor
 public Sub ToJson() As Object
 	If jEditor = Null Then Return Null
 	Dim xJson As Object = jEditor.RunMethod("get", Null).Result
 	Return xJson
 End Sub
 
+'get the text content of the editor
 public Sub ToString() As String
 	If jEditor = Null Then Return ""
 	Dim stext As String = jEditor.RunMethod("getText", Null).Result

@@ -17,6 +17,8 @@ Sub Process_Globals
 	Private types As Map
 	Private compPreview As SDUI5Preferences
 	Private compCode As SDUI5Code
+	Private prefShow As SDUI5Preferences
+	Private tblDesign As SDUI5Table
 End Sub
 
 
@@ -29,6 +31,18 @@ Sub Show(MainApp As SDUI5App)
 	items.Initialize
 	titles.Initialize
 	types.Initialize 
+	'
+	tblDesign.AddColumn("position", "Position")
+	tblDesign.AddColumnTextBox("name", "Field", False)
+	tblDesign.AddColumnTextBox("title", "Title", False)
+	tblDesign.AddColumnSelect("datatype", "Data Type", False, True, CreateMap())
+	tblDesign.AddColumnSelect("comptype", "Component", False, True, CreateMap())
+	tblDesign.AddColumnTextBox("defaultvalue", "Default Value", False)
+	tblDesign.AddColumnCheckBox("required", "Required", "success", False)
+	tblDesign.AddColumnCheckBox("visible", "Visible", "success", False)
+	tblDesign.AddColumnCheckBox("enabled", "Enabled", "success", False)
+	tblDesign.AddDesignerColums
+	
 	
 	'add the components to have
 	AddMenuItem("Dialer", "Dialer", "Dialer allows users to increase or decrease a numeric value using increment (+) and decrement (-) buttons.")
@@ -495,4 +509,24 @@ End Sub
 
 Private Sub compToAdd_Change (item As Map)
 	BANano.Await(GeneratePreview)
+End Sub
+
+Private Sub tblDesign_EditRow (Row As Int, item As Map)
+	
+End Sub
+
+Private Sub tblDesign_DeleteRow (Row As Int, item As Map)
+	
+End Sub
+
+Private Sub tblDesign_Add (e As BANanoEvent)
+	
+End Sub
+
+Private Sub tblDesign_Refresh (e As BANanoEvent)
+	
+End Sub
+
+Private Sub tblDesign_CloneRow (Row As Int, item As Map)
+	
 End Sub

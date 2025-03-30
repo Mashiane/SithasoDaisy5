@@ -687,25 +687,25 @@ Sub PrepareEmojis				'ignoredeadcode
 End Sub
 '
 
-Sub CloseInternalModals
-	UI.CloseDropDownByID($"${mName}_attachments"$)
-	UI.CloseDropDownByID($"${mName}_emojis"$)
-End Sub
+'Sub CloseInternalModals
+'	UI.CloseDropDownByID($"${mName}_attachments"$)
+'	UI.CloseDropDownByID($"${mName}_emojis"$)
+'End Sub
 
 
-private Sub ToggleEmoji(e As BANanoEvent)			'ignoredeadcode
-	e.PreventDefault
-	UI.ToggleClassByID($"${mName}_emojis"$, "dropdown-open")
-	'close attachments
-	UI.RemoveClassByID($"${mName}_attachments"$, "dropdown-open")
-End Sub
-
-private Sub ToggleAttachments(e As BANanoEvent)			'ignoredeadcode
-	e.PreventDefault
-	UI.ToggleClassByID($"${mName}_attachments"$, "dropdown-open")
-	'close emojis
-	UI.RemoveClassByID($"${mName}_emojis"$, "dropdown-open")
-End Sub
+'private Sub ToggleEmoji(e As BANanoEvent)			'ignoredeadcode
+'	e.PreventDefault
+'	UI.ToggleClassByID($"${mName}_emojis"$, "dropdown-open")
+'	'close attachments
+'	UI.RemoveClassByID($"${mName}_attachments"$, "dropdown-open")
+'End Sub
+'
+'private Sub ToggleAttachments(e As BANanoEvent)			'ignoredeadcode
+'	e.PreventDefault
+'	UI.ToggleClassByID($"${mName}_attachments"$, "dropdown-open")
+'	'close emojis
+'	UI.RemoveClassByID($"${mName}_emojis"$, "dropdown-open")
+'End Sub
 
 Sub setButtonSize(s As String)				'ignoredeadcode
 	CustProps.Put("ButtonSize", s)

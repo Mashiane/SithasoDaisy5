@@ -17,13 +17,15 @@ Sub Show(MainApp As SDUI5App)
 	pgIndex.UpdateTitle("SDUI5JsonEditor")
 	'
 	Dim j As Map = CreateMap()
-	j.Put("name", "SithasoDaisy5")
-	j.Put("version", "Beta 12")
-	app.UI.PutRecursive(j, "stack.name1", "b4j")
-	app.UI.PutRecursive(j, "stack.name2", "BANano")
-	app.UI.PutRecursive(j, "stack.name3", "DaisyUI")
+	j.Put("data", Array(1, 2, 3))
+	j.Put("boolean", True)
+	j.Put("color", "#82b92c")
+	j.Put("null", Null)
+	j.Put("number", 123)
+	j.Put("object", CreateMap("a":"b", "c": "d"))
+	j.Put("string", "Hello World")
 	jEdit.Json = j
-	jEdit.refresh
+	BANano.Await(jEdit.Refresh)
 End Sub
 
 Private Sub jEdit_OnError (err As Object)

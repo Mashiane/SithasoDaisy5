@@ -25,6 +25,7 @@ Private Sub Class_Globals
 	Public const DB_FLOAT As String = "FLOAT"
 	Public const DB_INTEGER As String = "INTEGER"
 	Public const DB_TEXT As String = "TEXT"
+	Public const DB_LONGTEXT As String = "TEXT"	
 	Public const DB_DOUBLE As String = "DOUBLE"
 	Public const DB_NUMBER As String = "NUMBER"
 	Public const DB_RELATION As String = "RELATION"
@@ -375,6 +376,38 @@ Sub SEND_EMAIL_REST(toEmail As String, Subject As String, Message As String) As 
 	fetch.NoCache = True
 	BANano.Await(fetch.PostWait)
 	Return fetch.Response
+End Sub
+
+Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
+	If ShowLog Then
+		Log($"SDUI5MySQLRESTNative.${sourceTable}.SetSchemaFromDataModel"$)
+	End If
+	If models.ContainsKey(sourceTable) = False Then
+		BANano.Throw($"SetSchemaFromDataModel.${sourceTable} data-model does NOT exist!"$)
+		Return
+	End If
+	Dim tm As Map = models.Get(sourceTable)
+	PrimaryKey = tm.GetDefault("pk", "")
+	Schema.Initialize
+	'set the field types
+	Dim fldsx As List = tm.Get("fields").As(List)
+	For Each fm As Map In fldsx
+		Dim fldType As String = fm.Get("type")
+		Dim fldName As String = fm.Get("name")
+		Select Case fldType
+			Case "TEXT", "STRING"
+				SchemaAddText1(fldName)
+			Case "BLOB"
+				SchemaAddBlob1(fldName)
+			Case "INT", "INTEGER"
+				SchemaAddInt1(fldName)
+			Case "DOUBLE", "REAL", "FLOAT"
+				SchemaAddDouble1(fldName)
+			Case "BOOL"
+				SchemaAddBoolean1(fldName)
+				
+		End Select
+	Next
 End Sub
 
 'set schema from data models
@@ -2108,7 +2141,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIPocketBase
 		fldValue = CDbl(fldValue)
 	Case DB_INTEGER
 		fldValue = CInt(fldValue)
-	Case DB_TEXT
+	Case DB_TEXT, DB_LONGTEXT
 		fldValue = CStr(fldValue)
 	Case DB_DOUBLE
 		fldValue = CDbl(fldValue)
@@ -2383,7 +2416,7 @@ Sub SetRecord(rec As Map)
 			v = CDbl(v)
 		Case DB_INTEGER
 			v = CInt(v)
-		Case DB_TEXT
+		Case DB_TEXT, DB_LONGTEXT
 			v = CStr(v)
 		Case DB_DOUBLE
 			v = CDbl(v)
@@ -2439,7 +2472,7 @@ Sub SetFormFile(fldName As String, fldValue As Object) As SDUIPocketBase
 		fldValue = CDbl(fldValue)
 	Case DB_INTEGER
 		fldValue = CInt(fldValue)
-	Case DB_TEXT
+	Case DB_TEXT, DB_LONGTEXT
 		fldValue = CStr(fldValue)
 	Case DB_DOUBLE
 		fldValue = CDbl(fldValue)
@@ -2478,7 +2511,7 @@ Sub SetFormField(fldName As String, fldValue As Object) As SDUIPocketBase
 		fldValue = CDbl(fldValue)
 	Case DB_INTEGER
 		fldValue = CInt(fldValue)
-	Case DB_TEXT
+	Case DB_TEXT, DB_LONGTEXT
 		fldValue = CStr(fldValue)
 	Case DB_DOUBLE
 		fldValue = CDbl(fldValue)
@@ -4237,7 +4270,7 @@ Sub SchemaToPocketBase As Map
 			nl.Add(CreateMap("name":k, "type":"number"))
 		Case DB_FILE, DB_BLOB
 			nl.Add(CreateMap("name":k, "type":"file"))
-		Case DB_STRING, DB_TEXT
+		Case DB_STRING, DB_TEXT, DB_LONGTEXT
 			nl.Add(CreateMap("name":k, "type":"text"))
 		Case DB_RELATION
 			nl.Add(CreateMap("name":k, "type":"relation"))

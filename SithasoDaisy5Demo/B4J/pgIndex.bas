@@ -155,6 +155,8 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-signature", "", "Signature Pad")
 	drawermenu.AddItemChild("plugins", "pg-treespider", "", "Tree Spider")
 	drawermenu.AddItemChild("plugins", "pg-jsoneditor", "", "JSON Editor")
+	drawermenu.AddItemChild("plugins", "pg-jsontree", "", "JSON Tree")
+	drawermenu.AddItemChild("plugins", "pg-easymde", "", "EasyMDE")
 End Sub
 
 
@@ -180,6 +182,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "easymde"
+				pgEasyMDE.Show(App)
 			Case "jsoneditor"
 				pgJSONEditor.Show(App)		
 			Case "treespider"
@@ -213,6 +217,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgColorPicker.Show(App)
 			Case "signature"
 				pgSignaturePad.Show(App)
+			Case "jsontree"
+				pgJsonTree.Show(App)
 			End Select		
 		
 			Select Case ssuffix

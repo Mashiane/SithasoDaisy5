@@ -13,6 +13,7 @@ Private Sub Class_Globals
 	Public const DB_FLOAT As String = "FLOAT"
 	Public const DB_INTEGER As String = "INTEGER"
 	Public const DB_TEXT As String = "TEXT"
+	Public const DB_LONGTEXT As String = "LONGTEXT"
 	Public const DB_DOUBLE As String = "DOUBLE"
 	Public const DB_NUMBER As String = "NUMBER"
 	Public const DB_DATE As String = "DATE"
@@ -255,6 +256,41 @@ private Sub GetRecursive(xdata As Map, path As String) As Object
 	End Try
 End Sub
 
+Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
+	If ShowLog Then
+		Log($"SDUI5MySQLRESTNative.${sourceTable}.SetSchemaFromDataModel"$)
+	End If
+	If models.ContainsKey(sourceTable) = False Then
+		BANano.Throw($"SetSchemaFromDataModel.${sourceTable} data-model does NOT exist!"$)
+		Return
+	End If
+	Dim tm As Map = models.Get(sourceTable)
+	PrimaryKey = tm.GetDefault("pk", "")
+	AutoIncrement = tm.GetDefault("ai", "")
+	Schema.Initialize
+	'set the field types
+	Dim fldsx As List = tm.Get("fields").As(List)
+	For Each fm As Map In fldsx
+		Dim fldType As String = fm.Get("type")
+		Dim fldName As String = fm.Get("name")
+		Select Case fldType
+			Case "TEXT", "STRING"
+				SchemaAddText1(fldName)
+			Case "BLOB"
+				SchemaAddBlob1(fldName)
+			Case "INT", "INTEGER"
+				SchemaAddInt1(fldName)
+			Case "DOUBLE", "REAL", "FLOAT"
+				SchemaAddDouble1(fldName)
+			Case "BOOL"
+				SchemaAddBoolean1(fldName)
+				
+		End Select
+	Next
+	If AutoIncrement <> "" Then
+		SchemaAddInt1(AutoIncrement)
+	End If
+End Sub
 
 'set schema from data models including primary key and auto-increment
 
@@ -1139,7 +1175,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLREST
 			fldValue = CDbl(fldValue)
 		Case DB_INTEGER
 			fldValue = CInt(fldValue)
-		Case DB_TEXT
+		Case DB_TEXT, DB_LONGTEXT
 			fldValue = CStr(fldValue)
 		Case DB_DOUBLE
 			fldValue = CDbl(fldValue)
@@ -1431,7 +1467,7 @@ Sub SetRecord(rec As Map)
 				v = CDbl(v)
 			Case DB_INTEGER
 				v = CInt(v)
-			Case DB_TEXT
+			Case DB_TEXT, DB_LONGTEXT
 				v = CStr(v)
 			Case DB_DOUBLE
 				v = CDbl(v)
