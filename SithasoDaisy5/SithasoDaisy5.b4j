@@ -384,6 +384,8 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("jsontr.ee.js")
 	BANano.Header.AddCSSFile("easymde.min.css")
 	BANano.Header.AddJavascriptFile("easymde.min.js")
+'	BANano.Header.AddJavascriptFile("paho-mqtt-min.js")
+'	BANano.Header.AddJavascriptFile("mqttws31.min.js")
 	
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version

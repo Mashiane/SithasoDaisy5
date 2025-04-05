@@ -16,12 +16,50 @@ Sub Process_Globals
 	Public ColorMap As Map
 	Public Months As Map
 	Public Days As Map
-	Public EmojiData As Map
 End Sub
 
 'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
 public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
 	Return BANano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
+End Sub
+
+Sub Val(InputStr As String) As String
+	InputStr = CStr(InputStr)
+	InputStr = InputStr.Trim
+	If InputStr = "" Then InputStr = "0"
+	
+	Dim AllowedChars As String = "0123456789.-"
+	Dim Result As StringBuilder
+	Result.Initialize
+    
+	For i = 0 To InputStr.Length - 1
+		Dim sChar As String = InputStr.CharAt(i)
+		If AllowedChars.IndexOf(sChar) <> -1 Then
+			Result.Append(sChar)
+		End If
+	Next    
+	Return Result.ToString
+End Sub
+
+'convert to int
+Sub CInt(o As Object) As Int
+	o = Val(o)
+	Return BANano.parseInt(o)
+End Sub
+
+Sub CleanID(s As String) As String
+	s = CStr(s)
+	s = s.tolowercase
+	s = s.Replace("#", "")
+	s = s.Replace(" ", "")
+	s = s.Replace("{", "")
+	s = s.Replace("]", "")
+	s = s.Replace("[", "")
+	s = s.Replace("}", "")
+	s = s.Replace("(", "")
+	s = s.Replace(")", "")
+	s = s.Trim
+	Return s
 End Sub
 
 'code for DOMContentLoaded

@@ -17,7 +17,6 @@ Sub Process_Globals
 	Private types As Map
 	Private compPreview As SDUI5Preferences
 	Private compCode As SDUI5Code
-	Private prefShow As SDUI5Preferences
 	Private tblDesign As SDUI5Table
 End Sub
 

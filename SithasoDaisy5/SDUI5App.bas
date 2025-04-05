@@ -402,6 +402,8 @@ Public Sub Initialize (mCallback As Object)
 	mElement.Initialize($"#body"$)
 	mElement.Append($"<div id="app" class="min-h-screen"></div>"$)
 	UI.AddClass(mElement, "relative h-screen w-screen m-0 p-0")
+	UI.AddStyle(mElement, "text-rendering", "optimizeSpeed")
+	UI.AddStyle(mElement, "min-height", "100vh")
 	mback = mCallback
 	AddLoader
 	Banano.Await(modSD5.InitColors)
@@ -2237,10 +2239,6 @@ Sub IndexFromEventID(eID As String) As String
 	Dim pos As String = UI.MvField(eID, 2, "_")
 	Return pos
 End Sub
-'
-'Sub UsesEmojiMart
-'	modSD5.EmojiData = Banano.Await(Banano.GetFileAsJSON("./assets/emojimart.json", Null))
-'End Sub
 
 'read as text
 Sub readAsText(fr As Map) As BANanoPromise

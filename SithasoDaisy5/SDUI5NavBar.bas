@@ -10,6 +10,9 @@ Version=10
 '
 #DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left|_logo|_burger|_center|_right, Description: Child Items - _left|_logo|_burger|_center|_right
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: HasBackButton, DisplayName: Back Button, FieldType: Boolean, DefaultValue: False, Description: Back Button
+#DesignerProperty: Key: BackLabel, DisplayName: Back Label, FieldType: String, DefaultValue: Back, Description: Back Label
+#DesignerProperty: Key: BackLabelVisible, DisplayName: Back Label Visible, FieldType: Boolean, DefaultValue: False, Description: Back Label Visible
 #DesignerProperty: Key: Sticky, DisplayName: Sticky, FieldType: Boolean, DefaultValue: True, Description: Sticky
 #DesignerProperty: Key: Top, DisplayName: Top, FieldType: String, DefaultValue: 0, Description: Top
 #DesignerProperty: Key: ZIndex, DisplayName: Z Index, FieldType: String, DefaultValue: 30, Description: Z index
@@ -90,6 +93,10 @@ Sub Class_Globals
 	Private bHideTitleOnLargeScreen As Boolean = False
 	Private bHideLogo As Boolean = False
 	Private bHideTitle As Boolean = False
+	Private bHasBackButton As Boolean = False
+	Private sBackLabel As String = "Back"
+	Private bBackLabelVisible As Boolean = False
+	Public BackButton As SDUI5Button
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -279,6 +286,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHideLogo = UI.CBool(bHideLogo)
 		bHideTitle = Props.GetDefault("HideTitle", False)
 		bHideTitle = UI.CBool(bHideTitle)
+		bHasBackButton = Props.GetDefault("HasBackButton", False)
+		bHasBackButton = UI.CBool(bHasBackButton)
+		sBackLabel = Props.GetDefault("BackLabel", "Back")
+		sBackLabel = UI.CStr(sBackLabel)
+		bBackLabelVisible = Props.GetDefault("BackLabelVisible", False)
+		bBackLabelVisible = UI.CBool(bBackLabelVisible)
 	End If
 	'
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
@@ -306,6 +319,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<nav id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_left" class="navbar-start flex items-center gap-2">
+			<div id="${mName}_back" class="hidden"></div>
 			<div id="${mName}_burger" class="hidden"></div>
 			<div id="${mName}_logo" class="hidden"></div>
 		</div>	
@@ -324,6 +338,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHideLogo(bHideLogo)
 	setHideTitle(bHideTitle)
 '	setVisible(bVisible)
+	setHasBackButton(bHasBackButton)
 End Sub
 
 'set Hide Logo
@@ -340,10 +355,12 @@ Sub setHideTitle(b As Boolean)					'ignoredeadcode
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_title"$, Not(b))
 End Sub
+
 'get Hide Logo
 Sub getHideLogo As Boolean
 	Return bHideLogo
 End Sub
+
 'get Hide Title
 Sub getHideTitle As Boolean
 	Return bHideTitle
@@ -368,6 +385,7 @@ Sub setHideHamburgerOnLargeScreen(b As Boolean)			'ignoredeadcode
 		UI.RemoveClassByID($"${mName}_burger"$, "lg:hidden")
 	End If
 End Sub
+
 'set Hide Logo On Large Screen
 Sub setHideLogoOnLargeScreen(b As Boolean)				'ignoredeadcode
 	bHideLogoOnLargeScreen = b
@@ -379,6 +397,7 @@ Sub setHideLogoOnLargeScreen(b As Boolean)				'ignoredeadcode
 		UI.RemoveClassByID($"${mName}_logo"$, "lg:hidden")
 	End If
 End Sub
+
 'set Hide Title On Large Screen
 Sub setHideTitleOnLargeScreen(b As Boolean)				'ignoredeadcode
 	bHideTitleOnLargeScreen = b
@@ -390,23 +409,26 @@ Sub setHideTitleOnLargeScreen(b As Boolean)				'ignoredeadcode
 		UI.RemoveClassByID($"${mName}_title"$, "lg:hidden")
 	End If
 End Sub
+
 'get Hide Hamburger
 Sub getHideHamburger As Boolean
 	Return bHideHamburger
 End Sub
+
 'get Hide Hamburger On Large Screen
 Sub getHideHamburgerOnLargeScreen As Boolean
 	Return bHideHamburgerOnLargeScreen
 End Sub
+
 'get Hide Logo On Large Screen
 Sub getHideLogoOnLargeScreen As Boolean
 	Return bHideLogoOnLargeScreen
 End Sub
+
 'get Hide Title On Large Screen
 Sub getHideTitleOnLargeScreen As Boolean
 	Return bHideTitleOnLargeScreen
 End Sub
-
 
 'set Sticky
 Sub setSticky(b As Boolean)
@@ -475,6 +497,58 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	Hamburger.UI.AddClassByID($"${mName}_burger"$, "shrink-0 ml-2")
 End Sub
 
+'set Back Button
+Sub setHasBackButton(b As Boolean)
+	bHasBackButton = b
+	CustProps.put("HasBackButton", b)
+	If mElement = Null Then Return
+	If bHasBackButton = False Then Return
+	If BANano.Exists($"#${mName}back"$) = True Then Return
+	BackButton.Initialize(mCallBack, $"${mName}back"$, $"${mName}back"$)
+	BackButton.ParentID = $"${mName}_back"$
+	BackButton.Visible = True
+'	BackButton.LeftIcon = "./assets/
+	If b = True Then
+		UI.AddAttr(mElement, "back-button", b)
+	Else
+		UI.RemoveAttr(mElement, "back-button")
+	End If
+End Sub
+
+'set Back Label
+Sub setBackLabel(s As String)
+	sBackLabel = s
+	CustProps.put("BackLabel", s)
+	If mElement = Null Then Return
+	If s <> "Back" Then UI.AddAttr(mElement, "back-label", s)
+End Sub
+
+'set Back Label Visible
+Sub setBackLabelVisible(b As Boolean)
+	bBackLabelVisible = b
+	CustProps.put("BackLabelVisible", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "back-label-visible", b)
+	Else
+		UI.RemoveAttr(mElement, "back-label-visible")
+	End If
+End Sub
+
+'get Back Button
+Sub getHasBackButton As Boolean
+	Return bHasBackButton
+End Sub
+
+'get Back Label
+Sub getBackLabel As String
+	Return sBackLabel
+End Sub
+
+'get Back Label Visible
+Sub getBackLabelVisible As Boolean
+	Return bBackLabelVisible
+End Sub
 
 'set Has Logo
 Sub setHasLogo(b As Boolean)			'ignoredeadcode
