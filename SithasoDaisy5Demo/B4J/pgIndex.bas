@@ -418,3 +418,19 @@ Private Sub appnavbar_TitleClick (e As BANanoEvent)
 	e.PreventDefault
 	App.ShowToastSuccess("Title Click!")
 End Sub
+
+Sub ShowNavBar
+	appnavbar.Visible = True
+End Sub
+
+Sub HideNavBar
+	appnavbar.Visible = False
+End Sub
+
+Sub OpenDrawer
+	appdrawer.OpenDrawer(True)
+End Sub
+
+Sub CloseDrawer
+	appdrawer.OpenDrawer(False)
+End Sub

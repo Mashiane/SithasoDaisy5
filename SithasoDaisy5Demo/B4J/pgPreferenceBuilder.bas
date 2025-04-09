@@ -18,29 +18,46 @@ Sub Process_Globals
 	Private compPreview As SDUI5Preferences
 	Private compCode As SDUI5Code
 	Private tblDesign As SDUI5Table
+	Private Mode As String
+	Private compTypes As List
+	Private dataTypes As List
+	Private lsDB As SDUILocalStorage
 End Sub
 
 
 Sub Show(MainApp As SDUI5App)
 	UI.Initialize(Me)
 	app = MainApp
+	pgIndex.HideNavBar
 	BANano.LoadLayout(app.PageView, "prefbuilderview")
 	pgIndex.UpdateTitle("Preference Dialog Builder")
+	lsDB.Initialize("preferences", "id")
+	lsDB.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
+	lsDB.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
 	'define the menu items to show
 	items.Initialize
 	titles.Initialize
 	types.Initialize 
+	compTypes.Initialize 
+	compTypes.AddAll(Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
-	tblDesign.AddColumn("position", "Position")
-	tblDesign.AddColumnTextBox("name", "Field", False)
-	tblDesign.AddColumnTextBox("title", "Title", False)
-	tblDesign.AddColumnSelect("datatype", "Data Type", False, True, CreateMap())
-	tblDesign.AddColumnSelect("comptype", "Component", False, True, CreateMap())
-	tblDesign.AddColumnTextBox("defaultvalue", "Default Value", False)
-	tblDesign.AddColumnCheckBox("required", "Required", "success", False)
-	tblDesign.AddColumnCheckBox("visible", "Visible", "success", False)
-	tblDesign.AddColumnCheckBox("enabled", "Enabled", "success", False)
+	dataTypes.Initialize 
+	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date"))
+	
+	tblDesign.AddColumn("id", "#")
+	tblDesign.SetColumnVisible("id", False)
+	tblDesign.AddColumnTextBox("proppos", "Position",False)
+	tblDesign.AddColumnTextBox("propname", "Field", False)
+	tblDesign.AddColumnTextBox("proptitle", "Title", False)
+	tblDesign.AddColumnSelect("propdatatype", "Data Type", False, True, UI.ListToSelectOptionsSort(dataTypes))
+	tblDesign.AddColumnSelect("proptype", "Component", False, True, UI.ListToSelectOptionsSort(compTypes))
+	tblDesign.AddColumnTextBox("propvalue", "Default Value", False)
+	tblDesign.AddColumnCheckBox("proprequired", "Required", "success", False)
+	tblDesign.AddColumnCheckBox("propvisible", "Visible", "success", False)
+	tblDesign.AddColumnCheckBox("propenabled", "Enabled", "success", False)
 	tblDesign.AddDesignerColums
+	
+	'BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
 	
 	
 	'add the components to have
@@ -95,6 +112,17 @@ Sub Show(MainApp As SDUI5App)
 '			ami.TooltipPosition = ami.TOOLTIPPOSITION_RIGHT
 '		End If
 	Next
+	BANano.Await(MountPreferences)
+End Sub
+
+Sub MountPreferences
+	BANano.Await(lsDB.Records)
+	tblDesign.SetItemsPaginate(lsDB.Result)
+	'
+	compPreview.Title = "Form Preview"
+	BANano.Await(compPreview.PropertyBagFromList(lsDB.result))
+	'show the code for this component
+	compCode.Content = compPreview.ToString
 End Sub
 
 private Sub AddProperties
@@ -105,10 +133,10 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("id", "ID", "", True)
 	compToAdd.AddPropertyPlusMinus("proppos", "Position", "1", True, 1, 1, 100)
 	compToAdd.AddPropertySelect("proptype", "Type", "TextBox", True, CreateMap())
-	compToAdd.SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	compToAdd.SetPropertySelectItemsListSort("proptype", compTypes)
 	compToAdd.AddPropertyTextBox("propname", "Name", "", True)
 	compToAdd.AddPropertyTextBox("proptitle", "Title", "", True)
-'	compToAdd.AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(Array("String","Int","Double","Blob","Bool","Date")))
+	compToAdd.AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(dataTypes))
 	compToAdd.AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
 	compToAdd.AddPropertyTextBox("propvalue", "Default Value", "", False)
 	compToAdd.AddPropertyCheckBox("proprequired", "Required", False, "success")
@@ -199,6 +227,7 @@ private Sub SortMenuItemsByKey As Map
 End Sub
 
 Private Sub menuComponents_ItemClick (item As String)
+	Mode = "C"
 	'set the active item in the menu
 	BANano.Await(menuComponents.SetItemActive(item))
 	'update the pref bag title
@@ -216,11 +245,9 @@ Sub ShowPropertiesByType(item As String)
 	BANano.Await(compToAdd.HideAllProperties)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
-	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
-'	compToAdd.ShowProperty(Array("propdatatype"))
-'	compToAdd.RequireProperty(True, Array("propdatatype"))
+	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
 	'set required properties
-	compToAdd.RequireProperty(True, Array("id", "proppos", "propname", "proptitle"))
+	compToAdd.RequireProperty(True, Array("id", "proppos", "propname", "proptitle", "propdatatype"))
 	compToAdd.SetPropertyValue("propalign", "left")
 	'show component specific
 	Select Case item
@@ -491,15 +518,37 @@ End Sub
 
 'if happy with the preview, save preference to db
 Private Sub compPreview_Yes_Click (e As BANanoEvent)
-	'check if the property bag is valid
-	Dim bIsValid As Boolean = BANano.Await(compToAdd.IsPropertyBagValid)
-	If bIsValid = False Then
-		BANano.Await(app.ShowSwalErrorWait("Preferences", "The specified preferences are not valid, please fix the issues!", "Ok"))
-		Return
-	End If
+'	'check if the property bag is valid
+'	Dim bIsValid As Boolean = BANano.Await(compToAdd.IsPropertyBagValid)
+'	If bIsValid = False Then
+'		BANano.Await(app.ShowSwalErrorWait("Preferences", "The specified preferences are not valid, please fix the issues!", "Ok"))
+'		Return
+'	End If
 	'the bag is valid, execute a preview
 	Dim bag As Map = BANano.Await(compToAdd.PropertyBag)
-	Log(bag)
+	Dim sid As String = bag.Get("id")
+'	Dim spropdatatype As String = bag.Get("propdatatype")
+'	Dim bpropenabled As Boolean = bag.Get("propenabled")
+'	Dim spropname As String = bag.Get("propname")
+'	Dim sproppos As String = bag.Get("proppos")
+'	Dim bproprequired As Boolean = bag.Get("proprequired")
+'	Dim sproptitle As String = bag.Get("proptitle")
+'	Dim sproptype As String = bag.Get("proptype")
+'	Dim spropvalue As String = bag.Get("propvalue")
+'	Dim bpropvisible As Boolean = bag.Get("propvisible")
+'	Dim sprops As String = BANano.ToJson(bag)
+	'
+	Select Case Mode
+	Case "C", ""
+		sid = lsDB.NextID
+		bag.Put("id", sid)
+		lsDB.SetRecord(bag)
+		BANano.Await(lsDB.create)
+	Case "U"
+		lsDB.SetRecord(bag)
+		BANano.Await(lsDB.Update) 
+	End Select
+	BANano.Await(MountPreferences)
 End Sub
 
 Private Sub compPreview_No_Click (e As BANanoEvent)
@@ -511,21 +560,84 @@ Private Sub compToAdd_Change (item As Map)
 End Sub
 
 Private Sub tblDesign_EditRow (Row As Int, item As Map)
-	
+	Mode = "U"
+	Dim sproptype As String = item.Get("proptype")
+	'update the pref bag title
+	compToAdd.Title = GetTitle(sproptype.ToLowerCase) & " Properties"
+	compPreview.Title = GetTitle(sproptype.ToLowerCase) & " Preview"
+	'add all properties needed
+	BANano.Await(AddProperties)
+	'set the component type we will add
+	compToAdd.SetPropertyValue("proptype", GetComponentType(sproptype))
+	'show properties depending on type we have chosen
+	BANano.Await(ShowPropertiesByType(sproptype.tolowercase))
+	compToAdd.PropertyBag = item
+	BANano.Await(GeneratePreview)
 End Sub
 
 Private Sub tblDesign_DeleteRow (Row As Int, item As Map)
-	
+	Dim toDeleteID As String = item.Get("id")
+	Dim toDeleteName As String = item.Get("propname")
+	Dim sMsg As String = $"<h2 class="text-2xl font-bold mt-2">${toDeleteName}</h2><br>Are you sure that you want to delete this record?"$
+	Dim bConfirm As Boolean = BANano.Await(app.ShowSwalConfirmWait("Confirm Delete", sMsg, "Yes", "No"))
+	If bConfirm = False Then Return
+	BANano.Await(lsDB.Delete(toDeleteID))
+	BANano.Await(MountPreferences)
 End Sub
 
 Private Sub tblDesign_Add (e As BANanoEvent)
-	
+	Mode = "C"
 End Sub
 
 Private Sub tblDesign_Refresh (e As BANanoEvent)
-	
+	BANano.Await(MountPreferences)
 End Sub
 
 Private Sub tblDesign_CloneRow (Row As Int, item As Map)
+	Mode = "C"
+	item.Put("id", lsDB.NextID)
+	Dim sproptype As String = item.Get("proptype")
+	'update the pref bag title
+	compToAdd.Title = GetTitle(sproptype.ToLowerCase) & " Properties"
+	compPreview.Title = GetTitle(sproptype.ToLowerCase) & " Preview"
+	'add all properties needed
+	BANano.Await(AddProperties)
+	'set the component type we will add
+	compToAdd.SetPropertyValue("proptype", GetComponentType(sproptype))
+	'show properties depending on type we have chosen
+	BANano.Await(ShowPropertiesByType(sproptype.tolowercase))
+	compToAdd.PropertyBag = item
+	BANano.Await(GeneratePreview)
+	app.ShowToastInfo("Save the record after update")
+End Sub
+
+Private Sub tblDesign_Back (e As BANanoEvent)
+	pgIndex.ShowNavBar
+	pgIndex.OpenDrawer
+	pgTypography.Show(app)
+End Sub
+
+Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, item As Map)
+	item.Put(Column, Value)
+	lsDB.SetRecord(item)
+	BANano.Await(lsDB.update)
+	BANano.Await(MountPreferences)
+End Sub
+
+Private Sub tblDesign_DeleteAll (e As BANanoEvent)
+	Dim sMsg As String = $"<h2 class="text-2xl font-bold mt-2">Preferences</h2><br>Are you sure that you want to delete all the preferences?"$
+	Dim bConfirm As Boolean = BANano.Await(app.ShowSwalConfirmWait("Confirm Delete", sMsg, "Yes", "No"))
+	If bConfirm = False Then Return
+	BANano.Await(lsDB.Clear)
+	BANano.Await(MountPreferences)
+End Sub
+
+Private Sub tblDesign_UploadToolbar (e As BANanoEvent)
 	
+End Sub
+
+Private Sub tblDesign_Download (e As BANanoEvent)
+	Dim result As List = BANano.Await(lsDB.Records)
+	Dim sjson As String = BANano.ToJson(result)
+	app.DownloadTextFile(sjson, "preferences.json")
 End Sub

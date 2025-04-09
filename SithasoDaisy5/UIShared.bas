@@ -36,6 +36,15 @@ Sub JoinQuote(delimiter As String, lst As List) As String
 	Return sout
 End Sub
 
+Sub CopyMapByKeys(source As Map, keys As List) As Map
+	Dim nm As Map = CreateMap()
+	For Each k As String In keys
+		Dim v As Object = source.Get(k)
+		nm.Put(k, v)
+	Next
+	Return nm
+End Sub
+
 'extract first number of words from a string
 Sub ExtractFirstWords(input As String, numwords As Int) As String			'ignoredeadcode
 	' Split the string into an array of words

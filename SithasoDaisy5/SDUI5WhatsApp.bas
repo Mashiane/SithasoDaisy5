@@ -10,7 +10,6 @@ Version=10.13
 #Event: Attachments_ItemClick (item As String)
 #Event: EmojiSelect (emoji As Map)
 #Event: EmojiClickOutside (e As BANanoEvent)
-#Event: Copy (e As BANanoEvent)
 #Event: CancelReply (e As BANanoEvent)
 #Event: Reply (MessageID as string)
 #Event: Search (e As BANanoEvent)
@@ -472,7 +471,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	UI.OnEventByID($"${mName}_emoji"$, "click", Me, "ToggleEmoji")
 '	UI.OnEventByID($"${mName}_attach"$, "click", Me, "ToggleAttachments")
 	UI.OnEventByID($"${mName}_back"$, "click", mCallBack, $"${mName}_back"$)
-	UI.OnEventByID($"${mName}_rightstatus"$, "click", mCallBack, $"${mName}_copy"$)
+	UI.OnEventByID($"${mName}_rightstatus"$, "click", Me, "CopyToClipboard")
 	'
 	UI.OnEventByID($"${mName}_leftsearch"$, "keyup", mCallBack, $"${mName}_search"$)
 	UI.OnEventByID($"${mName}_leftsearch"$, "search", mCallBack, $"${mName}_clearsearch"$)
@@ -490,6 +489,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	SetOnline
 	setEmojis(bEmojis)
 	BANano.Await(PrepareEmojis)
+End Sub
+
+private Sub CopyToClipboard(e As BANanoEvent)
+	e.PreventDefault 
+	BANano.Await(BANano.Navigator.GetField("clipboard").RunMethod("writeText", sRightStatus))
 End Sub
 
 Sub TriggerAttach

@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #Event: TitleClick (e As BANanoEvent)
 #Event: BurgerClick (value As Boolean)
+#Event: Back (e As BANanoEvent)
 '
 #DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left|_logo|_burger|_center|_right, Description: Child Items - _left|_logo|_burger|_center|_right
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
@@ -498,41 +499,50 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 End Sub
 
 'set Back Button
-Sub setHasBackButton(b As Boolean)
+Sub setHasBackButton(b As Boolean)									'ignoredeadcode
 	bHasBackButton = b
 	CustProps.put("HasBackButton", b)
-	If mElement = Null Then Return
 	If bHasBackButton = False Then Return
+	If mElement = Null Then Return
 	If BANano.Exists($"#${mName}back"$) = True Then Return
 	BackButton.Initialize(mCallBack, $"${mName}back"$, $"${mName}back"$)
 	BackButton.ParentID = $"${mName}_back"$
 	BackButton.Visible = True
-'	BackButton.LeftIcon = "./assets/
-	If b = True Then
-		UI.AddAttr(mElement, "back-button", b)
-	Else
-		UI.RemoveAttr(mElement, "back-button")
+	BackButton.LeftIcon = "./assets/chevron-left-solid.svg"
+	BackButton.IconSize = "70"
+	BackButton.Text = sBackLabel
+	BackButton.TextVisible = bBackLabelVisible
+	If bBackLabelVisible = False Then
+		BackButton.Shape = "circle"
 	End If
+	BackButton.TextSize = "lg"
+	BackButton.Ghost = True
+	BackButton.Active = False
+	BackButton.Enabled = True
+	BackButton.Shadow = "none"
+	BackButton.AddComponent
+	UI.OnChildEvent($"${mName}back"$, "click", mCallBack, $"${mName}_back"$)
+	BackButton.UI.AddClassByID($"${mName}back"$, "shrink-0 mr-1")
+	UI.SetVisibleByID($"${mName}_back"$, True)
 End Sub
 
 'set Back Label
-Sub setBackLabel(s As String)
+Sub setBackLabel(s As String)										'ignoredeadcode
 	sBackLabel = s
 	CustProps.put("BackLabel", s)
 	If mElement = Null Then Return
-	If s <> "Back" Then UI.AddAttr(mElement, "back-label", s)
+	If bHasBackButton = False Then Return
+	BackButton.Text = s
+	BackButton.TextVisible = True
 End Sub
 
 'set Back Label Visible
-Sub setBackLabelVisible(b As Boolean)
+Sub setBackLabelVisible(b As Boolean)								'ignoredeadcode
 	bBackLabelVisible = b
 	CustProps.put("BackLabelVisible", b)
+	If bHasBackButton = False Then Return
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddAttr(mElement, "back-label-visible", b)
-	Else
-		UI.RemoveAttr(mElement, "back-label-visible")
-	End If
+	BackButton.TextVisible = b
 End Sub
 
 'get Back Button
@@ -571,14 +581,14 @@ Sub setHasLogo(b As Boolean)			'ignoredeadcode
 End Sub
 
 'set Logo Height
-Sub setLogoHeight(s As String)
+Sub setLogoHeight(s As String)							'ignoredeadcode
 	sLogoHeight = s
 	CustProps.put("LogoHeight", s)
 	If mElement = Null Then Return
 	Logo.Height = s
 End Sub
 'set Logo Image
-Sub setLogoImage(s As String)
+Sub setLogoImage(s As String)							'ignoredeadcode
 	sLogoImage = s
 	CustProps.put("LogoImage", s)
 	If mElement = Null Then Return
@@ -586,14 +596,14 @@ Sub setLogoImage(s As String)
 End Sub
 'set Logo Mask
 'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
-Sub setLogoMask(s As String)
+Sub setLogoMask(s As String)							'ignoredeadcode
 	sLogoMask = s
 	CustProps.put("LogoMask", s)
 	If mElement = Null Then Return
 	Logo.Mask = s
 End Sub
 'set Logo Width
-Sub setLogoWidth(s As String)
+Sub setLogoWidth(s As String)							'ignoredeadcode
 	sLogoWidth = s
 	CustProps.put("LogoWidth", s)
 	If mElement = Null Then Return

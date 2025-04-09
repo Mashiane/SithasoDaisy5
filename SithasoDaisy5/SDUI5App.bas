@@ -451,19 +451,6 @@ private Sub guidAlphaApp(glen As Int) As String
 	Return s
 End Sub
 
-#if javascript
-function generateUniqueId(len) {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    const alphanumeric = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    const timestamp = Date.now().toString(36); // Convert timestamp to base 36
-    const randomChars = Array.from({ length: len - timestamp.length }, () =>
-        alphanumeric.charAt(Math.floor(Math.random() * alphanumeric.length))
-    ).join("");
-    const firstChar = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-    return firstChar + randomChars + timestamp;
-}
-#End If
-
 Sub SetTheme(s As String)
 	Dim html As BANanoElement = Banano.GetElement("html")
 	html.SetData("theme", s)

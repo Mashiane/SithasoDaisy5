@@ -10,6 +10,8 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: DockItem, DisplayName: Dock Item, FieldType: Boolean, DefaultValue: False, Description: Dock Item
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Button, Description: Text
+#DesignerProperty: Key: TextVisible, DisplayName: Text Visible, FieldType: Boolean, DefaultValue: True, Description: Text Visible
+#DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: primary|secondary|accent|neutral|info|success|warning|error|none
 #DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
@@ -35,7 +37,7 @@ Version=10
 #DesignerProperty: Key: Outline, DisplayName: Outline, FieldType: Boolean, DefaultValue: False, Description: Outline
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size Percentage, FieldType: String, DefaultValue: 70, Description: Icon Size Percentage
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size Percentage, FieldType: String, DefaultValue: 50, Description: Icon Size Percentage
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
@@ -129,7 +131,7 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_LEFT As String = "left"
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
-	Private sIconSize As String = "70"
+	Private sIconSize As String = "50"
 	Private sLeftIcon As String = ""
 	Private sLeftIconColor As String = "none"
 	Private sRightIcon As String = ""
@@ -138,6 +140,8 @@ Sub Class_Globals
 	Private bRightIconVisible As Boolean = False
 	Private sShadow As String = "md"
 	Private sPopOverTarget As String = ""
+	Private bTextVisible As Boolean = False
+	Private sTextSize As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -283,6 +287,28 @@ Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
 
+Sub setTextVisible(b As Boolean)			'ignoredeadcode
+	bTextVisible = b
+	CustProps.Put("TextVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_text"$, b)
+End Sub
+
+Sub setTextSize(s As String)
+	sTextSize = s
+	CustProps.Put("TextSize", sTextSize)
+	If mElement = Null Then Return
+	UI.SetSizeByID($"${mName}_text"$, "size", "text", s)
+End Sub
+
+Sub getTextSize As String
+	Return sTextSize
+End Sub
+
+Sub getTextVisible As Boolean
+	Return bTextVisible
+End Sub
+
 'set text
 Sub setText(text As String)			'ignoredeadcode
 	sText = text
@@ -389,7 +415,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
-		sIconSize = Props.GetDefault("IconSize", "70")
+		sIconSize = Props.GetDefault("IconSize", "50")
 		sIconSize = UI.CStr(sIconSize)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
 		sLeftIcon = UI.CStr(sLeftIcon)
@@ -406,6 +432,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = sShadow.ToLowerCase
 		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
+		bTextVisible = Props.GetDefault("TextVisible", False)
+		bTextVisible = UI.CBool(bTextVisible)
+		sTextSize = Props.GetDefault("TextSize", "none")
+		sTextSize = UI.CStr(sTextSize)
 	End If
 	'
 	If sParentID <> "" Then
@@ -475,6 +505,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	</${sTag}>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	setText(sText)
+	setTextVisible(bTextVisible)
+	setTextSize(sTextSize)
 	setTextColor(sTextColor)
 	setLeftImage(sImage)
 	setLeftImageHeight(sImageHeight)

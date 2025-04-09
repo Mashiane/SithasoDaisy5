@@ -878,7 +878,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 '	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "70")
+	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "50")
 End Sub
 'set Search Visible
 Sub setSearchVisible(b As Boolean)		'ignoredeadcode
@@ -1072,12 +1072,6 @@ Sub PropertyConfig
 	AddPropertyCheckBox("propcomputetextcolor", "Compute Text Color", False, "success")
 	AddPropertyCheckBox("propcomputeclass", "Compute Class", False, "success")
 	BANano.Await(ShowPropOnCondition)
-End Sub
-
-Sub LoadFromJSON(fileURL As String)
-	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
-	Dim pl As List = BANano.FromJson(fContents)
-	PropertyBagFromList(pl)
 End Sub
 
 Sub LoadFromJSONString(fContents As String)
@@ -4929,10 +4923,9 @@ Sub LoadDesignWait(designName As String) As Boolean
 	Return True
 End Sub
 '<code>
-'LoadPropertyBagFromJSON("./assets/abc.json")
-'SetPropertyPadding("py-1")
+'LoadFromJSON("./assets/abc.json")
 '</code>
-Sub LoadPropertyBagFromJSON(fileURL As String)
+Sub LoadFromJSON(fileURL As String)
 	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
 	Dim pl As List = BANano.FromJson(fContents)
 	PropertyBagFromList(pl)
@@ -5416,6 +5409,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.LeftIconColor = iconColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
+	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
 	Return btn
 End Sub
@@ -5445,6 +5439,7 @@ End Sub
 
 Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
 	btnID = UI.CleanID(btnID)
+	If tooltip = "" Then Return
 	Dim col As String = UI.FixColor("tooltip", color)
 	Dim pos As String = UI.FixSize("tooltip", position)
 	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)

@@ -12,8 +12,8 @@ Version=10
 #Event: ExportToPdf (e As BANanoEvent)
 #Event: ExportToXls (e As BANanoEvent)
 #Event: FileChange (e As BANanoEvent)
+#Event: Download (e As BANanoEvent)
 #Event: Custom_FileChange (e As BANanoEvent)
-#Event: UploadToolbar (e As BANanoEvent)
 #Event: CustomColumn (item As Map)
 #Event: CustomColumnRow (Row As Int, item As Map)
 #Event: CustomButton (e As BANanoEvent)
@@ -96,6 +96,8 @@ Version=10
 #DesignerProperty: Key: DeleteAllTooltip, DisplayName: Delete All Tooltip, FieldType: String, DefaultValue: , Description: Delete All Tooltip
 #DesignerProperty: Key: HasToolbarUpload, DisplayName: Has Toolbar Upload, FieldType: Boolean, DefaultValue: False, Description: Has Toolbar Upload
 #DesignerProperty: Key: UploadToolbarTooltip, DisplayName: Upload Toolbar Tooltip, FieldType: String, DefaultValue: , Description: Upload Toolbar Tooltip
+#DesignerProperty: Key: HasToolbarDownload, DisplayName: Has Toolbar Download, FieldType: Boolean, DefaultValue: False, Description: Has Toolbar Download
+#DesignerProperty: Key: DownloadToolbarTooltip, DisplayName: Download Toolbar Tooltip, FieldType: String, DefaultValue: , Description: Download Toolbar Tooltip
 #DesignerProperty: Key: MultipleFiles, DisplayName: Allow Multiple Files, FieldType: Boolean, DefaultValue: False, Description: Allow Multiple Files to be Uploaded
 #DesignerProperty: Key: HasExportMenu, DisplayName: Has Export Menu, FieldType: Boolean, DefaultValue: False, Description: Has Export Menu
 #DesignerProperty: Key: ExportToCsv, DisplayName: Export To Csv, FieldType: Boolean, DefaultValue: False, Description: Has Export To Csv
@@ -263,6 +265,8 @@ Private Sub Class_Globals
 	Private sRowCount As String
 	Private sAlphaChooserTextColor As String = "#ffffff"
 	Private sColumnChooserTextColor As String = "#ffffff"
+	Private bHasToolbarDownload As Boolean = False
+	Private sDownloadToolbarTooltip As String = ""
 End Sub
 
 ' returns the element id
@@ -550,6 +554,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAlphaChooserTextColor = UI.CStr(sAlphaChooserTextColor)
 		sColumnChooserTextColor = Props.GetDefault("ColumnChooserTextColor", "#ffffff")
 		sColumnChooserTextColor = UI.CStr(sColumnChooserTextColor)
+		bHasToolbarDownload = Props.GetDefault("HasToolbarDownload", False)
+		bHasToolbarDownload = UI.CBool(bHasToolbarDownload)
+		sDownloadToolbarTooltip = Props.GetDefault("DownloadToolbarTooltip", "")
+		sDownloadToolbarTooltip = UI.CStr(sDownloadToolbarTooltip)
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -619,6 +627,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHasSaveSingle(bHasSaveSingle)
 	setHasDeleteSingle(bHasDeleteSingle)
 	setHasToolbarUpload(bHasToolbarUpload)
+	setHasToolbarDownload(bHasToolbarDownload)
 	setHasDeleteAll(bHasDeleteAll)
 	setHasExportToCsv(bExportToCsv)
 	setHasExportToPdf(bExportToPdf)
@@ -1175,7 +1184,7 @@ private Sub SetColumnChooser(Status As Boolean, Height As String, Color As Strin
 		End If
 		'
 		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer">
-        <svg id="${mName}_${tc.name}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};pointer-events:none;" height="${iconsize}" data-visible="${tc.visible}" data-unique-ids="disabled" data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
+        <svg id="${mName}_${tc.name}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};pointer-events:none;" width="${iconsize}" height="${iconsize}" data-visible="${tc.visible}" data-unique-ids="disabled" data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
 		</svg>${tc.title}</div>"$
 		sbOptions.Append(sItem)
 		clicks1.Add($"${mName}_${tc.name}_column"$)
@@ -1546,7 +1555,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.LeftIconColor = iconColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
-	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "60")
+	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
 	Return btn
 End Sub
@@ -1644,6 +1653,7 @@ Sub AddToolbarTextBoxNormal(id As String) As SDUI5TextBox
 End Sub
 Sub SetExportToCSVTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToCsvTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("exporttocsv", tooltip, color, position)
 End Sub
 'set Has Export To Csv	
@@ -1656,6 +1666,7 @@ Sub setHasExportToCsv(b As Boolean)			'ignoredeadcode
 End Sub
 Sub SetExportToPDFTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToPdfTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("exporttopdf", tooltip, color, position)
 End Sub
 'set Has Export To Pdf
@@ -1668,6 +1679,7 @@ Sub setHasExportToPdf(b As Boolean)			'ignoredeadcode
 End Sub
 Sub SetExportToXLSTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToXlsTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("exporttoxls", tooltip, color, position)
 End Sub
 'set Has Export To Xls
@@ -1680,6 +1692,7 @@ Sub setHasExportToXls(b As Boolean)				'ignoredeadcode
 End Sub
 Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("AddNewTooltip", tooltip)
+	if tooltip = "" then return
 	SetToolbarButtonToolTip("add", tooltip, color, position)
 End Sub
 Sub setHasAddNew(b As Boolean)			'ignoredeadcode
@@ -1720,6 +1733,7 @@ Sub getHasGrid As Boolean
 End Sub
 Sub SetSaveSingleTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("SaveSingleTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("savesingle", tooltip, color, position)
 End Sub
 Sub setHasSaveSingle(b As Boolean)				'ignoredeadcode
@@ -1730,6 +1744,7 @@ Sub setHasSaveSingle(b As Boolean)				'ignoredeadcode
 End Sub
 Sub SetDeleteSingleTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteSingleTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("deletesingle", tooltip, color, position)
 End Sub
 Sub setHasDeleteSingle(b As Boolean)				'ignoredeadcode
@@ -1740,6 +1755,7 @@ Sub setHasDeleteSingle(b As Boolean)				'ignoredeadcode
 End Sub
 Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteAllTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("deleteall", tooltip, color, position)
 End Sub
 Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
@@ -1753,8 +1769,26 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 End Sub
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("UploadToolbarTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("uploadtoolbar", tooltip, color, position)
 End Sub
+
+Sub setHasToolbarDownload(b As Boolean)
+	bHasToolbarDownload = b
+	CustProps.Put("HasToolbarDownload", b)
+	If bHasToolbarDownload = False Then Return
+	If mElement = Null Then Return	
+	AddToolbarActionButtonIcon("downloadtoolbar", "./assets/download-solid.svg", "#FFFF99", "#000000")
+	BANano.GetElement($"#${mName}_downloadtoolbar"$).On("click", mCallBack, $"${mName}_Download"$)
+	If sDownloadToolbarTooltip <> "" Then 
+		SetToolbarButtonToolTip("downloadtoolbar", sDownloadToolbarTooltip, "primary", "left")
+	End If
+End Sub
+
+Sub getHasToolbarDownload As Boolean
+	Return bHasToolbarDownload
+End Sub
+
 Sub setHasToolbarUpload(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasToolbarUpload", b)
 	If b = False Then Return
@@ -1775,6 +1809,7 @@ private Sub UploadToolbarHandler(e As BANanoEvent)
 End Sub
 Sub SetBackTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("BackTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("back", tooltip, color, position)
 End Sub
 Sub setHasBack(b As Boolean)				'ignoredeadcode
@@ -1798,6 +1833,7 @@ End Sub
 
 Sub SetRefreshTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("RefreshTooltip", tooltip)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("refresh", tooltip, color, position)
 End Sub
 Sub setHasRefresh(b As Boolean)			'ignoredeadcode
@@ -2116,10 +2152,12 @@ Sub setTitle(t As String)
 End Sub
 
 Sub SetPrevPageTooltip(tooltip As String, color As String, position As String)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("prevpage", tooltip, color, position)
 End Sub
 
 Sub SetNextPageTooltip(tooltip As String, color As String, position As String)
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("nextpage", tooltip, color, position)
 End Sub
 
@@ -5052,7 +5090,7 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 '	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(btnColor)};pointer-events:none;" data-src="${theicon}" fill="currentColor" width="${iconsize}" height="${iconsize}" class="${cClass}"></svg>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(btnColor)};pointer-events:none;width:${iconsize};height:${iconsize}" data-src="${theicon}" preserveAspectRatio="xMidYMid meet" fill="currentColor" class="${cClass}"></svg>
     </td>"$
 	Return act
 End Sub
@@ -5108,7 +5146,7 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor}  ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
-    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled"  fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)};pointer-events:none;" data-js="enabled" class="${cClass}"></svg></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled"  fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" preserveAspectRatio="xMidYMid meet" style="${BuildIconColor(btnColor)};pointer-events:none;" data-js="enabled" class="${cClass}"></svg></div>
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
     </td>"$
@@ -5167,7 +5205,7 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
-    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)};pointer-events:none;" class="${cClass}"></svg></div>
+    <div><svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" preserveAspectRatio="xMidYMid meet" style="${BuildIconColor(btnColor)};pointer-events:none;" class="${cClass}"></svg></div>
     </div>
     </td>"$
 	Return act
@@ -6651,7 +6689,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
             <span class="flex-none">
-				<svg id="${mName}_${RowCnt}_${fldName}_${k}_i" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg></span>
+				<svg id="${mName}_${RowCnt}_${fldName}_${k}_i" style="pointer-events:none;width:70%;height:70%" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6678,7 +6716,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" preserveAspectRatio="xMidYMid meet" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize}" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -7313,7 +7351,7 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg></button>
+    <svg id="${mName}_${RowCnt}_${fldName}_icon" data-unique-ids="disabled" data-js="enabled" preserveAspectRatio="xMidYMid meet" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;width:50%;height:50%" data-src="${tc.icon}"></svg></button>
     </td>"$
 	'********
 	Return act

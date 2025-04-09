@@ -787,7 +787,7 @@ Sub Process_Globals
 	'this is the folder on your development server.
 	Public AppName As String = "sd5demo"
 	Public AppTitle As String = "SithasoDaisy 5 Demo"
-	Public AppVersion As String = "SithasoDaisy5 Beta 12"
+	Public AppVersion As String = "SithasoDaisy5"
 	'whe the app should
 	Public Publish As String = "C:\laragon\www"
 	Public Version As String = "0.01"
