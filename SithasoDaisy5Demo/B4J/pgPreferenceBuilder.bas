@@ -31,7 +31,11 @@ Sub Show(MainApp As SDUI5App)
 	pgIndex.HideNavBar
 	BANano.LoadLayout(app.PageView, "prefbuilderview")
 	pgIndex.UpdateTitle("Preference Dialog Builder")
-	lsDB.Initialize("preferences", "id")
+	'
+	Dim stablename As String = BANano.GetLocalStorage2("table")
+	stablename = UI.CStr(stablename)
+	
+	lsDB.Initialize(stablename, "id")
 	lsDB.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
 	lsDB.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
 	'define the menu items to show
@@ -44,6 +48,7 @@ Sub Show(MainApp As SDUI5App)
 	dataTypes.Initialize 
 	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date"))
 	
+	tblDesign.Title = $"${stablename} Fields"$
 	tblDesign.AddColumn("id", "#")
 	tblDesign.SetColumnVisible("id", False)
 	tblDesign.AddColumnTextBox("proppos", "Position",False)
@@ -56,6 +61,17 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnCheckBox("propvisible", "Visible", "success", False)
 	tblDesign.AddColumnCheckBox("propenabled", "Enabled", "success", False)
 	tblDesign.AddDesignerColums
+	tblDesign.AddColumnAction("down", "Move Down", "./assets/chevron-down-solid.svg", "#ff0000", "#ffffff")
+	tblDesign.AddColumnAction("up", "Move Up", "./assets/chevron-up-solid.svg", "#00ff00", "#ffffff")
+	tblDesign.SetHeaderVerticalLR("proprequired")
+	tblDesign.SetHeaderVerticalLR("propvisible")
+	tblDesign.SetHeaderVerticalLR("propenabled")
+	tblDesign.SetHeaderVerticalLR("edit")
+	tblDesign.SetHeaderVerticalLR("delete")
+	tblDesign.SetHeaderVerticalLR("clone")
+	tblDesign.SetHeaderVerticalLR("up")
+	tblDesign.SetHeaderVerticalLR("down")
+	
 	
 	'BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
 	
@@ -117,10 +133,13 @@ End Sub
 
 Sub MountPreferences
 	BANano.Await(lsDB.Records)
-	tblDesign.SetItemsPaginate(lsDB.Result)
+	'
+	Dim jsonQ As SDUIJSONQuery
+	Dim result As List = jsonQ.Initialize(lsDB.result).OrderAsc("proppos").Exec
+	tblDesign.SetItemsPaginate(result)
 	'
 	compPreview.Title = "Form Preview"
-	BANano.Await(compPreview.PropertyBagFromList(lsDB.result))
+	BANano.Await(compPreview.PropertyBagFromList(result))
 	'show the code for this component
 	compCode.Content = compPreview.ToString
 End Sub
@@ -614,7 +633,28 @@ End Sub
 Private Sub tblDesign_Back (e As BANanoEvent)
 	pgIndex.ShowNavBar
 	pgIndex.OpenDrawer
-	pgTypography.Show(app)
+	pgTableBuilder.Show(app)
+End Sub
+
+Private Sub tblDesign_UpRow (Row As Int, item As Map)
+	Dim sproppos As String = item.Get("proppos")
+	sproppos = UI.CInt(sproppos) - 1
+	If sproppos <= 0 Then
+		sproppos = 1
+	End If
+	item.Put("proppos", sproppos)
+	lsDB.SetRecord(item)
+	BANano.Await(lsDB.update)
+	BANano.Await(MountPreferences)
+End Sub
+
+Private Sub tblDesign_DownRow (Row As Int, item As Map)
+	Dim sproppos As String = item.Get("proppos")
+	sproppos = UI.CInt(sproppos) + 1
+	item.Put("proppos", sproppos)
+	lsDB.SetRecord(item)
+	BANano.Await(lsDB.update)
+	BANano.Await(MountPreferences)
 End Sub
 
 Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, item As Map)

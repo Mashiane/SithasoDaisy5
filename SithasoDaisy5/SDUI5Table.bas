@@ -1553,6 +1553,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.Size = sButtonSize
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
+	btn.TextVisible = False
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
@@ -1692,7 +1693,7 @@ Sub setHasExportToXls(b As Boolean)				'ignoredeadcode
 End Sub
 Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("AddNewTooltip", tooltip)
-	if tooltip = "" then return
+	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("add", tooltip, color, position)
 End Sub
 Sub setHasAddNew(b As Boolean)			'ignoredeadcode

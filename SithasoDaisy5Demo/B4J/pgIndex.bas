@@ -48,6 +48,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "play", "", "PlayGround")
+	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
 	drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
 	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
 	
@@ -157,6 +158,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-jsoneditor", "", "JSON Editor")
 	drawermenu.AddItemChild("plugins", "pg-jsontree", "", "JSON Tree")
 	drawermenu.AddItemChild("plugins", "pg-easymde", "", "EasyMDE")
+	drawermenu.AddItemChild("plugins", "pg-jsonquery", "", "JSON Query")
 End Sub
 
 
@@ -206,7 +208,10 @@ Private Sub drawermenu_ItemClick (item As String)
 			Case "prefbuilder"
 				'ensure that the drawer is closed
 				appdrawer.ForceClose
-				pgPreferenceBuilder.Show(App)		
+				pgPreferenceBuilder.Show(App)	
+			Case "tablebuilder"
+				appdrawer.ForceClose
+				pgTableBuilder.Show(App)		
 			Case "wizard"	
 				pgWizard.show(App)
 			Case "svg"
@@ -219,6 +224,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgSignaturePad.Show(App)
 			Case "jsontree"
 				pgJsonTree.Show(App)
+			Case "jsonquery"
+				pgJSONQuery.Show(App)		
 			End Select		
 		
 			Select Case ssuffix
@@ -433,4 +440,8 @@ End Sub
 
 Sub CloseDrawer
 	appdrawer.OpenDrawer(False)
+End Sub
+
+Sub CloseDrawerByForce
+	appdrawer.ForceClose
 End Sub

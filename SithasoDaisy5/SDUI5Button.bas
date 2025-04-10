@@ -140,7 +140,7 @@ Sub Class_Globals
 	Private bRightIconVisible As Boolean = False
 	Private sShadow As String = "md"
 	Private sPopOverTarget As String = ""
-	Private bTextVisible As Boolean = False
+	Private bTextVisible As Boolean = True
 	Private sTextSize As String = "none"
 End Sub
 'initialize the custom view class
@@ -432,7 +432,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = sShadow.ToLowerCase
 		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
-		bTextVisible = Props.GetDefault("TextVisible", False)
+		bTextVisible = Props.GetDefault("TextVisible", True)
 		bTextVisible = UI.CBool(bTextVisible)
 		sTextSize = Props.GetDefault("TextSize", "none")
 		sTextSize = UI.CStr(sTextSize)
@@ -468,8 +468,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Select Case sShape
 		Case "square"
 			UI.AddClassDT("btn-square")
+			bTextVisible = False
 		Case "circle"	
 			UI.AddClassDT("btn-circle")
+			bTextVisible = False
 		Case Else
 			UI.AddRoundedDT(sShape)	
 		End Select
@@ -770,8 +772,10 @@ Sub setShape(s As String)			'ignoredeadcode
 	Select Case sShape
 	Case "square"
 		UI.UpdateClass(mElement, "rounded", "btn-square")
+		setTextVisible(False)
 	Case "circle"
 		UI.UpdateClass(mElement, "rounded", "btn-circle")
+		setTextVisible(False)
 	Case Else
 		UI.SetRounded(mElement, s)	
 	End Select

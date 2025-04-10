@@ -5407,6 +5407,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.Size = sButtonSize
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
+	btn.TextVisible = False
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
