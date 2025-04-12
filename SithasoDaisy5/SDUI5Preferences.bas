@@ -3299,7 +3299,6 @@ Sub SetPropertyValue(Key As String, value As String)
 				Dim ni As String = $"${value}?${DateTime.Now}"$
 			End If
 			BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("src", ni)
-			BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("data-src", value)
 		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(Null)
 		Case "ColorWheel"
@@ -3399,7 +3398,7 @@ Sub GetPropertyValue(Key As String) As String
 	Dim v As String = ""
 	Select Case sComponentType
 		Case "Avatar", "Image"
-			v = BANano.GetElement($"#${mName}_${Key}_src"$).GetAttr("data-src")
+			v = BANano.GetElement($"#${mName}_${Key}_src"$).GetAttr("src")
 			v = UI.CStr(v)
 			If v.StartsWith("data:image") Then
 			Else
@@ -3534,7 +3533,7 @@ Sub SetPropertySelectMap(Key As String, Options As Map)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options.Keys
 		Dim v As String = Options.Get(k)
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${v}</option>"$
@@ -3559,7 +3558,7 @@ Sub SetPropertySelectItemsList(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
 		sbOptions.Append(sItem)
@@ -3597,7 +3596,7 @@ Sub SetPropertySelectItemsListSort(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
 		sbOptions.Append(sItem)
@@ -3613,7 +3612,7 @@ Sub SetPropertySelectItemsOptions(Key As String, delim As String, bSort As Boole
 	sbOptions.Initialize
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	If bAddNothingSelected Then
-		sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>--Nothing Selected--</option>""$)
+		sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
 	End If
 	For Each k As String In options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
@@ -3628,7 +3627,7 @@ Sub SetPropertySelectItemsList1(Key As String, bAddNothingSelected As Boolean, O
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	If bAddNothingSelected Then
-		sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>--Nothing Selected--</option>""$)
+		sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
 	End If
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
@@ -3656,10 +3655,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -3720,10 +3719,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -3809,10 +3808,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -3852,10 +3851,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -3895,10 +3894,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -4128,7 +4127,6 @@ Sub SetPropertyImage(Key As String, imgUrl As String)
 		value = $"${imgUrl}?${DateTime.Now}"$
 	End If
 	BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("src", value)
-	BANano.GetElement($"#${mName}_${Key}_src"$).SetAttr("data-src", imgUrl)
 End Sub
 Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, Color As String, StartValue As String, StepValue As String, MaxValue As String)
 	propBagKeys.Put(Key, Title)

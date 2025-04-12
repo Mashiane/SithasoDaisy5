@@ -31,6 +31,7 @@ Private Sub Class_Globals
 	Public const DB_RELATION As String = "RELATION"
 	Public const DB_JSON As String = "JSON"
 	Public const DB_DATE As String = "DATE"
+	Public const DB_LONGTEXT As String = "STRING"
 	'
 	Private mCallBack As Object			'ignore
 	Private baseURL As String
@@ -203,6 +204,18 @@ End Sub
 
 Sub getNoCache As Boolean
 	Return bNoCache
+End Sub
+
+Sub SchemaAddLongText1(b As String) As SDUIPocketBase
+	Schema.Put(b, DB_LONGTEXT)
+	Return Me
+End Sub
+
+Sub SchemaAddLongText(bools As List) As SDUIPocketBase
+	For Each b As String In bools
+		Schema.Put(b, DB_LONGTEXT)
+	Next
+	Return Me
 End Sub
 
 
@@ -395,6 +408,8 @@ Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
 		Dim fldType As String = fm.Get("type")
 		Dim fldName As String = fm.Get("name")
 		Select Case fldType
+			Case "LONGTEXT"
+				SchemaAddLongText1(fldName)
 			Case "TEXT", "STRING"
 				SchemaAddText1(fldName)
 			Case "BLOB"
@@ -428,6 +443,8 @@ Sub SetSchemaFromDataModel(models As Map)
 		Dim fldType As String = fm.Get("type")
 		Dim fldName As String = fm.Get("name")
 		Select Case fldType
+			Case "LONGTEXT"
+				SchemaAddLongText1(fldName)
 			Case "FILE"
 				SchemaAddFile1(fldName)
 			Case "TEXT", "STRING"

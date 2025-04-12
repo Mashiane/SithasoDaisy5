@@ -142,7 +142,7 @@ FileGroup45=Default Group\CSS
 FileGroup46=Default Group\JAVASCRIPT
 FileGroup47=Default Group\JAVASCRIPT
 FileGroup48=Default Group\IMAGES
-FileGroup49=Default Group
+FileGroup49=Default Group\JAVASCRIPT
 FileGroup5=Default Group\IMAGES
 FileGroup50=Default Group\JAVASCRIPT
 FileGroup51=Default Group\IMAGES
@@ -319,12 +319,12 @@ Version=10.2
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 5.17
+	#LibraryVersion: 5.19
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "5.17"
+	Private LibVersion As String = "5.19"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)	

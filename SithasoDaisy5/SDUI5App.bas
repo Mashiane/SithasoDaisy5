@@ -1432,6 +1432,19 @@ Sub AddDataModelStrings(TableName As String, FieldNames As List)
 	End If
 End Sub
 
+Sub AddDataModelLongTexts(TableName As String, FieldNames As List)
+	If DataModels.ContainsKey(TableName) Then
+		Dim tm As Map = DataModels.Get(TableName)
+		For Each fld As String In FieldNames
+			Dim fm As Map = CreateMap()
+			fm.Put("name", fld)
+			fm.Put("type", "LONGTEXT")
+			tm.Get("fields").As(List).Add(fm)
+		Next
+		DataModels.Put(TableName, tm)
+	End If
+End Sub
+
 'add integers to the data model
 Sub AddDataModelIntegers(TableName As String, FieldNames As List)
 	If DataModels.ContainsKey(TableName) Then
@@ -1495,6 +1508,19 @@ Sub AddDataModelFiles(TableName As String, FieldNames As List)
 			Dim fm As Map = CreateMap()
 			fm.Put("name", fld)
 			fm.Put("type", "FILE")
+			tm.Get("fields").As(List).Add(fm)
+		Next
+		DataModels.Put(TableName, tm)
+	End If
+End Sub
+
+Sub AddDataModelDates(TableName As String, FieldNames As List)
+	If DataModels.ContainsKey(TableName) Then
+		Dim tm As Map = DataModels.Get(TableName)
+		For Each fld As String In FieldNames
+			Dim fm As Map = CreateMap()
+			fm.Put("name", fld)
+			fm.Put("type", "DATE")
 			tm.Get("fields").As(List).Add(fm)
 		Next
 		DataModels.Put(TableName, tm)
@@ -2263,7 +2289,7 @@ Sub readAsDataURLFromBlob(blb As Map) As BANanoPromise
 	Return promise
 End Sub
 Sub GetBase64ImageFromURLWait(url As String) As String
-	Dim dataUrl As String = BANano.Await(BANano.GetFileAsDataURL(url, Null))
+	Dim dataUrl As String = Banano.Await(Banano.GetFileAsDataURL(url, Null))
 	Return dataUrl
 End Sub
 'read blob
@@ -2274,8 +2300,8 @@ private Sub ReadBlob(blb As Object)
 	' make a callback for the onload event
 	' an onload of a FileReader requires a 'event' param
 	Dim event As Map
-	FileReader.SetField("onload", BANano.CallBack(Me, "OnLoad1", Array(event)))
-	FileReader.SetField("onerror", BANano.CallBack(Me, "OnError1", Array(event)))
+	FileReader.SetField("onload", Banano.CallBack(Me, "OnLoad1", Array(event)))
+	FileReader.SetField("onerror", Banano.CallBack(Me, "OnError1", Array(event)))
 	' start reading the DataURL
 	FileReader.RunMethod("readAsBinaryString", blb)
 End Sub
@@ -2289,8 +2315,8 @@ private Sub ReadFile(FileToRead As Object, MethodName As String)
 	' make a callback for the onload event
 	' an onload of a FileReader requires a 'event' param
 	Dim event As Map
-	FileReader.SetField("onload", BANano.CallBack(Me, "OnLoad", Array(event)))
-	FileReader.SetField("onerror", BANano.CallBack(Me, "OnError", Array(event)))
+	FileReader.SetField("onload", Banano.CallBack(Me, "OnLoad", Array(event)))
+	FileReader.SetField("onerror", Banano.CallBack(Me, "OnError", Array(event)))
 	' start reading the DataURL
 	FileReader.RunMethod(MethodName, FileToRead)
 End Sub
@@ -2299,7 +2325,7 @@ private Sub OnLoad(event As Map) As String 'IgnoreDeadCode
 	Dim FileReader As BANanoObject = event.Get("target")
 	Dim UploadedFile As BANanoObject = FileReader.GetField("file")
 	' return to the then of the UploadFileAndGetDataURL
-	BANano.ReturnThen(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.Getfield("result")))
+	Banano.ReturnThen(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.Getfield("result")))
 End Sub
 private Sub OnError(event As Map) As String 'IgnoreDeadCode
 	Dim FileReader As BANanoObject = event.Get("target")
@@ -2308,7 +2334,7 @@ private Sub OnError(event As Map) As String 'IgnoreDeadCode
 	' uncomment this if you want to abort the whole operatio
 	' Abort = true
 	' FileReader.RunMethod("abort", Null)
-	BANano.ReturnElse(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.GetField("error"), "abort": Abort))
+	Banano.ReturnElse(CreateMap("name": UploadedFile.GetField("name"), "result": FileReader.GetField("error"), "abort": Abort))
 End Sub
 '
 private Sub OnLoad1(event As Map) As String 'IgnoreDeadCode
@@ -2399,4 +2425,21 @@ End Sub
 'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
 private Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double
 	Return Banano.RunJavascriptMethod("NumberFormat2", Array(number, minimumIntegers, maximumFractions, minimumFractions, groupingUsed))
+End Sub
+
+Sub GetFileFromEvent (e As BANanoEvent) As Map
+	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
+	'get the selected files, if any
+	Dim files As Object = Banano.GetElement($"#${sid}"$).GetField("files").Result
+	Dim res As List = files.As(List)
+	Dim filex As Map = res.Get(0)
+	Return filex
+End Sub
+
+Sub GetFilesFromEvent (e As BANanoEvent) As List
+	Dim sid As String = e.OtherField("srcElement").GetField("id").Result
+	'get the selected files, if any
+	Dim files As Object = Banano.GetElement($"#${sid}"$).GetField("files").Result
+	Dim res As List = files.As(List)
+	Return res
 End Sub

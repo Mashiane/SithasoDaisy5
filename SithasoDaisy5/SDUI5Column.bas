@@ -375,6 +375,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	setSize(sSize)
 End Sub
 
 'set Align Content
@@ -566,7 +567,7 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "col-span-" & sSize)
+	If s <> "" Then UI.UpdateClass(mElement, "colspan", "col-span-" & sSize)
 End Sub
 'set Size Lg
 Sub setSizeLg(s As String)

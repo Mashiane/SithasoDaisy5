@@ -112,6 +112,7 @@ End Sub
 
 Private Sub table1_ChangeRow (Row As Int, Value As Object, Column As String, item As Map)
 	app.ShowToastInfo($"table1_ChangeRow: ${Row} - ${BANano.ToJson(item)}"$)
+	table1.SetRowEnsureVisible(Row)
 End Sub
 
 Private Sub table1_SelectRow (Status As Boolean, Row As Int, item As Map)

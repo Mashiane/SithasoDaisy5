@@ -21,28 +21,167 @@ Sub Show(MainApp As SDUI5App)
 	BANano.LoadLayout(app.PageView, "tablebuilderview")
 	pgIndex.UpdateTitle("Table Builder")
 	lsDB.Initialize("tables", "id")
-	lsDB.SchemaAddText(Array("id", "tablename", "singular", "plural", "displayvalue"))
+	lsDB.SchemaAddText(Array("id", "tablename", "singular", "plural", "displayvalue", "primarykey", "autoincrement", "alphachooser", "columnchooser", "alphachooserfield"))
 	'
+	tblDesign.AddToolbarActionButtonIcon("schema", "./assets/table-list-solid.svg", "#03C03C", "#ffffff")
+	
 	tblDesign.AddColumn("id", "#")
 	tblDesign.SetColumnVisible("id", False)
 	tblDesign.AddColumnTextBox("tablename", "Table Name",False)
 	tblDesign.AddColumnTextBox("singular", "Singular", False)
 	tblDesign.AddColumnTextBox("plural", "Plural", False)
 	tblDesign.AddColumnTextBox("displayvalue", "Display Value", False)
+	tblDesign.AddColumnTextBox("primarykey", "Primary Key", False)
+	tblDesign.AddColumnTextBox("alphachooserfield", "Alpha Chooser Field", False)
+	tblDesign.AddColumnCheckBox("autoincrement", "Auto Increment", "success", False)
+	tblDesign.AddColumnCheckBox("alphachooser", "Alpha Chooser", "success", False)
+	tblDesign.AddColumnCheckBox("columnchooser", "Column Chooser", "success", False)
 	tblDesign.AddDesignerColums
+	'
 	tblDesign.AddColumnAction("fields", "Fields", "./assets/table-cells-solid.svg", "#ff0000", "#ffffff")
-	
+	tblDesign.AddColumnAction("code", "MySQL REST", "./assets/code-solid.svg", "#53209d", "#ffffff")
+	tblDesign.MoveBackButton
+	'
+	tblDesign.SetHeaderVerticalLR("edit")
+	tblDesign.SetHeaderVerticalLR("delete")
+	tblDesign.SetHeaderVerticalLR("clone")
+	tblDesign.SetHeaderVerticalLR("fields")
+	tblDesign.SetHeaderVerticalLR("code")
+	tblDesign.SetHeaderVerticalLR("autoincrement")
+	tblDesign.SetHeaderVerticalLR("alphachooser")
+	tblDesign.SetHeaderVerticalLR("columnchooser")
 	prefTable.AddPropertyTextBox("id", "#", "", True)
 	prefTable.SetPropertyVisible("id", False)
 	prefTable.AddPropertyTextBox("tablename", "Table Name", "", True)
 	prefTable.AddPropertyTextBox("singular", "Singular", "", True)
 	prefTable.AddPropertyTextBox("plural", "Plural", "", True)
 	prefTable.AddPropertyTextBox("displayvalue", "Display Value", "", True)
+	prefTable.AddPropertyTextBox("primarykey", "Primary Key", "", True)
+	prefTable.AddPropertyCheckBox("autoincrement", "Auto Increment", False, "success")
+	prefTable.AddPropertyCheckBox("alphachooser", "Alpha Chooser", False, "success")
+	prefTable.AddPropertyTextBox("alphachooserfield", "Alpha Chooser Field", "", True)
+	prefTable.AddPropertyCheckBox("columnchooser", "Column Chooser", False, "success")
 	'
 	BANano.Await(MountTables)
 End Sub
 
+private Sub tblDesign_schema(e As BANanoEvent)
+	e.PreventDefault
+	app.pagepause
+	'get existing tables
+	BANano.Await(lsDB.Records)
+	Dim kv As Map = CreateMap()
+	Do While lsDB.NextRow
+		Dim sid As String = lsDB.GetString("id")
+		Dim stablename As String = lsDB.GetString("tablename")
+		kv.Put(stablename, sid)
+	Loop
+	'
+	Dim tables As List
+	tables.Initialize 
+	'
+	Dim fetch As SDUIFetch
+	fetch.Initialize(Main.ServerURL)
+	fetch.SetContentTypeApplicationJSON
+	fetch.AddHeader("X-API-Key", Main.APIKey)
+	fetch.SetURL($"/assets/api.php/columns"$)
+	BANano.Await(fetch.GetWait)
+	If fetch.Success Then
+		Dim Response As Map = fetch.response
+		If Response.ContainsKey("tables") Then
+			tables = Response.Get("tables")
+		End If
+	Else
+		Log(fetch.ErrorMessage)
+	End If
+	'
+	For Each tbl As Map In tables
+		Dim sname As String = tbl.Get("name")
+		Dim colTitle As String = sname.Replace("_", " ")
+		colTitle = app.UI.ProperCase(colTitle)
+		Dim columns As List = tbl.Get("columns")
+		Dim pk As String = ""
+		'get the primary field if existing
+		For Each col As Map In columns
+			Dim colName As String = col.Get("name")
+			Dim colpk As Boolean = col.Get("pk")
+			colpk = app.UI.CBool(colpk)
+			If colpk Then 
+				pk = colName
+				Exit
+			End If
+		Next
+		
+		'add the table if it does not exist
+		Dim nt As Map = CreateMap()
+		nt.Put("id", lsDB.NextID)
+		nt.Put("tablename", sname)
+		nt.Put("singular", colTitle)
+		nt.Put("plural", colTitle)
+		nt.Put("primarykey", pk)
+		If kv.ContainsKey(sname) Then
+			Dim tbID As String = kv.Get(sname)
+			nt.Put("id", tbID)
+			lsDB.SetRecord(nt)
+			BANano.Await(lsDB.Update)
+		Else
+			lsDB.SetRecord(nt)
+			BANano.Await(lsDB.create)
+		End If
+		'
+		Dim colDB As SDUILocalStorage
+		colDB.Initialize(sname, "id")
+		colDB.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
+		colDB.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
+		'add to the table definition
+		Dim lstColumns As List
+		lstColumns.Initialize 
+		Dim colCnt As Int = 0
+		'"String","Int","Double","Blob","Bool","Date"
+		For Each col As Map In columns
+			colCnt = BANano.parseInt(colCnt) + 1
+			Dim colName As String = col.Get("name")
+			Dim colTitle As String = colName.Replace("_", " ")
+			colTitle = app.UI.ProperCase(colTitle)
+			Dim colType As String = col.Get("type")
+			colType = colType.Replace("varchar", "String")
+			colType = colType.Replace("longtext", "LongText")
+			colType = colType.Replace("text", "String")
+			colType = colType.Replace("integer", "Int")
+			colType = colType.Replace("bigint", "Int")
+			colType = colType.Replace("decimal", "Double")
+			colType = colType.Replace("datetime", "Date")
+			colType = colType.Replace("timestamp", "Date")
+			
+			Dim nc As Map = CreateMap()
+			nc.Put("id", colDB.NextID)
+			nc.Put("proppos", colCnt)
+			nc.Put("propname", colName)
+			nc.Put("proptitle", colTitle)
+			nc.Put("propdatatype", colType)
+			nc.Put("proptype", "TextBox")
+			nc.Put("propactive", True)
+			nc.Put("propvisible", True)
+			nc.Put("propcolumntype", "Normal")
+			nc.Put("propcolumnvisible", True)
+			nc.Put("propenabled", True)
+			lstColumns.Add(nc)
+		Next
+		colDB.Records = lstColumns
+	Next
+	BANano.Await(MountTables)
+	app.pageresume
+End Sub
+
+Private Sub tblDesign_codeRow (Row As Int, item As Map)
+	Dim clsTC As clsTableCode
+	BANano.Await(clsTC.Initialize(app, item))
+	clsTC.BuildPage
+End Sub
+
 Private Sub tblDesign_fieldsRow (Row As Int, item As Map)
+	Dim thisTable As String = BANano.ToJson(item)
+	BANano.SetLocalStorage2("thistable", thisTable)
 	Dim stablename As String = item.Get("tablename")
 	BANano.SetLocalStorage2("table", stablename)
 	pgIndex.CloseDrawerByForce
@@ -87,6 +226,8 @@ Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, 
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
 	BANano.Await(MountTables)
+	Log(Row)
+	tblDesign.SetRowEnsureVisible(Row)
 End Sub
 
 Private Sub tblDesign_Add (e As BANanoEvent)
@@ -99,7 +240,6 @@ Private Sub tblDesign_Refresh (e As BANanoEvent)
 End Sub
 
 Private Sub tblDesign_Back (e As BANanoEvent)
-	pgIndex.OpenDrawer
 	pgTypography.Show(app)
 End Sub
 

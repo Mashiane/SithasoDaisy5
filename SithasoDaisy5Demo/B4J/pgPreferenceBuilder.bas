@@ -21,7 +21,9 @@ Sub Process_Globals
 	Private Mode As String
 	Private compTypes As List
 	Private dataTypes As List
+	Private colTypes As List
 	Private lsDB As SDUILocalStorage
+	Private dbTables As SDUILocalStorage
 End Sub
 
 
@@ -34,7 +36,11 @@ Sub Show(MainApp As SDUI5App)
 	'
 	Dim stablename As String = BANano.GetLocalStorage2("table")
 	stablename = UI.CStr(stablename)
+	'initialize the tables
+	dbTables.Initialize("tables", "id")
+	dbTables.SchemaAddText(Array("id", "tablename", "singular", "plural", "displayvalue", "primarykey", "autoincrement"))
 	
+	'initialize the columns
 	lsDB.Initialize(stablename, "id")
 	lsDB.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
 	lsDB.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
@@ -43,10 +49,18 @@ Sub Show(MainApp As SDUI5App)
 	titles.Initialize
 	types.Initialize 
 	compTypes.Initialize 
+	colTypes.Initialize
+	 
 	compTypes.AddAll(Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
 	dataTypes.Initialize 
-	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date"))
+	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date", "LongText", "None"))
+	'
+	colTypes.AddAll(Array("Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
+	
+	'
+	tblDesign.AddToolbarActionButtonIcon("code", "./assets/code-solid.svg", "#53209d", "#ffffff")
+	tblDesign.MoveBackButton
 	
 	tblDesign.Title = $"${stablename} Fields"$
 	tblDesign.AddColumn("id", "#")
@@ -60,7 +74,26 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnCheckBox("proprequired", "Required", "success", False)
 	tblDesign.AddColumnCheckBox("propvisible", "Visible", "success", False)
 	tblDesign.AddColumnCheckBox("propenabled", "Enabled", "success", False)
+	tblDesign.AddColumnCheckBox("propactive", "Active", "success", False)
+	tblDesign.AddColumnCheckBox("propsort", "Order By", "success", False)
+	tblDesign.AddColumnCheckBox("propfocus", "Focus On", "success", False)
+	'
+	tblDesign.AddColumnSelect("propcolumntype", "Column Type", False, False, UI.ListToSelectOptionsSort(colTypes))
+	tblDesign.AddColumnCheckBox("propcolumnvisible", "Column Visible", "success", False)
+	tblDesign.AddColumnCheckBox("propcomputevalue", "ComputeValue", app.COLOR_GREEN, False)
+	tblDesign.AddColumnCheckBox("propcomputering", "ComputeRing", app.COLOR_GREEN, False)
+	tblDesign.AddColumnCheckBox("propcomputecolor", "ComputeColor", app.COLOR_GREEN, False)
+	tblDesign.AddColumnCheckBox("propcomputetextcolor", "ComputeTextColor", app.COLOR_GREEN, False)
+	tblDesign.AddColumnCheckBox("propcomputebgcolor", "ComputeBGColor", app.COLOR_GREEN, False)
+	tblDesign.AddColumnCheckBox("propcomputeclass", "ComputeClass", app.COLOR_GREEN, False)
+	tblDesign.SetColumnVisible("propcomputevalue", False)
+	tblDesign.SetColumnVisible("propcomputering", False)
+	tblDesign.SetColumnVisible("propcomputecolor", False)
+	tblDesign.SetColumnVisible("propcomputebgcolor", False)
+	tblDesign.SetColumnVisible("propcomputetextcolor", False)
+	tblDesign.SetColumnVisible("propcomputeclass", False)	'
 	tblDesign.AddDesignerColums
+	'
 	tblDesign.AddColumnAction("down", "Move Down", "./assets/chevron-down-solid.svg", "#ff0000", "#ffffff")
 	tblDesign.AddColumnAction("up", "Move Up", "./assets/chevron-up-solid.svg", "#00ff00", "#ffffff")
 	tblDesign.SetHeaderVerticalLR("proprequired")
@@ -71,10 +104,16 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("clone")
 	tblDesign.SetHeaderVerticalLR("up")
 	tblDesign.SetHeaderVerticalLR("down")
-	
-	
-	'BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
-	
+	tblDesign.SetHeaderVerticalLR("propsort")
+	tblDesign.SetHeaderVerticalLR("propfocus")
+	tblDesign.SetHeaderVerticalLR("propcolumnvisible")
+	tblDesign.SetHeaderVerticalLR("propactive")
+	tblDesign.SetHeaderVerticalLR("propcomputevalue")
+	tblDesign.SetHeaderVerticalLR("propcomputering")
+	tblDesign.SetHeaderVerticalLR("propcomputecolor")
+	tblDesign.SetHeaderVerticalLR("propcomputebgcolor")
+	tblDesign.SetHeaderVerticalLR("propcomputetextcolor")
+	tblDesign.SetHeaderVerticalLR("propcomputeclass")
 	
 	'add the components to have
 	AddMenuItem("Dialer", "Dialer", "Dialer allows users to increase or decrease a numeric value using increment (+) and decrement (-) buttons.")
@@ -131,11 +170,60 @@ Sub Show(MainApp As SDUI5App)
 	BANano.Await(MountPreferences)
 End Sub
 
+'get all the table names for foreign key related content
+Sub GetTableNames As Map
+	'get existing tables
+	BANano.Await(dbTables.Records)
+	'
+	Dim kv As Map = CreateMap()
+	Dim jsonQ As SDUIJSONQuery
+	jsonQ.Initialize(dbTables.result)
+	jsonQ.OrderAsc("tablename")
+	Dim result As List = BANano.Await(jsonQ.Exec)
+	For Each m As Map In result
+		Dim stablename As String = m.Get("tablename")
+		kv.Put(stablename, stablename)
+	Next
+	Return kv
+End Sub
+
+Sub GetFieldNames(tblName As String) As Map
+	Dim dbFields As SDUILocalStorage
+	dbFields.Initialize(tblName, "id")
+	dbFields.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
+	dbFields.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
+	BANano.Await(dbFields.Records)
+	'
+	Dim kv As Map = CreateMap()
+	Dim jsonQ As SDUIJSONQuery
+	jsonQ.Initialize(dbFields.result)
+	jsonQ.OrderAsc("propname")
+	Dim result As List = BANano.Await(jsonQ.Exec)
+	For Each m As Map In result
+		Dim stablename As String = m.Get("propname")
+		kv.Put(stablename, stablename)
+	Next
+	Return kv
+End Sub
+
+Sub tblDesign_code(e As BANanoEvent)
+	e.PreventDefault
+	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
+	thisTable = app.UI.CStr(thisTable)
+	If thisTable = "" Then Return
+	Dim item As Map = BANano.FromJson(thisTable)
+	Dim clsTC As clsTableCode
+	BANano.Await(clsTC.Initialize(app, item))
+	clsTC.BuildPage
+End Sub
+
 Sub MountPreferences
 	BANano.Await(lsDB.Records)
 	'
 	Dim jsonQ As SDUIJSONQuery
-	Dim result As List = jsonQ.Initialize(lsDB.result).OrderAsc("proppos").Exec
+	jsonQ.Initialize(lsDB.result)
+	jsonQ.OrderAsc("proppos")
+	Dim result As List = BANano.Await(jsonQ.Exec)
 	tblDesign.SetItemsPaginate(result)
 	'
 	compPreview.Title = "Form Preview"
@@ -204,10 +292,31 @@ private Sub AddProperties
 	compToAdd.AddPropertyCheckBox("propvisible", "Visible", True, "success")
 	compToAdd.AddPropertyCheckBox("propenabled", "Enabled", True, "success")
 	compToAdd.AddPropertyCheckBox("propreadonly", "Read Only", False, "success")
+	compToAdd.AddPropertyCheckBox("propactive", "Active", True, "success")
+	compToAdd.AddPropertyCheckBox("propsort", "Order By", False, "success")
+	compToAdd.AddPropertyCheckBox("propfocus", "Focus", False, "success")
+	compToAdd.AddPropertyTextBox("propupdate", "Update Property", "", False)
+	'
+	compToAdd.AddPropertySelect("propcolumntype", "Column Type", "Normal", False, UI.ListToSelectOptionsSort(colTypes))
+	compToAdd.AddPropertyCheckBox("propcolumnvisible", "Column Visible", True, "success")
+	compToAdd.AddPropertySelect("propsubtitle1", "Sub Title Field", "", False, CreateMap())
+	compToAdd.AddPropertySelect("propsubtitle2", "Sub Title 1 Field", "", False, CreateMap())
+	compToAdd.AddPropertyCheckBox("proptotal", "Total (Footer)", False, "success")
+	compToAdd.AddPropertySelectGroup("propforeigntable", "Foreign Table", "", False, CreateMap())
+	compToAdd.SetPropertyAppendIcon("propforeigntable", "./assets/magnifying-glass-solid.svg")
+	compToAdd.AddPropertySelect("propforeignfield", "Foreign Key", "id", False, CreateMap())
+	compToAdd.AddPropertySelect("propforeigndisplayfield", "Foreign Display", "", False, CreateMap())
+	compToAdd.AddPropertySelect("propforeigndisplayfield1", "Foreign Display 1", "", False, CreateMap())
+	compToAdd.AddPropertySelect("propforeigndisplayfield2", "Foreign Display 2", "", False, CreateMap())
+	compToAdd.AddPropertyCheckBox("propcomputevalue", "Compute Value", False, "success")
+	compToAdd.AddPropertyCheckBox("propcomputering", "Compute Ring", False, "success")
+	compToAdd.AddPropertyCheckBox("propcomputecolor", "Compute Color", False, "success")
+	compToAdd.AddPropertyCheckBox("propcomputebgcolor", "Compute BG Color", False, "success")
+	compToAdd.AddPropertyCheckBox("propcomputetextcolor", "Compute Text Color", False, "success")
+	compToAdd.AddPropertyCheckBox("propcomputeclass", "Compute Class", False, "success")
 	
 	'hide irrelevant details
 	compToAdd.SetPropertyVisible("id", False)
-'	compToAdd.SetPropertyVisible("proptype", False)
 End Sub
 
 private Sub AddMenuItem(key As String, title As String, tooltip As String)
@@ -254,6 +363,8 @@ Private Sub menuComponents_ItemClick (item As String)
 	compPreview.Title = GetTitle(item) & " Preview"
 	'add all properties needed
 	BANano.Await(AddProperties)
+	Dim tbls As Map = BANano.Await(GetTableNames)
+	BANano.Await(compToAdd.SetPropertySelectMap("propforeigntable", tbls))
 	'set the component type we will add
 	compToAdd.SetPropertyValue("proptype", GetComponentType(item))
 	'show properties depending on type we have chosen
@@ -264,7 +375,11 @@ Sub ShowPropertiesByType(item As String)
 	BANano.Await(compToAdd.HideAllProperties)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
-	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible")))
+	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype")))
+	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
+	BANano.Await(compToAdd.ShowProperty(Array("propforeigntable","propforeignfield","propforeigndisplayfield","propforeigndisplayfield1","propforeigndisplayfield2"))) 
+	BANano.Await(compToAdd.ShowProperty(Array("propcomputevalue","propcomputering","propcomputecolor","propcomputebgcolor","propcomputetextcolor","propcomputeclass")))
+	'
 	'set required properties
 	compToAdd.RequireProperty(True, Array("id", "proppos", "propname", "proptitle", "propdatatype"))
 	compToAdd.SetPropertyValue("propalign", "left")
@@ -384,32 +499,32 @@ Sub ShowPropertiesByType(item As String)
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/select/", app.COLOR_INFO)
 	Case "fileinput"
 		compToAdd.HideProperty(Array("propvalue", "propenabled"))
-		compToAdd.ShowProperty(Array("propaccept", "propmultiple"))
+		compToAdd.ShowProperty(Array("propaccept", "propmultiple", "propupdate"))
 		'propbagx.AddPropertyFileInput("fileinput1", "File Input 1", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "fileinput1", "proptitle": "File Input", "propvalue": "", "proprequired": True))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "fileinputprogress"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propaccept", "propmultiple", "propcolor", "propsize", "propicon", "proptextcolor", "propiconsize"))
+		compToAdd.ShowProperty(Array("propaccept", "propmultiple", "propcolor", "propsize", "propicon", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyFileInputProgress("fileinputprogress1", "File Input Progress", "80px", "./assets/headphones-solid.svg", app.COLOR_BROWN)
 		compToAdd.SetPropertyValues(CreateMap("propname": "fileinputprogress1", "proptitle": "File Input Progress", "propsize":"80px", "propicon":"./assets/headphones-solid.svg", _
 			"propcolor": "#a52a2a", "proptextcolor":"#ffffff", "propiconsize":"42px"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "camcorder"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize"))
+		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyCamCorder("camcoder1", "Camcoder", "80px", app.COLOR_PRIMARY)
 		compToAdd.SetPropertyValues(CreateMap("propname": "camcoder1", "propiconsize":"42px", "proptitle": "CamCorder", "propsize":"80px", "propcolor": "primary", "proptextcolor":"#ffffff"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "camera"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize"))
+		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyCamera("camera1", "Camera", "80px", app.COLOR_ERROR)
 		compToAdd.SetPropertyValues(CreateMap("propname": "camera1", "propiconsize":"42px", "proptitle": "Camera", "propsize":"80px", "propcolor": "error", "proptextcolor":"#ffffff"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "microphone"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize"))
+		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyMicrophone("microphone1", "Microphone", "80px", app.COLOR_ACCENT)
 		compToAdd.SetPropertyValues(CreateMap("propname": "microphone1", "propiconsize":"42px", "proptitle": "Microphone", "propsize":"80px", "propcolor": "accent", "proptextcolor":"#ffffff"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
@@ -545,18 +660,30 @@ Private Sub compPreview_Yes_Click (e As BANanoEvent)
 '	End If
 	'the bag is valid, execute a preview
 	Dim bag As Map = BANano.Await(compToAdd.PropertyBag)
-	Dim sid As String = bag.Get("id")
-'	Dim spropdatatype As String = bag.Get("propdatatype")
-'	Dim bpropenabled As Boolean = bag.Get("propenabled")
-'	Dim spropname As String = bag.Get("propname")
-'	Dim sproppos As String = bag.Get("proppos")
-'	Dim bproprequired As Boolean = bag.Get("proprequired")
-'	Dim sproptitle As String = bag.Get("proptitle")
-'	Dim sproptype As String = bag.Get("proptype")
-'	Dim spropvalue As String = bag.Get("propvalue")
-'	Dim bpropvisible As Boolean = bag.Get("propvisible")
-'	Dim sprops As String = BANano.ToJson(bag)
+	'check the foreign details
+	Dim spropforeigntable As String = bag.Get("propforeigntable")
+	spropforeigntable = app.UI.CStr(spropforeigntable)
+	Dim spropforeignfield As String = bag.Get("propforeignfield")
+	spropforeignfield = app.UI.CStr(spropforeignfield)
+	Dim spropforeigndisplayfield As String = bag.Get("propforeigndisplayfield")
+	spropforeigndisplayfield = app.UI.CStr(spropforeigndisplayfield)
+	Dim spropforeigndisplayfield1 As String = bag.Get("propforeigndisplayfield1")
+	spropforeigndisplayfield1 = app.UI.CStr(spropforeigndisplayfield1)
+	Dim spropforeigndisplayfield2 As String = bag.Get("propforeigndisplayfield2")
+	spropforeigndisplayfield2 = app.UI.CStr(spropforeigndisplayfield2)
+	If spropforeigntable <> "" Then
+		If spropforeignfield <> "" Then
+			If spropforeigndisplayfield <> "" Then
+				bag.Put("propcomputevalue", True)
+			End If
+		End If
+	End If
 	'
+	Dim sproppos As String = bag.Get("proppos")
+	sproppos = UI.CInt(sproppos)
+	sproppos = app.UI.PadRight(sproppos, 2, "0")
+	bag.Put("proppos", sproppos)
+	Dim sid As String = bag.Get("id")
 	Select Case Mode
 	Case "C", ""
 		sid = lsDB.NextID
@@ -586,12 +713,27 @@ Private Sub tblDesign_EditRow (Row As Int, item As Map)
 	compPreview.Title = GetTitle(sproptype.ToLowerCase) & " Preview"
 	'add all properties needed
 	BANano.Await(AddProperties)
+	Dim tbls As Map = BANano.Await(GetTableNames)
+	BANano.Await(compToAdd.SetPropertySelectMap("propforeigntable", tbls))
+	'get the value for foreign table
+	Dim spropforeigntable As String = item.Get("propforeigntable")
+	spropforeigntable = app.UI.CStr(spropforeigntable)
+	If spropforeigntable <> "" Then
+		'get fields for foreign table
+		Dim flds As Map = BANano.Await(GetFieldNames(spropforeigntable))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeignfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield1", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield2", flds))
+	End If
 	'set the component type we will add
 	compToAdd.SetPropertyValue("proptype", GetComponentType(sproptype))
 	'show properties depending on type we have chosen
 	BANano.Await(ShowPropertiesByType(sproptype.tolowercase))
 	compToAdd.PropertyBag = item
+	
 	BANano.Await(GeneratePreview)
+	app.UI.EnsureVisible(compToAdd.Name)
 End Sub
 
 Private Sub tblDesign_DeleteRow (Row As Int, item As Map)
@@ -621,6 +763,19 @@ Private Sub tblDesign_CloneRow (Row As Int, item As Map)
 	compPreview.Title = GetTitle(sproptype.ToLowerCase) & " Preview"
 	'add all properties needed
 	BANano.Await(AddProperties)
+	Dim tbls As Map = BANano.Await(GetTableNames)
+	BANano.Await(compToAdd.SetPropertySelectMap("propforeigntable", tbls))
+	'get the value for foreign table
+	Dim spropforeigntable As String = item.Get("propforeigntable")
+	spropforeigntable = app.UI.CStr(spropforeigntable)
+	If spropforeigntable <> "" Then
+		'get fields for foreign table
+		Dim flds As Map = BANano.Await(GetFieldNames(spropforeigntable))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeignfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield1", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield2", flds))
+	End If
 	'set the component type we will add
 	compToAdd.SetPropertyValue("proptype", GetComponentType(sproptype))
 	'show properties depending on type we have chosen
@@ -632,7 +787,6 @@ End Sub
 
 Private Sub tblDesign_Back (e As BANanoEvent)
 	pgIndex.ShowNavBar
-	pgIndex.OpenDrawer
 	pgTableBuilder.Show(app)
 End Sub
 
@@ -642,6 +796,7 @@ Private Sub tblDesign_UpRow (Row As Int, item As Map)
 	If sproppos <= 0 Then
 		sproppos = 1
 	End If
+	sproppos = app.UI.PadRight(sproppos, 2, "0")
 	item.Put("proppos", sproppos)
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
@@ -651,6 +806,7 @@ End Sub
 Private Sub tblDesign_DownRow (Row As Int, item As Map)
 	Dim sproppos As String = item.Get("proppos")
 	sproppos = UI.CInt(sproppos) + 1
+	sproppos = app.UI.PadRight(sproppos, 2, "0")
 	item.Put("proppos", sproppos)
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
@@ -659,9 +815,14 @@ End Sub
 
 Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, item As Map)
 	item.Put(Column, Value)
+	Dim sproppos As String = item.Get("proppos")
+	sproppos = UI.CInt(sproppos)
+	sproppos = app.UI.PadRight(sproppos, 2, "0")
+	item.Put("proppos", sproppos)	
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
 	BANano.Await(MountPreferences)
+	tblDesign.SetRowEnsureVisible(Row)
 End Sub
 
 Private Sub tblDesign_DeleteAll (e As BANanoEvent)
@@ -672,12 +833,36 @@ Private Sub tblDesign_DeleteAll (e As BANanoEvent)
 	BANano.Await(MountPreferences)
 End Sub
 
-Private Sub tblDesign_UploadToolbar (e As BANanoEvent)
-	
-End Sub
-
 Private Sub tblDesign_Download (e As BANanoEvent)
+	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
+	thisTable = app.UI.CStr(thisTable)
+	If thisTable = "" Then Return
+	Dim item As Map = BANano.FromJson(thisTable)
+	Dim stablename As String = item.Get("tablename")
 	Dim result As List = BANano.Await(lsDB.Records)
 	Dim sjson As String = BANano.ToJson(result)
-	app.DownloadTextFile(sjson, "preferences.json")
+	app.DownloadTextFile(sjson, $"${stablename}.json"$)
+End Sub
+
+Private Sub tblDesign_FileChange (e As BANanoEvent)
+	'has the file been specified
+	Dim fileObj As Map = app.GetFileFromEvent(e)
+	If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
+	Dim fields As List = BANano.Await(app.readAsJsonWait(fileObj))
+	lsDB.Records = fields
+	BANano.Await(MountPreferences)
+End Sub
+
+Private Sub compToAdd_propforeigntable_AppendClick (e As BANanoEvent)
+	e.PreventDefault
+	Dim spropforeigntable As String = BANano.Await(compToAdd.GetPropertyValue("propforeigntable"))
+	spropforeigntable = app.UI.CStr(spropforeigntable)
+	If spropforeigntable <> "" Then
+		'get fields for foreign table
+		Dim flds As Map = BANano.Await(GetFieldNames(spropforeigntable))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeignfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield1", flds))
+		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield2", flds))
+	End If
 End Sub

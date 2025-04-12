@@ -3606,3 +3606,28 @@ Sub MinuteDiff(currentDate As String, otherDate As String) As Int
 	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "minute")).Result
 	Return rslt
 End Sub
+
+'single quote each item on the list
+Sub ListSingleQuoteItems(lst As List)
+	Dim lTot As Int = lst.Size - 1
+	Dim lCnt As Int
+	For lCnt = 0 To lTot
+		Dim lItem As String = lst.Get(lCnt)
+		lItem = lItem.Replace("'", "")
+		lItem = $"'${lItem}'"$
+		lst.Set(lCnt, lItem)
+	Next
+End Sub
+
+Sub ListToArrayVariable(lst As List) As String
+	Dim lTot As Int = lst.Size - 1
+	Dim lCnt As Int
+	For lCnt = 0 To lTot
+		Dim lItem As String = lst.Get(lCnt)
+		lItem = lItem.Replace(QUOTE, "")
+		lItem = $""${lItem}""$
+		lst.Set(lCnt, lItem)
+	Next
+	Dim xs As String = Join(",", lst)
+	Return xs
+End Sub

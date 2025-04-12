@@ -806,10 +806,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText

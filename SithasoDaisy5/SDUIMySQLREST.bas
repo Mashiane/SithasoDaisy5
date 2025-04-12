@@ -76,6 +76,8 @@ Private Sub Class_Globals
 	Public ErrorMessage As String = ""
 	Public UseApiKey As Boolean = True
 	Public ApiFile As String = "api"
+	Private escapeCharStart As String
+	Private escapeCharEnd As String
 End Sub
 
 '<code>
@@ -108,7 +110,34 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	sSize = ""
 	joinL.Initialize 
 	UseApiKey = True
+	escapeCharStart = "`"
+	escapeCharEnd = "`"
 	Return Me
+End Sub
+
+Public Sub EscapeField(f As String) As String
+	Return $"${escapeCharStart}${f}${escapeCharEnd}"$
+End Sub
+
+Public Sub CreateTable As String
+	Dim sb As StringBuilder
+	sb.Initialize
+	sb.Append("(")
+	For i = 0 To Schema.Size - 1
+		Dim field, ftype As String
+		field = Schema.GetKeyAt(i)
+		ftype = Schema.GetValueAt(i)
+		If ftype = DB_TEXT Then ftype = "VARCHAR(255)"
+		If i > 0 Then sb.Append(", ")
+		sb.Append(EscapeField(field)).Append(" ").Append(ftype)
+		If field = PrimaryKey Then sb.Append(" PRIMARY KEY")
+	Next
+	If AutoIncrement <> "" Then
+		sb.Append($", ${AutoIncrement} INTEGER(11) NOT NULL AUTO_INCREMENT"$)
+	End If
+	sb.Append(")")
+	Dim query As String = "CREATE TABLE IF NOT EXISTS " & EscapeField(TableName) & " " & sb.ToString
+	Return query
 End Sub
 
 Sub SetLimit(s As String)
@@ -177,6 +206,19 @@ Sub SchemaAddText(bools As List) As SDUIMySQLREST
 	Next
 	Return Me
 End Sub
+
+Sub SchemaAddLongText1(b As String) As SDUIMySQLREST
+	Schema.Put(b, DB_LONGTEXT)
+	Return Me
+End Sub
+
+Sub SchemaAddLongText(bools As List) As SDUIMySQLREST
+	For Each b As String In bools
+		Schema.Put(b, DB_LONGTEXT)
+	Next
+	Return Me
+End Sub
+
 Sub SchemaAddInt1(b As String) As SDUIMySQLREST
 	Schema.Put(b, DB_INT)
 	Return Me
@@ -274,6 +316,8 @@ Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
 		Dim fldType As String = fm.Get("type")
 		Dim fldName As String = fm.Get("name")
 		Select Case fldType
+			Case "LONGTEXT"
+				SchemaAddLongText1(fldName)
 			Case "TEXT", "STRING"
 				SchemaAddText1(fldName)
 			Case "BLOB"
@@ -312,6 +356,8 @@ Sub SetSchemaFromDataModel(models As Map)
 		Dim fldType As String = fm.Get("type")
 		Dim fldName As String = fm.Get("name")
 		Select Case fldType
+			Case "LONGTEXT"
+				SchemaAddLongText1(fldName)
 			Case "TEXT", "STRING"
 				SchemaAddText1(fldName)
 			Case "BLOB"
@@ -401,7 +447,7 @@ Sub SELECT_ALL As List
 	
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add(qflds)
+	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)
 	If qjoin <> "" Then xcommand.Add(qjoin)
@@ -1325,7 +1371,7 @@ Sub ADD_FIELD(fld As String) As SDUIMySQLREST
 	If ShowLog Then
 		Log($"SDUIMySQLREST.${TableName}.ADD_FIELD(${fld})"$)
 	End If
-	flds.Add($"include=${fld}"$)
+	flds.Add(fld)
 	Return Me
 End Sub
 
@@ -1850,7 +1896,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	'
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add(qflds)
+	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
 	If qfilter <> "" Then xcommand.add(qfilter)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)

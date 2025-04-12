@@ -478,8 +478,10 @@ private Sub guidAlphaApp(glen As Int) As String
 End Sub
 
 'get items from storage
+'<code>
 'Do while rs.NextRow
 'Loop
+'</code>
 Sub getRecords As List
 	'get content from local storage
 	Dim lsJSON As String = banano.GetLocalStorage2(msName)

@@ -119,11 +119,11 @@ Version=10
 #DesignerProperty: Key: ColumnChooserHeight, DisplayName: Column Chooser Height, FieldType: String, DefaultValue: 8, Description: Column Chooser Height
 #DesignerProperty: Key: ColumnChooserColor, DisplayName: Column Chooser Color, FieldType: String, DefaultValue: primary, Description: Column Chooser Color
 #DesignerProperty: Key: ShowTotalRecords, DisplayName: Show Total Records, FieldType: Boolean, DefaultValue: True, Description: Show Total Records
-#DesignerProperty: Key: HasEdit, DisplayName: Has Edit, FieldType: Boolean, DefaultValue: False, Description: Has Edit
+#DesignerProperty: Key: HasEdit, DisplayName: Has Edit, FieldType: Boolean, DefaultValue: True, Description: Has Edit
 #DesignerProperty: Key: EditTooltip, DisplayName: Edit Tooltip, FieldType: String, DefaultValue: , Description: Edit Tooltip
 #DesignerProperty: Key: HasClone, DisplayName: Has Clone, FieldType: Boolean, DefaultValue: False, Description: Has Clone
 #DesignerProperty: Key: CloneTooltip, DisplayName: Clone Tooltip, FieldType: String, DefaultValue: , Description: Clone Tooltip
-#DesignerProperty: Key: HasDelete, DisplayName: Has Delete, FieldType: Boolean, DefaultValue: False, Description: Has Delete
+#DesignerProperty: Key: HasDelete, DisplayName: Has Delete, FieldType: Boolean, DefaultValue: True, Description: Has Delete
 #DesignerProperty: Key: DeleteTooltip, DisplayName: Delete Tooltip, FieldType: String, DefaultValue: , Description: Delete Tooltip
 #DesignerProperty: Key: HasUpload, DisplayName: Has Upload, FieldType: Boolean, DefaultValue: False, Description: Has Upload
 #DesignerProperty: Key: UploadTooltip, DisplayName: Upload Tooltip, FieldType: String, DefaultValue: , Description: Upload Tooltip
@@ -171,7 +171,7 @@ Private Sub Class_Globals
 	Private sSearchSize As String = "md"
 	Public Tag As Object
 	Private iItemsPerPage As Int = 5
-	Private bHasDeleteAll As Boolean
+	Private bHasDeleteAll As Boolean = False
 	Private bHasToolbarUpload As Boolean
 	Private sRawClasses As String
 	Private sRawStyles As String
@@ -407,13 +407,13 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHasBack = UI.CBool(bHasBack)
 		bHasClone = Props.GetDefault("HasClone", False)
 		bHasClone = UI.CBool(bHasClone)
-		bHasDelete = Props.GetDefault("HasDelete", False)
+		bHasDelete = Props.GetDefault("HasDelete", True)
 		bHasDelete = UI.CBool(bHasDelete)
 		bHasDownload = Props.GetDefault("HasDownload", False)
 		bHasDownload = UI.CBool(bHasDownload)
 		bHasUpload = Props.GetDefault("HasUpload", False)
 		bHasUpload = UI.CBool(bHasUpload)
-		bHasEdit = Props.GetDefault("HasEdit", False)
+		bHasEdit = Props.GetDefault("HasEdit", True)
 		bHasEdit = UI.CBool(bHasEdit)
 		bHasMenu = Props.GetDefault("HasMenu", False)
 		bHasMenu = UI.CBool(bHasMenu)
@@ -794,11 +794,15 @@ End Sub
 Sub setAddNewTooltip(s As String)
 	sAddNewTooltip = s
 	CustProps.put("AddNewTooltip", s)
+	If mElement = Null Then Return
+	If sAddNewTooltip <> "" Then SetToolbarButtonToolTip("add", sAddNewTooltip, sTooltipColor, "left")
 End Sub
 'set Back Tooltip
 Sub setBackTooltip(s As String)
 	sBackTooltip = s
 	CustProps.put("BackTooltip", s)
+	If mElement = Null Then Return
+	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 End Sub
 'set Clone Tooltip
 Sub setCloneTooltip(s As String)
@@ -809,11 +813,15 @@ End Sub
 Sub setDeleteAllTooltip(s As String)
 	sDeleteAllTooltip = s
 	CustProps.put("DeleteAllTooltip", s)
+	If mElement = Null Then Return
+	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, sTooltipColor, "left")
 End Sub
 'set Delete Single Tooltip
 Sub setDeleteSingleTooltip(s As String)
 	sDeleteSingleTooltip = s
 	CustProps.put("DeleteSingleTooltip", s)
+	If mElement = Null Then Return
+	If sDeleteSingleTooltip <> "" Then SetToolbarButtonToolTip("deletesingle", sDeleteSingleTooltip, sTooltipColor, "left")
 End Sub
 'set Delete Tooltip
 Sub setDeleteTooltip(s As String)
@@ -834,16 +842,22 @@ End Sub
 Sub setExportToCsvTooltip(s As String)
 	sExportToCsvTooltip = s
 	CustProps.put("ExportToCsvTooltip", s)
+	If mElement = Null Then Return
+	If sExportToCsvTooltip <> "" Then SetToolbarButtonToolTip("exporttocsv", sExportToCsvTooltip, sTooltipColor, "left")
 End Sub
 'set Export To Pdf Tooltip
 Sub setExportToPdfTooltip(s As String)
 	sExportToPdfTooltip = s
 	CustProps.put("ExportToPdfTooltip", s)
+	If mElement = Null Then Return
+	If sExportToPdfTooltip <> "" Then SetToolbarButtonToolTip("exporttopdf", sExportToPdfTooltip, sTooltipColor, "left")
 End Sub
 'set Export To Xls Tooltip
 Sub setExportToXlsTooltip(s As String)
 	sExportToXlsTooltip = s
 	CustProps.put("ExportToXlsTooltip", s)
+	If mElement = Null Then Return
+	If sExportToXlsTooltip <> "" Then SetToolbarButtonToolTip("exporttoxls", sExportToXlsTooltip, sTooltipColor, "left")
 End Sub
 'set Menu Tooltip
 Sub setMenuTooltip(s As String)
@@ -854,11 +868,15 @@ End Sub
 Sub setRefreshTooltip(s As String)
 	sRefreshTooltip = s
 	CustProps.put("RefreshTooltip", s)
+	If mElement = Null Then Return
+	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 End Sub
 'set Save Single Tooltip
 Sub setSaveSingleTooltip(s As String)
 	sSaveSingleTooltip = s
 	CustProps.put("SaveSingleTooltip", s)
+	If mElement = Null Then Return
+	If sSaveSingleTooltip <> "" Then SetToolbarButtonToolTip("savesingle", sSaveSingleTooltip, sTooltipColor, "left")
 End Sub
 'set Tooltip Color
 Sub setTooltipColor(s As String)
@@ -869,6 +887,8 @@ End Sub
 Sub setUploadToolbarTooltip(s As String)
 	sUploadToolbarTooltip = s
 	CustProps.put("UploadToolbarTooltip", s)
+	If mElement = Null Then Return
+	If sUploadToolbarTooltip <> "" Then SetToolbarButtonToolTip("uploadtoolbar", sUploadToolbarTooltip, sTooltipColor, "left")
 End Sub
 'set Upload Tooltip
 Sub setUploadTooltip(s As String)
@@ -1712,6 +1732,8 @@ End Sub
 Sub setGridTooltip(s As String)
 	sGridTooltip = s
 	CustProps.put("GridTooltip", s)
+	If mElement = Null Then Return
+	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
 End Sub
 'set Has Grid
 Sub setHasGrid(b As Boolean)		'ignoredeadcode
@@ -1760,13 +1782,15 @@ Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	SetToolbarButtonToolTip("deleteall", tooltip, color, position)
 End Sub
 Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
+	bHasDeleteAll = b
 	CustProps.put("HasDeleteAll", b)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("deleteall", "./assets/trash-can-solid.svg", "#FF0000", "white")
 	SetToolbarButtonBadge("deleteall", "0")
 	SetToolbarButtonBadgeRound("deleteall")
-	SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
+	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
+	SetToolbarButtonEnable("deleteall", False)
 End Sub
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("UploadToolbarTooltip", tooltip)
@@ -1824,7 +1848,7 @@ End Sub
 'move the back button to the end
 Sub MoveBackButton
 	If bHasBack = False Then Return
-	Dim backKey As String = $"#${mName}_back_indicator"$
+	Dim backKey As String = $"#${mName}_back"$
 	If BANano.Exists(backKey) Then
 		Dim bBtn As BANanoElement = BANano.GetElement(backKey)
 		bBtn.Remove
@@ -2243,6 +2267,7 @@ Sub AddColumnSelectAll			'ignoredeadcode
 	el.Initialize($"#${mName}_selectall"$)
 	el.HandleEvents("change", Me, "HandleSelectAll")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", "selectall")
+	SetToolbarSelectAllChecked(False)
 End Sub
 Sub getSelectAllID As String
 	Return $"${mName}_selectalllabel"$
@@ -8356,12 +8381,14 @@ private Sub HandleChange(event As BANanoEvent)     'ignoredeadcode
 		Dim rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(rowx)
 		Dim b As Boolean = BANano.GetElement($"#${src}"$).GetChecked
+		rowc.Put(action, b)
 		BANano.CallSub(mCallBack, mName & "_change", Array(b, action, rowc))
 	else If SubExists(mCallBack, $"${mName}_changerow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(rowx)
 		Dim b As Boolean = BANano.GetElement($"#${src}"$).GetChecked
+		rowc.Put(action, b)
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, b, action, rowc))
 	End If
 End Sub
@@ -8379,11 +8406,13 @@ private Sub HandleChangeS(event As BANanoEvent)     'ignoredeadcode
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(Rowx)
+		rowc.Put(action, value)
 		BANano.CallSub(mCallBack, mName & "_change", Array(value, action, rowc))
 	else If SubExists(mCallBack, $"${mName}_changerow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(Rowx)
+		rowc.Put(action, value)
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, value, action, rowc))
 	End If
 End Sub
@@ -8402,11 +8431,13 @@ private Sub HandleChangeR(event As BANanoEvent)     'ignoredeadcode
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(Rowx)
+		rowc.Put(action, value)
 		BANano.CallSub(mCallBack, mName & "_change", Array(value, action, rowc))
 	else If SubExists(mCallBack, $"${mName}_changerow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim Rowx As Map = GetRow(rowpos)
 		Dim rowc As Map = BANano.DeepClone(Rowx)
+		rowc.Put(action, value)
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, value, action, rowc))
 	End If
 End Sub
@@ -8426,6 +8457,7 @@ private Sub HandleChangeV(event As BANanoEvent)     'ignoredeadcode
 		Dim rowc As Map = BANano.DeepClone(rowx)
 		Dim b As Object = BANano.GetElement($"#${src}"$).GetValue
 		UpdateRangeText(rowpos + 1, action, b)
+		rowc.Put(action, b)
 		BANano.CallSub(mCallBack, mName & "_change", Array(b, action, rowc))
 	else If SubExists(mCallBack, $"${mName}_changerow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
@@ -8433,6 +8465,7 @@ private Sub HandleChangeV(event As BANanoEvent)     'ignoredeadcode
 		Dim rowc As Map = BANano.DeepClone(rowx)
 		Dim b As Object = BANano.GetElement($"#${src}"$).GetValue
 		UpdateRangeText(rowpos + 1, action, b)
+		rowc.Put(action, b)
 		BANano.CallSub(mCallBack, mName & "_changerow", Array(rowpos, b, action, rowc))
 	End If
 End Sub
@@ -9256,21 +9289,25 @@ Sub SetHeaderSideWaysLR(colName As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:sideways-lr]")
+	UI.SetStyleByID($"${mName}_${colName}_th"$, "text-align", "right")
 End Sub
 Sub SetHeaderSideWaysRL(colName As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:sideways-rl]")
+	UI.SetStyleByID($"${mName}_${colName}_th"$, "text-align", "right")
 End Sub
 Sub SetHeaderVerticalLR(colName As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:vertical-lr]")
+	UI.SetStyleByID($"${mName}_${colName}_th"$, "text-align", "right")
 End Sub
 Sub SetHeaderVerticalRL(colName As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
 	BANano.GetElement($"#${mName}_${colName}_th"$).AddClass("[writing-mode:vertical-rl]")
+	UI.SetStyleByID($"${mName}_${colName}_th"$, "text-align", "right")
 End Sub
 'visible
 'update select of Row
@@ -9326,11 +9363,7 @@ End Sub
 Sub SetRowEnsureVisible(rowPos As Int)
 	Dim rowCnt1 As Int = BANano.parseInt(rowPos) + 1
 	Dim rowName As String = $"${mName}_${rowCnt1}"$
-	If BANano.Exists($"#${rowName}"$) Then
-		Dim el As BANanoElement = BANano.GetElement($"#${rowName}"$)
-		Dim opt As Map = CreateMap("behavior": "smooth")
-		el.RunMethod("scrollIntoView", opt)
-	End If
+	UI.EnsureVisible(rowName)
 End Sub
 
 'visible
@@ -9855,7 +9888,7 @@ End Sub
 'Dim fileObj As Map = tblcollectionnames.GetFileFromEvent(e)
 'If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
 'tbl.ToolbarButtonLoading("?", True)
-'Dim props As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+'Dim props As Map = BANano.Await(App.readAsJsonWait(fileObj))
 'tbl.ToolbarButtonLoading("?", False)
 'Return
 'End Select
@@ -9874,10 +9907,10 @@ End Sub
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
 ''start uploading the file to assets folder
 ''fileDet = UI.UploadFileWait(fileObj)
 ''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
@@ -10511,10 +10544,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText
