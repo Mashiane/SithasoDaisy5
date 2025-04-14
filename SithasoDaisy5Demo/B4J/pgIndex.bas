@@ -159,6 +159,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-jsontree", "", "JSON Tree")
 	drawermenu.AddItemChild("plugins", "pg-easymde", "", "EasyMDE")
 	drawermenu.AddItemChild("plugins", "pg-jsonquery", "", "JSON Query")
+	drawermenu.AddItemChild("plugins", "pg-trendchart", "", "Trend Charts")
 End Sub
 
 
@@ -184,6 +185,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "trendchart"
+				pgTrendCharts.Show(App)
 			Case "easymde"
 				pgEasyMDE.Show(App)
 			Case "jsoneditor"

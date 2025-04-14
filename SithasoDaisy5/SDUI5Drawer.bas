@@ -65,8 +65,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -243,10 +242,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
+	'the drawer sits on the body of the page
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
-		<div id="${mName}_content" class="drawer-content"></div>
+		<main id="${mName}_content" class="drawer-content"></main>
 		<div id="${mName}_side" class="drawer-side z-50" style="scroll-behavior: smooth; scroll-padding-top: 5rem;">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 			<aside id="${mName}_sidecontent" class="min-h-screen"></aside>

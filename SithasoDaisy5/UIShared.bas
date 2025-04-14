@@ -3191,6 +3191,26 @@ Public Sub BeautifyB4X(sc As String) As Boolean
 	Return sout
 End Sub
 
+'download a text file
+Sub DownloadTextFile(content As String, fileName As String)
+	'load the file when it needs to be used
+	content = content.Replace("~","$")
+	Dim fc As List
+	fc.Initialize
+	fc.Add(content)
+	Dim blob As BANanoObject
+	blob.Initialize2("Blob",Array(fc, CreateMap("type": "text/plain;charset=utf-8")))
+	BANano.RunJavascriptMethod("saveAs",Array(blob,fileName))
+End Sub
+
+Sub PrettierCode(code As String) As String
+	Dim Prettier As BANanoObject = BANano.window.GetField("prettier")
+	'
+	Dim soutput As String = ""
+	soutput = Prettier.RunMethod("format", Array(code)).Result
+	Return soutput
+End Sub
+
 Sub Space(HM As Int) As String
 	Dim RS As String = ""
 	Do While Len(RS) < HM

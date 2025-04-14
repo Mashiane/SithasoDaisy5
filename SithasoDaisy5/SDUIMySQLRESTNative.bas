@@ -435,8 +435,8 @@ Sub SELECT_ALL As List
 		End If
 	End If
 	'
-	Dim qflds As String = Join("&", flds)
-	qflds = RemDelim(qflds, "&")
+	Dim qflds As String = Join(",", flds)
+	qflds = RemDelim(qflds, ",")
 '	
 	Dim qsort As String = Join("&", orderByL)
 	qsort = RemDelim(qsort, "&")
@@ -446,7 +446,7 @@ Sub SELECT_ALL As List
 '	
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add(qflds)
+	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)
 '	If qjoin <> "" Then xcommand.Add(qjoin)
@@ -1888,15 +1888,15 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 		qsort = RemDelim(qsort, "&")
 	End If
 	'
-	Dim qflds As String = Join("&", flds)
-	qflds = RemDelim(qflds, "&")
+	Dim qflds As String = Join(",", flds)
+	qflds = RemDelim(qflds, ",")
 	'
 	Dim qjoin As String = Join("&", joinL)
 	qjoin = RemDelim(qjoin, "&")
 	'
 	Dim xcommand As List
 	xcommand.Initialize
-	If qflds <> "" Then xcommand.add(qflds)
+	If qflds <> "" Then xcommand.add($"include=${qflds}"$)
 	If qfilter <> "" Then xcommand.add(qfilter)
 	If qsort <> "" Then xcommand.Add(qsort)
 	If sSize <> "" Then xcommand.Add($"size=${sSize}"$)

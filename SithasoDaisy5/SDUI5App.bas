@@ -385,9 +385,6 @@ Private Sub Class_Globals
 	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
 End Sub
 
-
-
-
 '<code>
 'Banano.Await(app.UsesPocketBase)
 'Banano.Await(app.UsesFlatPickDateTime)
@@ -400,10 +397,8 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
-	mElement.Append($"<div id="app" class="min-h-screen"></div>"$)
-	UI.AddClass(mElement, "relative h-screen w-screen m-0 p-0")
+	UI.AddClass(mElement, "relative min-h-screen h-screen w-screen m-0 p-0")
 	UI.AddStyle(mElement, "text-rendering", "optimizeSpeed")
-	UI.AddStyle(mElement, "min-height", "100vh")
 	mback = mCallback
 	AddLoader
 	Banano.Await(modSD5.InitColors)
@@ -763,7 +758,7 @@ End Sub
 
 'get the id of the component
 Sub getHere As String
-	Return $"#app"$
+	Return $"#body"$
 End Sub
 '
 ''return the cell id

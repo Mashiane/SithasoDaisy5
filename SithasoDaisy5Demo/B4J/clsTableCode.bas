@@ -208,7 +208,8 @@ Sub BuildPage
 	BANano.Await(BuildForeignCalls)
 	'
 	Dim sout As String = sb.ToString
-	app.DownloadTextFile(sout, $"${stablename}.bas"$)
+	Dim res As String = app.UI.BeautifyB4X(sout)
+	app.DownloadTextFile(res, $"${stablename}.bas"$)
 End Sub
 
 private Sub ExtractForeignKeys

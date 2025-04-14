@@ -55,6 +55,12 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: md, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: IndicatorVisible, DisplayName: Indicator Visible, FieldType: Boolean, DefaultValue: False, Description: Indicator Visible
+#DesignerProperty: Key: IndicatorValue, DisplayName: Indicator Value, FieldType: String, DefaultValue: , Description: Indicator Value
+#DesignerProperty: Key: IndicatorColor, DisplayName: Indicator Color, FieldType: String, DefaultValue: error, Description: Indicator Color
+#DesignerProperty: Key: IndicatorTextColor, DisplayName: Indicator Text Color, FieldType: String, DefaultValue: none, Description: Indicator Text Color
+#DesignerProperty: Key: IndicatorPosition, DisplayName: Indicator Position, FieldType: String, DefaultValue: top-end, Description: Indicator Position, List: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
+#DesignerProperty: Key: IndicatorSize, DisplayName: Indicator Size, FieldType: String, DefaultValue: xs, Description: Indicator Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -142,6 +148,21 @@ Sub Class_Globals
 	Private sPopOverTarget As String = ""
 	Private bTextVisible As Boolean = True
 	Private sTextSize As String = "none"
+	Private sIndicatorColor As String = "error"
+	Private sIndicatorPosition As String = "top-end"
+	Private sIndicatorSize As String = "xs"
+	Private sIndicatorTextColor As String = "none"
+	Private sIndicatorValue As String = ""
+	Private bIndicatorVisible As Boolean = False
+	Public CONST INDICATORPOSITION_BOTTOM_CENTER As String = "bottom-center"
+	Public CONST INDICATORPOSITION_BOTTOM_END As String = "bottom-end"
+	Public CONST INDICATORPOSITION_BOTTOM_START As String = "bottom-start"
+	Public CONST INDICATORPOSITION_MIDDLE_CENTER As String = "middle-center"
+	Public CONST INDICATORPOSITION_MIDDLE_END As String = "middle-end"
+	Public CONST INDICATORPOSITION_MIDDLE_START As String = "middle-start"
+	Public CONST INDICATORPOSITION_TOP_CENTER As String = "top-center"
+	Public CONST INDICATORPOSITION_TOP_END As String = "top-end"
+	Public CONST INDICATORPOSITION_TOP_START As String = "top-start"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -436,6 +457,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bTextVisible = UI.CBool(bTextVisible)
 		sTextSize = Props.GetDefault("TextSize", "none")
 		sTextSize = UI.CStr(sTextSize)
+		sIndicatorColor = Props.GetDefault("IndicatorColor", "error")
+		sIndicatorColor = UI.CStr(sIndicatorColor)
+		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-end")
+		sIndicatorPosition = UI.CStr(sIndicatorPosition)
+		sIndicatorSize = Props.GetDefault("IndicatorSize", "xs")
+		sIndicatorSize = UI.CStr(sIndicatorSize)
+		sIndicatorTextColor = Props.GetDefault("IndicatorTextColor", "none")
+		sIndicatorTextColor = UI.CStr(sIndicatorTextColor)
+		sIndicatorValue = Props.GetDefault("IndicatorValue", "")
+		sIndicatorValue = UI.CStr(sIndicatorValue)
+		bIndicatorVisible = Props.GetDefault("IndicatorVisible", False)
+		bIndicatorVisible = UI.CBool(bIndicatorVisible)
 	End If
 	'
 	If sParentID <> "" Then
@@ -497,6 +530,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<span id="${mName}_indicator" class="badge indicator-item"></span>
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<svg id="${mName}_lefticon" fill="currentColor" data-js="enabled" class="hidden"></svg>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
@@ -532,8 +566,95 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setRightIcon(sRightIcon)
 	setRightIconColor(sRightIconColor)
 	setPopOverTarget(sPopOverTarget)
+	setIndicatorVisible(bIndicatorVisible)
+	setIndicatorColor(sIndicatorColor)
+	setIndicatorPosition(sIndicatorPosition)
+	setIndicatorSize(sIndicatorSize)
+	setIndicatorTextColor(sIndicatorTextColor)
+	setIndicatorValue(sIndicatorValue)
 End Sub
 
+'set Indicator Visible
+Sub setIndicatorVisible(b As Boolean)					'ignoredeadcode
+	bIndicatorVisible = b
+	CustProps.put("IndicatorVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_indicator"$, b)
+	If b Then 
+		UI.AddClass(mElement, "indicator")
+	Else
+		UI.RemoveClass(mElement, "indicator")
+	End If
+End Sub
+'get Indicator Visible
+Sub getIndicatorVisible As Boolean
+	Return bIndicatorVisible
+End Sub
+
+'set Indicator Color
+Sub setIndicatorColor(s As String)						'ignoredeadcode
+	sIndicatorColor = s
+	CustProps.put("IndicatorColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetColorByID($"${mName}_indicator"$, "color", "badge", s)
+End Sub
+'set Indicator Position
+'options: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
+Sub setIndicatorPosition(s As String)					'ignoredeadcode
+	sIndicatorPosition = s
+	CustProps.put("IndicatorPosition", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Dim fpart As String = UI.mvfield(s,1,"-")
+	Dim spart As String = UI.mvfield(s,2,"-")
+	UI.UpdateClassByID($"${mName}_indicator"$, "position", $"indicator-${fpart} indicator-${spart}"$)
+End Sub
+'set Indicator Size
+'options: xs|none|sm|md|lg|xl
+Sub setIndicatorSize(s As String)									'ignoredeadcode
+	sIndicatorSize = s
+	CustProps.put("IndicatorSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetSizeByID($"${mName}_indicator"$, "size", "badge", s)
+End Sub
+'set Indicator Text Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setIndicatorTextColor(s As String)							'ignoredeadcode
+	sIndicatorTextColor = s
+	CustProps.put("IndicatorTextColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetTextColorByID($"${mName}_indicator"$, sIndicatorTextColor)
+End Sub
+'set Indicator Value
+Sub setIndicatorValue(s As String)									'ignoredeadcode
+	sIndicatorValue = s
+	CustProps.put("IndicatorValue", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_indicator"$, s)
+End Sub
+'get Indicator Color
+Sub getIndicatorColor As String
+	Return sIndicatorColor
+End Sub
+'get Indicator Position
+Sub getIndicatorPosition As String
+	Return sIndicatorPosition
+End Sub
+'get Indicator Size
+Sub getIndicatorSize As String
+	Return sIndicatorSize
+End Sub
+'get Indicator Text Color
+Sub getIndicatorTextColor As String
+	Return sIndicatorTextColor
+End Sub
+'get Indicator Value
+Sub getIndicatorValue As String
+	Return sIndicatorValue
+End Sub
 
 'set Pop Over Target
 Sub setPopOverTarget(s As String)				'ignoredeadcode

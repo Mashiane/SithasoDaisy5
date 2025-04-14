@@ -12,6 +12,8 @@ Sub Process_Globals
 	Private tblDesign As SDUI5Table
 	Private lsDB As SDUILocalStorage
 	Private Mode As String
+	Private SDUI5Column3 As SDUI5Column
+	Private SDUI5Column4 As SDUI5Column
 End Sub
 
 
@@ -189,6 +191,8 @@ Private Sub tblDesign_fieldsRow (Row As Int, item As Map)
 End Sub
 
 Sub MountTables
+	SDUI5Column3.Size = 12
+	SDUI5Column4.Visible = False
 	BANano.Await(lsDB.Records)
 	'
 	Dim jsonQ As SDUIJSONQuery
@@ -199,12 +203,16 @@ Sub MountTables
 End Sub
 
 Private Sub tblDesign_EditRow (Row As Int, item As Map)
+	SDUI5Column3.Size = 8
+	SDUI5Column4.Visible = True
 	Mode = "U"
 	prefTable.Title = "Edit Table"
 	prefTable.PropertyBag = item
 End Sub
 
 Private Sub tblDesign_CloneRow (Row As Int, item As Map)
+	SDUI5Column3.Size = 8
+	SDUI5Column4.Visible = True
 	Mode = "C"
 	item.Put("id", lsDB.NextID)
 	prefTable.PropertyBag = item
@@ -226,11 +234,12 @@ Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, 
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
 	BANano.Await(MountTables)
-	Log(Row)
 	tblDesign.SetRowEnsureVisible(Row)
 End Sub
 
 Private Sub tblDesign_Add (e As BANanoEvent)
+	SDUI5Column3.Size = 8
+	SDUI5Column4.Visible = True
 	Mode = "C"
 	prefTable.SetPropertyBagDefaults
 End Sub
@@ -278,4 +287,6 @@ End Sub
 Private Sub prefTable_No_Click (e As BANanoEvent)
 	Mode = "C"
 	prefTable.SetPropertyBagDefaults
+	SDUI5Column3.Size = 12
+	SDUI5Column4.Visible = False
 End Sub

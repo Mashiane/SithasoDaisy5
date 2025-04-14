@@ -1356,13 +1356,13 @@ Sub PropertyBagFromList(fContents As List)
 			Case "DatePicker"
 				AddPropertyDatePicker(spropname, sproptitle,spropvalue,sproprequired,spropdateformat,spropdisplayformat, sproplocale)
 				If IsLive = False Then
-					PropertyBuilder.Append($"${mName}.AddPropertyDatePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}", )"$).Append(CRLF)
+					PropertyBuilder.Append($"${mName}.AddPropertyDatePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}")"$).Append(CRLF)
 				End If			
 			Case "DateTimePicker"
 				sproptime24 = UI.CBool(sproptime24)
 				AddPropertyDateTimePicker(spropname, sproptitle,spropvalue,sproprequired,spropdateformat,spropdisplayformat,sproptime24, sproplocale)
 				If IsLive = False Then
-					PropertyBuilder.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}", )"$).Append(CRLF)
+					PropertyBuilder.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}")"$).Append(CRLF)
 				End If
 			Case "TimePicker"
 				sproptime24 = UI.CBool(sproptime24)
