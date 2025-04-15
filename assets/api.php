@@ -12764,11 +12764,11 @@ namespace Tqdev\PhpCrudApi {
 
     $config = new Config([
         'driver' => 'mysql',
-        'address' => 'dedi988.jnb2.host-h.net',
+        'address' => '',
         'port' => '3306',
-        'username' => 'findfaavcg_1',
-        'password' => '35HC4qXpBO36H41LuN07',
-        'database' => 'portal',
+        'username' => '',
+        'password' => '',
+        'database' => '',
         'debug' => false,
         'tables' => 'all',
         'controllers' => 'records,columns,tables,openapi,status',
