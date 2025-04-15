@@ -12,15 +12,15 @@ Sub Process_Globals
 	Private SDUI5TrendChart2 As SDUI5TrendChart
 	Private SDUI5TrendChart3 As SDUI5TrendChart
 	Private SDUI5TrendChart4 As SDUI5TrendChart
+	Private SDUI5TrendChart5 As SDUI5TrendChart
+	Private SDUI5TrendChart6 As SDUI5TrendChart
 End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesTrendCharts)
 	BANano.LoadLayout(app.PageView, "trendview")
 	pgIndex.UpdateTitle("SDUITrendChart")
 	'
-	BANano.Await(SDUI5TrendChart1.Refresh)
-	BANano.Await(SDUI5TrendChart2.Refresh)
-	BANano.Await(SDUI5TrendChart3.Refresh)
-	BANano.Await(SDUI5TrendChart4.Refresh)
+	
 End Sub

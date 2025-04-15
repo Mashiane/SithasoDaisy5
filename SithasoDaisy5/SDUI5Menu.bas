@@ -745,6 +745,47 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	Return item
 End Sub
 
+'add a avatar text
+Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As String, itemAvatarShape As String, itemAvatarSize As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem
+	itemKey = UI.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
+	parentID = UI.CleanID(parentID)	
+	Dim item As SDUI5MenuItem
+	If parentID <> "" Then
+		item.Initialize(mCallBack, itemKey, itemKey)
+		item.ParentID = parentID & "_items"
+		item.Text = itemText
+		item.Avatar = itemAvatar
+		item.AvatarShape = itemAvatarShape
+		item.avatarSize = itemAvatarSize
+		item.Parent = itemParent
+		If itemParent Then
+			item.ItemType = "collapse-item"
+		Else
+			item.ItemType = "avatar-text"	
+		End If
+		item.MenuName = mName
+		item.AddComponent
+		Return item
+	End If
+	'
+	item.Initialize(mCallBack, itemKey, itemKey)
+	item.Avatar = itemAvatar
+	item.AvatarShape = itemAvatarShape
+	item.avatarSize = itemAvatarSize
+	item.ParentID = mName
+	item.Text = itemText
+	If itemParent Then
+		item.ItemType = "collapse-item"
+	Else
+		item.ItemType = "avatar-text"
+	End If
+	item.Parent = itemParent
+	item.MenuName = mName
+	item.AddComponent
+	Return item
+End Sub
+
 Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) As SDUI5MenuItem
 	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
@@ -766,7 +807,6 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 	itemKey = UI.CleanID(itemKey)
 	Items.Put(itemKey, itemKey)
 	parentID = UI.CleanID(parentID)
-	itemKey = UI.CleanID(itemKey)
 	Dim item As SDUI5MenuItem
 	If parentID <> "" Then
 		item.Initialize(mCallBack, itemKey, itemKey)

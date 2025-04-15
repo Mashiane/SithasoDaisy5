@@ -36,6 +36,8 @@ Sub Initialize					'ignoreDeadCode
 	'AddPages
 	'show the sign in page
 	'IsAuthenticated(False)
+'	App.AddJavaScriptModuleURL("https://cdn.jsdelivr.net/npm/@weblogin/trendchart-elements@1.1.0/dist/index.js/+esm", True)
+'	App.AddJavaScriptModuleURL("./scripts/trendchart.js", True)
 	App.pageresume
 End Sub
 
@@ -47,13 +49,14 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
-	drawermenu.AddItemParent("", "play", "", "PlayGround")
+	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
 	drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
 	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
 	
-	drawermenu.AddItemChild("", "pg-typography", "", "Typography")
-	drawermenu.AddItemParent("", "components", "", "Components")
+	drawermenu.AddItemChild("", "pg-typography", "./assets/font-solid.svg", "Typography")
+	'
+	drawermenu.AddItemParent("", "components", "./assets/gifts-solid.svg", "Components")
 	drawermenu.SetItemOpen("components", True)
 	
 	drawermenu.AddItemParent("components", "actions", "", "Actions")
@@ -79,7 +82,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
 	'
-	drawermenu.AddItemParent("", "tables", "", "Tables")
+	drawermenu.AddItemParent("", "tables", "./assets/table-solid.svg", "Tables")
 	drawermenu.AddItemChild("tables", "pg-table", "", "Table 1")
 	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
 	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
@@ -113,7 +116,7 @@ Sub CreateDrawerMenu
 	'
 	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
 	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Calendars")
-	drawermenu.AddItemChild("dinput", "pg-checkbox", "", "Checkbox")
+	drawermenu.AddItemChild("dinput", "pg-checkbox", "./assets/square-check-regular.svg", "Checkbox")
 	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
 	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
 	drawermenu.AddItemChild("dinput", "pg-filter", "", "Filter")
@@ -148,7 +151,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("mockup", "pg-code", "", "Code")
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
 	'
-	drawermenu.AddItemParent("", "plugins", "", "Plugins")
+	drawermenu.AddItemParent("", "plugins", "./assets/gears-solid.svg", "Plugins")
 	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
 	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("plugins", "pg-svg", "", "SVG")

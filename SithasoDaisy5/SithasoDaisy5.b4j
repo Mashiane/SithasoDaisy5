@@ -3,7 +3,7 @@ Build1=Default,b4j.example
 File1=250x300.png
 File10=beautify-css.min.js
 File100=treeSpider.css
-File101=trendcharts.js
+File101=trendchart.js
 File102=upload-solid.svg
 File103=user-solid.svg
 File104=video.svg
@@ -418,7 +418,6 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("docxtemplater.min.js")
 	BANano.Header.AddJavascriptFile("pizzip.min.js")
 	BANano.Header.AddJavascriptFile("pizzip-utils.min.js")
-	BANano.Header.AddJavascriptES6File("trendcharts.js")
 	'
 	BANano.Header.AddCSSFile("prism.min.css")
 	BANano.Header.AddJavascriptFile("prism.min.js")
@@ -426,6 +425,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("beautify-css.min.js")
 	BANano.Header.AddJavascriptFile("beautify-html.min.js")
 	BANano.Header.AddJavascriptFile("prettier.min.js")
+	BANano.Header.AddJavascriptES6File("trendchart.js")
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version
 	ExitApplication

@@ -3639,6 +3639,17 @@ Sub ListSingleQuoteItems(lst As List)
 	Next
 End Sub
 
+Sub ListDoubleQuoteItems(lst As List)
+	Dim lTot As Int = lst.Size - 1
+	Dim lCnt As Int
+	For lCnt = 0 To lTot
+		Dim lItem As String = lst.Get(lCnt)
+		lItem = lItem.Replace(QUOTE, "")
+		lItem = $"${QUOTE}${lItem}${QUOTE}"$
+		lst.Set(lCnt, lItem)
+	Next
+End Sub
+
 Sub ListToArrayVariable(lst As List) As String
 	Dim lTot As Int = lst.Size - 1
 	Dim lCnt As Int

@@ -2438,3 +2438,31 @@ Sub GetFilesFromEvent (e As BANanoEvent) As List
 	Dim res As List = files.As(List)
 	Return res
 End Sub
+
+Sub AddJavaScriptModuleURL(urlLink As String, bAsync As Boolean)
+	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("script")
+	tmpScriptElem.SetAttr("type", "module")
+	tmpScriptElem.SetAttr("src", urlLink)
+	If bAsync Then tmpScriptElem.SetAttr("async", bAsync)
+	Banano.GetElement("head").Append(tmpScriptElem)
+End Sub
+
+Sub AddJavaScriptURL(urlLink As String, bAsync As Boolean)
+	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("script")
+	tmpScriptElem.SetAttr("src", urlLink)
+	If bAsync Then tmpScriptElem.SetAttr("async", bAsync)
+	Banano.GetElement("head").Append(tmpScriptElem)
+End Sub
+
+Sub AddCSSURL(urlLink As String, bAsync As Boolean)
+	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("link")
+	tmpScriptElem.SetAttr("rel", "stylesheet")
+	tmpScriptElem.SetAttr("type", "text/css")
+	tmpScriptElem.SetAttr("href", urlLink)
+	If bAsync Then tmpScriptElem.SetAttr("async", bAsync)
+	Banano.GetElement("head").Append(tmpScriptElem)
+End Sub
+
+Sub UsesTrendCharts
+	Banano.ImportWait("trendchart.js")
+End Sub

@@ -7,8 +7,8 @@ Version=10.2
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: ChartType, DisplayName: Chart Type, FieldType: String, DefaultValue: bar, Description: Chart Type, List: bar|line|pie|stack
-#DesignerProperty: Key: Labels (,), DisplayName: Labels, FieldType: String, DefaultValue: , Description: Labels
-#DesignerProperty: Key: Values (,), DisplayName: Values, FieldType: String, DefaultValue: , Description: Values
+#DesignerProperty: Key: Labels, DisplayName: Labels (;), FieldType: String, DefaultValue: , Description: Labels
+#DesignerProperty: Key: Values, DisplayName: Values (;), FieldType: String, DefaultValue: , Description: Values
 #DesignerProperty: Key: MinValue, DisplayName: Min, FieldType: String, DefaultValue: 0, Description: Min
 #DesignerProperty: Key: MaxValue, DisplayName: Max, FieldType: String, DefaultValue: 0, Description: Max
 #DesignerProperty: Key: Gap, DisplayName: Gap, FieldType: String, DefaultValue: 2, Description: Gap
@@ -25,6 +25,7 @@ Version=10.2
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400px, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 400px, Description: Width
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: ShapeColor, DisplayName: Shape Color, FieldType: String, DefaultValue: #597BFC, Description: Shape Color
 #DesignerProperty: Key: ShapeOpacity, DisplayName: Shape Opacity, FieldType: String, DefaultValue: 1, Description: Shape Opacity
 #DesignerProperty: Key: ResidualColor, DisplayName: Residual Color, FieldType: String, DefaultValue: black, Description: Residual Color
@@ -117,7 +118,8 @@ Sub Class_Globals
 	Private sShadow As String = "none"
 	Private sWidth As String = "400px"
 	Private sTag As String = ""
-	Private TC As BANanoObject
+	Private scode As String
+	Private sRounded As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -126,7 +128,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("trendcharts.js")
+	BANano.DependsOnAsset("trendchart.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -321,6 +323,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bInside = UI.CBool(bInside)
 		sLabels = Props.GetDefault("Labels", "")
 		sLabels = UI.CStr(sLabels)
+		sLabels = sLabels.Replace(";", ",")
 		sMaxValue = Props.GetDefault("MaxValue", "0")
 		sMaxValue = UI.CStr(sMaxValue)
 		sMinValue = Props.GetDefault("MinValue", "0")
@@ -339,6 +342,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipFormat = UI.CStr(sTooltipFormat)
 		sValues = Props.GetDefault("Values", "")
 		sValues = UI.CStr(sValues)
+		sValues = sValues.Replace(";", ",")
 		sWeight = Props.GetDefault("Weight", "2")
 		sWeight = UI.CStr(sWeight)
 		sHeight = Props.GetDefault("Height", "400px")
@@ -347,21 +351,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = UI.CStr(sShadow)
 		sWidth = Props.GetDefault("Width", "400px")
 		sWidth = UI.CStr(sWidth)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
 	End If
 	'
-	If sValues <> "" Then UI.AddAttrDT("values", $"[${sValues}]"$)
-	If sLabels <> "" Then UI.AddAttrDT("labels", $"[${sLabels}]"$)
 	If bStatic Then UI.AddAttrDT("static", bStatic)
 	If bTooltipDisabled Then UI.AddAttrDT("tooltip-disabled", bTooltipDisabled)
 	UI.AddAttrDT("tooltip-format", sTooltipFormat)
 	UI.AddAttrDT("max", sMaxValue)
+	UI.AddStyleDT("width", sWidth)
+	UI.AddStyleDT("height", sHeight)
 	
 	Select Case sChartType
 	Case "bar"
 		sTag = "tc-bar"
 		UI.AddAttrDT("min", sMinValue)
 		UI.AddAttrDT("radius", sRadius)
-		UI.AddAttrDT("horizontal", bHorizontal)
+		If bHorizontal Then UI.AddAttrDT("horizontal", bHorizontal)
 		UI.AddAttrDT("gap", sGap)
 		If sShapeColorX <> "" Then UI.AddStyleDT("--shape-color-x", sShapeColorX)
 		If sShapeOpacityActive <> "" Then UI.AddStyleDT("--shape-opacity-active", sShapeOpacityActive)
@@ -370,7 +377,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.AddAttrDT("min", sMinValue)
 		UI.AddAttrDT("weight", sWeight)
 		If sPoint <> "" Then UI.AddAttrDT("point", sPoint)
-		UI.AddAttrDT("inside", bInside)
+		If bInside Then UI.AddAttrDT("inside", bInside)
 		If sAreaColor <> "" Then UI.AddStyleDT("--area-color", sAreaColor)
 		If sAreaOpacity <> "" Then UI.AddStyleDT("--area-opacity", sAreaOpacity)
 		If sPointInnerColor <> "" Then UI.AddStyleDT("--point-inner-color", sPointInnerColor)
@@ -386,7 +393,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "stack"
 		sTag = "tc-stack"
 		UI.AddAttrDT("radius", sRadius)
-		UI.AddAttrDT("horizontal", bHorizontal)
+		If bHorizontal Then UI.AddAttrDT("horizontal", bHorizontal)
 		UI.AddAttrDT("gap", sGap)
 		If sShapeColorX <> "" Then UI.AddStyleDT("--shape-color-x", sShapeColorX)
 		If sShapeOpacityActive <> "" Then UI.AddStyleDT("--shape-opacity-active", sShapeOpacityActive)
@@ -415,12 +422,43 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div><${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></${sTag}></div>"$).Get("#" & mName)
+	scode = $"[BANCLEAN]<div id="${mName}chart"><${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></${sTag}></div>"$
+	mElement = mTarget.Append(scode).Get("#" & mName)
+	setRounded(sRounded)
+	setShadow(sShadow)
+	setValues(sValues)
+	setLabels(sLabels)
 End Sub
 
-Sub Refresh
-	TC = BANano.ImportWait("trendcharts.js")
-	Log(TC)
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}chart"$, sShadow)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+Sub ToString As String
+	Return scode
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)						'ignoredeadcode
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRoundedByID($"${mName}chart"$, sRounded)
+End Sub
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
 End Sub
 
 'set Area Color
@@ -599,11 +637,14 @@ Sub setInside(b As Boolean)
 	End If
 End Sub
 'set Labels
-Sub setLabels(s As String)
+Sub setLabels(s As String)				'ignoredeadcode
 	sLabels = s
 	CustProps.put("Labels", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "labels", $"[${s}]"$)
+	If s = "" Then Return
+	sLabels = sLabels.Replace(";", ",")
+	Dim lvalues As List = UI.StrParse(",", sLabels)
+	mElement.SetField("labels", lvalues)
 End Sub
 'set Max Value
 Sub setMaxValue(s As String)
@@ -670,11 +711,14 @@ Sub setTooltipFormat(s As String)
 	If s <> "" Then UI.AddAttr(mElement, "tooltip-format", s)
 End Sub
 'set Values
-Sub setValues(s As String)
+Sub setValues(s As String)				'ignoredeadcode
 	sValues = s
 	CustProps.put("Values", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddAttr(mElement, "values", $"[${s}]"$)
+	If s = "" Then Return
+	sValues = sValues.Replace(";", ",")
+	Dim lvalues As List = UI.StrParse(",", sValues)
+	mElement.SetField("values", lvalues)
 End Sub
 'set Weight
 Sub setWeight(s As String)

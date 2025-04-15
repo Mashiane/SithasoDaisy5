@@ -315,6 +315,7 @@ Sub SetURL(url As String)
 End Sub
 
 Private Sub fetchit(method As String)
+	Response.Initialize
 	'reset some variables
 	Success = False
 	mError = ""
@@ -324,9 +325,6 @@ Private Sub fetchit(method As String)
 	Response.Clear
 	'
 	Dim xbaseURL As String = vbaseURL
-	
-	Response.Initialize
-	 
 	fetchOptions.Method = method
 	If sredirect <> "" Then
 		fetchOptions.SetField("redirect", sredirect)

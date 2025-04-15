@@ -7,9 +7,12 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: MenuName, DisplayName: Menu Name, FieldType: String, DefaultValue: menu1, Description: Menu Name
-#DesignerProperty: Key: ItemType, DisplayName: Item Type, FieldType: String, DefaultValue: normal, Description: Item Type, List: icon|icon-text|normal|title|collapse-item
+#DesignerProperty: Key: ItemType, DisplayName: Item Type, FieldType: String, DefaultValue: normal, Description: Item Type, List: icon|icon-text|normal|title|collapse-item|avatar-text
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
+#DesignerProperty: Key: Avatar, DisplayName: Avatar, FieldType: String, DefaultValue: , Description: Avatar
+#DesignerProperty: Key: AvatarSize, DisplayName: Avatar Size, FieldType: String, DefaultValue: 16, Description: Avatar Size
+#DesignerProperty: Key: AvatarShape, DisplayName: Avatar Shape, FieldType: String, DefaultValue: circle, Description: Avatar Shape, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Width & Height
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
@@ -78,6 +81,7 @@ Sub Class_Globals
 	Public CONST BADGESIZE_XS As String = "xs"
 	Public CONST ITEMTYPE_ICON As String = "icon"
 	Public CONST ITEMTYPE_ICON_TEXT As String = "icon-text"
+	Public CONST ITEMTYPE_AVATAR_TEXT As String = "avatar-text"
 	Public CONST ITEMTYPE_NORMAL As String = "normal"
 	Public CONST ITEMTYPE_TITLE As String = "title"
 	Public CONST TOOLTIPPOSITION_BOTTOM As String = "bottom"
@@ -90,6 +94,9 @@ Sub Class_Globals
 	Private bOpen As Boolean = False
 	Private Items As Map
 	Private sPopOverTarget As String = ""
+	Private sAvatar As String = ""
+	Private sAvatarShape As String = "circle"
+	Private sAvatarSize As String = "16"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -306,6 +313,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bOpen = UI.CBool(bOpen)            
 		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
+		sAvatar = Props.GetDefault("Avatar", "")
+		sAvatar = UI.CStr(sAvatar)
+		sAvatarShape = Props.GetDefault("AvatarShape", "circle")
+		sAvatarShape = UI.CStr(sAvatarShape)
+		sAvatarSize = Props.GetDefault("AvatarSize", "16")
+		sAvatarSize = UI.CStr(sAvatarSize)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -333,14 +346,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadge = ""
 		sBadgeColor = ""
 		sBadgeSize = ""
+		sAvatar = ""
+		sAvatarShape = ""
+		sAvatarSize = ""
 	Case "icon-text", "collapse-item"
+		
 	Case "normal"
 		sIcon = ""
+		sAvatar = ""
+		sAvatarShape = ""
+		sAvatarSize = ""
 	Case "title"
 		sIcon = ""
 		sBadge = ""
 		sBadgeColor = ""
 		sBadgeSize = ""
+		sAvatar = ""
+		sAvatarShape = ""
+		sAvatarSize = ""
+	Case "avatar-text"
 	End Select
 	'
 	Select Case sItemType
@@ -357,6 +381,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<details id="${mName}_details">
 				<summary id="${mName}_anchor" class="items-center">
+					<div id="${mName}_avatar" class="avatar hidden">
+						<div id="${mName}_avatar_host">
+							<img id="${mName}_src" src="${sAvatar}" />
+						</div>
+					</div>
 					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"  data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 					<span id="${mName}_text">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
@@ -369,7 +398,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<a id="${mName}_anchor" class="items-center">
-					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"   data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
+					<div id="${mName}_avatar" class="avatar hidden">
+						<div id="${mName}_avatar_host">
+							<img id="${mName}_src" src="${sAvatar}" />
+						</div>
+					</div>
+					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
 					<span id="${mName}_text" class="hidden">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>
@@ -380,6 +414,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sItemType
 	Case "title"
 	Case Else
+		setAvatar(sAvatar)
+		setAvatarShape(sAvatarShape)
+		setAvatarSize(sAvatarSize)
 		setIcon(sIcon)
 		setIconColor(sIconColor)
 		setIconSize(sIconSize)
@@ -404,6 +441,51 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sItemType = "title" Then Return
 	'
 	UI.OnEvent(mElement, "click", Me, "itemclick")
+End Sub
+
+'set Avatar
+Sub setAvatar(s As String)					'ignoredeadcode
+	sAvatar = s
+	CustProps.put("Avatar", s)
+	If mElement = Null Then Return
+	If s = "" Then 
+		UI.SetVisibleByID($"${mName}_avatar"$, False)
+		Return
+	End If
+	UI.SetVisibleByID($"${mName}_avatar"$, True)
+	UI.SetImageByID($"${mName}_src"$, s)
+End Sub
+
+'set Avatar Shape
+'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
+Sub setAvatarShape(s As String)				'ignoredeadcode
+	sAvatarShape = s
+	CustProps.put("AvatarShape", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetMaskByID($"${mName}_avatar_host"$, s)
+End Sub
+
+'set Avatar Size
+Sub setAvatarSize(s As String)					'ignoredeadcode
+	sAvatarSize = s
+	CustProps.put("AvatarSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetHeightByID($"${mName}_avatar_host"$, s)
+	UI.SetWidthByID($"${mName}_avatar_host"$, s)
+End Sub
+'get Avatar
+Sub getAvatar As String
+	Return sAvatar
+End Sub
+'get Avatar Shape
+Sub getAvatarShape As String
+	Return sAvatarShape
+End Sub
+'get Avatar Size
+Sub getAvatarSize As String
+	Return sAvatarSize
 End Sub
 
 'set Pop Over Target
@@ -712,6 +794,24 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.Text = itemText
 	item.Parent = itemParent
 	item.ItemType = ITEMTYPE_ICON_TEXT
+	item.MenuName = sMenuName
+	item.AddComponent
+	Return item
+End Sub
+
+'add a avatar text
+Sub AddMenuItemAvatarText(itemKey As String, itemAvatar As String, itemAvatarShape As String, itemAvatarSize As String, itemText As String, itemParent As Boolean) As SDUI5MenuItem 
+	itemKey = UI.CleanID(itemKey)
+	Items.Put(itemKey, itemKey)
+	Dim item As SDUI5MenuItem
+	item.Initialize(mCallBack, itemKey, itemKey)
+	item.Avatar = itemAvatar
+	item.AvatarShape = itemAvatarShape
+	item.avatarSize = itemAvatarSize
+	item.ParentID = mName  & "_items"
+	item.Text = itemText
+	item.Parent = itemParent
+	item.ItemType = ITEMTYPE_AVATAR_TEXT
 	item.MenuName = sMenuName
 	item.AddComponent
 	Return item

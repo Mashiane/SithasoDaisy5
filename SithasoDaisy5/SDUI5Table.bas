@@ -1798,7 +1798,7 @@ Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As Str
 	SetToolbarButtonToolTip("uploadtoolbar", tooltip, color, position)
 End Sub
 
-Sub setHasToolbarDownload(b As Boolean)
+Sub setHasToolbarDownload(b As Boolean)				'ignoredeadcode
 	bHasToolbarDownload = b
 	CustProps.Put("HasToolbarDownload", b)
 	If bHasToolbarDownload = False Then Return
@@ -1846,7 +1846,7 @@ Sub setHasBack(b As Boolean)				'ignoredeadcode
 End Sub
 
 'move the back button to the end
-Sub MoveBackButton
+Sub MoveBackButton							'ignoredeadcode
 	If bHasBack = False Then Return
 	Dim backKey As String = $"#${mName}_back"$
 	If BANano.Exists(backKey) Then
