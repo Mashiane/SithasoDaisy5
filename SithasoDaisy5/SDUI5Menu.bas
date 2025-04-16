@@ -6,12 +6,15 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #Event: ItemClick (item As String)
+#Event: Change (Value As String)
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
+#DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -107,6 +110,8 @@ Sub Class_Globals
 	Public CONST PLACEMENT_TOP_CENTER As String = "top-center"
 	Public CONST PLACEMENT_TOP_END As String = "top-end"
 	Private sAnchorName As String
+	Private sCheckedColor As String = "success"
+	Private bHasCheckBox As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -320,6 +325,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bPopOver = UI.CBool(bPopOver)
 		bDropDownHover = Props.GetDefault("DropDownHover", False)
 		bDropDownHover = UI.CBool(bDropDownHover)
+		sCheckedColor = Props.GetDefault("CheckedColor", "success")
+		sCheckedColor = UI.CStr(sCheckedColor)
+		bHasCheckBox = Props.GetDefault("HasCheckBox", False)
+		bHasCheckBox = UI.CBool(bHasCheckBox)
 	End If
 	'
 	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
@@ -378,6 +387,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 '	setVisible(bVisible)
+End Sub
+
+'set Checked Color
+Sub setCheckedColor(s As String)
+	sCheckedColor = s
+	CustProps.put("CheckedColor", s)
+End Sub
+
+'set Has Check Box
+Sub setHasCheckBox(b As Boolean)
+	bHasCheckBox = b
+	CustProps.put("HasCheckBox", b)
+End Sub
+
+'get Checked Color
+Sub getCheckedColor As String
+	Return sCheckedColor
+End Sub
+
+'get Has Check Box
+Sub getHasCheckBox As Boolean
+	Return bHasCheckBox
 End Sub
 
 'set Card
@@ -685,6 +716,11 @@ Sub getRoundedItems As Boolean
 	Return bRoundedItems
 End Sub
 
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
+	Dim nselected As String = GetSelected
+	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
+End Sub
+
 'add a title
 Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	itemKey = UI.CleanID(itemKey)
@@ -695,7 +731,12 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.ItemType = "title"
 	item.Text = itemText
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -710,7 +751,12 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.Text = itemText
 	item.Parent = itemParent
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -725,7 +771,12 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.ParentID = mName
 	item.ItemType = "icon"
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -741,7 +792,12 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.Parent = itemParent
 	item.ItemType = "icon-text"
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -759,6 +815,8 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 		item.AvatarShape = itemAvatarShape
 		item.avatarSize = itemAvatarSize
 		item.Parent = itemParent
+		item.CheckedColor = sCheckedColor
+		item.HasCheckBox = bHasCheckBox
 		If itemParent Then
 			item.ItemType = "collapse-item"
 		Else
@@ -766,6 +824,9 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 		End If
 		item.MenuName = mName
 		item.AddComponent
+		If bHasCheckBox Then
+			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+		End If
 		Return item
 	End If
 	'
@@ -775,6 +836,8 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.avatarSize = itemAvatarSize
 	item.ParentID = mName
 	item.Text = itemText
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	If itemParent Then
 		item.ItemType = "collapse-item"
 	Else
@@ -783,6 +846,9 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.Parent = itemParent
 	item.MenuName = mName
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -797,7 +863,12 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.Parent = False
 	item.ItemType = "icon-text"
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -816,7 +887,12 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 		item.ItemType = "collapse-item"
 		item.Parent = True
 		item.MenuName = mName
+		item.CheckedColor = sCheckedColor
+		item.HasCheckBox = bHasCheckBox
 		item.AddComponent
+		If bHasCheckBox Then
+			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+		End If
 		Return item
 	End If
 	'there is no parent specified, add here
@@ -841,7 +917,12 @@ Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, item
 		item.ItemType = "item-text"
 		item.Parent = False
 		item.MenuName = mName
+		item.CheckedColor = sCheckedColor
+		item.HasCheckBox = bHasCheckBox
 		item.AddComponent
+		If bHasCheckBox Then
+			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+		End If
 		Return item
 	End If
 	'there is no parent specified, add here
@@ -861,7 +942,12 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.ItemType = "collapse-item"
 	item.Parent = True
 	item.MenuName = mName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
+	If bHasCheckBox Then
+		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
+	End If
 	Return item
 End Sub
 
@@ -878,6 +964,10 @@ Sub SetItemBadge(item As String, sText As String, sColor As String)
 	UI.SetTextByID($"${item}_badge"$, sText)
 	UI.SetColorByID($"${item}_badge"$, "color", "badge", sColor)
 	UI.SetVisibleByID($"${item}_badge"$, True)
+End Sub
+
+Sub SetItemChecked(item As String, b As Boolean)
+	UI.SetCheckedByID($"${item}_check"$, b)
 End Sub
 
 Sub SetItemBadgeVisible(item As String, b As Boolean)
@@ -952,4 +1042,36 @@ End Sub
 Sub TogglePopover
 	If mElement = Null Then Return
 	mElement.RunMethod("togglePopover", Null)
+End Sub
+
+'set Selected
+Sub SetSelected(s As String)					'ignoredeadcode
+	If mElement = Null Then Return
+	Dim selectedList As List = UI.GetOptions(s)
+	'uncheck everything
+	For Each item As String In Items.keys
+		Dim skey As String = $"${item}_check"$
+		UI.SetCheckedByID(skey, False)
+	Next
+	'check what is available
+	For Each item As String In selectedList
+		Dim npart As String = $"${item}_check"$
+		UI.SetCheckedByID(npart, True)
+	Next
+End Sub
+
+'get Selected
+Sub GetSelected As String
+	Dim selectedItems As List
+	selectedItems.Initialize
+	For Each item As String In Items.keys
+		Dim skey As String = $"${item}_check"$
+		Dim b As Boolean = UI.GetCheckedByID(skey)
+		If b Then
+			Dim ok As String = UI.MvField(item, 1, "_")
+			selectedItems.Add(ok)
+		End If
+	Next
+	Dim sSelected As String = UI.Join(";", selectedItems)
+	Return sSelected
 End Sub

@@ -14,6 +14,7 @@ Sub Process_Globals
 	Private menu9 As SDUI5Menu
 	Private menu13 As SDUI5Menu
 	Private menuFaces As SDUI5Menu
+	Private menuCheckBox As SDUI5Menu
 End Sub
 
 
@@ -28,7 +29,14 @@ Sub Show(MainApp As SDUI5App)
 	menuFaces.AddMenuItemAvatarText("", "face3", "https://picsum.photos/80/80?3", app.MASK_CIRCLE, "16", "Face 3", False)
 	menuFaces.AddMenuItemAvatarText("", "face4", "https://picsum.photos/80/80?4", app.MASK_CIRCLE, "16", "Face 4", False)
 	menuFaces.AddMenuItemAvatarText("", "face5", "https://picsum.photos/80/80?5", app.MASK_CIRCLE, "16", "Face 5", False)
-	
+	'
+	menuCheckBox.Clear
+	menuCheckBox.AddItemChild("", "check1", "", "Item 1")
+	menuCheckBox.AddItemChild("", "check2", "", "Item 2")
+	menuCheckBox.AddItemChild("", "check3", "", "Item 3")
+	menuCheckBox.AddItemChild("", "check4", "", "Item 4")
+	menuCheckBox.AddItemChild("", "check5", "", "Item 5")
+	menuCheckBox.AddItemChild("", "check6", "", "Item 6")
 End Sub
 
 Private Sub menu1_ItemClick (item As String)
@@ -53,4 +61,9 @@ End Sub
 
 Private Sub menuFaces_ItemClick (item As String)
 	app.ShowToastSuccess(item)
+End Sub
+
+Private Sub menuCheckBox_Change (Value As String)
+	Dim allSelected As String = menuCheckBox.GetSelected
+	app.ShowToastInfo(allSelected)
 End Sub

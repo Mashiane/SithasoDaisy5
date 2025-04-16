@@ -249,7 +249,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<main id="${mName}_content" class="drawer-content"></main>
 		<div id="${mName}_side" class="drawer-side z-50" style="scroll-behavior: smooth; scroll-padding-top: 5rem;">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
-			<aside id="${mName}_sidecontent" class="min-h-screen"></aside>
+			<aside id="${mName}_sidecontent" class="min-h-screen sticky top-0 flex flex-col overflow-y-auto"></aside>
 		</div>
 	</div>"$).Get("#" & mName)
 	setOverlay(bOverlay)

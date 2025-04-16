@@ -9,6 +9,9 @@ Version=10
 #DesignerProperty: Key: MenuName, DisplayName: Menu Name, FieldType: String, DefaultValue: menu1, Description: Menu Name
 #DesignerProperty: Key: ItemType, DisplayName: Item Type, FieldType: String, DefaultValue: normal, Description: Item Type, List: icon|icon-text|normal|title|collapse-item|avatar-text
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
+#DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
+#DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
+#DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: Avatar, DisplayName: Avatar, FieldType: String, DefaultValue: , Description: Avatar
 #DesignerProperty: Key: AvatarSize, DisplayName: Avatar Size, FieldType: String, DefaultValue: 16, Description: Avatar Size
@@ -97,6 +100,9 @@ Sub Class_Globals
 	Private sAvatar As String = ""
 	Private sAvatarShape As String = "circle"
 	Private sAvatarSize As String = "16"
+	Private bChecked As Boolean = False
+	Private sCheckedColor As String = "success"
+	Private bHasCheckBox As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -319,6 +325,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAvatarShape = UI.CStr(sAvatarShape)
 		sAvatarSize = Props.GetDefault("AvatarSize", "16")
 		sAvatarSize = UI.CStr(sAvatarSize)
+		bChecked = Props.GetDefault("Checked", False)
+		bChecked = UI.CBool(bChecked)
+		sCheckedColor = Props.GetDefault("CheckedColor", "success")
+		sCheckedColor = UI.CStr(sCheckedColor)
+		bHasCheckBox = Props.GetDefault("HasCheckBox", False)
+		bHasCheckBox = UI.CBool(bHasCheckBox)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -371,6 +383,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "title"
 		mElement = mTarget.Append($"[BANCLEAN]
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<input id="${mName}_check" value="${mName}" type="checkbox" class="checkbox hidden" />
 			<h2 id="${mName}_text">${sText}</h2>
 			<ul id="${mName}_items" class="hidden flex-nowrap"></ul>
 		</li>"$).Get("#" & mName)
@@ -381,6 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<details id="${mName}_details">
 				<summary id="${mName}_anchor" class="items-center">
+					<input id="${mName}_check" value="${mName}" type="checkbox" class="checkbox hidden" />
 					<div id="${mName}_avatar" class="avatar hidden">
 						<div id="${mName}_avatar_host">
 							<img id="${mName}_src" src="${sAvatar}" />
@@ -398,6 +412,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 				<a id="${mName}_anchor" class="items-center">
+					<input id="${mName}_check" value="${mName}" type="checkbox" class="checkbox hidden" />
 					<div id="${mName}_avatar" class="avatar hidden">
 						<div id="${mName}_avatar_host">
 							<img id="${mName}_src" src="${sAvatar}" />
@@ -432,6 +447,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setBadgeSize(sBadgeSize)
 		setBadgeVisible(bBadgeVisible)
 		setPopOverTarget(sPopOverTarget)
+		setCheckedColor(sCheckedColor)
+		setHasCheckBox(bHasCheckBox)
+		setChecked(bChecked)
 	End Select
 	setParent(bParent)
 	setText(sText)
@@ -441,6 +459,50 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sItemType = "title" Then Return
 	'
 	UI.OnEvent(mElement, "click", Me, "itemclick")
+	If bHasCheckBox Then
+		UI.OnEventByID($"${mName}_check"$, "change", Me, "changed")
+	End If
+End Sub
+
+
+
+'set Checked
+Sub setChecked(b As Boolean)							'ignoredeadcode
+	bChecked = b
+	CustProps.put("Checked", b)
+	If mElement = Null Then Return
+	UI.SetCheckedByID($"${mName}_check"$, b)
+End Sub
+
+'get Checked
+Sub getChecked As Boolean
+	Return bChecked
+End Sub
+
+'set Checked Color
+Sub setCheckedColor(s As String)							'ignoredeadcode
+	sCheckedColor = s
+	CustProps.put("CheckedColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetCheckedColorByID($"${mName}_check"$, s)
+End Sub
+
+'set Has Check Box
+Sub setHasCheckBox(b As Boolean)			'ignoredeadcode
+	bHasCheckBox = b
+	CustProps.put("HasCheckBox", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_check"$, b)
+End Sub
+
+'get Checked Color
+Sub getCheckedColor As String
+	Return sCheckedColor
+End Sub
+
+'get Has Check Box
+Sub getHasCheckBox As Boolean
+	Return bHasCheckBox
 End Sub
 
 'set Avatar
@@ -519,6 +581,12 @@ private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
 '	e.PreventDefault
 	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
+End Sub
+
+
+private Sub changed(e As BANanoEvent)			'ignoreDeadCode
+	Dim itemName As String = UI.MvField(e.ID, 1, "_")
+	BANano.CallSub(mCallBack, $"${sMenuName}_change"$, Array(itemName))
 End Sub
 
 'set Active
@@ -749,6 +817,8 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.ItemType = ITEMTYPE_TITLE
 	item.Text = itemText
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -764,6 +834,8 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.Text = itemText
 	item.Parent = itemParent
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -779,6 +851,8 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.ParentID = mName  & "_items"
 	item.ItemType = ITEMTYPE_ICON
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -795,6 +869,8 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.Parent = itemParent
 	item.ItemType = ITEMTYPE_ICON_TEXT
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -813,6 +889,8 @@ Sub AddMenuItemAvatarText(itemKey As String, itemAvatar As String, itemAvatarSha
 	item.Parent = itemParent
 	item.ItemType = ITEMTYPE_AVATAR_TEXT
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -828,6 +906,8 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.Parent = False
 	item.ItemType = ITEMTYPE_ICON_TEXT
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub
@@ -843,6 +923,8 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.ItemType = "collapse-item"
 	item.Parent = True
 	item.MenuName = sMenuName
+	item.CheckedColor = sCheckedColor
+	item.HasCheckBox = bHasCheckBox
 	item.AddComponent
 	Return item
 End Sub

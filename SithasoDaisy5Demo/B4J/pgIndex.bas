@@ -14,6 +14,7 @@ Sub Process_Globals
 	Private pageView As SDUI5Container	'ignore
 	Private drawermenu As SDUI5Menu
 	Private drawerNav As SDUI5NavBar
+	Private draweruser As SDUI5DrawerUser
 End Sub
 
 Sub Initialize					'ignoreDeadCode
@@ -163,6 +164,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-easymde", "", "EasyMDE")
 	drawermenu.AddItemChild("plugins", "pg-jsonquery", "", "JSON Query")
 	drawermenu.AddItemChild("plugins", "pg-trendchart", "", "Trend Charts")
+	drawermenu.AddItemChild("plugins", "pg-devices", "", "Devices")
 End Sub
 
 
@@ -188,6 +190,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "devices"
+				pgDevices.Show(App)
 			Case "trendchart"
 				pgTrendCharts.Show(App)
 			Case "easymde"
@@ -450,4 +454,12 @@ End Sub
 
 Sub CloseDrawerByForce
 	appdrawer.ForceClose
+End Sub
+
+Private Sub draweruser_Exit (event As BANanoEvent)
+	App.ShowToastInfo("Exit")
+End Sub
+
+Private Sub draweruser_Click (event As BANanoEvent)
+	App.ShowToastInfo("User Name")
 End Sub
