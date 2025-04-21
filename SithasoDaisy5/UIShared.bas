@@ -18,6 +18,11 @@ Sub Class_Globals
 	Public ExcludePosition As Boolean = False
 End Sub
 
+Sub AddCode(cd As StringBuilder, cl As String)
+	cl = cl.Replace("~","$")
+	cd.Append(cl).Append(CRLF)
+End Sub
+
 'join list to mv string
 Sub JoinQuote(delimiter As String, lst As List) As String
 	If lst.Size = 0 Then Return ""
@@ -3662,3 +3667,17 @@ Sub ListToArrayVariable(lst As List) As String
 	Dim xs As String = Join(",", lst)
 	Return xs
 End Sub
+
+'get the rest of the mv data from a particular position
+Sub MvRest(delim As String, svalue As String, startPos As String) As String
+	Dim spItems As List = StrParse(delim, svalue)
+	Dim lst As List
+	lst.initialize
+	Dim rCnt As Int = startPos-1
+	Dim rTot As Int = spItems.size - 1
+	For rCnt = (startPos-1) To rTot
+		lst.Add(spItems.Get(rCnt))
+	Next
+	Return Join(delim,lst)
+End Sub
+

@@ -18,6 +18,7 @@ Version=10
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Rows, DisplayName: Rows, FieldType: String, DefaultValue: 4, Description: Rows
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: AutoSizeToContent, DisplayName: Auto Size To Content, FieldType: Boolean, DefaultValue: False, Description: Auto Size To Content
@@ -108,6 +109,7 @@ Sub Class_Globals
 	Private sAppendIconColor As String = "none"
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
+	Private sRows As String = "4"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -116,7 +118,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -335,6 +337,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPrependIconColor = Props.GetDefault("PrependIconColor", "none")
 		sPrependIconColor = UI.CStr(sPrependIconColor)
 		If sPrependIconColor = "none" Then sPrependIconColor = ""
+		sRows = Props.GetDefault("Rows", "4")
+		sRows = UI.CStr(sRows)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -356,7 +360,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -364,7 +368,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
@@ -381,7 +385,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -389,7 +393,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</img></button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -405,7 +409,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label textarea join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -416,7 +420,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
       			</div>"$).Get("#" & mName)	
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -432,6 +436,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setGhost(bGhost)
 	setHeight(sHeight)
 	setValue(sValue)
+	setRows(sRows)
 	Select Case sInputType
 	Case "legend", "buttons", "buttons-floating"
 		setAppendImage(sAppendImage)
@@ -454,6 +459,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setMaxHeight(sMaxHeight)
 	setMinWidth(sMinWidth)
 	setMinHeight(sMinHeight)
+End Sub
+
+Sub setRows(s As String)			'ignoredeadcode
+	sRows = s
+	CustProps.Put("Rows", s)
+	If mElement = Null Then Return
+	UI.SetAttr(mElement, "rows", sRows)
+End Sub
+
+Sub getRows As String
+	Return sRows
 End Sub
 
 'set Append Color

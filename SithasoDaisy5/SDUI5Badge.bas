@@ -103,7 +103,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -341,9 +341,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden rounded-full bg-cover bg-center bg-no-repeat"></img>
-		<svg id="${mName}_lefticon" style="pointer-events:none;" data-unique-ids="disabled" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg>
+		<svg-renderer id="${mName}_lefticon" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg-renderer>
 		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
-		<svg id="${mName}_righticon" style="pointer-events:none;" data-unique-ids="disabled" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg>
+		<svg-renderer id="${mName}_righticon" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden rounded-full bg-cover bg-center bg-no-repeat"></img>
 	</${xtag}>"$).Get("#" & mName)
 	

@@ -122,6 +122,7 @@ Sub Class_Globals
 	Private sBottonsWidth As String = "22"
 	Private sButtonsShadow As String = "md"
 	Private sButtonsRounded As String = "md"
+	Public Form As SDUI5Form
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -343,7 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsShadow = UI.CStr(sButtonsShadow)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
-		if sbuttonsrounded = "none" then sButtonsRounded = ""
+		If sButtonsRounded = "none" Then sButtonsRounded = ""
 	End If
 	'
 	UI.AddClassDT("modal")
@@ -378,6 +379,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
 		</div>
 	</div>"$).Get("#" & mName)
+	'
+	Form.Initialize(mCallBack, $"${mName}_form"$, $"${mName}_form"$)
+	Form.LinkExisting
+	Form.Clear
+	Form.MdlName = mName
 		
 '	mElement = mTarget.Append($"[BANCLEAN]
 '	<dialog id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">

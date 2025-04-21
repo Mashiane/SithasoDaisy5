@@ -171,7 +171,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 '
 Sub OnEvent(event As String, MethodName As String)
@@ -532,10 +532,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_indicator" class="badge indicator-item"></span>
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
-		<svg id="${mName}_lefticon" fill="currentColor" data-js="enabled" class="hidden"></svg>
+		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
-		<svg id="${mName}_righticon" fill="currentColor" data-js="enabled" class="hidden"></svg>
+		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<div id="${mName}_badge" class="badge rounded-full hidden"></div>
 	</${sTag}>"$).Get("#" & mName)

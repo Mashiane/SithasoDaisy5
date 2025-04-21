@@ -112,7 +112,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize	
 	Items.Initialize 
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 
 Sub LinkExisting
@@ -400,7 +400,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<img id="${mName}_src" src="${sAvatar}" />
 						</div>
 					</div>
-					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled"  data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
+					<svg-renderer id="${mName}_icon"     data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 					<span id="${mName}_text">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</summary>	
@@ -418,7 +418,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<img id="${mName}_src" src="${sAvatar}" />
 						</div>
 					</div>
-					<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
+					<svg-renderer id="${mName}_icon"    data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 					<span id="${mName}_text" class="hidden">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>

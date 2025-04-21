@@ -80,7 +80,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -231,7 +231,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</div>			
 			<p id="${mName}_message">${sMessage}</p>
 			<button id="${mName}_reply" data-tip="Reply" class="cursor-pointer opacity-0 group-hover:opacity-100 absolute -top-3 -right-3 tooltip tooltip-left flex items-center justify-center w-6 h-6 bg-gray-200 text-gray-600 rounded-full hover:bg-gray-300 hover:text-gray-800" title="Reply">
-				<svg id="${mName}_replyicon" preserveAspectRatio="xMidYMid meet" style="pointer-events:none;width:50%;height:50%" data-unique-ids="disabled" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/reply-solid.svg"></svg>
+				<svg-renderer id="${mName}_replyicon" style="pointer-events:none;" preserveAspectRatio="xMidYMid meet" style="width:50%;height:50%"  class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/reply-solid.svg"></svg-renderer>
 			</button>
 			<div id="${mName}_reaction" class="absolute -bottom-3 -right-0 items-center justify-center rounded-full">${sReAction}️</div>
 		</div>

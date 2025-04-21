@@ -97,7 +97,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -348,7 +348,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
-    				<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg>
+    				<svg-renderer id="${mName}_icon" style="pointer-events:none;"   fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>

@@ -74,7 +74,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")	
+	BANano.DependsOnAsset("SVGRenderer.min.js")	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -263,7 +263,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<hr id="${mName}_startprefix" class="hidden"/>
 		<div id="${mName}_start" class="timeline-start hidden">${sStartText}</div>
 		<div id="${mName}_middle" class="timeline-middle hidden">
-			<svg id="${mName}_middleicon" style="pointer-events:none;" data-js="enabled" data-unique-ids="disabled" fill="currentColor" data-src="${sMiddleIcon}" class="hidden"></svg>
+			<svg-renderer id="${mName}_middleicon"   data-js="enabled"  fill="currentColor" data-src="${sMiddleIcon}" class="hidden"></svg-renderer>
 		</div>
 		<div id="${mName}_end" class="timeline-end hidden">${sEndText}</div>
 		<hr id="${mName}_endsuffix" class="hidden"/>

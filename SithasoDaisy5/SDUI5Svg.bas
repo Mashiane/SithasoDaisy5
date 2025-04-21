@@ -54,7 +54,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -155,7 +155,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<svg id="${mName}" ${xattrs} style="${xstyles}"></svg>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<svg-renderer id="${mName}" ${xattrs} style="${xstyles}"></svg-renderer>"$).Get("#" & mName)
 '	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 End Sub
 

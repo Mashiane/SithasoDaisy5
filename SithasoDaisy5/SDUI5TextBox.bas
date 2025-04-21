@@ -20,7 +20,6 @@ Version=10
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: ShowEyes, DisplayName: Show Eyes, FieldType: Boolean, DefaultValue: False, Description: Show Eyes
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Grow, DisplayName: Grow, FieldType: Boolean, DefaultValue: False, Description: Grow
@@ -32,6 +31,7 @@ Version=10
 #DesignerProperty: Key: MaxValue, DisplayName: Max Value, FieldType: String, DefaultValue: , Description: Max Value
 #DesignerProperty: Key: Pattern, DisplayName: Pattern, FieldType: String, DefaultValue: , Description: Pattern
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
+#DesignerProperty: Key: ReadOnly, DisplayName: Read Only, FieldType: Boolean, DefaultValue: False, Description: Read Only
 #DesignerProperty: Key: DPMode, DisplayName: DP Mode, FieldType: String, DefaultValue: single, Description: Date Picker Mode, List: multiple|range|single|time
 #DesignerProperty: Key: DPDateFormat, DisplayName: DP Date Format, FieldType: String, DefaultValue: Y-m-d, Description: Date Picker Date Format
 #DesignerProperty: Key: DPAltFormat, DisplayName: DP Alt Format, FieldType: String, DefaultValue: F j, Y, Description: Date Picker Alt Format
@@ -40,7 +40,8 @@ Version=10
 #DesignerProperty: Key: DPAltInputClass, DisplayName: DP Alt Input Class, FieldType: String, DefaultValue: , Description: Date Picker Alt Input Class
 #DesignerProperty: Key: DPCloseOnSelect, DisplayName: DP Close On Select, FieldType: Boolean, DefaultValue: False, Description: DP Close On Select
 #DesignerProperty: Key: DPConjunction, DisplayName: DP Conjunction, FieldType: String, DefaultValue: , Description: Date Picker Conjunction
-#DesignerProperty: Key: DPShowMonths, DisplayName: D P Show Months, FieldType: Int, DefaultValue: 1, Description: D p Show Months
+#DesignerProperty: Key: DPShowMonths, DisplayName: DP Show Months, FieldType: Int, DefaultValue: 1, Description: Date Picker Show Months
+#DesignerProperty: Key: DPTwentyFour, DisplayName: DP Twenty Four, FieldType: Boolean, DefaultValue: True, Description: Date Picker Twenty Four
 #DesignerProperty: Key: DPLocale, DisplayName: DP Locale, FieldType: String, DefaultValue: en, Description: Date Picker Locale
 #DesignerProperty: Key: DPPosition, DisplayName: DP Position, FieldType: String, DefaultValue: auto, Description: Date Picker Position, List: auto|above|below|auto left|auto center|auto right|above left|above center|above right|below left|below center|below right
 #DesignerProperty: Key: HandleDiameter, DisplayName: Handle Diameter, FieldType: Int, DefaultValue: 16, Description: Handle Diameter
@@ -107,6 +108,7 @@ Sub Class_Globals
 	Private sPattern As String = ""
 	Private sPlaceholder As String = ""
 	Private bRequired As Boolean = False
+	Private bReadOnly As Boolean = False
 	Private sSize As String = "md"
 	Private sStepValue As String = ""
 	Private sTypeOf As String = "text"
@@ -152,6 +154,7 @@ Sub Class_Globals
 	Private cwOptions As Map
 	Private sWheelPlacement As String = "top-end"
 	Private bToggleColorPicker As Boolean = False
+	Private bDPTwentyFour As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -169,7 +172,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("fplocale.min.js")
 	BANano.DependsOnAsset("reinvented-color-wheel.min.css")
 	BANano.DependsOnAsset("reinvented-color-wheel.min.js")
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -312,6 +315,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             sPlaceholder = UI.CStr(sPlaceholder)
             bRequired = Props.GetDefault("Required", False)
             bRequired = UI.CBool(bRequired)
+			bReadOnly = Props.GetDefault("ReadOnly", False)
+			bReadOnly = UI.CBool(bReadOnly)
             sSize = Props.GetDefault("Size", "md")
             sSize = UI.CStr(sSize)
             If sSize = "none" Then sSize = "md"
@@ -398,6 +403,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWheelPlacement = UI.CStr(sWheelPlacement)
 		bToggleColorPicker = Props.GetDefault("ToggleColorPicker", False)
 		bToggleColorPicker = UI.CBool(bToggleColorPicker)
+		bDPTwentyFour = Props.GetDefault("DPTwentyFour", False)
+		bDPTwentyFour = UI.CBool(bDPTwentyFour)
 		End If
         'we have a color wheel
 		If sTypeOf = "color-wheel" Then 
@@ -427,7 +434,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 							<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-							<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+							<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 						</button>
 	          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
@@ -435,7 +442,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 							<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-							<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+							<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 						</button>
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>					
@@ -458,7 +465,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -466,7 +473,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
 					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -489,7 +496,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg id="${mName}_prepend_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -500,7 +507,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg id="${mName}_append_icon" style="pointer-events:none;" data-unique-ids="disabled" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
 					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -527,6 +534,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setPattern(sPattern)
 		setPlaceholder(sPlaceholder)
 		setRequired(bRequired)
+		setReadOnly(bReadOnly)
 		BANano.Await(setSize(sSize))
 	setStepValue(sStepValue)
 	setEnabled(bEnabled)
@@ -736,7 +744,7 @@ Sub RefreshDatePicker			'ignoredeadcode
 	options.put("enableTime", False)
 	options.Put("noCalendar", False)
 	If sTypeOf = "time-picker" Or sTypeOf = "date-time-picker" Then
-		options.put("time_24hr", True)
+		options.put("time_24hr", bDPTwentyFour)
 		options.put("enableTime", True)
 		If sTypeOf = "time-picker" Then
 			options.put("noCalendar", True)
@@ -786,6 +794,15 @@ Sub RefreshDatePicker			'ignoredeadcode
 	
 	Dim xkey As String = $"#${mName}"$
 	FP = BANano.RunJavascriptMethod("flatpickr", Array(xkey, options))
+End Sub
+
+Sub setDPTwentyFour(b As Boolean)
+	bDPTwentyFour = b
+	CustProps.Put("DPTwentyFour", b)
+End Sub
+
+Sub getDPTwentyFour As Boolean
+	Return bDPTwentyFour
 End Sub
 
 Sub CloseDatePicker
@@ -1405,8 +1422,25 @@ Sub setRequired(b As Boolean)				'ignoredeadcode
 			UI.SetVisibleByID($"${mName}_required"$, False)
 			UI.SetVisibleByID($"${mName}_badge"$, False)
 			UI.RemoveAttr(mElement, "required")
-        End If
+	End If
 End Sub
+
+'set ReadOnly
+Sub setReadOnly(b As Boolean)				'ignoredeadcode
+    bReadOnly = b
+	CustProps.put("ReadOnly", b)
+    If mElement = Null Then Return
+    If b = True Then
+        UI.SetAttr(mElement, "readonly", b)
+	Else
+		UI.RemoveAttr(mElement, "readonly")
+    End If
+End Sub
+
+Sub getReadOnly As Boolean
+	Return bReadOnly
+End Sub
+
 'set Size
 'options: xs|none|sm|md|lg|xl
 Sub setSize(s As String)				'ignoredeadcode

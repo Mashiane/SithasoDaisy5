@@ -416,8 +416,10 @@ Public Sub Initialize (mCallback As Object)
 	Banano.Await(modSD5.InitDays)
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
+	Dim ie As BANanoObject = Banano.CallBack(Me, "iconloaderror", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
 	Banano.window.addEventListener("offline", ch, True)
+	Banano.Window.AddEventListener("iconloaderror", ie, True)
 	'
 	If SubExists(mCallback, "DarkTheme") Then
 		Dim cbTheme As Object = Banano.CallBack(mCallback, "DarkTheme", Null)
@@ -430,6 +432,10 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Duration = ToastDuration
 	AppToast.Position = ToastPosition
 	AppToast.AddComponent
+End Sub
+
+private Sub iconloaderror(e As BANanoEvent)				'ignoredeadcode
+	e.PreventDefault
 End Sub
 
 'get own unique key with 15 chars alphabets only
@@ -2465,4 +2471,53 @@ End Sub
 
 Sub UsesTrendCharts
 	Banano.ImportWait("trendchart.js")
+End Sub
+
+'<code>
+''use fetch to get the file contents
+'Dim csvData As String = banano.Await(banano.GetFileAsText("./assets/data.csv", Null, "utf8"))
+''parse the file contents and retrieve items on complete
+'ReadCSVFile(Me, "mycsv", csvData, "", true, true, "ISO-8859-1")
+'
+''will fire in each iteration
+'Sub mycsv_step(results As Map, parserObj As BANanoObject)
+'End Sub
+'
+''will fire when completed
+'Sub mycsv_complete(results As Map, fileObj As BANAnoObject)
+'Dim data As list = results.get("data")
+'Dim errors As List = results.get("errors")
+'Dim meta As Map = results.get("meta")
+'Dim fields As List = meta.get("fields")
+'End Sub
+'</code>
+Sub ReadCSVFile(Module As Object, event As String, content As String, delimiter As String, hasHeader As Boolean, dynamicTyping As Boolean, encoding As String)
+	event = event.tolowercase
+	Dim config As Map = CreateMap()
+	config.Put("delimiter", delimiter)
+	config.Put("header", hasHeader)
+	config.Put("dynamicTyping", dynamicTyping)
+	config.Put("worker", True)
+	config.put("download", False)
+	config.put("skipEmptyLines", True)
+	config.put("encoding", encoding)
+	'
+	Dim xstep As String = $"${event}_step"$
+	Dim results As Object
+	Dim parser As Object
+	If SubExists(Module, xstep) Then
+		Dim stepCB As BANanoObject = Banano.CallBack(Module, xstep, Array(results, parser))
+		config.Put("step", stepCB)
+	End If
+	'
+	Dim xcomplete As String = $"${event}_complete"$
+	Dim filex As Object
+	If SubExists(Module, xcomplete) Then
+		Dim completeCB As BANanoObject = Banano.CallBack(Module, xcomplete, Array(results, filex))
+		config.Put("complete", completeCB)
+	End If
+	'
+	Dim Papa As BANanoObject
+	Papa.Initialize("Papa")
+	Papa.RunMethod("parse", Array(content, config))
 End Sub

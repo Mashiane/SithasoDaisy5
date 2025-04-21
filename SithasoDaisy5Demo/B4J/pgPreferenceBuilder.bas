@@ -24,6 +24,8 @@ Sub Process_Globals
 	Private colTypes As List
 	Private lsDB As SDUILocalStorage
 	Private dbTables As SDUILocalStorage
+	Private colVertical As List
+	Private mdlPreview As SDUI5Modal
 End Sub
 
 
@@ -50,6 +52,10 @@ Sub Show(MainApp As SDUI5App)
 	types.Initialize 
 	compTypes.Initialize 
 	colTypes.Initialize
+	colVertical.Initialize 
+	
+	colVertical.AddAll(Array("LR", "RL"))
+	
 	 
 	compTypes.AddAll(Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
@@ -59,6 +65,7 @@ Sub Show(MainApp As SDUI5App)
 	colTypes.AddAll(Array("Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
 	
 	'
+	tblDesign.AddToolbarActionButtonIcon("form", "./assets/mobile-screen-button-solid.svg", "#6a639e", "#ffffff")
 	tblDesign.AddToolbarActionButtonIcon("code", "./assets/code-solid.svg", "#53209d", "#ffffff")
 	tblDesign.MoveBackButton
 	
@@ -70,15 +77,27 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnTextBox("proptitle", "Title", False)
 	tblDesign.AddColumnSelect("propdatatype", "Data Type", False, True, UI.ListToSelectOptionsSort(dataTypes))
 	tblDesign.AddColumnSelect("proptype", "Component", False, True, UI.ListToSelectOptionsSort(compTypes))
+	tblDesign.AddColumnSelect("propcolumntype", "Column Type", False, False, UI.ListToSelectOptionsSort(colTypes))
 	tblDesign.AddColumnTextBox("propvalue", "Default Value", False)
+	tblDesign.SetColumnVisible("propvalue", False)
+	tblDesign.AddColumnDialer("proprow", "Row", False, 1, 1, 100)
+	tblDesign.AddColumnDialer("propcol", "Col", False, 1, 1, 100)
 	tblDesign.AddColumnCheckBox("proprequired", "Required", "success", False)
 	tblDesign.AddColumnCheckBox("propvisible", "Visible", "success", False)
+	tblDesign.SetColumnVisible("propvisible", False)
 	tblDesign.AddColumnCheckBox("propenabled", "Enabled", "success", False)
+	tblDesign.SetColumnVisible("propenabled", False)
 	tblDesign.AddColumnCheckBox("propactive", "Active", "success", False)
 	tblDesign.AddColumnCheckBox("propsort", "Order By", "success", False)
+	tblDesign.SetColumnVisible("propsort", False)
 	tblDesign.AddColumnCheckBox("propfocus", "Focus On", "success", False)
+	tblDesign.SetColumnVisible("propfocus", False)
 	'
-	tblDesign.AddColumnSelect("propcolumntype", "Column Type", False, False, UI.ListToSelectOptionsSort(colTypes))
+	
+	tblDesign.AddColumnSelect("propcolumnvertical", "Column Vertical", False, True, UI.ListToSelectOptionsSort(colVertical))
+	tblDesign.SetColumnVisible("propcolumnvertical", False)
+	tblDesign.AddColumnCheckBox("proptotal", "Column Total", "success", False)
+	tblDesign.SetColumnVisible("proptotal", False)
 	tblDesign.AddColumnCheckBox("propcolumnvisible", "Column Visible", "success", False)
 	tblDesign.AddColumnCheckBox("propcomputevalue", "ComputeValue", app.COLOR_GREEN, False)
 	tblDesign.AddColumnCheckBox("propcomputering", "ComputeRing", app.COLOR_GREEN, False)
@@ -101,6 +120,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("propenabled")
 	tblDesign.SetHeaderVerticalLR("edit")
 	tblDesign.SetHeaderVerticalLR("delete")
+	tblDesign.SetHeaderVerticalLR("proptotal")
 	tblDesign.SetHeaderVerticalLR("clone")
 	tblDesign.SetHeaderVerticalLR("up")
 	tblDesign.SetHeaderVerticalLR("down")
@@ -206,14 +226,89 @@ Sub GetFieldNames(tblName As String) As Map
 	Return kv
 End Sub
 
+Sub tblDesign_form(e As BANanoEvent)
+	e.PreventDefault
+	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
+	thisTable = app.UI.CStr(thisTable)
+	If thisTable = "" Then Return
+	Dim item As Map = BANano.FromJson(thisTable)
+	BANano.Await(lsDB.Records)
+	Dim jsonQ As SDUIJSONQuery
+	jsonQ.Initialize(lsDB.result)
+	jsonQ.OrderAsc("proppos")
+	Dim result As List = BANano.Await(jsonQ.Exec)
+	Dim sdisplayvalue As String = item.Get("displayvalue")
+	Dim splural As String = item.Get("plural")
+	Dim sprimarykey As String = item.Get("primarykey")
+	Dim ssingular As String = item.Get("singular")
+	Dim stablename As String = item.Get("tablename")
+	
+	'clear the form
+	mdlPreview.Form.Clear
+	'start building the grid code
+	For Each fld As Map In result
+		Dim bpropactive As Boolean = fld.Get("propactive")
+		bpropactive = UI.CBool(bpropactive)
+		If bpropactive = False Then Continue
+		'
+		Dim spropcol As String = fld.Get("propcol")
+		Dim sproprow As String = fld.Get("proprow")
+		spropcol = app.UI.CStr(spropcol)
+		spropcol = app.UI.CStr(spropcol)
+		'add the row and column 
+		mdlPreview.Form.AddRC(sproprow, spropcol)
+	Next
+	'prepare the grid
+	mdlPreview.Form.PrepareRC
+	mdlPreview.Form.IsLive = True
+	mdlPreview.Form.MdlName = "mdlPreview"
+	BANano.Await(mdlPreview.Form.BuildGridFromRC)
+	Dim clsTC As clsTableCode
+	BANano.Await(clsTC.Initialize(app, item))
+	clsTC.BuildInputComponents(mdlPreview)	'
+	mdlPreview.Title = $"Add ${ssingular}"$
+	mdlPreview.Show
+End Sub
+
 Sub tblDesign_code(e As BANanoEvent)
 	e.PreventDefault
 	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
 	thisTable = app.UI.CStr(thisTable)
 	If thisTable = "" Then Return
 	Dim item As Map = BANano.FromJson(thisTable)
+	Dim stablename As String = item.Get("tablename")
+	Dim busemodal As Boolean = item.Get("usemodal")
+	busemodal = app.UI.CBool(busemodal)
 	Dim clsTC As clsTableCode
 	BANano.Await(clsTC.Initialize(app, item))
+	If busemodal Then
+		BANano.Await(lsDB.Records)
+		Dim jsonQ As SDUIJSONQuery
+		jsonQ.Initialize(lsDB.result)
+		jsonQ.OrderAsc("proppos")
+		Dim result As List = BANano.Await(jsonQ.Exec)
+		'prepare the grid
+		mdlPreview.Form.Clear
+		'start building the grid code
+		For Each fld As Map In result
+			Dim bpropactive As Boolean = fld.Get("propactive")
+			bpropactive = UI.CBool(bpropactive)
+			If bpropactive = False Then Continue
+			'
+			Dim spropcol As String = fld.Get("propcol")
+			Dim sproprow As String = fld.Get("proprow")
+			spropcol = app.UI.CStr(spropcol)
+			spropcol = app.UI.CStr(spropcol)
+		
+			'add the row and column
+			mdlPreview.Form.AddRC(sproprow, spropcol)
+		Next
+		mdlPreview.Form.PrepareRC
+		mdlPreview.Form.IsLive = False
+		mdlPreview.Form.MdlName = $"mdl${UI.ProperCase(stablename)}"$
+		BANano.Await(mdlPreview.Form.BuildGridFromRC)
+		clsTC.BuildInputComponents(mdlPreview)
+	End If
 	clsTC.BuildPage
 End Sub
 
@@ -246,6 +341,8 @@ private Sub AddProperties
 	compToAdd.AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(dataTypes))
 	compToAdd.AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
 	compToAdd.AddPropertyTextBox("propvalue", "Default Value", "", False)
+	compToAdd.AddPropertyDialer("proprow", "Row", 1, False, 1, 1, 100)
+	compToAdd.AddPropertyDialer("propcol", "Col", 1, False, 1, 1, 100)
 	compToAdd.AddPropertyCheckBox("proprequired", "Required", False, "success")
 	compToAdd.AddPropertyPlusMinus("propstart", "Min Value", "0", False, 0, 1, 100)
 	compToAdd.AddPropertyPlusMinus("propstep", "Step Value", "1", False, 0, 1, 100)
@@ -298,6 +395,7 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("propupdate", "Update Property", "", False)
 	'
 	compToAdd.AddPropertySelect("propcolumntype", "Column Type", "Normal", False, UI.ListToSelectOptionsSort(colTypes))
+	compToAdd.AddPropertySelect("propcolumnvertical", "Column Vertical", "", False, UI.ListToSelectOptionsSort(colVertical))
 	compToAdd.AddPropertyCheckBox("propcolumnvisible", "Column Visible", True, "success")
 	compToAdd.AddPropertySelect("propsubtitle1", "Sub Title Field", "", False, CreateMap())
 	compToAdd.AddPropertySelect("propsubtitle2", "Sub Title 1 Field", "", False, CreateMap())
@@ -376,7 +474,7 @@ Sub ShowPropertiesByType(item As String)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
 	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype")))
-	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
+	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propcolumnvertical", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
 	BANano.Await(compToAdd.ShowProperty(Array("propforeigntable","propforeignfield","propforeigndisplayfield","propforeigndisplayfield1","propforeigndisplayfield2"))) 
 	BANano.Await(compToAdd.ShowProperty(Array("propcomputevalue","propcomputering","propcomputecolor","propcomputebgcolor","propcomputetextcolor","propcomputeclass")))
 	'
@@ -865,4 +963,12 @@ Private Sub compToAdd_propforeigntable_AppendClick (e As BANanoEvent)
 		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield1", flds))
 		BANano.Await(compToAdd.SetPropertySelectMap("propforeigndisplayfield2", flds))
 	End If
+End Sub
+
+Private Sub mdlPreview_Yes_Click (e As BANanoEvent)
+	
+End Sub
+
+Private Sub mdlPreview_No_Click (e As BANanoEvent)
+	
 End Sub

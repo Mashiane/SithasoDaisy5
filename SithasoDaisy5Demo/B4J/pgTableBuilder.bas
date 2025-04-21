@@ -38,6 +38,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnCheckBox("autoincrement", "Auto Increment", "success", False)
 	tblDesign.AddColumnCheckBox("alphachooser", "Alpha Chooser", "success", False)
 	tblDesign.AddColumnCheckBox("columnchooser", "Column Chooser", "success", False)
+	tblDesign.AddColumnCheckBox("usemodal", "Use Modal", "success", False)
 	tblDesign.AddDesignerColums
 	'
 	tblDesign.AddColumnAction("fields", "Fields", "./assets/table-cells-solid.svg", "#ff0000", "#ffffff")
@@ -49,6 +50,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("clone")
 	tblDesign.SetHeaderVerticalLR("fields")
 	tblDesign.SetHeaderVerticalLR("code")
+	tblDesign.SetHeaderVerticalLR("usemodal")
 	tblDesign.SetHeaderVerticalLR("autoincrement")
 	tblDesign.SetHeaderVerticalLR("alphachooser")
 	tblDesign.SetHeaderVerticalLR("columnchooser")
@@ -63,9 +65,41 @@ Sub Show(MainApp As SDUI5App)
 	prefTable.AddPropertyCheckBox("alphachooser", "Alpha Chooser", False, "success")
 	prefTable.AddPropertyTextBox("alphachooserfield", "Alpha Chooser Field", "", True)
 	prefTable.AddPropertyCheckBox("columnchooser", "Column Chooser", False, "success")
+	prefTable.AddPropertyCheckBox("usemodal", "Use Modal", False, "success")
 	'
 	BANano.Await(MountTables)
 End Sub
+
+Private Sub tblDesign_Download (e As BANanoEvent)
+	app.pagepause
+	Dim download As List
+	download.Initialize 
+	'get existing tables
+	BANano.Await(lsDB.Records)
+	Do While lsDB.NextRow
+		Dim stablename As String = lsDB.GetString("tablename")
+		Dim fieldsDB As SDUILocalStorage
+		fieldsDB.Initialize(stablename, "id")
+		BANano.Await(fieldsDB.Records)
+		'
+		Dim rec As Map = lsDB.Record
+		rec.Put("fields", fieldsDB.Result)
+		download.Add(rec)
+	Loop
+	Dim dbJSON As String = BANano.ToJson(download)
+	app.DownloadTextFile(dbJSON, "table_builder.json")
+	app.pageresume
+End Sub
+
+Private Sub tblDesign_FileChange (e As BANanoEvent)
+	'has the file been specified
+	Dim fileObj As Map = app.GetFileFromEvent(e)
+	If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
+	Dim fields As List = BANano.Await(app.readAsJsonWait(fileObj))
+	'lsDB.Records = fields
+	'BANano.Await(MountPreferences)
+End Sub
+
 
 private Sub tblDesign_schema(e As BANanoEvent)
 	e.PreventDefault
@@ -150,6 +184,8 @@ private Sub tblDesign_schema(e As BANanoEvent)
 			colType = colType.Replace("longtext", "LongText")
 			colType = colType.Replace("text", "String")
 			colType = colType.Replace("integer", "Int")
+			colType = colType.Replace("float", "Double")
+			colType = colType.Replace("real", "Double")
 			colType = colType.Replace("bigint", "Int")
 			colType = colType.Replace("decimal", "Double")
 			colType = colType.Replace("datetime", "Date")
@@ -199,6 +235,11 @@ Sub MountTables
 	Dim result As List = jsonQ.Initialize(lsDB.result).OrderAsc("tablename").Exec
 	tblDesign.SetItemsPaginate(result)
 	Mode = "C"
+	If result.Size = 0 Then
+		tblDesign.SetDeleteAllEnable(False)
+	Else
+		tblDesign.SetDeleteAllEnable(True)
+	End If
 	prefTable.SetPropertyBagDefaults
 End Sub
 
@@ -256,6 +297,13 @@ Private Sub tblDesign_DeleteAll (e As BANanoEvent)
 	Dim sMsg As String = $"<h2 class="text-2xl font-bold mt-2">Tables</h2><br>Are you sure that you want to delete all the tables?"$
 	Dim bConfirm As Boolean = BANano.Await(app.ShowSwalConfirmWait("Confirm Delete", sMsg, "Yes", "No"))
 	If bConfirm = False Then Return
+	'get existing tables
+	BANano.Await(lsDB.Records)
+	Do While lsDB.NextRow
+		'remove the individual table
+		Dim stablename As String = lsDB.GetString("tablename")
+		BANano.RemoveLocalStorage2(stablename)
+	Loop
 	BANano.Await(lsDB.Clear)
 	BANano.Await(MountTables)
 End Sub

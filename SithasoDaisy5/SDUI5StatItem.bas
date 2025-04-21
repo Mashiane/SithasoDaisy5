@@ -86,7 +86,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -294,7 +294,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_figure" class="stat-figure hidden">
-			<svg id="${mName}_icon" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" class="hidden" data-js="enabled"></svg>
+			<svg-renderer id="${mName}_icon"    fill="currentColor" class="hidden" data-js="enabled"></svg-renderer>
       		<img id="${mName}_image" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 			<div id="${mName}_avatar" class="avatar hidden">
         		<div id="${mName}_avatar_host">

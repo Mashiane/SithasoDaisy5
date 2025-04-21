@@ -8,12 +8,20 @@ Version=10
 #Event: Change (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: default, Description: Type Of, List: legend|default
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox Group, Description: Label
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #00ff00, Description: Active Color
 #DesignerProperty: Key: Shape, DisplayName: Shape, FieldType: String, DefaultValue: full, Description: Shape, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -51,6 +59,14 @@ Sub Class_Globals
 	Private sSize As String = "none"
 	Private sValue As String = ""
 	Private items As Map
+	Private sTypeOf As String = "default"
+	Private sLabel As String = "Filter"
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
+	Private bRequired As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -196,7 +212,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
+		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
@@ -213,9 +229,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSize = "none" Then sSize = ""
 		sValue = Props.GetDefault("Value", "")
 		sValue = UI.CStr(sValue)
+		sTypeOf = Props.GetDefault("TypeOf", "default")
+		sTypeOf = UI.CStr(sTypeOf)
+		sLabel = Props.GetDefault("Label", "Label")
+		sLabel = UI.CStr(sLabel)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = UI.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = UI.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = UI.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = UI.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		bRequired = Props.GetDefault("Required", False)
+		bRequired = UI.CBool(bRequired)
 	End If
 	'
-	UI.AddClassDT("filter")
+	UI.AddClassDT("w-full")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -227,10 +260,119 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	Select Case sTypeOf
+	Case "legend"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="fieldset ${xclasses}" ${xattrs} style="${xstyles}">
+        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+        		<div id="${mName}_join" class="join">
+          			<div id="${mName}" class="filter join-item w-full"></div>
+          			<div id="${mName}_required" class="indicator join-item hidden">
+            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
+          			</div>
+          		</div>          
+        	</fieldset>"$).Get("#" & mName)
+		setBackgroundColor(sBackgroundColor)
+		setBorder(bBorder)
+		setBorderColor(sBorderColor)
+		setRoundedBox(bRoundedBox)
+		setShadow(sShadow)
+		setRequired(bRequired)
+	Case Else	
+		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="filter ${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	End Select
 '	setVisible(bVisible)
-	setOptions(sRawOptions)
-	setValue(sValue)
+	BANano.Await(setOptions(sRawOptions))
+	BANano.Await(setValue(sValue))
+End Sub
+
+'set Required
+Sub setRequired(b As Boolean)				'ignoredeadcode
+	bRequired = b
+	CustProps.put("Required", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.SetVisibleByID($"${mName}_required"$, True)
+		UI.SetVisibleByID($"${mName}_badge"$, True)
+	Else
+		UI.SetVisibleByID($"${mName}_required"$, False)
+		UI.SetVisibleByID($"${mName}_badge"$, False)
+	End If
+End Sub
+
+Sub getRequired As Boolean
+	Return bRequired
+End Sub
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sTypeOf <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub
 
 'set Value
@@ -256,6 +398,25 @@ Sub getValue As String
 	Return sValue
 End Sub
 
+Sub ResetValidation
+	Try
+		setBorderColor("success")
+	Catch
+	End Try		'ignore
+End Sub
+
+'run validation
+Sub IsBlank As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	If v = "" Then
+		setBorderColor("error")
+		Return True
+	End If
+	setBorderColor("success")
+	Return False
+End Sub
 
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
@@ -290,8 +451,16 @@ Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
-	Clear
-	If s = "" Then Return
+	Dim m As Map = UI.GetKeyValues(s, False)
+	BANano.Await(SetOptionsFromMap(m))
+End Sub
+
+'load the items from a map
+Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
+	If mElement = Null Then Return
+	BANano.Await(Clear)
+	If m.Size = 0 Then Return
+	'
 	Dim itemShape As String = UI.FixRounded(sShape)
 	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim itemColor As String = UI.FixColor("btn", sColor)
@@ -303,9 +472,8 @@ Sub setOptions(s As String)			'ignoredeadcode
 		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
-	Dim m As Map = UI.GetKeyValues(s, False)
 	Dim sb As StringBuilder
-	sb.Initialize 
+	sb.Initialize
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
@@ -317,6 +485,7 @@ Sub setOptions(s As String)			'ignoredeadcode
 		UI.OnEventByID(item, "change", Me, "changed")
 	Next
 End Sub
+
 
 private Sub changed(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
@@ -373,15 +542,4 @@ End Sub
 'get Size
 Sub getSize As String
 	Return sSize
-End Sub
-
-'run validation
-Sub IsBlank As Boolean
-	Dim v As String = getValue
-	v = UI.CStr(v)
-	v = v.Trim
-	If v = "" Then
-		Return True
-	End If
-	Return False
 End Sub

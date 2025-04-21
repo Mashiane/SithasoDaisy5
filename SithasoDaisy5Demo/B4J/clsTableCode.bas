@@ -9,6 +9,7 @@ Sub Class_Globals
 	Private ssingular As String
 	Private splural As String
 	Private sdisplayvalue As String
+	Private busemodal As Boolean
 	Private code As List
 	Private sb As StringBuilder
 	Private properTable As String
@@ -29,6 +30,98 @@ Sub Class_Globals
 	Private lIgnore As List
 	Private loads As Map
 	Private tblFiles As List
+	Private InputType As Map
+	Private ComponentNames As Map
+	Private DeclareForm As StringBuilder
+	Private IntFormWrite As StringBuilder
+	Private IntFormWrite1 As StringBuilder
+	Private IntFormDefaults As StringBuilder
+	Private IntFormRead As StringBuilder
+	Private IntFormRead1 As StringBuilder
+	Private IntFormEdit As StringBuilder
+	Private IntFormValidate As StringBuilder
+	Private IntFormValidateR As StringBuilder
+	Private IntFormFile As StringBuilder
+	
+	Private sproptype As String
+	Private spropname As String
+	Private sproptitle As String
+	Private spropvalue As String
+	Private bproprequired As Boolean
+	Private bpropreadonly As Boolean = False
+	Private bpropenabled As Boolean = False
+	Private bpropvisible As Boolean = False
+	Private spropoptions As String
+	Private spropsize As String
+	Private spropthickness As String
+	Private spropwidth As String
+	Private spropheight As String
+	Private spropshape As String
+	Private spropurl As String
+	Private spropcolor As String
+	Private spropactivecolor As String
+	Private bpropsingleselect As Boolean 
+	Private spropstart As String
+	Private spropstep As String
+	Private spropmax As String
+	Private spropdateformat As String
+	Private spropdisplayformat As String
+	Private bproptime24 As Boolean
+	Private sproplocale As String
+	Private spropprefix As String
+	Private spropicon As String
+	Private sPropBadgeTextColor As String
+	Private spropiconsize As String
+	Private bPropBadgeRound As Boolean
+	Private sPropBadgeValue As String
+	Private sPropHintId As String
+	Private bPropMultiple As Boolean
+	Private bPropSetHint As Boolean
+	Private bPropSetTooltip As Boolean
+	Private sPropTextColor As String
+	Private sPropBadgeColor As String
+	Private bPropSetBadge As Boolean
+	Private sproptextsize As String
+	Private bpropsingleselect As Boolean
+	Private spropaccept As String
+	Private bpropring As Boolean
+	Private spropringcolor As String
+	Private spropringoffset As String
+	Private spropringoffsetcolor As String
+	Private bproponlinestatus As Boolean
+	Private bproponline As Boolean
+	Private sprophandlediameter As String
+	Private spropwheeldiameter As String
+	Private spropwheelthickness As String
+	Private spropwheelposition As String
+	Private spropsuffix As String
+	Private spropprepend As String
+	Private spropappend As String
+	Private spropmaxlen As String
+	Private sproprows As String
+	Private spropalign As String
+	Private spropcol As String
+	Private sproprow As String
+	Private bpropactive As Boolean
+	Private spropname1 As String
+	Private spropname2 As String
+	Private RequiredInput As Map
+	Private spropupdate As String
+	Private spropdatatype As String
+	''
+	Private FormGlobal As String
+	Private FormWrite As String
+	Private FormWrite1 As String
+	Private FormValidate As String
+	Private FormValidateR As String
+	Private FormDefaults As String
+	Private FormRead As String
+	Private FormRead1 As String
+	Private FormEdit As String
+	Private FormFile As String	
+	Private pkComponent As String
+	Private GridCode As String
+	Private sbC As StringBuilder
 End Sub
 
 'showializes the object. You can add parameters to this method if needed.
@@ -50,14 +143,16 @@ Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
 	bcolumnchooser = app.UI.CBool(bcolumnchooser)
 	salphachooserfield = tbl.Get("alphachooserfield")
 	salphachooserfield = app.UI.CStr(salphachooserfield)
+	busemodal = tbl.get("usemodal")
+	busemodal = app.ui.CBool(busemodal)
 	fkeys.Initialize 
 	fTables.Initialize
 	mcompute.Initialize 
 	loads.Initialize 
 	'
-	properTable = ProperCase(stablename)
-	ssingular = ProperCase(ssingular)
-	splural = ProperCase(splural)
+	properTable = app.UI.CamelCase(stablename)
+	ssingular = app.UI.ProperCase(ssingular)
+	splural = app.UI.ProperCase(splural)
 	'
 	code.Initialize
 	sb.Initialize 
@@ -90,51 +185,13 @@ Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
 	Next
 End Sub
 
-private Sub ProperCase(myStr As String) As String
-	Try
-		If myStr.trim.length = 0 Then Return ""
-		Dim x As String
-		Dim j, k As Int
-		myStr = myStr.tolowercase
-		x = myStr.ToUpperCase.CharAt(0)
-		myStr = x & myStr.SubString2(1, myStr.Length)
-		For j = 1 To myStr.Length
-			k = myStr.IndexOf2(" ", j + 1)
-			If k = -1 Then Exit
-			x = myStr.ToUpperCase.CharAt(k + 1)
-			myStr = myStr.SubString2(0, k + 1) & x & myStr.SubString2(k + 2, myStr.Length)
-		Next
-		Return myStr
-	Catch
-		Return myStr
-	End Try
-End Sub
-
-'join list to mv string
-private Sub Join(delimiter As String, lst As List) As String
-	If lst.Size = 0 Then Return ""
-	Dim i As Int
-	Dim sbx As StringBuilder
-	Dim fld As String
-	sbx.Initialize
-	fld = lst.Get(0)
-	sbx.Append(fld)
-	For i = 1 To lst.size - 1
-		Dim fld As String = lst.Get(i)
-		sbx.Append(delimiter).Append(fld)
-	Next
-	Dim sout As String = sbx.ToString
-	sbx.Initialize
-	Return sout
-End Sub
-
 private Sub AddCodeLine(lst As List, cl As String)
 	cl = cl.Replace("~","$")
 	lst.Add(cl)
 End Sub
 
 private Sub BuildCodeLine(lst As List) As String
-	Dim allCode As String = Join(CRLF, lst)
+	Dim allCode As String = app.UI.Join(CRLF, lst)
 	allCode = allCode.Replace("~","$")
 	Return allCode
 End Sub
@@ -159,10 +216,10 @@ End Sub
 Sub BuildPage
 	BANano.Await(ExtractForeignKeys)
 	BANano.Await(BuildDataModels)
-	BANano.Await(BuildClassGlobals)
+	BANano.Await(BuildProcessGlobals)
 	BANano.Await(BuildShow)
 	BANano.Await(BuildTable)
-	BANano.Await(BuildPreferenceDialog)
+	If busemodal = False Then BANano.Await(BuildPreferenceDialog)
 	BANano.Await(BuildMount)
 	'***** ADD
 	AddCode(sb, $"'executed when the add button is clicked on the table"$)
@@ -172,7 +229,7 @@ Sub BuildPage
 	If fTables.Size > 0 Then
 		AddCode(sb, "'load foreign tables")
 		For Each k As String In fTables.Keys
-			Dim ftP As String = app.UI.ProperCase(k)
+			Dim ftP As String = app.UI.CamelCase(k)
 			AddCode(sb, $"BANano.Await(Load${ftP})"$)
 		Next
 	End If
@@ -202,14 +259,31 @@ Sub BuildPage
 	BANano.Await(BuildDeleteRow)
 	BANano.Await(BuildCloneRow)
 	BANano.Await(BuildTableChange)
-	BANano.Await(BuildPreferenceWork)
-	BANano.Await(BuildFileInputs)
 	BANano.Await(BuildCompute)
 	BANano.Await(BuildForeignCalls)
+	If busemodal Then
+		BANano.Await(BuildModalDefaults)
+		BANano.Await(BuildModalValidate)
+		sb.Append(FormFile).Append(CRLF)
+		BANano.Await(BuildModalSave)
+		BANano.Await(BuildModalForm)
+	Else
+		BANano.Await(BuildPreferenceSave)
+		BANano.Await(BuildFileInputs)
+	End If
 	'
 	Dim sout As String = sb.ToString
 	Dim res As String = app.UI.BeautifyB4X(sout)
 	app.DownloadTextFile(res, $"${stablename}.bas"$)
+End Sub
+
+Sub BuildModalForm
+	AddCode(sb, $"Private Sub Build${properTable}Modal"$)
+	'build the grid
+	AddCode(sb, GridCode)
+	AddCode(sb, sbC.ToString)
+	'add the components
+	AddCode(sb, $"End Sub"$)
 End Sub
 
 private Sub ExtractForeignKeys
@@ -276,7 +350,7 @@ private Sub BuildForeignCalls
 		Dim sfields As String = app.UI.ListToArrayVariable(flds)
 		sfields = sfields.Replace(QUOTE & QUOTE, QUOTE)
 		'
-		Dim ftName As String = ProperCase(ft)
+		Dim ftName As String = app.UI.CamelCase(ft)
 		'
 		If loads.ContainsKey(ftName) = False Then
 		AddCode(sb, $"'Load ${ftName}"$)
@@ -335,7 +409,7 @@ private Sub BuildForeignCalls
 		Case "Select", "SelectFromList", "SelectGroup"
 		Case Else
 			AddCode(sb, $"'compute value for ${ofld}"$)
-			AddCode(sb, $"Private Sub ComputeValue${ProperCase(ofld)}(item As Map) As String			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeValue${app.UI.CamelCase(ofld)}(item As Map) As String			'ignore"$)
 			AddCode(sb, $"Dim s${ofld} As String = item.Get("${ofld}")"$)
 			AddCode(sb, $"Dim t${ofld} As String = ${ftName}Object.GetDefault(s${ofld}, "")"$)
 			AddCode(sb, $"'Dim rec As Map = ${ftName}ObjectM.Get(s${ofld})"$)
@@ -436,13 +510,13 @@ private Sub BuildDataModels
 	End If
 	'
 	AddCode(sb, $"'****** Add this to pgIndex/BROWSERApp.CreateDrawerMenu"$)
-	AddCode(sb, $"drawermenu.AddMenuItemIconText("pg-${stablename.tolowercase}", "", "${splural}", False)"$)
+	AddCode(sb, $"drawermenu.AddItemChild("", "pg-${stablename.tolowercase}", "", "${splural}")"$)
 	'
 	AddCode(sb, $"'****** Add this to pgIndex/BROWSERApp.drawermenu_ItemClick [Case Statement]"$)
-	AddCode(sb, $"'****** Ensure you have created a code module named 'pg${ProperCase(stablename)}' also with the source code."$)
+	AddCode(sb, $"'****** Ensure you have created a code module named 'pg${app.UI.CamelCase(stablename)}' also with the source code."$)
 	
 	AddCode(sb, $"Case "${stablename.tolowercase}""$)
-	AddCode(sb, $"pg${ProperCase(stablename)}.Show(App)"$)
+	AddCode(sb, $"pg${app.UI.CamelCase(stablename)}.Show(App)"$)
 	'
 	AddCode(sb, $"'****** Open your database and execute this script to create your table"$)
 	AddCode(sb, mysql.CreateTable)
@@ -557,7 +631,7 @@ private Sub BuildCompute
 			Dim iPos As Int = lIgnore.IndexOf(spropname)
 			If iPos >= 0 Then Continue
 			AddCode(sb, $"'compute value for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeValue${ProperCase(spropname)}(item As Map) As Object			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeValue${app.UI.CamelCase(spropname)}(item As Map) As Object			'ignore"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"return s${spropname}"$)
 			AddCode(sb, $"End Sub"$)
@@ -566,7 +640,7 @@ private Sub BuildCompute
 		
 		If bpropcomputering Then
 			AddCode(sb, $"'compute ring for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeRing${ProperCase(spropname)}(item As Map) As Boolean			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeRing${app.UI.CamelCase(spropname)}(item As Map) As Boolean			'ignore"$)
 			AddCode(sb, $"Dim b${spropname} As Boolean = False"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"item.put("ringcolor", "")"$)
@@ -577,7 +651,7 @@ private Sub BuildCompute
 		'
 		If bpropcomputecolor Then
 			AddCode(sb, $"'compute color for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeColor${ProperCase(spropname)}(item As Map) As String			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeColor${app.UI.CamelCase(spropname)}(item As Map) As String			'ignore"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"item.put("color", "")"$)
 			AddCode(sb, $"return s${spropname}"$)
@@ -587,7 +661,7 @@ private Sub BuildCompute
 		'
 		If bpropcomputebgcolor Then
 			AddCode(sb, $"'compute background color for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeBackgroundColor${ProperCase(spropname)}(item As Map) As String			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeBackgroundColor${app.UI.CamelCase(spropname)}(item As Map) As String			'ignore"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"item.put("color", "")"$)
 			AddCode(sb, $"return s${spropname}"$)
@@ -597,7 +671,7 @@ private Sub BuildCompute
 		'
 		If bpropcomputetextcolor Then
 			AddCode(sb, $"'compute text color for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeTextColor${ProperCase(spropname)}(item As Map) As String			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeTextColor${app.UI.CamelCase(spropname)}(item As Map) As String			'ignore"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"item.put("textcolor", "")"$)
 			AddCode(sb, $"return s${spropname}"$)
@@ -607,7 +681,7 @@ private Sub BuildCompute
 		'
 		If bpropcomputeclass Then
 			AddCode(sb, $"'compute class for ${spropname}"$)
-			AddCode(sb, $"Private Sub ComputeClass${ProperCase(spropname)}(item As Map) As String			'ignore"$)
+			AddCode(sb, $"Private Sub ComputeClass${app.UI.CamelCase(spropname)}(item As Map) As String			'ignore"$)
 			AddCode(sb, $"Dim s${spropname} As String = item.Get("${spropname}")"$)
 			AddCode(sb, $"return s${spropname}"$)
 			AddCode(sb, $"End Sub"$)
@@ -617,14 +691,18 @@ private Sub BuildCompute
 End Sub
 
 
-private Sub BuildClassGlobals
+private Sub BuildProcessGlobals
 	AddCode(sb, $"Sub Process_Globals"$)
 	AddCode(sb, $"Private BANano As BANano 							'ignore"$)
 	AddCode(sb, $"Private app As SDUI5App							'ignore"$)
 	AddCode(sb, $"Private tbl${properTable} As SDUI5Table			'ignore"$)
-	AddCode(sb, $"Private pref${properTable} As SDUI5Preferences	'ignore"$)
-	AddCode(sb, $"Private SDUI5Column1 As SDUI5Column				'ignore"$)
-	AddCode(sb, $"Private SDUI5Column2 As SDUI5Column2				'ignore"$)
+	If busemodal = False Then
+		AddCode(sb, $"Private pref${properTable} As SDUI5Preferences	'ignore"$)
+		AddCode(sb, $"Private SDUI5Column1 As SDUI5Column				'ignore"$)
+		AddCode(sb, $"Private SDUI5Column2 As SDUI5Column				'ignore"$)
+	Else
+		AddCode(sb, $"Private mdl${properTable} As SDUI5Modal	'ignore"$)
+	End If
 	AddCode(sb, $"Private Mode As String = ""						'CRUD control"$)
 	AddCode(sb, $"Private toDeleteID As String						'id of item to delete"$)
 	AddCode(sb, $"Private toDeleteName As String					'name of item to delete"$)
@@ -635,11 +713,12 @@ private Sub BuildClassGlobals
 	If fTables.Size > 0 Then
 		AddCode(sb, "'define foreign table maps")
 		For Each k As String In fTables.Keys
-			Dim ftP As String = app.UI.ProperCase(k)
+			Dim ftP As String = app.UI.CamelCase(k)
 			AddCode(sb, $"Private ${ftP}Object As Map"$)
 			AddCode(sb, $"Private ${ftP}ObjectM As Map"$)
 		Next
 	End If
+	If busemodal Then AddCode(sb, FormGlobal)
 	AddCode(sb, $"End Sub"$)
 End Sub
 
@@ -661,11 +740,13 @@ private Sub BuildTableColumns
 		Dim bpropcolumnvisible As Boolean = prop.Get("propcolumnvisible")
 		Dim spropcolumntype As String = prop.Get("propcolumntype")
 		spropcolumntype = app.UI.CStr(spropcolumntype)
+		Dim spropcolumnvertical As String = prop.Get("propcolumnvertical")
+		spropcolumnvertical = app.UI.CStr(spropcolumnvertical)
 		Dim bProptotal As Boolean = prop.Get("proptotal")
 		Dim spropicon As String = prop.Get("propicon")
 		spropicon = app.UI.CStr(spropicon)
-		Dim sPropcolor As String = prop.Get("propcolor")
-		sPropcolor = app.UI.CStr(sPropcolor)
+		Dim spropcolor As String = prop.Get("propcolor")
+		spropcolor = app.UI.CStr(spropcolor)
 		Dim spropsize As String = prop.Get("propsize")
 		spropsize = app.UI.CStr(spropsize)
 		Dim spropshape As String = prop.Get("propshape")
@@ -679,8 +760,8 @@ private Sub BuildTableColumns
 		Dim bpropreadonly As Boolean = prop.Get("propreadonly")
 		Dim spropbgcolor As String = prop.Get("propbgcolor")
 		spropbgcolor = app.UI.CStr(spropbgcolor)
-		Dim sproptextcolor As String = prop.Get("proptextcolor")
-		sproptextcolor = app.UI.CStr(sproptextcolor)
+		Dim sPropTextColor As String = prop.Get("proptextcolor")
+		sPropTextColor = app.UI.CStr(sPropTextColor)
 		Dim spropprefix As String = prop.Get("propprefix")
 		spropprefix = app.UI.CStr(spropprefix)
 		Dim spropdateformat As String = prop.Get("propdateformat")
@@ -707,7 +788,7 @@ private Sub BuildTableColumns
 		spropstep = app.UI.CStr(spropstep)
 		Dim sRawpropoptions As String = prop.Get("propoptions")
 		sRawpropoptions = app.UI.CStr(sRawpropoptions)
-		Dim bpropmultiple As Boolean = prop.Get("propmultiple")
+		Dim bPropMultiple As Boolean = prop.Get("propmultiple")
 		'		
 		bpropcolumnvisible = app.UI.CBool(bpropcolumnvisible)
 		bpropactive = app.UI.CBool(bpropactive)
@@ -720,7 +801,7 @@ private Sub BuildTableColumns
 		bpropactive = app.UI.CBool(bpropactive)
 		bProptotal = app.UI.CBool(bProptotal)
 		bpropreadonly = app.UI.CBool(bpropreadonly)
-		bpropmultiple = app.UI.CBool(bpropmultiple)
+		bPropMultiple = app.UI.CBool(bPropMultiple)
 		'
 		If bpropactive = False Then Continue
 		If spropcolumntype = "None" Then Continue
@@ -733,7 +814,7 @@ private Sub BuildTableColumns
 		Select Case spropcolumntype.tolowercase
 		Case "action"
 			'tbl.AddColumnAction("btnstart", "Start/Stop", "fa-solid fa-play", app.COLOR_FUCHSIA)
-			AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${sPropcolor}")"$)
+			AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${spropcolor}")"$)
 			Case "avatar"
 				'tbl.AddColumnAvatar("avatar", "Employee", "4rem", app.MASK_CIRCLE)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}")"$)
@@ -742,7 +823,7 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}")"$)
 			Case "avatarplaceholder"
 				'tbl.AddColumnAvatarPlaceholder("hours", "Hours", "3rem", app.MASK_CIRCLE, "primary")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}", "${spropcolor}")"$)
 			Case "avatartitle"
 				'tb2.AddColumnAvatarTitle("avatar", "Employee", "4rem", "name", app.MASK_CIRCLE)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${spropshape}")"$)
@@ -751,19 +832,19 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${spropsubtitle2}", "${spropshape}")"$)
 			Case "badge"
 				'tbl.AddColumnBadge("name", "Category", "item.color")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}")"$)
 			Case "badgeavatartitle"
 				'tbl.AddColumnBadgeAvatarTitle("avatar", "Resource", "10", "name", "")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${spropcolor}")"$)
 			Case "badgegroup"
 				'tbl.AddColumnBadgeGroupColor("tags", "Tags", "10", "success")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}Color("${spropname}", "${sproptitle}", "${spropheight}","${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}Color("${spropname}", "${sproptitle}", "${spropheight}","${spropcolor}")"$)
 			Case "button"
 				'tb4.AddColumnButton("btnload", "Process", app.COLOR_INDIGO)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}")"$)
 			Case "checkbox"
 				'tbl.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${sPropcolor}", ${bpropreadonly})"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}", ${bpropreadonly})"$)
 			Case "clicklink"
 				'tbl.AddColumnClickLink("clicklink", "Aisle", "clicklink", app.color_neutral)
 				Dim source As String = spropsubtitle1
@@ -777,7 +858,7 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
 			Case "datepicker"
 				'tb4.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d H:i", "F j, Y H:i", False, False, False)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${spropdateformat}", "${spropdisplayformat}", False, ${bpropmultiple}, False, "${sproplocale}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${spropdateformat}", "${spropdisplayformat}", False, ${bPropMultiple}, False, "${sproplocale}")"$)
 			Case "datetime"
 				'tbl.AddColumnDate("trandate", "Date")
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
@@ -799,14 +880,14 @@ private Sub BuildTableColumns
 			Case "fileinputprogress"
 				tblFiles.add(spropname)
 				'tbl.AddColumnFileInputProgress("pfile", "File Progress", "lg", "40px", "fa-solid fa-arrow-up-from-bracket", "secondary")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropwidth}", "${spropicon}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropwidth}", "${spropicon}", "${spropcolor}")"$)
 			Case "filesize"
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
 			Case "icon"
 				'tbl.AddColumnIcon("sm", "Social Media", app.SIZE_LG, "item.color")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropcolor}")"$)
 			Case "icontitle"
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropsubtitle1}", "${spropcolor}")"$)
 			Case "image"
 				'tbl.AddColumnImage("image", "Image", "40px", "40px", app.MASK_SQUIRCLE)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropwidth}", "${spropheight}", "${spropshape}")"$)
@@ -819,7 +900,7 @@ private Sub BuildTableColumns
 			Case "menu"
 				Dim optionsmx As String = Json2CreateMap(sRawpropoptions)
 				'tbl.AddColumnDropDown("menu", "Menu", "fa-solid fa-ellipsis-vertical", "#3f51b5", CreateMap("edit":"Edit","delete":"Delete","clone":"Clone","print":"Print"))
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${sPropcolor}", ${optionsmx})"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${spropcolor}", ${optionsmx})"$)
 			Case "money"
 				'tbl.AddColumnMoney("gross", "Gross")
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
@@ -840,20 +921,20 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
 			Case "progress"
 				'tb2.AddColumnProgress("progress", "Completed", 40, 100, "item.color")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropwidth}", ${spropmax}, "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropwidth}", ${spropmax}, "${spropcolor}")"$)
 			Case "radial"
 				'tb4.AddColumnRadialProgress("progress", "Progress", "3.5rem", "item.color", "%")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", ${sPropcolor}, "${spropsuffix}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", ${spropcolor}, "${spropsuffix}")"$)
 			Case "radiogroup"
 				'tb4.AddColumnRadioGroup("gender", "Gender", False, app.COLOR_PRIMARY, CreateMap("male":"Male","female":"Female"))
 				Dim optionsmx As String = Json2CreateMap(sRawpropoptions)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${sPropcolor}", ${optionsmx})"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${spropcolor}", ${optionsmx})"$)
 			Case "range"
 				'tb4.AddColumnRange("hours", "Hours", 8, app.COLOR_ACCENT)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${spropmax}, "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${spropmax}, "${spropcolor}")"$)
 			Case "rating"
 				'tbl.AddColumnRating("rate", "Satisfaction", 3, "item.color")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${sPropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropcolor}")"$)
 			Case "select"
 				'tbl.AddColumnSelect("country", "Country", False, True, options)
 				Dim optionsmx As String = Json2CreateMap(sRawpropoptions)
@@ -885,7 +966,7 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsubtitle1}")"$)
 			Case "toggle"
 				'tbl.AddColumnToggle("attrdesigner", "Designer", app.COLOR_ACCENT, False)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${sPropcolor}", ${bpropreadonly})"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}", ${bpropreadonly})"$)
 			Case "website"
 				'tbl.AddColumnEmail("email", "Email", "name", app.color_accent)
 				Dim source As String = spropsubtitle1
@@ -893,41 +974,48 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${source}", app.color_info)"$)
 		End Select
 		'
+		Select Case spropcolumnvertical
+		Case "LR"
+			AddCode(sb, $"tbl${properTable}.SetHeaderVerticalLR("${spropname}")"$)
+		Case "RL"
+			AddCode(sb, $"tbl${properTable}.SetHeaderVerticalRL("${spropname}")"$)
+		End Select
+		
 		If bProptotal Then
 			AddCode(sb, $"tbl${properTable}.SetColumnSumValues("${spropname}", True)"$)
 		End If
 		'
 		If bpropcomputevalue Then
 			AddComment(sb, $"Set the computed value for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeValue("${spropname}", "ComputeValue${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeValue("${spropname}", "ComputeValue${app.UI.CamelCase(spropname)}")"$)
 		End If
 		
 		If bpropcomputering Then
 			AddComment(sb, $"Set the computed ring for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeRing("${spropname}", "ComputeRing${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeRing("${spropname}", "ComputeRing${app.UI.CamelCase(spropname)}")"$)
 		End If
 		
 		If bpropcomputecolor Then
 			AddComment(sb, $"Set the computed color for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeColor("${spropname}", "ComputeColor${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeColor("${spropname}", "ComputeColor${app.UI.CamelCase(spropname)}")"$)
 		End If
 		'
 		If bpropcomputebgcolor Then
 			AddComment(sb, $"Set the computed background color for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeBackgroundColor("${spropname}", "ComputeBackgroundColor${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeBackgroundColor("${spropname}", "ComputeBackgroundColor${app.UI.CamelCase(spropname)}")"$)
 		End If
 		'
 		If bpropcomputetextcolor Then
 			AddComment(sb, $"Set the computed text color for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeTextColor("${spropname}", "ComputeTextColor${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeTextColor("${spropname}", "ComputeTextColor${app.UI.CamelCase(spropname)}")"$)
 		End If
 		
 		If bpropcomputeclass Then
 			AddComment(sb, $"Set the computed class for ${spropname}"$)
-			AddCode(sb, $"tbl${properTable}.SetColumnComputeClass("${spropname}", "ComputeClass${ProperCase(spropname)}")"$)
+			AddCode(sb, $"tbl${properTable}.SetColumnComputeClass("${spropname}", "ComputeClass${app.UI.CamelCase(spropname)}")"$)
 		End If
 		'
-		If sproptextcolor <> "" Then AddCode(sb, $"tbl${properTable}.SetColumnTextColor("${spropname}", "${sproptextcolor}")"$)
+		If sPropTextColor <> "" Then AddCode(sb, $"tbl${properTable}.SetColumnTextColor("${spropname}", "${sPropTextColor}")"$)
 		If spropbgcolor <> "" Then AddCode(sb, $"tbl${properTable}.SetColumnBackgroundColor("${spropname}", "${spropbgcolor}")"$)
 		If spropalign <> "left" And spropalign <> "" Then
 			AddCode(sb, $"tbl${properTable}.SetColumnAlign("${spropname}", "${spropalign}")"$)
@@ -947,11 +1035,14 @@ private Sub BuildShow
 	AddCode(sb, $"BANano.LoadLayout(app.PageView, "${stablename}view")"$)
 	AddCode(sb, $"'update navbar title on baselayout"$)
 	AddCode(sb, $"pgIndex.UpdateTitle("${splural}")"$)
-	AddCode(sb, $"'lets set up the table"$)
-	AddCode(sb, $"tbl${properTable}.Title = "${splural}""$)
-	AddCode(sb, $"BANano.Await(BuildTable${properTable})"$)
-	AddCode(sb, $"'setup the preference dialog"$)
-	AddCode(sb, $"BANano.Await(BuildPreference${properTable})"$)
+	AddCode(sb, $"BANano.Await(Build${properTable}Table)"$)
+	If busemodal Then
+		AddCode(sb, $"'setup the modal dialog"$)
+		AddCode(sb, $"BANano.Await(Build${properTable}Modal)"$)
+	Else
+		AddCode(sb, $"'setup the preference dialog"$)
+		AddCode(sb, $"BANano.Await(Build${properTable}Preferences)"$)
+	End If
 	AddCode(sb, $"'mount the records"$)
 	AddCode(sb, $"BANano.Await(Mount${properTable})"$)
 	AddCode(sb, $"app.PageResume"$)
@@ -959,13 +1050,13 @@ private Sub BuildShow
 End Sub
 
 private Sub BuildPreferenceDialog
-	AddCode(sb, $"Private Sub BuildPreference${properTable}"$)
+	AddCode(sb, $"Private Sub Build${properTable}Preferences"$)
 	BANano.Await(BuildPreferences($"pref${properTable}"$))
 	AddCode(sb, $"End Sub"$)
 End Sub
 
 private Sub BuildTable
-	AddCode(sb, $"Private Sub BuildTable${properTable}"$)
+	AddCode(sb, $"Private Sub Build${properTable}Table"$)
 	AddCode(sb, $"'lets create the table columns"$)
 	AddCode(sb, $"tbl${properTable}.Title = "${splural}""$)
 	AddCode(sb, $"tbl${properTable}.HasAlphaChooser = ${balphachooser}"$)
@@ -983,8 +1074,7 @@ private Sub BuildTable
 	AddCode(sb, $"tbl${properTable}.CloneTooltip = "Clone ${ssingular}""$)
 	AddCode(sb, $"tbl${properTable}.HasDelete = True"$)
 	AddCode(sb, $"tbl${properTable}.DeleteTooltip = "Delete ${ssingular}""$)
-	AddCode(sb, $"tbl${properTable}.AlphaChooserColumn = "${sdisplayvalue}""$)
-	
+		
 	AddCode(sb, $"'lets build the table columns"$)
 	BANano.Await(BuildTableColumns)
 	AddCode(sb, $"'add edit/delete/clone buttons"$)
@@ -998,14 +1088,16 @@ End Sub
 private Sub BuildMount
 	AddCode(sb, $"'load ${splural} records from the database"$)
 	AddCode(sb, $"Private Sub Mount${properTable}"$)
-	AddCode(sb, $"SDUI5Column1.Size = 12"$)
-	AddCode(sb, $"SDUI5Column2.Visible = False"$)
+	If busemodal = False Then
+		AddCode(sb, $"SDUI5Column1.Size = 12"$)
+		AddCode(sb, $"SDUI5Column2.Visible = False"$)
+	End If
 	AddCode(sb, $"'turn to add mode"$)
 	AddCode(sb, "app.PagePause")
 	If fTables.Size > 0 Then
 		AddCode(sb, "'load foreign tables")
 		For Each k As String In fTables.Keys
-			Dim ftP As String = app.UI.ProperCase(k)
+			Dim ftP As String = app.UI.CamelCase(k)
 			AddCode(sb, $"BANano.Await(Load${ftP})"$)
 		Next
 	End If
@@ -1047,31 +1139,47 @@ End Sub
 
 private Sub BuildAddMode
 	AddCode(sb, $"'executed to prepare the preference dialog for adding a new record"$)
-	AddCode(sb, $"private Sub AddMode"$)
+	AddCode(sb, $"Private Sub AddMode"$)
 	AddCode(sb, $"'turn the mode to CREATE"$)
 	AddCode(sb, $"Mode = "C""$)
-	AddCode(sb, $"SDUI5Column1.Size = 8"$)
-	AddCode(sb, $"SDUI5Column2.Visible = True"$)
-	AddCode(sb, $"'change the title of the pref dialog"$)
-	AddCode(sb, $"pref${properTable}.Title = "Add ${ssingular}""$)
-	If mcompute.Size > 0 Then
-		For Each k As String In mcompute.Keys
-			Dim v As String = mcompute.Get(k)
-			Dim stbl As String = app.ui.MvField(v, 1, ".")
-			AddCode(sb, $"BANano.Await(pref${properTable}.SetPropertySelectMap("${k}", ${stbl}Object))"$)
-		Next
-	End If
-	AddCode(sb, $"'set the default properties"$)
-	AddCode(sb, $"BANano.Await(pref${properTable}.SetPropertyBagDefaults)"$)
-	If bautoincrement = False Then
-		AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", app.NextID)"$)
+	If busemodal Then
+		AddCode(sb, $"'change the title of the modal dialog"$)
+		AddCode(sb, $"mdl${properTable}.Title = "Add ${ssingular}""$)
+		If mcompute.Size > 0 Then
+			For Each k As String In mcompute.Keys
+				Dim v As String = mcompute.Get(k)
+				Dim stbl As String = app.ui.MvField(v, 1, ".")
+				Dim cname As String = GetComponentID(k)
+				AddCode(sb, $"BANano.Await(${cname}.SetOptionsFromMap(${stbl}Object))"$)
+			Next
+		End If		
+		AddCode(sb, $"'set the default properties"$)
+		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
+		AddCode(sb, $"mdl${properTable}.Show"$)
 	Else
-		AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", -1)"$)
+		AddCode(sb, $"SDUI5Column1.Size = 8"$)
+		AddCode(sb, $"SDUI5Column2.Visible = True"$)
+		AddCode(sb, $"'change the title of the pref dialog"$)
+		AddCode(sb, $"pref${properTable}.Title = "Add ${ssingular}""$)
+		If mcompute.Size > 0 Then
+			For Each k As String In mcompute.Keys
+				Dim v As String = mcompute.Get(k)
+				Dim stbl As String = app.ui.MvField(v, 1, ".")
+				AddCode(sb, $"BANano.Await(pref${properTable}.SetPropertySelectMap("${k}", ${stbl}Object))"$)
+			Next
+		End If
+		AddCode(sb, $"'set the default properties"$)
+		AddCode(sb, $"BANano.Await(pref${properTable}.SetPropertyBagDefaults)"$)
+		If bautoincrement = False Then
+			AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", app.NextID)"$)
+		Else
+			AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", -1)"$)
+		End If
+		If focuson.Size > 0 Then
+			AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
+			AddCode(sb, $"pref${properTable}.SetPropertyFocus("${focuson.Get(0)}")"$)
+		End If	
 	End If
-	If focuson.Size > 0 Then
-		AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
-		AddCode(sb, $"pref${properTable}.SetPropertyFocus("${focuson.Get(0)}")"$)
-	End If	
 	AddCode(sb, $"End Sub"$)
 End Sub
 
@@ -1080,6 +1188,32 @@ private Sub BuildEditMode
 	AddCode(sb, $"private Sub EditMode(item As Map)"$)
 	AddCode(sb, $"'turn the mode to UPDATE"$)
 	AddCode(sb, $"Mode = "U""$)
+	If busemodal Then
+		AddCode(sb, $"'change the title of the modal dialog"$)
+		AddCode(sb, $"mdl${properTable}.Title = "Edit ${ssingular}""$)
+		If mcompute.Size > 0 Then
+			For Each k As String In mcompute.Keys
+				Dim v As String = mcompute.Get(k)
+				Dim stbl As String = app.ui.MvField(v, 1, ".")
+				Dim cname As String = GetComponentID(k)
+				AddCode(sb, $"BANano.Await(${cname}.SetOptionsFromMap(${stbl}Object))"$)
+			Next
+		End If
+		AddCode(sb, $"'set the default properties"$)
+		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
+		For Each record As Map In properties
+			Dim spropname As String = record.Get("propname")
+			Dim bpropactive As Boolean = record.Get("propactive")
+			bpropactive = app.UI.CBool(bpropactive)
+			If bpropactive = False Then Continue
+			Dim spropdatatype As String = record.Get("propdatatype")
+			spropdatatype = app.UI.CStr(spropdatatype)
+			If spropdatatype = "None" Then AddCode(sb, $"item.Remove("${spropname}")"$)
+		Next
+		AddCode(sb, FormEdit)
+		AddCode(sb, FormRead1)
+		AddCode(sb, $"mdl${properTable}.Show"$)
+	Else	
 	AddCode(sb, $"SDUI5Column1.Size = 8"$)
 	AddCode(sb, $"SDUI5Column2.Visible = True"$)	
 	AddCode(sb, $"'change the title of the pref dialog"$)
@@ -1095,6 +1229,9 @@ private Sub BuildEditMode
 	AddCode(sb, $"banano.Await(pref${properTable}.SetPropertyBagDefaults)"$)
 	For Each record As Map In properties
 		Dim spropname As String = record.Get("propname")
+		Dim bpropactive As Boolean = record.Get("propactive")
+		bpropactive = app.UI.CBool(bpropactive)
+		If bpropactive = False Then Continue
 		Dim spropdatatype As String = record.Get("propdatatype")
 		spropdatatype = app.UI.CStr(spropdatatype)
 		If spropdatatype = "None" Then AddCode(sb, $"item.Remove("${spropname}")"$)
@@ -1104,6 +1241,7 @@ private Sub BuildEditMode
 		AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
 		AddCode(sb, $"pref${properTable}.SetPropertyFocus("${focuson.Get(0)}")"$)
 	End If	
+	End If
 	AddCode(sb, $"End Sub"$)
 End Sub
 
@@ -1112,6 +1250,33 @@ private Sub BuildCloneMode
 	AddCode(sb, $"private Sub CloneMode(item As Map)"$)
 	AddCode(sb, $"'turn the mode to UPDATE"$)
 	AddCode(sb, $"Mode = "C""$)
+	If busemodal Then
+		AddCode(sb, $"'change the title of the modal dialog"$)
+		AddCode(sb, $"mdl${properTable}.Title = "Add ${ssingular}""$)
+		If mcompute.Size > 0 Then
+			For Each k As String In mcompute.Keys
+				Dim v As String = mcompute.Get(k)
+				Dim stbl As String = app.ui.MvField(v, 1, ".")
+				Dim cname As String = GetComponentID(k)
+				AddCode(sb, $"BANano.Await(${cname}.SetOptionsFromMap(${stbl}Object))"$)
+			Next
+		End If
+		AddCode(sb, $"'set the default properties"$)
+		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
+		AddCode(sb, $"item.Put("${sprimarykey}", app.NextID)"$)
+		For Each record As Map In properties
+			Dim spropname As String = record.Get("propname")
+			Dim bpropactive As Boolean = record.Get("propactive")
+			bpropactive = app.UI.CBool(bpropactive)
+			If bpropactive = False Then Continue
+			Dim spropdatatype As String = record.Get("propdatatype")
+			spropdatatype = app.UI.CStr(spropdatatype)
+			If spropdatatype = "None" Then AddCode(sb, $"item.Remove("${spropname}")"$)
+		Next
+		AddCode(sb, FormEdit)
+		AddCode(sb, FormRead1)
+		AddCode(sb, $"mdl${properTable}.Show"$)
+	Else	
 	AddCode(sb, $"SDUI5Column1.Size = 8"$)
 	AddCode(sb, $"SDUI5Column2.Visible = True"$)
 	AddCode(sb, $"'change the title of the pref dialog"$)
@@ -1128,6 +1293,9 @@ private Sub BuildCloneMode
 	AddCode(sb, $"item.Put("${sprimarykey}", app.NextID)"$)
 	For Each record As Map In properties
 		Dim spropname As String = record.Get("propname")
+		Dim bpropactive As Boolean = record.Get("propactive")
+		bpropactive = app.UI.CBool(bpropactive)
+		If bpropactive = False Then Continue
 		Dim spropdatatype As String = record.Get("propdatatype")
 		spropdatatype = app.UI.CStr(spropdatatype)
 		If spropdatatype = "None" Then AddCode(sb, $"item.Remove("${spropname}")"$)
@@ -1137,6 +1305,7 @@ private Sub BuildCloneMode
 		AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
 		AddCode(sb, $"pref${properTable}.SetPropertyFocus("${focuson.Get(0)}")"$)
 	End If	
+	End If
 	AddCode(sb, $"End Sub"$)
 End Sub
 
@@ -1147,7 +1316,7 @@ private Sub BuildEditRow
 	If fTables.Size > 0 Then
 		AddCode(sb, "'load foreign tables")
 		For Each k As String In fTables.Keys
-			Dim ftP As String = app.UI.ProperCase(k)
+			Dim ftP As String = app.UI.CamelCase(k)
 			AddCode(sb, $"BANano.Await(Load${ftP})"$)
 		Next
 	End If
@@ -1202,7 +1371,7 @@ Sub BuildCloneRow
 	If fTables.Size > 0 Then
 		AddCode(sb, "'load foreign tables")
 		For Each k As String In fTables.Keys
-			Dim ftP As String = app.UI.ProperCase(k)
+			Dim ftP As String = app.UI.CamelCase(k)
 			AddCode(sb, $"BANano.Await(Load${ftP})"$)
 		Next
 	End If
@@ -1223,7 +1392,54 @@ Sub BuildCloneRow
 	AddCode(sb, $"End Sub"$)
 End Sub
 
-private Sub BuildPreferenceWork
+
+private Sub BuildModalSave
+	AddComment(sb, $"mdl${properTable} dialog 'Save' click"$)
+	AddCode(sb, $"Private Sub mdl${properTable}_Yes_Click (e As BANanoEvent)"$)
+	AddCode(sb, $"e.PreventDefault"$)
+	AddComment(sb, "Check validity of required fields")
+	AddCode(sb, $"Dim bValid As Boolean = BANano.Await(Get${properTable}Valid)"$)
+	AddCode(sb, $"If bValid = False Then"$)
+		AddCode(sb, $"BANano.Await(app.ShowSwalErrorWait("${ssingular}", "The ${ssingular.tolowercase} details are not complete!", "Ok"))"$)
+		AddCode(sb, $"Return"$)
+	AddCode(sb, $"End If"$)	
+	
+	AddCode(sb, $"app.pagepause"$)
+	AddCode(sb, FormWrite)
+	
+	AddCode(sb, $"'open the database and save the record"$)
+	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
+	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
+	AddCode(sb, $"db.ApiFile = "api""$)
+	AddCode(sb, $"db.UseApiKey = True"$)
+	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	AddCode(sb, $"'pass the map record"$)
+	AddComment(sb, "Prepare database to save")
+	AddCode(sb, $"db.PrepareRecord"$)
+	AddCode(sb, FormWrite1)
+	AddCode(sb, $"Select Case Mode"$)
+	AddCode(sb, $"Case "C""$)
+	AddCode(sb, $"'create a new record"$)
+	AddCode(sb, $"Dim nid As String = BANano.Await(db.CREATE)"$)
+	AddCode(sb, $"Case "U""$)
+	AddCode(sb, $"'update an existing record"$)
+	AddCode(sb, $"Dim nid As String = BANano.Await(db.UPDATE)"$)
+	AddCode(sb, $"End Select"$)
+	AddCode(sb, $"app.pageresume"$)
+	AddCode(sb, $"If nid <> "" Then"$)
+	AddCode(sb, $"app.ShowToastSuccess("${ssingular} has been created/updated.")"$)
+	AddCode(sb, $"Else"$)
+	AddCode(sb, $"app.ShowToastError("${ssingular} has NOT been created/updated. Please try again")"$)
+	AddCode(sb, "Return")
+	AddCode(sb, $"End If"$)
+	AddComment(sb, "Close the modal")
+	AddCode(sb, $"mdl${properTable}.Close"$)
+	AddCode(sb, $"BANano.Await(Mount${properTable})"$)	
+	AddCode(sb, $"End Sub"$)
+End Sub
+
+private Sub BuildPreferenceSave
 	AddCode(sb, $"'executed when a Apply button is clicked on the preference dialog"$)
 	AddCode(sb, $"Private Sub pref${properTable}_Yes_Click (e As BANanoEvent)"$)
 	AddCode(sb, $"e.PreventDefault"$)
@@ -1306,7 +1522,8 @@ private Sub BuildPreferences(mName As String)
 		Dim spropmax As String = record.get("propmax")
 		Dim spropdateformat As String = record.Get("propdateformat")
 		Dim spropdisplayformat As String = record.Get("propdisplayformat")
-		Dim sproptime24 As String = record.Get("proptime24")
+		Dim bproptime24 As Boolean = record.Get("proptime24")
+		bproptime24 = app.UI.CBool(bproptime24)
 		Dim sproplocale As String = record.Get("proplocale")
 		Dim spropprefix As String = record.get("propprefix")
 		Dim spropicon As String = record.get("propicon")
@@ -1475,11 +1692,11 @@ private Sub BuildPreferences(mName As String)
 			Case "DatePicker"
 				sb.Append($"${mName}.AddPropertyDatePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}")"$).Append(CRLF)
 			Case "DateTimePicker"
-				sproptime24 = app.UI.CBool(sproptime24)
-				sb.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}")"$).Append(CRLF)
+				bproptime24 = app.UI.CBool(bproptime24)
+				sb.Append($"${mName}.AddPropertyDateTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, "${spropdateformat}", "${spropdisplayformat}", ${bproptime24}, "${sproplocale}")"$).Append(CRLF)
 			Case "TimePicker"
-				sproptime24 = app.UI.CBool(sproptime24)
-				sb.Append($"${mName}.AddPropertyTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired},"${spropdateformat}", "${spropdisplayformat}", ${sproptime24}, "${sproplocale}")"$).Append(CRLF)
+				bproptime24 = app.UI.CBool(bproptime24)
+				sb.Append($"${mName}.AddPropertyTimePicker("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired},"${spropdateformat}", "${spropdisplayformat}", ${bproptime24}, "${sproplocale}")"$).Append(CRLF)
 			Case "TextBox"
 				sb.Append($"${mName}.AddPropertyTextBox("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired})"$).Append(CRLF)
 				If spropmaxlen <> "" Then
@@ -1682,12 +1899,1700 @@ private Sub BuildPreferences(mName As String)
 	Next
 End Sub
 
-Private Sub PropertyBuilderMap(sb1 As StringBuilder, spropName As String, m As Map)
-	sb1.Append($"Dim ${spropName}options As Map"$).append(CRLF)
-	sb1.Append($"${spropName}options.Initialize"$).append(CRLF)
+Sub BuildInputComponents(mdl As SDUI5Modal)
+	GridCode = mdl.Form.GridCode
+	InputType.Initialize
+	ComponentNames.Initialize
+	DeclareForm.Initialize
+	IntFormWrite.Initialize
+	IntFormWrite1.Initialize
+	IntFormDefaults.Initialize
+	IntFormRead.Initialize
+	IntFormRead1.Initialize
+	IntFormEdit.Initialize
+	IntFormValidate.Initialize 
+	IntFormValidateR.Initialize 
+	IntFormValidateR.Append($"${mdl.id}.ResetValidation"$).append(CRLF)
+	RequiredInput.Initialize 
+	IntFormFile.Initialize
+	sbC.Initialize 
+	pkComponent = ""
+	'
+	For Each record As Map In properties
+		spropdatatype = record.Get("propdatatype")
+		spropdatatype = app.UI.CStr(spropdatatype)
+		sproptype = record.get("proptype")
+		spropname = record.get("propname")
+		sproptitle = record.get("proptitle")
+		spropvalue = record.get("propvalue")
+		bproprequired = record.get("proprequired")
+		bproprequired = app.UI.CBool(bproprequired)
+		bpropreadonly = record.get("propreadonly")
+		bpropreadonly = app.UI.CBool(bpropreadonly)
+		bpropenabled = record.get("propenabled")
+		bpropenabled = app.UI.CBool(bpropenabled)
+		bpropvisible = record.get("propvisible")
+		bpropvisible = app.UI.CBool(bpropvisible)
+		spropoptions = record.get("propoptions")
+		spropsize = record.get("propsize")
+		spropthickness = record.Get("propthickness")
+		spropwidth = record.get("propwidth")
+		spropheight = record.get("propheight")
+		spropshape = record.get("propshape")
+		spropurl = record.get("propurl")
+		spropcolor = record.get("propcolor")
+		spropactivecolor = record.Get("propactivecolor")
+		bpropsingleselect = record.GetDefault("propsingleselect", False)
+		bpropsingleselect = app.UI.CBool(bpropsingleselect)
+		spropstart = record.get("propstart")
+		spropstep = record.get("propstep")
+		spropmax = record.get("propmax")
+		spropdateformat = record.Get("propdateformat")
+		spropdisplayformat = record.Get("propdisplayformat")
+		bproptime24 = record.Get("proptime24")
+		bproptime24 = app.UI.CBool(bproptime24)
+		sproplocale = record.Get("proplocale")
+		spropprefix = record.get("propprefix")
+		spropicon = record.get("propicon")
+		spropicon = app.UI.CStr(spropicon)
+		sPropBadgeTextColor = record.GetDefault("propbadgetextcolor", "")
+		sPropBadgeTextColor = app.UI.CStr(sPropBadgeTextColor)
+		spropiconsize = record.Get("propiconsize")
+		spropiconsize = app.UI.CStr(spropiconsize)
+		'
+		bPropBadgeRound = record.GetDefault("propbadgeround", False)
+		bPropBadgeRound = app.UI.CBool(bPropBadgeRound)
+		sPropBadgeValue = record.GetDefault("propbadgevalue", "")
+		sPropBadgeValue = app.UI.CStr(sPropBadgeValue)
+		sPropHintId = record.getDefault("prophintid", "")
+		sPropHintId = app.UI.CStr(sPropHintId)
+		bPropMultiple = record.GetDefault("propmultiple", False)
+		bPropMultiple = app.UI.CBool(bPropMultiple)
+		bPropSetHint = record.getdefault("propsethint", False)
+		bPropSetHint = app.UI.CBool(bPropSetHint)
+		bPropSetTooltip = record.GetDefault("propsettooltip", False)
+		bPropSetTooltip = app.UI.CBool(bPropSetTooltip)
+		sPropTextColor = record.GetDefault("proptextcolor", "")
+		sPropTextColor = app.UI.CStr(sPropTextColor)
+		sPropBadgeColor = record.GetDefault("propbadgecolor", "")
+		sPropBadgeColor = app.UI.CStr(sPropBadgeColor)
+		bPropSetBadge = record.getdefault("propsetbadge", False)
+		bPropSetBadge = app.UI.CBool(bPropSetBadge)
+		sproptextsize = record.GetDefault("proptextsize", "")
+		sproptextsize = app.UI.CStr(sproptextsize)
+		bpropsingleselect = record.GetDefault("propsingleselect", False)
+		bpropsingleselect = app.UI.CBool(bpropsingleselect)
+		spropaccept = record.GetDefault("propaccept", "")
+		spropaccept = app.UI.CStr(spropaccept)
+		bpropring = record.GetDefault("propring", False)
+		bpropring = app.UI.CBool(bpropring)
+		spropringcolor = record.GetDefault("propringcolor", "")
+		spropringcolor = app.UI.CStr(spropringcolor)
+		spropringoffset = record.GetDefault("propringoffset", "")
+		spropringoffset = app.UI.CStr(spropringoffset)
+		spropringoffsetcolor = record.GetDefault("propringoffsetcolor", "")
+		spropringoffsetcolor = app.UI.CStr(spropringoffsetcolor)
+		bproponlinestatus = record.GetDefault("proponlinestatus", False)
+		bproponlinestatus = app.UI.CBool(bproponlinestatus)
+		bproponline = record.GetDefault("proponline", False)
+		bproponline = app.UI.CBool(bproponline)
+		sprophandlediameter = record.GetDefault("prophandlediameter", "16")
+		sprophandlediameter = app.UI.CStr(sprophandlediameter)
+		spropwheeldiameter = record.GetDefault("propwheeldiameter", "200")
+		spropwheeldiameter = app.UI.CStr(spropwheeldiameter)
+		spropwheelthickness = record.GetDefault("propwheelthickness", "20")
+		spropwheelthickness = app.UI.CStr(spropwheelthickness)
+		spropwheelposition = record.GetDefault("propwheelposition", "top-end")
+		spropwheelposition = app.UI.CStr(spropwheelposition)
+		spropupdate = record.Get("propupdate")
+		spropupdate = app.UI.CStr(spropupdate)		
+		'
+		spropprefix = record.GetDefault("propprefix", "")
+		spropprefix = app.UI.CStr(spropprefix)
+		spropsuffix = record.get("propsuffix")
+		spropsuffix = app.UI.CStr(spropsuffix)
+		spropprepend = record.get("propprepend")
+		spropprepend = app.UI.CStr(spropprepend)
+		spropappend = record.get("propappend")
+		spropappend = app.UI.CStr(spropappend)
+		sproplocale = app.UI.CStr(sproplocale)
+		If sproplocale = "" Then sproplocale = "en"
+		'
+		spropmaxlen = record.getdefault("propmaxlen","")
+		spropmaxlen = app.UI.CStr(spropmaxlen)
+		sproprows = record.getdefault("proprows","")
+		sproprows = app.UI.CStr(sproprows)
+		spropalign = record.GetDefault("propalign", "left")
+		spropalign = app.UI.CStr(spropalign)
+		spropcol = record.GetDefault("propcol", "1")
+		spropcol = app.UI.CStr(spropcol)
+		sproprow = record.GetDefault("proprow", "1")
+		sproprow = app.UI.CStr(sproprow)
+		'
+		bpropactive = record.Get("propactive")
+		bpropactive = app.UI.CBool(bpropactive)
+		If bpropactive = False Then Continue
+		
+		spropname1 = GetComponentPrefix(sproptype) & app.UI.CamelCase(spropname)
+		spropname2 = app.UI.CamelCase(spropname)
+		If spropname = sprimarykey Then
+			pkComponent = spropname1
+		End If
+		'
+		If bproprequired Then
+			RequiredInput.Put(spropname, spropname)
+			IntFormValidate.Append($"${mdl.id}.Validate(${spropname1}.IsBlank)"$).append(CRLF)
+			IntFormValidateR.Append($"${spropname1}.ResetValidation"$).append(CRLF)
+		End If
+		'
+		InputType.Put(spropname, sproptype)
+		ComponentNames.Put(spropname, spropname1)
+		'
+		'get the row column position
+		Dim mpos As String = mdl.Form.CellID(sproprow, spropcol)
+		Select Case sproptype
+		Case "Dialer"
+			Dim txt As SDUI5TextBox
+			txt.Initialize(Me, spropname1, spropname1)
+			txt.InputType = "legend"
+			txt.TypeOf = "dialer"
+			txt.Label = sproptitle
+			txt.value = spropvalue
+			txt.Required = bproprequired
+			txt.Enabled = bpropenabled
+			txt.Visible = bpropvisible
+			txt.ReadOnly = bpropreadonly
+			txt.MinValue = spropstart
+			txt.StepValue = spropstep
+			txt.MaxValue = spropmax
+			txt.BackgroundColor = ""
+			txt.Border = False
+			txt.BorderColor = ""
+			txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "dialer""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.MinValue = "${spropstart}""$)
+				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
+				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				
+				
+			DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+			IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+			If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+			IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+			If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+			IntFormRead1.Append($"${spropname}.Value = s${spropname2}"$).Append(CRLF)
+			IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "TextBoxGroup", "TextBox"
+			Dim txt As SDUI5TextBox
+			txt.Initialize(Me, spropname1, spropname1)
+			txt.InputType = "legend"
+			txt.TypeOf = "text"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "text""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "SelectGroup", "Select"
+			Dim sel As SDUI5Select
+			sel.Initialize(Me, spropname1, spropname1)
+			sel.InputType = "legend"
+			sel.Label = sproptitle
+			sel.Options = spropoptions
+			sel.Value = spropvalue
+			sel.Required = bproprequired
+			sel.PrependIcon = spropprepend
+			sel.AppendIcon = spropappend
+				sel.Enabled = bpropenabled
+				sel.Visible = bpropvisible
+				sel.BackgroundColor = ""
+				sel.Border = False
+				sel.BorderColor = ""
+				sel.ParentID = mpos
+				sel.AddComponent
+				'
+				
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Select"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Select		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			Case "PasswordGroup", "Password"
+			Dim txt As SDUI5TextBox
+			txt.Initialize(Me, spropname1, spropname1)
+			txt.InputType = "legend"
+			txt.TypeOf = "text"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.ShowEyes = True
+				txt.Required = bproprequired
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.MaxLength = spropmaxlen
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "text""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.ShowEyes = True"$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.MaxLength = "${spropmaxlen}""$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "DatePicker"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "date-picker"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.DPDateFormat = spropdateformat
+				txt.DPAltFormat = spropdisplayformat
+				txt.DPTwentyFour = bproptime24
+				txt.DPLocale = sproplocale
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "date-picker""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.DPDateFormat = "${spropdateformat}""$)
+				AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
+				AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
+				AddCode(sbC, $"${spropname1}.DPLocale = "${sproplocale}""$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			Case "DateTimePicker"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "date-time-picker"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.DPDateFormat = spropdateformat
+				txt.DPAltFormat = spropdisplayformat
+				txt.DPLocale = sproplocale
+				txt.DPTwentyFour = bproptime24
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "date-time-picker""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.DPDateFormat = "${spropdateformat}""$)
+				AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
+				AddCode(sbC, $"${spropname1}.DPLocale = "${sproplocale}""$)
+				AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				
+		Case "TimePicker"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "time-picker"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.DPDateFormat = spropdateformat
+				txt.DPAltFormat = spropdisplayformat
+				txt.DPTwentyFour = bproptime24
+				txt.PrependIcon= spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "time-picker""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.DPDateFormat = "${spropdateformat}""$)
+				AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
+				AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon= "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Number"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "number"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.MinValue = spropstart
+				txt.StepValue = spropstep
+				txt.MaxValue = spropmax
+				txt.Required = bproprequired
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "number""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.MinValue = "${spropstart}""$)
+				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
+				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Telephone"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "tel"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "tel""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Email"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "email"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "email""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Label"
+			Dim lbl As SDUI5Text
+			lbl.Initialize(Me, spropname1, spropname1)
+			lbl.TextTag = spropsize
+			lbl.Text = sproptitle
+				lbl.ParentID = mpos
+				lbl.AddComponent
+				
+		Case "Link"
+			Dim lnk As SDUI5Link
+			lnk.Initialize(Me, spropname1, spropname1)
+				lnk.Text = sproptitle
+				lnk.Href = spropvalue
+				lnk.ParentID = mpos
+				lnk.AddComponent
+		Case "TextArea"
+			Dim txta As SDUI5TextArea
+			txta.Initialize(Me, spropname1, spropname1)
+			txta.InputType = "legend"
+			txta.Label = sproptitle
+			txta.value = spropvalue
+			txta.Required = bproprequired
+			txta.PrependIcon = spropappend
+			txta.AppendIcon = spropappend
+			txta.Enabled = bpropenabled
+			txta.Visible = bpropvisible
+			txta.rows = sproprows
+				txta.BackgroundColor = ""
+				txta.Border = False
+				txta.BorderColor = ""
+				txta.ParentID = mpos
+				txta.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextArea"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.rows = "${sproprows}""$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextArea		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "FileInput"
+			Dim fi As SDUI5FileInput
+			fi.Initialize(Me, spropname1, spropname1)
+			fi.InputType = "legend"
+			fi.Label = sproptitle
+			fi.Required = bproprequired
+			fi.Accept = spropaccept
+			fi.Visible = bpropvisible
+			fi.Enabled = bpropenabled
+				fi.BackgroundColor = ""
+				fi.Border = False
+				fi.BorderColor = ""
+				fi.ParentID = mpos
+				fi.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5FileInput"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5FileInput		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim f${spropname2} As Object = ${spropname1}.GetFile"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = Null"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", f${spropname2})"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				'
+				BANano.Await(BuildFileInputCode)
+		Case "FileInputProgress"
+			Dim fi As SDUI5FileInput
+			fi.Initialize(Me, spropname1, spropname1)
+			fi.InputType = "progress"
+			fi.Label = sproptitle
+			fi.Required = bproprequired
+			fi.Enabled = bpropenabled
+			fi.Accept = spropaccept
+			fi.Icon = spropicon 
+			fi.IconSize = spropiconsize
+			fi.IconColor = spropcolor
+			
+'			fi.Multiple = spropm
+			fi.Visible = bpropvisible
+				fi.ParentID = mpos
+				fi.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5FileInput"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "progress""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
+				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
+				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BaNano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5FileInput		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"'get the contents of the file"$).Append(CRLF)
+				IntFormWrite.Append($"Dim f${spropname} As Object = ${spropname1}.GetFile"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = Null"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", f${spropname2})"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				'
+				BANano.Await(BuildFileInputCode)
+		Case "CamCorder"
+			Dim fi As SDUI5FileInput
+			fi.Initialize(Me, spropname1, spropname1)
+			fi.InputType = "camcorder"
+			fi.Label = sproptitle
+			fi.Required = bproprequired
+			fi.Accept = spropaccept
+			fi.Enabled = bpropenabled
+'			fi.Multiple = spropm
+			fi.Icon = spropicon
+			fi.IconSize = spropiconsize
+				fi.IconColor = spropcolor
+				fi.Visible = bpropvisible
+				fi.ParentID = mpos
+				fi.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5FileInput"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "camcorder""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
+				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANAno.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5FileInput		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"'get the contents of the file"$).Append(CRLF)
+				IntFormWrite.Append($"Dim f${spropname} As Object = ${spropname1}.GetFile"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = Null"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", f${spropname2})"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				'
+				BANano.Await(BuildFileInputCode)
+		Case "Camera"
+			Dim fi As SDUI5FileInput
+			fi.Initialize(Me, spropname1, spropname1)
+			fi.InputType = "camera"
+			fi.Label = sproptitle
+			fi.Required = bproprequired
+			fi.Accept = spropaccept
+			fi.Enabled = bpropenabled
+'			fi.Multiple = spropm
+			fi.Icon = spropicon
+			fi.IconSize = spropiconsize
+				fi.IconColor = spropcolor
+				fi.Visible = bpropvisible
+				fi.ParentID = mpos
+				fi.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5FileInput"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "camera""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
+				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5FileInput		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"'get the contents of the file"$).Append(CRLF)
+				IntFormWrite.Append($"Dim f${spropname} As Object = ${spropname1}.GetFile"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = Null"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", f${spropname2})"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				'
+				BANano.Await(BuildFileInputCode)
+		Case "Microphone"
+			Dim fi As SDUI5FileInput
+			fi.Initialize(Me, spropname1, spropname1)
+			fi.InputType = "microphone"
+			fi.Label = sproptitle
+			fi.Required = bproprequired
+			fi.Enabled = bpropenabled
+			fi.Accept = spropaccept
+'			fi.Multiple = spropm
+			fi.Icon = spropicon
+			fi.IconSize = spropiconsize
+				fi.IconColor = spropcolor
+				fi.Visible = bpropvisible
+				fi.ParentID = mpos
+				fi.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5FileInput"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "microphone""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
+				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
+				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5FileInput		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"'get the contents of the file"$).Append(CRLF)
+				IntFormWrite.Append($"Dim f${spropname} As Object = ${spropname1}.GetFile"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = Null"$).Append(CRLF)
+				IntFormWrite1.Append($"db.SetField("${spropname}", f${spropname2})"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				'
+				BANano.Await(BuildFileInputCode)
+		Case "Avatar"
+			Dim avt As SDUI5Avatar
+			avt.Initialize(Me, spropname1, spropname1)
+			avt.AvatarType = "image"
+			avt.Mask = spropshape
+			avt.Image = spropvalue
+			avt.Size = spropsize
+			avt.Ring = bpropring
+			avt.RingColor = spropringcolor
+			avt.RingOffset = spropringoffset
+			avt.RingOffsetColor = spropringoffsetcolor
+			avt.Visible = bpropvisible
+			avt.ParentID = mpos
+				avt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Avatar"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.AvatarType = "image""$)
+				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
+				AddCode(sbC, $"${spropname1}.Image = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Size = "${spropsize}""$)
+				AddCode(sbC, $"${spropname1}.Ring = ${bpropring}"$)
+				AddCode(sbC, $"${spropname1}.RingColor = "${spropringcolor}""$)
+				AddCode(sbC, $"${spropname1}.RingOffset = "${spropringoffset}""$)
+				AddCode(sbC, $"${spropname1}.RingOffsetColor = "${spropringoffsetcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANAno.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Avatar		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Image"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Image = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Image = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			
+		Case "AvatarPlaceholder"
+			Dim avt As SDUI5Avatar
+			avt.Initialize(Me, spropname1, spropname1)
+			avt.AvatarType = "placeholder"
+			avt.Mask = spropshape
+			avt.Ring = bpropring
+			avt.RingColor = spropringcolor
+			avt.RingOffset = spropringoffset
+			avt.RingOffsetColor = spropringoffsetcolor
+			avt.Placeholder = spropvalue
+			avt.TextColor = sPropTextColor
+			avt.TextSize = sproptextsize
+			avt.Visible = bpropvisible
+			avt.ParentID = mpos
+				avt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Avatar"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.AvatarType = "placeholder""$)
+				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
+				AddCode(sbC, $"${spropname1}.Ring = ${bpropring}"$)
+				AddCode(sbC, $"${spropname1}.RingColor = "${spropringcolor}""$)
+				AddCode(sbC, $"${spropname1}.RingOffset = "${spropringoffset}""$)
+				AddCode(sbC, $"${spropname1}.RingOffsetColor = "${spropringoffsetcolor}""$)
+				AddCode(sbC, $"${spropname1}.Placeholder = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.TextColor = "${sPropTextColor}""$)
+				AddCode(sbC, $"${spropname1}.TextSize = "${sproptextsize}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Avatar		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Placeholder"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Placeholder = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Placeholder = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			
+		Case "AvatarGroup"
+			Dim avtg As SDUI5AvatarGroup
+			avtg.Initialize(Me, spropname1, spropname1)
+			avtg.Visible = bpropvisible
+			avtg.ParentID = mpos
+			avtg.AddComponent
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5AvatarGroup		'ignore"$).Append(CRLF)
+'				IntFormDefaults.Append($"${spropname1}.SetImages(Array())"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+'				IntFormRead1.Append($"${spropname1}.SetImages(Array())"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			
+		Case "Image"
+			Dim img As SDUI5Image
+			img.Initialize(Me, spropname1, spropname1)
+			img.Src = spropvalue
+			img.Height = spropheight
+			img.Width = spropwidth
+			img.Mask = spropshape
+			img.Visible = bpropvisible
+			img.ParentID = mpos
+			img.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Image"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.Src = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Height = "${spropheight}""$)
+				AddCode(sbC, $"${spropname1}.Width = "${spropwidth}""$)
+				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Image		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Src"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Src = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Src = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Progress"
+			Dim prg As SDUI5Progress
+			prg.Initialize(Me, spropname1, spropname1)
+			prg.ProgressType = "legend"
+			prg.Label = sproptitle
+			prg.Color = spropcolor
+			prg.Value = spropvalue
+			prg.MinValue = spropstart
+			prg.StepValue = spropstep
+			prg.MaxValue = spropmax
+			prg.Visible = bpropvisible
+			prg.ParentID = mpos
+				prg.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Progress"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.ProgressType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.MinValue = "${spropstart}""$)
+				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
+				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Progress		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "ColorWheel"
+				Dim txt As SDUI5TextBox
+				txt.Initialize(Me, spropname1, spropname1)
+				txt.InputType = "legend"
+				txt.TypeOf = "color-wheel"
+				txt.Label = sproptitle
+				txt.value = spropvalue
+				txt.Required = bproprequired
+				txt.HandleDiameter = sprophandlediameter
+				txt.WheelDiameter = spropwheeldiameter
+				txt.WheelThickness = spropwheelthickness
+				txt.WheelPlacement = spropwheelposition
+				txt.PrependIcon = spropappend
+				txt.AppendIcon = spropappend
+				txt.Enabled = bpropenabled
+				txt.Visible = bpropvisible
+				txt.ReadOnly = bpropreadonly
+				txt.BackgroundColor = ""
+				txt.Border = False
+				txt.BorderColor = ""
+				txt.ParentID = mpos
+				txt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "color-wheel""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+				AddCode(sbC, $"${spropname1}.HandleDiameter = "${sprophandlediameter}""$)
+				AddCode(sbC, $"${spropname1}.WheelDiameter = "${spropwheeldiameter}""$)
+				AddCode(sbC, $"${spropname1}.WheelThickness = "${spropwheelthickness}""$)
+				AddCode(sbC, $"${spropname1}.WheelPlacement = "${spropwheelposition}""$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				
+		Case "Range"
+			Dim rng As SDUI5Range
+			rng.Initialize(Me, spropname1, spropname1)
+			rng.RangeType = "legend"
+			rng.Label = sproptitle
+			rng.Value = spropvalue
+			rng.MinValue = spropstart
+			rng.StepValue = spropstep
+			rng.MaxValue = spropmax
+				rng.Visible = bpropvisible
+				rng.BackgroundColor = ""
+				rng.Border = False
+				rng.BorderColor = ""
+				rng.Enabled = bpropenabled
+				rng.ParentID = mpos
+				rng.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Range"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.RangeType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.MinValue = "${spropstart}""$)
+				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
+				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Range		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "CheckBox"
+			Dim chk As SDUI5CheckBox
+			chk.Initialize(Me, spropname1, spropname1)
+			chk.CheckBoxType = "legend"
+			
+			chk.Label = sproptitle
+			chk.CheckedColor = spropcolor
+			chk.Checked = app.UI.CBool(spropvalue)
+				chk.Visible = bpropvisible
+				chk.Enabled = bpropenabled
+				chk.BackgroundColor = ""
+				chk.BorderColor = ""
+				chk.ParentID = mpos
+				chk.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5CheckBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.CheckBoxType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5CheckBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim b${spropname} As Boolean = ${spropname1}.Checked"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", b${spropname})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Checked = ${app.UI.cbool(spropvalue)}"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim b${spropname} As Boolean = db${properTable}.GetBoolean("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Checked = b${spropname}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim b${spropname} As Boolean = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Toggle"
+			Dim tgl As SDUI5Toggle
+			tgl.Initialize(Me, spropname1, spropname1)
+			tgl.ToggleType = "legend"
+			tgl.Label = sproptitle
+			tgl.Checked = app.UI.CBool(spropvalue)
+			tgl.CheckedColor = spropcolor	
+				tgl.Visible = bpropvisible
+				tgl.Enabled = bpropenabled
+'				tg.BackgroundColor = ""
+'				tg.Border = False
+'				tg.BorderColor = ""
+				tgl.ParentID = mpos
+				tgl.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Toggle"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.ToggleType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"'				tg.BackgroundColor = """$)
+				AddCode(sbC, $"'				tg.Border = False"$)
+				AddCode(sbC, $"'				tg.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Toggle		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim b${spropname} As Boolean = ${spropname1}.Checked"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", b${spropname})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Checked = ${app.UI.cbool(spropvalue)}"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim b${spropname} As Boolean = db${properTable}.GetBoolean("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Checked = b${spropname}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim b${spropname} As Boolean = item.Get("${spropname}")"$).Append(CRLF)
+		Case "RadialProgress"
+			Dim rp As SDUI5RadialProgress
+			rp.Initialize(Me, spropname1, spropname1)
+			rp.Value = spropvalue
+			rp.Color = spropcolor
+			rp.TextColor = sPropTextColor
+			rp.ProgressSize = spropsize
+			rp.ProgressThickness = spropthickness
+				rp.Visible = bpropvisible
+				rp.ParentID = mpos
+				rp.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5RadialProgress"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.TextColor = "${sPropTextColor}""$)
+				AddCode(sbC, $"${spropname1}.ProgressSize = "${spropsize}""$)
+				AddCode(sbC, $"${spropname1}.ProgressThickness = "${spropthickness}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5RadialProgress		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+				
+		Case "Rating"
+			Dim rt As SDUI5Rating
+			rt.Initialize(Me, spropname1, spropname1)
+			rt.InputType = "legend"
+			rt.Label = sproptitle
+			rt.Mask = spropshape
+			rt.Color = spropcolor
+			rt.Value = spropvalue
+			rt.ReadOnly = bpropreadonly
+				rt.Visible = bpropvisible
+				rt.Enabled = bpropenabled
+				rt.BackgroundColor = ""
+				rt.Border = False
+				rt.BorderColor = ""
+				rt.ParentID = mpos
+				rt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Rating"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.InputType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}"$)
+				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Rating		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "RadioGroup"
+			Dim rg As SDUI5RadioGroup
+			rg.Initialize(Me, spropname1, spropname1)
+			rg.Label = sproptitle
+			rg.Options = spropoptions
+			rg.Value = spropvalue
+			rg.CheckedColor = spropcolor
+			rg.GroupName = spropname
+				rg.Visible = bpropvisible
+				rg.Enabled = bpropenabled
+				rg.BackgroundColor = ""
+				rg.Border = False
+				rg.BorderColor = ""
+				rg.ParentID = mpos
+				rg.AddComponent
+				'
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5RadioGroup"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5RadioGroup		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Placeholder"
+		Case "GroupSelect"
+			Dim gs As SDUI5GroupSelect
+			gs.Initialize(Me, spropname1, spropname1)
+			gs.Label = sproptitle
+			gs.GroupName = spropname
+			gs.Options = spropoptions
+			gs.Selected = spropvalue
+			gs.ActiveColor = spropcolor
+				gs.Enabled = bpropenabled
+				gs.Visible = bpropvisible
+				gs.BackgroundColor = ""
+				gs.Border = False
+				gs.BorderColor = ""
+				gs.ParentID = mpos
+				gs.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5GroupSelect"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5GroupSelect		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Selected"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Selected = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Selected = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "PlusMinus"
+		Case "CheckBoxGroup"
+			Dim chkg As SDUI5CheckBoxGroup
+			chkg.Initialize(Me, spropname1, spropname1)
+			chkg.TypeOf = "checkbox"
+			chkg.Label = sproptitle
+			chkg.Options = spropoptions
+			chkg.Selected = spropvalue
+			chkg.CheckedColor = spropcolor
+			chkg.GroupName = spropname
+				chkg.Enabled = bpropenabled
+				chkg.Visible = bpropvisible
+				chkg.BackgroundColor = ""
+				chkg.Border = False
+				chkg.BorderColor = ""
+				chkg.ParentID = mpos
+				chkg.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5CheckBoxGroup"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "checkbox""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5CheckBoxGroup		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Selected"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Selected = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Selected = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "ToggleGroup"
+			Dim tglg As SDUI5CheckBoxGroup
+			tglg.Initialize(Me, spropname1, spropname1)
+			tglg.TypeOf = "toggle"
+			tglg.Label = sproptitle
+			tglg.Options = spropoptions
+			tglg.Selected = spropvalue
+			tglg.CheckedColor = spropcolor
+			tglg.GroupName = spropname
+				tglg.Enabled = bpropenabled
+				tglg.Visible = bpropvisible
+				tglg.BackgroundColor = ""
+				tglg.Border = False
+				tglg.BorderColor = ""
+				tglg.ParentID = mpos
+				tglg.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5CheckBoxGroup"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.TypeOf = "toggle""$)
+				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5CheckBoxGroup		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Selected"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Selected = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Selected = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+		Case "Filter"
+			Dim flt As SDUI5Filter
+			flt.Initialize(Me, spropname1, spropname1)
+			flt.Options = spropoptions
+			flt.Value = spropvalue
+			flt.ActiveColor = spropcolor
+				flt.Enabled = bpropenabled
+			flt.Visible = bpropvisible	
+				flt.ParentID = mpos
+				flt.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+				AddCode(sbC, $"Dim ${spropname1} As SDUI5Filter"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
+				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Filter		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim s${spropname} As String = item.Get("${spropname}")"$).Append(CRLF)
+		End Select
+	Next
+	'
+	FormGlobal = DeclareForm.ToString
+	FormWrite = IntFormWrite.ToString
+	FormWrite1 = IntFormWrite1.ToString
+	FormValidate = IntFormValidate.ToString
+	FormValidateR = IntFormValidateR.ToString
+	FormDefaults = IntFormDefaults.ToString
+	FormRead = IntFormRead.ToString
+	FormRead1 = IntFormRead1.ToString
+	FormEdit = IntFormEdit.tostring
+	FormFile = IntFormFile.ToString
+End Sub
+
+private Sub BuildModalDefaults
+	AddCode(sb, $"'***** executed to set the component default values"$)
+	AddCode(sb, $"Private Sub Set${properTable}Defaults"$)
+	AddCode(sb, FormDefaults)
+	AddCode(sb, "End Sub")
+End Sub
+
+private Sub BuildModalValidate
+	'if nothing is required then exit
+	If RequiredInput.Size = 0 Then Return
+	AddCode(sb, $"'***** executed to get the validity of the required components"$)
+	AddCode(sb, $"Private Sub Get${properTable}Valid As Boolean"$)
+	AddCode(sb, FormValidateR)
+	AddCode(sb, FormValidate)
+	AddCode(sb, $"Return mdl${properTable}.IsValid"$)
+	AddCode(sb, "End Sub")
+End Sub
+
+private Sub BuildFileInputCode
+	AddCode(IntFormFile, $"'${spropname} input change event"$)
+	AddCode(IntFormFile, $"Private Sub ${spropname1}_change (e As BANanoEvent)"$)
+	AddCode(IntFormFile, $"e.PreventDefault"$)
+	AddCode(IntFormFile, $"'get file object from change event"$)
+	AddCode(IntFormFile, $"Dim fileObj As Map = ${spropname1}.GetFile"$)
+	AddCode(IntFormFile, $"If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return"$)
+	AddCode(IntFormFile, $"app.PagePause"$)
+	AddCode(IntFormFile, $"'get file details"$)
+	AddCode(IntFormFile, $"Dim fileDet As FileObject"$)
+	AddCode(IntFormFile, $"fileDet = UI.GetFileDetails(fileObj)"$)
+	AddCode(IntFormFile, $"'get the file name"$)
+	AddCode(IntFormFile, $"Dim fn As String = fileDet.FileName"$)
+	AddCode(IntFormFile, $"'you can check the size here"$)
+	AddCode(IntFormFile, $"Dim fs As Long = fileDet.FileSize"$)
+	AddCode(IntFormFile, $"Dim maxSize As Int = UI.ToKiloBytes(500)"$)
+	AddCode(IntFormFile, $"If fs > maxSize Then"$)
+	AddCode(IntFormFile, $"app.PageResume"$)
+	AddCode(IntFormFile, $"${spropname1}.Value = Null"$)
+	AddCode(IntFormFile, $"app.ShowToastError("The maximum file size is " & UI.FormatFileSize(maxSize))"$)
+	AddCode(IntFormFile, $"Return"$)
+	AddCode(IntFormFile, $"End If"$)
+	AddCode(IntFormFile, $"'"$)
+	'
+	If spropupdate <> "" Then
+		AddCode(IntFormFile, $"Dim fText As String = BANano.Await(readAsDataURLWait(fileObj))"$)
+		Dim xcompName As String = GetComponentID(spropupdate)
+		If xcompName = "" Then xcompName = spropupdate
+		AddCode(IntFormFile, $"${xcompName}.Src = fText"$)
+	Else
+		AddCode(IntFormFile, $"'****"$)
+		AddCode(IntFormFile, $"'Dim fJSON As Map = BANano.Await(readAsJsonWait(fileObj))"$)
+		AddCode(IntFormFile, $"'Dim fBuffer As Object = BANano.Await(readAsArrayBufferWait(fileObj))"$)
+		AddCode(IntFormFile, $"'Dim fText As String = BANano.Await(readAsTextWait(fileObj))"$)
+		AddCode(IntFormFile, $"'Dim fText As String = BANano.Await(readAsDataURLWait(fileObj))"$)
+		AddCode(IntFormFile, $"'"$)
+		AddCode(IntFormFile, $"'img.Src = fText"$)
+		AddCode(IntFormFile, $"'img.Tag = fText"$)
+		AddCode(IntFormFile, $"'"$)
+		AddCode(IntFormFile, $"'****"$)
+		AddCode(IntFormFile, $"'"$)
+		AddCode(IntFormFile, $"'upload excel file"$)
+		AddCode(IntFormFile, $"'Dim xcel As SDUIExcel"$)
+		AddCode(IntFormFile, $"'xcel.Initialize(Me, "excel", fn)"$)
+		AddCode(IntFormFile, $"'Dim xcelBuffer As Object = BANano.Await(readAsArrayBufferWait(fileObj))"$)
+		AddCode(IntFormFile, $"'Dim records As List = BANano.Await(xcel.ReadFile(xcelBuffer))"$)
+		AddCode(IntFormFile, $"'Log(xcel.GetSingleCode(records))"$)
+		AddCode(IntFormFile, $"'"$)
+	End If
+	'
+	AddCode(IntFormFile, $"app.PageResume"$)
+	AddCode(IntFormFile, $"End Sub"$)
+	AddCode(IntFormFile, $"'"$)
+End Sub
+
+'get the component id by field name
+Sub GetComponentID(s As String) As String
+	If ComponentNames.ContainsKey(s) Then
+		Dim x As String = ComponentNames.Get(s)
+		Return x
+	Else
+		BANano.Console.Warn($"'${s}' form component does not exist!"$)
+	End If
+	Return ""
+End Sub
+
+Sub GetComponentPrefix(xproptype As String) As String
+	Select Case xproptype
+		Case "Dialer", "TextBoxGroup", "TextBox", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password", "Number", "Telephone", "Email", "TextArea", "ColorWheel"
+			Return "txt"
+		Case "SelectGroup", "Select"
+			Return "cbo"
+		Case "Label"
+			Return "lbl"
+		Case "Link"
+			Return "lnk"
+		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
+			Return "fil"
+		Case "Avatar"
+			Return "avt"
+		Case "AvatarPlaceholder"
+			Return "avtpl"
+		Case "AvatarGroup"
+			Return "avtg"
+		Case "Image"
+			Return "img"
+		Case "Progress"
+			Return "prg"
+		Case "Range"
+			Return "rng"
+		Case "CheckBox"
+			Return "chk"
+		Case "Toggle"
+			Return "tgl"
+		Case "RadialProgress"
+			Return "rp"
+		Case "Rating"
+			Return "rt"
+		Case  "RadioGroup"
+			Return "rg"
+		Case "GroupSelect"
+			Return "gs"
+		Case "CheckBoxGroup"
+			Return "chkg"
+		Case "ToggleGroup"
+			Return "tglg"
+		Case "Filter"
+			Return "flt"
+	End Select
+End Sub
+
+Sub GetComponentPrefix1(xproptype As String) As String
+	Select Case xproptype
+		Case "SDUI5TextBox"
+			Return "txt"
+		Case "SDUI5Select"
+			Return "cbo"
+		Case "SDUI5Text"
+			Return "lbl"
+		Case "SDUI5Link"
+			Return "lnk"
+		Case "SDUI5TextArea"
+			Return "txta"
+		Case "SDUI5FileInput"
+			Return "fil"
+		Case "SDUI5Avatar"
+			Return "avt"
+		Case "SDUI5AvatarGroup"
+			Return "avtg"
+		Case "SDUI5Image"
+			Return "img"
+		Case "SDUI5Progress"
+			Return "prg"
+		Case "SDUI5Range"
+			Return "rng"
+		Case "SDUI5CheckBox"
+			Return "chk"
+		Case "SDUI5Toggle"
+			Return "tgl"
+		Case "SDUI5RadialProgress"
+			Return "rdp"
+		Case "SDUI5Rating"
+			Return "rt"
+		Case "SDUI5RadioGroup"
+			Return "rg"
+		Case "SDUI5GroupSelect"
+			Return "gs"
+		Case "SDUI5CheckBoxGroup"
+			Return "chkg"
+		Case "SDUI5Filter"
+			Return "flt"
+	End Select		
+End Sub
+
+Private Sub PropertyBuilderMap(sb1 As StringBuilder, xpropname As String, m As Map)
+	sb1.Append($"Dim ${xpropname}options As Map"$).append(CRLF)
+	sb1.Append($"${xpropname}options.Initialize"$).append(CRLF)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		sb1.Append($"${spropName}options.put("${k}", "${v}")"$).append(CRLF)
+		sb1.Append($"${xpropname}options.put("${k}", "${v}")"$).append(CRLF)
 	Next
 End Sub
 

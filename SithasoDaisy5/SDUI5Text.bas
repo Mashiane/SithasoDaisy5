@@ -159,7 +159,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("svg-loader.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -458,7 +458,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<svg id="${mName}_icon" data-js="enabled" style="pointer-events:none;" data-unique-ids="disabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg>
+		<svg-renderer id="${mName}_icon"  data-js="enabled"   fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 		<span id="${mName}_text"></span>
 	</${sTextTag}>"$).Get("#" & mName)
 	setFontWeight(sFontWeight)

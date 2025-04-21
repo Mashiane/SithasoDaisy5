@@ -105,7 +105,7 @@ File9=beautify.min.js
 File90=save.svg
 File91=search-solid.svg
 File92=signature_pad.umd.min.js
-File93=svg-loader.min.js
+File93=SVGRenderer.min.js
 File94=sweetalert2.all.min.js
 File95=sweetalert2.min.css
 File96=tailwind.min.js
@@ -190,7 +190,7 @@ FileGroup65=Default Group\IMAGES
 FileGroup66=Default Group\IMAGES
 FileGroup67=Default Group\JAVASCRIPT
 FileGroup68=Default Group\IMAGES
-FileGroup69=Default Group
+FileGroup69=Default Group\JAVASCRIPT
 FileGroup7=Default Group\LICENCES
 FileGroup70=Default Group\IMAGES
 FileGroup71=Default Group\IMAGES
@@ -230,19 +230,20 @@ Library2=jcore
 Library3=jfx
 Module1=BANanoGreenAPI
 Module10=SDUI5BreadCrumbs
-Module100=SDUI5Window
-Module101=SDUI5Wizard
-Module102=SDUIDocxTemplator
-Module103=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
-Module104=SDUIJSONQuery
-Module105=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUILocalStorage
-Module106=|relative|..\..\shared\SDUIMap
-Module107=SDUIMySQLREST
-Module108=SDUIMySQLRESTNative
-Module109=SDUIPocketBase
+Module100=SDUI5WhatsApp
+Module101=SDUI5Window
+Module102=SDUI5Wizard
+Module103=SDUIDocxTemplator
+Module104=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUIFetch
+Module105=SDUIJSONQuery
+Module106=|relative|..\SithasoDaisy\0SithasoDaisy2\SDUILocalStorage
+Module107=|relative|..\..\shared\SDUIMap
+Module108=SDUIMySQLREST
+Module109=SDUIMySQLRESTNative
 Module11=SDUI5Browser
-Module110=SithasoDaisy5
-Module111=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
+Module110=SDUIPocketBase
+Module111=SithasoDaisy5
+Module112=|relative|..\SithasoDaisy\0SithasoDaisy2\UIShared
 Module12=SDUI5Button
 Module13=SDUI5Card
 Module14=SDUI5Carousel
@@ -277,71 +278,71 @@ Module4=SDUI5Alert
 Module40=SDUI5Filter
 Module41=SDUI5Footer
 Module42=SDUI5FooterTitle
-Module43=SDUI5GroupSelect
-Module44=SDUI5Hero
-Module45=SDUI5Image
-Module46=SDUI5Indicator
-Module47=SDUI5InfoCard
-Module48=SDUI5Join
-Module49=SDUI5JsonEditor
+Module43=SDUI5Form
+Module44=SDUI5GroupSelect
+Module45=SDUI5Hero
+Module46=SDUI5Image
+Module47=SDUI5Indicator
+Module48=SDUI5InfoCard
+Module49=SDUI5Join
 Module5=SDUI5App
-Module50=SDUI5JsonTree
-Module51=SDUI5Kbd
-Module52=SDUI5Label
-Module53=SDUI5Link
-Module54=SDUI5List
-Module55=SDUI5ListItem
-Module56=SDUI5Loading
-Module57=SDUI5MDToast
-Module58=SDUI5Menu
-Module59=SDUI5MenuItem
+Module50=SDUI5JsonEditor
+Module51=SDUI5JsonTree
+Module52=SDUI5Kbd
+Module53=SDUI5Label
+Module54=SDUI5Link
+Module55=SDUI5List
+Module56=SDUI5ListItem
+Module57=SDUI5Loading
+Module58=SDUI5MDToast
+Module59=SDUI5Menu
 Module6=SDUI5Avatar
-Module60=SDUI5Modal
-Module61=SDUI5NavBar
-Module62=SDUI5Panel
-Module63=SDUI5PDFViewer
-Module64=SDUI5Phone
-Module65=SDUI5Preferences
-Module66=SDUI5Progress
-Module67=SDUI5RadialProgress
-Module68=SDUI5Radio
-Module69=SDUI5RadioGroup
+Module60=SDUI5MenuItem
+Module61=SDUI5Modal
+Module62=SDUI5NavBar
+Module63=SDUI5Panel
+Module64=SDUI5PDFViewer
+Module65=SDUI5Phone
+Module66=SDUI5Preferences
+Module67=SDUI5Progress
+Module68=SDUI5RadialProgress
+Module69=SDUI5Radio
 Module7=SDUI5AvatarGroup
-Module70=SDUI5Range
-Module71=SDUI5Rating
-Module72=SDUI5Row
-Module73=SDUI5Segment
-Module74=SDUI5Select
-Module75=SDUI5SignaturePad
-Module76=SDUI5Skeleton
-Module77=SDUI5Stack
-Module78=SDUI5Stat
-Module79=SDUI5StatItem
+Module70=SDUI5RadioGroup
+Module71=SDUI5Range
+Module72=SDUI5Rating
+Module73=SDUI5Row
+Module74=SDUI5Segment
+Module75=SDUI5Select
+Module76=SDUI5SignaturePad
+Module77=SDUI5Skeleton
+Module78=SDUI5Stack
+Module79=SDUI5Stat
 Module8=SDUI5Badge
-Module80=SDUI5Status
-Module81=SDUI5Steps
-Module82=SDUI5StepsItem
-Module83=SDUI5Svg
-Module84=SDUI5Swal
-Module85=SDUI5Swap
-Module86=SDUI5Table
-Module87=SDUI5Tabs
-Module88=SDUI5TabsItem
-Module89=SDUI5Text
+Module80=SDUI5StatItem
+Module81=SDUI5Status
+Module82=SDUI5Steps
+Module83=SDUI5StepsItem
+Module84=SDUI5Svg
+Module85=SDUI5Swal
+Module86=SDUI5Swap
+Module87=SDUI5Table
+Module88=SDUI5Tabs
+Module89=SDUI5TabsItem
 Module9=SDUI5BottomDrawer
-Module90=SDUI5TextArea
-Module91=SDUI5TextBox
-Module92=SDUI5Timeline
-Module93=SDUI5TimelineItem
-Module94=SDUI5Toast
-Module95=SDUI5Toggle
-Module96=SDUI5ToolTip
-Module97=SDUI5TreeSpider
-Module98=SDUI5TrendChart
-Module99=SDUI5WhatsApp
+Module90=SDUI5Text
+Module91=SDUI5TextArea
+Module92=SDUI5TextBox
+Module93=SDUI5Timeline
+Module94=SDUI5TimelineItem
+Module95=SDUI5Toast
+Module96=SDUI5Toggle
+Module97=SDUI5ToolTip
+Module98=SDUI5TreeSpider
+Module99=SDUI5TrendChart
 NumberOfFiles=112
 NumberOfLibraries=3
-NumberOfModules=111
+NumberOfModules=112
 Version=10.2
 @EndOfDesignText@
 #Region Project Attributes 
@@ -349,12 +350,12 @@ Version=10.2
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 5.20
+	#LibraryVersion: 5.27
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "5.20"
+	Private LibVersion As String = "5.27"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)	
@@ -398,7 +399,6 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("insert-rule.min.js")
 '	BANano.Header.AddJavascriptFile("moment.min.js")
 	BANano.Header.AddJavascriptFile("countUp.umd.js")
-	BANano.Header.AddJavascriptFile("svg-loader.min.js")
 	'
 	BANano.Header.AddCSSFile("reinvented-color-wheel.min.css")
 	BANano.Header.AddJavascriptFile("reinvented-color-wheel.min.js")
@@ -434,6 +434,8 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptES6File("trendchart.js")
 	'
 	BANano.Header.AddCSSFile("devices.min.css")
+	BANano.Header.AddJavascriptFile("papaparse.min.js")
+	BANano.Header.AddJavascriptFile("SVGRenderer.min.js")
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version
 	ExitApplication

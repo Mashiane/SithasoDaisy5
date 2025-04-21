@@ -346,22 +346,22 @@ Sub setDeviceType(s As String)						'ignoredeadcode
 		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "camera", "speaker", "homebuttonborder", "homebutton", "content"))
 		Select Case sOrientation
 		Case "portrait"
-			UI.SetWidth(mElement, "375px")
-			UI.SetHeight(mElement, "667px")
+			UI.SetWidth(mElement, "414px")
+			UI.SetHeight(mElement, "736px")
 		Case "landscape"
-			UI.SetHeight(mElement, "375px")
-			UI.SetWidth(mElement, "667px")
+			UI.SetHeight(mElement, "414px")
+			UI.SetWidth(mElement, "736px")
 		End Select
 	Case "iphonex"
 		UI.AddClassByID($"${mName}_device"$, "iphonex")
 		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "speaker", "homebuttonborder", "homebutton", "content"))
 		Select Case sOrientation
 		Case "portrait"
-			UI.SetWidth(mElement, "414px")
-			UI.SetHeight(mElement, "736px")
+			UI.SetWidth(mElement, "375px")
+			UI.SetHeight(mElement, "812px")
 		Case "landscape"
-			UI.SetHeight(mElement, "414px")
-			UI.SetWidth(mElement, "736px")
+			UI.SetHeight(mElement, "375px")
+			UI.SetWidth(mElement, "812px")
 		End Select
 	End Select
 	For Each k As String In parts
