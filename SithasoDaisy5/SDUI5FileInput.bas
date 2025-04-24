@@ -93,6 +93,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -865,6 +866,7 @@ End Sub
 
 'get the list of selected files
 Sub GetFiles As List
+	If mElement = Null Then Return Null
 	'get the selected files, if any
 	If mElement.GetField("files").GetField("length").Result = 0 Then 'ignore
 		Return Null
@@ -877,6 +879,7 @@ End Sub
 
 'get selected file
 Sub GetFile As Map
+	If mElement = Null Then Return Null
 	If mElement.GetField("files").GetField("length").Result = 0 Then 'ignore
 		Return Null
 	Else
@@ -885,8 +888,24 @@ Sub GetFile As Map
 	End If
 End Sub
 
+Sub setValue(v As Object)
+	If mElement = Null Then Return
+	mElement.SetValue(v)
+End Sub
+
+Sub getValue As Object
+	If mElement = Null Then Return Null
+	If bMultiple = False Then
+		Dim f As Object = GetFile
+	Else
+		Dim f As Object = GetFiles
+	End If	
+	Return f
+End Sub
+
 'ensure we can select the same file again
 Sub Nullify
+	If mElement = Null Then Return
 	mElement.SetValue(Null)
 End Sub
 

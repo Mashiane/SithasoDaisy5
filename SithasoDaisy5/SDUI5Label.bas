@@ -78,6 +78,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -524,7 +525,7 @@ Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${sk}">${v}</option>"$)
+		sb.Append($"<option id="${sk}_${mName}" value="${k}">${v}</option>"$)
 	Next
 	UI.AppendByID($"${mName}_input)"$, sb.ToString)
 End Sub
@@ -559,8 +560,8 @@ Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
 	Select Case sInputType
 	Case "select"
-		iKey = UI.CleanID(iKey)
-		Dim scode As String = $"<option id="${iKey}_${mName}" value="${iKey}">${iValue}</option>"$
+		Dim xKey As String = UI.CleanID(iKey)
+		Dim scode As String = $"<option id="${xKey}_${mName}" value="${iKey}">${iValue}</option>"$
 		UI.AppendByID($"${mName}_input"$, scode)
 	End Select	
 End Sub

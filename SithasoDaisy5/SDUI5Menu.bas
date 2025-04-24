@@ -30,6 +30,7 @@ Version=10
 #DesignerProperty: Key: LgDirection, DisplayName: LG Direction, FieldType: String, DefaultValue: none, Description: Lg Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: XlDirection, DisplayName: XL Direction, FieldType: String, DefaultValue: none, Description: Xl Direction, List: horizontal|none|vertical
 #DesignerProperty: Key: PopOver, DisplayName: Pop Over, FieldType: Boolean, DefaultValue: False, Description: Pop Over
+#DesignerProperty: Key: ClosePopupOnClick, DisplayName: Close Popup On Click, FieldType: Boolean, DefaultValue: False, Description: Close PopUnp On Click
 #DesignerProperty: Key: Card, DisplayName: Card, FieldType: Boolean, DefaultValue: False, Description: Card
 #DesignerProperty: Key: Dropdown, DisplayName: Dropdown, FieldType: Boolean, DefaultValue: False, Description: Dropdown
 #DesignerProperty: Key: DropdownOpen, DisplayName: Dropdown Open, FieldType: Boolean, DefaultValue: False, Description: Dropdown Open
@@ -112,10 +113,12 @@ Sub Class_Globals
 	Private sAnchorName As String
 	Private sCheckedColor As String = "success"
 	Private bHasCheckBox As Boolean = False
+	Private bClosePopupOnClick As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -329,6 +332,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckedColor = UI.CStr(sCheckedColor)
 		bHasCheckBox = Props.GetDefault("HasCheckBox", False)
 		bHasCheckBox = UI.CBool(bHasCheckBox)
+		bClosePopupOnClick = Props.GetDefault("ClosePopupOnClick", False)
+		bClosePopupOnClick = UI.CBool(bClosePopupOnClick)
 	End If
 	'
 	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
@@ -387,6 +392,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 '	setVisible(bVisible)
+End Sub
+
+Sub setClosePopupOnClick(b As Boolean)
+	bClosePopupOnClick = b
+	CustProps.Put("ClosePopupOnClick", b)
+End Sub
+
+Sub getClosePopupOnClick As Boolean
+	Return bClosePopupOnClick
 End Sub
 
 'set Checked Color
@@ -733,6 +747,7 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -753,6 +768,7 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -773,6 +789,7 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -794,6 +811,7 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -817,6 +835,7 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 		item.Parent = itemParent
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.ClosePopupOnClick = bClosePopupOnClick
 		If itemParent Then
 			item.ItemType = "collapse-item"
 		Else
@@ -838,6 +857,7 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.Text = itemText
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	If itemParent Then
 		item.ItemType = "collapse-item"
 	Else
@@ -865,6 +885,7 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -889,6 +910,7 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 		item.MenuName = mName
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.ClosePopupOnClick = bClosePopupOnClick
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -919,6 +941,7 @@ Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, item
 		item.MenuName = mName
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.ClosePopupOnClick = bClosePopupOnClick
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -944,6 +967,7 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1032,6 +1056,11 @@ End Sub
 Sub ShowPopOver
 	If mElement = Null Then Return
 	mElement.RunMethod("showPopover", Null)
+End Sub
+
+Sub ClosePopover
+	If mElement = Null Then Return
+	mElement.RunMethod("hidePopover", Null)
 End Sub
 
 Sub HidePopover

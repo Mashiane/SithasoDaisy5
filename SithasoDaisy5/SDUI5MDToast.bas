@@ -49,19 +49,21 @@ Sub Class_Globals
 	Public CONST TYPEOF_INFO As String = "info"
 	Public CONST TYPEOF_SUCCESS As String = "success"
 	Public CONST TYPEOF_WARNING As String = "warning"
-	Private MDToastObject As BANanoObject
 	Private UI As UIShared 'ignore
 End Sub
 
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
 	callbacks.Initialize
+	BANano.DependsOnAsset("toastify.min.css")
+	BANano.DependsOnAsset("toastify-js.min.js")
 End Sub
 
 'set the parent id

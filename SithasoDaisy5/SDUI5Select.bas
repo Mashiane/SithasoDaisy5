@@ -102,6 +102,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -643,8 +644,6 @@ Sub getPrependVisible As Boolean
 	Return bPrependVisible
 End Sub
 
-
-
 'set Options from a MV field
 'b4j:b4j; b4i:b4i; b4r:b4r
 Sub setOptions(s As String)		'ignoredeadcode
@@ -665,7 +664,7 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${sk}">${v}</option>"$)
+		sb.Append($"<option id="${sk}_${mName}" value="${k}">${v}</option>"$)
 	Next
 	mElement.Append(sb.ToString)	
 End Sub
@@ -696,8 +695,8 @@ End Sub
 
 Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
-	iKey = UI.CleanID(iKey)
-	Dim scode As String = $"<option id="${iKey}_${mName}" value="${iKey}">${iValue}</option>"$
+	Dim cKey As String = UI.CleanID(iKey)
+	Dim scode As String = $"<option id="${cKey}_${mName}" value="${iKey}">${iValue}</option>"$
 	mElement.Append(scode)
 End Sub
 
@@ -950,7 +949,8 @@ Sub getValidatorHint As String
 End Sub
 'get Value
 Sub getValue As String
-	sValue = mElement.getvalue
+	If mElement = Null Then Return ""
+	sValue = UI.CStr(mElement.getvalue)
 	Return sValue
 End Sub
 

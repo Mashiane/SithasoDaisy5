@@ -45,6 +45,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -190,6 +191,7 @@ Sub setValue(text As String)		'ignoredeadcode
 End Sub
 'get value
 Sub getValue As String
+	If mElement = Null Then Return ""
 	sValue = UI.GetTextByID($"${mName}_text"$)
 	Return sValue
 End Sub

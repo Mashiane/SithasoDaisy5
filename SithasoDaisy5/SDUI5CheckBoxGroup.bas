@@ -81,6 +81,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -342,7 +343,7 @@ End Sub
 
 Sub AddOption(k As String, v As String)
 	If mElement = Null Then Return
-	k = UI.CleanID(k)
+	Dim sk As String = UI.CleanID(k)
 	Dim rSize As String = UI.FixSize(sTypeOf, sSize)
 	Dim rColor As String = UI.FixColor(sTypeOf, sColor)
 	
@@ -362,30 +363,30 @@ Sub AddOption(k As String, v As String)
 	If bColumnView Then
 		Select Case sLabelPosition
 			Case "left"
-				sb.Append($"<div id="${k}_${mName}_host" class="flex items-center justify-between mb-2">
+				sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
 		      <label class="cursor-pointer select-none">
-			  	<span id="${k}_${mName}_label">${v}</span>
+			  	<span id="${sk}_${mName}_label">${v}</span>
 			  </label>
-		      <input id="${k}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+		      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 		  </div>"$)
-				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+				items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 			Case "right"
-				sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-			<input id="${k}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-			<span id="${k}_${mName}_label">${v}</span>
+				sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+			<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			<span id="${sk}_${mName}_label">${v}</span>
 			</label>"$)
-				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+				items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 		End Select
 	Else
 		sb.Append($"[BANCLEAN]
-		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-            <input id="${k}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-            <span id="${k}_${mName}_label" class="text-start">${v}</span> 
+		<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
+            <input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+            <span id="${sk}_${mName}_label" class="text-start">${v}</span> 
         </div>"$)
-		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
+		items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 	End If
 	UI.AppendByID($"${mName}_options"$, sb.ToString)
-	UI.OnEventByID($"${k}_${mName}"$, "change", Me, "changed")
+	UI.OnEventByID($"${sk}_${mName}"$, "change", Me, "changed")
 End Sub
 
 'get Selected
@@ -477,7 +478,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 			      <label class="cursor-pointer select-none">
 			        <span id="${sk}_${mName}_label">${v}</span>
 			      </label>
-			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${sk}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			      <input id="${sk}_${mName}" name="${sGroupName}[]" value="${k}" type="checkbox" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			    </div>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 				Next
@@ -486,7 +487,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 					Dim v As String = m.Get(k)
 					Dim sk As String = UI.CleanID(k)
 					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${sk}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+      					<input id="${sk}_${mName}" type="checkbox" name="${sGroupName}[]" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
       					<span id="${sk}_${mName}_label">${v}</span>
     				</label>"$)
 					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
@@ -498,12 +499,13 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 			Dim sk As String = UI.CleanID(k)
 			sb.Append($"[BANCLEAN]
 				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${sk}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+              		<input id="${sk}_${mName}" name="${sGroupName}[]" type="checkbox" value="${k}" class="${sTypeOf} ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
               		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
 			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 		Next
 	End If
+	'
 	UI.AppendByID($"${mName}_options"$, sb.ToString)
 	For Each item As String In items.keys
 		UI.OnEventByID(item, "change", Me, "changed")
@@ -712,6 +714,7 @@ End Sub
 
 'get selected
 Sub getValue As String
+	If mElement = Null Then Return ""
 	sSelected = getSelected
 	Return sSelected
 End Sub

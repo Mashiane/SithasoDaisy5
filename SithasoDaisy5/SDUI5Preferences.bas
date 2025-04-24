@@ -161,6 +161,7 @@ End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = CallBack
@@ -3150,6 +3151,11 @@ Sub SetPropertyAutoFocus(Key As String, p As Boolean)
 End Sub
 Sub SetPropertyFocus(Key As String)
 	BANano.GetElement($"#${mName}_${Key}"$).RunMethod("focus", Null)
+End Sub
+
+Sub SetPropertyEnsureVisible(Key As String)
+	Dim xKey As String = $"${mName}_${Key}"$
+	UI.EnsureVisible(xKey)
 End Sub
 
 'check only some properties

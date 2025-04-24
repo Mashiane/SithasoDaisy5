@@ -367,6 +367,7 @@ End Sub
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("math.min.js")
 	UI.Initialize(Me)
+	mElement = Null
 	mName = UI.CleanID(Name)
 	mEventName = UI.CleanID(EventName)
 	mCallBack = CallBack

@@ -31,6 +31,7 @@ Version=10
 #DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|none|right|top
 #DesignerProperty: Key: PopOverTarget, DisplayName: Pop Over Target, FieldType: String, DefaultValue: , Description: Pop Over Target
+#DesignerProperty: Key: ClosePopupOnClick, DisplayName: Close Popup On Click, FieldType: Boolean, DefaultValue: False, Description: Close PopUnp On Click
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -103,10 +104,12 @@ Sub Class_Globals
 	Private bChecked As Boolean = False
 	Private sCheckedColor As String = "success"
 	Private bHasCheckBox As Boolean = False
+	Private bClosePopupOnClick As Boolean
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -331,6 +334,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckedColor = UI.CStr(sCheckedColor)
 		bHasCheckBox = Props.GetDefault("HasCheckBox", False)
 		bHasCheckBox = UI.CBool(bHasCheckBox)
+		bClosePopupOnClick = Props.GetDefault("ClosePopupOnClick", False)
+		bClosePopupOnClick = UI.CBool(bClosePopupOnClick)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -464,7 +469,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 End Sub
 
+Sub setClosePopupOnClick(b As Boolean)
+	bClosePopupOnClick = b
+	CustProps.Put("ClosePopupOnClick", b)
+End Sub
 
+Sub getClosePopupOnClick As Boolean
+	Return bClosePopupOnClick
+End Sub
 
 'set Checked
 Sub setChecked(b As Boolean)							'ignoredeadcode
@@ -580,6 +592,9 @@ End Sub
 private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
 '	e.PreventDefault
 	Dim itemName As String = UI.MvField(e.ID, 1, "_")
+	If bClosePopupOnClick Then
+		BANano.GetElement($"#${sMenuName}"$).RunMethod("hidePopover", Null)
+	End If
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
 End Sub
 
@@ -819,6 +834,7 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -836,6 +852,7 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -853,6 +870,7 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -871,6 +889,7 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -891,6 +910,7 @@ Sub AddMenuItemAvatarText(itemKey As String, itemAvatar As String, itemAvatarSha
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -908,6 +928,7 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub
@@ -925,6 +946,7 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.MenuName = sMenuName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.ClosePopupOnClick = bClosePopupOnClick
 	item.AddComponent
 	Return item
 End Sub

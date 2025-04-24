@@ -2477,7 +2477,7 @@ End Sub
 ''use fetch to get the file contents
 'Dim csvData As String = banano.Await(banano.GetFileAsText("./assets/data.csv", Null, "utf8"))
 ''parse the file contents and retrieve items on complete
-'ReadCSVFile(Me, "mycsv", csvData, "", true, true, "ISO-8859-1")
+'ImportCSV(Me, "mycsv", csvData, "", true, true, "ISO-8859-1")
 '
 ''will fire in each iteration
 'Sub mycsv_step(results As Map, parserObj As BANanoObject)
@@ -2491,7 +2491,7 @@ End Sub
 'Dim fields As List = meta.get("fields")
 'End Sub
 '</code>
-Sub ReadCSVFile(Module As Object, event As String, content As String, delimiter As String, hasHeader As Boolean, dynamicTyping As Boolean, encoding As String)
+Sub ImportCSV(Module As Object, event As String, content As String, delimiter As String, hasHeader As Boolean, dynamicTyping As Boolean, encoding As String)
 	event = event.tolowercase
 	Dim config As Map = CreateMap()
 	config.Put("delimiter", delimiter)

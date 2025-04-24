@@ -159,6 +159,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -1126,12 +1127,12 @@ Sub getWidth As String
 End Sub
 
 private Sub changed1(e As BANanoEvent)			'ignoredeadcode
-	Dim cvalue As String = mElement.GetValue
+	Dim cvalue As String = UI.CStr(mElement.GetValue)
 	BANano.CallSub(mCallBack, $"${mName}_input"$, Array(cvalue))
 End Sub
 
 private Sub changed(e As BANanoEvent)			'ignoredeadcode
-	Dim cvalue As String = mElement.GetValue
+	Dim cvalue As String = UI.CStr(mElement.GetValue)
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(cvalue))
 End Sub
 
@@ -1287,7 +1288,7 @@ End Sub
 'get value
 Sub getValue As String					'ignoredeadcode
 	If mElement = Null Then Return ""
-	sValue = mElement.GetValue
+	sValue = ui.CStr(mElement.GetValue)
 	Return sValue
 End Sub
 

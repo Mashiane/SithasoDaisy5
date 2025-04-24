@@ -3681,3 +3681,37 @@ Sub MvRest(delim As String, svalue As String, startPos As String) As String
 	Return Join(delim,lst)
 End Sub
 
+Sub ReadTextFileFromAssets(fn As String) As String
+	Dim fileContents As String = BANano.Await(BANano.GetFileAsText($"${fn}?${DateTime.now}"$, Null, "utf8"))
+	Return fileContents
+End Sub
+
+Sub ReadJSONFileFromAssets(fn As String) As Object
+	Dim fileContents As String = BANano.Await(BANano.GetFileAsJSON($"${fn}?${DateTime.now}"$, Null))
+	Return fileContents
+End Sub
+
+Sub ReadBase64FileFromAssets(fn As String) As Object
+	Dim fileContents As String = BANano.Await(BANano.GetFileAsDataURL($"${fn}?${DateTime.now}"$, Null))
+	Return fileContents
+End Sub
+
+Sub AESEncrypt(v As String, s As String) As String
+	Dim CryptoJS As BANanoObject
+	CryptoJS.Initialize("CryptoJS")
+	
+	Dim o As BANanoObject = CryptoJS.GetField("AES").RunMethod("encrypt", Array(v, s))
+	Dim i As String = o.RunMethod("toString", Null).Result
+	Return i
+End Sub
+
+Sub AESDecrypt(v As String, s As String) As String
+	Dim CryptoJS As BANanoObject
+	CryptoJS.Initialize("CryptoJS")
+	Dim bytes As BANanoObject = CryptoJS.GetField("AES").RunMethod("decrypt", Array(v, s))
+	'
+	Dim k As BANanoObject = CryptoJS.GetField("enc").GetField("Utf8")
+	'
+	Dim i As String = bytes.RunMethod("toString", k).Result
+	Return i
+End Sub

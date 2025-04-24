@@ -47,6 +47,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -229,6 +230,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 Sub getValue As String
+	If mElement = Null Then Return ""
 	Dim sValue As String = easymde.RunMethod("value", Null).Result
 	Return sValue
 End Sub

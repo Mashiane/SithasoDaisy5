@@ -71,6 +71,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -286,6 +287,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setValue(sValue))
 End Sub
 
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.Put("Label", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabel As String
+	Return sLabel
+End Sub
+
 'set Required
 Sub setRequired(b As Boolean)				'ignoredeadcode
 	bRequired = b
@@ -385,6 +397,7 @@ End Sub
 
 'get Value
 Sub getValue As String
+	If mElement = Null Then Return ""
 	Dim selectedItems As List
 	selectedItems.Initialize
 	For Each item As String In items.keys
@@ -429,7 +442,7 @@ End Sub
 
 Sub AddOption(sKey As String, xValue As String)
 	If mElement = Null Then Return
-	sKey = UI.CleanID(sKey)
+	Dim xKey As String = UI.CleanID(sKey)
 	Dim itemShape As String = UI.FixRounded(sShape)
 	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim itemColor As String = UI.FixColor("btn", sColor)
@@ -441,9 +454,9 @@ Sub AddOption(sKey As String, xValue As String)
 		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
-	mElement.Append($"<input id="${sKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${xValue}"></input>"$)
-	items.put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
-	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "changed")
+	mElement.Append($"<input id="${xKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${xValue}"></input>"$)
+	items.put($"${xKey}_${mName}"$, $"${xKey}_${mName}"$)
+	UI.OnEventByID($"${xKey}_${mName}"$, "change", Me, "changed")
 End Sub
 
 'set Raw Options
@@ -477,7 +490,7 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<input id="${sk}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sk}" name="${mName}" aria-label="${v}"></input>"$)
+		sb.Append($"<input id="${sk}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${k}" name="${mName}" aria-label="${v}"></input>"$)
 		items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
 	Next
 	mElement.Append(sb.ToString)
@@ -542,4 +555,13 @@ End Sub
 'get Size
 Sub getSize As String
 	Return sSize
+End Sub
+
+Sub setTypeOf(s As String)
+	sTypeOf = s
+	CustProps.Put("TypeOf", s)
+End Sub
+
+Sub getTypeOf As String
+	Return sTypeOf
 End Sub

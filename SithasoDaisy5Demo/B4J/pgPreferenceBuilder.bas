@@ -57,12 +57,12 @@ Sub Show(MainApp As SDUI5App)
 	colVertical.AddAll(Array("LR", "RL"))
 	
 	 
-	compTypes.AddAll(Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
 	dataTypes.Initialize 
 	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date", "LongText", "None"))
 	'
-	colTypes.AddAll(Array("Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
+	colTypes.AddAll(Array("Button", "Normal","FileSize", "Money", "Date", "DateTime", "Thousand", "Link", "ClickLink", "Email", "Website", "Icon", "IconTitle", "TitleIcon", "Badge", "Rating", "RadialProgress", "Progress", "Range", "CheckBox", "Select", "SelectFromList", "RadioGroupFromList", "RadioGroup", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "Dialer", "Password", "Number", "FileInput", "FileInputProgressCamCorder", "FileInputProgressCamera", "FileInputProgressMicrophone", "FileInputProgress","DatePicker", "DatePicker1", "DateTimePicker", "TimePicker", "TextArea", "Toggle","Color", "Avatar", "PlaceHolder", "AvatarPlaceholder","Image", "AvatarTitle", "BadgeAvatarTitle", "AvatarTitleSubTitle", "TitleSubTitle", "AvatarGroup", "BadgeGroup", "None","Telephone"))
 	
 	'
 	tblDesign.AddToolbarActionButtonIcon("form", "./assets/mobile-screen-button-solid.svg", "#6a639e", "#ffffff")
@@ -136,6 +136,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("propcomputeclass")
 	
 	'add the components to have
+	AddMenuItem("Button", "Button", "Buttons allow the user to take actions or make choices.")
 	AddMenuItem("Dialer", "Dialer", "Dialer allows users to increase or decrease a numeric value using increment (+) and decrement (-) buttons.")
 	AddMenuItem("TextBox", "Text Box", "Text Input is a simple input field.")
 	AddMenuItem("PlusMinus", "Plus Minus", "Plus Minus is a simple input field with minus and plus append icons for number picking")
@@ -305,7 +306,7 @@ Sub tblDesign_code(e As BANanoEvent)
 		Next
 		mdlPreview.Form.PrepareRC
 		mdlPreview.Form.IsLive = False
-		mdlPreview.Form.MdlName = $"mdl${UI.ProperCase(stablename)}"$
+		mdlPreview.Form.MdlName = $"mdl${UI.CamelCase(stablename)}"$
 		BANano.Await(mdlPreview.Form.BuildGridFromRC)
 		clsTC.BuildInputComponents(mdlPreview)
 	End If
@@ -392,8 +393,13 @@ private Sub AddProperties
 	compToAdd.AddPropertyCheckBox("propactive", "Active", True, "success")
 	compToAdd.AddPropertyCheckBox("propsort", "Order By", False, "success")
 	compToAdd.AddPropertyCheckBox("propfocus", "Focus", False, "success")
+	compToAdd.AddPropertyCheckBox("propblock", "Block", False, "success")
 	compToAdd.AddPropertyTextBox("propupdate", "Update Property", "", False)
-	'
+	compToAdd.AddPropertyTextBox("proptermscaption", "T & C Caption", "Terms and Conditions", False)
+	compToAdd.AddPropertyTextBox("proptermsurl", "T & C URL", "", False)
+	compToAdd.AddPropertyTextBox("propprivacycaption", "Privacy Policy Caption", "Privacy Policy", False)
+	compToAdd.AddPropertyTextBox("propprivacyurl", "Privacy Policy URL", "", False)
+	compToAdd.AddPropertySelect("propaction", "Button Action", "None", False, CreateMap("None":"None","Save":"Save","Cancel":"Cancel", "Delete":"Delete"))
 	compToAdd.AddPropertySelect("propcolumntype", "Column Type", "Normal", False, UI.ListToSelectOptionsSort(colTypes))
 	compToAdd.AddPropertySelect("propcolumnvertical", "Column Vertical", "", False, UI.ListToSelectOptionsSort(colVertical))
 	compToAdd.AddPropertyCheckBox("propcolumnvisible", "Column Visible", True, "success")
@@ -483,6 +489,16 @@ Sub ShowPropertiesByType(item As String)
 	compToAdd.SetPropertyValue("propalign", "left")
 	'show component specific
 	Select Case item
+	Case "button"
+		compToAdd.SetPropertyVisible("propblock", True)
+		compToAdd.SetPropertyVisible("propaction", True)
+		compToAdd.SetPropertyVisible("propcolor", True)
+		compToAdd.SetPropertyVisible("propprepend", True)
+		compToAdd.SetPropertyVisible("propappend", True)
+		compToAdd.SetPropertyVisible("propvalue", False)
+		compToAdd.SetPropertyVisible("proprequired", False)
+		compToAdd.SetPropertyValues(CreateMap("propname": "button1", "proptitle": "Button"))
+		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/button/", app.COLOR_INFO)
 	Case "dialer"
 		compToAdd.ShowProperty(Array("propstart", "propstep", "propmax", "propalign"))
 		compToAdd.RequireProperty(True, Array("propstart", "propstep", "propmax", "propvalue"))
@@ -670,7 +686,7 @@ Sub ShowPropertiesByType(item As String)
 		 "propcolor": "secondary"))	
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/range/", app.COLOR_INFO)
 	Case "checkbox"
-		compToAdd.ShowProperty(Array("propcolor"))
+			compToAdd.ShowProperty(Array("propcolor", "proptermscaption", "proptermsurl", "propprivacycaption", "propprivacyurl"))
 		'propbagx.AddPropertyCheckBox("checkbox1", "CheckBox", False, app.COLOR_PRIMARY)
 		compToAdd.SetPropertyValues(CreateMap("propname": "checkbox1", "proptitle": "CheckBox", "proprequired": False, "propcolor": "primary"))	
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)

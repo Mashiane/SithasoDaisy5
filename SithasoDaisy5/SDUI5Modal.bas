@@ -127,6 +127,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -383,7 +384,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Form.Initialize(mCallBack, $"${mName}_form"$, $"${mName}_form"$)
 	Form.LinkExisting
 	Form.Clear
-	Form.MdlName = mName
+	Form.MdlName = UI.CamelCase(mName)
 		
 '	mElement = mTarget.Append($"[BANCLEAN]
 '	<dialog id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">

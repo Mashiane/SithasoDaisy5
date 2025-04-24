@@ -114,6 +114,7 @@ End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
+	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
@@ -1009,7 +1010,8 @@ Sub getValidatorHint As String
 End Sub
 'get Value
 Sub getValue As String
-	sValue = mElement.getvalue
+	If mElement = Null Then Return ""
+	sValue = UI.CStr(mElement.GetValue)
 	Return sValue
 End Sub
 
