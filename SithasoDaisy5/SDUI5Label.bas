@@ -524,8 +524,8 @@ Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 	sb.Initialize
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${k}">${v}</option>"$)
+		k = UI.CleanID(k)
+		sb.Append($"<option id="${k}_${mName}" value="${k}">${v}</option>"$)
 	Next
 	UI.AppendByID($"${mName}_input)"$, sb.ToString)
 End Sub
@@ -561,7 +561,7 @@ Sub AddOption(iKey As String, iValue As String)
 	Select Case sInputType
 	Case "select"
 		Dim xKey As String = UI.CleanID(iKey)
-		Dim scode As String = $"<option id="${xKey}_${mName}" value="${iKey}">${iValue}</option>"$
+		Dim scode As String = $"<option id="${xKey}_${mName}" value="${xKey}">${iValue}</option>"$
 		UI.AppendByID($"${mName}_input"$, scode)
 	End Select	
 End Sub

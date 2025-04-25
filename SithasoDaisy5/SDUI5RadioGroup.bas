@@ -359,7 +359,7 @@ End Sub
 
 Sub AddOption(k As String, v As String)
 	If mElement = Null Then Return
-	Dim sk As String = UI.CleanID(k)
+	k = UI.CleanID(k)
 	Dim rSize As String = UI.FixSize("radio", sSize)
 	Dim rColor As String = UI.FixColor("radio", sColor)
 	'
@@ -379,30 +379,30 @@ Sub AddOption(k As String, v As String)
 	If bColumnView Then
 		Select Case sLabelPosition
 		Case "left"
-			sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
+			sb.Append($"<div id="${k}_${mName}_host" class="flex items-center justify-between mb-2">
 		      <label class="cursor-pointer select-none">
-			  	<span id="${sk}_${mName}_label">${v}</span>
+			  	<span id="${k}_${mName}_label">${v}</span>
 			  </label>
-		      <input id="${sk}_${mName}" name="${sGroupName}" value="${k}" type="radio" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+		      <input id="${k}_${mName}" name="${sGroupName}" value="${k}" type="radio" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 		  </div>"$)
-		  items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+		  items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 		Case "right"
-			sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-			<input id="${sk}_${mName}" type="radio" name="${sGroupName}" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-			<span id="${sk}_${mName}_label">${v}</span>
+			sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+			<input id="${k}_${mName}" type="radio" name="${sGroupName}" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			<span id="${k}_${mName}_label">${v}</span>
 			</label>"$)
-			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+			items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 		End Select
 	Else
 		sb.Append($"[BANCLEAN]
 		<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-            <input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-            <span id="${sk}_${mName}_label" class="text-start">${v}</span> 
+            <input id="${k}_${mName}" name="${sGroupName}" type="radio" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+            <span id="${k}_${mName}_label" class="text-start">${v}</span> 
         </div>"$)
-		items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 	End If
 	UI.AppendByID($"${mName}_options"$, sb.ToString)
-	UI.OnEventByID($"${sk}_${mName}"$, "change", Me, "changed")
+	UI.OnEventByID($"${k}_${mName}"$, "change", Me, "changed")
 End Sub
 
 'load the items from a map
@@ -436,48 +436,48 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 		Case "left"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
-				Dim sk As String = UI.CleanID(k)
+				k = UI.CleanID(k)
 '				sb.Append($"[BANCLEAN]
 '					<label id="${sk}_${mName}_host" class="flex cursor-pointer fieldset-label items-center place-content-between mb-2">
 '						<span id="${sk}_${mName}_label">${v}</span>
 '						<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
 '					</label>"$)
 					
-				sb.Append($"<div id="${sk}_${mName}_host" class="flex items-center justify-between mb-2">
+				sb.Append($"<div id="${k}_${mName}_host" class="flex items-center justify-between mb-2">
 			      <label class="cursor-pointer select-none">
-			        <span id="${sk}_${mName}_label">${v}</span>
+			        <span id="${k}_${mName}_label">${v}</span>
 			      </label>
-			      <input id="${sk}_${mName}" name="${sGroupName}" value="${k}" type="radio" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+			      <input id="${k}_${mName}" name="${sGroupName}" value="${k}" type="radio" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
 			    </div>"$)
-				items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+				items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 			Next
 		Case "right"
 			For Each k As String In m.Keys
 				Dim v As String = m.Get(k)
-				Dim sk As String = UI.CleanID(k)
+				k = UI.CleanID(k)
 '				sb.Append($"[BANCLEAN]
 '					<label id="${sk}_${mName}_host" class="flex cursor-pointer items-center fieldset-label mb-2">
 '					<input type="radio" name="${sGroupName}" value="${sk}" class="radio ${rColor} ${rSize} ${cColor}"/>
 '					<span id="${sk}_${mName}_label">${v}</span>
 '				</label>"$)
 				'
-					sb.Append($"<label id="${sk}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
-      					<input id="${sk}_${mName}" type="radio" name="${sGroupName}" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-      					<span id="${sk}_${mName}_label">${v}</span>
+					sb.Append($"<label id="${k}_${mName}_host" class="flex gap-2 items-center cursor-pointer mb-2">
+      					<input id="${k}_${mName}" type="radio" name="${sGroupName}" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+      					<span id="${k}_${mName}_label">${v}</span>
     				</label>"$)
-					items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+					items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 			Next
 		End Select
 	Else	
 		For Each k As String In m.Keys
 			Dim v As String = m.Get(k)
-			Dim sk As String = UI.CleanID(k)
+			k = UI.CleanID(k)
 			sb.Append($"[BANCLEAN]
-				<div id="${sk}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
-              		<input id="${sk}_${mName}" name="${sGroupName}" type="radio" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
-              		<span id="${sk}_${mName}_label" class="text-start">${v}</span> 
+				<div id="${k}_${mName}_host" class="flex gap-3 items-center cursor-pointer">
+              		<input id="${k}_${mName}" name="${sGroupName}" type="radio" value="${k}" class="radio ${rColor} ${rSize} ${cColor} ${checkedColor} ${checkedBorder}"/>
+              		<span id="${k}_${mName}_label" class="text-start">${v}</span> 
             	</div>"$)
-			items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+			items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 		Next
 	End If	
 	BANano.Await(UI.AppendByID($"${mName}_options"$, sb.ToString))

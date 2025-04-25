@@ -437,12 +437,12 @@ Sub Clear			'ignoredeadcode
 	items.Initialize
 	Dim itemShape As String = UI.FixRounded(sShape)
 	Dim itemSize As String = UI.FixSize("btn", sSize)
-	mElement.Append($"<input id="reset_${mName}" class="btn ${itemShape} ${itemSize} filter-reset" value="reset" type="radio" name="${mName}"></input>"$)
+	mElement.Append($"<input id="reset_${mName}" class="btn ${itemShape} ${itemSize} filter-reset" aria-label="x" value="reset" type="radio" name="${mName}"></input>"$)
 End Sub
 
 Sub AddOption(sKey As String, xValue As String)
 	If mElement = Null Then Return
-	Dim xKey As String = UI.CleanID(sKey)
+	sKey = UI.CleanID(sKey)
 	Dim itemShape As String = UI.FixRounded(sShape)
 	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim itemColor As String = UI.FixColor("btn", sColor)
@@ -454,9 +454,9 @@ Sub AddOption(sKey As String, xValue As String)
 		Dim bbg As String = UI.FixColor("border", sActiveColor)
 		borderColor = $"checked:${bbg}"$
 	End If
-	mElement.Append($"<input id="${xKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${xValue}"></input>"$)
-	items.put($"${xKey}_${mName}"$, $"${xKey}_${mName}"$)
-	UI.OnEventByID($"${xKey}_${mName}"$, "change", Me, "changed")
+	mElement.Append($"<input id="${sKey}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${sKey}" name="${mName}" aria-label="${xValue}"></input>"$)
+	items.put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
+	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "changed")
 End Sub
 
 'set Raw Options
@@ -489,9 +489,9 @@ Sub SetOptionsFromMap(m As Map)			'ignoredeadcode
 	sb.Initialize
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<input id="${sk}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${k}" name="${mName}" aria-label="${v}"></input>"$)
-		items.put($"${sk}_${mName}"$, $"${sk}_${mName}"$)
+		k = UI.CleanID(k)
+		sb.Append($"<input id="${k}_${mName}" class="btn ${itemShape} ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" type="radio" value="${k}" name="${mName}" aria-label="${v}"></input>"$)
+		items.put($"${k}_${mName}"$, $"${k}_${mName}"$)
 	Next
 	mElement.Append(sb.ToString)
 	For Each item As String In items.keys

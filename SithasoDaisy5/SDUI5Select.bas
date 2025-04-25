@@ -663,8 +663,8 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	sb.Initialize 
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		Dim sk As String = UI.CleanID(k)
-		sb.Append($"<option id="${sk}_${mName}" value="${k}">${v}</option>"$)
+		k = UI.CleanID(k)
+		sb.Append($"<option id="${k}_${mName}" value="${k}">${v}</option>"$)
 	Next
 	mElement.Append(sb.ToString)	
 End Sub
@@ -696,7 +696,7 @@ End Sub
 Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
 	Dim cKey As String = UI.CleanID(iKey)
-	Dim scode As String = $"<option id="${cKey}_${mName}" value="${iKey}">${iValue}</option>"$
+	Dim scode As String = $"<option id="${cKey}_${mName}" value="${cKey}">${iValue}</option>"$
 	mElement.Append(scode)
 End Sub
 
