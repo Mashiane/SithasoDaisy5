@@ -1,0 +1,975 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=1.jpg
+File10=2.png
+File100=dockxsview.bjl
+File101=donuts-cake-svgrepo-com.svg
+File102=drawer.jpg
+File103=dropdown.jpg
+File104=dropdownview.bjl
+File105=easymdeview.bjl
+File106=env.json
+File107=face1.jpg
+File108=face10.jpg
+File109=face11.jpg
+File11=3.jpg
+File110=face12.jpg
+File111=face13.jpg
+File112=face14.jpg
+File113=face15.jpg
+File114=face16.jpg
+File115=face17.jpg
+File116=face18.jpg
+File117=face19.jpg
+File118=face2.jpg
+File119=face20.jpg
+File12=4.jpg
+File120=face21.jpg
+File121=face22.jpg
+File122=face23.jpg
+File123=face24.jpg
+File124=face25.jpg
+File125=face26.jpg
+File126=face27.jpg
+File127=face3.jpg
+File128=face4.jpg
+File129=face5.jpg
+File13=5.jpg
+File130=face6.jpg
+File131=face7.jpg
+File132=face8.jpg
+File133=face9.jpg
+File134=facebook-bg.svg
+File135=fan-solid.svg
+File136=favicon-16x16.png
+File137=favicon-32x32.png
+File138=fieldsetview.bjl
+File139=file-input.jpg
+File14=6.jpg
+File140=fileinputview.bjl
+File141=filterview.bjl
+File142=folderblue.svg
+File143=font-solid.svg
+File144=footer.jpg
+File145=footerview.bjl
+File146=gear.svg
+File147=gearcolor.svg
+File148=gears-solid.svg
+File149=gifts-solid.svg
+File15=7.jpg
+File150=github-brands.svg
+File151=googleheart.svg
+File152=gridbuilderview.bjl
+File153=gridview.bjl
+File154=groupselectview.bjl
+File155=hand-peace.svg
+File156=headphones-solid.svg
+File157=heart.svg
+File158=heartsong.svg
+File159=heart-with-ribbon.svg
+File16=8.jpg
+File160=hero.jpg
+File161=heroview.bjl
+File162=home.svg
+File163=home1.svg
+File164=home-decor-1.jpg
+File165=house-solid.svg
+File166=imageview.bjl
+File167=img_1.jpg
+File168=img_2.jpg
+File169=img_3.jpg
+File17=9.jpg
+File170=img_4.jpg
+File171=img_5.jpg
+File172=img_6.jpg
+File173=img_7.jpg
+File174=img1.png
+File175=img2.png
+File176=img3.png
+File177=img4.png
+File178=img5.png
+File179=img6.png
+File18=accordionview.bjl
+File180=img7.png
+File181=img8.png
+File182=img9.png
+File183=inbox.svg
+File184=inboxcolor.svg
+File185=indicator.jpg
+File186=indicatorview.bjl
+File187=info.svg
+File188=infoboxview.bjl
+File189=input.jpg
+File19=addfolder.svg
+File190=input-group.jpg
+File191=inputview.bjl
+File192=instagram-bg.svg
+File193=joinview.bjl
+File194=jsoneditorview.bjl
+File195=jsontreeview.bjl
+File196=jsonview.bjl
+File197=kbd.jpg
+File198=kbdview.bjl
+File199=labelview.bjl
+File2=1.png
+File20=alert.jpg
+File200=left.svg
+File201=link.jpg
+File202=linkview.bjl
+File203=listview.bjl
+File204=listviewitem1.bjl
+File205=listviewitem2.bjl
+File206=listviewitem3.bjl
+File207=loadingview.bjl
+File208=lockscreen-bg.jpg
+File209=login-bg.jpg
+File21=alertview.bjl
+File210=lula.jpg
+File211=m1.jpg
+File212=m2.jpg
+File213=m3.jpg
+File214=m4.jpg
+File215=m5.jpg
+File216=m6.jpg
+File217=m7.jpg
+File218=m8.jpg
+File219=male.png
+File22=alipay.png
+File220=marcus.jpg
+File221=mashy.jpg
+File222=mask.jpg
+File223=meeting.jpg
+File224=Melvin.jpg
+File225=menu.jpg
+File226=menu.svg
+File227=menu1view.bjl
+File228=menuview.bjl
+File229=minion.jpg
+File23=android-chrome-192x192.png
+File230=mobile-screen-button-solid.svg
+File231=mockup-code.jpg
+File232=mockup-phone.jpg
+File233=mockup-window.jpg
+File234=modal.jpg
+File235=modalview.bjl
+File236=money.png
+File237=movies.js
+File238=music-solid.svg
+File239=nature_01.jpg
+File24=android-chrome-512x512.png
+File240=nature_02.jpg
+File241=nature_03.jpg
+File242=nature_04.jpg
+File243=nature_05.jpg
+File244=nature_06.jpg
+File245=nature_09.jpg
+File246=nature_11.jpg
+File247=nature_12.jpg
+File248=navbar.jpg
+File249=navbarview.bjl
+File25=Angela.jpg
+File250=nike.jpg
+File251=office-dark.jpg
+File252=otter-solid.svg
+File253=pagination.jpg
+File254=paginationview.bjl
+File255=pants-svgrepo-com.svg
+File256=paypal.png
+File257=phoneview.bjl
+File258=pig.svg
+File259=places.js
+File26=Anna.jpg
+File260=play.svg
+File261=prefbuilderview.bjl
+File262=preferenceview.bjl
+File263=profile10.jpg
+File264=profile11.jpg
+File265=profile12.jpg
+File266=profile13.jpeg
+File267=progress.jpg
+File268=progressview.bjl
+File269=radial-progress.jpg
+File27=api.docx
+File270=radialprogressview.bjl
+File271=radio.jpg
+File272=radioview.bjl
+File273=range.jpg
+File274=rangeview.bjl
+File275=rating.jpg
+File276=ratingview.bjl
+File277=refresh.svg
+File278=register-bg.jpg
+File279=right.svg
+File28=api.php
+File280=sarah-dayan.jpg
+File281=Screenshot_1.jpg
+File282=Screenshot_2.jpg
+File283=Screenshot_3.jpg
+File284=search.svg
+File285=select.jpg
+File286=selectview.bjl
+File287=services.js
+File288=shoes.webp
+File289=shoes1.jpg
+File29=apple-touch-icon.png
+File290=shop-svgrepo-com.svg
+File291=signaturepadview.bjl
+File292=SithasoDaisyLogo1.jpg
+File293=skeletonview.bjl
+File294=speeddialview.bjl
+File295=spider.jpg
+File296=spider.webp
+File297=sponge.png
+File298=square-check-regular.svg
+File299=stack.jpg
+File3=10.jpg
+File30=arch.jpg
+File300=stackview.bjl
+File301=stat.jpg
+File302=statusview.bjl
+File303=statview.bjl
+File304=steps.jpg
+File305=stepsview.bjl
+File306=svgview.bjl
+File307=swap.jpg
+File308=swapview.bjl
+File309=tab.jpg
+File31=artboard.jpg
+File310=table.jpg
+File311=tablebuilderview.bjl
+File312=table-cells-solid.svg
+File313=table-list-solid.svg
+File314=table-solid.svg
+File315=tableview.bjl
+File316=tabs.jpg
+File317=tabsview.bjl
+File318=tailwind-css-component-card-1.png
+File319=tape.jpg
+File32=avatar.jpg
+File320=team-1.jpg
+File321=team-2.jpg
+File322=team-3.jpg
+File323=team-4.jpg
+File324=team-5.jpg
+File325=textarea.jpg
+File326=textareaview.bjl
+File327=thats-quiet-big.png
+File328=timelineview.bjl
+File329=toast.jpg
+File33=avatarview.bjl
+File330=toastview.bjl
+File331=toggle.jpg
+File332=toggleview.bjl
+File333=tooltip.jpg
+File334=tooltipview.bjl
+File335=tranding-food-1.png
+File336=tranding-food-2.png
+File337=tranding-food-3.png
+File338=tranding-food-4.png
+File339=tranding-food-5.png
+File34=b4jlink.jpg
+File340=tranding-food-6.png
+File341=tranding-food-7.png
+File342=treespiderview.bjl
+File343=trendview.bjl
+File344=twitter-bg.svg
+File345=typographyview.bjl
+File346=user-solid.svg
+File347=validationview.bjl
+File348=wallet.svg
+File349=whatsappview.bjl
+File35=b4jlink2.jpg
+File350=wifi.svg
+File351=windowview.bjl
+File352=wizard1.bjl
+File353=wizard2.bjl
+File354=wizard3.bjl
+File355=wizard4.bjl
+File356=wizardview.bjl
+File357=yadit.jpg
+File358=yuna.jpg
+File359=yyoff.svg
+File36=badge.jpg
+File360=yyon.svg
+File37=badgeview.bjl
+File38=bakery-breakfast-dessert-svgrepo-com.svg
+File39=bananolink.jpg
+File4=11.jpg
+File40=banner_1.jpg
+File41=banner_10.jpg
+File42=banner_11.jpg
+File43=banner_12.jpg
+File44=banner_2.jpg
+File45=banner_3.jpg
+File46=banner_4.jpg
+File47=banner_5.jpg
+File48=banner_6.jpg
+File49=banner_7.jpg
+File5=12.jpg
+File50=banner_8.jpg
+File51=banner_9.jpg
+File52=baselayout.bjl
+File53=blankview.bjl
+File54=bottomdrawerview.bjl
+File55=bottom-navigation.jpg
+File56=breadcrumbs.jpg
+File57=breadcrumbsview.bjl
+File58=browserview.bjl
+File59=btn.jpg
+File6=13.jpg
+File60=button-group.jpg
+File61=buttonsview.bjl
+File62=cancel-circle.svg
+File63=card.jpg
+File64=cardview.bjl
+File65=carousel.jpg
+File66=carouselview.bjl
+File67=casette.webp
+File68=chat.jpg
+File69=chatbubbleview.bjl
+File7=14.jpg
+File70=check.svg
+File71=check-all.svg
+File72=checkbox.jpg
+File73=checkboxview.bjl
+File74=chevron-down-solid.svg
+File75=chevron-up-solid.svg
+File76=circle.png
+File77=circle.svg
+File78=close.svg
+File79=closemenu.svg
+File8=15.jpg
+File80=code-solid.svg
+File81=codeview.bjl
+File82=collapse.jpg
+File83=collapseview.bjl
+File84=colorpickerview.bjl
+File85=countdown.jpg
+File86=countdownview.bjl
+File87=daisyman1.png
+File88=daisyui.jpg
+File89=daisywoman1.jpg
+File9=2.jpg
+File90=daisywoman2.png
+File91=daisywoman3.png
+File92=daisywoman4.png
+File93=datetimelineview.bjl
+File94=devicesview.bjl
+File95=diffview.bjl
+File96=divider.jpg
+File97=dividerview.bjl
+File98=dockcolorview.bjl
+File99=dockview.bjl
+FileGroup1=Default Group\Images
+FileGroup10=Default Group\Images
+FileGroup100=Default Group\Views
+FileGroup101=Default Group\Images
+FileGroup102=Default Group\Images
+FileGroup103=Default Group\Images
+FileGroup104=Default Group\Views
+FileGroup105=Default Group
+FileGroup106=Default Group
+FileGroup107=Default Group\Images
+FileGroup108=Default Group\Images
+FileGroup109=Default Group\Images
+FileGroup11=Default Group\Images
+FileGroup110=Default Group\Images
+FileGroup111=Default Group\Images
+FileGroup112=Default Group\Images
+FileGroup113=Default Group\Images
+FileGroup114=Default Group\Images
+FileGroup115=Default Group\Images
+FileGroup116=Default Group\Images
+FileGroup117=Default Group\Images
+FileGroup118=Default Group\Images
+FileGroup119=Default Group\Images
+FileGroup12=Default Group\Images
+FileGroup120=Default Group\Images
+FileGroup121=Default Group\Images
+FileGroup122=Default Group\Images
+FileGroup123=Default Group\Images
+FileGroup124=Default Group\Images
+FileGroup125=Default Group\Images
+FileGroup126=Default Group\Images
+FileGroup127=Default Group\Images
+FileGroup128=Default Group\Images
+FileGroup129=Default Group\Images
+FileGroup13=Default Group\Images
+FileGroup130=Default Group\Images
+FileGroup131=Default Group\Images
+FileGroup132=Default Group\Images
+FileGroup133=Default Group\Images
+FileGroup134=Default Group\Images
+FileGroup135=Default Group\Images
+FileGroup136=Default Group\Images
+FileGroup137=Default Group\Images
+FileGroup138=Default Group\Views
+FileGroup139=Default Group\Images
+FileGroup14=Default Group\Images
+FileGroup140=Default Group\Views
+FileGroup141=Default Group\Views
+FileGroup142=Default Group\Images
+FileGroup143=Default Group
+FileGroup144=Default Group\Images
+FileGroup145=Default Group\Views
+FileGroup146=Default Group\Images
+FileGroup147=Default Group\Images
+FileGroup148=Default Group
+FileGroup149=Default Group
+FileGroup15=Default Group\Images
+FileGroup150=Default Group\Images
+FileGroup151=Default Group\Images
+FileGroup152=Default Group\Views
+FileGroup153=Default Group\Views
+FileGroup154=Default Group\Views
+FileGroup155=Default Group\Images
+FileGroup156=Default Group\Images
+FileGroup157=Default Group\Images
+FileGroup158=Default Group\Images
+FileGroup159=Default Group\Images
+FileGroup16=Default Group\Images
+FileGroup160=Default Group\Images
+FileGroup161=Default Group\Views
+FileGroup162=Default Group\Images
+FileGroup163=Default Group\Images
+FileGroup164=Default Group\Images
+FileGroup165=Default Group\Images
+FileGroup166=Default Group\Views
+FileGroup167=Default Group\Images
+FileGroup168=Default Group\Images
+FileGroup169=Default Group\Images
+FileGroup17=Default Group\Images
+FileGroup170=Default Group\Images
+FileGroup171=Default Group\Images
+FileGroup172=Default Group\Images
+FileGroup173=Default Group\Images
+FileGroup174=Default Group\Images
+FileGroup175=Default Group\Images
+FileGroup176=Default Group\Images
+FileGroup177=Default Group\Images
+FileGroup178=Default Group\Images
+FileGroup179=Default Group\Images
+FileGroup18=Default Group\Views
+FileGroup180=Default Group\Images
+FileGroup181=Default Group\Images
+FileGroup182=Default Group\Images
+FileGroup183=Default Group\Images
+FileGroup184=Default Group\Images
+FileGroup185=Default Group\Images
+FileGroup186=Default Group\Views
+FileGroup187=Default Group\Images
+FileGroup188=Default Group\Views
+FileGroup189=Default Group\Images
+FileGroup19=Default Group\Images
+FileGroup190=Default Group\Images
+FileGroup191=Default Group\Views
+FileGroup192=Default Group\Images
+FileGroup193=Default Group\Views
+FileGroup194=Default Group
+FileGroup195=Default Group
+FileGroup196=Default Group
+FileGroup197=Default Group\Images
+FileGroup198=Default Group\Views
+FileGroup199=Default Group\Views
+FileGroup2=Default Group\Images
+FileGroup20=Default Group\Images
+FileGroup200=Default Group\Images
+FileGroup201=Default Group\Images
+FileGroup202=Default Group\Views
+FileGroup203=Default Group\Views
+FileGroup204=Default Group\Views
+FileGroup205=Default Group\Views
+FileGroup206=Default Group\Views
+FileGroup207=Default Group\Views
+FileGroup208=Default Group\Images
+FileGroup209=Default Group\Images
+FileGroup21=Default Group\Views
+FileGroup210=Default Group\Images
+FileGroup211=Default Group\Images
+FileGroup212=Default Group\Images
+FileGroup213=Default Group\Images
+FileGroup214=Default Group\Images
+FileGroup215=Default Group\Images
+FileGroup216=Default Group\Images
+FileGroup217=Default Group\Images
+FileGroup218=Default Group\Images
+FileGroup219=Default Group\Images
+FileGroup22=Default Group\Images
+FileGroup220=Default Group\Images
+FileGroup221=Default Group\Images
+FileGroup222=Default Group\Images
+FileGroup223=Default Group\Images
+FileGroup224=Default Group\Images
+FileGroup225=Default Group\Images
+FileGroup226=Default Group\Images
+FileGroup227=Default Group\Views
+FileGroup228=Default Group\Views
+FileGroup229=Default Group\Images
+FileGroup23=Default Group\Images
+FileGroup230=Default Group
+FileGroup231=Default Group\Images
+FileGroup232=Default Group\Images
+FileGroup233=Default Group\Images
+FileGroup234=Default Group\Images
+FileGroup235=Default Group\Views
+FileGroup236=Default Group\Images
+FileGroup237=Default Group\JSON
+FileGroup238=Default Group\Images
+FileGroup239=Default Group\Images
+FileGroup24=Default Group\Images
+FileGroup240=Default Group\Images
+FileGroup241=Default Group\Images
+FileGroup242=Default Group\Images
+FileGroup243=Default Group\Images
+FileGroup244=Default Group\Images
+FileGroup245=Default Group\Images
+FileGroup246=Default Group\Images
+FileGroup247=Default Group\Images
+FileGroup248=Default Group\Images
+FileGroup249=Default Group\Views
+FileGroup25=Default Group\Images
+FileGroup250=Default Group\Images
+FileGroup251=Default Group\Images
+FileGroup252=Default Group
+FileGroup253=Default Group\Images
+FileGroup254=Default Group\Views
+FileGroup255=Default Group\Images
+FileGroup256=Default Group\Images
+FileGroup257=Default Group\Views
+FileGroup258=Default Group\Images
+FileGroup259=Default Group\JSON
+FileGroup26=Default Group\Images
+FileGroup260=Default Group\Images
+FileGroup261=Default Group\Views
+FileGroup262=Default Group\Views
+FileGroup263=Default Group\Images
+FileGroup264=Default Group\Images
+FileGroup265=Default Group\Images
+FileGroup266=Default Group\Images
+FileGroup267=Default Group\Images
+FileGroup268=Default Group\Views
+FileGroup269=Default Group\Images
+FileGroup27=Default Group
+FileGroup270=Default Group\Views
+FileGroup271=Default Group\Images
+FileGroup272=Default Group\Views
+FileGroup273=Default Group\Images
+FileGroup274=Default Group\Views
+FileGroup275=Default Group\Images
+FileGroup276=Default Group\Views
+FileGroup277=Default Group\Images
+FileGroup278=Default Group\Images
+FileGroup279=Default Group\Images
+FileGroup28=Default Group
+FileGroup280=Default Group\Images
+FileGroup281=Default Group\Images
+FileGroup282=Default Group\Images
+FileGroup283=Default Group\Images
+FileGroup284=Default Group\Images
+FileGroup285=Default Group\Images
+FileGroup286=Default Group\Views
+FileGroup287=Default Group\JSON
+FileGroup288=Default Group\Images
+FileGroup289=Default Group\Images
+FileGroup29=Default Group\Images
+FileGroup290=Default Group\Images
+FileGroup291=Default Group\Views
+FileGroup292=Default Group\Images
+FileGroup293=Default Group\Views
+FileGroup294=Default Group
+FileGroup295=Default Group\Images
+FileGroup296=Default Group\Images
+FileGroup297=Default Group\Images
+FileGroup298=Default Group
+FileGroup299=Default Group\Images
+FileGroup3=Default Group\Images
+FileGroup30=Default Group\Images
+FileGroup300=Default Group\Views
+FileGroup301=Default Group\Images
+FileGroup302=Default Group\Views
+FileGroup303=Default Group\Views
+FileGroup304=Default Group\Images
+FileGroup305=Default Group\Views
+FileGroup306=Default Group\Views
+FileGroup307=Default Group\Images
+FileGroup308=Default Group\Views
+FileGroup309=Default Group\Images
+FileGroup31=Default Group\Images
+FileGroup310=Default Group\Images
+FileGroup311=Default Group
+FileGroup312=Default Group
+FileGroup313=Default Group
+FileGroup314=Default Group
+FileGroup315=Default Group\Views
+FileGroup316=Default Group\Images
+FileGroup317=Default Group\Views
+FileGroup318=Default Group\Images
+FileGroup319=Default Group\Images
+FileGroup32=Default Group\Images
+FileGroup320=Default Group\Images
+FileGroup321=Default Group\Images
+FileGroup322=Default Group\Images
+FileGroup323=Default Group\Images
+FileGroup324=Default Group\Images
+FileGroup325=Default Group\Images
+FileGroup326=Default Group\Views
+FileGroup327=Default Group\Images
+FileGroup328=Default Group\Views
+FileGroup329=Default Group\Images
+FileGroup33=Default Group\Views
+FileGroup330=Default Group\Views
+FileGroup331=Default Group\Images
+FileGroup332=Default Group\Views
+FileGroup333=Default Group\Images
+FileGroup334=Default Group\Views
+FileGroup335=Default Group\Images
+FileGroup336=Default Group\Images
+FileGroup337=Default Group\Images
+FileGroup338=Default Group\Images
+FileGroup339=Default Group\Images
+FileGroup34=Default Group\Images
+FileGroup340=Default Group\Images
+FileGroup341=Default Group\Images
+FileGroup342=Default Group\Views
+FileGroup343=Default Group
+FileGroup344=Default Group\Images
+FileGroup345=Default Group\Views
+FileGroup346=Default Group\Images
+FileGroup347=Default Group\Views
+FileGroup348=Default Group\Images
+FileGroup349=Default Group\Views
+FileGroup35=Default Group\Images
+FileGroup350=Default Group\Images
+FileGroup351=Default Group\Views
+FileGroup352=Default Group\Views
+FileGroup353=Default Group\Views
+FileGroup354=Default Group\Views
+FileGroup355=Default Group\Views
+FileGroup356=Default Group\Views
+FileGroup357=Default Group\Images
+FileGroup358=Default Group\Images
+FileGroup359=Default Group\Images
+FileGroup36=Default Group\Images
+FileGroup360=Default Group\Images
+FileGroup37=Default Group\Views
+FileGroup38=Default Group\Images
+FileGroup39=Default Group\Images
+FileGroup4=Default Group\Images
+FileGroup40=Default Group\Images
+FileGroup41=Default Group\Images
+FileGroup42=Default Group\Images
+FileGroup43=Default Group\Images
+FileGroup44=Default Group\Images
+FileGroup45=Default Group\Images
+FileGroup46=Default Group\Images
+FileGroup47=Default Group\Images
+FileGroup48=Default Group\Images
+FileGroup49=Default Group\Images
+FileGroup5=Default Group\Images
+FileGroup50=Default Group\Images
+FileGroup51=Default Group\Images
+FileGroup52=Default Group\Views
+FileGroup53=Default Group
+FileGroup54=Default Group\Views
+FileGroup55=Default Group\Images
+FileGroup56=Default Group\Images
+FileGroup57=Default Group\Views
+FileGroup58=Default Group\Views
+FileGroup59=Default Group\Images
+FileGroup6=Default Group\Images
+FileGroup60=Default Group\Images
+FileGroup61=Default Group\Views
+FileGroup62=Default Group\Images
+FileGroup63=Default Group\Images
+FileGroup64=Default Group\Views
+FileGroup65=Default Group\Images
+FileGroup66=Default Group\Views
+FileGroup67=Default Group\Images
+FileGroup68=Default Group\Images
+FileGroup69=Default Group\Views
+FileGroup7=Default Group\Images
+FileGroup70=Default Group\Images
+FileGroup71=Default Group\Images
+FileGroup72=Default Group\Images
+FileGroup73=Default Group\Views
+FileGroup74=Default Group
+FileGroup75=Default Group
+FileGroup76=Default Group\Images
+FileGroup77=Default Group\Images
+FileGroup78=Default Group\Images
+FileGroup79=Default Group\Images
+FileGroup8=Default Group\Images
+FileGroup80=Default Group
+FileGroup81=Default Group\Views
+FileGroup82=Default Group\Images
+FileGroup83=Default Group\Views
+FileGroup84=Default Group\Views
+FileGroup85=Default Group\Images
+FileGroup86=Default Group\Views
+FileGroup87=Default Group\Images
+FileGroup88=Default Group\Images
+FileGroup89=Default Group\Images
+FileGroup9=Default Group\Images
+FileGroup90=Default Group\Images
+FileGroup91=Default Group\Images
+FileGroup92=Default Group\Images
+FileGroup93=Default Group\Views
+FileGroup94=Default Group
+FileGroup95=Default Group\Views
+FileGroup96=Default Group\Images
+FileGroup97=Default Group\Views
+FileGroup98=Default Group\Views
+FileGroup99=Default Group\Views
+Group=Default Group
+Library1=banano
+Library2=jcore
+Library3=jfx
+Library4=json
+Library5=sithasodaisy5
+Library6=bananofontawesome
+Module1=BlankPage
+Module10=pgButtons
+Module11=pgCard
+Module12=pgCarousel
+Module13=pgChatBubble
+Module14=pgCheckBox
+Module15=pgCode
+Module16=pgCollapse
+Module17=pgColorPicker
+Module18=pgCountdown
+Module19=pgDatePicker
+Module2=clsTableCode
+Module20=pgdatetimeline
+Module21=pgDevices
+Module22=pgDiff
+Module23=pgDivider
+Module24=pgDock
+Module25=pgDockColor
+Module26=pgDockXS
+Module27=pgDropDown
+Module28=pgEasyMDE
+Module29=pgFieldSet
+Module3=pgAccordion
+Module30=pgFileInput
+Module31=pgFilter
+Module32=pgFooter
+Module33=pgGrid
+Module34=pggridbuilder
+Module35=pgGridCode
+Module36=pgGroupSelect
+Module37=pgHero
+Module38=pgImage
+Module39=pgIndex
+Module4=pgAlert
+Module40=pgIndicator
+Module41=pgInfoBox
+Module42=pgInput
+Module43=pgJoin
+Module44=pgJSONEditor
+Module45=pgJSONQuery
+Module46=pgJsonTree
+Module47=pgKbd
+Module48=pgLabel
+Module49=pgLink
+Module5=pgAvatar
+Module50=pgList
+Module51=pgLoading
+Module52=pgMenu
+Module53=pgMenu1
+Module54=pgModal
+Module55=pgNavBar
+Module56=pgPagination
+Module57=pgPhone
+Module58=pgPreferenceBuilder
+Module59=pgPreferences
+Module6=pgBadge
+Module60=pgProgress
+Module61=pgRadialProgress
+Module62=pgRadio
+Module63=pgRange
+Module64=pgRating
+Module65=pgSelect
+Module66=pgSignaturePad
+Module67=pgSkeleton
+Module68=pgSpeedDial
+Module69=pgStack
+Module7=pgBottomDrawer
+Module70=pgStat
+Module71=pgStatus
+Module72=pgSteps
+Module73=pgSVG
+Module74=pgSwap
+Module75=pgTable
+Module76=pgTable2
+Module77=pgTable3
+Module78=pgTableBuilder
+Module79=pgTabs
+Module8=pgBreadCrumbs
+Module80=pgTextArea
+Module81=pgTimeline
+Module82=pgToast
+Module83=pgToggle
+Module84=pgToolTip
+Module85=pgTreeSpider
+Module86=pgTrendCharts
+Module87=pgTypography
+Module88=pgValidation
+Module89=pgWhatsApp
+Module9=pgBrowser
+Module90=pgWindow
+Module91=pgWizard
+NumberOfFiles=360
+NumberOfLibraries=6
+NumberOfModules=91
+Version=10.2
+@EndOfDesignText@
+#Region Project Attributes 
+	#MergeLibraries: True
+	#LibraryAuthor: Anele Mbanga (Mashy)
+	#IgnoreWarnings:32, 16
+#End Region
+
+'https://play.tailwindcss.com/ufjKjmoy2Z
+'https://syntha.ai/converters/tailwindcss-to-css
+
+#IgnoreWarnings:12, 15
+Sub Process_Globals
+	Public BANano As BANano 'ignore
+	'the name of the application &
+	'this is the folder on your development server.
+	Public AppName As String = "sd5demo"
+	Public AppTitle As String = "SithasoDaisy 5.28 Demo"
+	Public AppVersion As String = "SithasoDaisy 5.28"
+	'whe the app should
+	Public Publish As String = "C:\laragon\www"
+	Public Version As String = "0.01"
+	Public ServerIP As String = "https://127.0.0.1"
+	Public APIKey As String = ""
+	Public ServerURL As String = ""
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)
+	'change this according to your needs
+	'initialize banano for first use
+	'this is the web-app builder
+	BANano.Initialize("BANano", AppName, DateTime.now)
+	'BANano.HTML_NAME = "index.html"
+	'BANano.JAVASCRIPT_NAME = $"app${DateTime.now}.js"$
+	BANano.Header.Title = AppTitle
+	BANano.Header.AddFavicon("./assets/600by600.jpg", "16x16")
+	BANano.Header.AddAppleTouchIcon("./assets/600by600.jpg", "180x180")
+	BANano.Header.Author ="Anele Mbanga (Mashy)"
+	'BANano.Header.Charset = "iso-8859-1"
+	BANano.Header.Description = "SithasoDaisy 5 Demo"
+	'BANano.header.Expires = "Mon, 22 Jul 2002 11:12:01 GMT"
+	BANano.Header.Keywords = "banano,tailwindcss,app,sithasodaisy"
+	BANano.Header.Language = "en"
+	BANano.Header.AddMeta($"<meta name="copyright" content="&copy; 2025 SithasoDaisy 5">"$)
+	BANano.Header.AddMeta($"<meta name="robots" content="ALL">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Pragma" content="no-cache">"$)
+'	BANano.Header.AddMeta($"<meta http-equiv="Expires" content="0">"$)
+	
+	'BANano.Header.AddMSTileIcon("mstile-150x150.png", "144x144")
+	'BANano.Header.SetMaskIcon("safari-pinned-tab.svg")
+	'BANano.Header.AddManifestIcon("android-chrome-192x192.png", "192x192")
+	'BANano.Header.AddManifestIcon("android-chrome-512x512.png", "512x512")
+	BANano.TranspilerOptions.MinifyOnline = False
+	BANano.TranspilerOptions.RemoveDeadCode = False
+	BANano.TranspilerOptions.IgnoreWarningsOldBrowsers = True
+	BANano.TranspilerOptions.ShowWarningDeadCode = False
+	BANano.TranspilerOptions.MergeAllCSSFiles = False
+	BANano.TranspilerOptions.MergeAllJavascriptFiles = False
+	BANano.TranspilerOptions.EnableLiveCodeSwapping = True
+	BANano.TranspilerOptions.DisableShortenVariableNames = True
+	BANano.Header.OnDOMContentLoaded = modSD5.DOMContentLoaded
+	'BANano.TranspilerOptions.DoNotDeleteFolderOnCompilation($"C:\laragon\www\${AppName}\assets"$)
+	BANano.TranspilerOptions.ShowLogPosition = True
+	'
+	'BANano.Header.AddJavascriptFile("exceljs.min.js")
+	'
+	'BANano.Header.AddCSSFile("https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;700;900&display=swap")
+	'
+	' a PWA must have a service worker.  Will be build automatically caching everything used in your Web App
+	'BANano.SERVICEWORKER_NAME = "service-worker.js"
+	'BANano.TranspilerOptions.UseServiceWorker = False
+	' this line makes sure our Web App becomes a PWA
+	#if Release
+	'BANano.TranspilerOptions.UseServiceWorkerWithUpdateMessage(True, "#26AE60", "Update available", "Click here to update the app to the latest version")
+	#end if	
+	
+	' optional: if your WebApp is not in the root
+	'BANano.TranspilerOptions.SetPWAStartUrl($"${AppName}/index.html"$)
+	'BANano.Header.BackgroundColor = "#1e1e1e"
+
+	' additonal JavaScript and CSS files we want to include
+	' BANano.Header.AddJavascriptFile("jsstore.min.js")
+
+	' settings needed for the PWA app icons, splash screens, etc…
+	BANano.Header.AddMSTileIcon("mstile-150x150.png", "150x150")
+	BANano.Header.MSTileColor = "#ffc40d"
+	
+	BANano.Header.AddManifestIcon("android-chrome-192x192.png", "192x192")
+	BANano.Header.AddManifestIcon("android-chrome-512x512.png", "512x512")
+	BANano.Header.SetAndroidMaskIcon("maskable_icon.png", "731x731")
+	BANano.Header.MaskIconColor = "#1e1e1e"
+	
+	BANano.Header.AddAppleTouchIcon("apple-touch-icon.png", "")
+	BANano.Header.SetAppleMaskIcon("safari.png")
+	BANano.Header.AddAppleTouchStartupImage("iphone5_splash.png", "320px", "568px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphone6_splash.png", "375px", "667px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphoneplus_splash.png", "621px", "1104px", "3")
+	BANano.Header.AddAppleTouchStartupImage("iphonex_splash.png", "375px", "812px", "3")
+	BANano.Header.AddAppleTouchStartupImage("iphonexr_splash.png", "414px", "896px", "2")
+	BANano.Header.AddAppleTouchStartupImage("iphonexsmax_splash.png", "414px", "896px", "3")
+	BANano.Header.AddAppleTouchStartupImage("ipad_splash.png", "768px", "1024px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro1_splash.png", "834px", "1112px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro2_splash.png", "834px", "1194px", "2")
+	BANano.Header.AddAppleTouchStartupImage("ipadpro3_splash.png", "1024px", "1366px", "2")
+		
+	BANano.Header.AddFavicon("favicon-16x16.png", "16x16")
+	BANano.Header.AddFavicon("favicon-32x32.png", "32x32")
+	'
+	BANano.Header.AddJavascriptFile("movies.js")
+	BANano.Header.AddJavascriptFile("places.js")
+	BANano.Header.AddJavascriptFile("services.js")
+	
+		
+	'set php settings
+'	BANano.PHP_NAME = $"${AppName}.php"$
+'	#if release
+'	'change to external host domain e.g http://www.google.com
+'	'exclude the port address
+'	#end if
+'	BANano.PHPHost = $"${ServerIP}/${AppName}/"$
+'	BANano.PHPAddHeader("Access-Control-Allow-Origin: *")
+	
+	'transpile the app to javascript
+	BANano.Build(Publish)
+	
+	'open the default browser and show the generated index.html file
+	Dim fx As JFX
+	Dim appPath As String = $"${ServerIP}/${AppName}/index.html"$
+	fx.ShowExternalDocument(appPath)
+	#if release
+	ExitApplication
+	#end if
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+Sub BANano_Ready
+'	'get the environment variables
+	'get the env.json content
+	Dim env As Map = BANano.Await(BANano.GetFileAsJSON("./assets/env.json?" & DateTime.Now, Null))
+	'get the api key
+	APIKey = env.Get("api-key")
+	'get the path to the URL
+	ServerURL = env.Get("api-url")
+	pgIndex.Initialize
+End Sub
+
+
