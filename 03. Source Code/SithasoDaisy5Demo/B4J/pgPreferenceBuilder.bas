@@ -26,6 +26,8 @@ Sub Process_Globals
 	Private dbTables As SDUILocalStorage
 	Private colVertical As List
 	Private mdlPreview As SDUI5Modal
+	Private mdlTablePreview As SDUI5Modal
+	Private tblPreview As SDUI5Table
 End Sub
 
 
@@ -66,6 +68,7 @@ Sub Show(MainApp As SDUI5App)
 	
 	'
 	tblDesign.AddToolbarActionButtonIcon("form", "./assets/mobile-screen-button-solid.svg", "#6a639e", "#ffffff")
+	tblDesign.AddToolbarActionButtonIcon("table", "./assets/table-list-solid.svg", "#880e4f", "#ffffff")
 	tblDesign.AddToolbarActionButtonIcon("code", "./assets/code-solid.svg", "#53209d", "#ffffff")
 	tblDesign.MoveBackButton
 	
@@ -225,6 +228,344 @@ Sub GetFieldNames(tblName As String) As Map
 		kv.Put(stablename, stablename)
 	Next
 	Return kv
+End Sub
+
+Sub tblDesign_table(e As BANanoEvent)
+	e.PreventDefault
+	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
+	thisTable = app.UI.CStr(thisTable)
+	If thisTable = "" Then Return
+	Dim item As Map = BANano.FromJson(thisTable)
+	Log(item)
+	Dim balphachooser As Boolean = app.GetBoolean(item, "alphachooser")
+	Dim salphachooserfield As String = app.GetString(item, "alphachooserfield")
+	Dim bcolumnchooser As Boolean = app.GetBoolean(item, "columnchooser")
+	Dim sdisplayvalue As String = app.GetString(item, "displayvalue")
+	Dim splural As String = app.GetString(item, "plural")
+	Dim sprimarykey As String = app.GetString(item, "primarykey")
+	Dim ssingular As String = app.GetString(item, "singular")
+	Dim stablename As String = app.GetString(item, "tablename")
+	Dim busetable As Boolean = app.GetBoolean(item, "usetable")
+	If busetable = False Then
+		app.ShowSwalInfo("Use Table is not set for this record.")
+		Return
+	End If
+	'
+	BANano.Await(lsDB.Records)
+	Dim jsonQ As SDUIJSONQuery
+	jsonQ.Initialize(lsDB.result)
+	jsonQ.OrderAsc("proppos")
+	Dim result As List = BANano.Await(jsonQ.Exec)
+	'
+	tblPreview.Title = splural
+	tblPreview.ItemsPerPage = "10"
+	tblPreview.HasAddnew = True
+	tblPreview.AddNewTooltip = $"Add new ${ssingular}"$
+	tblPreview.HasRefresh = True
+	tblPreview.RefreshTooltip = $"Refresh ${splural}"$
+	tblPreview.HasAlphaChooser = balphachooser
+	tblPreview.AlphaChooserColumn = salphachooserfield
+	tblPreview.HasColumnChooser = bcolumnchooser
+	tblPreview.MoveBackButton
+	tblPreview.ClearHeadings
+	tblPreview.ClearRows
+	tblPreview.ClearFooter
+	BANano.Await(BuildTableColumns(result))
+	
+	mdlTablePreview.Show
+End Sub
+
+private Sub BuildTableColumns(properties As List)
+	For Each prop As Map In properties
+		Dim spropname As String = prop.Get("propname")
+		Dim sproptitle As String = prop.Get("proptitle")
+		Dim bpropactive As Boolean = prop.Get("propactive")
+		Dim bpropcomputevalue As Boolean = prop.Get("propcomputevalue")
+		Dim bpropcomputering As Boolean = prop.Get("propcomputering")
+		Dim bpropcomputecolor As Boolean = prop.Get("propcomputecolor")
+		Dim bpropcomputetextcolor As Boolean = prop.Get("propcomputetextcolor")
+		Dim bpropcomputebgcolor As Boolean = prop.Get("propcomputebgcolor")
+		Dim bpropcomputeclass As Boolean = prop.Get("propcomputeclass")
+		Dim spropalign As String = prop.Get("propalign")
+		spropalign = app.UI.CStr(spropalign)
+		Dim bpropcolumnvisible As Boolean = prop.Get("propcolumnvisible")
+		Dim spropcolumntype As String = prop.Get("propcolumntype")
+		spropcolumntype = app.UI.CStr(spropcolumntype)
+		Dim spropcolumnvertical As String = prop.Get("propcolumnvertical")
+		spropcolumnvertical = app.UI.CStr(spropcolumnvertical)
+		Dim bProptotal As Boolean = prop.Get("proptotal")
+		Dim spropicon As String = prop.Get("propicon")
+		spropicon = app.UI.CStr(spropicon)
+		Dim spropcolor As String = prop.Get("propcolor")
+		spropcolor = app.UI.CStr(spropcolor)
+		Dim spropsize As String = prop.Get("propsize")
+		spropsize = app.UI.CStr(spropsize)
+		Dim spropshape As String = prop.Get("propshape")
+		spropshape = app.UI.CStr(spropshape)
+		Dim spropsubtitle1 As String = prop.Get("propsubtitle1")
+		spropsubtitle1 = app.UI.CStr(spropsubtitle1)
+		Dim spropsubtitle2 As String = prop.Get("propsubtitle2")
+		spropsubtitle2 = app.UI.CStr(spropsubtitle2)
+		Dim spropheight As String = prop.get("propheight")
+		spropheight = app.UI.CStr(spropheight)
+		Dim bpropreadonly As Boolean = prop.Get("propreadonly")
+		Dim spropbgcolor As String = prop.Get("propbgcolor")
+		spropbgcolor = app.UI.CStr(spropbgcolor)
+		Dim sPropTextColor As String = prop.Get("proptextcolor")
+		sPropTextColor = app.UI.CStr(sPropTextColor)
+		Dim spropprefix As String = prop.Get("propprefix")
+		spropprefix = app.UI.CStr(spropprefix)
+		Dim spropdateformat As String = prop.Get("propdateformat")
+		spropdateformat = app.UI.CStr(spropdateformat)
+		Dim spropprepend As String = prop.Get("propprepend")
+		spropprepend = app.UI.CStr(spropprepend)
+		Dim spropsuffix As String = prop.Get("propsuffix")
+		spropsuffix = app.UI.CStr(spropsuffix)
+		Dim spropappend As String = prop.Get("propappend")
+		spropappend = app.UI.CStr(spropappend)
+		Dim sproprows As String = prop.Get("proprows")
+		sproprows = app.UI.CStr(sproprows)
+		Dim spropwidth As String = prop.Get("propwidth")
+		spropwidth = app.UI.CStr(spropwidth)
+		Dim spropmax As String = prop.Get("propmax")
+		spropmax = app.UI.CStr(spropmax)
+		Dim spropstart As String = prop.Get("propstart")
+		spropstart = app.UI.CStr(spropstart)
+		Dim sproplocale As String = prop.Get("proplocale")
+		sproplocale = app.UI.CStr(sproplocale)
+		Dim spropdisplayformat As String = prop.Get("propdisplayformat")
+		spropdisplayformat = app.UI.CStr(spropdisplayformat)
+		Dim spropstep As String = prop.Get("propstep")
+		spropstep = app.UI.CStr(spropstep)
+		Dim sRawpropoptions As String = prop.Get("propoptions")
+		sRawpropoptions = app.UI.CStr(sRawpropoptions)
+		Dim bPropMultiple As Boolean = prop.Get("propmultiple")
+		'
+		bpropcolumnvisible = app.UI.CBool(bpropcolumnvisible)
+		bpropactive = app.UI.CBool(bpropactive)
+		bpropcomputering = app.UI.CBool(bpropcomputering)
+		bpropcomputecolor = app.UI.CBool(bpropcomputecolor)
+		bpropcomputetextcolor = app.UI.CBool(bpropcomputetextcolor)
+		bpropcomputebgcolor = app.UI.CBool(bpropcomputebgcolor)
+		bpropcomputeclass = app.UI.CBool(bpropcomputeclass)
+		bpropcomputevalue = app.UI.CBool(bpropcomputevalue)
+		bpropactive = app.UI.CBool(bpropactive)
+		bProptotal = app.UI.CBool(bProptotal)
+		bpropreadonly = app.UI.CBool(bpropreadonly)
+		bPropMultiple = app.UI.CBool(bPropMultiple)
+		'
+		If bpropactive = False Then Continue
+		If spropcolumntype = "None" Then Continue
+		'
+		Select Case spropcolumntype
+		Case "Select", "SelectFromList", "SelectGroup"
+			bpropcomputevalue = False
+		End Select
+		
+		Select Case spropcolumntype.tolowercase
+			Case "action"
+				'tbl.AddColumnAction("btnstart", "Start/Stop", "fa-solid fa-play", app.COLOR_FUCHSIA)
+				tblPreview.AddColumnAction(spropname, sproptitle, spropicon, spropcolor, sPropTextColor)
+			Case "avatar"
+				'tbl.AddColumnAvatar("avatar", "Employee", "4rem", app.MASK_CIRCLE)
+				tblPreview.AddColumnAvatar(spropname, sproptitle, spropsize, spropshape)
+			Case "avatargroup"
+				'tbl.AddColumnAvatarGroup("agroup", "Resources", "2rem", app.MASK_CIRCLE)
+				tblPreview.AddColumnAvatarGroup(spropname, sproptitle, spropsize, spropshape)
+			Case "avatarplaceholder"
+				'tbl.AddColumnAvatarPlaceholder("hours", "Hours", "3rem", app.MASK_CIRCLE, "primary")
+				tblPreview.AddColumnAvatarPlaceHolder(spropname, sproptitle, spropsize, spropshape, spropcolor)
+			Case "avatartitle"
+				'tb2.AddColumnAvatarTitle("avatar", "Employee", "4rem", "name", app.MASK_CIRCLE)
+				tblPreview.AddColumnAvatarTitle(spropname, sproptitle, spropsize, spropsubtitle1, spropshape)
+			Case "avatartitlesubtitle"
+				'tb3.AddColumnAvatarTitleSubTitle("avatar", "Employee", "4rem", "name", "country", app.MASK_HEXAGON)
+				tblPreview.AddColumnAvatarTitleSubTitle(spropname, sproptitle, spropsize, spropsubtitle1, spropsubtitle2, spropshape)
+			Case "badge"
+				'tbl.AddColumnBadge("name", "Category", "item.color")
+				tblPreview.AddColumnBadge(spropname, sproptitle, spropcolor)
+			Case "badgeavatartitle"
+				'tbl.AddColumnBadgeAvatarTitle("avatar", "Resource", "10", "name", "")
+				tblPreview.AddColumnBadgeAvatarTitle(spropname, sproptitle, spropsize, spropsubtitle1, spropcolor)
+			Case "badgegroup"
+				'tbl.AddColumnBadgeGroupColor("tags", "Tags", "10", "success")
+				tblPreview.AddColumnBadgeGroupColor(spropname, sproptitle, spropheight,spropcolor)
+			Case "button"
+				'tb4.AddColumnButton("btnload", "Process", app.COLOR_INDIGO)
+				tblPreview.AddColumnButton(spropname, sproptitle, spropcolor)
+			Case "checkbox"
+				'tbl.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
+				tblPreview.AddColumnCheckBox(spropname, sproptitle, spropcolor, bpropreadonly)
+			Case "clicklink"
+				'tbl.AddColumnClickLink("clicklink", "Aisle", "clicklink", app.color_neutral)
+				Dim source As String = spropsubtitle1
+				If spropsubtitle1 = "" Then source = spropname
+				tblPreview.AddColumnClickLink(spropname, sproptitle, source, app.COLOR_INFO)
+			Case "color"
+				'tbl.AddColumnColor("color", "Category", "name")
+				tblPreview.AddColumnColor(spropname, sproptitle, spropsubtitle1)
+			Case "date"
+				'tbl.AddColumnDate("trandate", "Date")
+				tblPreview.AddColumnDate(spropname, sproptitle)
+			Case "datepicker"
+				'tb4.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d H:i", "F j, Y H:i", False, False, False)
+				tblPreview.AddColumnDatePicker(spropname, sproptitle, bpropreadonly, spropdateformat, spropdisplayformat, False, bPropMultiple, False, sproplocale)
+			Case "datetime"
+				'tbl.AddColumnDate("trandate", "Date")
+				tblPreview.AddColumnDateTime(spropname, sproptitle)
+			Case "datetimepicker"
+				'tbl.AddColumnDateTimePicker("dod", "Date of Death", False, "d/m/Y H:i", "d/m/Y H:i", "es")
+				tblPreview.AddColumnDateTimePicker(spropname, sproptitle, bpropreadonly, spropdateformat, spropdisplayformat, False, False, False, sproplocale)
+			Case "dialer"
+				'tb4.AddColumnDialer("clicklink", "Qty", False, 0, 1, 100)
+				tblPreview.AddColumnDialer(spropname, sproptitle, bpropreadonly, spropstart, spropstep, spropmax)
+			Case "email"
+				'tbl.AddColumnEmail("email", "Email", "name", app.color_accent)
+				Dim source As String = spropsubtitle1
+				If spropsubtitle1 = "" Then source = spropname
+				tblPreview.AddColumnEmail(spropname, sproptitle, source, app.COLOR_INFO)
+			Case "file"
+				'tbl.AddColumnFileInput("product", "Choose Product")
+				tblPreview.AddColumnFileInput(spropname, sproptitle)
+			Case "fileinputprogress"
+				'tbl.AddColumnFileInputProgress("pfile", "File Progress", "lg", "40px", "fa-solid fa-arrow-up-from-bracket", "secondary")
+				tblPreview.AddColumnFileInputProgress(spropname, sproptitle, spropsize, spropwidth, spropicon, spropcolor)
+			Case "filesize"
+				tblPreview.AddColumnFileSize(spropname, sproptitle)
+			Case "icon"
+				'tbl.AddColumnIcon("sm", "Social Media", app.SIZE_LG, "item.color")
+				tblPreview.AddColumnIcon(spropname, sproptitle, spropsize, spropcolor)
+			Case "icontitle"
+				tblPreview.AddColumnIconTitle(spropname, sproptitle, spropsize, spropsubtitle1, spropcolor)
+			Case "image"
+				'tbl.AddColumnImage("image", "Image", "40px", "40px", app.MASK_SQUIRCLE)
+				tblPreview.AddColumnImage(spropname, sproptitle, spropwidth, spropheight, spropshape)
+			Case "link"
+				'tbl.AddColumnLink("link", "Link", "link", app.color_primary)				
+				Dim source As String = spropsubtitle1
+				If spropsubtitle1 = "" Then source = spropname
+				tblPreview.AddColumnLink(spropname, sproptitle, source, app.COLOR_INFO)
+			Case "menu"
+				Dim optionsmx As Map = app.UI.GetKeyValues(sRawpropoptions, False)
+				'tbl.AddColumnDropDown("menu", "Menu", "fa-solid fa-ellipsis-vertical", "#3f51b5", CreateMap("edit":"Edit","delete":"Delete","clone":"Clone","print":"Print"))
+				tblPreview.AddColumnDropDown(spropname, sproptitle, spropicon, spropcolor, optionsmx)
+			Case "money"
+				'tbl.AddColumnMoney("gross", "Gross")
+				tblPreview.AddColumnMoney(spropname, sproptitle)
+			Case "normal"
+				'tbl.AddColumn("attrname", "Name")
+				tblPreview.AddColumn(spropname, sproptitle)
+			Case "number"
+				'tbl.AddColumnNumber("email", "Email", False)
+				tblPreview.AddColumnNumber(spropname, sproptitle, bpropreadonly)
+			Case "password"
+				'tbl.AddColumnPassword("email", "Email", False)
+				tblPreview.AddColumnPassword(spropname, sproptitle,bpropreadonly)
+			Case "passwordgroup"
+				'tb4.AddColumnPasswordGroup("name", "Password", False)
+				tblPreview.AddColumnPasswordGroup(spropname, sproptitle, bpropreadonly)
+			Case "placeholder"
+				'tbl.AddColumnPlaceHolder("attrname", "Name")
+				tblPreview.AddColumnPlaceholder(spropname, sproptitle)
+			Case "progress"
+				'tb2.AddColumnProgress("progress", "Completed", 40, 100, "item.color")
+				tblPreview.AddColumnProgress(spropname, sproptitle, spropwidth, spropmax, spropcolor)
+			Case "radial"
+				'tb4.AddColumnRadialProgress("progress", "Progress", "3.5rem", "item.color", "%")
+				tblPreview.AddColumnRadialProgress(spropname, sproptitle, spropsize, spropcolor, spropsuffix)
+			Case "radiogroup"
+				'tb4.AddColumnRadioGroup("gender", "Gender", False, app.COLOR_PRIMARY, CreateMap("male":"Male","female":"Female"))
+				Dim optionsmx As Map = app.UI.GetKeyValues(sRawpropoptions, False)
+				tblPreview.AddColumnRadioGroup(spropname, sproptitle, bpropreadonly, spropcolor, optionsmx)
+			Case "range"
+				'tb4.AddColumnRange("hours", "Hours", 8, app.COLOR_ACCENT)
+				tblPreview.AddColumnRange(spropname, sproptitle, spropmax, spropcolor)
+			Case "rating"
+				'tbl.AddColumnRating("rate", "Satisfaction", 3, "item.color")
+				tblPreview.AddColumnRating(spropname, sproptitle, spropsize, spropcolor, spropshape)
+			Case "select"
+				'tbl.AddColumnSelect("country", "Country", False, True, options)
+				Dim optionsmx As Map = app.UI.GetKeyValues(sRawpropoptions, False)
+				tblPreview.AddColumnSelect(spropname, sproptitle, bpropreadonly, True, optionsmx)
+			Case "selectgroup"
+				Dim optionsmx As Map = app.UI.GetKeyValues(sRawpropoptions, False)
+				'tb4.AddColumnSelectGroup("country", "County", False, True, CreateMap(), "", "fa-brands fa-linkedin", "", "fa-regular fa-flag")
+				tblPreview.AddColumnSelectGroup(spropname, sproptitle, bpropreadonly, True, optionsmx, spropprefix, spropprepend, spropsuffix, spropappend)
+			Case "textarea"
+				'tbl.AddColumnTextARea("job", "Job Title", False, 5)
+				tblPreview.AddColumnTextArea(spropname, sproptitle, bpropreadonly, sproprows)
+			Case "textbox"
+				'tbl.AddColumnTextBox("email", "Email", False)
+				tblPreview.AddColumnTextBox(spropname, sproptitle, bpropreadonly)
+			Case "telephone"
+				'tbl.AddColumnTelephone("email", "Email", False)
+				tblPreview.AddColumnTelephone(spropname, sproptitle, bpropreadonly)
+			Case "textboxgroup"
+				'tb4.AddColumnTextBoxGroup("id", "Price", True, "$", "", "00", "")
+				tblPreview.AddColumnTextBoxGroup(spropname, sproptitle, bpropreadonly, spropprefix, spropprepend, spropsuffix, spropappend)
+			Case "thousand"
+				'tbl.AddColumnThousand("population", "Population")
+				tblPreview.AddColumnThousand(spropname, sproptitle)
+			Case "timepicker"
+				'tbl.AddColumnTimePicker("tob", "Time of Birth", False, "H:i", True)
+				tblPreview.AddColumnTimePicker(spropname, sproptitle, bpropreadonly, spropdateformat, True)
+			Case "titlesubtitle"
+				'tbl.AddColumnTitleSubTitle("job", "Job", "country")
+				tblPreview.AddColumnTitleSubTitle(spropname, sproptitle, spropsubtitle1)
+			Case "toggle"
+				'tbl.AddColumnToggle("attrdesigner", "Designer", app.COLOR_ACCENT, False)
+				tblPreview.AddColumnToggle(spropname, sproptitle, spropcolor, bpropreadonly)
+			Case "website"
+				'tbl.AddColumnEmail("email", "Email", "name", app.color_accent)
+				Dim source As String = spropsubtitle1
+				If spropsubtitle1 = "" Then source = spropname
+				tblPreview.AddColumnWebSite(spropname, sproptitle, source, app.color_info)
+		End Select
+		'
+		Select Case spropcolumnvertical
+			Case "LR"
+				tblPreview.SetHeaderVerticalLR(spropname)
+			Case "RL"
+				tblPreview.SetHeaderVerticalRL(spropname)
+		End Select
+		
+		If bProptotal Then
+			tblPreview.SetColumnSumValues(spropname, True)
+		End If
+		'
+		If bpropcomputevalue Then
+			'tblPreview.SetColumnComputeValue("${spropname}", "ComputeValue${app.UI.CamelCase(spropname)}")"$)
+		End If
+		
+		If bpropcomputering Then
+			'AddCode(sb, $"tbl${properTable}.SetColumnComputeRing("${spropname}", "ComputeRing${app.UI.CamelCase(spropname)}")"$)
+		End If
+		
+		If bpropcomputecolor Then
+			'AddCode(sb, $"tbl${properTable}.SetColumnComputeColor("${spropname}", "ComputeColor${app.UI.CamelCase(spropname)}")"$)
+		End If
+		'
+		If bpropcomputebgcolor Then
+			'AddCode(sb, $"tbl${properTable}.SetColumnComputeBackgroundColor("${spropname}", "ComputeBackgroundColor${app.UI.CamelCase(spropname)}")"$)
+		End If
+		'
+		If bpropcomputetextcolor Then
+			'AddCode(sb, $"tbl${properTable}.SetColumnComputeTextColor("${spropname}", "ComputeTextColor${app.UI.CamelCase(spropname)}")"$)
+		End If
+		
+		If bpropcomputeclass Then
+			'AddCode(sb, $"tbl${properTable}.SetColumnComputeClass("${spropname}", "ComputeClass${app.UI.CamelCase(spropname)}")"$)
+		End If
+		'
+		If sPropTextColor <> "" Then tblPreview.SetColumnTextColor(spropname, sPropTextColor)
+		If spropbgcolor <> "" Then tblPreview.SetColumnBackgroundColor(spropname, spropbgcolor)
+		If spropalign <> "left" And spropalign <> "" Then
+			tblPreview.SetColumnAlign(spropname, spropalign)
+		End If
+		If bpropcolumnvisible = False Then
+			tblPreview.SetColumnVisible(spropname, False)
+		End If
+	Next
 End Sub
 
 Sub tblDesign_form(e As BANanoEvent)
@@ -986,5 +1327,9 @@ Private Sub mdlPreview_Yes_Click (e As BANanoEvent)
 End Sub
 
 Private Sub mdlPreview_No_Click (e As BANanoEvent)
-	
+	mdlPreview.Close
+End Sub
+
+Private Sub mdlTablePreview_No_Click (e As BANanoEvent)
+	mdlTablePreview.close
 End Sub

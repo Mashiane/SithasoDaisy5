@@ -829,7 +829,7 @@ private Sub BuildTableColumns
 		Select Case spropcolumntype.tolowercase
 		Case "action"
 			'tbl.AddColumnAction("btnstart", "Start/Stop", "fa-solid fa-play", app.COLOR_FUCHSIA)
-			AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${spropcolor}")"$)
+			AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropicon}", "${spropcolor}", "${sPropTextColor}")"$)
 			Case "avatar"
 				'tbl.AddColumnAvatar("avatar", "Employee", "4rem", app.MASK_CIRCLE)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropshape}")"$)
@@ -879,7 +879,7 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}")"$)
 			Case "datetimepicker"
 				'tbl.AddColumnDateTimePicker("dod", "Date of Death", False, "d/m/Y H:i", "d/m/Y H:i", "es")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${spropdateformat}", "${spropdisplayformat}", "${sproplocale}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, "${spropdateformat}", "${spropdisplayformat}", False, False, False, "${sproplocale}")"$)
 			Case "dialer"
 				'tb4.AddColumnDialer("clicklink", "Qty", False, 0, 1, 100)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${bpropreadonly}, ${spropstart}, ${spropstep}, ${spropmax})"$)
@@ -949,7 +949,7 @@ private Sub BuildTableColumns
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", ${spropmax}, "${spropcolor}")"$)
 			Case "rating"
 				'tbl.AddColumnRating("rate", "Satisfaction", 3, "item.color")
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropcolor}")"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropsize}", "${spropcolor}", "${spropshape}")"$)
 			Case "select"
 				'tbl.AddColumnSelect("country", "Country", False, True, options)
 				Dim optionsmx As String = Json2CreateMap(sRawpropoptions)

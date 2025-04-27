@@ -3715,3 +3715,33 @@ Sub AESDecrypt(v As String, s As String) As String
 	Dim i As String = bytes.RunMethod("toString", k).Result
 	Return i
 End Sub
+
+Sub GetString(m As Map, fld As String) As String
+	Dim x As String = m.Get(fld)
+	x = CStr(x)
+	Return x
+End Sub
+
+Sub GetBoolean(m As Map, fld As String) As Boolean
+	Dim x As Boolean = m.Get(fld)
+	x = CBool(x)
+	Return x
+End Sub
+
+Sub GetInt(m As Map, fld As String) As Int
+	Dim x As Int = m.Get(fld)
+	x = CInt(x)
+	Return x
+End Sub
+
+Sub GetDouble(m As Map, fld As String) As Double
+	Dim x As Int = m.Get(fld)
+	x = CDbl(x)
+	Return x
+End Sub
+
+Sub GetLong(m As Map, fld As String) As Long
+	Dim x As Int = m.Get(fld)
+	x = CInt(x)
+	Return x
+End Sub

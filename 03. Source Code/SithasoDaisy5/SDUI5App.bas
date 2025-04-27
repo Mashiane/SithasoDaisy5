@@ -2521,3 +2521,36 @@ Sub ImportCSV(Module As Object, event As String, content As String, delimiter As
 	Papa.Initialize("Papa")
 	Papa.RunMethod("parse", Array(content, config))
 End Sub
+
+Sub GetString(m As Map, fld As String) As String
+	Dim x As String = m.Get(fld)
+	x = UI.CStr(x)
+	Return x
+End Sub
+
+Sub GetBoolean(m As Map, fld As String) As Boolean
+	Dim x As Boolean = m.Get(fld)
+	x = UI.CBool(x)
+	Return x
+End Sub
+
+Sub GetInt(m As Map, fld As String) As Int
+	Dim x As Int = m.Get(fld)
+	x = UI.Cint(x)
+	Return x
+End Sub
+
+Sub GetDouble(m As Map, fld As String) As Double
+	Dim x As Int = m.Get(fld)
+	x = UI.CDbl(x)
+	Return x
+End Sub
+
+Sub GetLong(m As Map, fld As String) As Long
+	Dim x As Int = m.Get(fld)
+	x = UI.CInt(x)
+	Return x
+End Sub
+
+
+

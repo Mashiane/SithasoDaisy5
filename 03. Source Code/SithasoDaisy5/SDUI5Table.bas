@@ -64,7 +64,7 @@ Version=10
 #DesignerProperty: Key: Orientation, DisplayName: PDF Orientation, FieldType: String, DefaultValue: landscape, Description: Orientation for pdf reporting, List: landscape|potrait
 #DesignerProperty: Key: PageBreakRepeat, DisplayName: PDF PageBreakRepeat, FieldType: String, DefaultValue: , Description: Field For Page Break Repeat
 #DesignerProperty: Key: PdfTheme, DisplayName: PDF Theme, FieldType: String, DefaultValue: striped, Description: Pdf theme, List: css|grid|none|plain|striped
-#DesignerProperty: Key: ItemsPerPage, DisplayName: Items Per Page, FieldType: String, DefaultValue: 5, Description: Items Per Page
+#DesignerProperty: Key: ItemsPerPage, DisplayName: Items Per Page, FieldType: String, DefaultValue: 10, Description: Items Per Page
 #DesignerProperty: Key: HasFilter, DisplayName: Has Filter, FieldType: Boolean, DefaultValue: False, Description: Has Filter
 #DesignerProperty: Key: IsCompact, DisplayName: Is Compact, FieldType: Boolean, DefaultValue: False, Description: Is Compact
 #DesignerProperty: Key: NormalCase, DisplayName: Normal Case Titles, FieldType: Boolean, DefaultValue: False, Description: Columns Titles Is Normal Case
@@ -170,7 +170,7 @@ Private Sub Class_Globals
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
 	Public Tag As Object
-	Private iItemsPerPage As Int = 5
+	Private iItemsPerPage As Int = 10
 	Private bHasDeleteAll As Boolean = False
 	Private bHasToolbarUpload As Boolean
 	Private sRawClasses As String
@@ -201,7 +201,7 @@ Private Sub Class_Globals
 	Public Originals As List
 	Private iCurrentPage As Int
 	Private iTotalPages As Int
-	Private sItemsPerPage As String = "5"
+	Private sItemsPerPage As String = "10"
 	Private lastPage As Int
 	Private sComponentSize As String = "md"
 	Private rowclick As Map
@@ -397,7 +397,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sItemsPerPage = Props.GetDefault("ItemsPerPage", "5")
+		sItemsPerPage = Props.GetDefault("ItemsPerPage", "10")
 		sItemsPerPage = UI.CStr(sItemsPerPage)
 		iItemsPerPage = UI.CInt(sItemsPerPage)
 		bVisible = Props.GetDefault("Visible", True)
