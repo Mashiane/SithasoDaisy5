@@ -165,7 +165,7 @@ Private Sub Class_Globals
 	Private bHasDeleteSingle As Boolean
 	Public Rows As List
 	Public Columns As Map
-	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean)
+	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -2906,6 +2906,29 @@ Sub SetColumnComputeValue(colName As String, subName As String)
 		Dim nc As TableColumn
 		nc = Columns.Get(colName)
 		nc.ComputeValue = subName
+		Columns.Put(colName, nc)
+	End If
+End Sub
+'
+'When ever you are adding a row on the table, first "compute the value" of the "colName" column by calling the "subName" sub routine.
+'<code>
+'tbl.SetColumnComputeOptions("agroup", "ComputeAgroupValue")
+'Sub SetColumnComputeOptions(item As Map) As String
+''get the amount for this row
+'dim samount As String = item.get("amount")
+'dim sqta as String = item.get("qta")
+''convert to double
+'Dim totalx As Double = UI.CDbl(samount) * UI.CInt(sqta)
+'totalx = UI.CDbl(totalx)
+'return totalx
+'End Sub
+'</code>
+Sub SetColumnComputeOptions(colName As String, subName As String)
+	colName = colName.ToLowerCase
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn
+		nc = Columns.Get(colName)
+		nc.ComputeOptions = subName
 		Columns.Put(colName, nc)
 	End If
 End Sub
@@ -5812,13 +5835,19 @@ Private Sub BuildRowSelect(Module As Object, fldName As String, fldValu As Strin
 	'
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	'
 	If tc.NothingSelected Then
 		Dim sItem As String = $"<option name="${mName}_0_${fldName}" value="">--Nothing Selected--</option>"$
 		sbOptions.Append(sItem)
 	End If
-	'	Dim rCnt As Int = 0
-	Dim options As Map = tc.options
+	Dim options As Map = CreateMap()
+	If tc.ComputeOptions = "" Then
+		options = tc.options
+	Else
+		Dim subName1 As String = tc.ComputeOptions
+		Dim bp As BANanoPromise = BANano.CallSub(Module, subName1, Array(rowdata))
+		options = BANano.Await(bp)
+	End If
+	'
 	For Each k As String In options.Keys
 		Dim v As String = options.Get(k)
 		Dim xSelected As String = ""
@@ -5940,15 +5969,22 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 	Dim btnColor As String = GetColorFromField("select", bColor, rowdata)
 	Dim creadonly As String = ""
 	If tc.readonly Then creadonly = $"disabled="disabled""$
+	
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	'
 	If tc.NothingSelected Then
 		Dim sItem As String = $"<option name="${mName}_0_${fldName}" value="">--Nothing Selected--</option>"$
 		sbOptions.Append(sItem)
 	End If
-	'	Dim rCnt As Int = 0
-	Dim options As Map = tc.options
+	Dim options As Map = CreateMap()
+	If tc.ComputeOptions = "" Then
+		options = tc.options
+	Else
+		Dim subName1 As String = tc.ComputeOptions
+		Dim bp As BANanoPromise = BANano.CallSub(Module, subName1, Array(rowdata))
+		options = BANano.Await(bp)
+	End If
+	'
 	For Each k As String In options.Keys
 		Dim v As String = options.Get(k)
 		Dim xSelected As String = ""
@@ -5956,6 +5992,7 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 		Dim sItem As String = $"<option name="${mName}_${RowCnt}_${fldName}" ${xSelected} value="${k}">${v}</option>"$
 		sbOptions.Append(sItem)
 	Next
+	'
 	Dim bgColor As String = tc.BGColor
 	If tc.ComputeBackgroundColor <> "" Then
 		Dim subName As String = tc.ComputeBackgroundColor
@@ -7482,17 +7519,17 @@ Sub AddRow(rowdata As Map)
 		'
 		Select Case tc.typeof
 			Case "titleicon"
-				Dim act As String = BuildRowTitleIcon(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTitleIcon(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_icon"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_subtitle"$, "")
 			Case "icontitle"
-				Dim act As String = BuildRowIconTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowIconTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_icon"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_subtitle"$, "")
 			Case "icon"
-				Dim act As String = BuildRowIcon(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowIcon(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				'is icon from records
 				Dim sicon As String = tc.icon
 				Dim theicon As String = ""
@@ -7508,104 +7545,104 @@ Sub AddRow(rowdata As Map)
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_icon"$, "")
 			Case "clicklink"
-				Dim act As String = BuildRowClickLink(mCallBack,fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowClickLink(mCallBack,fldName, fldValu, rowdata, RowCnt, tc))
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, subtitle)
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_clicklink"$, "")
 			Case "link"
-				Dim act As String = BuildRowLink(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowLink(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "color"
-				Dim act As String = BuildRowColor(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowColor(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "website"
-				Dim act As String = BuildRowWebsite(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowWebsite(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "email"
-				Dim act As String = BuildRowEmail(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowEmail(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "toggle"
-				Dim act As String = BuildRowToggle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowToggle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				Dim bchecked As Boolean = UI.CBool(fldValu)
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, bchecked)
 				sbRow.Append(act)
 				changes.Put($"${mName}_${RowCnt}_${fldName}_toggle"$, "")
 			Case "checkbox"
-				Dim act As String = BuildRowCheckBox(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.await(BuildRowCheckBox(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				Dim bchecked As Boolean = UI.CBool(fldValu)
 				If rowdata.ContainsKey(fldName) Then rowdata.Put(fldName, bchecked)
 				sbRow.Append(act)
 				changes.Put($"${mName}_${RowCnt}_${fldName}_checkbox"$, "")
 			Case "range"
-				Dim act As String = BuildRowRange(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowRange(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_range"$, "")
 			Case "progress"
-				Dim act As String = BuildRowProgress(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowProgress(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_progress"$, "")
 			Case "radial"
-				Dim act As String = BuildRowRadial(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowRadial(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_radial"$, "")
 			Case "radiogroup"
-				Dim act As String = BuildRowRadioGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowRadioGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				Dim options As Map = tc.options
 				For Each k As String In options.Keys
 					rchanges.Put($"${mName}_${RowCnt}_${fldName}_${k}_radio"$, "")
 				Next
 				sbRow.Append(act)
 			Case "select"
-				Dim act As String = BuildRowSelect(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowSelect(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				schanges.Put($"${mName}_${RowCnt}_${fldName}_select"$, "")
 			Case "passwordgroup"
-				Dim act As String = BuildRowPasswordGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowPasswordGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				passwords.Put(fldName, fldName)
 			Case "selectgroup"
-				Dim act As String = BuildRowSelectGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowSelectGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				schanges.Put($"${mName}_${RowCnt}_${fldName}_select"$, "")
 				groups_sel.Put(fldName, fldName)
 			Case "textboxgroup"
-				Dim act As String = BuildRowTextBoxGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTextBoxGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				groups.Put(fldName, fldName)
 			Case "dialer"
-				Dim act As String = BuildRowDialer(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowDialer(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				dialers.Put(fldName, fldName)
 			Case "telephone"
-				Dim act As String = BuildRowTelephone(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTelephone(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "textbox"
-				Dim act As String = BuildRowTextBox(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTextBox(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "fileinputprogress"
-				Dim act As String = BuildRowFileInputProgress(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowFileInputProgress(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				fclicks.Put($"${mName}_${RowCnt}_${fldName}_button"$, "")
 				fchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "file"
-				Dim act As String = BuildRowFile(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowFile(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				fchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "password"
-				Dim act As String = BuildRowPassword(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowPassword(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "number"
-				Dim act As String = BuildRowNumber(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowNumber(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "datepicker"
-				Dim act As String = BuildRowDatePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowDatePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				'
@@ -7637,7 +7674,7 @@ Sub AddRow(rowdata As Map)
 				datepickers.Put($"${mName}_${RowCnt}_${fldName}_input"$, dp1)
 				DPValue.Put($"${mName}_${RowCnt}_${fldName}_input"$, fldValu)
 			Case "datetimepicker"
-				Dim act As String = BuildRowDateTimePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.await(BuildRowDateTimePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				'
@@ -7670,7 +7707,7 @@ Sub AddRow(rowdata As Map)
 				datepickers.Put($"${mName}_${RowCnt}_${fldName}_input"$, dp1)
 				DPValue.Put($"${mName}_${RowCnt}_${fldName}_input"$, fldValu)
 			Case "timepicker"
-				Dim act As String = BuildRowTimePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTimePicker(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 				'
@@ -7690,26 +7727,26 @@ Sub AddRow(rowdata As Map)
 				datepickers.Put($"${mName}_${RowCnt}_${fldName}_input"$, dp1)
 				DPValue.Put($"${mName}_${RowCnt}_${fldName}_input"$, fldValu)
 			Case "textarea"
-				Dim act As String = BuildRowTextArea(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTextArea(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				vchanges.Put($"${mName}_${RowCnt}_${fldName}_textarea"$, "")
 			Case "rating"
-				Dim act As String = BuildRowRating(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowRating(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				Dim rCnt As Int = 0
 				For rCnt = 1 To tc.size
 					rchanges.put($"${mName}_${RowCnt}_${fldName}_${rCnt}_rating"$, "")
 				Next
 				sbRow.Append(act)
 			Case "badge"
-				Dim act As String = BuildRowBadge(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowBadge(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_badge"$, "")
 			Case "button"
-				Dim act As String = BuildRowButton(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowButton(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_button"$, "")
 			Case "menu", "menuicon"
-				Dim act As String = BuildRowMenu(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.await(BuildRowMenu(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				Dim options As Map = tc.options
 				For Each k As String In options.Keys
 					menus.Put($"${mName}_${RowCnt}_${fldName}_${k}_li"$, "")
@@ -7717,50 +7754,50 @@ Sub AddRow(rowdata As Map)
 				Next
 				sbRow.Append(act)
 			Case "action"
-				Dim act As String = BuildRowAction(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowAction(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_button"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_icon"$, "")
 			Case "fileaction"
-				Dim act As String = BuildRowFileAction(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowFileAction(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				fclicks.Put($"${mName}_${RowCnt}_${fldName}_button"$, "")
 				fchanges.Put($"${mName}_${RowCnt}_${fldName}_input"$, "")
 			Case "normal", "filesize", "date", "datetime", "money", "thousand"
-				Dim act As String = BuildRowOther(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowOther(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "image"
-				Dim act As String = BuildRowImage(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowImage(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_image"$, "")
 			Case "badgegroup"
-				Dim act As String = BuildRowBadgeGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowBadgeGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "avatargroup"
-				Dim act As String = BuildRowAvatarGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowAvatarGroup(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "avatarplaceholder"
-				Dim act As String = BuildRowAvatarPlaceholder(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowAvatarPlaceholder(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "avatar"
-				Dim act As String = BuildRowAvatar(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.await(BuildRowAvatar(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_avatar"$, "")
 			Case "titlesubtitle"
-				Dim act As String = BuildRowTitleSubtitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowTitleSubtitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 			Case "badgeavatartitle"
-				Dim act As String = BuildRowBadgeAvatarTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowBadgeAvatarTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_avatar"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_title"$, "")
 			Case "avatartitle"
-				Dim act As String = BuildRowAvatarTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowAvatarTitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_avatar"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_title"$, "")
 			Case "avatartitlesubtitle"
-				Dim act As String = BuildRowAvatarTitleSubtitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc)
+				Dim act As String = BANano.Await(BuildRowAvatarTitleSubtitle(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				sbRow.Append(act)
 				clicks.put($"${mName}_${RowCnt}_${fldName}_avatar"$, "")
 				clicks.put($"${mName}_${RowCnt}_${fldName}_title"$, "")

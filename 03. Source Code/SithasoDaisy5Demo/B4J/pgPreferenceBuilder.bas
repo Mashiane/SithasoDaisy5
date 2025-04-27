@@ -68,7 +68,7 @@ Sub Show(MainApp As SDUI5App)
 	
 	'
 	tblDesign.AddToolbarActionButtonIcon("form", "./assets/mobile-screen-button-solid.svg", "#6a639e", "#ffffff")
-	tblDesign.AddToolbarActionButtonIcon("table", "./assets/table-list-solid.svg", "#880e4f", "#ffffff")
+	tblDesign.AddToolbarActionButtonIcon("tableprops", "./assets/table-list-solid.svg", "#880e4f", "#ffffff")
 	tblDesign.AddToolbarActionButtonIcon("code", "./assets/code-solid.svg", "#53209d", "#ffffff")
 	tblDesign.MoveBackButton
 	
@@ -95,6 +95,8 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetColumnVisible("propsort", False)
 	tblDesign.AddColumnCheckBox("propfocus", "Focus On", "success", False)
 	tblDesign.SetColumnVisible("propfocus", False)
+	tblDesign.AddColumnCheckBox("propcenterchildren", "Center Children", "success", False)
+	tblDesign.SetColumnVisible("propcenterchildren", False)
 	'
 	
 	tblDesign.AddColumnSelect("propcolumnvertical", "Column Vertical", False, True, UI.ListToSelectOptionsSort(colVertical))
@@ -137,6 +139,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("propcomputebgcolor")
 	tblDesign.SetHeaderVerticalLR("propcomputetextcolor")
 	tblDesign.SetHeaderVerticalLR("propcomputeclass")
+	tblDesign.SetHeaderVerticalLR("propcenterchildren")
 	
 	'add the components to have
 	AddMenuItem("Button", "Button", "Buttons allow the user to take actions or make choices.")
@@ -230,13 +233,12 @@ Sub GetFieldNames(tblName As String) As Map
 	Return kv
 End Sub
 
-Sub tblDesign_table(e As BANanoEvent)
+Sub tblDesign_tableprops(e As BANanoEvent)
 	e.PreventDefault
 	Dim thisTable As String = BANano.GetLocalStorage2("thistable")
 	thisTable = app.UI.CStr(thisTable)
 	If thisTable = "" Then Return
 	Dim item As Map = BANano.FromJson(thisTable)
-	Log(item)
 	Dim balphachooser As Boolean = app.GetBoolean(item, "alphachooser")
 	Dim salphachooserfield As String = app.GetString(item, "alphachooserfield")
 	Dim bcolumnchooser As Boolean = app.GetBoolean(item, "columnchooser")
@@ -258,6 +260,7 @@ Sub tblDesign_table(e As BANanoEvent)
 	Dim result As List = BANano.Await(jsonQ.Exec)
 	'
 	tblPreview.Title = splural
+	tblPreview.ClearToolbarActions
 	tblPreview.ItemsPerPage = "10"
 	tblPreview.HasAddnew = True
 	tblPreview.AddNewTooltip = $"Add new ${ssingular}"$
@@ -595,10 +598,15 @@ Sub tblDesign_form(e As BANanoEvent)
 		'
 		Dim spropcol As String = fld.Get("propcol")
 		Dim sproprow As String = fld.Get("proprow")
+		Dim bpropcenterchildren As Boolean = app.GetBoolean(fld, "propcenterchildren")
+		'
 		spropcol = app.UI.CStr(spropcol)
 		spropcol = app.UI.CStr(spropcol)
 		'add the row and column 
 		mdlPreview.Form.AddRC(sproprow, spropcol)
+		If bpropcenterchildren Then 
+			mdlPreview.Form.CenterRC(sproprow, spropcol)
+		End If
 	Next
 	'prepare the grid
 	mdlPreview.Form.PrepareRC
@@ -639,11 +647,16 @@ Sub tblDesign_code(e As BANanoEvent)
 			'
 			Dim spropcol As String = fld.Get("propcol")
 			Dim sproprow As String = fld.Get("proprow")
+			Dim bpropcenterchildren As Boolean = app.GetBoolean(fld, "propcenterchildren")
+			'
 			spropcol = app.UI.CStr(spropcol)
 			spropcol = app.UI.CStr(spropcol)
 		
 			'add the row and column
 			mdlPreview.Form.AddRC(sproprow, spropcol)
+			If bpropcenterchildren Then
+				mdlPreview.Form.CenterRC(sproprow, spropcol)
+			End If
 		Next
 		mdlPreview.Form.PrepareRC
 		mdlPreview.Form.IsLive = False
@@ -734,6 +747,7 @@ private Sub AddProperties
 	compToAdd.AddPropertyCheckBox("propactive", "Active", True, "success")
 	compToAdd.AddPropertyCheckBox("propsort", "Order By", False, "success")
 	compToAdd.AddPropertyCheckBox("propfocus", "Focus", False, "success")
+	compToAdd.AddPropertyCheckBox("propcenterchildren", "Center Children", False, "success")
 	compToAdd.AddPropertyCheckBox("propblock", "Block", False, "success")
 	compToAdd.AddPropertyTextBox("propupdate", "Update Property", "", False)
 	compToAdd.AddPropertyTextBox("proptermscaption", "T & C Caption", "Terms and Conditions", False)
@@ -820,7 +834,7 @@ Sub ShowPropertiesByType(item As String)
 	BANano.Await(compToAdd.HideAllProperties)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
-	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype")))
+	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype", "propcenterchildren")))
 	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propcolumnvertical", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
 	BANano.Await(compToAdd.ShowProperty(Array("propforeigntable","propforeignfield","propforeigndisplayfield","propforeigndisplayfield1","propforeigndisplayfield2"))) 
 	BANano.Await(compToAdd.ShowProperty(Array("propcomputevalue","propcomputering","propcomputecolor","propcomputebgcolor","propcomputetextcolor","propcomputeclass")))

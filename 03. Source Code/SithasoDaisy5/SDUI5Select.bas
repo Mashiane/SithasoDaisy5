@@ -661,6 +661,7 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	If m.Size = 0 Then Return
 	Dim sb As StringBuilder
 	sb.Initialize 
+	sb.Append($"<option value="" selected>--Nothing Selected--</option>""$)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		k = UI.CleanID(k)

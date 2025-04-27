@@ -2211,6 +2211,12 @@ Sub SetCenterChildren(mElement As BANanoElement, b As Boolean)
 	End If
 End Sub
 
+Sub SetCenterChildrenByID(sID As String, b As Boolean)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetCenterChildren(mElement, b)
+End Sub
+
 Sub SetField(mElement As BANanoElement, k As String, v As String)  
 	If mElement = Null Then Return
 	mElement.SetField(k, v)

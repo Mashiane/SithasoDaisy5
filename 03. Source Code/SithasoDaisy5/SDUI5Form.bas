@@ -93,6 +93,7 @@ Sub Class_Globals
 	Public MdlName As String
 	Private IntGrid As StringBuilder
 	Public GridCode As String
+	Private centerMap As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -109,6 +110,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	RCCenterOnParent.Initialize
 	formmatrix.Initialize
 	matrixMap.Initialize
+	centerMap.Initialize 
 	OffsetsM.Initialize
 	SizesM.Initialize
 	GridRowsM.Initialize
@@ -128,6 +130,7 @@ Sub Clear
 	RCCenterOnParent.Initialize
 	formmatrix.Initialize
 	matrixMap.Initialize
+	centerMap.Initialize 
 	OffsetsM.Initialize
 	SizesM.Initialize
 	GridRowsM.Initialize
@@ -150,6 +153,19 @@ Sub AddRC(r As Int, c As Int)
 		Dim skey As String = $"${srow}.${scol}"$
 		If formmatrix.IndexOf(skey) = -1 Then
 			formmatrix.Add(skey)
+		End If
+	End If
+End Sub
+
+Sub CenterRC(r As Int, c As Int)
+	r = UI.CInt(r)
+	c = UI.CInt(c)
+	If r >= 1 And c >= 1 Then
+		Dim scol As String = UI.PadRight(c, 2, "0")
+		Dim srow As String = UI.PadRight(r, 2, "0")
+		Dim skey As String = $"${srow}.${scol}"$
+		If centerMap.ContainsKey(skey) = False Then
+			centerMap.put(skey, skey)
 		End If
 	End If
 End Sub
@@ -245,8 +261,30 @@ Sub BuildGridFromRC
 		End Select
 	Next
 	If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.BuildGrid)"$)
+	'do we have centered items
+	Dim centerSort As List
+	centerSort.Initialize
+	For Each k As String In centerMap.Keys
+		centerSort.Add(k)
+	Next
+	centerSort.Sort(True)
+	For Each k As String In centerSort
+		Dim sr As String = UI.MvField(k,1,".")
+		Dim sc As String = UI.MvField(k,2,".")
+		sr = UI.CInt(sr)
+		sc = UI.CInt(sc)
+		If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.CenterRC(${sr}, ${sc}))"$)
+	Next
 	GridCode = IntGrid.tostring
 	BANano.Await(BuildGrid)
+	'
+	For Each k As String In centerSort
+		Dim sr As String = UI.MvField(k,1,".")
+		Dim sc As String = UI.MvField(k,2,".")
+		sr = UI.CInt(sr)
+		sc = UI.CInt(sc)
+		BANano.Await(CenterRC(sr, sc))
+	Next
 End Sub
 
 ' returns the element id
@@ -560,6 +598,11 @@ Sub CellID(r As Int, c As Int) As String
 		rid = $"${mName}r${r}"$
 	End If
 	Return rid
+End Sub
+
+Sub CellCenter(r As Int, c As Int)
+	Dim cid As String = CellID(r, c)
+	UI.SetCenterChildrenByID(cid, True)
 End Sub
 
 Sub LinkExisting()

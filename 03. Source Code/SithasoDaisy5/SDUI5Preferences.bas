@@ -2420,6 +2420,7 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>Select ${Title}</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" value="">--Nothing Selected--</option>""$)
 	For Each k As String In Options.Keys
 		If k = "" Then Continue
 		Dim v As String = Options.Get(k)
@@ -3522,6 +3523,7 @@ Sub AddPropertySelect(Key As String, Title As String, DefaultValue As String, Re
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	sbOptions.Append($"<option name="${mName}_${Key}" disabled selected>Select ${Title}</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" value="">--Nothing Selected--</option>""$)
 	For Each k As String In Options.Keys
 		If k = "" Then Continue
 		Dim v As String = Options.Get(k)
@@ -3539,7 +3541,7 @@ Sub SetPropertySelectMap(Key As String, Options As Map)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" value="" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options.Keys
 		Dim v As String = Options.Get(k)
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${v}</option>"$
@@ -3564,7 +3566,7 @@ Sub SetPropertySelectItemsList(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" value="" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
 		sbOptions.Append(sItem)
@@ -3602,7 +3604,7 @@ Sub SetPropertySelectItemsListSort(Key As String, Options As List)
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
-	sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
+	sbOptions.Append($"<option name="${mName}_${Key}" value="" selected>--Nothing Selected--</option>""$)
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
 		sbOptions.Append(sItem)
@@ -3618,7 +3620,7 @@ Sub SetPropertySelectItemsOptions(Key As String, delim As String, bSort As Boole
 	sbOptions.Initialize
 	BANano.GetElement($"#${mName}_${Key}"$).Empty
 	If bAddNothingSelected Then
-		sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
+		sbOptions.Append($"<option name="${mName}_${Key}" value="" selected>--Nothing Selected--</option>""$)
 	End If
 	For Each k As String In options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$
@@ -3633,7 +3635,7 @@ Sub SetPropertySelectItemsList1(Key As String, bAddNothingSelected As Boolean, O
 	Dim sbOptions As StringBuilder
 	sbOptions.Initialize
 	If bAddNothingSelected Then
-		sbOptions.Append($"<option name="${mName}_${Key}" selected>--Nothing Selected--</option>""$)
+		sbOptions.Append($"<option name="${mName}_${Key}" value="" selected>--Nothing Selected--</option>""$)
 	End If
 	For Each k As String In Options
 		Dim sItem As String = $"<option name="${mName}_${Key}" value="${k}">${k}</option>"$

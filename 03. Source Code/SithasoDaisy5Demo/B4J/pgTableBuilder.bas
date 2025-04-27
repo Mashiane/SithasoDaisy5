@@ -32,16 +32,20 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnTextBox("tablename", "Table Name",False)
 	tblDesign.AddColumnTextBox("singular", "Singular", False)
 	tblDesign.AddColumnTextBox("plural", "Plural", False)
-	tblDesign.AddColumnTextBox("displayvalue", "Display Value", False)
-	tblDesign.AddColumnTextBox("primarykey", "Primary Key", False)
-	tblDesign.AddColumnTextBox("alphachooserfield", "Alpha Chooser Field", False)
-	tblDesign.AddColumnCheckBox("autoincrement", "Auto Increment", "success", False)
+	tblDesign.AddColumnSelect("displayvalue", "Display Value", False, True, CreateMap())
+	tblDesign.SetColumnComputeOptions("displayvalue", "ComputeFields")
+	tblDesign.AddColumnSelect("primarykey", "Primary Key", False, True, CreateMap())
+	tblDesign.SetColumnComputeOptions("primarykey", "ComputeFields")
 	tblDesign.AddColumnCheckBox("alphachooser", "Alpha Chooser", "success", False)
+	tblDesign.AddColumnSelect("alphachooserfield", "Alpha Chooser Field", False, True, CreateMap())
+	tblDesign.SetColumnComputeOptions("alphachooserfield", "ComputeFields")
+	tblDesign.AddColumnCheckBox("autoincrement", "Auto Increment", "success", False)
 	tblDesign.AddColumnCheckBox("columnchooser", "Column Chooser", "success", False)
 	tblDesign.AddColumnCheckBox("usetable", "Use Table", "success", False)
 	tblDesign.AddColumnCheckBox("usemodal", "Use Modal", "success", False)
 	tblDesign.AddDesignerColums
 	'
+	tblDesign.AddColumnAction("list", "List", "./assets/ellipsis-solid.svg", "#4f7d09", "#ffffff")
 	tblDesign.AddColumnAction("fields", "Fields", "./assets/table-cells-solid.svg", "#ff0000", "#ffffff")
 	tblDesign.AddColumnAction("code", "MySQL REST", "./assets/code-solid.svg", "#53209d", "#ffffff")
 	tblDesign.MoveBackButton
@@ -56,22 +60,50 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.SetHeaderVerticalLR("autoincrement")
 	tblDesign.SetHeaderVerticalLR("alphachooser")
 	tblDesign.SetHeaderVerticalLR("columnchooser")
+	tblDesign.SetHeaderVerticalLR("list")
+	'
 	prefTable.AddPropertyTextBox("id", "#", "", True)
 	prefTable.SetPropertyVisible("id", False)
 	prefTable.AddPropertyTextBox("tablename", "Table Name", "", True)
 	prefTable.AddPropertyTextBox("singular", "Singular", "", True)
 	prefTable.AddPropertyTextBox("plural", "Plural", "", True)
-	prefTable.AddPropertyTextBox("displayvalue", "Display Value", "", True)
-	prefTable.AddPropertyTextBox("primarykey", "Primary Key", "", True)
+	prefTable.AddPropertySelect("displayvalue", "Display Value", "", True, CreateMap())
+	prefTable.AddPropertySelect("primarykey", "Primary Key", "", True, CreateMap())
 	prefTable.AddPropertyCheckBox("autoincrement", "Auto Increment", False, "success")
 	prefTable.AddPropertyCheckBox("alphachooser", "Alpha Chooser", False, "success")
-	prefTable.AddPropertyTextBox("alphachooserfield", "Alpha Chooser Field", "", True)
+	prefTable.AddPropertySelect("alphachooserfield", "Alpha Chooser Field", "", True, CreateMap())
 	prefTable.AddPropertyCheckBox("columnchooser", "Column Chooser", False, "success")
 	prefTable.AddPropertyCheckBox("usetable", "Use Table", False, "success")
 	prefTable.AddPropertyCheckBox("usemodal", "Use Modal", False, "success")
 	'
 	BANano.Await(MountTables)
 End Sub
+
+Private Sub ComputeFields(item As Map) As Map
+	Dim stablename As String = item.Get("tablename")
+	Dim flds As Map = BANano.Await(GetFieldNames(stablename))
+	Return flds
+End Sub
+
+Sub GetFieldNames(tblName As String) As Map
+	Dim dbFields As SDUILocalStorage
+	dbFields.Initialize(tblName, "id")
+	dbFields.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
+	dbFields.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
+	BANano.Await(dbFields.Records)
+	'
+	Dim kv As Map = CreateMap()
+	Dim jsonQ As SDUIJSONQuery
+	jsonQ.Initialize(dbFields.result)
+	jsonQ.OrderAsc("propname")
+	Dim result As List = BANano.Await(jsonQ.Exec)
+	For Each m As Map In result
+		Dim stablename As String = m.Get("propname")
+		kv.Put(stablename, stablename)
+	Next
+	Return kv
+End Sub
+
 
 Private Sub tblDesign_Download (e As BANanoEvent)
 	app.pagepause
@@ -214,6 +246,17 @@ private Sub tblDesign_schema(e As BANanoEvent)
 	app.pageresume
 End Sub
 
+private Sub tblDesign_listRow(Row As Int, Item As Map)
+	Dim stablename As String = Item.Get("tablename")
+	Dim bresp As Boolean = BANano.Await(app.ShowSwalConfirmWait(stablename, "Are you sure you want to set the fields to list?", "Yes", "No"))
+	If bresp = False Then Return
+	Dim props As List = BANano.Await(BANano.GetFileAsJSON($"./assets/list.json?${DateTime.Now}"$, Null))
+	Private lsTB As SDUILocalStorage
+	lsTB.Initialize(stablename, "id")
+	lsTB.Records = props
+	app.ShowToastSuccess($"${stablename} fields have been set to id and name!"$)
+End Sub
+
 Private Sub tblDesign_codeRow (Row As Int, item As Map)
 	Dim clsTC As clsTableCode
 	BANano.Await(clsTC.Initialize(app, item))
@@ -251,6 +294,11 @@ Private Sub tblDesign_EditRow (Row As Int, item As Map)
 	SDUI5Column4.Visible = True
 	Mode = "U"
 	prefTable.Title = "Edit Table"
+	Dim stablename As String = item.Get("tablename")
+	Dim flds As Map = BANano.Await(GetFieldNames(stablename))
+	prefTable.SetPropertySelectMap("displayvalue", flds)
+	prefTable.SetPropertySelectMap("primarykey", flds)
+	prefTable.SetPropertySelectMap("alphachooserfield", flds)
 	prefTable.PropertyBag = item
 End Sub
 
@@ -259,6 +307,11 @@ Private Sub tblDesign_CloneRow (Row As Int, item As Map)
 	SDUI5Column4.Visible = True
 	Mode = "C"
 	item.Put("id", lsDB.NextID)
+	Dim stablename As String = item.Get("tablename")
+	Dim flds As Map = BANano.Await(GetFieldNames(stablename))
+	prefTable.SetPropertySelectMap("displayvalue", flds)
+	prefTable.SetPropertySelectMap("primarykey", flds)
+	prefTable.SetPropertySelectMap("alphachooserfield", flds)
 	prefTable.PropertyBag = item
 	app.ShowToastInfo("Save the record after update")
 End Sub
@@ -285,6 +338,10 @@ Private Sub tblDesign_Add (e As BANanoEvent)
 	SDUI5Column3.Size = 8
 	SDUI5Column4.Visible = True
 	Mode = "C"
+	Dim flds As Map = CreateMap()
+	prefTable.SetPropertySelectMap("displayvalue", flds)
+	prefTable.SetPropertySelectMap("primarykey", flds)
+	prefTable.SetPropertySelectMap("alphachooserfield", flds)
 	prefTable.SetPropertyBagDefaults
 End Sub
 
@@ -320,6 +377,8 @@ Private Sub prefTable_Yes_Click (e As BANanoEvent)
 	End If
 	'the bag is valid, execute a preview
 	Dim bag As Map = BANano.Await(prefTable.PropertyBag)
+	Log(bag)
+	'
 	Dim sid As String = bag.Get("id")
 	'
 	Select Case Mode
