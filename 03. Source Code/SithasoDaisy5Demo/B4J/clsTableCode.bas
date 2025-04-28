@@ -1185,6 +1185,11 @@ private Sub BuildAddMode
 		End If		
 		AddCode(sb, $"'set the default properties"$)
 		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
+		If bautoincrement = False Then
+			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = app.NextID)"$)
+		Else
+			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = -1)"$)
+		End If
 		AddCode(sb, $"mdl${properTable}.Show"$)
 		If focuson.Size > 0 Then
 			AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
@@ -1305,7 +1310,11 @@ private Sub BuildCloneMode
 		End If
 		AddCode(sb, $"'set the default properties"$)
 		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
-		AddCode(sb, $"item.Put("${sprimarykey}", app.NextID)"$)
+		If bautoincrement = False Then
+			AddCode(sb,  $"item.Put("${sprimarykey}", app.NextID)"$)
+		Else
+			AddCode(sb,  $"item.Put("${sprimarykey}", "-1")"$)
+		End If
 		For Each record As Map In properties
 			Dim spropname As String = record.Get("propname")
 			Dim bpropactive As Boolean = record.Get("propactive")
@@ -1337,7 +1346,11 @@ private Sub BuildCloneMode
 	End If
 	AddCode(sb, $"'set the properties"$)
 	AddCode(sb, $"banano.Await(pref${properTable}.SetPropertyBagDefaults)"$)
-	AddCode(sb, $"item.Put("${sprimarykey}", app.NextID)"$)
+	If bautoincrement = False Then
+		AddCode(sb,  $"item.Put("${sprimarykey}", app.NextID)"$)
+	Else
+		AddCode(sb,  $"item.Put("${sprimarykey}", "-1")"$)
+	End If
 	For Each record As Map In properties
 		Dim spropname As String = record.Get("propname")
 		Dim bpropactive As Boolean = record.Get("propactive")
