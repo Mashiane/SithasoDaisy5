@@ -1186,9 +1186,9 @@ private Sub BuildAddMode
 		AddCode(sb, $"'set the default properties"$)
 		AddCode(sb, $"BANano.Await(Set${properTable}Defaults)"$)
 		If bautoincrement = False Then
-			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = app.NextID)"$)
+			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = app.NextID"$)
 		Else
-			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = -1)"$)
+			AddCode(sb,  $"${GetComponentID(sprimarykey)}.Value = "-1""$)
 		End If
 		AddCode(sb, $"mdl${properTable}.Show"$)
 		If focuson.Size > 0 Then
@@ -1213,7 +1213,7 @@ private Sub BuildAddMode
 		If bautoincrement = False Then
 			AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", app.NextID)"$)
 		Else
-			AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", -1)"$)
+			AddCode(sb, $"pref${properTable}.SetPropertyValue("${sprimarykey}", "-1")"$)
 		End If
 		If focuson.Size > 0 Then
 			AddCode(sb, $"'focus on the ${focuson.Get(0)}"$)
