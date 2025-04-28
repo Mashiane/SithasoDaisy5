@@ -313,7 +313,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '			setShadow(sShadow)
 
 			mElement = mTarget.Append($"[BANCLEAN]
-				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 					<div id="${mName}_tooltip" class="tooltip" data-tip="${sValue}">
 						<label id="${mName}_host" class="flex items-center w-full gap-2">

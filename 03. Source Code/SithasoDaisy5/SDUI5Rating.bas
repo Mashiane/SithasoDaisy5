@@ -291,7 +291,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sInputType
 	Case "legend"	
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
   				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}" class="rating"></div>
 				<div id="${mName}_hint" class="fieldset-label hidden">${sHint}</div>

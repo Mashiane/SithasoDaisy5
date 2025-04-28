@@ -23,6 +23,11 @@ Version=10
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -68,6 +73,11 @@ Sub Class_Globals
 	Private sCheckedIcon As String = ""
 	Private sUncheckedColor As String = ""
 	Private sUncheckedIcon As String = ""
+	Private sBackgroundColor As String = "base-200"
+	Private bBorder As Boolean = True
+	Private sBorderColor As String = "base-300"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -255,6 +265,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckedIcon = UI.CStr(sCheckedIcon)
 		sUncheckedIcon = Props.GetDefault("UncheckedIcon", "")
 		sUncheckedIcon = UI.CStr(sUncheckedIcon)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackgroundColor = UI.CStr(sBackgroundColor)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = UI.CBool(bBorder)
+		sBorderColor = Props.GetDefault("BorderColor", "base-300")
+		sBorderColor = UI.CStr(sBorderColor)
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = UI.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	
 	If sParentID <> "" Then
@@ -274,16 +295,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sToggleType
 	Case "legend"
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
 				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
-  					<input id="${mName}" type="checkbox" class="toggle">
-						<svg-renderer id="${mName}_checkedicon"    aria-label="enabled" data-js="enabled" fill="currentColor" data-src="${sCheckedIcon}" class="hidden"></svg-renderer>
-						<svg-renderer id="${mName}_uncheckedicon"    aria-label="disabled" data-js="enabled" fill="currentColor" data-src="${sUncheckedIcon}" class="hidden"></svg-renderer>
-  					</input>
+  					<input id="${mName}" type="checkbox" class="toggle"></input>
 					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</fieldset>"$).Get("#" & mName)
+			setBackgroundColor(sBackgroundColor)
+			setBorder(bBorder)
+			setBorderColor(sBorderColor)
+			setRoundedBox(bRoundedBox)
+			setShadow(sShadow)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} toggle" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 	Case "left-label"
@@ -321,6 +344,83 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setUncheckedColor(sUncheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+'get Legend
+Sub getLegend As String
+	Return sLegend
+End Sub
+
+
+'set Background Color
+Sub setBackgroundColor(s As String)			'ignoredeadcode
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If sToggleType <> "legend" Then Return
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_control"$, sBackgroundColor)
+End Sub
+
+'set Border
+Sub setBorder(b As Boolean)				'ignoredeadcode
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "border")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "border")
+	End If
+End Sub
+
+'set Border Color
+Sub setBorderColor(s As String)			'ignoredeadcode
+	sBorderColor = s
+	CustProps.put("BorderColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBorderColorByID($"${mName}_control"$, s)
+End Sub
+
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)			'ignoredeadcode
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClassByID($"${mName}_control"$, "rounded-box")
+	Else
+		UI.RemoveClassByID($"${mName}_control"$, "rounded-box")
+	End If
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)					'ignoredeadcode
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadowByID($"${mName}_control"$, s)
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+'get Border Color
+Sub getBorderColor As String
+	Return sBorderColor
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+'get Shadow
+Sub getShadow As String
+	Return sShadow
 End Sub
 
 Sub Focus
@@ -483,10 +583,7 @@ End Sub
 Sub getLabel As String
 	Return sLabel
 End Sub
-'get Legend
-Sub getLegend As String
-	Return sLegend
-End Sub
+
 'get Required
 Sub getRequired As Boolean
 	Return bRequired

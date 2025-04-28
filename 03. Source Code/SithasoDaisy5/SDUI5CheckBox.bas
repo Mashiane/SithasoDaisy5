@@ -301,9 +301,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sCheckBoxType
 		Case "legend"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="${xclasses} fieldset rounded-sm" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
-				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
+				<label id="${mName}_labelhost" class="mt-1.5 fieldset-label flex gap-2 items-center cursor-pointer">
   					<input id="${mName}" type="checkbox" class="checkbox"></input>
   					<span id="${mName}_label">${sLabel}</span>
 				</label>

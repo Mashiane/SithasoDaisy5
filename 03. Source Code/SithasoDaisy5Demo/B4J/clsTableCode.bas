@@ -129,6 +129,11 @@ Sub Class_Globals
 	Private spropprivacyurl As String
 	Private bpropblock As Boolean
 	Private spropaction As String
+	Private bpropborder As Boolean
+	Private spropbordercolor As String 
+	Private spropbgcolor As String
+	Private spropmargin As String
+	Private sproppadding As String
 End Sub
 
 'showializes the object. You can add parameters to this method if needed.
@@ -803,7 +808,14 @@ private Sub BuildTableColumns
 		spropstep = app.UI.CStr(spropstep)
 		Dim sRawpropoptions As String = prop.Get("propoptions")
 		sRawpropoptions = app.UI.CStr(sRawpropoptions)
-		Dim bPropMultiple As Boolean = prop.Get("propmultiple")
+		Dim bPropMultiple As Boolean = prop.Get("propmultiple")		
+		'
+		bpropborder = app.GetBoolean(prop, "propborder")
+		spropbgcolor = app.GetString(prop, "propbgcolor")
+		spropbordercolor = app.GetString(prop, "propbordercolor")
+		spropmargin = app.GetString(prop, "propmargin")
+		sproppadding = app.GetString(prop, "proppadding")
+		spropdatatype = app.GetString(prop, "propdatatype")
 		'		
 		bpropcolumnvisible = app.UI.CBool(bpropcolumnvisible)
 		bpropactive = app.UI.CBool(bpropactive)
@@ -820,6 +832,7 @@ private Sub BuildTableColumns
 		'
 		If bpropactive = False Then Continue
 		If spropcolumntype = "None" Then Continue
+		If spropdatatype = "None" Then Continue
 		'
 		Select Case spropcolumntype
 		Case "Select", "SelectFromList", "SelectGroup"
@@ -1941,7 +1954,7 @@ private Sub BuildPreferences(mName As String)
 				spropvalue = app.UI.CBool(spropvalue)
 				sb.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropactivecolor}")"$).Append(CRLF)
 				sb.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
-			Case "Toggle"
+			Case "Toggle", "ToggleLegend"
 				spropvalue = app.UI.CBool(spropvalue)
 				sb.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
 				sb.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
@@ -2095,6 +2108,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 		spropappend = app.UI.CStr(spropappend)
 		sproplocale = app.UI.CStr(sproplocale)
 		If sproplocale = "" Then sproplocale = "en"
+		bpropborder = app.GetBoolean(record, "propborder")
+		spropbgcolor = app.GetString(record, "propbgcolor")
+		spropbordercolor = app.GetString(record, "propbordercolor")
+		spropmargin = app.GetString(record, "propmargin")
+		sproppadding = app.GetString(record, "proppadding")
 		'
 		spropmaxlen = record.getdefault("propmaxlen","")
 		spropmaxlen = app.UI.CStr(spropmaxlen)
@@ -2150,6 +2168,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			btn.Block = bpropblock
 			btn.LeftIcon = spropprepend
 			btn.RightIcon = spropappend
+			btn.MarginAXYTBLR = spropmargin
+			btn.PaddingAXYTBLR = sproppadding
 			btn.ParentID = mpos
 			btn.AddComponent
 				'
@@ -2162,6 +2182,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			AddCode(sbC, $"${spropname2}.Block = ${bpropblock}"$)
 			AddCode(sbC, $"${spropname2}.LeftIcon = "${spropprepend}""$)
 			AddCode(sbC, $"${spropname2}.RightIcon = "${spropappend}""$)
+			AddCode(sbC, $"${spropname2}.MarginAXYTBLR = "${spropmargin}""$)
+			AddCode(sbC, $"${spropname2}.PaddingAXYTBLR = "${sproppadding}""$)
 			AddCode(sbC, $"${spropname2}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 			AddCode(sbC, $"BANano.Await(${spropname2}.AddComponent)"$)
 		Case "Dialer"
@@ -2178,9 +2200,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			txt.MinValue = spropstart
 			txt.StepValue = spropstep
 			txt.MaxValue = spropmax
-			txt.BackgroundColor = ""
-			txt.Border = False
-			txt.BorderColor = ""
+			txt.BackgroundColor = spropbgcolor
+			txt.Border = bpropborder
+			txt.BorderColor = spropbordercolor
+			txt.MarginAXYTBLR = spropmargin
+			txt.PaddingAXYTBLR = sproppadding
 			txt.ParentID = mpos
 			txt.AddComponent
 				'
@@ -2198,9 +2222,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.MinValue = "${spropstart}""$)
 				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
 				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				
@@ -2225,9 +2251,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2244,9 +2272,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				
@@ -2271,9 +2301,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			sel.AppendIcon = spropappend
 				sel.Enabled = bpropenabled
 				sel.Visible = bpropvisible
-				sel.BackgroundColor = ""
-				sel.Border = False
-				sel.BorderColor = ""
+				sel.BackgroundColor = spropbgcolor
+				sel.Border = bpropborder
+				sel.BorderColor = spropbordercolor
+				sel.MarginAXYTBLR = spropmargin
+				sel.PaddingAXYTBLR = sproppadding
 				sel.ParentID = mpos
 				sel.AddComponent
 				'
@@ -2291,9 +2323,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				
@@ -2319,9 +2353,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
 				txt.MaxLength = spropmaxlen
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2340,9 +2376,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
 				AddCode(sbC, $"${spropname1}.MaxLength = "${spropmaxlen}""$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2370,9 +2408,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2393,9 +2433,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2423,9 +2465,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2446,9 +2490,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2476,9 +2522,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2498,9 +2546,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2527,9 +2577,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2549,9 +2601,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2575,9 +2629,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2594,9 +2650,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2620,9 +2678,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -2639,9 +2699,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2657,6 +2719,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			lbl.Initialize(Me, spropname1, spropname1)
 			lbl.TextTag = spropsize
 			lbl.Text = sproptitle
+				lbl.MarginAXYTBLR = spropmargin
+				lbl.PaddingAXYTBLR = sproppadding
 				lbl.ParentID = mpos
 				lbl.AddComponent
 				
@@ -2665,6 +2729,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			lnk.Initialize(Me, spropname1, spropname1)
 				lnk.Text = sproptitle
 				lnk.Href = spropvalue
+				lnk.MarginAXYTBLR = spropmargin
+				lnk.PaddingAXYTBLR = sproppadding
 				lnk.ParentID = mpos
 				lnk.AddComponent
 		Case "TextArea"
@@ -2679,9 +2745,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			txta.Enabled = bpropenabled
 			txta.Visible = bpropvisible
 			txta.rows = sproprows
-				txta.BackgroundColor = ""
-				txta.Border = False
-				txta.BorderColor = ""
+				txta.BackgroundColor = spropbgcolor
+				txta.Border = bpropborder
+				txta.BorderColor = spropbordercolor
+				txta.MarginAXYTBLR = spropmargin
+				txta.PaddingAXYTBLR = sproppadding
 				txta.ParentID = mpos
 				txta.AddComponent
 				'
@@ -2697,9 +2765,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.rows = "${sproprows}""$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2720,9 +2790,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			fi.Accept = spropaccept
 			fi.Visible = bpropvisible
 			fi.Enabled = bpropenabled
-				fi.BackgroundColor = ""
-				fi.Border = False
-				fi.BorderColor = ""
+				fi.BackgroundColor = spropbgcolor
+				fi.Border = bpropborder
+				fi.BorderColor = spropbordercolor
+				fi.MarginAXYTBLR = spropmargin
+				fi.PaddingAXYTBLR = sproppadding
 				fi.ParentID = mpos
 				fi.AddComponent
 				'
@@ -2735,9 +2807,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2763,7 +2837,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			fi.IconSize = spropiconsize
 				fi.Color = spropcolor
 				fi.IconColor = sPropTextColor
-			
+				fi.MarginAXYTBLR = spropmargin
+				fi.PaddingAXYTBLR = sproppadding
 '			fi.Multiple = spropm
 			fi.Visible = bpropvisible
 				fi.ParentID = mpos
@@ -2782,6 +2857,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
 				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BaNano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2809,6 +2886,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				fi.Color = spropcolor
 				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
+				fi.MarginAXYTBLR = spropmargin
+				fi.PaddingAXYTBLR = sproppadding
 				fi.ParentID = mpos
 				fi.AddComponent
 				'
@@ -2825,6 +2904,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
 				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANAno.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2852,6 +2933,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				fi.Color = spropcolor
 				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
+				fi.MarginAXYTBLR = spropmargin
+				fi.PaddingAXYTBLR = sproppadding
 				fi.ParentID = mpos
 				fi.AddComponent
 				'
@@ -2868,6 +2951,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
 				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2896,6 +2981,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			fi.Color = spropcolor
 				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
+				fi.MarginAXYTBLR = spropmargin
+				fi.PaddingAXYTBLR = sproppadding
 				fi.ParentID = mpos
 				fi.AddComponent
 				'
@@ -2912,6 +2999,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
 				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2937,6 +3026,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			avt.RingOffset = spropringoffset
 			avt.RingOffsetColor = spropringoffsetcolor
 			avt.Visible = bpropvisible
+				avt.MarginAXYTBLR = spropmargin
+				avt.PaddingAXYTBLR = sproppadding
 			avt.ParentID = mpos
 				avt.AddComponent
 				'
@@ -2952,6 +3043,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.RingOffset = "${spropringoffset}""$)
 				AddCode(sbC, $"${spropname1}.RingOffsetColor = "${spropringoffsetcolor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANAno.Await(${spropname1}.AddComponent)"$)
 				'
@@ -2977,6 +3070,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			avt.TextColor = sPropTextColor
 			avt.TextSize = sproptextsize
 			avt.Visible = bpropvisible
+				avt.MarginAXYTBLR = spropmargin
+				avt.PaddingAXYTBLR = sproppadding
 			avt.ParentID = mpos
 				avt.AddComponent
 				'
@@ -2993,6 +3088,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.TextColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.TextSize = "${sproptextsize}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3008,6 +3105,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			Dim avtg As SDUI5AvatarGroup
 			avtg.Initialize(Me, spropname1, spropname1)
 			avtg.Visible = bpropvisible
+			avtg.MarginAXYTBLR = spropmargin
+			avtg.PaddingAXYTBLR = sproppadding
 			avtg.ParentID = mpos
 			avtg.AddComponent
 				'
@@ -3025,6 +3124,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			img.Width = spropwidth
 			img.Mask = spropshape
 			img.Visible = bpropvisible
+			img.MarginAXYTBLR = spropmargin
+			img.PaddingAXYTBLR = sproppadding
 			img.ParentID = mpos
 			img.AddComponent
 				'
@@ -3036,6 +3137,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Width = "${spropwidth}""$)
 				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3058,6 +3161,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			prg.StepValue = spropstep
 			prg.MaxValue = spropmax
 			prg.Visible = bpropvisible
+			prg.MarginAXYTBLR = spropmargin
+			prg.PaddingAXYTBLR = sproppadding
 			prg.ParentID = mpos
 				prg.AddComponent
 				'
@@ -3072,6 +3177,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
 				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3100,9 +3207,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
 				txt.ReadOnly = bpropreadonly
-				txt.BackgroundColor = ""
-				txt.Border = False
-				txt.BorderColor = ""
+				txt.BackgroundColor = spropbgcolor
+				txt.Border = bpropborder
+				txt.BorderColor = spropbordercolor
+				txt.MarginAXYTBLR = spropmargin
+				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
 				'
@@ -3123,9 +3232,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3148,10 +3259,12 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			rng.StepValue = spropstep
 			rng.MaxValue = spropmax
 				rng.Visible = bpropvisible
-				rng.BackgroundColor = ""
-				rng.Border = False
-				rng.BorderColor = ""
+				rng.BackgroundColor = spropbgcolor
+				rng.Border = bpropborder
+				rng.BorderColor = spropbordercolor
 				rng.Enabled = bpropenabled
+				rng.MarginAXYTBLR = spropmargin
+				rng.PaddingAXYTBLR = sproppadding
 				rng.ParentID = mpos
 				rng.AddComponent
 				'
@@ -3165,10 +3278,12 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
 				AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3191,13 +3306,15 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				chk.Checked = app.UI.CBool(spropvalue)
 				chk.Visible = bpropvisible
 				chk.Enabled = bpropenabled
-				chk.Border = False
-				chk.BackgroundColor = ""
-				chk.BorderColor = ""
+				chk.BackgroundColor = spropbgcolor
+				chk.Border = bpropborder
+				chk.BorderColor = spropbordercolor
 				chk.TermsConditionsCaption = sproptermscaption
 				chk.TermsConditionsUrl = sproptermsurl
 				chk.PrivacyPolicyCaption = spropprivacycaption
 				chk.PrivacyPolicyUrl = spropprivacyurl
+				chk.MarginAXYTBLR = spropmargin
+				chk.PaddingAXYTBLR = sproppadding
 				chk.ParentID = mpos
 				chk.AddComponent
 				'
@@ -3212,13 +3329,15 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
 				AddCode(sbC, $"${spropname1}.TermsConditionsCaption = "${sproptermscaption}""$)
 				AddCode(sbC, $"${spropname1}.TermsConditionsUrl = "${sproptermsurl}""$)
 				AddCode(sbC, $"${spropname1}.PrivacyPolicyUrl = "${spropprivacycaption}""$)
 				AddCode(sbC, $"${spropname1}.BorderColor = "${spropprivacyurl}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3239,13 +3358,15 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			chk.Checked = app.UI.CBool(spropvalue)
 			chk.Visible = bpropvisible
 			chk.Enabled = bpropenabled
-			chk.Border = False
-			chk.BackgroundColor = ""
-			chk.BorderColor = ""
+				chk.BackgroundColor = spropbgcolor
+				chk.Border = bpropborder
+				chk.BorderColor = spropbordercolor
 			chk.TermsConditionsCaption = sproptermscaption
 			chk.TermsConditionsUrl = sproptermsurl
 			chk.PrivacyPolicyCaption = spropprivacycaption
 			chk.PrivacyPolicyUrl = spropprivacyurl
+				chk.MarginAXYTBLR = spropmargin
+				chk.PaddingAXYTBLR = sproppadding
 			chk.ParentID = mpos
 			chk.AddComponent
 				'
@@ -3259,13 +3380,15 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
 				AddCode(sbC, $"${spropname1}.TermsConditionsCaption = "${sproptermscaption}""$)
 				AddCode(sbC, $"${spropname1}.TermsConditionsUrl = "${sproptermsurl}""$)
 				AddCode(sbC, $"${spropname1}.PrivacyPolicyUrl = "${spropprivacycaption}""$)
 				AddCode(sbC, $"${spropname1}.BorderColor = "${spropprivacyurl}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3276,19 +3399,67 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				If spropdatatype <> "None" Then IntFormRead.Append($"Dim b${spropname} As Boolean = db${properTable}.GetBoolean("${spropname}")"$).Append(CRLF)
 				IntFormRead1.Append($"${spropname1}.Checked = b${spropname}"$).Append(CRLF)
 				IntFormEdit.Append($"Dim b${spropname} As Boolean = item.Get("${spropname}")"$).Append(CRLF)
+			Case "ToggleLegend"
+				Dim tgl As SDUI5Toggle
+				tgl.Initialize(Me, spropname1, spropname1)
+				tgl.ToggleType = "legend"
+				tgl.Label = "Yes"
+				tgl.Legend = sproptitle
+				tgl.Checked = app.UI.CBool(spropvalue)
+				tgl.Color = spropcolor
+				tgl.CheckedColor = spropactivecolor
+				tgl.Visible = bpropvisible
+				tgl.Enabled = bpropenabled
+				tgl.MarginAXYTBLR = spropmargin
+				tgl.PaddingAXYTBLR = sproppadding
+				tgl.BackgroundColor = spropbgcolor
+				tgl.Border = bpropborder
+				tgl.BorderColor = spropbordercolor
+				tgl.ParentID = mpos
+				tgl.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+'				AddCode(sbC, $"Dim ${spropname1} As SDUI5Toggle"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.ToggleType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Legend = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Label = "Yes""$)
+				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				
+				DeclareForm.Append($"Private ${spropname1} As SDUI5Toggle		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim b${spropname} As Boolean = ${spropname1}.Checked"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", b${spropname})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Checked = ${app.UI.cbool(spropvalue)}"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim b${spropname} As Boolean = db${properTable}.GetBoolean("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Checked = b${spropname}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim b${spropname} As Boolean = item.Get("${spropname}")"$).Append(CRLF)
 		Case "Toggle"
 			Dim tgl As SDUI5Toggle
 			tgl.Initialize(Me, spropname1, spropname1)
-			tgl.ToggleType = "legend"
+			tgl.ToggleType = "label-right"
 			tgl.Label = sproptitle
 			tgl.Checked = app.UI.CBool(spropvalue)
 			tgl.Color = spropcolor
 			tgl.CheckedColor = spropactivecolor	
 				tgl.Visible = bpropvisible
 				tgl.Enabled = bpropenabled
-'				tg.BackgroundColor = ""
-'				tg.Border = False
-'				tg.BorderColor = ""
+				tgl.MarginAXYTBLR = spropmargin
+				tgl.PaddingAXYTBLR = sproppadding
+				tgl.BackgroundColor = spropbgcolor
+				tgl.Border = bpropborder
+				tgl.BorderColor = spropbordercolor
 				tgl.ParentID = mpos
 				tgl.AddComponent
 				'
@@ -3302,9 +3473,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"'				tg.BackgroundColor = """$)
-				AddCode(sbC, $"'				tg.Border = False"$)
-				AddCode(sbC, $"'				tg.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3325,6 +3498,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			rp.ProgressSize = spropsize
 			rp.ProgressThickness = spropthickness
 				rp.Visible = bpropvisible
+				rp.MarginAXYTBLR = spropmargin
+				rp.PaddingAXYTBLR = sproppadding
 				rp.ParentID = mpos
 				rp.AddComponent
 				'
@@ -3337,6 +3512,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.ProgressSize = "${spropsize}""$)
 				AddCode(sbC, $"${spropname1}.ProgressThickness = "${spropthickness}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3360,9 +3537,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			rt.ReadOnly = bpropreadonly
 				rt.Visible = bpropvisible
 				rt.Enabled = bpropenabled
-				rt.BackgroundColor = ""
-				rt.Border = False
-				rt.BorderColor = ""
+				rt.BackgroundColor = spropbgcolor
+				rt.Border = bpropborder
+				rt.BorderColor = spropbordercolor
+				rt.MarginAXYTBLR = spropmargin
+				rt.PaddingAXYTBLR = sproppadding
 				rt.ParentID = mpos
 				rt.AddComponent
 				'
@@ -3377,9 +3556,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3401,9 +3582,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			rg.GroupName = spropname
 				rg.Visible = bpropvisible
 				rg.Enabled = bpropenabled
-				rg.BackgroundColor = ""
-				rg.Border = False
-				rg.BorderColor = ""
+				rg.BackgroundColor = spropbgcolor
+				rg.Border = bpropborder
+				rg.BorderColor = spropbordercolor
+				rg.MarginAXYTBLR = spropmargin
+				rg.PaddingAXYTBLR = sproppadding
 				rg.ParentID = mpos
 				rg.AddComponent
 				'
@@ -3419,9 +3602,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				
@@ -3446,9 +3631,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				gs.Enabled = bpropenabled
 				gs.Visible = bpropvisible
 				gs.Size = spropsize
-				gs.BackgroundColor = ""
-				gs.Border = False
-				gs.BorderColor = ""
+				gs.BackgroundColor = spropbgcolor
+				gs.Border = bpropborder
+				gs.BorderColor = spropbordercolor
+				gs.MarginAXYTBLR = spropmargin 
+				gs.PaddingAXYTBLR = sproppadding
 				gs.ParentID = mpos
 				gs.AddComponent
 				'
@@ -3465,9 +3652,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.TextColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3492,9 +3681,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			chkg.GroupName = spropname
 				chkg.Enabled = bpropenabled
 				chkg.Visible = bpropvisible
-				chkg.BackgroundColor = ""
-				chkg.Border = False
-				chkg.BorderColor = ""
+				chkg.BackgroundColor = spropbgcolor
+				chkg.Border = bpropborder
+				chkg.BorderColor = spropbordercolor
+				chkg.MarginAXYTBLR = spropmargin
+				chkg.PaddingAXYTBLR = sproppadding
 				chkg.ParentID = mpos
 				chkg.AddComponent
 				'
@@ -3510,9 +3701,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3536,9 +3729,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			tglg.GroupName = spropname
 				tglg.Enabled = bpropenabled
 				tglg.Visible = bpropvisible
-				tglg.BackgroundColor = ""
-				tglg.Border = False
-				tglg.BorderColor = ""
+				tglg.BackgroundColor = spropbgcolor
+				tglg.Border = bpropborder
+				tglg.BorderColor = spropbordercolor
+				tglg.MarginAXYTBLR = spropmargin
+				tglg.PaddingAXYTBLR = sproppadding
 				tglg.ParentID = mpos
 				tglg.AddComponent
 				'
@@ -3554,9 +3749,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				'
@@ -3578,9 +3775,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			flt.ActiveColor = spropactivecolor
 			flt.Enabled = bpropenabled
 			flt.Visible = bpropvisible
-				flt.BackgroundColor = ""
-				flt.Border = False
-				flt.BorderColor = ""
+				flt.BackgroundColor = spropbgcolor
+				flt.Border = bpropborder
+				flt.BorderColor = spropbordercolor
+				flt.MarginAXYTBLR = spropmargin
+				flt.PaddingAXYTBLR = sproppadding
 				flt.ParentID = mpos
 				flt.AddComponent
 				'
@@ -3595,9 +3794,11 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
-				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
-				AddCode(sbC, $"${spropname1}.Border = False"$)
-				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
+				AddCode(sbC, $"${spropname1}.Border = ${bpropborder}"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropbordercolor}""$)
+				AddCode(sbC, $"${spropname1}.MarginAXYTBLR = "${spropmargin}""$)
+				AddCode(sbC, $"${spropname1}.PaddingAXYTBLR = "${sproppadding}""$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
 				
@@ -3733,7 +3934,7 @@ Sub GetComponentPrefix(xproptype As String) As String
 			Return "rng"
 		Case "CheckBox", "CheckBoxLegend"
 			Return "chk"
-		Case "Toggle"
+		Case "Toggle", "ToggleLegend"
 			Return "tgl"
 		Case "RadialProgress"
 			Return "rp"

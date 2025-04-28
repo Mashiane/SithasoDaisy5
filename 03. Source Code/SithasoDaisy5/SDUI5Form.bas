@@ -260,7 +260,6 @@ Sub BuildGridFromRC
 				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns12x1"$)
 		End Select
 	Next
-	If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.BuildGrid)"$)
 	'do we have centered items
 	Dim centerSort As List
 	centerSort.Initialize
@@ -268,12 +267,13 @@ Sub BuildGridFromRC
 		centerSort.Add(k)
 	Next
 	centerSort.Sort(True)
+	If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.BuildGrid)"$)
 	For Each k As String In centerSort
 		Dim sr As String = UI.MvField(k,1,".")
 		Dim sc As String = UI.MvField(k,2,".")
 		sr = UI.CInt(sr)
 		sc = UI.CInt(sc)
-		If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.CenterRC(${sr}, ${sc}))"$)
+		If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.CellCenter(${sr}, ${sc}))"$)
 	Next
 	GridCode = IntGrid.tostring
 	BANano.Await(BuildGrid)
@@ -283,7 +283,7 @@ Sub BuildGridFromRC
 		Dim sc As String = UI.MvField(k,2,".")
 		sr = UI.CInt(sr)
 		sc = UI.CInt(sc)
-		BANano.Await(CenterRC(sr, sc))
+		BANano.Await(CellCenter(sr, sc))
 	Next
 End Sub
 

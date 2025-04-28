@@ -355,7 +355,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			
 			
 			mElement = mTarget.Append($"[BANCLEAN]
-				<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 					<div id="${mName}_tooltip" class="relative tooltip w-full" data-tip="${iValue}">
 						<progress id="${mName}" step="${iStepValue}" max="${iMaxValue}" min="${iMinValue}" value="${iValue}" class="progress rounded-full w-full"></progress>

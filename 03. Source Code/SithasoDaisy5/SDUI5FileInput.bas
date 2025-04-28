@@ -314,7 +314,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sInputType
 	Case "legend"
 		mElement = mTarget.Append($"[BANCLEAN]
-				<fieldset id="${mName}_control" class="fieldset ${xclasses}" ${xattrs} style="${xstyles}">
+				<fieldset id="${mName}_control" class="fieldset rounded-sm ${xclasses}" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div id="${mName}_join" class="join">
 	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"/>
@@ -347,7 +347,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 	Case "microphone", "progress", "camera", "camcorder"
 		mElement = mTarget.Append($"[BANCLEAN]
-			<div id="${mName}_control" class="${xclasses} flex items-center w-full" ${xattrs} style="${xstyles}">
+			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
     				<svg-renderer id="${mName}_icon" style="pointer-events:none;"   fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>

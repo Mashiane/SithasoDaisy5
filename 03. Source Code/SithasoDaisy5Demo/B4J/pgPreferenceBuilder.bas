@@ -59,7 +59,7 @@ Sub Show(MainApp As SDUI5App)
 	colVertical.AddAll(Array("LR", "RL"))
 	
 	 
-	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "ToggleLegend", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
 	dataTypes.Initialize 
 	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date", "LongText", "None"))
@@ -176,6 +176,7 @@ Sub Show(MainApp As SDUI5App)
 	AddMenuItem("CheckBox", "CheckBox","Checkboxes are used to select or deselect a value.")
 	AddMenuItem("CheckBoxLegend", "CheckBox Legend","Checkboxes are used to select or deselect a value.")
 	AddMenuItem("Toggle", "Toggle","Toggle is a checkbox that is styled to look like a switch button.")
+	AddMenuItem("ToggleLegend", "Toggle Legend","Toggle is a checkbox that is styled to look like a switch button.")
 	AddMenuItem("RadialProgress", "Radial Progress","Radial progress can be used to show the progress of a task or to show the passing of time.")
 	AddMenuItem("Rating", "Rating","Rating is a set of radio buttons that allow the user to rate something.")
 	AddMenuItem("GroupSelect", "Group Select","Group Select allows users to select multiple options or a single option from items that are categorized.")
@@ -639,6 +640,27 @@ Sub tblDesign_code(e As BANanoEvent)
 		jsonQ.Initialize(lsDB.result)
 		jsonQ.OrderAsc("proppos")
 		Dim result As List = BANano.Await(jsonQ.Exec)
+		'check if some fields are avatar, image, files and not using LongText
+		Dim errors As Map = CreateMap()
+		For Each fld As Map In result
+			Dim bpropactive As Boolean = app.GetBoolean(fld, "propactive")
+			If bpropactive = False Then Continue
+			Dim spropname As String = app.GetString(fld, "propname")
+			Dim spropdatatype As String = app.GetString(fld, "propdatatype")
+			Dim sproptype As String = app.GetString(fld, "proptype")
+			Select Case sproptype
+			Case "TextArea", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", _
+				"Image", "GroupSelect", "CheckBoxGroup", "AvatarGroup", "RadioGroup", "ToggleGroup"
+				If spropdatatype <> "LongText" Then errors.Put(spropname, spropname)
+			End Select
+		Next
+		If errors.Size > 0 Then
+			Dim pKeys As List = app.UI.MapKeysToList(errors)
+			Dim sKeys As String = app.UI.Join("<br>", pKeys)
+			Dim resp As Boolean = BANano.Await(app.ShowSwalConfirmWait("LongText Perhaps?", $"Consider changing the data type for these fields<br><br><b>${sKeys}</b><br><br>Continue?"$, "Yes", "No"))
+			If resp = False Then Return
+		End If
+		
 		'prepare the grid
 		mdlPreview.Form.Clear
 		'start building the grid code
@@ -716,6 +738,13 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("propcolor", "Color", "", False)
 	compToAdd.AddPropertyTextBox("propactivecolor", "Active Color", "", False)
 	compToAdd.AddPropertyTextBox("proptextcolor", "Text Color", "", False)
+	
+	compToAdd.AddPropertyCheckBox("propborder", "Border", False, "success")
+	compToAdd.AddPropertyTextBox("propbordercolor", "Border Color", "base-300", False)
+	compToAdd.AddPropertyTextBox("propbgcolor", "Background Color", "base-200", False)
+	compToAdd.AddPropertyTextBox("propmargin", "Margin", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", False)
+	compToAdd.AddPropertyTextBox("proppadding", "Padding", "a=?; x=?; y=?; t=?; b=?; l=?; r=?", False)
+	
 	compToAdd.AddPropertyTextBox("propsize", "Size", "", False)
 	compToAdd.AddPropertyTextBox("proptextsize", "Text Size", "", False)
 	compToAdd.AddPropertyTextBox("propthickness", "Thickness", "", False)
@@ -837,7 +866,7 @@ Sub ShowPropertiesByType(item As String)
 	BANano.Await(compToAdd.HideAllProperties)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
-	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype", "propcenterchildren", "proptextcolor", "propactivecolor", "proprow", "propcol")))
+	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype", "propcenterchildren", "proptextcolor", "propactivecolor", "proprow", "propcol", "propmargin", "proppadding", "propborder", "propbordercolor", "propbgcolor")))
 	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propcolumnvertical", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
 	BANano.Await(compToAdd.ShowProperty(Array("propforeigntable","propforeignfield","propforeigndisplayfield","propforeigndisplayfield1","propforeigndisplayfield2"))) 
 	BANano.Await(compToAdd.ShowProperty(Array("propcomputevalue","propcomputering","propcomputecolor","propcomputebgcolor","propcomputetextcolor","propcomputeclass")))
@@ -864,7 +893,7 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyValues(CreateMap("propname": "dialer1", "proptitle": "Dialer", "propvalue": "10", "proprequired": True, "propstart": "0", "propstep": "5", "propmax": "100", "propalign": "center"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "textbox"
-		compToAdd.ShowProperty(Array("propreadonly", "propmaxlen", "propalign"))
+			compToAdd.ShowProperty(Array("propreadonly", "propmaxlen", "propalign"))
 		'propbagx.AddPropertyTextBox("textbox1", "TextBox", "Mashy", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "textbox1", "proptitle": "TextBox", "propvalue": "Mashy", "proprequired": True))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
@@ -876,7 +905,7 @@ Sub ShowPropertiesByType(item As String)
 		 "propalign": "center", "propappend":"./assets/fan-solid.svg"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "textboxgroup"
-		compToAdd.ShowProperty(Array("propprepend", "propappend", "propmaxlen"))
+			compToAdd.ShowProperty(Array("propprepend", "propappend", "propmaxlen"))
 		'propbagx.AddPropertyTextBoxGroup("textboxgroup1", "TextBoxGroup", "TextBoxGroup", True)
 		'propbagx.SetPropertyAppendIcon("textboxgroup1", "./assets/fan-solid.svg")
 		compToAdd.SetPropertyValues(CreateMap("propname": "textboxgroup1", "proptitle": "TextBoxGroup", "propvalue": "TextBoxGroup", "proprequired": True, "propappend": "./assets/fan-solid.svg"))
@@ -884,17 +913,17 @@ Sub ShowPropertiesByType(item As String)
 	Case "selectgroup"
 		'propbagx.AddPropertySelectGroup("selectgroup1", "SelectGroup", "b4a", True, CreateMap("b4a": "Basic 4 Android", "b4i": "Basic 4 iPhone", "b4j": "Basic 4 Java", "b4r": "Basic 4 Arduino"))
 		'propbagx.SetPropertyAppendIcon("selectgroup1", "./assets/plus-solid.svg")
-		compToAdd.ShowProperty(Array("propprepend", "propappend", "propoptions"))
+			compToAdd.ShowProperty(Array("propprepend", "propappend", "propoptions"))
 		compToAdd.SetPropertyValues(CreateMap("propname": "selectgroup1", "proptitle": "SelectGroup", "propvalue": "b4a", "proprequired": True, _
 			"propoptions": "b4a:Basic 4 Android; b4i:Basic 4 iPhone; b4j:Basic 4 Java; b4r:Basic 4 Arduino", "propappend": "./assets/plus-solid.svg"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/select/", app.COLOR_INFO)
 	Case "passwordgroup"
-		compToAdd.ShowProperty(Array("propprepend", "propmaxlen"))
+			compToAdd.ShowProperty(Array("propprepend", "propmaxlen"))
 		'propbagx.AddPropertyPasswordGroup("password1", "Password Group", "anythingcanhappen", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "password1", "proptitle": "Password Group", "propvalue": "anythingcanhappen", "proprequired": True))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "datepicker"
-		compToAdd.ShowProperty(Array("propdateformat", "propdisplayformat", "proplocale", "propformats"))
+			compToAdd.ShowProperty(Array("propdateformat", "propdisplayformat", "proplocale", "propformats"))
 		compToAdd.SetPropertyValue("propdateformat", "Y-m-d")
 		compToAdd.SetPropertyValue("propdisplayformat", "D, d M J")
 		compToAdd.SetPropertyValue("proplocale", "en")
@@ -903,7 +932,7 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyValues(CreateMap("propname": "datepicker1", "proptitle": "Date Picker", "proprequired": True, "propdateformat":"Y-m-d", "propdisplayformat": "F j, Y", "proplocale":"en"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/calendar/", app.COLOR_INFO)
 	Case "datetimepicker"
-		compToAdd.ShowProperty(Array("propdateformat", "propdisplayformat", "proplocale", "proptime24", "propformats"))
+			compToAdd.ShowProperty(Array("propdateformat", "propdisplayformat", "proplocale", "proptime24", "propformats"))
 		compToAdd.SetPropertyValue("propdateformat", "Y-m-d H:i")
 		compToAdd.SetPropertyValue("propdisplayformat", "D, d M J H:i")
 		compToAdd.SetPropertyValue("proplocale", "en")
@@ -921,23 +950,23 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyValues(CreateMap("propname": "timepicker1", "proptitle": "Time Picker", "proprequired": True, "propdateformat":"H:i", "propdisplayformat": "H:i", "proplocale":"en", "proptime24":True))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/calendar/", app.COLOR_INFO)
 	Case "password"
-		compToAdd.ShowProperty(Array("propmaxlen"))
+			compToAdd.ShowProperty(Array("propmaxlen"))
 		'propbagx.AddPropertyPassword("password0", "Password", "anythingcanhappen", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "password0", "proptitle": "Password", "propvalue": "anythingcanhappen", "proprequired": True))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "number"
-		compToAdd.ShowProperty(Array("propstart", "propstep", "propmax"))
+			compToAdd.ShowProperty(Array("propstart", "propstep", "propmax"))
 		compToAdd.RequireProperty(True, Array("propstart", "propstep", "propmax", "propvalue"))
 		'propbagx.AddPropertyNumber("number1", "Number", "5", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "number1", "proptitle": "Number", "propvalue": "5", "proprequired": True))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "telephone"
-		compToAdd.ShowProperty(Array("propmaxlen"))
+			compToAdd.ShowProperty(Array("propmaxlen"))
 		'' propbagx.AddPropertyTelephone("telephone1", "Telephone", "123456789", True)
 		compToAdd.SetPropertyValues(CreateMap("propname": "telephone1", "proptitle": "Telephone", "propvalue": "123456789", "proprequired": True))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/input/", app.COLOR_INFO)
 	Case "email"
-		compToAdd.HideProperty(Array("proprequired", "propenabled"))
+			compToAdd.HideProperty(Array("proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propcolor"))
 		'propdisplay.AddPropertyEmail("email1", "Email", "anele@sithasoholdings.co.za", app.COLOR_PRIMARY)
 		compToAdd.SetPropertyValues(CreateMap("propname": "email1", "proptitle": "Email", "propvalue": "anele@sithasoholdings.co.za", "propcolor": "primary"))
@@ -958,13 +987,13 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.HideProperty(Array("proprequired", "propenabled", "propreadonly"))
 		compToAdd.SetPropertyValues(CreateMap("propname": "placeholder1", "proptitle": "Placeholder", "propvalue": "This is a placeholder"))
 	Case "textarea"
-		compToAdd.ShowProperty(Array("proprows"))
+			compToAdd.ShowProperty(Array("proprows"))
 		compToAdd.ShowProperty(Array("propmaxlen", "proprows"))
 		'propbagx.AddPropertyTextArea("textarea1", "Text Area", "", True)
-			compToAdd.SetPropertyValues(CreateMap("propname": "textarea1", "proptitle": "Text Area", "propvalue": "I love coding SithasoDaisy5", "proprequired": True, "proprows":"4"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "textarea1", "proptitle": "Text Area", "propvalue": "I love coding SithasoDaisy5", "proprequired": True, "proprows":"4", "datatype":"LongText"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/textarea/", app.COLOR_INFO)
 	Case "select"
-		compToAdd.ShowProperty(Array("propoptions"))
+			compToAdd.ShowProperty(Array("propoptions"))
 		'propbagx.AddPropertySelect("select1", "Select", "b4j", True, CreateMap("b4a": "Basic 4 Android", "b4i": "Basic 4 iPhone", "b4j": "Basic 4 Java", "b4r": "Basic 4 Arduino"))
 		compToAdd.SetPropertyValues(CreateMap("propname": "select1", "proptitle": "Select", "propvalue": "b4j", "proprequired": True, _
 			"propoptions": "b4a:Basic 4 Android; b4i:Basic 4 iPhone; b4j:Basic 4 Java; b4r:Basic 4 Arduino"))
@@ -980,31 +1009,31 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.ShowProperty(Array("propaccept", "propmultiple", "propcolor", "propsize", "propicon", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyFileInputProgress("fileinputprogress1", "File Input Progress", "80px", "./assets/headphones-solid.svg", app.COLOR_BROWN)
 		compToAdd.SetPropertyValues(CreateMap("propname": "fileinputprogress1", "proptitle": "File Input Progress", "propsize":"80px", "propicon":"./assets/headphones-solid.svg", _
-			"propcolor": "#a52a2a", "proptextcolor":"#ffffff", "propiconsize":"42px"))
+			"propcolor": "#a52a2a", "proptextcolor":"#ffffff", "propiconsize":"42px", "datatype":"None"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "camcorder"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyCamCorder("camcoder1", "Camcoder", "80px", app.COLOR_PRIMARY)
-		compToAdd.SetPropertyValues(CreateMap("propname": "camcoder1", "propiconsize":"42px", "proptitle": "CamCorder", "propsize":"80px", "propcolor": "primary", "proptextcolor":"#ffffff"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "camcoder1", "propiconsize":"42px", "proptitle": "CamCorder", "propsize":"80px", "propcolor": "primary", "proptextcolor":"#ffffff","datatype":"None"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "camera"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyCamera("camera1", "Camera", "80px", app.COLOR_ERROR)
-		compToAdd.SetPropertyValues(CreateMap("propname": "camera1", "propiconsize":"42px", "proptitle": "Camera", "propsize":"80px", "propcolor": "error", "proptextcolor":"#ffffff"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "camera1", "propiconsize":"42px", "proptitle": "Camera", "propsize":"80px", "propcolor": "error", "proptextcolor":"#ffffff","datatype":"None"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "microphone"
 		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propcolor", "propsize", "proptextcolor", "propiconsize", "propupdate"))
 		'propbagx.AddPropertyMicrophone("microphone1", "Microphone", "80px", app.COLOR_ACCENT)
-		compToAdd.SetPropertyValues(CreateMap("propname": "microphone1", "propiconsize":"42px", "proptitle": "Microphone", "propsize":"80px", "propcolor": "accent", "proptextcolor":"#ffffff"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "microphone1", "propiconsize":"42px", "proptitle": "Microphone", "propsize":"80px", "propcolor": "accent", "proptextcolor":"#ffffff", "datatype":"None"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/file-input/", app.COLOR_INFO)
 	Case "avatar"
-		compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
+			compToAdd.HideProperty(Array("propvalue", "proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propsize", "propshape", "propurl", "propring", "propringcolor", "propringoffset", "propringoffsetcolor", "proponlinestatus", "proponline"))
 		'propdisplay.AddPropertyAvatar("avatar1", "Avatar", "80px", app.MASK_SQUIRCLE, "./assets/mashy.jpg")
-		compToAdd.SetPropertyValues(CreateMap("propname": "avatar1", "proptitle": "Avatar", "propsize":"80px", "propshape": app.MASK_SQUIRCLE, "propurl":"./assets/mashy.jpg"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "avatar1", "proptitle": "Avatar", "propsize":"80px", "propshape": app.MASK_SQUIRCLE, "propurl":"./assets/mashy.jpg", "datatype":"LongText"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/avatar/", app.COLOR_INFO)
 	Case "avatarplaceholder"
 		compToAdd.HideProperty(Array("proprequired", "propenabled"))
@@ -1023,21 +1052,21 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyEnabled("propshape", False)
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/avatar/", app.COLOR_INFO)
 	Case "image"
-		compToAdd.HideProperty(Array("proprequired", "propenabled", "propvalue"))
+			compToAdd.HideProperty(Array("proprequired", "propenabled", "propvalue"))
 		compToAdd.ShowProperty(Array("propwidth", "propheight", "propshape", "propurl"))
 		'propdisplay.AddPropertyImage("image1", "Image", "80px", "80px", app.MASK_HEART, "./assets/10.jpg")
-		compToAdd.SetPropertyValues(CreateMap("propname": "image1", "proptitle": "Image", "propwidth":"80px", "propheight":"80px", "propshape": app.MASK_HEART, "propurl":"./assets/10.jpg"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "image1", "proptitle": "Image", "propwidth":"80px", "propheight":"80px", "propshape": app.MASK_HEART, "propurl":"./assets/10.jpg", "datatype":"LongText"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Related Docs", "https://daisyui.com/components/mask/", app.COLOR_INFO)
 	Case "progress"
 		compToAdd.HideProperty(Array("proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propstart", "propstep", "propmax", "propcolor"))
+			compToAdd.ShowProperty(Array("propstart", "propstep", "propmax", "propcolor"))
 		compToAdd.RequireProperty(True, Array("propstart", "propstep", "propmax", "propvalue"))
 		'propdisplay.AddPropertyProgress("progress1", "Progress", "20", app.COLOR_PRIMARY, "0", "2", "100")
 		compToAdd.SetPropertyValues(CreateMap("propname": "progress1", "proptitle": "Progress", "propvalue": "20", "propstart": "0", "propstep": "2", "propmax": "100", "propcolor": "primary"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/progress/", app.COLOR_INFO)
 	Case "range"
 		compToAdd.HideProperty(Array("proprequired"))
-		compToAdd.ShowProperty(Array("propstart", "propstep", "propmax", "propcolor"))
+			compToAdd.ShowProperty(Array("propstart", "propstep", "propmax", "propcolor"))
 		compToAdd.RequireProperty(True, Array("propstart", "propstep", "propmax", "propvalue"))
 		'propbagx.AddPropertyRange("range1", "Range", "30", app.COLOR_SECONDARY, "0", "1", "100")
 		compToAdd.SetPropertyValues(CreateMap("propname": "range1", "proptitle": "Range", "propvalue": "30", "proprequired": False, "propstart": "0", "propstep": "1", "propmax": "100", _
@@ -1054,10 +1083,15 @@ Sub ShowPropertiesByType(item As String)
 			compToAdd.SetPropertyValues(CreateMap("propname": "checkboxlegend1", "proptitle": "CheckBox Legend 1", "proprequired": False, "propcolor": "primary", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
 	Case "toggle"
-		compToAdd.ShowProperty(Array("propcolor", "propsize"))
+			compToAdd.ShowProperty(Array("propcolor", "propsize"))
 		'propbagx.AddPropertyToggle("toggle1", "Toggle", True, "success")
 			compToAdd.SetPropertyValues(CreateMap("propname": "toggle1", "proptitle": "Toggle", "proprequired": True, "propcolor": "success", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/toggle/", app.COLOR_INFO)
+	Case "togglelegend"
+		compToAdd.ShowProperty(Array("propcolor", "propsize"))
+		'propbagx.AddPropertyToggle("toggle1", "Toggle", True, "success")
+		compToAdd.SetPropertyValues(CreateMap("propname": "togglelegend1", "proptitle": "Toggle Legend 1", "proprequired": True, "propcolor": "success", "propactivecolor":"#22c55e"))
+		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/toggle/", app.COLOR_INFO)
 	Case "radialprogress"
 		compToAdd.HideProperty(Array("proprequired", "propenabled"))
 		compToAdd.ShowProperty(Array("propcolor", "propsize", "propthickness"))
@@ -1066,7 +1100,7 @@ Sub ShowPropertiesByType(item As String)
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/radial-progress/", app.COLOR_INFO)
 	Case "rating"
 		compToAdd.HideProperty(Array("proprequired", "propenabled"))
-		compToAdd.ShowProperty(Array("propcolor", "propshape"))
+			compToAdd.ShowProperty(Array("propcolor", "propshape"))
 		'propbagx.AddPropertyRating("rating1", "Rating 1", "2", "primary", app.MASK_STAR_2)
 		compToAdd.SetPropertyValues(CreateMap("propname": "rating1", "proptitle": "Rating", "propvalue":"2", "propshape": app.MASK_STAR_2, "propcolor": "primary"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/rating/", app.COLOR_INFO)
@@ -1078,35 +1112,35 @@ Sub ShowPropertiesByType(item As String)
 		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propsingleselect":False, "propactivecolor":"#22c55e", "proptextcolor":"#ffffff", "propsize":"md"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
 	Case "checkboxgroup"
-		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
+			compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
 		'Dim gsOptions As Map = UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 		'BANano.Await(propbagx.AddPropertyCheckBoxGroup("checkboxgroup", "CheckBox Group", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 		compToAdd.SetPropertyValues(CreateMap("propname": "checkboxgroup", "proptitle": "CheckBox Group", "propvalue": "spar;quadbike", "proprequired": False, _
 		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propactivecolor":"#22c55e"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
 	Case "togglegroup"
-		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
+			compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
 		'Dim gsOptions As Map = UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 		'BANano.Await(propbagx.AddPropertyToggleGroup("togglegroup1", "Toggle Group", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 		compToAdd.SetPropertyValues(CreateMap("propname": "togglegroup1", "proptitle": "Toggle Group", "propvalue": "spar;quadbike", "proprequired": False, _
 		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/toggle/", app.COLOR_INFO)
 	Case "radiogroup"
-		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
+			compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
 		'Dim gsOptions As Map = UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 		'BANano.Await(propbagx.AddPropertyRadioGroup("groupselect1", "Group Select", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 		compToAdd.SetPropertyValues(CreateMap("propname": "radiogroup", "proptitle": "Radio Group", "propvalue": "spar", "proprequired": False, _
 		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/radio/", app.COLOR_INFO)
 	Case "filter"
-		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
+			compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))
 		'Dim gsOptions As Map = UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 		'BANano.Await(propbagx.AddPropertyFilter("groupselect1", "Group Select", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 		compToAdd.SetPropertyValues(CreateMap("propname": "filter1", "proptitle": "Filter", "propvalue": "quadbike", "proprequired": False, _
 		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/filter/", app.COLOR_INFO)
 	Case "colorwheel"
-		compToAdd.ShowProperty(Array("prophandlediameter", "propwheeldiameter", "propwheelthickness", "propwheelposition"))
+			compToAdd.ShowProperty(Array("prophandlediameter", "propwheeldiameter", "propwheelthickness", "propwheelposition"))
 		'propbagx.AddPropertyColorWheel("color1", "Color Wheel", "#f5375f", True, 16, 200, 20, "top-end")
 		compToAdd.SetPropertyValues(CreateMap("propname": "color1", "proptitle": "Color Wheel", "propvalue":"#f5375f","prophandlediameter":"16", "propwheeldiameter": "200", _
 			"propwheelthickness":"20", "propwheelposition":"bottom-end"))

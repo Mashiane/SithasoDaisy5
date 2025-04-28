@@ -998,7 +998,7 @@ Sub PropertyConfig
 	AddPropertyTextBox("propname", "Field Name", "", True)
 	AddPropertyTextBox("proptitle", "Title", "", True)
 	AddPropertySelect("proptype", "Type", "TextBox", True, CreateMap())
-	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "ColorWheel", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "ToggleLegend", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "ColorWheel", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(Array("String","Int","Double","Blob","Bool","Date")))
 	AddPropertyTextBox("propvalue", "Default Value", "", False)
 	AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
@@ -1600,7 +1600,7 @@ Sub PropertyBagFromList(fContents As List)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
 				SetPropertyChecked(spropname, spropvalue)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
-			Case "Toggle"
+			Case "Toggle", "ToggleLegend"
 				spropvalue = UI.CBool(spropvalue)
 				AddPropertyToggle(spropname, sproptitle, spropvalue, spropactivecolor)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
@@ -1942,7 +1942,7 @@ Sub ShowPropOnCondition
 		Case "CheckBox", "CheckBoxLegend"
 			SetPropertyVisible("proprequired", False)
 			SetPropertyVisible("propcolor", True)
-		Case "Toggle"
+		Case "Toggle", "ToggleLegend"
 			SetPropertyVisible("proprequired", False)
 			SetPropertyVisible("propcolor", True)
 		Case "RadialProgress"
@@ -3347,7 +3347,7 @@ Sub SetPropertyValue(Key As String, value As String)
 			UI.SetStyleByID($"#${mName}_${Key}"$,"--value", value)
 		Case "Rating"
 			BANano.GetElement($"#${mName}_${Key}_${value}"$).SetChecked(True)
-		Case "CheckBox", "Toggle", "CheckBoxLegend"
+		Case "CheckBox", "Toggle", "CheckBoxLegend", "ToggleLegend"
 			value = UI.CBool(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetChecked(value)
 		Case "Progress"
@@ -3436,7 +3436,7 @@ Sub GetPropertyValue(Key As String) As String
 		'	Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
 		'	v = Itemx.GetValue
 		'	v = UI.CStr(v)
-		Case "CheckBox", "Toggle", "CheckBoxLegend"
+		Case "CheckBox", "Toggle", "CheckBoxLegend", "ToggleLegend"
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetChecked
 			v = UI.CBool(v)
 		Case "Email","Link", "Label"
@@ -4305,7 +4305,7 @@ Sub SetPropertyColor(Key As String, s As String)
 			Dim tcolor As String = UI.FixColor("checkbox", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
-		Case "Toggle"
+		Case "Toggle", "ToggleLegend"
 			If lcolor <> "" Then
 				Dim llcolor As String = UI.FixColor("toggle", lcolor)
 				el.RemoveClass(llcolor)
@@ -5077,7 +5077,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "CheckBox", "CheckBoxLegend"
 						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
-					Case "Toggle"
+					Case "Toggle", "ToggleLegend"
 						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success")
 					Case "RadialProgress"

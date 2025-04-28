@@ -258,7 +258,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-	<fieldset id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+	<fieldset id="${mName}" class="${xclasses} rounded-sm" ${xattrs} style="${xstyles}">
 		<legend id="${mName}_legend" class="fieldset-legend hidden">${sLegend}</legend>
 		<div id="${mName}_content"></div>
 		<p id="${mName}_label" class="fieldset-label hidden">${sLabel}</p>

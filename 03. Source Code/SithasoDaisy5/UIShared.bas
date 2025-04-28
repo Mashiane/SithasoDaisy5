@@ -3751,3 +3751,34 @@ Sub GetLong(m As Map, fld As String) As Long
 	x = CInt(x)
 	Return x
 End Sub
+
+'create a list from map specific properties
+Sub MapPropertiesToList(m As Map, props As List) As List
+	Dim lst As List
+	lst.Initialize
+	For Each k As String In props
+		If m.ContainsKey(k) Then
+			Dim v As Object = m.Get(k)
+			lst.Add(v)
+		End If
+	Next
+	Return lst
+End Sub
+
+Sub MapKeysToList(m As Map) As List
+	Dim lst As List
+	lst.Initialize
+	For Each k As String In m.Keys
+		lst.Add(k)
+	Next
+	Return lst
+End Sub
+
+Sub MapValuesToList(m As Map) As List
+	Dim lst As List
+	lst.Initialize
+	For Each k As String In m.Values
+		lst.Add(k)
+	Next
+	Return lst
+End Sub

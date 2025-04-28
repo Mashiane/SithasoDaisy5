@@ -264,7 +264,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sTypeOf
 	Case "legend"
 		mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="fieldset ${xclasses}" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="fieldset rounded-sm ${xclasses}" ${xattrs} style="${xstyles}">
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
           			<div id="${mName}" class="filter join-item w-full"></div>

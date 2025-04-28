@@ -255,7 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case sRadioType
 		Case "legend"
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLegend}</legend>
 				<label id="${mName}_labelhost" class="fieldset-label flex gap-2 items-center cursor-pointer">
   					<input id="${mName}" type="radio" class="radio"></input>

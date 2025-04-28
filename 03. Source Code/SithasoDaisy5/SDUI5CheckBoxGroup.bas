@@ -290,7 +290,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Select Case bColumnView
 		Case True
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="${xclasses} rounded-sm" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options"></div>
 	      		<label id="${mName}_hint" class="fieldset-label hidden">${sHint}</label>
@@ -298,7 +298,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case Else
 			'row view
 			mElement = mTarget.Append($"[BANCLEAN]
-			<fieldset id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<fieldset id="${mName}_control" class="${xclasses} rounded-sm" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 				<div id="${mName}_options" class="grid grid-cols-3 gap-4 w-fit"></div>
 	      		<label id="${mName}_hint" class="fieldset-label hidden">${sHint}</label>

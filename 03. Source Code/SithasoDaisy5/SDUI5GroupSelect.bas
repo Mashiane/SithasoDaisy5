@@ -277,7 +277,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-		<fieldset id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<fieldset id="${mName}" class="rounded-sm ${xclasses}" ${xattrs} style="${xstyles}">
   			<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
   			<div id="${mName}_content" class="flex gap-2 flex-wrap break-words relative"></div>
 		</fieldset>"$).Get("#" & mName)
@@ -375,15 +375,17 @@ End Sub
 Sub setOptions(s As String)				'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
-	If mElement = Null Then Return
-	items.Initialize 
-	UI.ClearByID($"${mName}_content"$)
-	If s = "" Then Return
 	Dim mItems As Map = UI.GetKeyValues(sRawOptions, False)
-	
+	BANano.Await(SetOptionsFromMap(mItems))
+End Sub
+
+'load the items from a map
+Sub SetOptionsFromMap(mItems As Map)			'ignoredeadcode
+	If mElement = Null Then Return
+	BANano.Await(Clear)		
 	Dim sb As StringBuilder
 	sb.Initialize
-	Dim itemSize As String = UI.FixSize("btn", sSize) 
+	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim iconsize As String = UI.FixIconSize(sSize)
 	Dim iType As String = "checkbox"
 	If bSingleSelect Then iType = "radio"
@@ -402,13 +404,11 @@ Sub setOptions(s As String)				'ignoredeadcode
 	For Each k As String In mItems.Keys
 		Dim v As String = mItems.Get(k)
 		k = UI.CleanID(k)
-		Dim nk As String = $"${k}_${mName}"$
-		'sb.Append($"<input id="${k}_${mName}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
-		
+		Dim nk As String = $"${mName}_${k}"$
 		sb.Append($"[BANCLEAN]
-		<div id="${k}_${mName}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${k}_${mName}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
-			<input id="${k}_${mName}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+		<div id="${mName}_${k}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
+			<svg-renderer id="${mName}_${k}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
 	Next
@@ -419,10 +419,12 @@ Sub setOptions(s As String)				'ignoredeadcode
 	Next
 End Sub
 
+
+
 private Sub IconClick(e As BANanoEvent)		'ignoredeadcode
 	e.PreventDefault
-	Dim k As String = UI.MvField(e.ID, 1, "_")
-	UI.ToggleByID($"${k}_${mName}"$)
+	Dim k As String = UI.MvField(e.ID, 2, "_")
+	UI.ToggleByID($"${mName}_${k}"$)
 	UpdateChanges(True)
 End Sub
 
@@ -440,7 +442,7 @@ End Sub
 Sub AddOption(k As String, v As String)
 	If mElement = Null Then Return
 	k = UI.CleanID(k)
-	Dim nk As String = $"${k}_${mName}"$
+	Dim nk As String = $"${mName}_${k}"$
 	Dim itemSize As String = UI.FixSize("btn", sSize)
 	Dim iconsize As String = UI.FixIconSize(sSize)
 	Dim iType As String = "checkbox"
@@ -460,9 +462,9 @@ Sub AddOption(k As String, v As String)
 	'UI.AppendByID($"${mName}_content"$, $"<input id="${nk}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${sGroupName}" type="${iType}" aria-label="${v}">"$)
 	
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
-		<div id="${k}_${mName}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${k}_${mName}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
-			<input id="${k}_${mName}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+		<div id="${mName}_${K}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
+			<svg-renderer id="${mName}_${k}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	
 	items.Put(nk, nk)
@@ -488,13 +490,11 @@ private Sub UpdateChanges(fireEvent As Boolean)
 	Dim selL As List = UI.StrParse(";", nselected)
 	For Each k As String In selL
 		'remove the item color
-		If sChipColor <> "" Then UI.RemoveClassByID($"${k}_${mName}_host"$, itemColor)
+		If sChipColor <> "" Then UI.RemoveClassByID($"${mName}_${k}_host"$, itemColor)
 		'add the active color
-		If sActiveColor <> "" Then UI.AddClassByID($"${k}_${mName}_host"$, abg)
+		If sActiveColor <> "" Then UI.AddClassByID($"${mName}_${k}_host"$, abg)
 		'show the icon
-		UI.SetVisibleByID($"${k}_${mName}_icon"$, True)
-'		UI.AddStyleByID($"${k}_${mName}"$, "outline-style", "none")
-		'used class checked:outline-none!
+		UI.SetVisibleByID($"${mName}_${k}_icon"$, True)
 	Next
 	If fireEvent Then
 		BANano.CallSub(mCallBack, $"${mName}_change"$, Array(nselected))
@@ -529,7 +529,7 @@ Sub setSelected(s As String)					'ignoredeadcode
 	Next
 	'check what is available
 	For Each item As String In selectedList
-		Dim npart As String = $"${item}_${mName}"$
+		Dim npart As String = $"${mName}_${item}"$
 		UI.SetCheckedByID(npart, True)
 	Next
 	UpdateChanges(False)
@@ -607,7 +607,7 @@ Sub getSelected As String
 	For Each item As String In items.keys
 		Dim b As Boolean = UI.GetCheckedByID(item)
 		If b Then 
-			Dim ok As String = UI.MvField(item, 1, "_")
+			Dim ok As String = UI.MvField(item, 2, "_")
 			selectedItems.Add(ok)
 		End If
 	Next
