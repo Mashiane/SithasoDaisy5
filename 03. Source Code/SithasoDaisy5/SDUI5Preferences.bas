@@ -998,7 +998,7 @@ Sub PropertyConfig
 	AddPropertyTextBox("propname", "Field Name", "", True)
 	AddPropertyTextBox("proptitle", "Title", "", True)
 	AddPropertySelect("proptype", "Type", "TextBox", True, CreateMap())
-	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "ColorWheel", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	SetPropertySelectItemsListSort("proptype", Array("Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "RadialProgress", "Rating", "RadioGroup", "PlaceHolder", "ColorWheel", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	AddPropertySelect("propdatatype", "Data Type", "String", True, UI.ListToSelectOptionsSort(Array("String","Int","Double","Blob","Bool","Date")))
 	AddPropertyTextBox("propvalue", "Default Value", "", False)
 	AddPropertyTextBox("propplaceholder", "Place Holder", "", False)
@@ -1594,7 +1594,7 @@ Sub PropertyBagFromList(fContents As List)
 				spropmax = UI.CInt(spropmax)
 				AddPropertyDialer(spropname,sproptitle, spropvalue, sproprequired, spropstart, spropstep, spropmax)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyDialer("${spropname}", "${sproptitle}", ${spropvalue}, ${sproprequired}, ${spropstart}, ${spropstep}, ${spropmax})"$).Append(CRLF)
-			Case "CheckBox"
+			Case "CheckBox", "CheckBoxLegend"
 				spropvalue = UI.CBool(spropvalue)
 				AddPropertyCheckBox(spropname, sproptitle, spropvalue, spropcolor)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
@@ -1602,7 +1602,7 @@ Sub PropertyBagFromList(fContents As List)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
 			Case "Toggle"
 				spropvalue = UI.CBool(spropvalue)
-				AddPropertyToggle(spropname, sproptitle, spropvalue, spropcolor)
+				AddPropertyToggle(spropname, sproptitle, spropvalue, spropactivecolor)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggle("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
 				SetPropertyChecked(spropname, spropvalue)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
@@ -1939,7 +1939,7 @@ Sub ShowPropOnCondition
 			SetPropertyVisible("propenabled", False)
 			SetPropertyVisible("propreadonly", False)
 			SetPropertyVisible("propsize", False)
-		Case "CheckBox"
+		Case "CheckBox", "CheckBoxLegend"
 			SetPropertyVisible("proprequired", False)
 			SetPropertyVisible("propcolor", True)
 		Case "Toggle"
@@ -3347,7 +3347,7 @@ Sub SetPropertyValue(Key As String, value As String)
 			UI.SetStyleByID($"#${mName}_${Key}"$,"--value", value)
 		Case "Rating"
 			BANano.GetElement($"#${mName}_${Key}_${value}"$).SetChecked(True)
-		Case "CheckBox", "Toggle"
+		Case "CheckBox", "Toggle", "CheckBoxLegend"
 			value = UI.CBool(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetChecked(value)
 		Case "Progress"
@@ -3436,7 +3436,7 @@ Sub GetPropertyValue(Key As String) As String
 		'	Itemx.Initialize($"input[name=${mName}_${Key}]:checked"$)
 		'	v = Itemx.GetValue
 		'	v = UI.CStr(v)
-		Case "CheckBox", "Toggle"
+		Case "CheckBox", "Toggle", "CheckBoxLegend"
 			v = BANano.GetElement($"#${mName}_${Key}"$).GetChecked
 			v = UI.CBool(v)
 		Case "Email","Link", "Label"
@@ -4141,6 +4141,7 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Progress")
+	Dim xprogress As String = UI.FixColor("progress", Color)
 	'
 	Dim psize As String = "24px"
 	Select Case sComponentSize
@@ -4167,7 +4168,7 @@ Sub AddPropertyProgress(Key As String, Title As String, DefaultValue As String, 
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="flex items-center w-full">
     <span id="${mName}_${Key}_text" class="text-${sComponentSize} mx-2">${DefaultValue}%</span>
-    <progress id="${mName}_${Key}" name="${mName}_${Key}" class="rounded-full progress progress-${Color} w-full ${psize1}" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></progress>
+    <progress id="${mName}_${Key}" name="${mName}_${Key}" class="rounded-full progress ${xprogress} w-full ${psize1}" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></progress>
     </div>
     </td>
     </tr>"$
@@ -4179,6 +4180,7 @@ Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Col
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
 	ComponentType.Put(Key, "Range")
+	Dim xrange As String = UI.FixColor("range", Color)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
@@ -4189,7 +4191,7 @@ Sub AddPropertyRange(Key As String, Title As String, DefaultValue As String, Col
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div class="flex items-center">
     <span id="${mName}_${Key}_text" class="text-${sComponentSize} mx-2">${DefaultValue}</span>
-    <input type="range" id="${mName}_${Key}" name="${mName}_${Key}" class="range range-${sComponentSize} range-${Color} w-full" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></input>
+    <input type="range" id="${mName}_${Key}" name="${mName}_${Key}" class="range range-${sComponentSize} ${xrange} w-full" value="${DefaultValue}" min="${StartValue}" step="${StepValue}" max="${MaxValue}"></input>
     </div>
     </td>
     </tr>"$
@@ -4202,6 +4204,7 @@ Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean,
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "CheckBox")
+	Dim xcheckboxcolor As String = UI.FixColor("checkbox", Color)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
@@ -4210,7 +4213,7 @@ Sub AddPropertyCheckBox(Key As String, Title As String, DefaultValue As Boolean,
 			</span>
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="checkbox checkbox-${Color} checkbox-${sComponentSize}"></input></td>
+    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="checkbox ${xcheckboxcolor} checkbox-${sComponentSize}"></input></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	BANano.GetElement($"#${mName}_${Key}"$).SetChecked(DefaultValue)
@@ -4294,7 +4297,7 @@ Sub SetPropertyColor(Key As String, s As String)
 			Dim tcolor As String = UI.FixColor("range", s)
 			el.AddClass(tcolor)
 			LastColors.Put(Key, s)
-		Case "CheckBox"
+		Case "CheckBox", "CheckBoxLegend"
 			If lcolor <> "" Then
 				Dim llcolor As String = UI.FixColor("checkbox", lcolor)
 				el.RemoveClass(llcolor)
@@ -4389,6 +4392,7 @@ Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, C
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "Boolean")
 	ComponentType.Put(Key, "Toggle")
+	Dim xcolor As String = UI.FixColor("toggle", Color)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
@@ -4397,7 +4401,7 @@ Sub AddPropertyToggle(Key As String, Title As String, DefaultValue As Boolean, C
 			</span>
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="toggle toggle-${Color} toggle-${sComponentSize}"></input></td>
+    <input name="${mName}_${Key}" id="${mName}_${Key}" type="checkbox" class="toggle ${xcolor} toggle-${sComponentSize}"></input></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	BANano.GetElement($"#${mName}_${Key}"$).SetChecked(DefaultValue)
@@ -4408,6 +4412,7 @@ Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Bo
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "RadialProgress")
 	ComponentType.Put(Key, "RadialProgress")
+	Dim xcolor As String = UI.FixColor("text", Color)
 	Dim scode As String = $"[BANCLEAN]
     <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
     <td id="${mName}_${Key}_th" >
@@ -4416,7 +4421,7 @@ Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Bo
 			</span>
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div name="${mName}_${Key}" id="${mName}_${Key}" role="progressbar" class="radial-progress text-${Color}"></div></td>
+    <div name="${mName}_${Key}" id="${mName}_${Key}" role="progressbar" class="radial-progress ${xcolor}"></div></td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	BANano.GetElement($"#${mName}_${Key}"$).SetText($"${DefaultValue}%"$)
@@ -5069,7 +5074,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Range"
 						sdefaultvalue = UI.CInt(sdefaultvalue)
 						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100")
-					Case "CheckBox"
+					Case "CheckBox", "CheckBoxLegend"
 						sdefaultvalue = UI.CBool(sdefaultvalue)
 						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
 					Case "Toggle"

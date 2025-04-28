@@ -59,7 +59,7 @@ Sub Show(MainApp As SDUI5App)
 	colVertical.AddAll(Array("LR", "RL"))
 	
 	 
-	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
 	'
 	dataTypes.Initialize 
 	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date", "LongText", "None"))
@@ -174,6 +174,7 @@ Sub Show(MainApp As SDUI5App)
 	AddMenuItem("Progress", "Progress","Progress bar can be used to show the progress of a task or to show the passing of time.")
 	AddMenuItem("Range", "Range","Range slider is used to select a value by sliding a handle.")
 	AddMenuItem("CheckBox", "CheckBox","Checkboxes are used to select or deselect a value.")
+	AddMenuItem("CheckBoxLegend", "CheckBox Legend","Checkboxes are used to select or deselect a value.")
 	AddMenuItem("Toggle", "Toggle","Toggle is a checkbox that is styled to look like a switch button.")
 	AddMenuItem("RadialProgress", "Radial Progress","Radial progress can be used to show the progress of a task or to show the passing of time.")
 	AddMenuItem("Rating", "Rating","Rating is a set of radio buttons that allow the user to rate something.")
@@ -343,6 +344,7 @@ private Sub BuildTableColumns(properties As List)
 		Dim sRawpropoptions As String = prop.Get("propoptions")
 		sRawpropoptions = app.UI.CStr(sRawpropoptions)
 		Dim bPropMultiple As Boolean = prop.Get("propmultiple")
+		Dim spropactivecolor As String = app.GetString(prop, "propactivecolor")
 		'
 		bpropcolumnvisible = app.UI.CBool(bpropcolumnvisible)
 		bpropactive = app.UI.CBool(bpropactive)
@@ -396,9 +398,9 @@ private Sub BuildTableColumns(properties As List)
 			Case "button"
 				'tb4.AddColumnButton("btnload", "Process", app.COLOR_INDIGO)
 				tblPreview.AddColumnButton(spropname, sproptitle, spropcolor)
-			Case "checkbox"
+			Case "checkbox", "checkboxlegend"
 				'tbl.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
-				tblPreview.AddColumnCheckBox(spropname, sproptitle, spropcolor, bpropreadonly)
+				tblPreview.AddColumnCheckBox(spropname, sproptitle, spropactivecolor, bpropreadonly)
 			Case "clicklink"
 				'tbl.AddColumnClickLink("clicklink", "Aisle", "clicklink", app.color_neutral)
 				Dim source As String = spropsubtitle1
@@ -713,7 +715,9 @@ private Sub AddProperties
 	compToAdd.AddPropertyCheckBox("propsingleselect", "Single Select", False, "success")
 	compToAdd.AddPropertyTextBox("propcolor", "Color", "", False)
 	compToAdd.AddPropertyTextBox("propactivecolor", "Active Color", "", False)
+	compToAdd.AddPropertyTextBox("proptextcolor", "Text Color", "", False)
 	compToAdd.AddPropertyTextBox("propsize", "Size", "", False)
+	compToAdd.AddPropertyTextBox("proptextsize", "Text Size", "", False)
 	compToAdd.AddPropertyTextBox("propthickness", "Thickness", "", False)
 	compToAdd.AddPropertyTextBox("propicon", "Icon", "", False)
 	compToAdd.AddPropertyTextBox("propiconsize", "Icon Size", "42px", False)
@@ -736,8 +740,7 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("propringoffsetcolor", "Ring Offset Color", "base-100", False)
 	compToAdd.AddPropertyCheckBox("proponlinestatus", "Online Status", False, "success")
 	compToAdd.AddPropertyCheckBox("proponline", "Online", False, "success")
-	compToAdd.AddPropertyTextBox("proptextcolor", "Text Color", "", False)
-	compToAdd.AddPropertyTextBox("proptextsize", "Text Size", "", False)
+	
 	compToAdd.AddPropertyTextBox("propaccept", "File Accept", "", False)
 	compToAdd.AddPropertyCheckBox("propmultiple", "File Multiple", False, "success")
 	compToAdd.AddPropertySelect("propalign", "Alignment", "left", False, CreateMap("left":"Left","center":"Center", "right":"Right"))
@@ -834,7 +837,7 @@ Sub ShowPropertiesByType(item As String)
 	BANano.Await(compToAdd.HideAllProperties)
 	compToAdd.SetPropertyCaption("propoptions", "Options List (JSON)")
 	'show necessary ones
-	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype", "propcenterchildren")))
+	BANano.Await(compToAdd.ShowProperty(Array("proppos", "propname", "propdatatype", "proptitle", "propvalue", "proprequired", "propenabled", "propvisible", "propsort", "propfocus", "proptype", "propcenterchildren", "proptextcolor", "propactivecolor", "proprow", "propcol")))
 	BANano.Await(compToAdd.ShowProperty(Array("propactive", "propupdate", "propcolumntype", "propcolumnvertical", "propsubtitle1", "propsubtitle2", "propcolumnvisible", "proptotal")))
 	BANano.Await(compToAdd.ShowProperty(Array("propforeigntable","propforeignfield","propforeigndisplayfield","propforeigndisplayfield1","propforeigndisplayfield2"))) 
 	BANano.Await(compToAdd.ShowProperty(Array("propcomputevalue","propcomputering","propcomputecolor","propcomputebgcolor","propcomputetextcolor","propcomputeclass")))
@@ -1040,15 +1043,20 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyValues(CreateMap("propname": "range1", "proptitle": "Range", "propvalue": "30", "proprequired": False, "propstart": "0", "propstep": "1", "propmax": "100", _
 		 "propcolor": "secondary"))	
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/range/", app.COLOR_INFO)
-	Case "checkbox"
-			compToAdd.ShowProperty(Array("propcolor", "proptermscaption", "proptermsurl", "propprivacycaption", "propprivacyurl"))
+		Case "checkbox"
+			compToAdd.ShowProperty(Array("propcolor", "proptermscaption", "proptermsurl", "propprivacycaption", "propprivacyurl", "propsize"))
 		'propbagx.AddPropertyCheckBox("checkbox1", "CheckBox", False, app.COLOR_PRIMARY)
-		compToAdd.SetPropertyValues(CreateMap("propname": "checkbox1", "proptitle": "CheckBox", "proprequired": False, "propcolor": "primary"))	
+			compToAdd.SetPropertyValues(CreateMap("propname": "checkbox1", "proptitle": "CheckBox", "proprequired": False, "propcolor": "primary", "propactivecolor":"#22c55e"))
+			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
+		Case "checkboxlegend"
+			compToAdd.ShowProperty(Array("propcolor", "proptermscaption", "proptermsurl", "propprivacycaption", "propprivacyurl", "propsize"))
+			'propbagx.AddPropertyCheckBox("checkbox1", "CheckBox", False, app.COLOR_PRIMARY)
+			compToAdd.SetPropertyValues(CreateMap("propname": "checkboxlegend1", "proptitle": "CheckBox Legend 1", "proprequired": False, "propcolor": "primary", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
 	Case "toggle"
-		compToAdd.ShowProperty(Array("propcolor"))
+		compToAdd.ShowProperty(Array("propcolor", "propsize"))
 		'propbagx.AddPropertyToggle("toggle1", "Toggle", True, "success")
-		compToAdd.SetPropertyValues(CreateMap("propname": "toggle1", "proptitle": "Toggle", "proprequired": True, "propcolor": "success"))
+			compToAdd.SetPropertyValues(CreateMap("propname": "toggle1", "proptitle": "Toggle", "proprequired": True, "propcolor": "success", "propactivecolor":"#22c55e"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/toggle/", app.COLOR_INFO)
 	Case "radialprogress"
 		compToAdd.HideProperty(Array("proprequired", "propenabled"))
@@ -1063,11 +1071,11 @@ Sub ShowPropertiesByType(item As String)
 		compToAdd.SetPropertyValues(CreateMap("propname": "rating1", "proptitle": "Rating", "propvalue":"2", "propshape": app.MASK_STAR_2, "propcolor": "primary"))
 			compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/rating/", app.COLOR_INFO)
 	Case "groupselect"
-		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor", "propsingleselect"))
+			compToAdd.ShowProperty(Array("propcolor", "propoptions", "proptextcolor", "propactivecolor", "propsingleselect", "propsize"))
 		'Dim gsOptions As Map = UI.GetKeyValues("spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", False)
 		'BANano.Await(propbagx.AddPropertyGroupSelect("groupselect1", "Group Select", "spar;quadbike", "neutral", False, "#22c55e", gsOptions))
 		compToAdd.SetPropertyValues(CreateMap("propname": "groupselect1", "proptitle": "Group Select", "propvalue": "spar;quadbike", "proprequired": False, _
-		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propsingleselect":False, "propactivecolor":"#22c55e"))
+		"propoptions": "spar:Spar; boatride:Boat Ride; horseride:Horse Ride; quadbike: Quad Bike; helicopter:Helicopter", "propcolor": "neutral", "propsingleselect":False, "propactivecolor":"#22c55e", "proptextcolor":"#ffffff", "propsize":"md"))
 		compToAdd.AddPropertyLink("daisyuidocs", "DaisyUI Docs", "https://daisyui.com/components/checkbox/", app.COLOR_INFO)
 	Case "checkboxgroup"
 		compToAdd.ShowProperty(Array("propcolor", "propoptions", "propactivecolor"))

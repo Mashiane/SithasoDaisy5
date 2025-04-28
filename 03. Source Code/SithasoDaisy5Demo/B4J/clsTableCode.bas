@@ -857,9 +857,9 @@ private Sub BuildTableColumns
 			Case "button"
 				'tb4.AddColumnButton("btnload", "Process", app.COLOR_INDIGO)
 				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}")"$)
-			Case "checkbox"
+			Case "checkbox", "checkboxlegend"
 				'tbl.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
-				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropcolor}", ${bpropreadonly})"$)
+				AddCode(sb, $"tbl${properTable}.AddColumn${spropcolumntype}("${spropname}", "${sproptitle}", "${spropactivecolor}", ${bpropreadonly})"$)
 			Case "clicklink"
 				'tbl.AddColumnClickLink("clicklink", "Aisle", "clicklink", app.color_neutral)
 				Dim source As String = spropsubtitle1
@@ -1937,9 +1937,9 @@ private Sub BuildPreferences(mName As String)
 				spropstep = app.UI.CInt(spropstep)
 				spropmax = app.UI.CInt(spropmax)
 				sb.Append($"${mName}.AddPropertyDialer("${spropname}", "${sproptitle}", ${spropvalue}, ${sproprequired}, ${spropstart}, ${spropstep}, ${spropmax})"$).Append(CRLF)
-			Case "CheckBox"
+			Case "CheckBox", "CheckBoxLegend"
 				spropvalue = app.UI.CBool(spropvalue)
-				sb.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}")"$).Append(CRLF)
+				sb.Append($"${mName}.AddPropertyCheckBox("${spropname}", "${sproptitle}", ${spropvalue}, "${spropactivecolor}")"$).Append(CRLF)
 				sb.Append($"${mName}.SetPropertyChecked("${spropname}", ${spropvalue})"$).Append(CRLF)
 			Case "Toggle"
 				spropvalue = app.UI.CBool(spropvalue)
@@ -1960,7 +1960,7 @@ private Sub BuildPreferences(mName As String)
 			Case "CheckBoxGroup"
 				Dim optm As Map = OptionsToMap(spropoptions)
 				PropertyBuilderMap(sb, spropname, optm)
-				sb.Append($"${mName}.AddPropertyCheckBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
+				sb.Append($"${mName}.AddPropertyCheckBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropactivecolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 			Case "ToggleGroup"
 				Dim optm As Map = OptionsToMap(spropoptions)
 				PropertyBuilderMap(sb, spropname, optm)
@@ -2761,7 +2761,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			fi.Accept = spropaccept
 			fi.Icon = spropicon 
 			fi.IconSize = spropiconsize
-			fi.IconColor = spropcolor
+				fi.Color = spropcolor
+				fi.IconColor = sPropTextColor
 			
 '			fi.Multiple = spropm
 			fi.Visible = bpropvisible
@@ -2778,7 +2779,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
 				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
 				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
-				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BaNano.Await(${spropname1}.AddComponent)"$)
@@ -2804,7 +2806,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 '			fi.Multiple = spropm
 			fi.Icon = spropicon
 			fi.IconSize = spropiconsize
-				fi.IconColor = spropcolor
+				fi.Color = spropcolor
+				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
 				fi.ParentID = mpos
 				fi.AddComponent
@@ -2819,7 +2822,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
 				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
-				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANAno.Await(${spropname1}.AddComponent)"$)
@@ -2845,7 +2849,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 '			fi.Multiple = spropm
 			fi.Icon = spropicon
 			fi.IconSize = spropiconsize
-				fi.IconColor = spropcolor
+				fi.Color = spropcolor
+				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
 				fi.ParentID = mpos
 				fi.AddComponent
@@ -2860,7 +2865,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
 				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
-				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
@@ -2887,7 +2893,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 '			fi.Multiple = spropm
 			fi.Icon = spropicon
 			fi.IconSize = spropiconsize
-				fi.IconColor = spropcolor
+			fi.Color = spropcolor
+				fi.IconColor = sPropTextColor
 				fi.Visible = bpropvisible
 				fi.ParentID = mpos
 				fi.AddComponent
@@ -2902,7 +2909,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Accept = "${spropaccept}""$)
 				AddCode(sbC, $"${spropname1}.Icon = "${spropicon}""$)
 				AddCode(sbC, $"${spropname1}.IconSize = "${spropiconsize}""$)
-				AddCode(sbC, $"${spropname1}.IconColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.IconColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
 				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
@@ -3172,12 +3180,62 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
 				IntFormRead1.Append($"${spropname1}.Value = s${spropname2}"$).Append(CRLF)
 				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
+			Case "CheckBoxLegend"
+				Dim chk As SDUI5CheckBox
+				chk.Initialize(Me, spropname1, spropname1)
+				chk.CheckBoxType = "legend"
+				chk.Label = "Yes"
+				chk.Legend = sproptitle
+				chk.Color = spropcolor
+				chk.CheckedColor = spropactivecolor
+				chk.Checked = app.UI.CBool(spropvalue)
+				chk.Visible = bpropvisible
+				chk.Enabled = bpropenabled
+				chk.Border = False
+				chk.BackgroundColor = ""
+				chk.BorderColor = ""
+				chk.TermsConditionsCaption = sproptermscaption
+				chk.TermsConditionsUrl = sproptermsurl
+				chk.PrivacyPolicyCaption = spropprivacycaption
+				chk.PrivacyPolicyUrl = spropprivacyurl
+				chk.ParentID = mpos
+				chk.AddComponent
+				'
+				AddComment(sbC, $"Add ${spropname1}"$)
+'				AddCode(sbC, $"Dim ${spropname1} As SDUI5CheckBox"$)
+				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
+				AddCode(sbC, $"${spropname1}.CheckBoxType = "legend""$)
+				AddCode(sbC, $"${spropname1}.Label = "Yes""$)
+				AddCode(sbC, $"${spropname1}.Legend = "${sproptitle}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
+				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
+				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
+				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
+				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
+				AddCode(sbC, $"${spropname1}.Border = False"$)
+				AddCode(sbC, $"${spropname1}.BorderColor = """$)
+				AddCode(sbC, $"${spropname1}.TermsConditionsCaption = "${sproptermscaption}""$)
+				AddCode(sbC, $"${spropname1}.TermsConditionsUrl = "${sproptermsurl}""$)
+				AddCode(sbC, $"${spropname1}.PrivacyPolicyUrl = "${spropprivacycaption}""$)
+				AddCode(sbC, $"${spropname1}.BorderColor = "${spropprivacyurl}""$)
+				AddCode(sbC, $"${spropname1}.ParentID = mdl${properTable}.Form.CellID("${sproprow}", "${spropcol}")"$)
+				AddCode(sbC, $"BANano.Await(${spropname1}.AddComponent)"$)
+				'
+				DeclareForm.Append($"Private ${spropname1} As SDUI5CheckBox		'ignore"$).Append(CRLF)
+				IntFormWrite.Append($"Dim b${spropname} As Boolean = ${spropname1}.Checked"$).append(CRLF)
+				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", b${spropname})"$).append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Checked = ${app.UI.cbool(spropvalue)}"$).Append(CRLF)
+				If spropdatatype <> "None" Then IntFormRead.Append($"Dim b${spropname} As Boolean = db${properTable}.GetBoolean("${spropname}")"$).Append(CRLF)
+				IntFormRead1.Append($"${spropname1}.Checked = b${spropname}"$).Append(CRLF)
+				IntFormEdit.Append($"Dim b${spropname} As Boolean = item.Get("${spropname}")"$).Append(CRLF)
 		Case "CheckBox"
 			Dim chk As SDUI5CheckBox
 			chk.Initialize(Me, spropname1, spropname1)
 			chk.CheckBoxType = "right-label"
 			chk.Label = sproptitle
-			chk.CheckedColor = spropcolor
+			chk.Color = spropcolor
+			chk.CheckedColor = spropactivecolor
 			chk.Checked = app.UI.CBool(spropvalue)
 			chk.Visible = bpropvisible
 			chk.Enabled = bpropenabled
@@ -3196,7 +3254,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
 				AddCode(sbC, $"${spropname1}.CheckBoxType = "right-label""$)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
-				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
@@ -3223,7 +3282,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			tgl.ToggleType = "legend"
 			tgl.Label = sproptitle
 			tgl.Checked = app.UI.CBool(spropvalue)
-			tgl.CheckedColor = spropcolor	
+			tgl.Color = spropcolor
+			tgl.CheckedColor = spropactivecolor	
 				tgl.Visible = bpropvisible
 				tgl.Enabled = bpropenabled
 '				tg.BackgroundColor = ""
@@ -3238,7 +3298,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.ToggleType = "legend""$)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.Checked = ${app.UI.CBool(spropvalue)}"$)
-				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"'				tg.BackgroundColor = """$)
@@ -3335,7 +3396,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			rg.Label = sproptitle
 			rg.Options = spropoptions
 			rg.Value = spropvalue
-			rg.CheckedColor = spropcolor
+			rg.Color = spropcolor
+			rg.CheckedColor = spropactivecolor
 			rg.GroupName = spropname
 				rg.Visible = bpropvisible
 				rg.Enabled = bpropenabled
@@ -3352,7 +3414,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
 				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
-				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
@@ -3377,9 +3440,12 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			gs.GroupName = spropname
 			gs.Options = spropoptions
 			gs.Selected = spropvalue
-			gs.ActiveColor = spropcolor
+			gs.ChipColor = spropcolor
+			gs.ActiveColor = spropactivecolor
+				gs.TextColor = sPropTextColor
 				gs.Enabled = bpropenabled
 				gs.Visible = bpropvisible
+				gs.Size = spropsize
 				gs.BackgroundColor = ""
 				gs.Border = False
 				gs.BorderColor = ""
@@ -3393,7 +3459,10 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
 				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
-				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Size = "${spropsize}""$)
+				AddCode(sbC, $"${spropname1}.ChipColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropactivecolor}""$)
+				AddCode(sbC, $"${spropname1}.TextColor = "${sPropTextColor}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
@@ -3418,7 +3487,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			chkg.Label = sproptitle
 			chkg.Options = spropoptions
 			chkg.Selected = spropvalue
-			chkg.CheckedColor = spropcolor
+			chkg.Color = spropcolor
+			chkg.CheckedColor = spropactivecolor
 			chkg.GroupName = spropname
 				chkg.Enabled = bpropenabled
 				chkg.Visible = bpropvisible
@@ -3435,7 +3505,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
 				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
-				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
@@ -3460,7 +3531,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			tglg.Label = sproptitle
 			tglg.Options = spropoptions
 			tglg.Selected = spropvalue
-			tglg.CheckedColor = spropcolor
+			tglg.Color = spropcolor
+			tglg.CheckedColor = spropactivecolor
 			tglg.GroupName = spropname
 				tglg.Enabled = bpropenabled
 				tglg.Visible = bpropvisible
@@ -3477,7 +3549,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
 				AddCode(sbC, $"${spropname1}.Selected = "${spropvalue}""$)
-				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.CheckedColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.GroupName = "${spropname}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
@@ -3501,8 +3574,9 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			flt.Label = sproptitle
 			flt.Options = spropoptions
 			flt.Value = spropvalue
-			flt.ActiveColor = spropcolor
-				flt.Enabled = bpropenabled
+			flt.Color = spropcolor
+			flt.ActiveColor = spropactivecolor
+			flt.Enabled = bpropenabled
 			flt.Visible = bpropvisible
 				flt.BackgroundColor = ""
 				flt.Border = False
@@ -3517,7 +3591,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.Options = "${spropoptions}""$)
 				AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
-				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.Color = "${spropcolor}""$)
+				AddCode(sbC, $"${spropname1}.ActiveColor = "${spropactivecolor}""$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.BackgroundColor = """$)
@@ -3656,7 +3731,7 @@ Sub GetComponentPrefix(xproptype As String) As String
 			Return "prg"
 		Case "Range"
 			Return "rng"
-		Case "CheckBox"
+		Case "CheckBox", "CheckBoxLegend"
 			Return "chk"
 		Case "Toggle"
 			Return "tgl"
