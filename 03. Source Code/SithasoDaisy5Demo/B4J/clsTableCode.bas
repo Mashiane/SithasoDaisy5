@@ -2930,7 +2930,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 			avt.Initialize(Me, spropname1, spropname1)
 			avt.AvatarType = "image"
 			avt.Mask = spropshape
-			avt.Image = spropvalue
+				avt.Image = spropurl
 			avt.Size = spropsize
 			avt.Ring = bpropring
 			avt.RingColor = spropringcolor
@@ -2945,7 +2945,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
 				AddCode(sbC, $"${spropname1}.AvatarType = "image""$)
 				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
-				AddCode(sbC, $"${spropname1}.Image = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Image = "${spropurl}""$)
 				AddCode(sbC, $"${spropname1}.Size = "${spropsize}""$)
 				AddCode(sbC, $"${spropname1}.Ring = ${bpropring}"$)
 				AddCode(sbC, $"${spropname1}.RingColor = "${spropringcolor}""$)
@@ -2959,7 +2959,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				DeclareForm.Append($"Private ${spropname1} As SDUI5Avatar		'ignore"$).Append(CRLF)
 				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Image"$).append(CRLF)
 				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
-				IntFormDefaults.Append($"${spropname1}.Image = "${spropvalue}""$).Append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Image = "${spropurl}""$).Append(CRLF)
 				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
 				IntFormRead1.Append($"${spropname1}.Image = s${spropname2}"$).Append(CRLF)
 				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
@@ -3020,7 +3020,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 		Case "Image"
 			Dim img As SDUI5Image
 			img.Initialize(Me, spropname1, spropname1)
-			img.Src = spropvalue
+			img.Src = spropurl
 			img.Height = spropheight
 			img.Width = spropwidth
 			img.Mask = spropshape
@@ -3031,7 +3031,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5Image"$)
 				AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
-				AddCode(sbC, $"${spropname1}.Src = "${spropvalue}""$)
+				AddCode(sbC, $"${spropname1}.Src = "${spropurl}""$)
 				AddCode(sbC, $"${spropname1}.Height = "${spropheight}""$)
 				AddCode(sbC, $"${spropname1}.Width = "${spropwidth}""$)
 				AddCode(sbC, $"${spropname1}.Mask = "${spropshape}""$)
@@ -3043,7 +3043,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 				DeclareForm.Append($"Private ${spropname1} As SDUI5Image		'ignore"$).Append(CRLF)
 				IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Src"$).append(CRLF)
 				If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
-				IntFormDefaults.Append($"${spropname1}.Src = "${spropvalue}""$).Append(CRLF)
+				IntFormDefaults.Append($"${spropname1}.Src = "${spropurl}""$).Append(CRLF)
 				If spropdatatype <> "None" Then IntFormRead.Append($"Dim s${spropname2} As String = db.GetString("${spropname}")"$).Append(CRLF)
 				IntFormRead1.Append($"${spropname1}.Src = s${spropname2}"$).Append(CRLF)
 				IntFormEdit.Append($"Dim s${spropname2} As String = item.Get("${spropname}")"$).Append(CRLF)
