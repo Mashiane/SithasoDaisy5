@@ -123,7 +123,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 End Sub
 '
 'empty the contents of the container
-Sub Clear
+Sub Clear								'ignoredeadcode
 	RCSizes.Initialize
 	RCMargins.Initialize
 	RCPaddings.Initialize
@@ -605,7 +605,7 @@ Sub CellCenter(r As Int, c As Int)
 	UI.SetCenterChildrenByID(cid, True)
 End Sub
 
-Sub LinkExisting()
+Sub LinkExisting()						'ignoredeadcode
 	mElement.Initialize($"#${mName}"$)
 	mTarget = BANano.ToElement(mElement.GetField("parentNode"))
 End Sub

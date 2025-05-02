@@ -1198,7 +1198,7 @@ private Sub ShowSwalInput(title As String, message As String, okText As String, 
 End Sub
 
 'parse HTML to json
-Sub parseHTML(sinput As String) As List
+Sub ParseHTML(sinput As String) As List
 	treeSchema.Initialize
 	Dim res As Map = Banano.RunJavascriptMethod("htmlParser", Array(sinput))
 	ParseTree(res)
@@ -1883,7 +1883,7 @@ End Sub
 Sub AddMyLayoutFile(tempID As String, fileName As String)
 	Dim tempHTML As String = Banano.Await(Banano.GetFileAsText(fileName, Null, "utf8"))
 	templates.Put(tempID, tempHTML)
-	Dim parsed As List = parseHTML(tempHTML)
+	Dim parsed As List = ParseHTML(tempHTML)
 	Dim templateV As Map = CreateMap()
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
@@ -2455,6 +2455,7 @@ End Sub
 
 Sub AddJavaScriptURL(urlLink As String, bAsync As Boolean)
 	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("script")
+	tmpScriptElem.SetAttr("type", "text/javascript")
 	tmpScriptElem.SetAttr("src", urlLink)
 	If bAsync Then tmpScriptElem.SetAttr("async", bAsync)
 	Banano.GetElement("head").Append(tmpScriptElem)
@@ -2552,5 +2553,136 @@ Sub GetLong(m As Map, fld As String) As Long
 	Return x
 End Sub
 
+'upload file to server and return success or error
+'server should have write permissions
+'<code>
+'Sub FileInput_Change (fo As Map)
+'dim fd as FileObject = BANano.Await(UploadFileWait(fo))
+''dim fd As FileObject = 'BANano.Await(UploadFileOptionsWait(fileObj, "../files", False))
+'if fd.FileOK = True Then
+'else
+'end if
+'End Sub
+'</code>
+Sub UploadFileWait(fileO As Map) As FileObject
+	'get the file details
+	Dim fileDet As FileObject = Banano.Await(GetFileDetails(fileO))
+	'get the file name
+	Dim fn As String = fileDet.FileName
+	'start uploading the file
+	Dim fd As BANanoObject
+	fd.Initialize2("FormData", Null)
+	fd.RunMethod("append", Array("upload", fileO))
+	'
+	Dim Res As String = Banano.CallAjaxWait("./assets/upload.php", "POST", "", fd, True, Null)
+	Dim result As Map = Banano.FromJson(Res)
+	Dim sstatus As String = result.Get("status")
+	fileDet.Status = sstatus
+	If sstatus = "success" Then
+		fileDet.FileOK = True
+		fileDet.FullPath = $"./files/${fn}"$
+		
+	Else
+		fileDet.FileOK = False
+		fileDet.FullPath = ""
+	End If
+	Return fileDet
+End Sub
 
+'<code>
+''upload to files folder without renaming the file
+'BANano.Await(UploadFileOptionsWait(fileObj, "../files", "n"))
+'</code>
+Sub UploadFileOptionsWait(fileO As Map, targetPath As String, bRename As String) As FileObject
+	'get the file details
+	Dim fileDet As FileObject = Banano.Await(GetFileDetails(fileO))
+	'start uploading the file
+	Dim fd As BANanoObject
+	fd.Initialize2("FormData", Null)
+	fd.RunMethod("append", Array("upload", fileO))
+	fd.RunMethod("append", Array("target", targetPath))
+	fd.RunMethod("append", Array("renameit", bRename))
+	'
+	Dim Res As String = Banano.CallAjaxWait("./assets/uploadoptions.php", "POST", "", fd, False, Null)
+	Dim result As Map = Banano.FromJson(Res)
+	Dim sstatus As String = result.Get("status")
+	Dim sfullpath As String = result.Get("fullpath")
+	Dim sname As String = result.Get("name")
+	fileDet.Status = sstatus
+	fileDet.FileName = sname
+	If sstatus = "success" Then
+		fileDet.FileOK = True
+	Else
+		fileDet.FileOK = False
+	End If
+	fileDet.FullPath = sfullpath
+	Return fileDet
+End Sub
 
+'<code>
+''upload to assets folder without renaming the file
+'BANano.Await(UploadFileRenameToWait(fileObj, "../files", "anewName.pdf"))
+'</code>
+Sub UploadFileRenameToWait(fileO As Map, targetPath As String, newFileName As String) As FileObject
+	'get the file details
+	Dim fileDet As FileObject = Banano.Await(GetFileDetails(fileO))
+	'start uploading the file
+	Dim fd As BANanoObject
+	fd.Initialize2("FormData", Null)
+	fd.RunMethod("append", Array("upload", fileO))
+	fd.RunMethod("append", Array("target", targetPath))
+	fd.RunMethod("append", Array("renameit", "y"))
+	fd.RunMethod("append", Array("myname", newFileName))
+	'
+	Dim Res As String = Banano.CallAjaxWait("./assets/uploadoptions.php", "POST", "", fd, True, Null)
+	Dim result As Map = Banano.FromJson(Res)
+	Dim sstatus As String = result.Get("status")
+	Dim sfullpath As String = result.Get("fullpath")
+	Dim sname As String = result.Get("name")
+	fileDet.Status = sstatus
+	fileDet.FileName = sname
+	If sstatus = "success" Then
+		fileDet.FileOK = True
+	Else
+		fileDet.FileOK = False
+	End If
+	fileDet.FullPath = sfullpath
+	Return fileDet
+End Sub
+
+'get file details, this implements a blob
+Sub GetFileDetails(fileObj As Map) As FileObject
+	Dim ff As FileObject
+	ff.Initialize
+	ff.FileOK = False
+	If Banano.IsNull(fileObj) Or Banano.IsUndefined(fileObj) Then Return ff
+	Dim sname As String = fileObj.Get("name")
+	Dim lmd As Object = fileObj.Get("lastModified")
+	Dim ssize As String = fileObj.Get("size")
+	Dim stype As String = fileObj.Get("type")
+	Dim swebkitRelativePath As String = fileObj.Get("webkitRelativePath")
+	'
+	Dim slastModifiedDate As BANanoObject
+	slastModifiedDate.Initialize2("Date", lmd)    '
+	Dim yyyy As String = slastModifiedDate.RunMethod("getFullYear", Null).Result
+	Dim dd As String = slastModifiedDate.RunMethod("getDate", Null).Result
+	Dim mm As String = slastModifiedDate.RunMethod("getMonth", Null).Result
+	Dim hh As String = slastModifiedDate.RunMethod("getHours", Null).Result
+	Dim minutes As String = slastModifiedDate.RunMethod("getMinutes", Null).Result
+	'pad the details
+	dd = modSD5.PadRight(dd, 2, "0")
+	mm = modSD5.PadRight(mm, 2, "0")
+	hh = modSD5.PadRight(hh, 2, "0")
+	minutes = modSD5.PadRight(minutes, 2, "0")
+	'
+	Dim fd As String = $"${yyyy}-${mm}-${dd} ${hh}:${minutes}"$
+	ff.FileName = sname
+	ff.FileDate = fd
+	ff.FileDateOnly = $"${yyyy}-${mm}-${dd}"$
+	ff.FileSize = ssize
+	ff.FileType = stype
+	ff.FileOK = True
+	ff.Extension = UI.MvLast(".", sname)
+	ff.webkitRelativePath = swebkitRelativePath
+	Return ff
+End Sub

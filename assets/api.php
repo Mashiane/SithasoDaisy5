@@ -12772,7 +12772,7 @@ namespace Tqdev\PhpCrudApi {
         'debug' => false,
         'tables' => 'all',
         'controllers' => 'records,columns,tables,openapi,status',
-        'middlewares' => 'sslRedirect,apiKeyAuth,sanitation',
+        'middlewares' => 'apiKeyAuth,sanitation',
         'apiKeyAuth.keys' => 'jNOEqK8xvAqWWRf7B4jlw2ppOCeBoHunex4ViA1txPrG7V9DW1dG737HhseS4E5Ca3xVaUtUwbDRIOrkwEZv7SEvUQP6jClRpDESkRUnshgyngNDd2epbJWjF48xAzKp',
         'apiKeyAuth.header' => 'X-API-Key',
     ]);

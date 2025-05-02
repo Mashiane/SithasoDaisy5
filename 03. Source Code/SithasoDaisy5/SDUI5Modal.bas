@@ -8,6 +8,10 @@ Version=10
 #Event: Yes_Click (e As BANanoEvent)
 #Event: No_Click (e As BANanoEvent)
 #Event: Cancel_Click (e As BANanoEvent)
+#Event: Ok_Click (e As BANanoEvent)
+#Event: Retry_Click (e As BANanoEvent)
+#Event: Abort_Click (e As BANanoEvent)
+#Event: Ignore_Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _box|_title|_form|_action, Description: Child Item _box|_title|_form|_action
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
@@ -18,20 +22,20 @@ Version=10
 #DesignerProperty: Key: Backdrop, DisplayName: Backdrop, FieldType: Boolean, DefaultValue: True, Description: Backdrop
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
 #DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Actions Visible
-#DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel
+#DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel|ok-cancel|retry-cancel|abort-retry-ignore
 #DesignerProperty: Key: BottonsWidth, DisplayName: Bottons Width, FieldType: String, DefaultValue: 22, Description: Bottons Width
 #DesignerProperty: Key: ButtonsShadow, DisplayName: Buttons Shadow, FieldType: String, DefaultValue: md, Description: Buttons Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ButtonsRounded, DisplayName: Buttons Rounded, FieldType: String, DefaultValue: md, Description: Buttons Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
-#DesignerProperty: Key: YesCaption, DisplayName: Yes Caption, FieldType: String, DefaultValue: Yes, Description: Yes Caption
+#DesignerProperty: Key: YesCaption, DisplayName: Yes/Ok/Retry/Abort Caption, FieldType: String, DefaultValue: Yes, Description: Yes Caption
 #DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
 #DesignerProperty: Key: YesColor, DisplayName: Yes Color, FieldType: String, DefaultValue: success, Description: Yes Color
 #DesignerProperty: Key: YesLoading, DisplayName: Yes Loading, FieldType: Boolean, DefaultValue: False, Description: Yes Loading
-#DesignerProperty: Key: NoCaption, DisplayName: No Caption, FieldType: String, DefaultValue: No, Description: No Caption
+#DesignerProperty: Key: NoCaption, DisplayName: No/Retry Caption, FieldType: String, DefaultValue: No, Description: No Caption
 #DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
 #DesignerProperty: Key: NoColor, DisplayName: No Color, FieldType: String, DefaultValue: error, Description: No Color
 #DesignerProperty: Key: NoLoading, DisplayName: No Loading, FieldType: Boolean, DefaultValue: False, Description: No Loading
 #DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
-#DesignerProperty: Key: CancelCaption, DisplayName: Cancel Caption, FieldType: String, DefaultValue: Cancel, Description: Cancel Caption
+#DesignerProperty: Key: CancelCaption, DisplayName: Cancel/Ignore Caption, FieldType: String, DefaultValue: Cancel, Description: Cancel Caption
 #DesignerProperty: Key: CancelTextColor, DisplayName: Cancel Text Color, FieldType: String, DefaultValue: #ffffff, Description: Cancel Text Color
 #DesignerProperty: Key: CancelColor, DisplayName: Cancel Color, FieldType: String, DefaultValue: gray, Description: Cancel Color
 #DesignerProperty: Key: CancelLoading, DisplayName: Cancel Loading, FieldType: Boolean, DefaultValue: False, Description: Cancel Loading
@@ -407,8 +411,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bFullScreen = False Then setWidth(sWidth)
 	setFullScreen(bFullScreen)
 	setTitle(sTitle)
+	setHTML(sRawHtml)
 	'sort action buttons
 	Select Case sActionType
+	Case "ok-cancel", "retry-cancel"
+		BANano.Await(AddYesButton)
+		BANano.Await(AddCancelButton)
 	Case "cancel"
 		BANano.Await(AddCancelButton)
 	Case "no"
@@ -418,7 +426,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "yes-no"
 		BANano.Await(AddYesButton)
 		BANano.Await(AddNoButton)
-	Case "yes-no-cancel"
+	Case "yes-no-cancel", "abort-retry-ignore"
 		BANano.Await(AddYesButton)
 		BANano.Await(AddNoButton)
 		BANano.Await(AddCancelButton)
@@ -487,7 +495,7 @@ Sub setFullScreen(b As Boolean)		'ignoredeadcode
 End Sub
 
 'set Raw Html
-Sub setHtml(s As String)
+Sub setHTML(s As String)				'ignoredeadcode
 	sRawHtml = s
 	CustProps.put("RawHtml", s)
 	If mElement = Null Then Return
@@ -495,12 +503,21 @@ Sub setHtml(s As String)
 End Sub
 
 'get Raw Html
-Sub getHtml As String
+Sub getHTML As String
 	Return sRawHtml
 End Sub
 
 private Sub AddYesButton				'ignoredeadcode
 	Dim yName As String = $"${mName}_yes"$
+	Select Case sActionType
+	Case "ok-cancel"
+		yName = $"${mName}_ok"$
+	Case "yes", "yes-no", "yes-no-cancel"
+	Case "retry-cancel"
+		yName = $"${mName}_retry"$
+	Case "abort-retry-ignore"
+		yName = $"${mName}_abort"$
+	End Select
 	YesButton.Initialize(mCallBack, yName, yName)
 	YesButton.ParentID = $"${mName}_action"$
 	YesButton.BackgroundColor = sYesColor
@@ -512,11 +529,16 @@ private Sub AddYesButton				'ignoredeadcode
 	YesButton.Shadow = sButtonsShadow
 	YesButton.Shape = sButtonsRounded
 	YesButton.AddComponent
-	UI.OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
+	UI.OnEventByID(yName, "click", mCallBack, $"${yName}_click"$)
 End Sub
 
 private Sub AddNoButton			'ignoredeadcode
 	Dim nName As String = $"${mName}_no"$
+	Select Case sActionType
+	Case "abort-retry-ignore"
+		nName = $"${mName}_retry"$
+	End Select	
+	
 	NoButton.Initialize(mCallBack, nName, nName)
 	NoButton.ParentID = $"${mName}_action"$
 	NoButton.BackgroundColor = sNoColor
@@ -528,11 +550,16 @@ private Sub AddNoButton			'ignoredeadcode
 	NoButton.Shadow = sButtonsShadow
 	NoButton.Shape = sButtonsRounded
 	NoButton.AddComponent
-	UI.OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
+	UI.OnEventByID(nName, "click", mCallBack, $"${nName}_click"$)
 End Sub
 
 private Sub AddCancelButton				'ignoredeadcode
 	Dim cName As String = $"${mName}_cancel"$
+	Select Case sActionType
+	Case "abort-retry-ignore"
+		cName = $"${mName}_ignore"$
+	End Select
+	
 	CancelButton.Initialize(mCallBack, cName, cName)
 	CancelButton.ParentID = $"${mName}_action"$
 	CancelButton.BackgroundColor = sCancelColor
@@ -544,9 +571,8 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.Shadow = sButtonsShadow
 	CancelButton.Shape = sButtonsRounded
 	CancelButton.AddComponent
-	UI.OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)	
+	UI.OnEventByID(cName, "click", mCallBack, $"${cName}_click"$)	
 End Sub
-
 
 'set Actions Visible
 Sub setActionsVisible(b As Boolean)			'ignoredeadcode

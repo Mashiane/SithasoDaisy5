@@ -65,6 +65,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("actions", "pg-speeddial", "", "Speed Dial")
 	drawermenu.AddItemChild("actions", "pg-dropdown", "", "Dropdown")
 	drawermenu.AddItemChild("actions", "pg-modal", "", "Modal")
+	drawermenu.AddItemChild("actions", "pg-modalhtml", "", "Modal HTML")
 	drawermenu.AddItemChild("actions", "pg-swap", "", "Swap")
 		
 	drawermenu.AddItemParent("components", "display", "", "Data Display")
@@ -101,6 +102,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("navigation", "pg-link", "", "Link")
 	drawermenu.AddItemChild("navigation", "pg-menu", "", "Menu")
 	drawermenu.AddItemChild("navigation", "pg-menu1", "", "Menu (More)")
+	drawermenu.AddItemChild("navigation", "pg-menutree", "", "Menu Tree")
 	drawermenu.AddItemChild("navigation", "pg-navbar", "", "Navbar")
 	drawermenu.AddItemChild("navigation", "pg-pagination", "", "Pagination")
 	drawermenu.AddItemChild("navigation", "pg-steps", "", "Steps")
@@ -166,6 +168,10 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-jsonquery", "", "JSON Query")
 	drawermenu.AddItemChild("plugins", "pg-trendchart", "", "Trend Charts")
 	drawermenu.AddItemChild("plugins", "pg-devices", "", "Devices")
+	drawermenu.AddItemChild("plugins", "pg-lottieplayer", "", "Lottie Player")
+	drawermenu.AddItemChild("plugins", "pg-pivot", "", "Pivot")
+	drawermenu.AddItemChild("plugins", "pg-dropzone", "", "DropZone")
+	drawermenu.AddItemChild("plugins", "pg-videoplayer", "", "Video Player")
 End Sub
 
 
@@ -191,6 +197,18 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "videoplayer"
+				pgVideoPlayer.Show(App)
+			Case "dropzone"
+				pgDropZone.show(App)
+			Case "modalhtml"
+				pgModalHTML.Show(App)		
+			Case "pivot"
+				pgPivot.Show(App)
+			Case "lottieplayer"
+				pgLottiePlayer.Show(App)		
+			Case "menutree"
+				pgMenuTree.Show(App)
 			Case "speeddial"
 				pgSpeedDial.Show(App)
 			Case "devices"

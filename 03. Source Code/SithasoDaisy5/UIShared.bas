@@ -2284,42 +2284,6 @@ Sub ProperCase(myStr As String) As String
 	End Try
 End Sub
 
-'get file details, this implements a blob
-Sub GetFileDetails(fileObj As Map) As FileObject
-	Dim ff As FileObject
-	ff.Initialize
-	ff.FileOK = False
-	If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return ff
-	Dim sname As String = fileObj.Get("name")
-	Dim lmd As Object = fileObj.Get("lastModified")
-	Dim ssize As String = fileObj.Get("size")
-	Dim stype As String = fileObj.Get("type")
-	Dim swebkitRelativePath As String = fileObj.Get("webkitRelativePath")
-	'
-	Dim slastModifiedDate As BANanoObject
-	slastModifiedDate.Initialize2("Date", lmd)    '
-	Dim yyyy As String = slastModifiedDate.RunMethod("getFullYear", Null).Result
-	Dim dd As String = slastModifiedDate.RunMethod("getDate", Null).Result
-	Dim mm As String = slastModifiedDate.RunMethod("getMonth", Null).Result
-	Dim hh As String = slastModifiedDate.RunMethod("getHours", Null).Result
-	Dim minutes As String = slastModifiedDate.RunMethod("getMinutes", Null).Result
-	'pad the details
-	dd = modSD5.PadRight(dd, 2, "0")
-	mm = modSD5.PadRight(mm, 2, "0")
-	hh = modSD5.PadRight(hh, 2, "0")
-	minutes = modSD5.PadRight(minutes, 2, "0")
-	'
-	Dim fd As String = $"${yyyy}-${mm}-${dd} ${hh}:${minutes}"$
-	ff.FileName = sname
-	ff.FileDate = fd
-	ff.FileDateOnly = $"${yyyy}-${mm}-${dd}"$
-	ff.FileSize = ssize
-	ff.FileType = stype
-	ff.FileOK = True
-	ff.Extension = MvLast(".", sname)
-	ff.webkitRelativePath = swebkitRelativePath
-	Return ff
-End Sub
 
 'count mv string
 Sub MvCount(strMV As String, Delimiter As String) As Int
@@ -3123,7 +3087,7 @@ End Sub
 '	Return hints.ContainsKey(tblName)
 'End Sub
 
-Sub CamelCase(idName As String) As String
+Sub CamelCase(idName As String) As String						'ignoredeadcode
 	idName = idName.trim
 	If idName = "" Then Return ""
 	Dim ls As StringBuilder
