@@ -123,13 +123,17 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+'	If BANano.AssetsIsDefined("TrendCharts") = False Then
+'		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesTrendCharts)' should be added!"$)
+'		Return
+'	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("trendchart.js")
+'	BANano.DependsOnAsset("trendchart.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String

@@ -14,6 +14,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	banano.Await(app.UsesMarkDownEditor)
 	BANano.LoadLayout(app.PageView, "easymdeview")
 	pgIndex.UpdateTitle("SDUI5EasyMDE")
 End Sub

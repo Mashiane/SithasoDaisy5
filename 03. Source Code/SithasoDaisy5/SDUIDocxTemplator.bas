@@ -30,6 +30,10 @@ End Sub
 'BANano.Await(doc.BuildWait)
 '</code>	
 Public Sub Initialize(mcb As Object, event As String, tmpFile As String, target As String)
+	If BANano.AssetsIsDefined("DocXTemplate") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDocxTemplate)' should be added!"$)
+		Return
+	End If
 	fn = tmpFile
 	mcallback = mcb
 	eventName = event

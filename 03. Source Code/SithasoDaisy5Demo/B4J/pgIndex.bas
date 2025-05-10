@@ -19,13 +19,14 @@ End Sub
 
 Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
+	'load these universally
+	BANano.Await(App.UsesColorWheel)
+	BANano.Await(App.UsesDatePicker)
 	'load the main layout to the body of the page
 	BANano.LoadLayout(App.Here, "baselayout")
 	drawerNav.Title = Main.AppVersion
 	BANano.Await(pgTypography.Show(App))
 
-'	BANano.Await(App.UsesFlatPickDateTime)
-	
 	'set the font of the app
 	'app.Font = "font-sans"
 	'link this app to the drawer, this is needed
@@ -77,7 +78,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-chatbubble", "", "Chat Bubble")
 	drawermenu.AddItemChild("display", "pg-collapse", "", "Collapse")
 	drawermenu.AddItemChild("display", "pg-countdown", "", "Countdown")
-	drawermenu.SetItemBadge("pg-countdown", "wip", "secondary")
 	drawermenu.AddItemChild("display", "pg-diff", "", "Diff")
 	drawermenu.AddItemChild("display", "pg-kbd", "", "Kbd")
 	drawermenu.AddItemChild("display", "pg-list", "", "List")
@@ -121,6 +121,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
 	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Calendars")
 	drawermenu.AddItemChild("dinput", "pg-checkbox", "./assets/square-check-regular.svg", "Checkbox")
+	drawermenu.AddItemChild("dinput", "pg-advancedgroupselect", "", "Advanced CheckBox Group")
 	drawermenu.AddItemChild("dinput", "pg-fieldset", "", "Fieldset")
 	drawermenu.AddItemChild("dinput", "pg-fileinput", "", "File Input")
 	drawermenu.AddItemChild("dinput", "pg-filter", "", "Filter")
@@ -172,6 +173,10 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("plugins", "pg-pivot", "", "Pivot")
 	drawermenu.AddItemChild("plugins", "pg-dropzone", "", "DropZone")
 	drawermenu.AddItemChild("plugins", "pg-videoplayer", "", "Video Player")
+	drawermenu.AddItemChild("plugins", "pg-pdfviewer", "", "PDF Viewer")
+	drawermenu.AddItemChild("plugins", "pg-qrcode", "", "QRCode")
+	drawermenu.AddItemChild("plugins", "pg-barcodereader", "", "Barcode Reader")
+	drawermenu.AddItemChild("plugins", "pg-treeview", "", "Tree View")
 End Sub
 
 
@@ -197,6 +202,16 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "advancedgroupselect"
+				pgAdvancedCheckGroup.Show(App)		
+			Case "treeview"
+				pgTreeView.Show(App)
+			Case "barcodereader"
+				pgBarcodeReader.Show(App)		
+			Case "qrcode"
+				pgQRCode.Show(App)
+			Case "pdfviewer"
+				pgPDFView.Show(App)
 			Case "videoplayer"
 				pgVideoPlayer.Show(App)
 			Case "dropzone"

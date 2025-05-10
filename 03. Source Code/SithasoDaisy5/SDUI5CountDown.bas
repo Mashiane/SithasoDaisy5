@@ -40,7 +40,10 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sValue As String = "5"
 	Private sFont As String = "mono"
-	Private sTextSize As String = "none"        
+	Private sTextSize As String = "none"
+	Private ctimer As Timer        
+	Private ivalue As Int
+	Private mvalue As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -50,12 +53,15 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	ctimer.Initialize("ctimer", 1000)
+	ctimer.Enabled = False
 End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
 End Sub
+
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -63,6 +69,7 @@ Public Sub AddComponent
 	mTarget = BANano.GetElement("#" & sParentID)
 	DesignerCreateView(mTarget, CustProps)
 End Sub
+
 'remove this element from the dom
 Public Sub Remove()
 	mElement.Remove
@@ -131,14 +138,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -152,7 +159,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -186,7 +193,6 @@ Sub setValue(text As String)		'ignoredeadcode
 	sValue = text
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_text"$, text)
 	UI.SetStyleByID($"${mName}_text"$, "--value", text)
 End Sub
 'get value
@@ -214,6 +220,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sTextSize = "none" Then sTextSize = ""    
 	End If
 	'
+	mvalue = sValue
 	UI.AddClassDT("countdown")
 	If sFont <> "" Then UI.AddClassDT("font-" & sFont)
 	If sTextSize <> "" Then UI.AddTextSizeDT(sTextSize)
@@ -234,7 +241,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	</span>"$).Get("#" & mName)
 	setValue(sValue)
 '	setVisible(bVisible)
+	StartCountDown
 End Sub
+
+Sub StartCountDown
+	ivalue = UI.CInt(mvalue)
+	ctimer.Enabled = True
+End Sub
+
+Sub EndCountDown
+	ctimer.Enabled = False
+End Sub
+
+Private Sub ctimer_Tick
+	If ivalue > 0 Then
+		ivalue = UI.CInt(ivalue) - 1
+	End If
+	setValue(ivalue)
+End Sub
+
 
 'set Font
 Sub setFont(s As String)

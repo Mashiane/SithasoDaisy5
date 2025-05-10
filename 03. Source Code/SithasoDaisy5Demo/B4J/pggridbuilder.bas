@@ -16,6 +16,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesCode)
 	BANano.LoadLayout(app.PageView, "gridbuilderview")
 	pgIndex.UpdateTitle("TailwindCSS Grid Builder")
 	prefGrid.AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#ff00ff", "#ffffff")

@@ -115,6 +115,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("WhatsApp") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesWhatsApp)' should be added!"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -126,6 +130,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	messages.Initialize  
 	sLastMsgID = ""
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	BANano.DependsOnAsset("whatsapp.min.css")
 	MessageType = "T"
 End Sub
 

@@ -50,6 +50,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("Pivot") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesPivot)' should be added for '${Name}'"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)

@@ -34,6 +34,7 @@ End Sub
 Sub Show(MainApp As SDUI5App)
 	UI.Initialize(Me)
 	app = MainApp
+	BANano.Await(app.UsesCode)
 	pgIndex.HideNavBar
 	BANano.LoadLayout(app.PageView, "prefbuilderview")
 	pgIndex.UpdateTitle("Preference Dialog Builder")

@@ -58,6 +58,10 @@ Sub Class_Globals
 End Sub
 
 Public Sub Initialize(Module As Object, EventName As String, fileName As String)
+	If BANano.AssetsIsDefined("SQLiteBrowser") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesSQLiteBrowser)' should be added!"$)
+		Return
+	End If
 	assetFile = fileName
 	mCallBack = Module
 	mEvent = EventName

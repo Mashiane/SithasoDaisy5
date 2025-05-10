@@ -16,6 +16,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesJSONQuery)
 	BANano.LoadLayout(app.PageView, "jsonview")
 	pgIndex.UpdateTitle("SDUIJSONQuery")
 	'

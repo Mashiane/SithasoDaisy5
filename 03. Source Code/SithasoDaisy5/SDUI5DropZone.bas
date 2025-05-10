@@ -74,6 +74,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("DropZone") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDropZone)' should be added for '${Name}'"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -386,11 +390,7 @@ Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "rounded-box")
-	Else
-		UI.RemoveClass(mElement, "rounded-box")
-	End If
+	UI.SetRoundedBox(mElement, b)
 End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none

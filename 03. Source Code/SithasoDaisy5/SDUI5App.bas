@@ -599,32 +599,101 @@ Sub StartEruda
 	Eruda.RunMethod("init", Null)
 End Sub
 
-Sub UsesDevice
-	Banano.Await(LoadAssetsOnDemand("Devices", Array("devices.min.css","html-to-image.js")))
+'valid
+Sub UsesPocketBase
+	Banano.Await(UI.LoadAssetsOnDemand("PocketBase", Array("pocketbase.umd.js")))
 End Sub
 
-Sub UsesEruda
-	Banano.Await(LoadAssetsOnDemand("Eruda", Array("eruda.js")))
+'valid
+Sub UsesDevices
+	Banano.Await(UI.LoadAssetsOnDemand("Devices", Array("devices.min.css","html-to-image.js")))
 End Sub
 
-''creates a pageview directly on the body
-''if you have a drawer dont use this call
-'Sub UsesPageView
-'	If Banano.Exists($"#pageview"$) Then
-'		'PageView.CreateDiv(mback, "body", "pageview")
-'		PageView.CreateCustomTag(mback, "body", "pageview", "div")
-'	End If
-'End Sub
-'
-''remove all pages in the app
-'Sub ClearPageView
-'	PageView.Clear
-'End Sub
-'
-''font-mono, font-sans, font-serif
-'Sub setFont(f As String)
-'	Container.AddClass(f)
-'End Sub
+'valid
+Sub UsesPivot
+	Banano.Await(UI.LoadAssetsOnDemand("Pivot", Array("webdatarocks.min.css","webdatarocks.toolbar.min.js", "webdatarocks.js")))
+End Sub
+
+'valid
+Sub UsesColorWheel
+	Banano.Await(UI.LoadAssetsOnDemand("ColorWheel", Array("reinvented-color-wheel.min.css", "reinvented-color-wheel.min.js")))
+End Sub
+
+'valid
+Sub UsesWhatsApp
+	Banano.Await(UI.LoadAssetsOnDemand("WhatsApp", Array("whatsapp.min.css", "emojimart.js")))
+End Sub
+
+'valid
+Sub UsesTreeSpider
+	Banano.Await(UI.LoadAssetsOnDemand("TreeSpider", Array("treeSpider.bundle.min.js", "treeSpider.css")))
+End Sub
+
+'valid
+Sub UsesExcel
+	Banano.Await(UI.LoadAssetsOnDemand("Excel", Array("jszip.min.js", "xlsx.full.min.js","oxml.min.js")))
+End Sub
+
+'valid
+Sub UsesMarkDownEditor
+	Banano.Await(UI.LoadAssetsOnDemand("MDE", Array("easymde.min.css", "easymde.min.js")))
+End Sub
+
+'valid
+Sub UsesLottiePlayer
+	Banano.Await(UI.LoadAssetsOnDemand("LottiePlayer", Array("lottie-player.js")))
+End Sub
+
+'valid
+Sub UsesQRCode
+	Banano.Await(UI.LoadAssetsOnDemand("QRCode", Array("qrcode.min.js")))
+End Sub
+
+'valid
+Sub UsesBarCodeReader
+	Banano.Await(UI.LoadAssetsOnDemand("BarCode", Array("html5-qrcode.min.js")))
+End Sub
+
+'valid
+Sub UsesDropZone
+	Banano.Await(UI.LoadAssetsOnDemand("DropZone", Array("dropzone.min.js", "dropzone.min.css")))
+End Sub
+
+'valid
+Sub UsesVideoAudioPlayer
+	Banano.Await(UI.LoadAssetsOnDemand("VideoAudio", Array("plyr.css", "plyr.js")))
+End Sub
+
+
+'valid
+Sub UsesSQLiteBrowser
+	Banano.Await(UI.LoadAssetsOnDemand("SQLiteBrowser", Array("sql-browser.min.js")))
+End Sub
+
+'valid
+Sub UsesHTMLParser
+	Banano.Await(UI.LoadAssetsOnDemand("HTMLParser", Array("htmlParser.min.js")))
+End Sub
+
+'valid
+Sub UsesDocxTemplate
+	Banano.Await(UI.LoadAssetsOnDemand("DocXTemplate", Array("docxtemplater.min.js", "pizzip.min.js", "pizzip-utils.min.js")))
+End Sub
+
+'valid
+Sub UsesCode
+	Banano.Await(UI.LoadAssetsOnDemand("Code", Array("prism.min.css", "prism.min.js", "beautify.min.js", "beautify-css.min.js", "beautify-html.min.js", "prettier.min.js")))
+End Sub
+
+'valid
+Sub UsesSignaturePad
+	Banano.Await(UI.LoadAssetsOnDemand("SignaturePad", Array("signature_pad.umd.min.js")))
+End Sub
+
+'valid
+Sub UsesDatePicker
+	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
+End Sub
 
 Sub ShowToast(msg As String)
 	AppToast.Duration = ToastDuration
@@ -1198,13 +1267,19 @@ private Sub ShowSwalInput(title As String, message As String, okText As String, 
 End Sub
 
 'parse HTML to json
+'please add app.UsesHTMLParser before calling this subroutine
 Sub ParseHTML(sinput As String) As List
+	If Banano.AssetsIsDefined("HTMLParser") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesHTMLParser)' should be added!"$)
+		Return Null
+	End If
 	treeSchema.Initialize
 	Dim res As Map = Banano.RunJavascriptMethod("htmlParser", Array(sinput))
 	ParseTree(res)
 	Return treeSchema
 End Sub
 
+'please add app.UsesHTMLParser before calling this subroutine
 Sub ParseTree(Rootx As Map)
 	'does this contains children
 	If Rootx.ContainsKey("children") Then
@@ -1572,94 +1647,6 @@ Sub PageResume
 	lEL.SetStyle(Banano.ToJson(mStyle))
 End Sub
 
-Sub UsesGijgo
-	Banano.Await(LoadAssetsOnDemand("TreeView", Array("core.min.js", "core.min.css", "checkbox.min.css", "tree.min.css", _
-	"draggable.min.js", "droppable.min.js", "checkbox.min.js", "tree.min.js", "editor.min.css", "editor.min.js")))
-End Sub
-
-'includes jquery
-Sub UsesEnjoyHint
-	Banano.Await(LoadAssetsOnDemand("EnjoyHint", Array("kinetic.min.js", "enjoyhint.min.js", "enjoyhint.min.css")))
-End Sub
-
-Sub UsesStories
-	Banano.Await(LoadAssetsOnDemand("Stories", Array("zuck.min.css", "snapssenger.min.css", "vemdezap.min.css", "snapgram.min.css","facesnap.min.css","zuck.min.js")))
-End Sub
-
-Sub UsesSwiper
-	Banano.Await(LoadAssetsOnDemand("SwiperX", Array("swiper-bundle.min.css", "swiper-bundle.min.js")))
-End Sub
-
-
-Sub UsesFlipPage
-	Banano.Await(LoadAssetsOnDemand("FlipPage", Array("flip-book.min.css", "page-flip.browser.js")))
-End Sub
-
-Sub UsesTimeLine
-	Banano.Await(LoadAssetsOnDemand("TimeLine", Array("timeline.min.css")))
-End Sub
-
-Sub UsesGridNav
-	Banano.Await(LoadAssetsOnDemand("GridNav", Array("grid-nav.min.css")))
-End Sub
-
-Sub LoadAssetsOnDemand(Key As String, Items As List)
-	Dim iTot As Int = Items.size - 1
-	Dim iCnt As Int = 0
-	For iCnt = 0 To iTot
-		Dim fn As String = Items.Get(iCnt)
-		If fn.EndsWith(".js") Then
-			If fn.StartsWith("./scripts/") = False Then
-				Items.Set(iCnt, $"./scripts/${fn}"$)
-			End If
-		End If
-		If fn.EndsWith(".css") Then
-			If fn.StartsWith("./styles/") = False Then
-				Items.Set(iCnt, $"./styles/${fn}"$)
-			End If
-		End If
-	Next
-	Dim pathsNotFound() As String
-	If Banano.AssetsIsDefined(Key) = False Then
-		'load the assets
-		pathsNotFound = Banano.AssetsLoadWait(Key, Items)
-		If Banano.IsNull(pathsNotFound) = False Then
-			Banano.Console.Warn($"${Key} not fully loaded..."$)
-			For Each path As String In pathsNotFound
-				Log(path)
-			Next
-		End If
-	End If
-End Sub
-
-Sub UsesChartKick
-	Banano.Await(LoadAssetsOnDemand("ChartKick", Array("chart.min.js", "chartjs-adapter-date-fns.bundle.min.js", "chartkick.min.js")))
-End Sub
-
-Sub UsesQRCode
-	Banano.Await(LoadAssetsOnDemand("QRCode", Array("qrcode.min.js")))
-End Sub
-
-Sub UsesPDFLib
-	Banano.Await(LoadAssetsOnDemand("PDFLib", Array("pdf-lib.min.js")))
-End Sub
-
-Sub UsesSQLite
-	Banano.Await(LoadAssetsOnDemand("SQLite", Array("sql-browser.min.js")))
-End Sub
-
-Sub UsesMath
-	Banano.Await(LoadAssetsOnDemand("MathIT", Array("math.min.js")))
-End Sub
-
-Sub UsesBarCodeReader
-	Banano.Await(LoadAssetsOnDemand("BarCodeReader", Array("html5-qrcode.min.js")))
-End Sub
-
-Sub UsesWebCam
-	Banano.Await(LoadAssetsOnDemand("WebCam", Array("webcam.min.js")))
-End Sub
-
 Sub CopyToClipboard(txt As String)
 	Banano.Await(Banano.Navigator.GetField("clipboard").RunMethod("writeText", txt))
 End Sub
@@ -1669,176 +1656,52 @@ Sub CopyFromClipBoard As String
 	Return clipText
 End Sub
 
-
-'Sub UsesFlatPickDateTime
-'	Banano.Await(LoadAssetsOnDemand("FlatPicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
-'End Sub
-
-Sub UsesLottiePlayer
-	Banano.Await(LoadAssetsOnDemand("Lottie", Array("lottie-player.js")))
-End Sub
-
-Sub UsesDocxTemplator
-	Banano.Await(LoadAssetsOnDemand("DocX", Array("docxtemplater.js", "pizzip.js", "pizzip-utils.js")))
-End Sub
-
-Sub UsesRollDate
-	Banano.Await(LoadAssetsOnDemand("RollDate", Array("rolldate.min.js")))
-End Sub
-
-'Sub UsesFaceIO
-'	Banano.Await(LoadAssetsOnDemand("FaceIO", Array("fio.js")))
-'End Sub
-
-'Sub UsesJQuery
-'	Banano.Await(LoadAssetsOnDemand("jquery", Array("jquery-3.6.3.min.js")))
-'End Sub
-
-Sub UsesLZCompressString
-	Banano.Await(LoadAssetsOnDemand("StringCompression", Array("lz-string.min.js")))
-End Sub
-
-'do not add UsesExcel, UsesCSV, UsesPDF with this, resources already included.
-'Sub UsesTable
-'	Banano.Await(LoadAssetsOnDemand("Table", Array("pagination.css", "pagination.min.js", "fuse.min.js")))
-'End Sub
-
-'Sub UsesFormToJSON
-'	Banano.Await(LoadAssetsOnDemand("FormToJSON", Array("form-data-json.min.js")))
-'End Sub
-
-'Sub UsesPocketBase
-'	Banano.Await(LoadAssetsOnDemand("PocketBase", Array("pocketbase.umd.js")))
-'End Sub
-
-Sub UsesCouchDB
-	Banano.Await(LoadAssetsOnDemand("CouchDB", Array("pouchdb-8.0.1.min.js", "pouchdb.find.min.js")))
-End Sub
-
-Sub UsesFullCalendar
-	Banano.Await(LoadAssetsOnDemand("FullCalendar", Array("fc.min.css", "fc.min.js", "fclocales.min.js")))
-End Sub
-
-'Sub UsesSignaturePad
-'	Banano.Await(LoadAssetsOnDemand("SignaturePad", Array("signature_pad.umd.min.js")))
-'End Sub
-
 Sub UsesCSVParser
-	Banano.Await(LoadAssetsOnDemand("CSV", Array("papaparse.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("CSV", Array("papaparse.min.js")))
 End Sub
 
-Sub UsesKanBan
-	Banano.Await(LoadAssetsOnDemand("KanBan", Array("jkanban.min.css", "dragula.min.js", "jkanban.min.js")))
+'valid
+Sub UsesJSONEditor
+	Banano.Await(UI.LoadAssetsOnDemand("JSONEditor", Array("jsoneditor.min.js")))
 End Sub
 
+Sub UsesJSONTree
+	Banano.Await(UI.LoadAssetsOnDemand("JSONTree", Array("jsontr.ee.js")))
+End Sub
+
+'valid
+Sub UsesTrendCharts
+	Banano.Await(UI.LoadAssetsOnDemand("TrendCharts", Array("trendchart.js")))
+	Banano.ImportWait("trendchart.js")
+End Sub
+
+'valid
+Sub UsesTreeView
+	Banano.Await(UI.LoadAssetsOnDemand("TreeView", Array("daisyuitreeview.umd.js")))
+End Sub
+
+'valid
 Sub UsesAES
-	Banano.Await(LoadAssetsOnDemand("Crypto", Array("crypto-js.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Crypto", Array("crypto-js.min.js")))
 End Sub
 
-Sub UsesGMaps
-	Banano.Await(LoadAssetsOnDemand("GMaps", Array("gmaps.min.js")))
+'valid
+Sub UsesInfoBox
+	Banano.Await(UI.LoadAssetsOnDemand("InfoBox", Array("infobox.min.css", "countUp.umd.js")))
 End Sub
 
-Sub UsesAES4PHP
-	Banano.Await(LoadAssetsOnDemand("Encryption", Array("encryption.min.js")))
+'valid
+Sub UsesJSONQuery
+	Banano.Await(UI.LoadAssetsOnDemand("JSONQuery", Array("jsonquery.js")))
 End Sub
 
-Sub UsesToastChart
-	Banano.Await(LoadAssetsOnDemand("TuiChart", Array("toastui-chart.min.css", "toastui-chart.min.js")))
+'valid
+Sub UsesFormula
+	Banano.Await(UI.LoadAssetsOnDemand("Formula", Array("formula.min.js")))
 End Sub
 
-Sub UsesMockupCode
-	Banano.Await(LoadAssetsOnDemand("PrismCode", Array("prism.min.css", "prism.min.js", "beautify.min.js", "beautify-css.min.js", "beautify-html.min.js", "prettier.min.js")))
-End Sub
-
-Sub UsesPDF
-	Banano.Await(LoadAssetsOnDemand("PDF", Array("jspdf.umd.min.js", "jspdf.plugin.autotable.min.js", "html2canvas.min.js", "pdf-lib.min.js")))
-End Sub
-
-Sub UsesExcel
-	Banano.Await(LoadAssetsOnDemand("Excel", Array("jszip.min.js", "oxml.min.js", "xlsx.full.min.js")))
-End Sub
-
-Sub UsesFireBase
-	Banano.Await(LoadAssetsOnDemand("FireBase", Array("firesql.umd.js")))
-End Sub
-
-Sub UsesSupaBase
-	Banano.Await(LoadAssetsOnDemand("SupaBase", Array("supabase.js")))
-End Sub
-
-Sub UsesRelax
-	Banano.Await(LoadAssetsOnDemand("Relax", Array("pouchdb.min.js", "pouchdb.find.js")))
-End Sub
-
-Sub UsesJustGage
-	Banano.Await(LoadAssetsOnDemand("Gauge", Array("raphael.min.js", "justgage.min.js")))
-End Sub
-
-Sub UsesFluidMeter
-	Banano.Await(LoadAssetsOnDemand("FluidMeter", Array("js-fluid-meter.js")))
-End Sub
-
-Sub UsesFrappeGantt
-	Banano.Await(LoadAssetsOnDemand("FrappeGantt", Array("frappe-gantt.min.css", "frappe-gantt.min.js")))
-End Sub
-
-Sub UsesEvoCalendar
-	Banano.Await(LoadAssetsOnDemand("UseEvoCalendar", Array("evo-calendar.min.css", "evo-calendar.midnight-blue.min.css", "evo-calendar.orange-coral.min.css", _
-	"evo-calendar.royal-navy.min.css", "evo-calendar.min.js")))
-End Sub
-
-Sub UsesDropZone
-	Banano.Await(LoadAssetsOnDemand("DropZoneX", Array("dropzone.min.css", "dropzone.min.js")))
-End Sub
-
-Sub UsesCollectJS
-	Banano.Await(LoadAssetsOnDemand("CollectJS", Array("collect.min.js")))
-End Sub
-
-'<code>
-''uncomment unused
-'Banano.Await(app.UsesPDF)
-'Banano.Await(app.UsesExcel)
-'Banano.Await(app.UsesCSV)
-'Banano.Await(app.UsesEnjoyHint)
-'Banano.Await(app.UsesFlatPickDateTime)
-'Banano.Await(app.UsesRollDate)
-''Banano.Await(app.UsesDropZone)
-''BANano.Await(app.UsesSwiper)
-''Banano.Await(app.UsesPocketBase)
-''Banano.Await(app.UsesFlipPage)
-''Banano.Await(app.UsesTimeLine)
-''Banano.Await(app.UsesGridNav)
-''Banano.Await(app.UsesChartKick)
-''Banano.Await(app.UsesQRCode)
-''Banano.Await(app.UsesBarCodeReader)
-''Banano.Await(app.UsesWebCam)
-''Banano.Await(app.UsesAxios)
-''Banano.Await(app.UsesLottiePlayer)
-''Banano.Await(app.UsesDocxTemplator)
-''Banano.Await(app.UsesHTMLParser)
-''Banano.Await(app.UsesLZCompressString)
-''Banano.Await(app.UsesFullCalendar)
-''Banano.Await(app.UsesDevice)
-''Banano.Await(app.UsesKanBan)
-''Banano.Await(app.UsesAES)
-''Banano.Await(app.UsesGMaps)
-''Banano.Await(app.UsesAES4PHP)
-''Banano.Await(app.UsesToastChart)
-''Banano.Await(app.UsesMockupCode)
-''Banano.Await(app.UsesFireBase)
-''Banano.Await(app.UsesSupaBase)
-''Banano.Await(app.UsesRelax)
-''Banano.Await(app.UsesGijgo)
-''Banano.Await(app.UsesJustGage)
-''Banano.Await(app.UsesFluidMeter)
-''Banano.Await(app.UsesFrappeGantt)
-''Banano.Await(app.UsesEvoCalendar)
-''Banano.Await(app.UsesDropZone)
-''Banano.Await(app.UsesCollectJS)
-'</code>
-Sub AddUses
+Sub UsesMath
+	Banano.Await(UI.LoadAssetsOnDemand("Formula", Array("math.min.js")))
 End Sub
 
 ''add item as form
@@ -1924,7 +1787,7 @@ End Sub
 '</code>
 Sub AddMyLayout(tempID As String, tempHTML As String)
 	templates.Put(tempID, tempHTML)
-	Dim parsed As List = parseHTML(tempHTML)
+	Dim parsed As List = ParseHTML(tempHTML)
 	Dim templateV As Map = CreateMap()
 	For Each hItem As Map In parsed
 		Dim stype As String = hItem.Get("type")
@@ -2470,10 +2333,6 @@ Sub AddCSSURL(urlLink As String, bAsync As Boolean)
 	Banano.GetElement("head").Append(tmpScriptElem)
 End Sub
 
-Sub UsesTrendCharts
-	Banano.ImportWait("trendchart.js")
-End Sub
-
 '<code>
 ''use fetch to get the file contents
 'Dim csvData As String = banano.Await(banano.GetFileAsText("./assets/data.csv", Null, "utf8"))
@@ -2493,6 +2352,10 @@ End Sub
 'End Sub
 '</code>
 Sub ImportCSV(Module As Object, event As String, content As String, delimiter As String, hasHeader As Boolean, dynamicTyping As Boolean, encoding As String)
+	If Banano.AssetsIsDefined("CSV") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesCSVParser)' should be added!"$)
+		Return
+	End If
 	event = event.tolowercase
 	Dim config As Map = CreateMap()
 	config.Put("delimiter", delimiter)

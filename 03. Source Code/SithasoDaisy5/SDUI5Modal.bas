@@ -383,6 +383,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
         	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
 		</div>
+		<label id="${mName}_backdrop" class="modal-backdrop" for="${mName}_toggle">Close</label>
 	</div>"$).Get("#" & mName)
 	'
 	Form.Initialize(mCallBack, $"${mName}_form"$, $"${mName}_form"$)

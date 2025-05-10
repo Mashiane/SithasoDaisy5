@@ -13,6 +13,9 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	app.PagePause
+	BANano.Await(app.UsesDevices)
 	BANano.LoadLayout(app.PageView, "devicesview")
 	pgIndex.UpdateTitle("SDUI5Devices")
+	app.pageresume
 End Sub

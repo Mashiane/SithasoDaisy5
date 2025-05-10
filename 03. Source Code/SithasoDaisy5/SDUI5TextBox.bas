@@ -570,8 +570,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	Select Case sTypeOf
 	Case "date-picker", "date-time-picker", "time-picker"
+		If BANano.AssetsIsDefined("DatePicker") = False Then
+			BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDatePicker)' should be added!"$)
+			Return
+		End If
 		BANano.Await(RefreshDatePicker)
 	Case "color-wheel"
+		If BANano.AssetsIsDefined("ColorWheel") = False Then
+			BANano.Throw($"Uses Error: 'BANano.Await(app.UsesColorWheel)' should be added!"$)
+			Return
+		End If
 		BANano.Await(RefreshColorWheel)
 		If bToggleColorPicker Then
 			'the color picker will be opened when a button is clicked

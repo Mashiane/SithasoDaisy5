@@ -83,6 +83,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("VideoAudio") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesVideoAudioPlayer)' should be added!"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -536,11 +540,7 @@ Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "rounded-box")
-	Else
-		UI.RemoveClass(mElement, "rounded-box")
-	End If
+	UI.SetRoundedBox(mElement, b)
 End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none

@@ -89,6 +89,10 @@ End Sub
 'xcel.Initialize(Me, "excel", SDUIShared.DateTimeNowBackUp & " " & tbl.ExcelTitle & ".xlsx")
 '</code>
 Sub Initialize(Module As Object, Event As String, fileName As String)
+	If BANano.AssetsIsDefined("Excel") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesExcel)' should be added!"$)
+		Return
+	End If
 	mback = Module
 	mEvent = Event
 	BANano.DependsOnAsset("jszip.min.js")

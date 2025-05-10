@@ -486,7 +486,7 @@ End Sub
 	input[type=search] {
 		-webkit-appearance: searchfield !important;
 	} 
-	input[type=search]::-webkit-search-cancel-	button {
+	input[type=search]::-webkit-search-cancel-button {
 		-webkit-appearance: searchfield-cancel-button !important;
 	}
 	.input-group {

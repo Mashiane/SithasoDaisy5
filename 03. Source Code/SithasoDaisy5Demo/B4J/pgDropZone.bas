@@ -14,6 +14,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	banano.Await(app.UsesDropZone)
 	BANano.LoadLayout(app.PageView, "dropzoneview")
 	pgIndex.UpdateTitle("SDUI5DropZone")
 End Sub

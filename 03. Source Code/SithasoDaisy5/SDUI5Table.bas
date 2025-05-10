@@ -365,7 +365,6 @@ Sub getMarginAXYTBLR As String
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
-	BANano.DependsOnAsset("math.min.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mName = UI.CleanID(Name)
@@ -582,7 +581,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          	<button id="${mName}_searchbtn" class="btn join-item hidden ">
-					<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;"   fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
+					<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;" width="50%" height="50%"   fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
 				</button>
 			</div>
 			<div id="${mName}_actions" class="hidden flex flex-1 m-4 mr-0 justify-end gap-1"></div>
@@ -596,7 +595,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         </div>
 		<div id="${mName}_divider2" class="m-0 divider"></div>
         <div id="${mName}_tablebox" class="m-1 overflow-x-auto">
-        	<table id="${mName}_table" class="table w-full ${mName}table">
+        	<table id="${mName}_table" class="table w-full table-pin-rows ${mName}table">
         		<thead id="${mName}_thead">
         			<tr id="${mName}_theadtr" class="tblheading"></tr>
         		</thead>
@@ -8823,6 +8822,7 @@ private Sub NewColumn As TableColumn
 	nc.maxwidth = ""
 	nc.width = ""
 	nc.height = ""
+	nc.Size = ""
 	nc.options.Initialize
 	nc.NothingSelected = False
 	nc.ComputeValue = ""
@@ -8831,6 +8831,7 @@ private Sub NewColumn As TableColumn
 	nc.ComputeClass = ""
 	nc.ComputeBackgroundColor = ""
 	nc.ComputeTextColor = ""
+	nc.ComputeOptions = ""
 	nc.Prefix = ""
 	nc.suffix = ""
 	nc.PrependIcon = ""

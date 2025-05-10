@@ -20,7 +20,7 @@ Sub Show(MainApp As SDUI5App)
 	app = MainApp
 	BANano.Await(app.UsesTrendCharts)
 	BANano.LoadLayout(app.PageView, "trendview")
-	pgIndex.UpdateTitle("SDUITrendChart")
+	pgIndex.UpdateTitle("SDUI5TrendChart")
 	'
 	
 End Sub

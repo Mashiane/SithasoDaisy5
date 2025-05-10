@@ -13,6 +13,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesPivot)
 	BANano.LoadLayout(app.PageView, "pivotview")
 	pgIndex.UpdateTitle("SDUI5Browser")
 End Sub

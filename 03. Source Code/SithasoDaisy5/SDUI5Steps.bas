@@ -465,11 +465,7 @@ Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClass(mElement, "rounded-box")
-	Else
-		UI.RemoveClass(mElement, "rounded-box")
-	End If
+	UI.SetRoundedBox(mElement, b)
 End Sub
 'set S m Direction
 'options: horizontal|none|vertical

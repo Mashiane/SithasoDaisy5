@@ -88,6 +88,10 @@ End Sub
 'pb.SchemaAddText(Array("id", "name"))
 '</code>
 Public Sub Initialize(Module As Object, eventName As String, url As String, TableName As String) As SDUIPocketBase
+	If BANano.AssetsIsDefined("PocketBase") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesPocketBase)' should be added!"$)
+		Return Me
+	End If
 	BANano.DependsOnAsset("pocketbase.umd.js")
 	sTableName = TableName
 	mCallBack = Module

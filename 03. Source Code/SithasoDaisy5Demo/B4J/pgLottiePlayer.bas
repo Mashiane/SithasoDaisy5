@@ -13,6 +13,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesLottiePlayer)
 	BANano.LoadLayout(app.PageView, "lottieplayerview")
 	pgIndex.UpdateTitle("SDUI5LottiePlayer")
 End Sub

@@ -13,6 +13,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesVideoAudioPlayer)
 	BANano.LoadLayout(app.PageView, "videoplayerview")
 	pgIndex.UpdateTitle("SDUI5VideoPlayer")
 End Sub

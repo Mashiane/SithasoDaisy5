@@ -63,6 +63,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("Devices") = False Then 
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDevices)' should be added for '${Name}'"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -70,6 +74,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("devices.min.css")
+	BANano.DependsOnAsset("html-to-image.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String

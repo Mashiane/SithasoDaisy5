@@ -13,6 +13,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesJSONTree)
 	BANano.LoadLayout(app.PageView, "jsontreeview")
 	pgIndex.UpdateTitle("SDUI5JsonTree")
 	'

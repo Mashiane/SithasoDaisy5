@@ -2619,6 +2619,10 @@ End Sub
 'DisplayDateFormat: "F j, Y"
 'https://flatpickr.js.org/formatting/
 Sub AddPropertyDatePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, locale As String)
+	If BANano.AssetsIsDefined("DatePicker") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDatePicker)' should be added!"$)
+		Return
+	End If
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -2673,6 +2677,10 @@ End Sub
 'WheelThickness = 20
 'WheelPlacement = bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
 Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String, Required As Boolean, iHandleDiameter As Int, iWheelDiameter As Int, iWheelThickness As Int, sWheelPlacement As String)
+	If BANano.AssetsIsDefined("ColorWheel") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesColorWheel)' should be added!"$)
+		Return
+	End If
 	If DefaultValue = "" Then DefaultValue = "#ff0000"
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
@@ -2853,6 +2861,10 @@ End Sub
 'DisplayDateFormat: "F j, Y H:i"
 'https://flatpickr.js.org/formatting/
 Sub AddPropertyDateTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, DateFormat As String, DisplayDateFormat As String, Time24Hours As Boolean, locale As String)
+	If BANano.AssetsIsDefined("DatePicker") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDatePicker)' should be added!"$)
+		Return
+	End If
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")
@@ -2905,6 +2917,10 @@ End Sub
 'https://flatpickr.js.org/formatting/
 'locale = 'en
 Sub AddPropertyTimePicker(Key As String, Title As String, DefaultValue As String, Required As Boolean, TimeFormat As String, DisplayFormat As String, Time24Hours As Boolean, locale As String)
+	If BANano.AssetsIsDefined("DatePicker") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDatePicker)' should be added!"$)
+		Return
+	End If
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
 	Types.Put(Key, "String")

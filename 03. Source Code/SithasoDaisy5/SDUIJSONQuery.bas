@@ -23,6 +23,10 @@ Sub Class_Globals
 End Sub
 
 Public Sub Initialize(jsonObject As Object) As SDUIJSONQuery
+	If BANano.AssetsIsDefined("JSONQuery") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesJSONQuery)' should be added!"$)
+		Return Me
+	End If
 	BANano.DependsOnAsset("jsonquery.js")
 	Reset
 	JQ = BANano.RunJavascriptMethod("JsonQuery", Array(jsonObject))

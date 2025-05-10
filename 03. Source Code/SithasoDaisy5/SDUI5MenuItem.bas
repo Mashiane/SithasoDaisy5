@@ -12,6 +12,10 @@ Version=10
 #DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
+#DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
+#DesignerProperty: Key: ItemActiveColor, DisplayName: Item Active Color, FieldType: String, DefaultValue: , Description: Item Active Color
+#DesignerProperty: Key: ItemFocusColor, DisplayName: Item Focus Color, FieldType: String, DefaultValue: , Description: Item Focus Color
+#DesignerProperty: Key: ItemHoverColor, DisplayName: Item Hover Color, FieldType: String, DefaultValue: , Description: Item Hover Color
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: Avatar, DisplayName: Avatar, FieldType: String, DefaultValue: , Description: Avatar
 #DesignerProperty: Key: AvatarSize, DisplayName: Avatar Size, FieldType: String, DefaultValue: 16, Description: Avatar Size
@@ -109,6 +113,10 @@ Sub Class_Globals
 	Private bClosePopupOnClick As Boolean
 	Private sRawItemClasses As String = ""
 	Private sRawItemStyles As String = ""
+	Private sItemActiveColor As String = ""
+	Private sItemColor As String = ""
+	Private sItemFocusColor As String = ""
+	Private sItemHoverColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -270,6 +278,70 @@ Sub setText(text As String)			'ignoredeadcode
 		UI.SetTextByID($"${mName}_text"$, sText)
 	End If
 End Sub
+
+'set Item Active Color
+Sub setItemActiveColor(s As String)
+	sItemActiveColor = s
+	CustProps.put("ItemActiveColor", s)
+	If mElement = Null Then Return
+	Dim bcolor As String = UI.FixColor("bg", s)
+	If bcolor = "" Then Return
+	UI.AddClass(mElement, $"active:${bcolor}"$)
+End Sub
+
+'set Item Color
+Sub setItemColor(s As String)
+	sItemColor = s
+	CustProps.put("ItemColor", s)
+	If mElement = Null Then Return
+	Dim bcolor As String = UI.FixColor("bg", s)
+	If bcolor = "" Then Return
+	UI.AddClass(mElement, bcolor)
+End Sub
+
+'set Item Focus Color
+Sub setItemFocusColor(s As String)
+	sItemFocusColor = s
+	CustProps.put("ItemFocusColor", s)
+	If mElement = Null Then Return
+	Dim bcolor As String = UI.FixColor("bg", s)
+	If bcolor = "" Then Return
+	UI.AddClass(mElement, $"focus:${bcolor}"$)
+End Sub
+
+'set Item Hover Color
+Sub setItemHoverColor(s As String)
+	sItemHoverColor = s
+	CustProps.put("ItemHoverColor", s)
+	If mElement = Null Then Return
+	Dim bcolor As String = UI.FixColor("bg", s)
+	If bcolor = "" Then Return
+	UI.AddClass(mElement, $"hover:${bcolor}"$)
+End Sub
+
+'get Item Active Color
+Sub getItemActiveColor As String
+	Return sItemActiveColor
+End Sub
+
+'get Item Color
+Sub getItemColor As String
+	Return sItemColor
+End Sub
+
+'get Item Focus Color
+Sub getItemFocusColor As String
+	Return sItemFocusColor
+End Sub
+
+'get Item Hover Color
+Sub getItemHoverColor As String
+	Return sItemHoverColor
+End Sub
+
+
+
+
 'get text
 Sub getText As String
 	sText = UI.GetText(mElement)
@@ -344,6 +416,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawItemClasses = UI.CStr(sRawItemClasses)
 		sRawItemStyles = Props.GetDefault("RawItemStyles", "")
 		sRawItemStyles = UI.CStr(sRawItemStyles)
+		sItemActiveColor = Props.GetDefault("ItemActiveColor", "")
+		sItemActiveColor = UI.CStr(sItemActiveColor)
+		sItemColor = Props.GetDefault("ItemColor", "")
+		sItemColor = UI.CStr(sItemColor)
+		sItemFocusColor = Props.GetDefault("ItemFocusColor", "")
+		sItemFocusColor = UI.CStr(sItemFocusColor)
+		sItemHoverColor = Props.GetDefault("ItemHoverColor", "")
+		sItemHoverColor = UI.CStr(sItemHoverColor)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")

@@ -14,6 +14,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesWhatsApp)
 	'adjust the pageview to 92%
 	app.UI.SetHeightByID("pageview", "screen")
 	BANano.LoadLayout(app.PageView, "whatsappview")

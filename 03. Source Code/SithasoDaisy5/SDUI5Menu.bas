@@ -15,6 +15,10 @@ Version=10
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
 #DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
+#DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
+#DesignerProperty: Key: ItemActiveColor, DisplayName: Item Active Color, FieldType: String, DefaultValue: , Description: Item Active Color
+#DesignerProperty: Key: ItemFocusColor, DisplayName: Item Focus Color, FieldType: String, DefaultValue: , Description: Item Focus Color
+#DesignerProperty: Key: ItemHoverColor, DisplayName: Item Hover Color, FieldType: String, DefaultValue: , Description: Item Hover Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 56, Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -118,6 +122,10 @@ Sub Class_Globals
 	Private bClosePopupOnClick As Boolean = False
 	Private sRawItemClasses As String = ""
 	Private sRawItemStyles As String = ""
+	Private sItemActiveColor As String = ""
+	Private sItemColor As String = ""
+	Private sItemFocusColor As String = ""
+	Private sItemHoverColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -342,6 +350,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawItemClasses = UI.CStr(sRawItemClasses)
 		sRawItemStyles = Props.GetDefault("RawItemStyles", "")
 		sRawItemStyles = UI.CStr(sRawItemStyles)
+		sItemActiveColor = Props.GetDefault("ItemActiveColor", "")
+		sItemActiveColor = UI.CStr(sItemActiveColor)
+		sItemColor = Props.GetDefault("ItemColor", "")
+		sItemColor = UI.CStr(sItemColor)
+		sItemFocusColor = Props.GetDefault("ItemFocusColor", "")
+		sItemFocusColor = UI.CStr(sItemFocusColor)
+		sItemHoverColor = Props.GetDefault("ItemHoverColor", "")
+		sItemHoverColor = UI.CStr(sItemHoverColor)
 	End If
 	'
 	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
@@ -400,6 +416,50 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 '	setVisible(bVisible)
+End Sub
+
+'set Item Active Color
+Sub setItemActiveColor(s As String)
+	sItemActiveColor = s
+	CustProps.put("ItemActiveColor", s)
+End Sub
+
+'set Item Color
+Sub setItemColor(s As String)
+	sItemColor = s
+	CustProps.put("ItemColor", s)
+End Sub
+
+'set Item Focus Color
+Sub setItemFocusColor(s As String)
+	sItemFocusColor = s
+	CustProps.put("ItemFocusColor", s)
+End Sub
+
+'set Item Hover Color
+Sub setItemHoverColor(s As String)
+	sItemHoverColor = s
+	CustProps.put("ItemHoverColor", s)
+End Sub
+
+'get Item Active Color
+Sub getItemActiveColor As String
+	Return sItemActiveColor
+End Sub
+
+'get Item Color
+Sub getItemColor As String
+	Return sItemColor
+End Sub
+
+'get Item Focus Color
+Sub getItemFocusColor As String
+	Return sItemFocusColor
+End Sub
+
+'get Item Hover Color
+Sub getItemHoverColor As String
+	Return sItemHoverColor
 End Sub
 
 'set Item Classes
@@ -625,11 +685,7 @@ Sub setRoundedBox(b As Boolean)
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
-	If b Then
-		UI.AddClass(mElement, "rounded-box")
-	Else
-		UI.RemoveClass(mElement, "rounded-box")
-	End If
+	UI.SetRoundedBox(mElement, b)
 End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
@@ -783,6 +839,10 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -806,6 +866,10 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -829,6 +893,10 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -853,6 +921,10 @@ Sub AddMenuItemIconColor(itemKey As String, itemIcon As String, iconSize As Stri
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -878,6 +950,10 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -910,6 +986,10 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 			item.ItemType = "avatar-text"	
 		End If
 		item.MenuName = mName
+		item.ItemColor = sItemColor
+		item.itemactivecolor = sItemActiveColor
+		item.itemfocuscolor = sItemFocusColor
+		item.ItemHoverColor = sItemHoverColor
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -928,6 +1008,10 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	If itemParent Then
 		item.ItemType = "collapse-item"
 	Else
@@ -958,6 +1042,10 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -985,6 +1073,10 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 		item.ClosePopupOnClick = bClosePopupOnClick
 		item.ItemClasses = sRawItemClasses
 		item.ItemStyles = sRawItemStyles
+		item.ItemColor = sItemColor
+		item.itemactivecolor = sItemActiveColor
+		item.itemfocuscolor = sItemFocusColor
+		item.ItemHoverColor = sItemHoverColor
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1018,6 +1110,10 @@ Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, item
 		item.ClosePopupOnClick = bClosePopupOnClick
 		item.ItemClasses = sRawItemClasses
 		item.ItemStyles = sRawItemStyles
+		item.ItemColor = sItemColor
+		item.itemactivecolor = sItemActiveColor
+		item.itemfocuscolor = sItemFocusColor
+		item.ItemHoverColor = sItemHoverColor
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1046,6 +1142,10 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
+	item.ItemColor = sItemColor
+	item.itemactivecolor = sItemActiveColor
+	item.itemfocuscolor = sItemFocusColor
+	item.ItemHoverColor = sItemHoverColor
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")

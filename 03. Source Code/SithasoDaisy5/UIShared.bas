@@ -18,6 +18,12 @@ Sub Class_Globals
 	Public ExcludePosition As Boolean = False
 End Sub
 
+Sub PlayAudio(af As String)
+	Dim Audio As BANanoObject
+	Audio.Initialize2("Audio", Array(af))
+	Audio.RunMethod("play", Null)
+End Sub
+
 Sub AddCode(cd As StringBuilder, cl As String)
 	cl = cl.Replace("~","$")
 	cd.Append(cl).Append(CRLF)
@@ -724,6 +730,12 @@ public Sub SetRoundedByID(sID As String, s As String)
 	SetRounded(mElement, s)
 End Sub
 
+public Sub SetRoundedBoxByID(sID As String, b As Boolean)
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRoundedBox(mElement, b)
+End Sub
+
 public Sub SetRingColorByID(sID As String, s As String)
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -752,6 +764,15 @@ public Sub SetRounded(mElement As BANanoElement, s As String)
 	If mElement = Null Then Return
 	Dim xmask As String = FixRounded(s)
 	UpdateClass(mElement, "rounded", xmask)
+End Sub
+
+public Sub SetRoundedBox(mElement As BANanoElement, b As Boolean)
+	If mElement = Null Then Return
+	If b = True Then
+		AddClass(mElement, "rounded-box")
+	Else
+		RemoveClass(mElement, "rounded-box")
+	End If
 End Sub
 
 public Sub SetShadow(mElement As BANanoElement, s As String)
@@ -2096,13 +2117,13 @@ Sub AddMinHeightDT(s As String)
 End Sub
 
 Sub AddColorDT(prefix As String, tc As String)
-	Dim s As String = FixSize(prefix, tc)
+	Dim s As String = FixColor(prefix, tc)
 	AddAttrDT("data-color", s)
 	AddClassDT(s)
 End Sub
 
 Sub AddBorderColorDT(tc As String)					'ignoredeadcode
-	Dim s As String = FixSize("border", tc)
+	Dim s As String = FixColor("border", tc)
 	AddAttrDT("data-bordercolor", s)
 	AddClassDT(s)
 End Sub
@@ -2119,9 +2140,14 @@ Sub AddRoundedDT(tc As String)
 	AddClassDT(s)
 End Sub
 
+Sub AddRoundedBoxDT
+	AddClassDT("rounded-box")
+End Sub
+
 Sub AddShadowDT(s As String)
 	Dim x As String = FixShadow(s)
 	AddAttrDT("data-shadow", s)
+	AddAttrDT("shadow", s)
 	AddClassDT(x)
 End Sub
 
@@ -3504,6 +3530,10 @@ Sub StrMid1(Text As String, Start As Int, iLength As Int) As String
 End Sub
 
 Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
+	If BANano.AssetsIsDefined("Formula") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesFormula)' should be added!"$)
+		Return ""
+	End If
 	If idNumber.Length <> 13 Then
 		idNumber = PadRight(idNumber, 13, "0")
 	End If
@@ -3666,7 +3696,12 @@ Sub ReadBase64FileFromAssets(fn As String) As Object
 	Return fileContents
 End Sub
 
+'add app.UsesAES
 Sub AESEncrypt(v As String, s As String) As String
+	If BANano.AssetsIsDefined("Crypto") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesAES)' should be added!"$)
+		Return Me
+	End If
 	Dim CryptoJS As BANanoObject
 	CryptoJS.Initialize("CryptoJS")
 	
@@ -3675,7 +3710,12 @@ Sub AESEncrypt(v As String, s As String) As String
 	Return i
 End Sub
 
+'add app.UsesAES
 Sub AESDecrypt(v As String, s As String) As String
+	If BANano.AssetsIsDefined("Crypto") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesAES)' should be added!"$)
+		Return Me
+	End If
 	Dim CryptoJS As BANanoObject
 	CryptoJS.Initialize("CryptoJS")
 	Dim bytes As BANanoObject = CryptoJS.GetField("AES").RunMethod("decrypt", Array(v, s))
@@ -3745,4 +3785,34 @@ Sub MapValuesToList(m As Map) As List
 		lst.Add(k)
 	Next
 	Return lst
+End Sub
+
+Sub LoadAssetsOnDemand(Key As String, Items As List)
+	'already loaded, return
+	If BANano.AssetsIsDefined(Key) Then Return
+	'
+	Dim iTot As Int = Items.size - 1
+	Dim iCnt As Int = 0
+	For iCnt = 0 To iTot
+		Dim fn As String = Items.Get(iCnt)
+		If fn.EndsWith(".js") Then
+			If fn.StartsWith("./scripts/") = False Then
+				Items.Set(iCnt, $"./scripts/${fn}"$)
+			End If
+		End If
+		If fn.EndsWith(".css") Then
+			If fn.StartsWith("./styles/") = False Then
+				Items.Set(iCnt, $"./styles/${fn}"$)
+			End If
+		End If
+	Next
+	Dim pathsNotFound() As String
+	'load the assets
+	pathsNotFound = BANano.AssetsLoadWait(Key, Items)
+	If BANano.IsNull(pathsNotFound) = False Then
+		BANano.Console.Warn($"${Key} not fully loaded..."$)
+		For Each path As String In pathsNotFound
+			Log(path)
+		Next
+	End If
 End Sub

@@ -14,6 +14,7 @@ End Sub
 
 Sub Show(MainApp As SDUI5App)
 	app = MainApp
+	BANano.Await(app.UsesSignaturePad)	
 	BANano.LoadLayout(app.PageView, "signaturepadview")
 	pgIndex.UpdateTitle("SDUI5SignaturePad")
 End Sub
