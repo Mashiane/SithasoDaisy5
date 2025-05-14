@@ -157,26 +157,44 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
 	'
 	drawermenu.AddItemParent("", "plugins", "./assets/gears-solid.svg", "Plugins")
-	drawermenu.AddItemChild("plugins", "pg-infobox", "", "Infobox")
-	drawermenu.AddItemChild("plugins", "pg-preferences", "", "Preferences")
-	drawermenu.AddItemChild("plugins", "pg-svg", "", "SVG")
-	drawermenu.AddItemChild("plugins", "pg-whatsapp", "", "WhatsApp")
-	drawermenu.AddItemChild("plugins", "pg-signature", "", "Signature Pad")
-	drawermenu.AddItemChild("plugins", "pg-treespider", "", "Tree Spider")
-	drawermenu.AddItemChild("plugins", "pg-jsoneditor", "", "JSON Editor")
-	drawermenu.AddItemChild("plugins", "pg-jsontree", "", "JSON Tree")
-	drawermenu.AddItemChild("plugins", "pg-easymde", "", "EasyMDE")
-	drawermenu.AddItemChild("plugins", "pg-jsonquery", "", "JSON Query")
-	drawermenu.AddItemChild("plugins", "pg-trendchart", "", "Trend Charts")
-	drawermenu.AddItemChild("plugins", "pg-devices", "", "Devices")
-	drawermenu.AddItemChild("plugins", "pg-lottieplayer", "", "Lottie Player")
-	drawermenu.AddItemChild("plugins", "pg-pivot", "", "Pivot")
-	drawermenu.AddItemChild("plugins", "pg-dropzone", "", "DropZone")
-	drawermenu.AddItemChild("plugins", "pg-videoplayer", "", "Video Player")
-	drawermenu.AddItemChild("plugins", "pg-pdfviewer", "", "PDF Viewer")
-	drawermenu.AddItemChild("plugins", "pg-qrcode", "", "QRCode")
-	drawermenu.AddItemChild("plugins", "pg-barcodereader", "", "Barcode Reader")
-	drawermenu.AddItemChild("plugins", "pg-treeview", "", "Tree View")
+	'
+	drawermenu.AddItemParent("plugins", "canvas", "", "Canvas")
+	drawermenu.AddItemChild("canvas", "pg-signature", "", "Signature Pad")
+	drawermenu.AddItemChild("canvas", "pg-qrcode", "", "QRCode")
+	drawermenu.AddItemChild("canvas", "pg-svg", "", "SVG")
+	drawermenu.AddItemChild("canvas", "pg-barcode", "", "Barcode")
+	drawermenu.AddItemChild("canvas", "pg-barcodereader", "", "Barcode Reader")
+	'
+	drawermenu.AddItemParent("plugins", "editors", "", "Editors")
+	drawermenu.AddItemChild("editors", "pg-jsoneditor", "", "JSON Editor")
+	drawermenu.AddItemChild("editors", "pg-easymde", "", "EasyMDE")
+	'
+	drawermenu.AddItemParent("plugins", "json", "", "JSON")
+	drawermenu.AddItemChild("json", "pg-jsontree", "", "JSON Tree")
+	drawermenu.AddItemChild("json", "pg-jsonquery", "", "JSON Query")
+	'
+	drawermenu.AddItemParent("plugins", "media", "", "Media")
+	drawermenu.AddItemChild("media", "pg-lottieplayer", "", "Lottie Player")
+	drawermenu.AddItemChild("media", "pg-videoplayer", "", "Video Player")
+	drawermenu.AddItemChild("media", "pg-devices", "", "Devices")
+	'
+	drawermenu.AddItemParent("plugins", "files", "", "Files")
+	drawermenu.AddItemChild("files", "pg-pdfviewer", "", "PDF Viewer")
+	drawermenu.AddItemChild("files", "pg-dropzone", "", "DropZone")
+	'
+	drawermenu.AddItemParent("plugins", "trees", "", "Trees")
+	drawermenu.AddItemChild("trees", "pg-treespider", "", "Tree Spider")
+	drawermenu.AddItemChild("trees", "pg-treeview", "", "Tree View")
+	'
+	drawermenu.AddItemParent("plugins", "charts", "", "Charts")
+	drawermenu.AddItemChild("charts", "pg-trendchart", "", "Trend Charts")
+	drawermenu.AddItemChild("charts", "pg-pivot", "", "Pivot")
+	drawermenu.AddItemChild("charts", "pg-infobox", "", "Infobox")
+	'
+	drawermenu.AddItemParent("plugins", "other", "", "Other")
+	drawermenu.AddItemChild("other", "pg-preferences", "", "Preferences")
+	drawermenu.AddItemChild("other", "pg-whatsapp", "", "WhatsApp")
+
 End Sub
 
 
@@ -202,6 +220,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "barcode"
+				pgBarCode.Show(App)	
 			Case "advancedgroupselect"
 				pgAdvancedCheckGroup.Show(App)		
 			Case "treeview"

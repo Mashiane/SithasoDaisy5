@@ -1647,6 +1647,12 @@ Sub PageResume
 	lEL.SetStyle(Banano.ToJson(mStyle))
 End Sub
 
+Sub GetMapFromEventDetail(e As BANanoEvent) As Map
+	Dim det As Object = e.Detail
+	Dim det1 As Map = det
+	Return det1
+End Sub
+
 Sub CopyToClipboard(txt As String)
 	Banano.Await(Banano.Navigator.GetField("clipboard").RunMethod("writeText", txt))
 End Sub
@@ -1678,6 +1684,17 @@ End Sub
 'valid
 Sub UsesTreeView
 	Banano.Await(UI.LoadAssetsOnDemand("TreeView", Array("daisyuitreeview.umd.js")))
+End Sub
+
+'valid
+Sub UsesContextMenu
+	Banano.Await(UI.LoadAssetsOnDemand("ContextMenu", Array("ContextMenu.js")))
+	Banano.ImportWait("ContextMenu.js")
+End Sub
+
+'valid
+Sub UsesBarCode
+	Banano.Await(UI.LoadAssetsOnDemand("JsBarCode", Array("JsBarcode.all.js")))
 End Sub
 
 'valid

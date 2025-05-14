@@ -308,16 +308,23 @@ End Sub
 Sub Download(fileName As String)
 	Dim canvasE As BANanoElement
 	canvasE.Initialize($"#${mName} canvas"$)
-	Dim dataURL As BANanoObject = BANano.await(canvasE.RunMethod("toDataURL", Null))
+	Dim dataURL As BANanoObject = canvasE.RunMethod("toDataURL", Null).result
 	Dim blob As Object = BANano.await(UI.dataURLToBlob(dataURL))		'ignore
 	BANano.RunJavascriptMethod("saveAs",Array(blob,fileName))
+End Sub
+
+Sub toBlob As Object
+	Dim canvasE As BANanoElement
+	canvasE.Initialize($"#${mName} canvas"$)
+	Dim res As Object = canvasE.RunMethod("toBlob", Null).Result
+	Return res
 End Sub
 
 'Returns signature image as data URL
 Sub toDataURL As String
 	Dim canvasE As BANanoElement
 	canvasE.Initialize($"#${mName} canvas"$)
-	Dim dataURL As Object = BANano.await(canvasE.RunMethod("toDataURL", Null))
+	Dim dataURL As Object = canvasE.RunMethod("toDataURL", Null).result
 	Return dataURL
 End Sub
 

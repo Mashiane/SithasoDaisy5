@@ -699,6 +699,11 @@ Sub undo
 	End If
 End Sub
 
+Sub toBlob As Object
+	Dim res As Object = SignaturePad.RunMethod("toBlob", Null).Result
+	Return res
+End Sub
+
 'Returns signature image as data URL
 Sub toDataURL As String
 	Dim res As String = ""

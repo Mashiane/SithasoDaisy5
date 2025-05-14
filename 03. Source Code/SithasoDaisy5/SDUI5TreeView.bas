@@ -17,7 +17,7 @@ Version=10.2
 #Event: nodeEditCancelled (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
+#DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: primary, Description: Item Color
 #DesignerProperty: Key: ItemActiveColor, DisplayName: Item Active Color, FieldType: String, DefaultValue: , Description: Item Active Color
 #DesignerProperty: Key: ItemFocusColor, DisplayName: Item Focus Color, FieldType: String, DefaultValue: , Description: Item Focus Color
 #DesignerProperty: Key: ItemHoverColor, DisplayName: Item Hover Color, FieldType: String, DefaultValue: , Description: Item Hover Color
@@ -33,10 +33,15 @@ Version=10.2
 #DesignerProperty: Key: MultipleCheck, DisplayName: Multiple Check, FieldType: Boolean, DefaultValue: False, Description: Multiple Check
 #DesignerProperty: Key: MultipleSelect, DisplayName: Multiple Select, FieldType: Boolean, DefaultValue: False, Description: Multiple Select
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: none, Description: Background Color
-#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: CheckBoxSize, DisplayName: Check Box Size, FieldType: String, DefaultValue: md, Description: Check Box Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: TextBoxSize, DisplayName: Text Box Size, FieldType: String, DefaultValue: sm, Description: Text Box Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: CheckBoxActiveColor, DisplayName: Check Box Active Color, FieldType: String, DefaultValue: , Description: Check Box Active Color
+#DesignerProperty: Key: CheckBoxActiveBorderColor, DisplayName: Check Box Active Border Color, FieldType: String, DefaultValue: , Description: Check Box Active Border Color
+#DesignerProperty: Key: Replace, DisplayName: Replace, FieldType: Boolean, DefaultValue: False, Description: Replace
+#DesignerProperty: Key: UseLocalstorage, DisplayName: Use Localstorage, FieldType: Boolean, DefaultValue: True, Description: Use Localstorage
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: , Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
-#DesignerProperty: Key: SelectedColor, DisplayName: Selected Color, FieldType: String, DefaultValue: none, Description: Selected Color
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -78,20 +83,25 @@ Sub Class_Globals
 	Private bInlineEdit As Boolean = False
 	Private bMultipleCheck As Boolean = False
 	Private bMultipleSelect As Boolean = False
-	Private sBackgroundColor As String = "none"
-	Private sRounded As String = "none"
+	Private sBackgroundColor As String = ""
+	Private sRounded As String = ""
 	Private bRoundedBox As Boolean = False
-	Private sSelectedColor As String = "none"
-	Private sShadow As String = "none"
+	Private sShadow As String = ""
 	Private sSize As String = "md"
 	Private sHeight As String = "full"
 	Private sWidth As String = "200px"
 	Private tv As BANanoObject
 	Private bBuilt As Boolean
 	Private sItemActiveColor As String = ""
-	Private sItemColor As String = ""
+	Private sItemColor As String = "primary"
 	Private sItemFocusColor As String = ""
 	Private sItemHoverColor As String = ""
+	Private sCheckBoxActiveBorderColor As String = ""
+	Private sCheckBoxActiveColor As String = ""
+	Private sCheckBoxSize As String = ""
+	Private bReplace As Boolean = False
+	Private sTextBoxSize As String = ""
+	Private bUseLocalstorage As Boolean = True
 End Sub
 
 #if css
@@ -278,15 +288,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bMultipleCheck = UI.CBool(bMultipleCheck)
 		bMultipleSelect = Props.GetDefault("MultipleSelect", False)
 		bMultipleSelect = UI.CBool(bMultipleSelect)
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "none")
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
 		sBackgroundColor = UI.CStr(sBackgroundColor)
-		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = Props.GetDefault("Rounded", "")
 		sRounded = UI.CStr(sRounded)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
 		bRoundedBox = UI.CBool(bRoundedBox)
-		sSelectedColor = Props.GetDefault("SelectedColor", "none")
-		sSelectedColor = UI.CStr(sSelectedColor)
-		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = Props.GetDefault("Shadow", "")
 		sShadow = UI.CStr(sShadow)
 		sSize = Props.GetDefault("Size", "md")
 		sSize = UI.CStr(sSize)
@@ -296,12 +304,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		sItemActiveColor = Props.GetDefault("ItemActiveColor", "")
 		sItemActiveColor = UI.CStr(sItemActiveColor)
-		sItemColor = Props.GetDefault("ItemColor", "")
+		sItemColor = Props.GetDefault("ItemColor", "primary")
 		sItemColor = UI.CStr(sItemColor)
 		sItemFocusColor = Props.GetDefault("ItemFocusColor", "")
 		sItemFocusColor = UI.CStr(sItemFocusColor)
 		sItemHoverColor = Props.GetDefault("ItemHoverColor", "")
 		sItemHoverColor = UI.CStr(sItemHoverColor)
+		sCheckBoxActiveBorderColor = Props.GetDefault("CheckBoxActiveBorderColor", "")
+		sCheckBoxActiveBorderColor = UI.CStr(sCheckBoxActiveBorderColor)
+		sCheckBoxActiveColor = Props.GetDefault("CheckBoxActiveColor", "")
+		sCheckBoxActiveColor = UI.CStr(sCheckBoxActiveColor)
+		sCheckBoxSize = Props.GetDefault("CheckBoxSize", "")
+		sCheckBoxSize = UI.CStr(sCheckBoxSize)
+		bReplace = Props.GetDefault("Replace", False)
+		bReplace = UI.CBool(bReplace)
+		sTextBoxSize = Props.GetDefault("TextBoxSize", "")
+		sTextBoxSize = UI.CStr(sTextBoxSize)
+		bUseLocalstorage = Props.GetDefault("UseLocalstorage", True)
+		bUseLocalstorage = UI.CBool(bUseLocalstorage)
 	End If
 	'
 	If sItemActiveColor <> "" Then
@@ -329,13 +349,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Options.Put("itemFocusColor", sItemFocusColor)
 	Options.Put("itemHoverColor", sItemHoverColor)
 	Options.put("treeName", mName)
+	Options.put("checkBoxActiveBorderColor", sCheckBoxActiveBorderColor)
+	Options.put("checkBoxActiveColor", sCheckBoxActiveColor)
+	Options.put("checkBoxSize", sCheckBoxSize)
+	Options.put("replace", bReplace)
+	Options.put("textBoxSize", sTextBoxSize)
+	Options.put("useLocalstorage", bUseLocalstorage)
 	'
 	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	If sSize <> "" Then UI.AddSizeDT("menu", sSize)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox Then UI.AddRoundedBoxDT
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If sSize <> "" Then UI.AddSizeDT("menu", sSize)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	UI.AddClassDT("menu")
@@ -373,6 +398,18 @@ private Sub BuildTree
 	tv.Initialize2("DaisyUITreeView", Array(el, Options))
 End Sub
 
+'get the tree structure as a map
+Sub GetTreeMap As Map
+	Dim res As Map = tv.RunMethod("getTree", Null).Result
+	Return res
+End Sub
+
+'get the tree data as a list
+Sub GetTreeList As List
+	Dim res As List = tv.RunMethod("flattenTree", Null).Result
+	Return res
+End Sub
+
 Sub Refresh
 	tv.RunMethod("refresh", Null)
 End Sub
@@ -383,6 +420,26 @@ End Sub
 
 Sub expandAll
 	tv.RunMethod("expandAll", Null)
+End Sub
+
+Sub nodeMoveRight(nodeId As String)
+	tv.RunMethod("nodeMoveRight", nodeId)
+End Sub
+
+Sub nodeMoveLeft(nodeId As String)
+	tv.RunMethod("nodeMoveLeft", nodeId)
+End Sub
+
+Sub nodeMoveUp(nodeId As String)
+	tv.RunMethod("nodeMoveUp", nodeId)
+End Sub
+
+Sub nodeMoveDown(nodeId As String)
+	tv.RunMethod("nodeMoveDown", nodeId)
+End Sub
+
+Sub enableInlineEditing(nodeId As String)
+	tv.RunMethod("enableInlineEditing", nodeId)
 End Sub
 
 Sub nodeExists(nodeID As String) As Boolean
@@ -397,6 +454,14 @@ End Sub
 
 Sub addNode(parentId As String, nodeId As String, iconUrl As String, text As String, href As String)
 	tv.RunMethod("addNode", Array(parentId, nodeId, iconUrl, text, href))
+End Sub
+
+Sub addNodeBefore(targetId As String, nodeId As String, iconUrl As String, text As String, href As String)
+	tv.RunMethod("addNodeBefore", Array(targetId, nodeId, iconUrl, text, href))
+End Sub
+
+Sub addNodeAfter(targetId As String, nodeId As String, iconUrl As String, text As String, href As String)
+	tv.RunMethod("addNodeAfter", Array(targetId, nodeId, iconUrl, text, href))
 End Sub
 
 Sub checkNode(nodeId As String, b As Boolean)
@@ -476,6 +541,76 @@ Sub checkNodes(nodes As List)
 	tv.RunMethod("checkedNodes", nodes)
 End Sub
 
+'set Check Box Active Border Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setCheckBoxActiveBorderColor(s As String)
+	sCheckBoxActiveBorderColor = s
+	CustProps.put("CheckBoxActiveBorderColor", s)
+	Options.Put("checkBoxActiveBorderColor", s)
+	tv.GetField("settings").SetField("checkBoxActiveBorderColor", s)
+End Sub
+'set Check Box Active Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setCheckBoxActiveColor(s As String)
+	sCheckBoxActiveColor = s
+	CustProps.put("CheckBoxActiveColor", s)
+	Options.Put("checkBoxActiveColor", s)
+	tv.GetField("settings").SetField("checkBoxActiveColor", s)
+End Sub
+'set Check Box Size
+'options: xs|none|sm|md|lg|xl
+Sub setCheckBoxSize(s As String)
+	sCheckBoxSize = s
+	CustProps.put("CheckBoxSize", s)
+	Options.Put("checkBoxSize", s)
+	tv.GetField("settings").SetField("checkBoxSize", s)
+End Sub
+'set Replace
+Sub setReplace(b As Boolean)
+	bReplace = b
+	CustProps.put("Replace", b)
+	Options.put("replace", b)
+	tv.GetField("settings").SetField("replace", b)
+End Sub
+'set Text Box Size
+'options: xs|none|sm|md|lg|xl
+Sub setTextBoxSize(s As String)
+	sTextBoxSize = s
+	CustProps.put("TextBoxSize", s)
+	Options.Put("textBoxSize", s)
+	tv.GetField("settings").SetField("textBoxSize", S)
+End Sub
+'set Use Localstorage
+Sub setUseLocalstorage(b As Boolean)
+	bUseLocalstorage = b
+	CustProps.put("UseLocalstorage", b)
+	Options.Put("useLocalstorage", b)
+	tv.GetField("settings").SetField("useLocalstorage", b)
+End Sub
+'get Check Box Active Border Color
+Sub getCheckBoxActiveBorderColor As String
+	Return sCheckBoxActiveBorderColor
+End Sub
+'get Check Box Active Color
+Sub getCheckBoxActiveColor As String
+	Return sCheckBoxActiveColor
+End Sub
+'get Check Box Size
+Sub getCheckBoxSize As String
+	Return sCheckBoxSize
+End Sub
+'get Replace
+Sub getReplace As Boolean
+	Return bReplace
+End Sub
+'get Text Box Size
+Sub getTextBoxSize As String
+	Return sTextBoxSize
+End Sub
+'get Use Localstorage
+Sub getUseLocalstorage As Boolean
+	Return bUseLocalstorage
+End Sub
 
 'set Collapse Icon Url
 Sub setCollapseIconUrl(s As String)
@@ -615,12 +750,7 @@ Sub setRoundedBox(b As Boolean)
 	If mElement = Null Then Return
 	UI.SetRoundedBox(mElement, bRoundedBox)
 End Sub
-'set Selected Color
-'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setSelectedColor(s As String)
-	sSelectedColor = s
-	CustProps.put("SelectedColor", s)
-End Sub
+
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
 Sub setShadow(s As String)
@@ -660,10 +790,7 @@ End Sub
 Sub getRoundedBox As Boolean
 	Return bRoundedBox
 End Sub
-'get Selected Color
-Sub getSelectedColor As String
-	Return sSelectedColor
-End Sub
+
 'get Shadow
 Sub getShadow As String
 	Return sShadow
