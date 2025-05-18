@@ -1769,6 +1769,23 @@ Sub ResizeIconByID(sID As String, sPercentage As String)
 	mElement.RemoveAttr("height")	
 End Sub
 
+Sub Increment(ival As Int) As Int
+	ival = CInt(ival) + 1
+	Return ival
+End Sub
+
+Sub Decrement(ival As Int) As Int
+	ival = CInt(ival) - 1
+	Return ival
+End Sub
+
+Sub PercentOf(cvalue As Int, tvalue As Int) As Double
+	Dim dbl As Double = CDbl(cvalue) / CDbl(tvalue)
+	dbl = CDbl(dbl) * 100
+	dbl = Round(dbl)
+	Return dbl
+End Sub
+
 'set width and height of icon
 Sub SetIconSizeByID(sID As String, s As String)
 	sID = CleanID(sID)

@@ -1829,6 +1829,11 @@ Sub setHasToolbarUpload(b As Boolean)				'ignoredeadcode
 		BANano.GetElement($"#${mName}_file"$).SetAttr("multiple", "multiple")
 	End If
 End Sub
+
+Sub ToolBarFileNullify
+	BANano.GetElement($"#${mName}_file"$).SetValue(Null)
+End Sub
+
 private Sub UploadToolbarHandler(e As BANanoEvent)
 	e.PreventDefault
 	e.StopPropagation

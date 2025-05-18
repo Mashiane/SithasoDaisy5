@@ -33,6 +33,7 @@ Private Sub Class_Globals
 	Public const DB_DATE As String = "DATE"
 	Public const DB_LONGTEXT As String = "STRING"
 	'
+	Public UseAPIKey As Boolean 
 	Private mCallBack As Object			'ignore
 	Private baseURL As String
 	Private whereField As Map
@@ -79,6 +80,7 @@ Private Sub Class_Globals
 	Public DeleteRule As String
 	Private idxNames As Map
 	Private uniqueIdxNames As Map
+	Public MatchSchema As Boolean
 End Sub
 
 
@@ -126,7 +128,58 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, Tabl
 	idxNames.Initialize 
 	uniqueIdxNames.Initialize 
 	setNoCache(bNoCache)
-		
+	MatchSchema = True
+	PrepareSubs(Module, eventName)
+	Return Me
+End Sub
+
+'<code>
+''initialize the connection to pocketbase with a collection to access
+'Dim client As BANAnoObject = App.OpenPocketBase(urL)
+'pb.InitializeOnConnection(Me, client, "pb", "http://127.0.0.1:8090", "projects")
+'pb.SchemaAddText(Array("id", "name"))
+'</code>
+Public Sub InitializeOnConnection(Module As Object, connection As BANanoObject, eventName As String, url As String, TableName As String) As SDUIPocketBase
+	sTableName = TableName
+	mCallBack = Module
+	skipTotal = True
+	baseURL = url
+	whereField.Initialize
+	ops.Initialize
+	expand.Initialize 
+	orderByL.Initialize
+	flds.Initialize
+	Record.Initialize
+	lastPosition = -1
+	result.Initialize
+	mEvent = eventName
+	PrimaryKey = "id"
+	Schema.Initialize
+	client = connection
+	SchemaAddText1("id")
+	fileFields.Initialize
+	combineL.Initialize
+	ShowLog = False
+	batchSize = 100
+	Upgrade = False
+	headers.Initialize 
+	keepalive = True
+	bNoCache = False
+	ListRule = ""
+	ViewRule =""
+	CreateRule = ""
+	UpdateRule = ""
+	DeleteRule = ""
+	idxNames.Initialize 
+	uniqueIdxNames.Initialize 
+	setNoCache(bNoCache)
+	MatchSchema = True
+	PrepareSubs(Module, eventName)
+	Return Me
+End Sub
+
+
+Private Sub PrepareSubs(Module As Object, eventName As String)
 	If SubExists(Module, $"${eventName}_AuthChange"$) Then
 		Dim stoken As String
 		Dim smodel As Object
@@ -165,7 +218,6 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, Tabl
 		Dim cb As BANanoObject = BANano.CallBack(Module, $"${mEvent}_ConnectionError"$, Array(e))
 		client.GetField("realtime").RunMethod("subscribe", Array("PB_ERROR", cb))
 	End If
-	Return Me
 End Sub
 
 'required
@@ -2146,6 +2198,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIPocketBase
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SetField(${fldName}, ${fldValue})"$)
 	End If
+	If Schema.ContainsKey(fldName) Then
 	Dim dt As String = Schema.Get(fldName)
 	Select Case dt
 	Case DB_BOOL
@@ -2167,6 +2220,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIPocketBase
 	Case DB_DOUBLE
 		fldValue = CDbl(fldValue)
 	End Select
+	end if
 	Record.Put(fldName, fldValue)
 	Return Me
 End Sub
@@ -2415,10 +2469,12 @@ End Sub
 Sub SetRecord(rec As Map)
 	Record.Initialize 
 	'only process schema fields
-	For Each k As String In rec.Keys
-		Dim fldPos As Boolean = Schema.ContainsKey(k)
-		If fldPos = False Then rec.Remove(k)
-	Next
+	If MatchSchema Then
+		For Each k As String In rec.Keys
+			Dim fldPos As Boolean = Schema.ContainsKey(k)
+			If fldPos = False Then rec.Remove(k)
+		Next
+	End If
 	For Each k As String In rec.Keys
 		Dim v As Object = rec.GetDefault(k, "")
 		Dim dt As String = Schema.Get(k)
@@ -4538,9 +4594,39 @@ Sub SchemaGet(prjName As String, surl As String, semail As String, spassword As 
 			If tblname.StartsWith(prjSearch) Then
 				prjTables.Add(rec)
 			End If
-		End Select	
+		End Select
 	Loop
 	Return prjTables
+End Sub
+
+Sub SchemaTableGet(ftblName As String, surl As String, semail As String, spassword As String) As Map
+	Dim prjTables As List
+	prjTables.Initialize
+	If ShowLog Then
+		Log($"SDUIPocketBase.SchemaTableGet"$)
+	End If
+	'connect to host
+	Dim dbSource As SDUIPocketBase
+	dbSource.Initialize(Me, "sourceDB", surl, "")
+	BANano.await(dbSource.ADMIN_AUTH_WITH_PASSWORD(semail, spassword))
+		
+	Dim sProfile As profileType = dbSource.UserProfile
+	If sProfile.Size = 0 Then Return prjTables
+	
+	'get all collection
+	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS)
+	dbSource.MoveStart
+	
+	'extract collections for project
+	Do While dbSource.NextRow
+		Dim rec As Map = dbSource.Record
+		Dim tblName As String = dbSource.GetString("name")
+		If tblName.EqualsIgnoreCase(ftblName) Then
+			Return rec
+		End If	
+	Loop
+	Dim m As Map = CreateMap()
+	Return m
 End Sub
 
 'moveStart

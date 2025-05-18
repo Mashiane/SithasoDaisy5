@@ -2,7 +2,7 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=9.8
+Version=10.2
 @EndOfDesignText@
 #IgnoreWarnings:12
 #Event: ExcelDownload (e As BANanoEvent)
@@ -82,6 +82,46 @@ Sub Class_Globals
 	Public rows As List
 	Private mback As Object
 	Private mEvent As String
+	Type TableColumn1(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, classes As List, options As Map, NothingSelected As Boolean, rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String)
+End Sub
+
+Sub InStr(sText As String, sFind As String) As Int
+	Return sText.tolowercase.IndexOf(sFind.tolowercase)
+End Sub
+
+'get alpha
+Sub AlphaNumeric(value As String) As String
+	value = CStr(value)
+	Try
+		value = value.Trim
+		If value = "" Then value = ""
+		Dim sout As String = ""
+		Dim mout As String = ""
+		Dim slen As Int = value.Length
+		Dim i As Int = 0
+		For i = 0 To slen - 1
+			mout = value.CharAt(i)
+			If InStr("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", mout) <> -1 Then
+				sout = sout & mout
+			End If
+		Next
+		Return sout
+	Catch
+		Return value
+	End Try
+End Sub
+
+'create a list from map specific keys
+Sub GetListFromMapKeys(m As Map, keys As List) As List
+	Dim lst As List
+	lst.Initialize
+	For Each k As String In keys
+		If m.ContainsKey(k) Then
+			Dim v As Object = m.Get(k)
+			lst.Add(v)
+		End If
+	Next
+	Return lst
 End Sub
 
 'initialize with filename
@@ -191,14 +231,14 @@ Sub SetColumnsFromDataTable(xcolumns As Map)
 	Dim colTot As Int = xcolumns.Size - 1
 	Dim colCnt As Int
 	For colCnt = 0 To colTot
-		Dim hdr As TableColumn = xcolumns.GetValueAt(colCnt)
+		Dim hdr As TableColumn1 = xcolumns.GetValueAt(colCnt)
 		Dim sDataKey As String = hdr.name
 		Dim sTitle As String = hdr.title
 		'
 		Select Case hdr.typeof
-		Case "action", "edit", "delete", "print", "delete", "clone", "save", "cancel", "button", "menu"
-		Case Else
-			columns.Put(sDataKey, sTitle)
+			Case "action", "edit", "delete", "print", "delete", "clone", "save", "cancel", "button", "menu"
+			Case Else
+				columns.Put(sDataKey, sTitle)
 		End Select
 	Next
 End Sub
@@ -725,37 +765,12 @@ Sub ExportTable(mExcelTitle As String, border As Boolean, fieldNames As List, fi
 	Download(mback, $"${mEvent}_exceldownload"$)
 End Sub
 
-'get alpha
-private Sub AlphaNumeric(value As String) As String
-	value = CStr(value)
-	Try
-		value = value.Trim
-		If value = "" Then value = ""
-		Dim sout As String = ""
-		Dim mout As String = ""
-		Dim slen As Int = value.Length
-		Dim i As Int = 0
-		For i = 0 To slen - 1
-			mout = value.CharAt(i)
-			If "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".IndexOf(mout) <> -1 Then
-				sout = sout & mout
-			End If
-		Next
-		Return sout
-	Catch
-		Return value
-	End Try
-End Sub
-
-'create a list from map specific keys
-private Sub GetListFromMapKeys(m As Map, keys As List) As List
-	Dim lst As List
-	lst.Initialize
-	For Each k As String In keys
-		If m.ContainsKey(k) Then
-			Dim v As Object = m.Get(k)
-			lst.Add(v)
-		End If
+Sub GetExcelHeadings(lst As List) As List
+	Dim headers As List
+	headers.Initialize
+	Dim r1 As Map = lst.Get(0)
+	For Each k As String In r1.Keys
+		headers.Add(k)
 	Next
-	Return lst
+	Return headers
 End Sub

@@ -21,6 +21,7 @@ Private Sub Class_Globals
 	Public const DB_BLOB As String = "BLOB"
 	Public const DB_FLOAT As String = "FLOAT"
 	'
+	Public MatchSchema As Boolean
 	Private mCallBack As Object			'ignore
 	Private whereField As Map
 	Private ops As List
@@ -112,6 +113,7 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	UseApiKey = False
 	escapeCharStart = "`"
 	escapeCharEnd = "`"
+	MatchSchema = True
 End Sub
 
 Public Sub EscapeField(f As String) As String
@@ -137,6 +139,12 @@ Public Sub CreateTable As String
 	sb.Append(")")
 	Dim query As String = "CREATE TABLE IF NOT EXISTS " & EscapeField(TableName) & " " & sb.ToString
 	Return query
+End Sub
+
+'ensure the query only return the id only
+Sub GetAffectedID
+	flds.Initialize
+	flds.Add("id")
 End Sub
 
 Sub SchemaAddLongText1(b As String) As SDUIMySQLRESTNative
@@ -1205,6 +1213,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLRESTNative
 	If ShowLog Then
 		Log($"SDUIMySQLRESTNative.${TableName}.SetField(${fldName}, ${fldValue})"$)
 	End If
+	If Schema.ContainsKey(fldName) Then
 	Dim dt As String = Schema.Get(fldName)
 	Select Case dt
 		Case DB_BOOL
@@ -1224,6 +1233,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLRESTNative
 		Case DB_DOUBLE
 			fldValue = CDbl(fldValue)
 	End Select
+	End If
 	Record.Put(fldName, fldValue)
 	Return Me
 End Sub
@@ -1492,11 +1502,13 @@ End Sub
 
 Sub SetRecord(rec As Map)
 	Record.Initialize
-	'only process schema fields
-	For Each k As String In rec.Keys
-		Dim fldPos As Boolean = Schema.ContainsKey(k)
-		If fldPos = False Then rec.Remove(k)
-	Next
+	If MatchSchema Then
+		'only process schema fields
+		For Each k As String In rec.Keys
+			Dim fldPos As Boolean = Schema.ContainsKey(k)
+			If fldPos = False Then rec.Remove(k)
+		Next
+	End If
 	For Each k As String In rec.Keys
 		Dim v As Object = rec.GetDefault(k, "")
 		Dim dt As String = Schema.Get(k)

@@ -194,6 +194,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("plugins", "other", "", "Other")
 	drawermenu.AddItemChild("other", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("other", "pg-whatsapp", "", "WhatsApp")
+	drawermenu.AddItemChild("other", "pg-officeribbon", "", "Office Ribbon")
 
 End Sub
 
@@ -220,6 +221,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "officeribbon"
+				pgOfficeRibbon.Show(App)		
 			Case "barcode"
 				pgBarCode.Show(App)	
 			Case "advancedgroupselect"

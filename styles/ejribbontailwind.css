@@ -1,0 +1,3026 @@
+.e-dropdownbase .e-list-item.e-active,
+.e-dropdownbase .e-list-item.e-active.e-hover {
+  font-weight: 500;
+}
+
+.e-dropdownbase .e-list-group-item,
+.e-fixed-head {
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.e-small .e-dropdownbase .e-list-group-item,
+.e-small .e-fixed-head,
+.e-small.e-dropdownbase .e-list-group-item,
+.e-small.e-fixed-head {
+  font-size: 10px;
+}
+
+.e-dropdownbase .e-list-item .e-list-icon {
+  padding: 0 8px 0 0;
+}
+
+.e-small .e-dropdownbase .e-list-item .e-list-icon {
+  padding: 0 4px 0 0;
+}
+
+.e-ddl.e-control-wrapper .e-ddl-icon::before {
+  -webkit-transform: rotate(0deg);
+          transform: rotate(0deg);
+  -webkit-transition: -webkit-transform 300ms ease;
+  transition: -webkit-transform 300ms ease;
+  transition: transform 300ms ease;
+  transition: transform 300ms ease, -webkit-transform 300ms ease;
+}
+
+.e-ddl.e-control-wrapper.e-icon-anim .e-ddl-icon::before {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+  -webkit-transition: -webkit-transform 300ms ease;
+  transition: -webkit-transform 300ms ease;
+  transition: transform 300ms ease;
+  transition: transform 300ms ease, -webkit-transform 300ms ease;
+}
+
+.e-dropdownbase .e-list-item.e-active.e-hover {
+  color: #111827;
+}
+
+.e-input-group:not(.e-disabled) .e-control.e-dropdownlist ~ .e-ddl-icon:active,
+.e-input-group:not(.e-disabled) .e-control.e-dropdownlist ~ .e-ddl-icon:hover,
+.e-input-group:not(.e-disabled) .e-back-icon:active,
+.e-input-group:not(.e-disabled) .e-back-icon:hover,
+.e-popup.e-ddl .e-input-group:not(.e-disabled) .e-clear-icon:active,
+.e-popup.e-ddl .e-input-group:not(.e-disabled) .e-clear-icon:hover {
+  background: transparent;
+}
+
+.e-input-group .e-ddl-icon:not(:active)::after {
+  -webkit-animation: none;
+          animation: none;
+}
+
+.e-ddl.e-popup {
+  border: 0;
+  border-radius: 4px;
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  margin-top: 4px;
+}
+
+.e-small .e-ddl.e-popup,
+.e-small.e-ddl.e-popup {
+  border-radius: 2px;
+  margin-top: 2px;
+}
+
+.e-popup.e-ddl .e-dropdownbase {
+  min-height: 26px;
+  padding: 4px 0;
+}
+
+.e-input-group.e-ddl,
+.e-input-group.e-ddl .e-input,
+.e-input-group.e-ddl .e-ddl-icon {
+  background: #fff;
+}
+
+.e-ddl.e-ddl-device.e-ddl-device-filter .e-input-group:hover:not(.e-disabled):not(.e-float-icon-left),
+.e-ddl.e-ddl-device.e-ddl-device-filter .e-input-group.e-control-wrapper:hover:not(.e-disabled):not(.e-float-icon-left) {
+  border-bottom-width: 0;
+}
+
+.e-ddl.e-popup.e-outline .e-filter-parent {
+  padding: 4px 8px;
+}
+
+/*! component's theme wise override definitions and variables */
+@-webkit-keyframes hscroll-popup-shadow {
+  0% {
+    border-color: rgba(255, 255, 255, 0.5);
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 200px rgba(255, 255, 255, 0.12);
+  }
+}
+@keyframes hscroll-popup-shadow {
+  0% {
+    border-color: rgba(255, 255, 255, 0.5);
+    -webkit-box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.5);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 0 200px rgba(255, 255, 255, 0.12);
+  }
+}
+/*! component's theme wise override definitions and variables */
+@-webkit-keyframes tbar-alt-popup-shadow {
+  0% {
+    border-color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+  }
+}
+@keyframes tbar-alt-popup-shadow {
+  0% {
+    border-color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+  }
+}
+@-webkit-keyframes hscroll-alt-popup-shadow {
+  0% {
+    border-color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+  }
+}
+@keyframes hscroll-alt-popup-shadow {
+  0% {
+    border-color: rgba(0, 0, 0, 0.12);
+    -webkit-box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
+  }
+  100% {
+    -webkit-box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 0 0 200px rgba(0, 0, 0, 0.12);
+  }
+}
+.e-ribbon .e-drop-icon::before {
+  content: "\e729";
+}
+
+.e-ribbon.e-rbn {
+  display: block;
+  border-radius: unset;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-skeleton-container {
+  min-width: 52px;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-skeleton-container.e-ribbon-skeleton-hidden {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-skeleton-container.e-simplified {
+  min-width: 120px;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-skeleton-container.e-simplified .e-ribbon-skeleton {
+  height: 20px;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-skeleton {
+  border-radius: 4px;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-overlay {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: absolute;
+  gap: 30px;
+  width: 100%;
+  height: 100%;
+  z-index: 4;
+  padding: 10px;
+  overflow: hidden;
+}
+.e-ribbon.e-rbn .e-ribbon-tab.e-tab .e-content > .e-item.e-active {
+  overflow: hidden;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-toolbar {
+  min-height: auto;
+  display: inline-block;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll-content > .e-item:not(.e-active) {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  position: absolute;
+  padding: 8px 8px;
+  border: none;
+  border-width: unset;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  text-transform: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu.e-active,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage.e-active {
+  border-radius: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu.e-active, .e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu:focus,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage.e-active,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage:focus {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  outline: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-help-template {
+  position: absolute;
+  top: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  height: 38px;
+  padding-right: 12px;
+  border-bottom: none;
+  z-index: 1;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header {
+  border-bottom: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-hor-nav {
+  height: 38px;
+  min-height: 38px;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header::before {
+  border-width: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-indicator {
+  display: block;
+  z-index: 1;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-items {
+  height: 38px;
+  min-height: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-items:not(.e-tbar-pos) .e-toolbar-item:first-child,
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-items:not(.e-tbar-pos) .e-toolbar-item:last-child {
+  margin: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item {
+  vertical-align: unset;
+  margin: 0;
+  border: none;
+  border-radius: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item:not(.e-separator) {
+  height: auto;
+  min-height: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-active {
+  border: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-active::before {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-wrap {
+  padding: 0;
+  height: auto;
+  border: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  padding: 8px 8px;
+  text-transform: none;
+  margin: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-text-wrap {
+  height: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-active .e-text-wrap::before {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-active .e-text-wrap .e-tab-text {
+  font-weight: 400;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll.e-scroll-device .e-scroll-nav.e-scroll-right-nav {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll {
+  padding: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav {
+  height: auto;
+  min-height: auto;
+  min-width: auto;
+  width: auto;
+  border-style: solid;
+  -webkit-transform: none;
+          transform: none;
+  border-width: 1px;
+  border-radius: 2px;
+  z-index: 3;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav.e-overlay {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav .e-nav-arrow {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 14px;
+  height: auto;
+  -webkit-transform: none;
+          transform: none;
+  padding: 0 5px;
+  width: auto;
+  letter-spacing: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav .e-nav-arrow::before {
+  font-size: 14px;
+  line-height: 14px;
+}
+.e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus .e-text-wrap {
+  height: 38px;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-wrap:focus .e-text-wrap {
+  height: auto;
+}
+.e-ribbon.e-rbn .e-content {
+  width: 100%;
+}
+.e-ribbon.e-rbn.e-ribbon-collapsible .e-content {
+  width: calc(100% - 20px);
+}
+.e-ribbon.e-rbn .e-ribbon-collapse-btn {
+  bottom: 0;
+  cursor: pointer;
+  position: absolute;
+  line-height: 12px;
+  padding: 2px;
+  border: none;
+}
+.e-ribbon.e-rbn .e-ribbon-collapse-btn:not(.e-ribbon-expand-btn) {
+  -webkit-transform: rotate(180deg);
+          transform: rotate(180deg);
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-content {
+  width: calc(100% - 20px - 40px);
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-group-of-btn,
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn {
+  cursor: pointer;
+  border-radius: 4px;
+  padding: 0;
+  border: none;
+  height: 26px;
+  margin: auto;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-group-of-btn .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn .e-btn-icon {
+  font-size: 16px;
+  line-height: 16px;
+  padding: 5px;
+  margin: 0;
+  width: auto;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-group-of-btn:focus,
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn:focus {
+  outline: none;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-group-of-btn.e-hidden,
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn.e-hidden {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn {
+  bottom: 3px;
+  position: absolute;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-overall-of-btn.e-ribbon-hide {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-overflow .e-ribbon-group-container {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+.e-ribbon.e-rbn.e-ribbon-minimize .e-ribbon-tab .e-content, .e-ribbon.e-rbn.e-ribbon-minimize .e-ribbon-collapse-btn, .e-ribbon.e-rbn.e-ribbon-minimize .e-ribbon-overall-of-btn {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item:has(.e-ribbon-gallery-container:not(.e-hidden)) {
+  height: 30px;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper {
+  margin: 4px 2px;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  width: 95px;
+  margin: 0 2px;
+  border-radius: 4px;
+  max-height: 22px;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item.e-disabled {
+  pointer-events: none;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item .e-ribbon-gallery-text {
+  font-size: 12px;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-tab .e-hscroll-bar {
+  overflow-y: hidden;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-input-group {
+  margin-bottom: 0;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group {
+  padding-top: 1px;
+  height: auto;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group.e-ribbon-emptyCollection::after {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group.e-ribbon-emptyCollection .e-ribbon-group-container {
+  padding: 0;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-launcher-icon,
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-overall-overflow-popup,
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group-container .e-ribbon-group-overflow-popup {
+  display: none;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group-container {
+  padding: 0 5px 0 4px;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group-content {
+  padding: 0;
+  height: 32px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-overlay {
+  gap: 16px;
+}
+.e-ribbon.e-rbn .e-ribbon-tab-item {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+}
+.e-ribbon.e-rbn .e-ribbon-tab-item.e-disabled {
+  pointer-events: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group {
+  position: relative;
+  padding-top: 6px;
+  height: 120px;
+}
+.e-ribbon.e-rbn .e-ribbon-group.e-hidden, .e-ribbon.e-rbn .e-ribbon-group.e-hide-group {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group.e-disabled {
+  pointer-events: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group::after {
+  border-right: 1px solid;
+  content: "";
+  height: calc(100% - 16px);
+  position: absolute;
+  top: 8px;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-collapse-btn,
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-help-template,
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-group::after {
+  right: 0;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-overall-of-btn {
+  right: 0;
+}
+.e-ribbon.e-rbn:not(.e-rtl).e-ribbon-collapsible .e-ribbon-overall-of-btn {
+  right: 25px;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-tab-header {
+  left: var(--fileMenuWidth);
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-tab .e-hscroll.e-scroll-device {
+  padding-right: 30px;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-collapse-btn,
+.e-ribbon.e-rbn.e-rtl .e-ribbon-help-template,
+.e-ribbon.e-rbn.e-rtl .e-ribbon-group::after {
+  left: 0;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-overall-of-btn {
+  left: 0;
+}
+.e-ribbon.e-rbn.e-rtl.e-ribbon-collapsible .e-ribbon-overall-of-btn {
+  left: 25px;
+}
+.e-ribbon.e-rbn.e-rtl .e-tab-header {
+  right: var(--fileMenuWidth);
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-tab .e-hscroll.e-scroll-device {
+  padding-left: 30px;
+}
+.e-ribbon.e-rbn .e-ribbon-content-height .e-ribbon-collection {
+  max-height: 90px;
+}
+
+.e-ribbon-backstage-popup.e-ribbon-backstage-open {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-items-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  height: 100%;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn {
+  border: none;
+  border-radius: unset;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  padding: unset;
+  text-align: start;
+  width: 100%;
+  height: 38px;
+  line-height: 38px;
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn .e-btn-icon {
+  font-size: 16px;
+  line-height: 16px;
+  width: auto;
+  margin: 0;
+  padding: 11px 18px 11px 16px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:focus {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:hover {
+  border-style: solid;
+  border-width: 0;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:focus:hover {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:hover, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:focus:hover {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu {
+  border: unset;
+  border-radius: unset;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul {
+  min-width: 135px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical.e-menu .e-menu-item.e-separator, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul.e-menu .e-menu-item.e-separator {
+  margin: 4px 20px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator), .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator) {
+  height: 38px;
+  line-height: 38px;
+  padding: 0;
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator):focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator):focus {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator):hover, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator):hover {
+  border-style: solid;
+  border-width: 0;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-selected:focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-selected:focus {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator):focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator):hover, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-selected:focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator):focus, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator):hover, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-selected:focus {
+  border-style: solid;
+  border-width: 2px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator) .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator) .e-menu-icon {
+  font-size: 16px;
+  line-height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: auto;
+  margin-right: unset;
+  margin: 11px 18px 15px 16px;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-blankicon, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-blankicon {
+  padding-left: 50px !important; /* stylelint-disable-line declaration-no-important */
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-rtl ul.e-vertical .e-menu-item:not(.e-separator).e-blankicon,
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-rtl ul.e-ul .e-menu-item:not(.e-separator).e-blankicon {
+  padding-left: 0 !important; /* stylelint-disable-line declaration-no-important */
+  padding-right: 50px !important; /* stylelint-disable-line declaration-no-important */
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-content {
+  overflow: auto;
+}
+
+.e-ribbon.e-rbn,
+.e-ribbon-group-overflow-ddb {
+  border: none;
+}
+.e-ribbon.e-rbn .e-disabled,
+.e-ribbon-group-overflow-ddb .e-disabled {
+  opacity: 0.35;
+  pointer-events: none;
+}
+.e-ribbon.e-rbn .e-input-group,
+.e-ribbon-group-overflow-ddb .e-input-group {
+  height: 26px;
+  border-radius: 4px;
+  margin: 0 0 4px;
+}
+.e-ribbon.e-rbn .e-input-group input.e-input,
+.e-ribbon-group-overflow-ddb .e-input-group input.e-input {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  height: auto;
+  min-height: auto;
+}
+.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon,
+.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 12px;
+  height: auto;
+  min-height: auto;
+  padding: 7px 3px 7px 2px;
+  margin: 0;
+  border: none;
+  min-width: auto;
+  border-radius: unset;
+}
+.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon,
+.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon {
+  font-size: 12px;
+}
+.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-clear-icon,
+.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-clear-icon {
+  min-width: auto;
+  min-height: auto;
+  border-radius: unset;
+}
+.e-ribbon.e-rbn .e-input-group .e-clear-icon,
+.e-ribbon-group-overflow-ddb .e-input-group .e-clear-icon {
+  min-width: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-group-content,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-content {
+  padding: 0 8px;
+}
+.e-ribbon.e-rbn .e-ribbon-content-height,
+.e-ribbon-group-overflow-ddb .e-ribbon-content-height {
+  height: 90px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-header,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-header {
+  font-size: 10px;
+  line-height: 16px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  white-space: nowrap;
+  padding: 4px 11px 4px 11px;
+}
+.e-ribbon.e-rbn .e-ribbon-launcher-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon {
+  position: absolute;
+  bottom: 0;
+  margin: 0 8px 4px 0;
+  cursor: pointer;
+  border: none;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-launcher .e-ribbon-group-header,
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-launcher .e-ribbon-group-header {
+  margin-right: 20px;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-launcher .e-ribbon-launcher-icon,
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-launcher .e-ribbon-launcher-icon {
+  right: 0;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-launcher .e-ribbon-group-header,
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-launcher .e-ribbon-group-header {
+  margin-left: 20px;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-launcher .e-ribbon-launcher-icon,
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-launcher .e-ribbon-launcher-icon {
+  left: 0;
+  margin: 0 0 4px 8px;
+}
+.e-ribbon.e-rbn .e-ribbon-column,
+.e-ribbon-group-overflow-ddb .e-ribbon-column {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+}
+.e-ribbon.e-rbn .e-ribbon-row,
+.e-ribbon-group-overflow-ddb .e-ribbon-row {
+  overflow: hidden;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow,
+.e-ribbon.e-rbn .e-ribbon-item,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow,
+.e-ribbon-group-overflow-ddb .e-ribbon-item {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  padding: 1px;
+  vertical-align: middle;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow .e-ribbon-gallery-wrapper,
+.e-ribbon.e-rbn .e-ribbon-item .e-ribbon-gallery-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-ribbon-gallery-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-gallery-wrapper {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 5px 2px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon.e-rbn .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  max-height: 80px;
+  margin: 0 2px;
+  border-radius: 4px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow .e-ribbon-gallery-button,
+.e-ribbon.e-rbn .e-ribbon-item .e-ribbon-gallery-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-ribbon-gallery-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-gallery-button {
+  padding: 0 2px;
+  border-width: 0 0 0 1px;
+  border-radius: 0 4px 4px 0;
+  line-height: 12px;
+  font-weight: 400;
+  font-size: 12px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-hidden,
+.e-ribbon.e-rbn .e-ribbon-item.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-hidden {
+  display: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn {
+  border: none;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: 12px;
+  text-transform: none;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:focus,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:focus,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:focus,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:focus {
+  outline: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon.e-rbn .e-ribbon-group-overflow .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon.e-rbn .e-ribbon-item .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon.e-rbn .e-ribbon-item .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) {
+  border: none;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn {
+  height: 100%;
+  min-height: inherit;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  max-width: 10ch;
+  min-width: -webkit-fit-content;
+  min-width: -moz-fit-content;
+  min-width: fit-content;
+  white-space: normal;
+  padding: 0 2px;
+  line-height: 18px;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-ribbon-group-overflow-ddb,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-ribbon-group-overflow-ddb,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-ribbon-group-overflow-ddb,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-ribbon-group-overflow-ddb {
+  max-width: 100%;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret),
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret),
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret),
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret) {
+  min-height: 24px;
+  min-width: 24px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  font-size: 24px;
+  font-weight: 400;
+  padding: 8px 6px 4px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-icon-top,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-icon-top,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-icon-top,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn .e-icon-top {
+  height: 50%;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-top-icon-btn,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-top-icon-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-top-icon-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-btn.e-top-icon-btn {
+  gap: 4px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn {
+  -webkit-box-pack: space-evenly;
+      -ms-flex-pack: space-evenly;
+          justify-content: space-evenly;
+  height: 50%;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn .e-icon-top,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn .e-icon-top,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn .e-icon-top,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper.e-vertical .e-btn .e-icon-top {
+  height: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret,
+.e-ribbon.e-rbn .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item.e-ribbon-large-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0 12px;
+}
+.e-ribbon.e-rbn .e-ribbon-group-overflow,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow {
+  height: 90px;
+  padding: 2px 8px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) {
+  min-height: 33%;
+  padding: 2px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-ribbon-gallery-container),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-ribbon-gallery-container) {
+  padding: 0;
+  border-style: solid;
+  border-width: 1px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-ribbon-gallery-container:not(.e-hidden)),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-ribbon-gallery-container:not(.e-hidden)) {
+  height: 90px;
+  border-radius: 4px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-checkbox-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-checkbox-wrapper {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  margin: auto 0;
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  padding: 0 5px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-checkbox-wrapper .e-label,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-checkbox-wrapper .e-label {
+  font-size: 12px;
+  font-weight: 400;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:disabled {
+  pointer-events: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-wrapper,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-container,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-container {
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-wrapper .e-split-btn-wrapper.e-rtl .e-split-colorpicker.e-split-btn,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-container .e-split-btn-wrapper.e-rtl .e-split-colorpicker.e-split-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-wrapper .e-split-btn-wrapper.e-rtl .e-split-colorpicker.e-split-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-colorpicker-container .e-split-btn-wrapper.e-rtl .e-split-colorpicker.e-split-btn {
+  padding: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper {
+  border: 1px solid transparent;
+  border-radius: 4px;
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-btn {
+  border-radius: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret {
+  font-size: 12px;
+  padding: 0 12px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item {
+  min-height: 100%;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-split-btn-wrapper.e-vertical,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-split-btn-wrapper.e-vertical {
+  height: 100%;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-split-btn-wrapper.e-vertical .e-dropdown-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-split-btn-wrapper.e-vertical .e-dropdown-btn {
+  margin: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn {
+  white-space: nowrap;
+  padding: 0;
+  line-height: 18px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon {
+  font-size: 16px;
+  line-height: 16px;
+  margin: 5px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret), .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret) {
+  min-height: 16px;
+  min-width: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-colorpicker-wrapper .e-split-btn-wrapper, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-colorpicker-wrapper .e-split-btn-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-colorpicker-wrapper .e-split-btn-wrapper,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-colorpicker-wrapper .e-split-btn-wrapper {
+  border: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon {
+  height: 16px;
+  width: 16px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-split-preview, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-split-preview,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-split-preview,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-split-preview {
+  border-radius: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret {
+  padding: 2px;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 2px;
+  margin: 0;
+  width: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper .e-btn, .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper .e-btn {
+  margin: 0;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-icon-left,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-icon-left {
+  width: 1em;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  width: auto;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn.e-dropdown-btn:not(.e-icon-btn) .e-caret,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn.e-dropdown-btn:not(.e-icon-btn) .e-caret {
+  margin: 5px;
+  padding: 0;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn:not(.e-icon-btn, .e-dropdown-btn), .e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn:not(.e-icon-btn, .e-dropdown-btn),
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn:not(.e-icon-btn, .e-dropdown-btn),
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn:not(.e-icon-btn, .e-dropdown-btn) {
+  padding: 0 4px 0 0;
+}
+.e-ribbon.e-rbn:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left,
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  padding: 0 2px 0 0;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn:not(.e-icon-btn, .e-dropdown-btn), .e-ribbon.e-rbn.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn:not(.e-icon-btn, .e-dropdown-btn),
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn:not(.e-icon-btn, .e-dropdown-btn),
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn:not(.e-icon-btn, .e-dropdown-btn) {
+  padding: 0 0 0 4px;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left,
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  padding: 0 0 0 2px;
+}
+.e-ribbon.e-rbn.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-gallery-button,
+.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-gallery-button {
+  border-width: 0 1px 0 0;
+  border-radius: 4px 0 0 4px;
+}
+
+.e-ribbon-group-overflow-ddb.e-dropdown-popup:has(.e-ribbon-overflow-target) {
+  min-width: 190px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-of-tab:not(.e-ribbon-active) {
+  display: none;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:has(.e-ribbon-gallery-container) {
+  border: 0;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:has(.e-input-group) {
+  margin: 5px 0;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-gallery-dropdown.e-btn {
+  padding: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  width: 100%;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-gallery-dropdown.e-btn .e-btn-icon {
+  margin: 0;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-gallery-wrapper.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-gallery-container.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-gallery-button.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-of-tab .e-ribbon-of-group-container.e-hidden,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-of-tab .e-ribbon-of-group-container.e-hide-group, .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target.e-hidden, .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target.e-hide-group {
+  display: none;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target.e-disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-of-tab .e-ribbon-of-group-container.e-disabled {
+  pointer-events: none;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item .e-dropdown-btn .e-caret {
+  font-size: 18px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item .e-input-group {
+  height: 30px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item .e-ribbon-combobox-label,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item .e-ribbon-colorpicker-label {
+  white-space: nowrap;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  font-weight: 400;
+  font-size: 14px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:has(.e-colorpicker-wrapper) {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item > .e-input-group,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item .e-ribbon-template {
+  margin: 3px 5px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon {
+  font-size: 18px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item > .e-checkbox-wrapper {
+  margin: 7px 0 7px 12px;
+  padding: 0;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item {
+  padding: 0;
+  width: 100%;
+  height: 32px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret) {
+  min-width: 18px;
+  min-height: 18px;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon.e-icon-left {
+  margin: 0;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) > .e-btn {
+  line-height: 18px;
+  overflow: hidden;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper {
+  width: inherit;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-split-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item:not(:has(.e-ribbon-template)) > .e-btn {
+  width: 100%;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-overflow-header {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 7px 0 7px 12px;
+  height: 28px;
+}
+
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label {
+  margin-left: 34px;
+}
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  margin: 7px 8px 7px 12px;
+}
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)) {
+  padding-left: 34px;
+}
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper, .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-container, .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper {
+  margin-left: 34px;
+}
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret {
+  -webkit-transform: rotate(-90deg);
+          transform: rotate(-90deg);
+  padding: 0 12px;
+  margin: 0 0 0 auto;
+}
+
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-overflow-header {
+  padding: 7px 12px 7px 0;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label {
+  margin-right: 34px;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  margin: 7px 12px 7px 8px;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)) {
+  padding-right: 34px;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper, .e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-container, .e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper {
+  margin-right: 34px;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+  padding: 0 12px;
+  margin: 0 auto 0 0;
+}
+.e-rtl.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-checkbox-wrapper {
+  margin: 7px 12px 7px 0;
+}
+
+.e-dropdown-popup.e-ribbon-dropdown-group-button {
+  border-radius: 4px;
+  border: 1px solid;
+  padding: 4px 9px;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-ribbon-groupbutton-header {
+  padding-bottom: 3px;
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button.e-ribbon-group-button-overflow-popup .e-btn-group .e-btn.e-ribbon-group-button:not(.e-icon-btn) {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button.e-ribbon-group-button-overflow-popup .e-btn-group:has(.e-ribbon-group-button-content) .e-btn.e-ribbon-group-button:first-of-type {
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button.e-ribbon-group-button-overflow-popup .e-btn-group:has(.e-ribbon-group-button-content) .e-btn.e-ribbon-group-button:last-of-type {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button.e-ribbon-group-button-overflow-popup .e-btn-group:not(.e-icon-btn) {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+  border-radius: 4px;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  margin: 5px;
+  width: auto;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon.e-icon-left {
+  padding: 0 2px 0 0;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button {
+  padding: 0;
+  font-weight: 400;
+  font-size: 12px;
+  border: 1px solid #d1d5db;
+  text-transform: none;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button:not(.e-icon-btn) {
+  padding: 0 5px 0 0;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button:focus, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button:focus-visible {
+  outline: none;
+  -webkit-box-shadow: none !important;
+          box-shadow: none !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.e-ribbon-gallery-popup.e-popup .e-ribbon-popup-container .e-ribbon-gallery-header:first-child,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-popup-container .e-ribbon-gallery-header:first-child {
+  padding-top: 0;
+}
+
+.e-ribbon-gallery-popup.e-popup,
+.e-ribbon-gallery-dropdown.e-popup {
+  border-radius: 4px;
+  padding: 8px 12px 12px;
+  overflow: auto;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-header,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-header {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 22px;
+  padding: 8px 0 4px;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  margin: 2px;
+  height: 54px;
+  width: 73px;
+}
+
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  width: 95px;
+}
+
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container,
+.e-ribbon-group-overflow .e-ribbon-gallery-container,
+.e-ribbon-item .e-ribbon-gallery-container {
+  padding: 0;
+  margin: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: distribute;
+      align-content: space-around;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  display: inherit;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  text-align: center;
+  list-style-type: none;
+  padding: 5px 0;
+  cursor: pointer;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 4px;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-disabled,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-disabled,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item.e-disabled,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item.e-disabled {
+  pointer-events: none;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-hidden,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-hidden,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item.e-hidden,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item.e-hidden {
+  display: none;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item .e-ribbon-gallery-icons,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item .e-ribbon-gallery-icons,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item .e-ribbon-gallery-icons,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item .e-ribbon-gallery-icons {
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 3px;
+  background-size: cover;
+  min-width: 20px;
+  min-height: 20px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item:hover, .e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-ribbon-gallery-selected,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item:hover,
+.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-container .e-ribbon-gallery-item.e-ribbon-gallery-selected,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item:hover,
+.e-ribbon-group-overflow .e-ribbon-gallery-container .e-ribbon-gallery-item.e-ribbon-gallery-selected,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item:hover,
+.e-ribbon-item .e-ribbon-gallery-container .e-ribbon-gallery-item.e-ribbon-gallery-selected {
+  border-radius: 4px;
+}
+
+.e-ribbon-gallery-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  width: inherit;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.e-ribbon-keytip {
+  font-size: 14px;
+  line-height: 18px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: unset;
+}
+.e-ribbon-keytip.e-popup-open {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.e-ribbon-menu {
+  display: block;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical.e-menu,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul.e-menu, .e-ribbon-menu.e-menu-container ul.e-vertical.e-menu,
+.e-ribbon-menu.e-menu-container ul.e-ul.e-menu {
+  padding: 4px 0;
+  border: 1px solid;
+  border-radius: 2px;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item {
+  border-radius: unset;
+  font-weight: 400;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-menu-icon, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item .e-menu-icon {
+  min-height: 18px;
+  min-width: 18px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  width: auto;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-blankicon,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-blankicon, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item.e-blankicon,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item.e-blankicon {
+  padding-left: 38px !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.e-ribbon-control.e-dropdown-popup ul .e-item {
+  font-size: 12px;
+  height: 24px;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.e-ribbon-control.e-dropdown-popup ul .e-item .e-menu-icon {
+  font-size: 16px;
+  line-height: 16px;
+  min-height: 16px;
+  min-width: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+.e-ribbon-tooltip .e-tip-content {
+  padding: 4px;
+}
+.e-ribbon-tooltip .e-tip-content .e-ribbon-tooltip-title {
+  font-size: 12px;
+  line-height: 18px;
+  padding: 4px 4px 0;
+}
+.e-ribbon-tooltip .e-tip-content .e-ribbon-text-container {
+  padding: 4px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+.e-ribbon-tooltip .e-tip-content .e-ribbon-text-container .e-ribbon-tooltip-content {
+  font-size: 10px;
+  line-height: 15px;
+}
+.e-ribbon-tooltip .e-tip-content .e-ribbon-text-container .e-ribbon-tooltip-icon {
+  font-size: 32px;
+  line-height: 32px;
+  padding-right: 8px;
+}
+
+.e-ribbon-vertical-center.e-dropdown-popup,
+.e-ribbon-group-overflow-ddb.e-dropdown-popup {
+  border-radius: 4px;
+}
+.e-ribbon-vertical-center.e-ribbon-filemenu.e-dropdown-popup,
+.e-ribbon-group-overflow-ddb.e-ribbon-filemenu.e-dropdown-popup {
+  border-radius: 2px;
+}
+
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-overlay {
+  background: #f3f4f6;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-overlay .e-ribbon-skeleton.e-skeleton.e-skeleton-text {
+  background-color: #e5e7eb;
+}
+.e-ribbon.e-rbn.e-ribbon-container .e-ribbon-overlay .e-ribbon-skeleton.e-skeleton.e-shimmer-wave::after {
+  background-image: -webkit-gradient(linear, left top, right top, color-stop(20%, rgba(255, 255, 255, 0)), color-stop(50%, rgba(255, 255, 255, 0.3)), color-stop(70%, rgba(255, 255, 255, 0)));
+  background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 70%);
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header {
+  border-color: unset;
+  background: #f3f4f6;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-ribbon-contextual-tab {
+  background: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-ribbon-contextual-tab .e-tab-wrap .e-tab-text {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-wrap .e-tab-text {
+  color: #111827;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-wrap:hover .e-tab-text {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item.e-active .e-tab-wrap .e-tab-text {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-indicator {
+  background: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav {
+  border-color: #d1d5db;
+  background: #f3f4f6;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav .e-nav-arrow {
+  color: #6b7280;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:hover {
+  border-color: #d1d5db;
+  background: #e5e7eb;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:hover .e-nav-arrow {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:active {
+  border-color: #d1d5db;
+  background: #e5e7eb;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:active .e-nav-arrow {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:focus {
+  border-color: #d1d5db;
+  background: #e5e7eb;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll .e-scroll-nav:focus .e-nav-arrow {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage {
+  background: #f3f4f6;
+  color: #111827;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu.e-active,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage.e-active {
+  color: #fff;
+  background: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu:hover:not(.e-active),
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage:hover:not(.e-active) {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage:focus-visible {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-help-template {
+  border-color: unset;
+  background: #f3f4f6;
+}
+.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-template:focus-visible {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-tab-wrap:focus .e-tab-text {
+  color: #4f46e5;
+}
+.e-ribbon.e-rbn .e-ribbon-collapse-btn {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-collapse-btn:hover, .e-ribbon.e-rbn .e-ribbon-collapse-btn:focus-visible {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+
+.e-ribbon-backstage-popup {
+  -webkit-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper {
+  background: #4f46e5;
+}
+.e-ribbon-backstage-popup .e-btn {
+  background: #4f46e5;
+  color: #fff;
+  font-weight: 400;
+}
+.e-ribbon-backstage-popup .e-btn:focus {
+  background: #4338ca;
+  color: #fff;
+  border-color: #e0e7ff;
+}
+.e-ribbon-backstage-popup .e-btn:hover {
+  background: #3730a3;
+  color: #fff;
+  border-color: unset;
+}
+.e-ribbon-backstage-popup .e-btn:hover:focus {
+  background: #4338ca;
+  color: #fff;
+  border-color: #e0e7ff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper:not(.e-menu-popup), .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-container:not(.e-menu-popup) {
+  background: #4f46e5;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical.e-menu, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul.e-menu {
+  background: #4f46e5;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item {
+  color: #fff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-menu-icon {
+  color: #fff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-separator, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-separator {
+  background: #e5e7eb;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:focus, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:focus {
+  background: #4338ca;
+  color: #fff;
+  border-color: #e0e7ff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:focus .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:focus .e-menu-icon {
+  color: #fff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-focused, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-selected, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-focused {
+  background: #3730a3;
+  color: #fff;
+  border-color: unset;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-selected .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-focused .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-selected .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-focused .e-menu-icon {
+  color: #fff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-selected:focus, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-selected:focus {
+  background: #4338ca;
+  color: #fff;
+  border-color: #e0e7ff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-selected:focus .e-menu-icon, .e-ribbon-backstage-popup .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-selected:focus .e-menu-icon {
+  color: #fff;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-template,
+.e-ribbon-backstage-popup .e-ribbon-backstage-content {
+  background: #f3f4f6;
+}
+
+.e-ribbon.e-rbn,
+.e-ribbon-group-overflow-ddb {
+  background: #f3f4f6;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-checkbox-wrapper .e-label,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-checkbox-wrapper .e-label {
+  color: #111827;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-checkbox-wrapper.e-checkbox-disabled .e-label,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-checkbox-wrapper.e-checkbox-disabled .e-label {
+  color: #9ca3af;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper.e-ribbon-hover, .e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper:not(.e-ribbon-hover):hover, .e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper.e-ribbon-open,
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-ribbon-hover,
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper:not(.e-ribbon-hover):hover,
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-ribbon-open,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper.e-ribbon-hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper:not(.e-ribbon-hover):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-colorpicker-wrapper.e-ribbon-open,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-ribbon-hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper:not(.e-ribbon-hover):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-ribbon-open {
+  border-color: #e5e7eb;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-vertical:hover .e-split-btn:not(:hover),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(.e-disabled) .e-split-btn-wrapper.e-vertical:hover .e-split-btn:not(:hover) {
+  border-color: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-item .e-split-btn-wrapper.e-vertical:hover .e-split-btn:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-split-btn-wrapper.e-vertical:hover .e-split-btn:disabled {
+  border-color: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-item:has(.e-ribbon-gallery-container),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:has(.e-ribbon-gallery-container) {
+  border-color: #d1d5db;
+  background: #fff;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu),
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type),
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn {
+  background: transparent;
+  color: #111827;
+  border-color: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu) .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type) .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn .e-btn-icon {
+  color: #6b7280;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):hover .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:hover .e-btn-icon {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active {
+  background: #e5e7eb;
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button.e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type).e-active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn.e-active .e-btn-icon {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active {
+  background: #e5e7eb;
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):active .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:active .e-btn-icon {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible .e-btn-icon {
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):focus-visible,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:focus-visible {
+  -webkit-box-shadow: none;
+          box-shadow: none;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled .e-btn-icon,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled .e-btn-icon {
+  color: #9ca3af;
+}
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon.e-rbn .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled, .e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon.e-rbn.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):disabled,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:disabled,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-btn-group .e-btn.e-ribbon-group-button:not(:first-of-type):not(:last-of-type):disabled,
+.e-ribbon-group-overflow-ddb.e-ribbon-overflow:not(:has(.e-ribbon-template)) .e-ribbon-group-of-btn:disabled {
+  color: #9ca3af;
+}
+.e-ribbon.e-rbn .e-ribbon-group-header,
+.e-ribbon-group-overflow-ddb .e-ribbon-group-header {
+  color: #111827;
+}
+.e-ribbon.e-rbn .e-ribbon-launcher-icon,
+.e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon {
+  border-color: transparent;
+}
+.e-ribbon.e-rbn .e-ribbon-launcher-icon:hover, .e-ribbon.e-rbn .e-ribbon-launcher-icon:focus-visible,
+.e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon:hover,
+.e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon:focus-visible {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+.e-ribbon.e-rbn .e-input-group,
+.e-ribbon-group-overflow-ddb .e-input-group {
+  border-color: #d1d5db;
+  background: #fff;
+}
+.e-ribbon.e-rbn .e-input-group input.e-input,
+.e-ribbon-group-overflow-ddb .e-input-group input.e-input {
+  color: #111827;
+}
+.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon,
+.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon {
+  color: #6b7280;
+}
+.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon:hover,
+.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+.e-ribbon.e-rbn .e-input-group.e-disabled, .e-ribbon.e-rbn .e-input-group:not(.e-success):not(.e-warning):not(.e-error):not(.e-float-icon-left).e-disabled,
+.e-ribbon-group-overflow-ddb .e-input-group.e-disabled,
+.e-ribbon-group-overflow-ddb .e-input-group:not(.e-success):not(.e-warning):not(.e-error):not(.e-float-icon-left).e-disabled {
+  border-color: #9ca3af;
+}
+.e-ribbon.e-rbn .e-ribbon-group::after,
+.e-ribbon-group-overflow-ddb .e-ribbon-group::after {
+  border-color: #e5e7eb;
+}
+
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-combobox-label,
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-colorpicker-label {
+  color: #111827;
+}
+.e-ribbon-group-overflow-ddb .e-ribbon-item .e-ribbon-template:focus-visible {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: unset;
+}
+
+.e-ribbon-file-menu.e-dropdown-popup,
+.e-ribbon-vertical-center.e-dropdown-popup,
+.e-ribbon-group-overflow-ddb.e-dropdown-popup,
+.e-ribbon-dropdown-group-button.e-dropdown-popup {
+  background: #fff;
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #e5e7eb;
+}
+.e-ribbon-file-menu.e-dropdown-popup .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-file-menu.e-dropdown-popup .e-btn-group .e-btn.e-ribbon-group-button:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-file-menu.e-dropdown-popup .e-ribbon-group-of-btn:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-vertical-center.e-dropdown-popup .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-vertical-center.e-dropdown-popup .e-btn-group .e-btn.e-ribbon-group-button:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-vertical-center.e-dropdown-popup .e-ribbon-group-of-btn:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-group-overflow-ddb.e-dropdown-popup .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-group-overflow-ddb.e-dropdown-popup .e-btn-group .e-btn.e-ribbon-group-button:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-group-overflow-ddb.e-dropdown-popup .e-ribbon-group-of-btn:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-dropdown-group-button.e-dropdown-popup .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn:not(.e-ribbon-file-menu):not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-dropdown-group-button.e-dropdown-popup .e-btn-group .e-btn.e-ribbon-group-button:not(:hover, :active, :focus-visible, :disabled, .e-active),
+.e-ribbon-dropdown-group-button.e-dropdown-popup .e-ribbon-group-of-btn:not(:hover, :active, :focus-visible, :disabled, .e-active) {
+  background: transparent;
+}
+
+.e-ribbon-gallery-button {
+  border-color: #d1d5db;
+  background: transparent;
+  color: #6b7280;
+}
+.e-ribbon-gallery-button.e-gallery-button-active {
+  background: #e5e7eb;
+  color: #6b7280;
+}
+
+.e-ribbon-gallery-item {
+  background: transparent;
+  border-color: transparent;
+}
+.e-ribbon-gallery-item .e-ribbon-gallery-text {
+  color: #111827;
+}
+.e-ribbon-gallery-item .e-ribbon-gallery-icons {
+  color: #6b7280;
+}
+
+.e-ribbon-gallery-popup.e-popup,
+.e-dropdown-popup.e-ribbon-gallery-dropdown {
+  background: #fff;
+  -webkit-box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-header,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-header {
+  color: #111827;
+}
+
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item:hover,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item:hover,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item:hover {
+  background: #f3f4f6;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-ribbon-gallery-selected,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-ribbon-gallery-selected,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-ribbon-gallery-selected {
+  background: #e5e7eb;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-text,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-text,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-text {
+  color: #111827;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-icons,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-icons,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-ribbon-gallery-selected .e-ribbon-gallery-icons {
+  color: #6b7280;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-disabled,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-disabled,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-disabled {
+  background: transparent;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-text,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-text,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-text {
+  color: #9ca3af;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-icons,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-icons,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item.e-disabled .e-ribbon-gallery-icons {
+  color: #d1d5db;
+}
+.e-ribbon-gallery-wrapper .e-ribbon-gallery-item:focus, .e-ribbon-gallery-wrapper .e-ribbon-gallery-item:focus-visible,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item:focus,
+.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-item:focus-visible,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item:focus,
+.e-dropdown-popup.e-ribbon-gallery-dropdown .e-ribbon-gallery-item:focus-visible {
+  border-color: 0 0 0 2px rgba(255, 255, 255, 0.95), 0 0 0 4px #4f46e5;
+}
+
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-icon {
+  color: #6b7280;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button {
+  color: #111827;
+  background: #fff;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:hover, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:focus {
+  background: #f3f4f6;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:hover .e-btn-icon, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:focus .e-btn-icon {
+  color: #111827;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:hover, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:focus {
+  background: #f3f4f6;
+  color: #111827;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:hover .e-btn-icon, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:focus .e-btn-icon {
+  color: #111827;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn.e-active {
+  background: #e5e7eb;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn.e-active .e-btn-icon {
+  color: #374151;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-active {
+  background: #e5e7eb;
+  color: #111827;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-active .e-btn-icon {
+  color: #374151;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:active .e-btn-icon, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:active .e-btn-icon {
+  color: #374151;
+}
+.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button.e-icon-btn:active, .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn.e-ribbon-group-button:active {
+  background: #e5e7eb;
+}
+
+.e-ribbon-tooltip.e-tooltip-wrap.e-popup {
+  background: #111827;
+}
+.e-ribbon-tooltip.e-tooltip-wrap .e-tip-content {
+  color: #f9fafb;
+}
+.e-ribbon-tooltip.e-tooltip-wrap .e-arrow-tip .e-arrow-tip-inner.e-tip-top {
+  color: #111827;
+}
+
+.e-ribbon-keytip {
+  background-color: #111827;
+  color: #f9fafb;
+}
+
+.e-ribbon-group-overflow-ddb.e-dropdown-popup {
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid transparent;
+}
+
+.e-ribbon-menu.e-menu-wrapper:not(.e-menu-popup), .e-ribbon-menu.e-menu-container:not(.e-menu-popup) {
+  background: #fff;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical.e-menu,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul.e-menu, .e-ribbon-menu.e-menu-container ul.e-vertical.e-menu,
+.e-ribbon-menu.e-menu-container ul.e-ul.e-menu {
+  border-color: #e5e7eb;
+  background: #fff;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item {
+  color: #111827;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-caret,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-caret, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item .e-caret,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item .e-menu-icon,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item .e-caret {
+  color: #6b7280;
+}
+.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-focused,
+.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-focused, .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item.e-focused,
+.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item.e-focused {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn {
+  background: #4f46e5;
+  color: #fff;
+  border-color: transparent;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn:hover {
+  background: #3730a3;
+  color: #fff;
+  border-color: transparent;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item {
+  background: #4f46e5;
+  color: #fff;
+  border-color: transparent;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-focused, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-focused {
+  background: #3730a3;
+  color: #fff;
+  border-color: transparent;
+}
+.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-separator, .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-separator {
+  background: #e5e7eb;
+}
+
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group {
+  height: 150px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-file-menu,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-backstage {
+  font-size: 16px;
+  line-height: 24px;
+  padding: 12px 12px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-help-template,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-ribbon-help-template {
+  padding-right: 16px;
+  height: 48px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-hscroll,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-hscroll {
+  min-height: auto;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-hor-nav,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-hor-nav {
+  height: 48px;
+  min-height: 48px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-items,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-items {
+  height: 48px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item {
+  margin-right: 0;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-text,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab .e-tab-header .e-toolbar-item .e-tab-text {
+  font-size: 16px;
+  line-height: 24px;
+  padding: 12px 12px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus, .e-bigger.e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus .e-text-wrap,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus .e-text-wrap {
+  height: 48px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab.e-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-tab.e-tab .e-tab-header .e-toolbar-item .e-text-wrap,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab.e-tab.e-focused .e-tab-header .e-toolbar-item .e-tab-wrap:focus,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-tab.e-tab .e-tab-header .e-toolbar-item .e-text-wrap {
+  height: auto;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible .e-content,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible .e-content {
+  width: calc(100% - 24px);
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible .e-ribbon-collapse-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible .e-ribbon-collapse-btn {
+  font-size: 14px;
+  line-height: 14px;
+  padding: 5px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-content,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-content {
+  width: calc(100% - 24px - 40px);
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-group-of-btn,
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-group-of-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn {
+  height: 34px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-group-of-btn .e-btn-icon,
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-group-of-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn .e-btn-icon {
+  font-size: 20px;
+  line-height: 20px;
+  padding: 7px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow .e-ribbon-overall-of-btn {
+  bottom: 3px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow:not(.e-rtl) .e-ribbon-overall-of-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow:not(.e-rtl) .e-ribbon-overall-of-btn {
+  right: 28px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow.e-rtl .e-ribbon-overall-of-btn,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-collapsible.e-ribbon-overflow.e-rtl .e-ribbon-overall-of-btn {
+  left: 28px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:has(.e-ribbon-gallery-container:not(.e-hidden)),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:has(.e-ribbon-gallery-container:not(.e-hidden)) {
+  height: 114px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:has(.e-ribbon-gallery-container),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:has(.e-ribbon-gallery-container) {
+  padding: 0;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  max-height: 104px;
+  width: 104px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item:has(.e-ribbon-gallery-container:not(.e-hidden)),
+.e-bigger .e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item:has(.e-ribbon-gallery-container:not(.e-hidden)) {
+  height: 36px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-item .e-ribbon-gallery-wrapper .e-ribbon-gallery-container .e-ribbon-gallery-item {
+  max-height: 28px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-content-height .e-ribbon-collection,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-content-height .e-ribbon-collection {
+  max-height: 114px;
+}
+
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-header,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-header,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-header,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-header {
+  font-size: 12px;
+  line-height: 18px;
+  padding: 8px 11px 4px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-launcher-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-launcher-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-launcher-icon {
+  margin: 0 8px 4px 0;
+}
+.e-bigger.e-ribbon.e-rbn.e-rtl .e-ribbon-launcher-icon,
+.e-bigger .e-ribbon.e-rbn.e-rtl .e-ribbon-launcher-icon,
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-launcher-icon,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-launcher-icon {
+  margin: 0 0 4px 8px;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group,
+.e-bigger .e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-ribbon-group,
+.e-bigger.e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-ribbon-group {
+  height: auto;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-input-group,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-simplified-mode .e-input-group,
+.e-bigger .e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-input-group,
+.e-bigger.e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-input-group {
+  margin-bottom: 0;
+}
+.e-bigger.e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group-content,
+.e-bigger .e-ribbon.e-rbn.e-ribbon-simplified-mode .e-ribbon-group-content,
+.e-bigger .e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-ribbon-group-content,
+.e-bigger.e-ribbon-group-overflow-ddb.e-ribbon-simplified-mode .e-ribbon-group-content {
+  height: 40px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-content-height,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-content-height,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-content-height,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-content-height {
+  height: 114px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow {
+  height: 114px;
+}
+.e-bigger.e-ribbon.e-rbn .e-input-group,
+.e-bigger .e-ribbon.e-rbn .e-input-group,
+.e-bigger .e-ribbon-group-overflow-ddb .e-input-group,
+.e-bigger.e-ribbon-group-overflow-ddb .e-input-group {
+  height: 34px;
+  margin: 0 0 4px;
+}
+.e-bigger.e-ribbon.e-rbn .e-input-group:not(.e-float-input) .e-input,
+.e-bigger .e-ribbon.e-rbn .e-input-group:not(.e-float-input) .e-input,
+.e-bigger .e-ribbon-group-overflow-ddb .e-input-group:not(.e-float-input) .e-input,
+.e-bigger.e-ribbon-group-overflow-ddb .e-input-group:not(.e-float-input) .e-input {
+  min-height: auto;
+}
+.e-bigger.e-ribbon.e-rbn .e-input-group input.e-input,
+.e-bigger .e-ribbon.e-rbn .e-input-group input.e-input,
+.e-bigger .e-ribbon-group-overflow-ddb .e-input-group input.e-input,
+.e-bigger.e-ribbon-group-overflow-ddb .e-input-group input.e-input {
+  font-size: 14px;
+  line-height: 22px;
+  height: auto;
+}
+.e-bigger.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon,
+.e-bigger .e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 11px 4px 11px 2px;
+}
+.e-bigger.e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon,
+.e-bigger .e-ribbon.e-rbn .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-input-group.e-control-wrapper .e-input-group-icon.e-ddl-icon {
+  font-size: 12px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item {
+  padding: 2px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item .e-checkbox-wrapper,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item .e-checkbox-wrapper,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item .e-checkbox-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item .e-checkbox-wrapper {
+  padding: 0 7px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item .e-checkbox-wrapper .e-label,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item .e-checkbox-wrapper .e-label,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item .e-checkbox-wrapper .e-label,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item .e-checkbox-wrapper .e-label {
+  font-size: 14px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn {
+  font-size: 14px;
+  line-height: 125%;
+  padding: 0 5px;
+  max-width: 10ch;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn .e-btn-icon:not(.e-caret) {
+  min-height: 32px;
+  min-width: 32px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  font-size: 32px;
+  padding: 8px 3px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-btn.e-top-icon-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-btn.e-top-icon-btn {
+  gap: 8px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-large-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-large-item .e-dropdown-btn .e-caret {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0 13px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow .e-split-btn-wrapper .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)) .e-split-btn-wrapper .e-dropdown-btn .e-caret {
+  font-size: 12px;
+  line-height: 12px;
+  padding: 0 13px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn {
+  font-size: 14px;
+  line-height: 125%;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon {
+  font-size: 20px;
+  line-height: 20px;
+  margin: 7px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret), .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-btn .e-btn-icon:not(.e-caret) {
+  min-width: 20px;
+  min-height: 20px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn {
+  padding: 0;
+  border: none;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-colorpicker.e-split-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-colorpicker.e-split-btn .e-btn-icon {
+  height: 20px;
+  width: 20px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-split-btn-wrapper:has(.e-icon-btn) .e-dropdown-btn .e-caret {
+  padding: 3px 2px;
+}
+.e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-dropdown-btn .e-caret, .e-bigger.e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-group-overflow.e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon.e-rbn .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-group-overflow.e-ribbon-small-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-small-item .e-dropdown-btn .e-caret {
+  font-size: 14px;
+  line-height: 12px;
+  padding: 3px 2px;
+  margin: 0;
+}
+
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-overflow-header,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-overflow-header {
+  font-size: 16px;
+  line-height: 20px;
+  height: 30px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item.e-ribbon-medium-item {
+  height: 36px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-dropdown-btn .e-caret {
+  font-size: 18px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-input-group,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-input-group {
+  height: 36px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon {
+  font-size: 18px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon:not(.e-caret) {
+  min-width: 18px;
+  min-height: 18px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon.e-icon-left,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-btn .e-btn-icon.e-icon-left {
+  margin: 0;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-colorpicker-wrapper),
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):has(.e-colorpicker-wrapper) {
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label {
+  font-size: 16px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-input-group,
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-template,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-input-group,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-template {
+  margin: 3px 7px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-checkbox-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-checkbox-wrapper {
+  margin: 9px 0 9px 16px;
+  padding: 0;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-overflow-header,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-overflow-header {
+  padding: 6px 0 6px 16px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label {
+  margin-left: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  margin: 9px 12px 9px 16px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)),
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)) {
+  padding-left: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper, .e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper {
+  margin-left: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb:not(.e-rtl) .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret {
+  padding: 0 12px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-overflow-header,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-overflow-header {
+  padding: 6px 16px 6px 0;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-combobox-label,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) .e-ribbon-colorpicker-label {
+  margin-right: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item .e-btn .e-btn-icon.e-icon-left {
+  margin: 9px 16px 9px 12px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)),
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)).e-ribbon-medium-item:not(:has(.e-colorpicker-wrapper)) .e-btn:not(:has(.e-btn-icon)) {
+  padding-right: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper, .e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-colorpicker-label)) .e-colorpicker-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)):not(:has(.e-ribbon-combobox-label)) .e-input-group.e-control-wrapper {
+  margin-right: 46px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-split-btn-wrapper .e-icons.e-caret,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-dropdown-btn .e-icons.e-caret {
+  padding: 0 12px;
+}
+.e-bigger .e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-checkbox-wrapper,
+.e-bigger.e-ribbon-group-overflow-ddb.e-rtl .e-ribbon-overflow-target .e-ribbon-item:not(:has(.e-ribbon-template)) > .e-checkbox-wrapper {
+  margin: 9px 16px 9px 0;
+}
+
+.e-bigger .e-ribbon-control.e-dropdown-popup ul .e-item {
+  font-size: 14px;
+  height: 32px;
+}
+.e-bigger .e-ribbon-control.e-dropdown-popup ul .e-item .e-menu-icon {
+  font-size: 20px;
+  line-height: 20px;
+  min-height: 20px;
+  min-width: 20px;
+}
+
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-vertical.e-menu,
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-ul.e-menu, .e-bigger .e-ribbon-menu.e-menu-container ul.e-vertical.e-menu,
+.e-bigger .e-ribbon-menu.e-menu-container ul.e-ul.e-menu,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-vertical.e-menu,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-ul.e-menu,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-vertical.e-menu,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-ul.e-menu {
+  padding: 4px 0;
+}
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-blankicon,
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-blankicon, .e-bigger .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item.e-blankicon,
+.e-bigger .e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item.e-blankicon,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item.e-blankicon,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item.e-blankicon,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item.e-blankicon,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item.e-blankicon {
+  padding-left: 50px !important; /* stylelint-disable-line declaration-no-important */
+}
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-menu-icon,
+.e-bigger .e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-menu-icon, .e-bigger .e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item .e-menu-icon,
+.e-bigger .e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item .e-menu-icon,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-vertical .e-menu-item .e-menu-icon,
+.e-bigger.e-ribbon-menu.e-menu-wrapper ul.e-ul .e-menu-item .e-menu-icon,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-vertical .e-menu-item .e-menu-icon,
+.e-bigger.e-ribbon-menu.e-menu-container ul.e-ul .e-menu-item .e-menu-icon {
+  min-width: 22px;
+  min-height: 22px;
+}
+
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn {
+  height: 48px;
+  line-height: 48px;
+}
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-btn .e-btn-icon {
+  font-size: 20px;
+  line-height: 20px;
+  padding: 14px 16px;
+}
+
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator),
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator),
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator),
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator) {
+  height: 48px;
+}
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator) .e-menu-icon,
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator) .e-menu-icon,
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator) .e-menu-icon,
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator) .e-menu-icon {
+  font-size: 20px;
+  line-height: 20px;
+  margin: 14px 16px 18px;
+  min-width: 20px;
+  min-height: 20px;
+}
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-blankicon,
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-vertical .e-menu-item:not(.e-separator).e-blankicon,
+.e-bigger .e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-blankicon,
+.e-bigger.e-ribbon-backstage-popup .e-ribbon-backstage-wrapper .e-ribbon-backstage-menu.e-menu-wrapper ul.e-ul .e-menu-item:not(.e-separator).e-blankicon {
+  padding-left: 52px !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.e-bigger .e-dropdown-popup.e-ribbon-dropdown-group-button,
+.e-bigger.e-dropdown-popup.e-ribbon-dropdown-group-button {
+  padding: 4px 9px;
+}
+.e-bigger .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon,
+.e-bigger.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon {
+  font-size: 20px;
+  line-height: 20px;
+  margin: 7px;
+  min-height: 20px;
+  min-width: 20px;
+}
+.e-bigger .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon.e-icon-left,
+.e-bigger.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn-icon.e-icon-left {
+  padding: 0;
+}
+.e-bigger .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button,
+.e-bigger.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button {
+  font-size: 14px;
+}
+.e-bigger .e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button:not(.e-icon-btn),
+.e-bigger.e-dropdown-popup.e-ribbon-dropdown-group-button .e-btn-group .e-btn.e-ribbon-group-button:not(.e-icon-btn) {
+  padding: 0 7px 0 0;
+}
+
+.e-bigger.e-ribbon-gallery-popup.e-popup,
+.e-bigger .e-ribbon-gallery-popup.e-popup,
+.e-bigger.e-ribbon-gallery-dropdown.e-popup,
+.e-bigger .e-ribbon-gallery-dropdown.e-popup {
+  padding: 12px 16px 16px;
+}
+.e-bigger.e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-header,
+.e-bigger .e-ribbon-gallery-popup.e-popup .e-ribbon-gallery-header,
+.e-bigger.e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-header,
+.e-bigger .e-ribbon-gallery-dropdown.e-popup .e-ribbon-gallery-header {
+  font-size: 16px;
+  line-height: 24px;
+  padding: 12px 0 8px;
+}
+
+.e-bigger.e-ribbon-keytip,
+.e-bigger .e-ribbon-keytip {
+  font-size: 14px;
+  line-height: 18px;
+  min-width: 20px;
+  height: 20px;
+}

@@ -78,6 +78,7 @@ Private Sub Class_Globals
 	Public ApiFile As String = "api"
 	Private escapeCharStart As String
 	Private escapeCharEnd As String
+	Public MatchSchema As Boolean
 End Sub
 
 '<code>
@@ -112,6 +113,7 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	UseApiKey = True
 	escapeCharStart = "`"
 	escapeCharEnd = "`"
+	MatchSchema = True
 	Return Me
 End Sub
 
@@ -767,7 +769,7 @@ Sub DELETE_MULTIPLE(items As List) As Boolean
 End Sub
 
 'record is saved as json string
-'returns the record id
+'returns the record affected
 '<code>
 'pb.PrepareRecord
 'pb.SetField("id", 1)
@@ -822,12 +824,17 @@ Sub UPDATE As String
 				Log($"SDUIMySQLREST.${TableName}.UPDATE ERROR.${fetch.ErrorMessage}"$)
 			End If
 		End If
-		
 		Return CInt(output)
 	Catch
 		Log(LastException.Message)
 		Return ""
 	End Try
+End Sub
+
+'ensure the query only return the id only
+Sub GetAffectedID
+	flds.Initialize
+	flds.Add("id")
 End Sub
 
 'get a value using key
@@ -1207,6 +1214,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLREST
 	If ShowLog Then
 		Log($"SDUIMySQLREST.${TableName}.SetField(${fldName}, ${fldValue})"$)
 	End If
+	If Schema.ContainsKey(fldName) Then
 	Dim dt As String = Schema.Get(fldName)
 	Select Case dt
 		Case DB_BOOL
@@ -1226,6 +1234,7 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIMySQLREST
 		Case DB_DOUBLE
 			fldValue = CDbl(fldValue)
 	End Select
+	End If
 	Record.Put(fldName, fldValue)
 	Return Me
 End Sub
@@ -1492,11 +1501,13 @@ End Sub
 
 Sub SetRecord(rec As Map)
 	Record.Initialize
-	'only process schema fields
-	For Each k As String In rec.Keys
-		Dim fldPos As Boolean = Schema.ContainsKey(k)
-		If fldPos = False Then rec.Remove(k)
-	Next
+	If MatchSchema Then
+		'only process schema fields
+		For Each k As String In rec.Keys
+			Dim fldPos As Boolean = Schema.ContainsKey(k)
+			If fldPos = False Then rec.Remove(k)
+		Next
+	End If
 	For Each k As String In rec.Keys
 		Dim v As Object = rec.GetDefault(k, "")
 		Dim dt As String = Schema.Get(k)

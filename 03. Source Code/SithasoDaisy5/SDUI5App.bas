@@ -695,6 +695,13 @@ Sub UsesDatePicker
 	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
 End Sub
 
+Sub UsesOfficeRibbon
+	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
+	"ejsplitbuttontailwind.css", "ejinputstailwind.css", "ejliststailwind.css", "ejdropdownstailwind.css", "ejnavigationtailwind.css", "ejribbontailwind.css", "ej2-base.min.js", "ej2-data.min.js", "ej2-buttons.min.js", _
+	"ej2-popups.min.js", "ej2-splitbuttons.min.js", "ej2-inputs.min.js", "ej2-lists.min.js", "ej2-dropdowns.min.js", _
+	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js")))
+End Sub
+
 Sub ShowToast(msg As String)
 	AppToast.Duration = ToastDuration
 	AppToast.ShowInfo(msg)
@@ -1629,6 +1636,16 @@ End Sub
 '	Banano.GetElement($"#${item}toggle"$).SetChecked(True)
 'End Sub
 
+Sub OpenPocketBase(url As String) As BANanoObject
+	If Banano.AssetsIsDefined("PocketBase") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesPocketBase)' should be added!"$)
+		Return Me
+	End If
+	Dim client As BANanoObject
+	client.Initialize2("PocketBase", url)
+	Return client
+End Sub
+
 'show loader
 Sub PagePause
 	Dim lEL As BANanoElement
@@ -1636,6 +1653,7 @@ Sub PagePause
 	Dim mStyle As Map = CreateMap()
 	mStyle.Put("display", "block")
 	lEL.SetStyle(Banano.ToJson(mStyle))
+	Sleep(0)
 End Sub
 
 'hide loader
@@ -1645,6 +1663,7 @@ Sub PageResume
 	Dim mStyle As Map = CreateMap()
 	mStyle.Put("display", "none")
 	lEL.SetStyle(Banano.ToJson(mStyle))
+	Sleep(0)
 End Sub
 
 Sub GetMapFromEventDetail(e As BANanoEvent) As Map

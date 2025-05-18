@@ -241,25 +241,27 @@ End Sub
 
 'set a field in the table
 Sub SetField(fldName As String, fldValue As Object)
-	Dim dt As String = Schema.Get(fldName)
-	Select Case dt
-	Case DB_BOOL
-		fldValue = CBool(fldValue)
-	Case DB_INT
-		fldValue = CInt(fldValue)
-	Case DB_FILE
-	Case DB_REAL
-		fldValue = CDbl(fldValue)
-	Case DB_BLOB
-	Case DB_FLOAT
-		fldValue = CDbl(fldValue)
-	Case DB_INTEGER
-		fldValue = CInt(fldValue)
-	Case DB_TEXT,DB_LONGTEXT
-		fldValue = CStr(fldValue)
-	Case DB_DOUBLE
-		fldValue = CDbl(fldValue)
-	End Select
+	If Schema.ContainsKey(fldName) Then
+		Dim dt As String = Schema.Get(fldName)
+		Select Case dt
+		Case DB_BOOL
+			fldValue = CBool(fldValue)
+		Case DB_INT
+			fldValue = CInt(fldValue)
+		Case DB_FILE
+		Case DB_REAL
+			fldValue = CDbl(fldValue)
+		Case DB_BLOB
+		Case DB_FLOAT
+			fldValue = CDbl(fldValue)
+		Case DB_INTEGER
+			fldValue = CInt(fldValue)
+		Case DB_TEXT,DB_LONGTEXT
+			fldValue = CStr(fldValue)
+		Case DB_DOUBLE
+			fldValue = CDbl(fldValue)
+		End Select
+	End If	
 	Record.Put(fldName, fldValue)
 End Sub
 
