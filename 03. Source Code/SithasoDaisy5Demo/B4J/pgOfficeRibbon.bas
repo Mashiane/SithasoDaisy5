@@ -231,3 +231,11 @@ End Sub
 private Sub SDUI5OfficeRibbon1_gbcase(args As Map)
 	app.ShowToastInfo($"SDUI5OfficeRibbon1_gbcase"$)
 End Sub
+
+
+Private Sub SDUI5OfficeRibbon1_FileMenu (args As Map)
+	Dim actionID As String = SDUI5OfficeRibbon1.GetActionID(args)
+	Log("SDUI5OfficeRibbon1_FileMenu")
+	app.ShowToastInfo($"SDUI5OfficeRibbon1_FileMenu: ${actionID}"$)
+	Log(args)
+End Sub

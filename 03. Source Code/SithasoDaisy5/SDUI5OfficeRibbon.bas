@@ -11,6 +11,7 @@ Version=10.2
 #Event: ButtonID (args As Map)
 #Event: TabSelected (args As Map)
 #Event: LauncherIconClick (args As Map)
+#Event: FileMenu (args As Map)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: FileMenuText, DisplayName: File Menu Text, FieldType: String, DefaultValue: File, Description: File Menu Text
@@ -773,14 +774,15 @@ Sub Refresh
 		tabs.Add(rec) 
 	Next
 	'
+	Dim args As Object
+	Dim cbfilemenu As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_filemenu"$, Array(args))
 	Dim fileMenu As Map = CreateMap()
 	fileMenu.Put("text", sFileMenuText)
 	fileMenu.Put("menuItems", menuItems)
 	fileMenu.put("visible", bFileMenuVisible)
 	fileMenu.Put("showItemOnClick", bshowItemOnClick)
-	
+	fileMenu.Put("select", cbfilemenu)
 	'
-	Dim args As Object
 	Dim cbtabSelected As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_tabselected"$, Array(args))
 	Dim cblauncherIconClick As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_launcherIconClick"$, Array(args))
 	
