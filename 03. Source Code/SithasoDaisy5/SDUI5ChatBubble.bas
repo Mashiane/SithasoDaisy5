@@ -282,6 +282,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setImageSize(sImageSize)
 	setImageVisible(bImageVisible)
 	setTextColor(sTextColor)
+	setMessage(sMessage)
 '	setVisible(bVisible)
 End Sub
 
@@ -343,11 +344,11 @@ Sub setImageVisible(b As Boolean)				'ignoredeadcode
 	UI.SetVisibleByID($"${mName}_avatar"$, b)
 End Sub
 'set Message
-Sub setMessage(s As String)
+Sub setMessage(s As String)				'ignoredeadcode
 	sMessage = s
 	CustProps.put("Message", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_message"$, s)
+	UI.SetHTMLByID($"${mName}_message"$, s)
 End Sub
 'set Message From
 Sub setMessageFrom(s As String)

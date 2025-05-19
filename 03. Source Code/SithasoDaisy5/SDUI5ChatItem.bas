@@ -374,7 +374,7 @@ Sub setMessage(s As String)
 	sMessage = s
 	CustProps.put("Message", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_message"$, s)
+	UI.SetHTMLByID($"${mName}_message"$, s)
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0

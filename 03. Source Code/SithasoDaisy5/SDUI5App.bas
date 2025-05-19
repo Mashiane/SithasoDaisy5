@@ -1653,7 +1653,6 @@ Sub PagePause
 	Dim mStyle As Map = CreateMap()
 	mStyle.Put("display", "block")
 	lEL.SetStyle(Banano.ToJson(mStyle))
-	Sleep(0)
 End Sub
 
 'hide loader
@@ -1663,7 +1662,6 @@ Sub PageResume
 	Dim mStyle As Map = CreateMap()
 	mStyle.Put("display", "none")
 	lEL.SetStyle(Banano.ToJson(mStyle))
-	Sleep(0)
 End Sub
 
 Sub GetMapFromEventDetail(e As BANanoEvent) As Map

@@ -535,7 +535,7 @@ Sub setMessage(s As String)				'ignoredeadcode
 	sMessage = s
 	CustProps.put("Message", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_message"$, s)
+	UI.SetHTMLByID($"${mName}_message"$, s)
 End Sub
 'set Reply Id
 Sub setReplyId(s As String)					'ignoredeadcode

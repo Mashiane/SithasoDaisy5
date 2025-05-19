@@ -22,8 +22,9 @@ Sub Initialize					'ignoreDeadCode
 	'load these universally
 	BANano.Await(App.UsesColorWheel)
 	BANano.Await(App.UsesDatePicker)
+	BANano.Await(App.UsesJSONQuery)
 	'load the main layout to the body of the page
-	BANano.LoadLayout(App.Here, "baselayout")
+	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppVersion
 	BANano.Await(pgTypography.Show(App))
 
@@ -52,6 +53,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
+	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
 	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
 	drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
 	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
@@ -221,6 +223,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "exceltoapp"
+				pgExcelToApp.Show(App)			
 			Case "officeribbon"
 				pgOfficeRibbon.Show(App)		
 			Case "barcode"
