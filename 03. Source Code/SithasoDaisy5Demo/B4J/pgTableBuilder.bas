@@ -23,15 +23,25 @@ Sub Show(MainApp As SDUI5App)
 	BANano.LoadLayout(app.PageView, "tablebuilderview")
 	pgIndex.UpdateTitle("Table Builder")
 	lsDB.Initialize("tables", "id")
-	lsDB.SchemaAddText(Array("id", "tablename", "singular", "plural", "displayvalue", "primarykey", "autoincrement", "alphachooser", "columnchooser", "alphachooserfield"))
+	lsDB.SchemaAddText(Array("id", "tablename", "singular", "plural", "displayvalue", "primarykey", "autoincrement", "alphachooser", "columnchooser", "alphachooserfield", _
+	"database", "useapi", "prefix"))
 	'
+	tblDesign.AddToolbarFileUpload("uploadpocketbase", "./assets/cloud-arrow-up-solid.svg", "#711755", False)
+	tblDesign.SetToolbarButtonTextColorWhite("uploadpocketbase")
+	tblDesign.SetToolbarButtonToolTip("uploadpocketbase", "Import PocketBase Schema", "", "left")
 	tblDesign.AddToolbarActionButtonIcon("schema", "./assets/table-list-solid.svg", "#03C03C", "#ffffff")
+	tblDesign.SetToolbarButtonTextColorWhite("schema")
+	tblDesign.SetToolbarButtonToolTip("schema", "Import MySQL Schema using PHP REST API", "", "left")
 	
 	tblDesign.AddColumn("id", "#")
 	tblDesign.SetColumnVisible("id", False)
 	tblDesign.AddColumnTextBox("tablename", "Table Name",False)
+	tblDesign.AddColumnTextBox("prefix", "Prefix",False)
 	tblDesign.AddColumnTextBox("singular", "Singular", False)
 	tblDesign.AddColumnTextBox("plural", "Plural", False)
+	tblDesign.AddColumnTextBox("height", "Height", False)
+	tblDesign.AddColumnTextBox("width", "Width", False)
+	tblDesign.AddColumnSelect("database", "Database", False, True, CreateMap("PocketBase":"PocketBase","MySQLRest":"MySQLRest"))
 	tblDesign.AddColumnSelect("displayvalue", "Display Value", False, True, CreateMap())
 	tblDesign.SetColumnComputeOptions("displayvalue", "ComputeFields")
 	tblDesign.AddColumnSelect("primarykey", "Primary Key", False, True, CreateMap())
@@ -43,6 +53,11 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnCheckBox("columnchooser", "Column Chooser", "success", False)
 	tblDesign.AddColumnCheckBox("usetable", "Use Table", "success", False)
 	tblDesign.AddColumnCheckBox("usemodal", "Use Modal", "success", False)
+	tblDesign.AddColumnCheckBox("useapi", "Use API", "success", False)
+	tblDesign.SetColumnVisible("prefix", False)
+	tblDesign.SetColumnVisible("database", False)
+	tblDesign.SetColumnVisible("useapi", False)
+	
 	tblDesign.AddDesignerColums
 	'
 	tblDesign.AddColumnAction("list", "List", "./assets/ellipsis-solid.svg", "#4f7d09", "#ffffff")
@@ -50,6 +65,7 @@ Sub Show(MainApp As SDUI5App)
 	tblDesign.AddColumnAction("code", "MySQL REST", "./assets/code-solid.svg", "#53209d", "#ffffff")
 	tblDesign.MoveBackButton
 	'
+	tblDesign.SetHeaderVerticalLR("useapi")
 	tblDesign.SetHeaderVerticalLR("edit")
 	tblDesign.SetHeaderVerticalLR("delete")
 	tblDesign.SetHeaderVerticalLR("clone")
@@ -65,8 +81,12 @@ Sub Show(MainApp As SDUI5App)
 	prefTable.AddPropertyTextBox("id", "#", "", True)
 	prefTable.SetPropertyVisible("id", False)
 	prefTable.AddPropertyTextBox("tablename", "Table Name", "", True)
+	prefTable.AddPropertyTextBox("prefix", "Prefix", "", True)
 	prefTable.AddPropertyTextBox("singular", "Singular", "", True)
 	prefTable.AddPropertyTextBox("plural", "Plural", "", True)
+	prefTable.AddPropertyTextBox("height", "Height", "fit", True)
+	prefTable.AddPropertyTextBox("width", "Width", "700px", True)
+	prefTable.AddPropertySelect("database", "Database", "", False, CreateMap("PocketBase":"PocketBase","MySQLRest":"MySQLRest"))
 	prefTable.AddPropertySelect("displayvalue", "Display Value", "", False, CreateMap())
 	prefTable.AddPropertySelect("primarykey", "Primary Key", "", False, CreateMap())
 	prefTable.AddPropertyCheckBox("autoincrement", "Auto Increment", False, "success")
@@ -75,6 +95,7 @@ Sub Show(MainApp As SDUI5App)
 	prefTable.AddPropertyCheckBox("columnchooser", "Column Chooser", False, "success")
 	prefTable.AddPropertyCheckBox("usetable", "Use Table", False, "success")
 	prefTable.AddPropertyCheckBox("usemodal", "Use Modal", False, "success")
+	prefTable.AddPropertyCheckBox("useapi", "Use API", False, "success")
 	'
 	BANano.Await(MountTables)
 End Sub
@@ -135,6 +156,123 @@ Private Sub tblDesign_FileChange (e As BANanoEvent)
 	'BANano.Await(MountPreferences)
 End Sub
 
+private Sub tbldesign_uploadpocketbase_filechange(e As BANanoEvent)
+	Dim fileObj As Map = app.GetFileFromEvent(e)
+	If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
+	app.pagepause
+	'get existing tables
+	BANano.Await(lsDB.Records)
+	
+	'get pocketbase schema from file
+	Dim collections As List = BANano.Await(app.readAsJsonWait(fileObj))
+	For Each tbl As Map In collections
+		Dim sname As String = tbl.Get("name")
+		Dim stype As String = tbl.Get("type")
+		'get column names
+		Dim columns As List = tbl.Get("schema")
+		Dim colTitle As String = sname.Replace("_", " ")
+		colTitle = app.UI.ProperCase(colTitle)
+		'exclude all tables that are not base
+		If stype <> "base" Then Continue
+		'
+		'find the table from the collection, if exist, ignore
+		Dim tblPos As Int = app.UI.SearchList(lsDB.Result, "tablename", sname)
+		'the table does not exist, add it
+		If tblPos = -1 Then 
+			Dim pk As String = "id"
+			'add the table if it does not exist
+			Dim nt As Map = CreateMap()
+			nt.Put("id", lsDB.NextID)
+			nt.Put("tablename", sname)
+			nt.Put("singular", colTitle)
+			nt.Put("plural", colTitle)
+			nt.Put("primarykey", pk)
+			nt.Put("database", "PocketBase")
+			nt.Put("useapi", False)
+			nt.Put("prefix", "")
+			lsDB.SetRecord(nt)
+			BANano.Await(lsDB.create)
+		End If
+		'process columns
+		Dim colDB As SDUILocalStorage
+		colDB.Initialize(sname, "id")
+		colDB.SchemaAddBoolean(Array("proprequired", "propvisible", "propenabled"))
+		colDB.SchemaAddText(Array("id", "proppos", "propname", "proptitle", "propdatatype", "proptype", "propvalue", "props"))
+		BANano.Await(colDB.Records)		
+		'add to the table definition
+		Dim lstColumns As List
+		lstColumns.Initialize
+		Dim colCnt As Int = 0
+		'"String","Int","Double","Blob","Bool","Date"
+		Dim bHasID As Boolean = False
+		For Each col As Map In columns
+			colCnt = BANano.parseInt(colCnt) + 1
+			Dim colrequired As Boolean = app.UI.CBool(col.Get("required"))
+			Dim colName As String = col.Get("name")
+			If colName.EqualsIgnoreCase("id") Then bHasID = True
+			'only add columns that dont exist
+			Dim colPos As Int = app.UI.SearchList(colDB.Result, "propname", colName)
+			If colPos = -1 Then
+				Dim colTitle As String = colName.Replace("_", " ")
+				colTitle = app.UI.ProperCase(colTitle)
+				Dim colType As String = col.Get("type")
+				colType = colType.Replace("text", "String")
+				colType = colType.Replace("editor", "LongText")
+				colType = colType.Replace("number", "Int")
+				colType = colType.Replace("bool", "Bool")
+				colType = colType.Replace("email", "String")
+				colType = colType.Replace("url", "String")
+				colType = colType.Replace("date", "String")
+				colType = colType.Replace("select", "String")
+				colType = colType.Replace("file", "LongText")
+				colType = colType.Replace("relation", "String")
+				colType = colType.Replace("json", "LongText")
+				'
+				Dim nc As Map = CreateMap()
+				nc.Put("id", colDB.NextID)
+				nc.Put("proppos", colCnt)
+				nc.Put("proprequired", colrequired)
+				nc.Put("propname", colName)
+				nc.Put("proptitle", colTitle)
+				nc.Put("propdatatype", colType)
+				nc.Put("proptype", "TextBox")
+				nc.Put("propactive", True)
+				nc.Put("propvisible", True)
+				nc.Put("propcolumntype", "Normal")
+				nc.Put("propcolumnvisible", True)
+				nc.Put("propenabled", True)
+				nc.Put("proprow", colCnt)
+				nc.Put("propcol", 1)				
+				lstColumns.Add(nc)
+			End If
+		Next
+		If bHasID = False Then
+			Dim colPos As Int = app.UI.SearchList(colDB.Result, "propname", "id")
+			If colPos = -1 Then
+				Dim nc As Map = CreateMap()
+				nc.Put("id", colDB.NextID)
+				nc.Put("proppos", 0)
+				nc.Put("proprequired", False)
+				nc.Put("propname", "id")
+				nc.Put("proptitle", "id")
+				nc.Put("propdatatype", "String")
+				nc.Put("proptype", "TextBox")
+				nc.Put("propactive", True)
+				nc.Put("propvisible", False)
+				nc.Put("propcolumntype", "Normal")
+				nc.Put("propcolumnvisible", False)
+				nc.Put("propenabled", True)
+				nc.Put("proptotal", True)
+				nc.Put("proprow", 1)
+				nc.Put("propcol", 1)
+				lstColumns.Add(nc)
+			End If
+		End If
+		colDB.Records = lstColumns
+	Next
+	app.pageresume
+	BANano.Await(MountTables)
+End Sub
 
 private Sub tblDesign_schema(e As BANanoEvent)
 	e.PreventDefault
@@ -190,6 +328,9 @@ private Sub tblDesign_schema(e As BANanoEvent)
 		nt.Put("singular", colTitle)
 		nt.Put("plural", colTitle)
 		nt.Put("primarykey", pk)
+		nt.Put("database", "MySQLRest")
+		nt.Put("useapi", True)
+		nt.Put("prefix", "")
 		If kv.ContainsKey(sname) Then
 			Dim tbID As String = kv.Get(sname)
 			nt.Put("id", tbID)
@@ -260,7 +401,7 @@ End Sub
 Private Sub tblDesign_codeRow (Row As Int, item As Map)
 	Dim clsTC As clsTableCode
 	BANano.Await(clsTC.Initialize(app, item))
-	clsTC.BuildPage
+	BANano.Await(clsTC.BuildPage)
 End Sub
 
 Private Sub tblDesign_fieldsRow (Row As Int, item As Map)
@@ -327,11 +468,13 @@ Private Sub tblDesign_DeleteRow (Row As Int, item As Map)
 End Sub
 
 Private Sub tblDesign_ChangeRow (Row As Int, Value As Object, Column As String, item As Map)
+	app.pagepause
 	item.Put(Column, Value)
 	lsDB.SetRecord(item)
 	BANano.Await(lsDB.update)
 	BANano.Await(MountTables)
 	tblDesign.SetRowEnsureVisible(Row)
+	app.pageresume
 End Sub
 
 Private Sub tblDesign_Add (e As BANanoEvent)

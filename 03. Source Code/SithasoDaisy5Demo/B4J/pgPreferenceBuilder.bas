@@ -60,7 +60,7 @@ Sub Show(MainApp As SDUI5App)
 	colVertical.AddAll(Array("LR", "RL"))
 	
 	 
-	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "ToggleLegend", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter"))
+	compTypes.AddAll(Array("Button", "Dialer", "TextBox", "TextBoxGroup", "SelectGroup", "PasswordGroup", "DatePicker", "DateTimePicker", "TimePicker", "Password","Number","Telephone", "Email", "Label", "Link", "TextArea", "Select", "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone", "Avatar", "AvatarPlaceholder", "AvatarGroup", "Image", "Progress", "ColorWheel", "Range", "CheckBox", "CheckBoxLegend", "Toggle", "ToggleLegend", "RadialProgress", "Rating", "RadioGroup", "Placeholder", "GroupSelect", "PlusMinus", "CheckBoxGroup", "ToggleGroup", "Filter", "None"))
 	'
 	dataTypes.Initialize 
 	dataTypes.AddAll(Array("String","Int","Double","Blob","Bool","Date", "LongText", "None"))
@@ -321,7 +321,7 @@ private Sub BuildTableColumns(properties As List)
 		sPropTextColor = app.UI.CStr(sPropTextColor)
 		Dim spropprefix As String = prop.Get("propprefix")
 		spropprefix = app.UI.CStr(spropprefix)
-		Dim spropdateformat As String = prop.Get("propdateformat")
+		Dim spropdateformat As String = prop.GetDefault("propdateformat", "Y-m-d")
 		spropdateformat = app.UI.CStr(spropdateformat)
 		Dim spropprepend As String = prop.Get("propprepend")
 		spropprepend = app.UI.CStr(spropprepend)
@@ -339,7 +339,7 @@ private Sub BuildTableColumns(properties As List)
 		spropstart = app.UI.CStr(spropstart)
 		Dim sproplocale As String = prop.Get("proplocale")
 		sproplocale = app.UI.CStr(sproplocale)
-		Dim spropdisplayformat As String = prop.Get("propdisplayformat")
+		Dim spropdisplayformat As String = prop.GetDefault("propdisplayformat", "D, d M J")
 		spropdisplayformat = app.UI.CStr(spropdisplayformat)
 		Dim spropstep As String = prop.Get("propstep")
 		spropstep = app.UI.CStr(spropstep)
@@ -591,8 +591,12 @@ Sub tblDesign_form(e As BANanoEvent)
 	Dim sprimarykey As String = item.Get("primarykey")
 	Dim ssingular As String = item.Get("singular")
 	Dim stablename As String = item.Get("tablename")
+	Dim sheight As String = item.GetDefault("height", "fit")
+	Dim swidth As String = item.GetDefault("width", "700px")
 	
 	'clear the form
+	mdlPreview.Height = sheight
+	mdlPreview.Width = swidth
 	mdlPreview.Form.Clear
 	'start building the grid code
 	For Each fld As Map In result
@@ -619,7 +623,7 @@ Sub tblDesign_form(e As BANanoEvent)
 	BANano.Await(mdlPreview.Form.BuildGridFromRC)
 	Dim clsTC As clsTableCode
 	BANano.Await(clsTC.Initialize(app, item))
-	clsTC.BuildInputComponents(mdlPreview)	'
+	BANano.Await(clsTC.BuildInputComponents(mdlPreview))	'
 	mdlPreview.Title = $"Add ${ssingular}"$
 	mdlPreview.Show
 End Sub
@@ -630,9 +634,19 @@ Sub tblDesign_code(e As BANanoEvent)
 	thisTable = app.UI.CStr(thisTable)
 	If thisTable = "" Then Return
 	Dim item As Map = BANano.FromJson(thisTable)
+	Dim sheight As String = item.GetDefault("height", "fit")
+	Dim swidth As String = item.GetDefault("width", "700px")
 	Dim stablename As String = item.Get("tablename")
 	Dim busemodal As Boolean = item.Get("usemodal")
 	busemodal = app.UI.CBool(busemodal)
+	Dim sprefix As String = item.Get("prefix")
+	sprefix = app.UI.CStr(sprefix)
+	Dim properTable As String = stablename.ToLowerCase
+	If sprefix <> "" Then
+		properTable = properTable.Replace(sprefix.tolowercase, "")
+	End If
+	properTable = app.UI.CamelCase(properTable)
+	
 	Dim clsTC As clsTableCode
 	BANano.Await(clsTC.Initialize(app, item))
 	If busemodal Then
@@ -663,6 +677,8 @@ Sub tblDesign_code(e As BANanoEvent)
 		End If
 		
 		'prepare the grid
+		mdlPreview.Height = sheight
+		mdlPreview.Width = swidth
 		mdlPreview.Form.Clear
 		'start building the grid code
 		For Each fld As Map In result
@@ -685,11 +701,11 @@ Sub tblDesign_code(e As BANanoEvent)
 		Next
 		mdlPreview.Form.PrepareRC
 		mdlPreview.Form.IsLive = False
-		mdlPreview.Form.MdlName = $"mdl${UI.CamelCase(stablename)}"$
+		mdlPreview.Form.MdlName = $"mdl${properTable}"$
 		BANano.Await(mdlPreview.Form.BuildGridFromRC)
-		clsTC.BuildInputComponents(mdlPreview)
+		BANano.Await(clsTC.BuildInputComponents(mdlPreview))
 	End If
-	clsTC.BuildPage
+	BANano.Await(clsTC.BuildPage)
 End Sub
 
 Sub MountPreferences
@@ -737,7 +753,7 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("proplocale", "Locale", "en", False)
 	compToAdd.AddPropertyCheckBox("propsingleselect", "Single Select", False, "success")
 	compToAdd.AddPropertyTextBox("propcolor", "Color", "", False)
-	compToAdd.AddPropertyTextBox("propactivecolor", "Active Color", "", False)
+	compToAdd.AddPropertyTextBox("propactivecolor", "Active Color", "#22c55e", False)
 	compToAdd.AddPropertyTextBox("proptextcolor", "Text Color", "", False)
 	
 	compToAdd.AddPropertyCheckBox("propborder", "Border", False, "success")
@@ -756,7 +772,7 @@ private Sub AddProperties
 	compToAdd.AddPropertyTextBox("prophandlediameter", "Handle Diameter", "16", True)
 	compToAdd.AddPropertyTextBox("propwheeldiameter", "Wheel Diameter", "200", True)
 	compToAdd.AddPropertyTextBox("propwheelthickness", "Wheel Thickness", "20", True)
-	compToAdd.AddPropertySelect("propwheelposition", "Wheel Position", "top-end", True, _
+	compToAdd.AddPropertySelect("propwheelposition", "Wheel Position", "bottom-end", True, _
 	UI.ListToSelectOptionsSort(Array("bottom", "bottom-center", "bottom-end", "center", "end", "left", "left-center", "left-end", _
 	"right", "right-center", "right-end", "start", "top", "top-center", "top-end")))	
 	compToAdd.AddPropertyTextBox("propwidth", "Width", "", False)

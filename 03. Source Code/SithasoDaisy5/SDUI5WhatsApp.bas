@@ -633,6 +633,8 @@ private Sub CancelTheReply(e As BANanoEvent)
 	MessageType = "T"
 	SetTextPlaceholder("Type a message here.")
 	UI.FocusByID($"${mName}_message"$)
+	Dim e As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_CancelReply"$, Array(e))
 End Sub
 
 Sub MessageFocus
@@ -1427,6 +1429,7 @@ private Sub ReplyClick(e As BANanoEvent)				'ignoredeadcode
 	UI.SetValueByID($"${mName}_filepick"$, Null)
 	ShowCancelReply
 	MessageFocus
+	BANano.CallSub(mCallBack, $"${mName}_Reply"$, Array(MessageID))
 End Sub
 
 Sub RefreshChats

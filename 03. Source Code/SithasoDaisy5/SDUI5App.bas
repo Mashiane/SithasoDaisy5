@@ -699,7 +699,11 @@ Sub UsesOfficeRibbon
 	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
 	"ejsplitbuttontailwind.css", "ejinputstailwind.css", "ejliststailwind.css", "ejdropdownstailwind.css", "ejnavigationtailwind.css", "ejribbontailwind.css", "ej2-base.min.js", "ej2-data.min.js", "ej2-buttons.min.js", _
 	"ej2-popups.min.js", "ej2-splitbuttons.min.js", "ej2-inputs.min.js", "ej2-lists.min.js", "ej2-dropdowns.min.js", _
-	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js")))
+	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js", "ejsfontawesome.css")))
+End Sub
+
+Sub UsesFontAwesome
+	Banano.Await(UI.LoadAssetsOnDemand("FontAwesome", Array("fontawesome.min.css")))
 End Sub
 
 Sub ShowToast(msg As String)
@@ -1729,14 +1733,9 @@ Sub UsesJSONQuery
 	Banano.Await(UI.LoadAssetsOnDemand("JSONQuery", Array("jsonquery.js")))
 End Sub
 
-'valid
-Sub UsesFormula
-	Banano.Await(UI.LoadAssetsOnDemand("Formula", Array("formula.min.js")))
-End Sub
-
-Sub UsesMath
-	Banano.Await(UI.LoadAssetsOnDemand("Formula", Array("math.min.js")))
-End Sub
+'Sub UsesMath
+'	Banano.Await(UI.LoadAssetsOnDemand("Math", Array("math.min.js")))
+'End Sub
 
 ''add item as form
 'Sub AddAsForm(Module As Object, elID As String)

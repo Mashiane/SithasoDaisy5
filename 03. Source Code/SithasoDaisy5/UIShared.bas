@@ -29,6 +29,18 @@ Sub AddCode(cd As StringBuilder, cl As String)
 	cd.Append(cl).Append(CRLF)
 End Sub
 
+'search for a map object having a particular property
+Sub SearchList(lst As List, key As String, value As String) As Int
+	Dim colTot As Int = lst.Size - 1
+	Dim colCnt As Int = 0
+	For colCnt = 0 To colTot
+		Dim col As Map = lst.Get(colCnt)
+		Dim colIDx As String = col.Get(key)
+		If colIDx.EqualsIgnoreCase(value) Then Return colCnt
+	Next
+	Return -1
+End Sub
+
 'join list to mv string
 Sub JoinQuote(delimiter As String, lst As List) As String
 	If lst.Size = 0 Then Return ""
@@ -97,8 +109,6 @@ End Sub
 Sub Len(Text As String) As Int
 	Return Text.Length
 End Sub
-
-
 
 Sub PadRight(Value As String, MaxLen As Int, PadChar As String) As String
 	Value = CStr(Value)
@@ -2686,6 +2696,18 @@ Sub ListToSelectOptionsSort(lst As List) As Map
 	Return m
 End Sub
 
+Sub MapToOptionsString(m As Map) As String
+	Dim sb As StringBuilder
+	sb.Initialize 
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		sb.Append($"${k}:${v};"$)
+	Next
+	Dim sout As String = sb.ToString
+	sout = RemDelim(sout, ";")
+	Return sout
+End Sub
+
 'put recursive object to a map
 Sub PutRecursive(data As Map, path As String, value As Object)
 	Try
@@ -3546,51 +3568,75 @@ Sub StrMid1(Text As String, Start As Int, iLength As Int) As String
 	Return Text.SubString2(Start-1,Start+iLength-1)
 End Sub
 
-Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
-	If BANano.AssetsIsDefined("Formula") = False Then
-		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesFormula)' should be added!"$)
-		Return ""
+Sub GetGenderFromRSAID(IDNumber As String) As String
+	IDNumber = PadRight(IDNumber, 13, "0")
+	Dim seq As Int = IDNumber.SubString2(6, 10)
+	seq = CInt(seq)
+	If (seq >= 0) And (seq <= 4999) Then
+		Return "Female"
+	Else If (seq >= 5000) And (seq <= 9999) Then
+		Return "Male"
+	Else
+		Return "Unknown"
 	End If
+End Sub
+
+Sub IsValidRSAID_Luhn(IDNumber As String) As Boolean
+	If IDNumber.Length <> 13 Then
+		IDNumber = PadRight(IDNumber, 13, "0")
+	End If
+	Dim sum As Int = 0
+	Dim doubleDigit As Boolean = False
+	For i = IDNumber.Length - 1 To 0 Step -1
+		Dim digit As Int = Asc(IDNumber.CharAt(i)) - 48
+		If doubleDigit Then
+			digit = digit * 2
+			If digit > 9 Then digit = digit - 9
+		End If
+		sum = sum + digit
+		doubleDigit = Not(doubleDigit)
+	Next
+	Return (sum Mod 10 = 0)
+End Sub
+
+Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
 	If idNumber.Length <> 13 Then
 		idNumber = PadRight(idNumber, 13, "0")
 	End If
-	Dim iyear As Int = Left(idNumber,2)
-	Dim imonth As Int = StrMid1(idNumber,3,2)
-	Dim iday As Int = StrMid1(idNumber,5,2)
+	Dim iyear As String = Left(idNumber,2)
+	Dim imonth As String = StrMid1(idNumber,3,2)
+	Dim iday As String = StrMid1(idNumber,5,2)
 	'
-	Dim formulajs As BANanoObject
-	formulajs.Initialize("formulajs")
-	Dim dob As BANanoObject = formulajs.RunMethod("DATE", Array(iyear, imonth, iday))
-	Dim ndob As BANanoObject
-	ndob.Initialize2("Date", dob)
-	Dim yyyy As String = ndob.RunMethod("getFullYear", Null).result
-	Dim mm As Int = ndob.RunMethod("getMonth", Null).result
-	Dim dd As String = ndob.RunMethod("getDate", Null).result
+	Dim dateObj As BANanoObject
+	dateObj.Initialize2("Date", $"${iyear}-${imonth}-${iday}"$)
+	Dim yyyy As String = dateObj.RunMethod("getFullYear", Null).result
+	Dim mm As Int = dateObj.RunMethod("getMonth", Null).result
+	Dim dd As String = dateObj.RunMethod("getDate", Null).result
 	mm = BANano.parseInt(mm) + 1
 	mm = PadRight(mm, 2, "0")
 	dd = PadRight(dd, 2, "0")
 	'
 	Select Case yyyy
-		Case "1900"
-			yyyy = "2000"
-		Case "1901"
-			yyyy = "2001"
-		Case "1902"
-			yyyy = "2002"
-		Case "1903"
-			yyyy = "2003"
-		Case "1904"
-			yyyy = "2004"
-		Case "1905"
-			yyyy = "2005"
-		Case "1906"
-			yyyy = "2006"
-		Case "1907"
-			yyyy = "2007"
-		Case "1908"
-			yyyy = "2008"
-		Case "1909"
-			yyyy = "2009"
+	Case "1900"
+		yyyy = "2000"
+	Case "1901"
+		yyyy = "2001"
+	Case "1902"
+		yyyy = "2002"
+	Case "1903"
+		yyyy = "2003"
+	Case "1904"
+		yyyy = "2004"
+	Case "1905"
+		yyyy = "2005"
+	Case "1906"
+		yyyy = "2006"
+	Case "1907"
+		yyyy = "2007"
+	Case "1908"
+		yyyy = "2008"
+	Case "1909"
+		yyyy = "2009"
 	End Select
 	Dim nDate As String = $"${yyyy}-${mm}-${dd}"$
 	Return nDate

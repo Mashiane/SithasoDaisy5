@@ -74,10 +74,6 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	If BANano.AssetsIsDefined("OfficeRibbon") = False Then
-		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesOfficeRibbon)' should be added for '${Name}'"$)
-		Return
-	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -445,6 +441,24 @@ Sub AddButton(itemName As String, itemID As String, iconCss As String, itemText 
 	UI.PutRecursive(item, "buttonSettings.content", itemText)
 	UI.PutRecursive(item, "buttonSettings.clicked", cb)
 	items.Add(item)
+	Return Me
+End Sub
+
+Sub AddButtonMedium(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(itemName, itemID, iconCss, itemText)
+	SetItemSizeMedium(itemName, itemID)
+	Return Me
+End Sub
+
+Sub AddButtonSmall(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(itemName, itemID, iconCss, itemText)
+	SetItemSizeSmall(itemName, itemID)
+	Return Me
+End Sub
+
+Sub AddButtonLarge(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(itemName, itemID, iconCss, itemText)
+	SetItemSizeLarge(itemName, itemID)
 	Return Me
 End Sub
 

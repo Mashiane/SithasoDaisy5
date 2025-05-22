@@ -130,12 +130,6 @@ Sub Show(MainApp As SDUI5App)
 End Sub
 
 
-
-Private Sub SDUI5OfficeRibbon1_ColorChange (value As String)
-	Log("SDUI5OfficeRibbon1_ColorChange")
-	app.ShowToastInfo($"ColorChange: ${value}"$)
-End Sub
-
 Private Sub SDUI5OfficeRibbon1_ComboChange (id As String, value As String, text As String)
 	Log("SDUI5OfficeRibbon1_ComboChange")
 	app.ShowToastInfo($"ComboChange: ${id}, ${value}"$)

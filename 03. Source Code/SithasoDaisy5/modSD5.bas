@@ -11,7 +11,7 @@ Sub Process_Globals
 	Private forms As Map			'ignore
 	Private hints As Map			'ignore
 	Private BANano As BANano		'ignore
-	'Private math As BANanoObject	'ignore
+'	Private math As BANanoObject	'ignore
 	Type Paginate(previousPage As Int, nextPage As Int, totalPages As Int, items As List)
 	Public ColorMap As Map
 	Public Months As Map

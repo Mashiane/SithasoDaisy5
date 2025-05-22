@@ -1,0 +1,18 @@
+.e-btn .fa,
+.e-btn .fa-solid,
+.e-btn .fa-regular,
+.e-btn .fa-brands {
+    display: inline-block !important;
+    font-family: "Font Awesome 6 Free" !important;
+    font-weight: 900 !important;
+    font-style: normal;
+    font-size: inherit;
+    line-height: 1;
+    vertical-align: middle;
+}
+.e-btn .fa {
+    font-weight: 400 !important; /* fallback for regular icons */
+}
+.e-btn .fa-solid {
+    font-weight: 900 !important;
+}

@@ -15,6 +15,7 @@ Version=10
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: Select an element, Description: Placeholder
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options (JSON)
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
+#DesignerProperty: Key: ValuesAsIs, DisplayName: Values As Is, FieldType: Boolean, DefaultValue: False, Description: Values As Is
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
@@ -98,6 +99,7 @@ Sub Class_Globals
 	Private sAppendIconColor As String = "none"
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
+	Private bValuesAsIs As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -319,6 +321,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPrependIconColor = Props.GetDefault("PrependIconColor", "none")
 		sPrependIconColor = UI.CStr(sPrependIconColor)
 		If sPrependIconColor = "none" Then sPrependIconColor = ""
+		bValuesAsIs = Props.GetDefault("ValuesAsIs", False)
+		bValuesAsIs = UI.CBool(bValuesAsIs)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -664,8 +668,8 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	sb.Append($"<option value="" selected>--Nothing Selected--</option>""$)
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
-		k = UI.CleanID(k)
-		sb.Append($"<option id="${k}_${mName}" value="${k}">${v}</option>"$)
+		If bValuesAsIs = False Then k = UI.CleanID(k)
+		sb.Append($"<option value="${k}">${v}</option>"$)
 	Next
 	mElement.Append(sb.ToString)	
 End Sub
@@ -673,6 +677,7 @@ End Sub
 'load the items from a list
 Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
+	Clear
 	Dim nm As Map = CreateMap()
 	For Each k As String In m
 		Dim sk As String = UI.CleanID(k)
@@ -686,6 +691,14 @@ Sub getOptions As String
 	Return sRawOptions
 End Sub
 
+Sub setValuesAsIs(b As Boolean)
+	bValuesAsIs = b
+	CustProps.Put("ValuesAsIs", bValuesAsIs)
+End Sub
+
+Sub getValuesAsIs As Boolean
+	Return bValuesAsIs
+End Sub
 
 Sub Clear			'ignoredeadcode
 	If mElement = Null Then Return
@@ -696,8 +709,9 @@ End Sub
 
 Sub AddOption(iKey As String, iValue As String)
 	If mElement = Null Then Return
-	Dim cKey As String = UI.CleanID(iKey)
-	Dim scode As String = $"<option id="${cKey}_${mName}" value="${cKey}">${iValue}</option>"$
+	Dim cKey As String = iKey
+	If bValuesAsIs = False Then cKey = UI.CleanID(iKey)
+	Dim scode As String = $"<option value="${cKey}">${iValue}</option>"$
 	mElement.Append(scode)
 End Sub
 

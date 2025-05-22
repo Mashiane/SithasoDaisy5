@@ -535,7 +535,8 @@ Sub setMessage(s As String)				'ignoredeadcode
 	sMessage = s
 	CustProps.put("Message", s)
 	If mElement = Null Then Return
-	UI.SetHTMLByID($"${mName}_message"$, s)
+	sMessage = BANano.RunJavascriptMethod("whatsappToHtml", Array(sMessage))
+	UI.SetHTMLByID($"${mName}_message"$, sMessage)
 End Sub
 'set Reply Id
 Sub setReplyId(s As String)					'ignoredeadcode

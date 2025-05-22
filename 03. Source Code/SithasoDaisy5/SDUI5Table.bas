@@ -1522,9 +1522,8 @@ End Sub
 
 'add a file upload button with table event
 '<code>
-'Sub tblName_filechange (e As BANAnoEvent)
+'Sub tblName_{btnid}_filechange (e As BANAnoEvent)
 'tblName.FileChangeEvent
-'tblName.FileChangeMultiple
 'End Sub
 '</code>
 Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
@@ -1535,10 +1534,14 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
-	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
 	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
 	Return btn
 End Sub
+
+Sub SetToolbarButtonTextColorWhite(id As String)
+	SetToolbarButtonTextColor(id, "#ffffff")
+End Sub	
 
 private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault

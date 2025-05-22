@@ -70,7 +70,7 @@ Private Sub SDUI5WhatsApp1_ChatClick (chatID As String)
 	"This is an amazing food item", "", "", "")
 	Sleep(1000)
 	SDUI5WhatsApp1.AddEditTextMessage("m-12347", False, "./assets/13.jpg", "Coffee", "19:39", _
-	"This was delicious", "", "m-12347", "")
+	"This was delicious. <br> I really enjoyed it. <b>I willc come here again</b>.", "", "m-12347", "")
 	Sleep(1000)
 	SDUI5WhatsApp1.EnableEmoji(True)
 	SDUI5WhatsApp1.EnableAttach(True)
@@ -111,6 +111,11 @@ Private Sub SDUI5WhatsApp1_Copy (e As BANanoEvent)
 End Sub
 
 Private Sub SDUI5WhatsApp1_Send (e As BANanoEvent)
-	'if you click reply, the id of the message
-	app.ShowToastInfo($"Reply ID: ${SDUI5WhatsApp1.MessageID}"$)
+	Dim msgID As String = app.nextid
+	SDUI5WhatsApp1.AddEditTextMessage($"m-${msgID}"$, False, "./assets/mashy.jpg", "Mashy", app.UI.DateTimeNow, SDUI5WhatsApp1.Message, "", SDUI5WhatsApp1.MessageID, "")
+End Sub
+
+Private Sub SDUI5WhatsApp1_Reply (MessageID As String)
+	Dim msgID As String = app.nextid
+	SDUI5WhatsApp1.AddEditTextMessage($"m-${msgID}"$, True, "./assets/alien.png", "System", app.UI.DateTimeNow, $"Waiting for a Reply to: ${MessageID} "$, "Text of the old message.", MessageID, "")
 End Sub

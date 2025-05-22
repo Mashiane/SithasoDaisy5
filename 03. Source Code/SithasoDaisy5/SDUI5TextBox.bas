@@ -1296,7 +1296,7 @@ End Sub
 'get value
 Sub getValue As String					'ignoredeadcode
 	If mElement = Null Then Return ""
-	sValue = ui.CStr(mElement.GetValue)
+	sValue = UI.CStr(mElement.GetValue)
 	Return sValue
 End Sub
 

@@ -43,6 +43,7 @@ Sub Class_Globals
 	Private IntFormValidate As StringBuilder
 	Private IntFormValidateR As StringBuilder
 	Private IntFormFile As StringBuilder
+	Private PageCode As StringBuilder
 	
 	Private sproptype As String
 	Private spropname As String
@@ -135,11 +136,34 @@ Sub Class_Globals
 	Private spropmargin As String
 	Private sproppadding As String
 	Private mpos As String
+	Private sdatabase As String
+	Private buseapi As Boolean
+	Private sprefix As String
+	Private smodalheight As String = "fit"
+	Private smodalwidth As String = "700px"
 End Sub
 
 'showializes the object. You can add parameters to this method if needed.
 Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
 	app = MainApp
+	InputType.Initialize
+	ComponentNames.Initialize
+	DeclareForm.Initialize
+	IntFormWrite.Initialize
+	IntFormWrite1.Initialize
+	IntFormDefaults.Initialize
+	IntFormRead.Initialize
+	IntFormRead1.Initialize
+	IntFormEdit.Initialize
+	IntFormValidate.Initialize
+	IntFormValidateR.Initialize
+	IntFormValidateR.Append($"app.ResetValidation"$).append(CRLF)
+	RequiredInput.Initialize
+	IntFormFile.Initialize
+	PageCode.Initialize 
+	sbC.Initialize
+	smodalheight = tbl.GetDefault("height", "fit")
+	smodalwidth = tbl.GetDefault("width", "700px")
 	stablename = tbl.Get("tablename")
 	stablename = stablename.tolowercase
 	ssingular = tbl.Get("singular")
@@ -160,12 +184,28 @@ Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
 	busemodal = app.ui.CBool(busemodal)
 	busetable = tbl.Get("usetable")
 	busetable = app.UI.CBool(busetable)
+	sdatabase = tbl.Get("database")
+	sdatabase = app.UI.CStr(sdatabase)
+	If sdatabase = "" Then sdatabase = "PocketBase"
+	buseapi = app.UI.CBool(tbl.Get("useapi"))
+	Select Case sdatabase
+	Case "PocketBase"
+		buseapi = False
+	Case "MySQLRest"
+		buseapi = True
+	End Select
+	sprefix = tbl.Get("prefix")
+	sprefix = app.UI.CStr(sprefix)
 	fkeys.Initialize 
 	fTables.Initialize
 	mcompute.Initialize 
 	loads.Initialize 
 	'
-	properTable = app.UI.CamelCase(stablename)
+	properTable = stablename.ToLowerCase
+	If sprefix <> "" Then
+		properTable = properTable.Replace(sprefix.tolowercase, "")
+	End If
+	properTable = app.UI.CamelCase(properTable)
 	ssingular = app.UI.ProperCase(ssingular)
 	splural = app.UI.ProperCase(splural)
 	'
@@ -183,7 +223,7 @@ Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
 	BANano.Await(jsonQ.Initialize(lsDB.result))
 	jsonQ.OrderAsc("proppos")
 	properties = BANano.Await(jsonQ.Exec)
-	
+		
 	For Each prop As Map In properties
 		Dim spropname As String = prop.Get("propname")
 		Dim bpropsort As Boolean = prop.Get("propsort")
@@ -286,6 +326,7 @@ Sub BuildPage
 		BANano.Await(BuildModalSave)
 		BANano.Await(BuildModalForm)
 		BANano.Await(BuildButtonEvents)
+		sb.Append(PageCode.ToString)
 	Else
 		BANano.Await(BuildPreferenceSave)
 		BANano.Await(BuildFileInputs)
@@ -299,6 +340,8 @@ End Sub
 Sub BuildModalForm
 	AddCode(sb, $"Private Sub Build${properTable}Modal"$)
 	'build the grid
+	AddCode(sb, $"mdl${properTable}.Height = "${smodalheight}""$)
+	AddCode(sb, $"mdl${properTable}.Width = "${smodalwidth}""$)
 	AddCode(sb, GridCode)
 	AddCode(sb, sbC.ToString)
 	'add the components
@@ -350,7 +393,7 @@ Sub BuildSDUI5Telephone
 	txt.Label = sproptitle
 	txt.value = spropvalue
 	txt.Required = bproprequired
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -362,6 +405,16 @@ Sub BuildSDUI5Telephone
 	txt.PaddingAXYTBLR = sproppadding
 	txt.ParentID = mpos
 	txt.AddComponent
+	
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	
 	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
@@ -371,8 +424,10 @@ Sub BuildSDUI5Telephone
 	AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 	AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -402,7 +457,7 @@ Sub BuildSDUI5Email
 				txt.Label = sproptitle
 				txt.value = spropvalue
 				txt.Required = bproprequired
-				txt.PrependIcon = spropappend
+				txt.PrependIcon = spropprepend
 				txt.AppendIcon = spropappend
 				txt.Enabled = bpropenabled
 				txt.Visible = bpropvisible
@@ -414,6 +469,17 @@ Sub BuildSDUI5Email
 				txt.PaddingAXYTBLR = sproppadding
 				txt.ParentID = mpos
 				txt.AddComponent
+	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+				
+				
 				'
 				AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
@@ -423,8 +489,10 @@ Sub BuildSDUI5Email
 				AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 				AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 				AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+				AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 				AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+				If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 				AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 				AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 				AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -452,7 +520,7 @@ Sub BuildSDUI5TextArea
 	txta.Label = sproptitle
 	txta.value = spropvalue
 	txta.Required = bproprequired
-	txta.PrependIcon = spropappend
+	txta.PrependIcon = spropprepend
 	txta.AppendIcon = spropappend
 	txta.Enabled = bpropenabled
 	txta.Visible = bpropvisible
@@ -465,6 +533,15 @@ Sub BuildSDUI5TextArea
 	txta.ParentID = mpos
 	txta.AddComponent
 	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextArea"$)
 	AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
@@ -472,8 +549,10 @@ Sub BuildSDUI5TextArea
 	AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 	AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.rows = "${sproprows}""$)
@@ -979,7 +1058,7 @@ Sub BuildSDUI5PasswordGroup
 	txt.value = spropvalue
 	txt.ShowEyes = True
 	txt.Required = bproprequired
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -993,6 +1072,15 @@ Sub BuildSDUI5PasswordGroup
 	txt.ParentID = mpos
 	txt.AddComponent
 	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
 	AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
@@ -1002,8 +1090,10 @@ Sub BuildSDUI5PasswordGroup
 	AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.ShowEyes = True"$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1038,7 +1128,7 @@ Sub BuildSDUI5DatePicker
 	txt.DPAltFormat = spropdisplayformat
 	txt.DPTwentyFour = bproptime24
 	txt.DPLocale = sproplocale
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -1050,6 +1140,15 @@ Sub BuildSDUI5DatePicker
 	txt.PaddingAXYTBLR = sproppadding
 	txt.ParentID = mpos
 	txt.AddComponent
+	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
 	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
@@ -1063,8 +1162,10 @@ Sub BuildSDUI5DatePicker
 	AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
 	AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
 	AddCode(sbC, $"${spropname1}.DPLocale = "${sproplocale}""$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1097,7 +1198,7 @@ Sub BuildSDUI5DateTimePicker
 	txt.DPAltFormat = spropdisplayformat
 	txt.DPLocale = sproplocale
 	txt.DPTwentyFour = bproptime24
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -1109,6 +1210,14 @@ Sub BuildSDUI5DateTimePicker
 	txt.PaddingAXYTBLR = sproppadding
 	txt.ParentID = mpos
 	txt.AddComponent
+If spropprepend <> "" Then
+PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+PageCode.Append($"End Sub"$).Append(CRLF)
+End If
+If spropappend <> "" Then
+	PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+	PageCode.Append($"End Sub"$).Append(CRLF)
+End If
 	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
@@ -1122,8 +1231,10 @@ Sub BuildSDUI5DateTimePicker
 	AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
 	AddCode(sbC, $"${spropname1}.DPLocale = "${sproplocale}""$)
 	AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1180,7 +1291,9 @@ Sub BuildSDUI5TimePicker
 	AddCode(sbC, $"${spropname1}.DPAltFormat = "${spropdisplayformat}""$)
 	AddCode(sbC, $"${spropname1}.DPTwentyFour = ${bproptime24}"$)
 	AddCode(sbC, $"${spropname1}.PrependIcon= "${spropappend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1213,7 +1326,7 @@ Sub BuildSDUI5Number
 	txt.StepValue = spropstep
 	txt.MaxValue = spropmax
 	txt.Required = bproprequired
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -1226,6 +1339,15 @@ Sub BuildSDUI5Number
 	txt.ParentID = mpos
 	txt.AddComponent
 	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
 	AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
@@ -1237,8 +1359,10 @@ Sub BuildSDUI5Number
 	AddCode(sbC, $"${spropname1}.StepValue = "${spropstep}""$)
 	AddCode(sbC, $"${spropname1}.MaxValue = "${spropmax}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1272,7 +1396,7 @@ Sub BuildSDUI5ColorWheel
 	txt.WheelDiameter = spropwheeldiameter
 	txt.WheelThickness = spropwheelthickness
 	txt.WheelPlacement = spropwheelposition
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -1282,8 +1406,18 @@ Sub BuildSDUI5ColorWheel
 	txt.BorderColor = spropbordercolor
 	txt.MarginAXYTBLR = spropmargin
 	txt.PaddingAXYTBLR = sproppadding
+	txt.ToggleColorPicker = True
 	txt.ParentID = mpos
 	txt.AddComponent
+	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
 	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
@@ -1293,12 +1427,15 @@ Sub BuildSDUI5ColorWheel
 	AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 	AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
+	AddCode(sbC, $"${spropname1}.ToggleColorPicker = True"$)
 	AddCode(sbC, $"${spropname1}.HandleDiameter = "${sprophandlediameter}""$)
 	AddCode(sbC, $"${spropname1}.WheelDiameter = "${spropwheeldiameter}""$)
 	AddCode(sbC, $"${spropname1}.WheelThickness = "${spropwheelthickness}""$)
 	AddCode(sbC, $"${spropname1}.WheelPlacement = "${spropwheelposition}""$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1931,7 +2068,7 @@ Sub BuildSDUI5TextBoxGroup
 	txt.Label = sproptitle
 	txt.value = spropvalue
 	txt.Required = bproprequired
-	txt.PrependIcon = spropappend
+	txt.PrependIcon = spropprepend
 	txt.AppendIcon = spropappend
 	txt.Enabled = bpropenabled
 	txt.Visible = bpropvisible
@@ -1944,6 +2081,15 @@ Sub BuildSDUI5TextBoxGroup
 	txt.ParentID = mpos
 	txt.AddComponent
 	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	'
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5TextBox"$)
 	AddCode(sbC, $"${spropname1}.Initialize(Me, "${spropname1}", "${spropname1}")"$)
@@ -1952,8 +2098,10 @@ Sub BuildSDUI5TextBoxGroup
 	AddCode(sbC, $"${spropname1}.Label = "${sproptitle}""$)
 	AddCode(sbC, $"${spropname1}.value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
-	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropappend}""$)
+	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.ReadOnly = ${bpropreadonly}"$)
@@ -1967,6 +2115,7 @@ Sub BuildSDUI5TextBoxGroup
 				
 				
 	DeclareForm.Append($"Private ${spropname1} As SDUI5TextBox		'ignore"$).Append(CRLF)
+	
 	IntFormWrite.Append($"Dim s${spropname2} As String = ${spropname1}.Value"$).append(CRLF)
 	If spropdatatype <> "None" Then IntFormWrite1.Append($"db.SetField("${spropname}", s${spropname2})"$).append(CRLF)
 	IntFormDefaults.Append($"${spropname1}.Value = "${spropvalue}""$).Append(CRLF)
@@ -1996,6 +2145,14 @@ Sub BuildSDUI5SelectGroup
 	sel.ParentID = mpos
 	sel.AddComponent
 	'
+	If spropprepend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_prepend (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
+	If spropappend <> "" Then
+		PageCode.Append($"Private Sub ${spropname1}_append (e As BANanoEvent)"$).Append(CRLF)
+		PageCode.Append($"End Sub"$).Append(CRLF)
+	End If
 				
 	AddComment(sbC, $"Add ${spropname1}"$)
 '				AddCode(sbC, $"Dim ${spropname1} As SDUI5Select"$)
@@ -2007,7 +2164,9 @@ Sub BuildSDUI5SelectGroup
 	AddCode(sbC, $"${spropname1}.Value = "${spropvalue}""$)
 	AddCode(sbC, $"${spropname1}.Required = ${bproprequired}"$)
 	AddCode(sbC, $"${spropname1}.PrependIcon = "${spropprepend}""$)
+	If spropprepend <> "" Then AddCode(sbC, $"${spropname1}.PrependVisible = True"$)
 	AddCode(sbC, $"${spropname1}.AppendIcon = "${spropappend}""$)
+	If spropappend <> "" Then AddCode(sbC, $"${spropname1}.AppendVisible = True"$)
 	AddCode(sbC, $"${spropname1}.Enabled = ${bpropenabled}"$)
 	AddCode(sbC, $"${spropname1}.Visible = ${bpropvisible}"$)
 	AddCode(sbC, $"${spropname1}.BackgroundColor = "${spropbgcolor}""$)
@@ -2117,16 +2276,18 @@ private Sub BuildForeignCalls
 		AddCode(sb, $"${ftName}Object.Initialize"$)
 		AddCode(sb, $"${ftName}ObjectM.Initialize"$)
 		'
-		AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+		AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 		AddCode(sb, $"db.Initialize(Me, "${ft}", Main.ServerURL, "${ft}")"$)
 		AddCode(sb, $"'link this api class to the data models"$)
 		AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-		AddCode(sb, $"'the api file will be api.php"$)
-		AddCode(sb, $"db.ApiFile = "api""$)
-		AddCode(sb, $"'we are using an api key to make calls"$)
-		AddCode(sb, $"db.UseApiKey = True"$)
-		AddCode(sb, $"'specify the api key"$)
-		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+		If buseapi Then
+			AddCode(sb, $"'the api file will be api.php"$)
+			AddCode(sb, $"db.ApiFile = "api""$)
+			AddCode(sb, $"'we are using an api key to make calls"$)
+			AddCode(sb, $"db.UseApiKey = True"$)
+			AddCode(sb, $"'specify the api key"$)
+			AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+		End If
 		AddCode(sb, $"'clear any where clauses"$)
 		AddCode(sb, $"db.CLEAR_WHERE"$)
 		If orderby.Size > 0 Then
@@ -2330,12 +2491,14 @@ private Sub BuildTableChange
 	AddCode(sb, $"tbl${properTable}.SaveLastAccessedPage"$)
 	AddCode(sb, $"'process the update ${ssingular}"$)
 	AddCode(sb, $"'execute an update using the id of the ${ssingular}"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"db.SetRecord(item)"$)
 	AddCode(sb, $"'execute an update"$)
 	AddCode(sb, $"Dim newid As String = banano.Await(db.UPDATE)"$)
@@ -2467,7 +2630,7 @@ private Sub BuildProcessGlobals
 	AddCode(sb, $"Private Mode As String = ""						'CRUD control"$)
 	AddCode(sb, $"Private toDeleteID As String						'id of item to delete"$)
 	AddCode(sb, $"Private toDeleteName As String					'name of item to delete"$)
-	AddCode(sb, $"Public name As String = "${stablename}""$)
+	AddCode(sb, $"Public name As String = "${properTable.ToLowerCase}""$)
 	AddCode(sb, $"Public title As String = "${splural}""$)
 	AddCode(sb, $"Public icon As String = "./assets/page.svg""$)
 	AddCode(sb, $"Public color As String = "#000000""$)
@@ -2487,16 +2650,16 @@ End Sub
 private Sub BuildTableColumns
 	tblFiles.Initialize 
 	For Each prop As Map In properties
-		Dim spropname As String = prop.Get("propname")
-		Dim sproptitle As String = prop.Get("proptitle")
-		Dim bpropactive As Boolean = prop.Get("propactive")
+		spropname = prop.Get("propname")
+		sproptitle = prop.Get("proptitle")
+		bpropactive = prop.Get("propactive")
 		Dim bpropcomputevalue As Boolean = prop.Get("propcomputevalue")
 		Dim bpropcomputering As Boolean = prop.Get("propcomputering")
 		Dim bpropcomputecolor As Boolean = prop.Get("propcomputecolor")
 		Dim bpropcomputetextcolor As Boolean = prop.Get("propcomputetextcolor")
 		Dim bpropcomputebgcolor As Boolean = prop.Get("propcomputebgcolor")
 		Dim bpropcomputeclass As Boolean = prop.Get("propcomputeclass")
-		Dim spropalign As String = prop.Get("propalign")
+		spropalign = prop.Get("propalign")
 		spropalign = app.UI.CStr(spropalign)
 		Dim bpropcolumnvisible As Boolean = prop.Get("propcolumnvisible")
 		Dim spropcolumntype As String = prop.Get("propcolumntype")
@@ -2504,52 +2667,52 @@ private Sub BuildTableColumns
 		Dim spropcolumnvertical As String = prop.Get("propcolumnvertical")
 		spropcolumnvertical = app.UI.CStr(spropcolumnvertical)
 		Dim bProptotal As Boolean = prop.Get("proptotal")
-		Dim spropicon As String = prop.Get("propicon")
+		spropicon = prop.Get("propicon")
 		spropicon = app.UI.CStr(spropicon)
-		Dim spropcolor As String = prop.Get("propcolor")
+		spropcolor = prop.GetDefault("propcolor", "")
 		spropcolor = app.UI.CStr(spropcolor)
-		Dim spropsize As String = prop.Get("propsize")
+		spropsize = prop.Get("propsize")
 		spropsize = app.UI.CStr(spropsize)
-		Dim spropshape As String = prop.Get("propshape")
+		spropshape = prop.Get("propshape")
 		spropshape = app.UI.CStr(spropshape)
 		Dim spropsubtitle1 As String = prop.Get("propsubtitle1")
 		spropsubtitle1 = app.UI.CStr(spropsubtitle1)
 		Dim spropsubtitle2 As String = prop.Get("propsubtitle2")
 		spropsubtitle2 = app.UI.CStr(spropsubtitle2)
-		Dim spropheight As String = prop.get("propheight")
+		spropheight = prop.get("propheight")
 		spropheight = app.UI.CStr(spropheight)
-		Dim bpropreadonly As Boolean = prop.Get("propreadonly")
-		Dim spropbgcolor As String = prop.Get("propbgcolor")
+		bpropreadonly = prop.Get("propreadonly")
+		spropbgcolor = prop.Get("propbgcolor")
 		spropbgcolor = app.UI.CStr(spropbgcolor)
-		Dim sPropTextColor As String = prop.Get("proptextcolor")
+		sPropTextColor = prop.Get("proptextcolor")
 		sPropTextColor = app.UI.CStr(sPropTextColor)
-		Dim spropprefix As String = prop.Get("propprefix")
+		spropprefix = prop.Get("propprefix")
 		spropprefix = app.UI.CStr(spropprefix)
-		Dim spropdateformat As String = prop.Get("propdateformat")
+		spropdateformat = prop.GetDefault("propdateformat", "Y-m-d")
 		spropdateformat = app.UI.CStr(spropdateformat)
-		Dim spropprepend As String = prop.Get("propprepend")
+		spropprepend = prop.Get("propprepend")
 		spropprepend = app.UI.CStr(spropprepend)
-		Dim spropsuffix As String = prop.Get("propsuffix")
+		spropsuffix = prop.Get("propsuffix")
 		spropsuffix = app.UI.CStr(spropsuffix)
-		Dim spropappend As String = prop.Get("propappend")
+		spropappend = prop.Get("propappend")
 		spropappend = app.UI.CStr(spropappend)
-		Dim sproprows As String = prop.Get("proprows")
+		sproprows = prop.Get("proprows")
 		sproprows = app.UI.CStr(sproprows)
-		Dim spropwidth As String = prop.Get("propwidth")
+		spropwidth = prop.Get("propwidth")
 		spropwidth = app.UI.CStr(spropwidth)
-		Dim spropmax As String = prop.Get("propmax")
+		spropmax = prop.Get("propmax")
 		spropmax = app.UI.CStr(spropmax)
-		Dim spropstart As String = prop.Get("propstart")
+		spropstart = prop.Get("propstart")
 		spropstart = app.UI.CStr(spropstart)
-		Dim sproplocale As String = prop.Get("proplocale")
+		sproplocale = prop.Get("proplocale")
 		sproplocale = app.UI.CStr(sproplocale)
-		Dim spropdisplayformat As String = prop.Get("propdisplayformat")
+		spropdisplayformat = prop.GetDefault("propdisplayformat", "D, d M J")
 		spropdisplayformat = app.UI.CStr(spropdisplayformat)
-		Dim spropstep As String = prop.Get("propstep")
+		spropstep = prop.Get("propstep")
 		spropstep = app.UI.CStr(spropstep)
 		Dim sRawpropoptions As String = prop.Get("propoptions")
 		sRawpropoptions = app.UI.CStr(sRawpropoptions)
-		Dim bPropMultiple As Boolean = prop.Get("propmultiple")		
+		bPropMultiple = prop.Get("propmultiple")		
 		'
 		bpropborder = app.GetBoolean(prop, "propborder")
 		spropbgcolor = app.GetString(prop, "propbgcolor")
@@ -2801,7 +2964,7 @@ private Sub BuildShow
 	AddCode(sb, $"app = MainApp"$)
 	AddCode(sb, $"app.PagePause"$)
 	AddCode(sb, $"'load the layout"$)
-	AddCode(sb, $"BANano.LoadLayout(app.PageView, "${stablename}view")"$)
+	AddCode(sb, $"BANano.LoadLayout(app.PageView, "${properTable.tolowercase}view")"$)
 	AddCode(sb, $"'update navbar title on baselayout"$)
 	AddCode(sb, $"pgIndex.UpdateTitle(title)"$)
 	If busetable Then AddCode(sb, $"BANano.Await(Build${properTable}Table)"$)
@@ -2884,16 +3047,18 @@ private Sub BuildMount
 	'load all records for the table
 	If busetable Then
 		AddCode(sb, $"'select ${splural} from the database"$)
-		AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+		AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 		AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 		AddCode(sb, $"'link this api class to the data models"$)
 		AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-		AddCode(sb, $"'the api file will be api.php"$)
-		AddCode(sb, $"db.ApiFile = "api""$)
-		AddCode(sb, $"'we are using an api key to make calls"$)
-		AddCode(sb, $"db.UseApiKey = True"$)
-		AddCode(sb, $"'specify the api key"$)
-		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+		If buseapi Then
+			AddCode(sb, $"'the api file will be api.php"$)
+			AddCode(sb, $"db.ApiFile = "api""$)
+			AddCode(sb, $"'we are using an api key to make calls"$)
+			AddCode(sb, $"db.UseApiKey = True"$)
+			AddCode(sb, $"'specify the api key"$)
+			AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+		End If
 		AddCode(sb, $"'clear any where clauses"$)
 		AddCode(sb, $"db.CLEAR_WHERE"$)
 		If orderby.Size > 0 Then
@@ -2910,6 +3075,7 @@ private Sub BuildMount
 			For Each k As String In fkeys.Keys
 				Dim ft As String = app.ui.MvField(k, 1, ".")
 				Dim ofld As String = app.ui.MvField(k, 6, ".")
+				ofld = app.UI.CamelCase(ofld)
 				AddCode(sb, $"tbl${properTable}.SetColumnOptions("${ofld}", ${ft}Object)"$)
 			Next
 		End If
@@ -3136,14 +3302,16 @@ private Sub BuildEditRow
 	End If
 	AddCode(sb, $"Dim sID As String = item.Get("${sprimarykey}")"$)
 	AddCode(sb, $"'execute a read from the database"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"'assign schema"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"'use api key"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"'use api key"$)
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"'read the record"$)
 	AddCode(sb, $"Dim rec As Map = BANano.Await(db.READ(sID))"$)
 	AddCode(sb, $"BANano.Await(EditMode(rec))"$)
@@ -3165,12 +3333,14 @@ private Sub BuildDeleteRow
 	AddCode(sb, $"If bConfirm = False Then Return"$)
 	AddCode(sb, $"app.pagepause"$)
 	AddCode(sb, $"'execute a delete using the id of the ${ssingular}"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"BANano.Await(db.DELETE(toDeleteID))"$)
 	AddCode(sb, $"'reload the ${splural}"$)
 	AddCode(sb, $"BANano.Await(Mount${properTable})"$)
@@ -3191,14 +3361,16 @@ Sub BuildCloneRow
 	End If
 	AddCode(sb, $"Dim sID As String = item.Get("${sprimarykey}")"$)
 	AddCode(sb, $"'execute a read from the database"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"'assign schema"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"'use api key"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"'use api key"$)
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"'read the record"$)
 	AddCode(sb, $"Dim rec As Map = BANano.Await(db.READ(sID))"$)
 	AddCode(sb, $"BANano.Await(CloneMode(rec))"$)
@@ -3228,12 +3400,14 @@ private Sub BuildModalSave
 	AddCode(sb, FormWrite)
 	
 	AddCode(sb, $"'open the database and save the record"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"'pass the map record"$)
 	AddComment(sb, "Prepare database to save")
 	AddCode(sb, $"db.PrepareRecord"$)
@@ -3291,12 +3465,14 @@ private Sub BuildPreferenceSave
 	Next
 	AddCode(sb, $"app.pagepause"$)
 	AddCode(sb, $"'open the database and save the record"$)
-	AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+	AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 	AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 	AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-	AddCode(sb, $"db.ApiFile = "api""$)
-	AddCode(sb, $"db.UseApiKey = True"$)
-	AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	If buseapi Then
+		AddCode(sb, $"db.ApiFile = "api""$)
+		AddCode(sb, $"db.UseApiKey = True"$)
+		AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+	End If
 	AddCode(sb, $"'pass the map record"$)
 	AddCode(sb, $"db.SetRecord(pb)"$)
 	AddCode(sb, $"Select Case Mode"$)
@@ -3352,8 +3528,8 @@ private Sub BuildPreferences(mName As String)
 		Dim spropstart As String = record.get("propstart")
 		Dim spropstep As String = record.get("propstep")
 		Dim spropmax As String = record.get("propmax")
-		Dim spropdateformat As String = record.Get("propdateformat")
-		Dim spropdisplayformat As String = record.Get("propdisplayformat")
+		Dim spropdateformat As String = record.GetDefault("propdateformat", "Y-m-d")
+		Dim spropdisplayformat As String = record.GetDefault("propdisplayformat", "D, d M J")
 		Dim bproptime24 As Boolean = record.Get("proptime24")
 		bproptime24 = app.UI.CBool(bproptime24)
 		Dim sproplocale As String = record.Get("proplocale")
@@ -3407,7 +3583,7 @@ private Sub BuildPreferences(mName As String)
 		spropwheeldiameter = app.UI.CStr(spropwheeldiameter)
 		Dim spropwheelthickness As String = record.GetDefault("propwheelthickness", "20")
 		spropwheelthickness = app.UI.CStr(spropwheelthickness)
-		Dim spropwheelposition As String = record.GetDefault("propwheelposition", "top-end")
+		Dim spropwheelposition As String = record.GetDefault("propwheelposition", "bottom-end")
 		spropwheelposition = app.UI.CStr(spropwheelposition)
 		'
 		spropprefix = app.UI.CStr(spropprefix)
@@ -3733,21 +3909,6 @@ End Sub
 
 Sub BuildInputComponents(mdl As SDUI5Modal)
 	GridCode = mdl.Form.GridCode
-	InputType.Initialize
-	ComponentNames.Initialize
-	DeclareForm.Initialize
-	IntFormWrite.Initialize
-	IntFormWrite1.Initialize
-	IntFormDefaults.Initialize
-	IntFormRead.Initialize
-	IntFormRead1.Initialize
-	IntFormEdit.Initialize
-	IntFormValidate.Initialize 
-	IntFormValidateR.Initialize 
-	IntFormValidateR.Append($"app.ResetValidation"$).append(CRLF)
-	RequiredInput.Initialize 
-	IntFormFile.Initialize
-	sbC.Initialize 
 	pkComponent = ""
 	'
 	For Each record As Map In properties
@@ -3756,7 +3917,8 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 		sproptype = record.get("proptype")
 		spropname = record.get("propname")
 		sproptitle = record.get("proptitle")
-		spropvalue = record.get("propvalue")
+		spropvalue = record.getdefault("propvalue","")
+		spropvalue = app.UI.CStr(spropvalue)
 		bproprequired = record.get("proprequired")
 		bproprequired = app.UI.CBool(bproprequired)
 		bpropreadonly = record.get("propreadonly")
@@ -3773,14 +3935,17 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 		spropshape = record.get("propshape")
 		spropurl = record.get("propurl")
 		spropcolor = record.get("propcolor")
-		spropactivecolor = record.Get("propactivecolor")
+		spropactivecolor = record.GetDefault("propactivecolor", "#22c55e")
+		spropactivecolor = app.UI.CStr(spropactivecolor)
 		bpropsingleselect = record.GetDefault("propsingleselect", False)
 		bpropsingleselect = app.UI.CBool(bpropsingleselect)
 		spropstart = record.get("propstart")
 		spropstep = record.get("propstep")
 		spropmax = record.get("propmax")
-		spropdateformat = record.Get("propdateformat")
-		spropdisplayformat = record.Get("propdisplayformat")
+		spropdateformat = record.GetDefault("propdateformat", "Y-m-d")
+		spropdateformat = app.UI.CStr(spropdateformat)
+		spropdisplayformat = record.GetDefault("propdisplayformat", "D, d M J")
+		spropdisplayformat = app.UI.CStr(spropdisplayformat)
 		bproptime24 = record.Get("proptime24")
 		bproptime24 = app.UI.CBool(bproptime24)
 		sproplocale = record.Get("proplocale")
@@ -3834,7 +3999,7 @@ Sub BuildInputComponents(mdl As SDUI5Modal)
 		spropwheeldiameter = app.UI.CStr(spropwheeldiameter)
 		spropwheelthickness = record.GetDefault("propwheelthickness", "20")
 		spropwheelthickness = app.UI.CStr(spropwheelthickness)
-		spropwheelposition = record.GetDefault("propwheelposition", "top-end")
+		spropwheelposition = record.GetDefault("propwheelposition", "bottom-end")
 		spropwheelposition = app.UI.CStr(spropwheelposition)
 		spropupdate = record.Get("propupdate")
 		spropupdate = app.UI.CStr(spropupdate)		
@@ -4035,7 +4200,7 @@ private Sub BuildFileInputCode
 	AddCode(IntFormFile, $"app.PagePause"$)
 	AddCode(IntFormFile, $"'get file details"$)
 	AddCode(IntFormFile, $"Dim fileDet As FileObject"$)
-	AddCode(IntFormFile, $"fileDet = App.UI.GetFileDetails(fileObj)"$)
+	AddCode(IntFormFile, $"fileDet = App.GetFileDetails(fileObj)"$)
 	AddCode(IntFormFile, $"'get the file name"$)
 	AddCode(IntFormFile, $"Dim fn As String = fileDet.FileName"$)
 	AddCode(IntFormFile, $"'you can check the size here"$)
@@ -4243,12 +4408,14 @@ private Sub BuildButtonEvents
 						AddCode(sb, FormWrite)
 	
 						AddCode(sb, $"'open the database and save the record"$)
-						AddCode(sb, $"Dim db As SDUIMySQLREST"$)
+						AddCode(sb, $"Dim db As SDUI${sdatabase}"$)
 						AddCode(sb, $"db.Initialize(Me, "${stablename}", Main.ServerURL, "${stablename}")"$)
 						AddCode(sb, $"db.SetSchemaFromDataModel(app.DataModels)"$)
-						AddCode(sb, $"db.ApiFile = "api""$)
-						AddCode(sb, $"db.UseApiKey = True"$)
-						AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+						If buseapi Then
+							AddCode(sb, $"db.ApiFile = "api""$)
+							AddCode(sb, $"db.UseApiKey = True"$)
+							AddCode(sb, $"db.ApiKey = Main.APIKey"$)
+						End If
 						AddCode(sb, $"'pass the map record"$)
 						AddComment(sb, "Prepare database to save")
 						AddCode(sb, $"db.PrepareRecord"$)
@@ -4309,7 +4476,7 @@ private Sub BuildFileInputs
 			AddCode(sb, $"If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return"$)
 			AddCode(sb, $"'get file details"$)
 			AddCode(sb, $"Dim fileDet As FileObject"$)
-			AddCode(sb, $"fileDet = App.UI.GetFileDetails(fileObj)"$)
+			AddCode(sb, $"fileDet = App.GetFileDetails(fileObj)"$)
 			AddCode(sb, $"'get the file name"$)
 			AddCode(sb, $"Dim fn As String = fileDet.FileName"$)
 			AddCode(sb, $"'you can check the size here"$)
