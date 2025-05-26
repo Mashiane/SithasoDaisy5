@@ -201,7 +201,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<div id="${mName}" class="chat">
     	<div id="${mName}_avatar" class="chat-image avatar">
     		<div id="${mName}_host">
-    			<img id="${mName}_image" src="${sSenderImage}" alt=""></img>
+    			<img id="${mName}_image" class="bg-cover bg-center bg-no-repeat" src="${sSenderImage}" alt=""></img>
     		</div>
     	</div>
     	<div id="${mName}_header" class="chat-header">

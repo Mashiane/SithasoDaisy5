@@ -1497,7 +1497,8 @@ Sub setTypeOf(s As String)				'ignoredeadcode
 		If sMaxValue = "" Then sMaxValue = "100"
 		If sStepValue = "" Then sStepValue = "1"
 		UI.SetAttr(mElement, "type", "number")
-		UI.AddClass(mElement, "text-center tabular-nums")
+		UI.AddClass(mElement, "text-center tabular-nums ")
+		UI.AddClassByID($"${mName}_control"$, "flex items-center")
 		sPrependImage = ""
 		sAppendImage = ""
 		sPrependIcon = "./assets/minus-solid.svg"

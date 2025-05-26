@@ -6216,12 +6216,12 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 	Dim iconsize As String = UI.FixIconSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
+    <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control flex items-center">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent">
 		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-src="./assets/minus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
-    <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
+    <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="text-center input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent">
 		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;" data-src="./assets/plus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>

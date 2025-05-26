@@ -197,6 +197,8 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("other", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("other", "pg-whatsapp", "", "WhatsApp")
 	drawermenu.AddItemChild("other", "pg-officeribbon", "", "Office Ribbon")
+	drawermenu.AddItemChild("other", "pg-leaflet", "", "Leaflet Map")
+	
 
 End Sub
 
@@ -223,6 +225,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "leaflet"
+				pgLeafLet.Show(App)
 			Case "exceltoapp"
 				pgExcelToApp.Show(App)			
 			Case "officeribbon"

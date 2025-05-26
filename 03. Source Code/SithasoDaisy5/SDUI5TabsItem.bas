@@ -8,15 +8,17 @@ Version=10
 
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _content, Description: Child Item _content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
 #DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color
-#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: none, Description: Badge Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: , Description: Border Color
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: md, Description: Badge Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
-#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
-#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
+#DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: , Description: Border Color
+#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
@@ -47,7 +49,7 @@ Sub Class_Globals
 	Private sBackgroundColor As String = ""
 	Private sBadge As String = ""
 	Private sBadgeColor As String = ""
-	Private sBadgeSize As String = "none"
+	Private sBadgeSize As String = "md"
 	Private sBorderColor As String = ""
 	Private sTextColor As String = ""
 	Private bEnabled As Boolean = True
@@ -57,6 +59,8 @@ Sub Class_Globals
 	Public CONST BADGESIZE_SM As String = "sm"
 	Public CONST BADGESIZE_XL As String = "xl"
 	Public CONST BADGESIZE_XS As String = "xs"
+	Private sIcon As String = ""
+	Private sIconSize As String = "20px"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -66,8 +70,14 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 End Sub
+
+Sub LinkExisting
+	mElement.Initialize($"#${mName}_${sParentID}"$)
+	mTarget = BANano.GetElement("#" & sParentID)
+	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -170,27 +180,27 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bActive = Props.GetDefault("Active", False)
 		bActive = UI.CBool(bActive)
-		'sBackgroundColor = Props.GetDefault("BackgroundColor", "")
-		'sBackgroundColor = UI.CStr(sBackgroundColor)
 		sBadge = Props.GetDefault("Badge", "")
 		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
 		sBadgeColor = UI.CStr(sBadgeColor)
-		sBadgeSize = Props.GetDefault("BadgeSize", "none")
+		sBadgeSize = Props.GetDefault("BadgeSize", "md")
 		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sBorderColor = Props.GetDefault("BorderColor", "")
 		sBorderColor = UI.CStr(sBorderColor)
 		bEnabled = Props.GetDefault("Enabled", True)
 		bEnabled = UI.CBool(bEnabled)
-		'sTextColor = Props.GetDefault("TextColor", "")
-		'sTextColor = UI.CStr(sTextColor)
+		sIcon= Props.GetDefault("Icon", "")
+		sIcon = UI.CStr(sIcon)
+		sIconSize = Props.GetDefault("IconSize", "20px")
+		sIconSize = UI.CStr(sIconSize)
 	End If
 	'
 	'If bActive = True Then UI.AddClassDT("tab-active")
@@ -198,10 +208,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'If sBadge <> "" Then UI.AddClassDT("badge-" & sBadge)
 	'If sBadgeColor <> "" Then UI.AddClassDT("badge-" & sBadgeColor)
 	'If sBorderColor <> "" Then UI.AddClassDT("border-color-" & sBorderColor)
-	UI.AddClassDT("tab")
+	UI.AddClassDT("tab flex items-center justify-center")
 	UI.AddAttrDT("role", "tab")
-	UI.AddAttrDT("type", "radio")
-	UI.AddAttrDT("name", sParentID)
+	'UI.AddAttrDT("type", "radio")
+	'UI.AddAttrDT("name", sParentID)
 	UI.AddAttrDT("aria-label", sText)
 	'If sTabsName <> "" Then UI.AddAttrDT("tabs-name", sTabsName)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
@@ -215,14 +225,70 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mTarget.Initialize($"#${sParentID}"$)
 		
-	mElement = mTarget.Append($"[BANCLEAN]
-	<input id="${mName}_${sParentID}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>
+	mElement = mTarget.Append($"[BANCLEAN]	
+	<label id="${mName}_${sParentID}_label" class="${xclasses}" ${xattrs} style="${xstyles}">
+    	<input id="${mName}_${sParentID}" type="radio" name="${sParentID}" value="${mName}"/>
+		<svg-renderer id="${mName}_${sParentID}_icon" class="mr-1" width="${sIconSize}" height="${sIconSize}" style="pointer-events:none;" fill="currentColor" data-js="enabled"></svg-renderer>
+		<span id="${mName}_${sParentID}_text">${sText}</span>
+		<span id="${mName}_${sParentID}_badge" class="ml-1 badge badge-sm">${sBadge}</div>
+  	</label>
   	<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
+	
+	'<input id="${mName}_${sParentID}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>
+  	'<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
 	'
 	setActive(bActive)
+	setTextColor(sTextColor)
+	setBackgroundColor(sBackgroundColor)
+	setBorderColor(sBorderColor)
 	setEnabled(bEnabled)
+	setIcon(sIcon)
+	setBadgeColor(sBadgeColor)
+	setBadgeSize(sBadgeSize)
+	setBadge(sBadge)
 '	setVisible(bVisible)
 	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
+End Sub
+
+Sub HideContent(skey As String)
+	skey = UI.CleanID(skey)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${skey}_${sParentID}_content"$, False)
+End Sub
+
+Sub ShowContent(skey As String)
+	skey = UI.CleanID(skey)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${skey}_${sParentID}_content"$, True)
+End Sub
+
+
+Sub setIconSize(s As String)
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	UI.SetAttrByID($"${mName}_${sParentID}_icon"$, "height", sIconSize)
+	UI.SetAttrByID($"${mName}_${sParentID}_icon"$, "width", sIconSize)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+	
+Sub setIcon(s As String)				'ignoredeadcode
+	sIcon = s
+	CustProps.Put("Icon", sIcon)
+	If mElement = Null Then Return
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_${sParentID}_icon"$, False)
+	Else
+		UI.SetIconNameByID($"${mName}_${sParentID}_icon"$, sIcon)
+		UI.SetVisibleByID($"${mName}_${sParentID}_icon"$, True)
+	End If	
+End Sub
+
+Sub getIcon As String
+	Return sIcon
 End Sub
 
 private Sub itemchange(e As BANanoEvent)		'ignoredeadcode
@@ -236,7 +302,8 @@ Sub setText(text As String)
 	sText = text
 	CustProps.Put("Text", text)
 	If mElement = Null Then Return
-	UI.SetAttrByID($"${mName}_${sParentID}"$, "aria-label", sText)
+	UI.SetAttrByID($"${mName}_${sParentID}_label"$, "aria-label", sText)
+	UI.SetTextByID($"${mName}_${sParentID}_text"$, sText)
 End Sub
 
 'get text
@@ -250,27 +317,39 @@ Sub setActive(b As Boolean)		'ignoredeadcode
 	CustProps.put("Active", b)
 	If mElement = Null Then Return
 	UI.SetChecked(mElement, b)
+	If b Then
+		UI.AddClassByID($"${mName}_${sParentID}_label"$, "tab-active")
+	Else
+		UI.RemoveClassByID($"${mName}_${sParentID}_label"$, "tab-active")
+	End If
 End Sub
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)				'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If sBackgroundColor = "" Then Return
+	Dim thisColor As String = $"[--tab-bg:${sBackgroundColor}]"$
+	UI.UpdateClass(mElement, "bg", thisColor)
 End Sub
 'set Badge
-Sub setBadge(s As String)
+Sub setBadge(s As String)				'ignoredeadcode
 	sBadge = s
 	CustProps.put("Badge", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.AddClass(mElement, "badge-" & s)
+	UI.SetTextByID($"${mName}_${sParentID}_badge"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_${sParentID}_badge"$, False)
+	Else	
+		UI.SetVisibleByID($"${mName}_${sParentID}_badge"$, True)
+	End If
 End Sub
 'set Badge Color
-Sub setBadgeColor(s As String)
+Sub setBadgeColor(s As String)					'ignoredeadcode
 	sBadgeColor = s
 	CustProps.put("BadgeColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.AddClass(mElement, "badge-" & s)
+	UI.SetColorByID($"${mName}_${sParentID}_badge"$, "color", "badge", sBadgeColor)
 End Sub
 'set Badge Size
 'options: xs|none|sm|md|lg|xl
@@ -278,14 +357,18 @@ Sub setBadgeSize(s As String)
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
+	UI.SetSizeByID($"${mName}_${sParentID}_badge"$, "size", "badge", s)
 End Sub
 'set Border Color
-Sub setBorderColor(s As String)
+Sub setBorderColor(s As String)			'ignoredeadcode
 	sBorderColor = s
 	CustProps.put("BorderColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.AddClass(mElement, "border-color-" & s)
+	If sBorderColor = "" Then Return
+	Dim thisColor As String = $"[--tab-border-color:${sBorderColor}]"$
+	UI.UpdateClass(mElement, "bc", thisColor)
 End Sub
+
 'set Disabled
 Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
@@ -298,11 +381,11 @@ Sub setEnabled(b As Boolean)			'ignoredeadcode
 	End If
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-'	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
 End Sub
 
 Sub getEnabled As Boolean

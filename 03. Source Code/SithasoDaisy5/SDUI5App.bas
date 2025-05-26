@@ -24,7 +24,7 @@ Private Sub Class_Globals
 	Public SwalPosition As String = "top-end"
 	Public SwalTimer As Int = 3000
 	Public ToastDuration As Int = 3000
-	Public ToastPosition As String = "top_right"
+	Public ToastPosition As String = "TR"
 	'
 	Public CONST SIZE_LG As String = "lg"
 	Public CONST SIZE_MD As String = "md"
@@ -72,26 +72,26 @@ Private Sub Class_Globals
 	Public const COLOR_GHOST As String = "ghost"
 	Public const COLOR_SLATE As String = "slate"
 	Public const COLOR_ZINC As String = "zinc"
-	Public const COLOR_GRAY As String = "gray"
+	'Public const COLOR_GRAY As String = "gray"
 	Public const COLOR_NEUTRAL As String = "neutral"
 	Public const COLOR_STONE As String = "stone"
 	Public const COLOR_AMBER As String = "amber"
-	Public const COLOR_YELLOW As String = "yellow"
-	Public const COLOR_LIME As String = "lime"
-	Public const COLOR_GREEN As String = "green"
+	'Public const COLOR_YELLOW As String = "yellow"
+	'Public const COLOR_LIME As String = "lime"
+	'Public const COLOR_GREEN As String = "green"
 	Public const COLOR_EMERALD As String = "emerald"
-	Public const COLOR_TEAL As String = "teal"
-	Public const COLOR_CYAN As String = "cyan"
+	'Public const COLOR_TEAL As String = "teal"
+	'Public const COLOR_CYAN As String = "cyan"
 	Public const COLOR_SKY As String = "sky"
-	Public const COLOR_BLUE As String = "blue"
-	Public const COLOR_INDIGO As String = "indigo"
-	Public const COLOR_VIOLET As String = "violet"
-	Public const COLOR_PURPLE As String = "purple"
-	Public const COLOR_FUCHSIA As String = "fuchsia"
-	Public const COLOR_PINK As String = "pink"
+	'Public const COLOR_BLUE As String = "blue"
+	'Public const COLOR_INDIGO As String = "indigo"
+	'Public const COLOR_VIOLET As String = "violet"
+	'Public const COLOR_PURPLE As String = "purple"
+	'Public const COLOR_FUCHSIA As String = "fuchsia"
+	'Public const COLOR_PINK As String = "pink"
 	Public const COLOR_ROSE As String = "rose"
-	Public const COLOR_RED As String = "red"
-	Public const COLOR_ORANGE As String = "orange"
+	'Public const COLOR_RED As String = "red"
+	'Public const COLOR_ORANGE As String = "orange"
 		
 	Public const COLOR_PRIMARY As String = "primary"
 	Public const COLOR_ACCENT As String = "accent"
@@ -102,10 +102,10 @@ Private Sub Class_Globals
 	Public const COLOR_BASE As String = "base"
 	Public const COLOR_SECONDARY As String = "secondary"
 	
-	Public const COLOR_BLACK As String = "black"
-	Public const COLOR_BROWN As String = "brown"
+	'Public const COLOR_BLACK As String = "black"
+	'Public const COLOR_BROWN As String = "brown"
 	Public const COLOR_TRANSPARENT As String = "transparent"
-	Public const COLOR_WHITE As String = "white"
+	'Public const COLOR_WHITE As String = "white"
 	Public const COLOR_NONE As String = ""
 	'
 	Public const INTENSITY_NORMAL As String = ""
@@ -120,19 +120,19 @@ Private Sub Class_Globals
 	Public const INTENSITY_800 As String = "800"
 	Public const INTENSITY_900 As String = "900"
 	
-	Public const INTENSITY_LIGHTEN5 As String = "lighten-5"
-	Public const INTENSITY_LIGHTEN4 As String = "lighten-4"
-	Public const INTENSITY_LIGHTEN3 As String = "lighten-3"
-	Public const INTENSITY_LIGHTEN2 As String = "lighten-2"
-	Public const INTENSITY_LIGHTEN1 As String = "lighten-1"
-	Public const INTENSITY_DARKEN1 As String = "darken-1"
-	Public const INTENSITY_DARKEN2 As String = "darken-2"
-	Public const INTENSITY_DARKEN3 As String = "darken-3"
-	Public const INTENSITY_DARKEN4 As String = "darken-4"
-	Public const INTENSITY_ACCENT1 As String = "accent-1"
-	Public const INTENSITY_ACCENT2 As String = "accent-2"
-	Public const INTENSITY_ACCENT3 As String = "accent-3"
-	Public const INTENSITY_ACCENT4 As String = "accent-4"
+'	Public const INTENSITY_LIGHTEN5 As String = "lighten-5"
+'	Public const INTENSITY_LIGHTEN4 As String = "lighten-4"
+'	Public const INTENSITY_LIGHTEN3 As String = "lighten-3"
+'	Public const INTENSITY_LIGHTEN2 As String = "lighten-2"
+'	Public const INTENSITY_LIGHTEN1 As String = "lighten-1"
+'	Public const INTENSITY_DARKEN1 As String = "darken-1"
+'	Public const INTENSITY_DARKEN2 As String = "darken-2"
+'	Public const INTENSITY_DARKEN3 As String = "darken-3"
+'	Public const INTENSITY_DARKEN4 As String = "darken-4"
+'	Public const INTENSITY_ACCENT1 As String = "accent-1"
+'	Public const INTENSITY_ACCENT2 As String = "accent-2"
+'	Public const INTENSITY_ACCENT3 As String = "accent-3"
+'	Public const INTENSITY_ACCENT4 As String = "accent-4"
 	
 	Public Themes As Map
 	'
@@ -383,6 +383,156 @@ Private Sub Class_Globals
 	Public CONST GRIDFLOW_NONE As String = "none"
 	Public CONST GRIDFLOW_ROW As String = "row"
 	Public CONST GRIDFLOW_ROW_DENSE As String = "row-dense"
+	'
+	Public CONST COLOR_LIGHTSLATEGREY  As String = "#778899"
+	Public CONST COLOR_DARKVIOLET  As String = "#9400D3"
+	Public CONST COLOR_CYAN  As String = "#00FFFF"
+	Public CONST COLOR_DARKSLATEBLUE  As String = "#483D8B"
+	Public CONST COLOR_BISQUE  As String = "#FFE4C4"
+	Public CONST COLOR_LIGHTGREY  As String = "#D3D3D3"
+	Public CONST COLOR_KHAKI  As String = "#F0E68C"
+	Public CONST COLOR_DARKGRAY  As String = "#A9A9A9"
+	Public CONST COLOR_SADDLEBROWN  As String = "#8B4513"
+	Public CONST COLOR_BLANCHEDALMOND As String = "#FFEBCD"
+	Public CONST COLOR_DARKBLUE As String = "#00008B"
+	Public CONST COLOR_LIGHTCORAL As String = "#F08080"
+	Public CONST COLOR_ORANGERED As String = "#FF4500"
+	Public CONST COLOR_MOCCASIN As String = "#FFE4B5"
+	Public CONST COLOR_AZURE As String = "#F0FFFF"
+	Public CONST COLOR_LIGHTGOLDENRODYELLOW As String = "#FAFAD2"
+	Public CONST COLOR_SKYBLUE As String = "#87CEEB"
+	Public CONST COLOR_DEEPSKYBLUE As String = "#00BFFF"
+	Public CONST COLOR_CHARTREUSE As String = "#7FFF00"
+	Public CONST COLOR_MEDIUMPURPLE As String = "#9370DB"
+	Public CONST COLOR_LIGHTYELLOW As String = "#FFFFE0"
+	Public CONST COLOR_VIOLET As String = "#EE82EE"
+	Public CONST COLOR_PALEVIOLETRED As String = "#DB7093"
+	Public CONST COLOR_DIMGREY As String = "#696969"
+	Public CONST COLOR_ROSYBROWN As String = "#BC8F8F"
+	Public CONST COLOR_HONEYDEW As String = "#F0FFF0"
+	Public CONST COLOR_MEDIUMBLUE As String = "#0000CD"
+	Public CONST COLOR_DARKSEAGREEN As String = "#8FBC8F"
+	Public CONST COLOR_LIMEGREEN As String = "#32CD32"
+	Public CONST COLOR_PALETURQUOISE As String = "#AFEEEE"
+	Public CONST COLOR_MEDIUMORCHID As String = "#BA55D3"
+	Public CONST COLOR_BURLYWOOD As String = "#DEB887"
+	Public CONST COLOR_SILVER As String = "#C0C0C0"
+	Public CONST COLOR_PAPAYAWHIP As String = "#FFEFD5"
+	Public CONST COLOR_CHOCOLATE As String = "#D2691E"
+	Public CONST COLOR_LIGHTSTEELBLUE As String = "#B0C4DE"
+	Public CONST COLOR_PINK As String = "#FFC0CB"
+	Public CONST COLOR_DARKGREEN As String = "#006400"
+	Public CONST COLOR_SIENNA As String = "#A0522D"
+	Public CONST COLOR_SEASHELL As String = "#FFF5EE"
+	Public CONST COLOR_THISTLE As String = "#D8BFD8"
+	Public CONST COLOR_YELLOW As String = "#FFFF00"
+	Public CONST COLOR_LIGHTSEAGREEN As String = "#20B2AA"
+	Public CONST COLOR_CORNSILK As String = "#FFF8DC"
+	Public CONST COLOR_BLUEVIOLET As String = "#8A2BE2"
+	Public CONST COLOR_TOMATO As String = "#FF6347"
+	Public CONST COLOR_CORNFLOWERBLUE As String = "#6495ED"
+	Public CONST COLOR_SANDYBROWN As String = "#F4A460"
+	Public CONST COLOR_GOLD As String = "#FFD700"
+	Public CONST COLOR_SPRINGGREEN As String = "#00FF7F"
+	Public CONST COLOR_GRAY As String = "#808080"
+	Public CONST COLOR_MEDIUMVIOLETRED As String = "#C71585"
+	Public CONST COLOR_CRIMSON As String = "#DC143C"
+	Public CONST COLOR_DARKCYAN As String = "#008B8B"
+	Public CONST COLOR_IVORY As String = "#FFFFF0"
+	Public CONST COLOR_DARKMAGENTA As String = "#8B008B"
+	Public CONST COLOR_WHEAT As String = "#F5DEB3"
+	Public CONST COLOR_INDIANRED As String = "#CD5C5C"
+	Public CONST COLOR_DARKORCHID As String = "#9932CC"
+	Public CONST COLOR_WHITESMOKE As String = "#F5F5F5"
+	Public CONST COLOR_MINTCREAM As String = "#F5FFFA"
+	Public CONST COLOR_LIGHTPINK As String = "#FFB6C1"
+	Public CONST COLOR_BLACK As String = "#000000"
+	Public CONST COLOR_TEAL As String = "#008080"
+	Public CONST COLOR_CADETBLUE As String = "#5F9EA0"
+	Public CONST COLOR_BEIGE As String = "#F5F5DC"
+	Public CONST COLOR_DARKKHAKI As String = "#BDB76B"
+	Public CONST COLOR_BLUE As String = "#0000FF"
+	Public CONST COLOR_DARKSLATEGRAY As String = "#2F4F4F"
+	Public CONST COLOR_ROYALBLUE As String = "#4169E1"
+	Public CONST COLOR_SEAGREEN As String = "#2E8B57"
+	Public CONST COLOR_PURPLE As String = "#800080"
+	Public CONST COLOR_ORCHID As String = "#DA70D6"
+	Public CONST COLOR_FORESTGREEN As String = "#228B22"
+	Public CONST COLOR_DARKSALMON As String = "#E9967A"
+	Public CONST COLOR_PALEGREEN As String = "#98FB98"
+	Public CONST COLOR_NAVY As String = "#000080"
+	Public CONST COLOR_LIGHTSLATEGRAY As String = "#778899"
+	Public CONST COLOR_REBECCAPURPLE As String = "#663399"
+	Public CONST COLOR_GREENYELLOW As String = "#ADFF2F"
+	Public CONST COLOR_RED As String = "#FF0000"
+	Public CONST COLOR_AQUA As String = "#00FFFF"
+	Public CONST COLOR_WHITE As String = "#FFFFFF"
+	Public CONST COLOR_DODGERBLUE As String = "#1E90FF"
+	Public CONST COLOR_LIGHTBLUE As String = "#ADD8E6"
+	Public CONST COLOR_OLIVE As String = "#808000"
+	Public CONST COLOR_CORAL As String = "#FF7F50"
+	Public CONST COLOR_PEACHPUFF As String = "#FFDAB9"
+	Public CONST COLOR_DARKOLIVEGREEN As String = "#556B2F"
+	Public CONST COLOR_DARKTURQUOISE As String = "#00CED1"
+	Public CONST COLOR_DARKGREY As String = "#A9A9A9"
+	Public CONST COLOR_LAVENDER As String = "#E6E6FA"
+	Public CONST COLOR_LIGHTGRAY As String = "#D3D3D3"
+	Public CONST COLOR_GAINSBORO As String = "#DCDCDC"
+	Public CONST COLOR_TANCOLOR As String = "#D2B48C"
+	Public CONST COLOR_PLUM As String = "#DDA0DD"
+	Public CONST COLOR_MIDNIGHTBLUE As String = "#191970"
+	Public CONST COLOR_POWDERBLUE As String = "#B0E0E6"
+	Public CONST COLOR_DIMGRAY As String = "#696969"
+	Public CONST COLOR_LEMONCHIFFON As String = "#FFFACD"
+	Public CONST COLOR_SALMON As String = "#FA8072"
+	Public CONST COLOR_LIGHTGREEN As String = "#90EE90"
+	Public CONST COLOR_BROWN As String = "#A52A2A"
+	Public CONST COLOR_GOLDENROD As String = "#DAA520"
+	Public CONST COLOR_STEELBLUE As String = "#4682B4"
+	Public CONST COLOR_LIGHTSALMON As String = "#FFA07A"
+	Public CONST COLOR_DARKRED As String = "#8B0000"
+	Public CONST COLOR_SNOW As String = "#FFFAFA"
+	Public CONST COLOR_OLIVEDRAB As String = "#6B8E23"
+	Public CONST COLOR_YELLOWGREEN As String = "#9ACD32"
+	Public CONST COLOR_INDIGO As String = "#4B0082"
+	Public CONST COLOR_LAWNGREEN As String = "#7CFC00"
+	Public CONST COLOR_MAGENTA As String = "#FF00FF"
+	Public CONST COLOR_AQUAMARINE As String = "#7FFFD4"
+	Public CONST COLOR_FLORALWHITE As String = "#FFFAF0"
+	Public CONST COLOR_ANTIQUEWHITE As String = "#FAEBD7"
+	Public CONST COLOR_HOTPINK As String = "#FF69B4"
+	Public CONST COLOR_TURQUOISE As String = "#40E0D0"
+	Public CONST COLOR_PERU As String = "#CD853F"
+	Public CONST COLOR_FUCHSIA As String = "#FF00FF"
+	Public CONST COLOR_FIREBRICK As String = "#B22222"
+	Public CONST COLOR_ALICEBLUE As String = "#F0F8FF"
+	Public CONST COLOR_DARKGOLDENROD As String = "#B8860B"
+	Public CONST COLOR_NAVAJOWHITE As String = "#FFDEAD"
+	Public CONST COLOR_LAVENDERBLUSH As String = "#FFF0F5"
+	Public CONST COLOR_MEDIUMSPRINGGREEN As String = "#00FA9A"
+	Public CONST COLOR_SLATEGRAY As String = "#708090"
+	Public CONST COLOR_MISTYROSE As String = "#FFE4E1"
+	Public CONST COLOR_LINEN As String = "#FAF0E6"
+	Public CONST COLOR_DARKORANGE As String = "#FF8C00"
+	Public CONST COLOR_SLATEBLUE As String = "#6A5ACD"
+	Public CONST COLOR_LIGHTCYAN As String = "#E0FFFF"
+	Public CONST COLOR_LIGHTSKYBLUE As String = "#87CEFA"
+	Public CONST COLOR_MEDIUMSEAGREEN As String = "#3CB371"
+	Public CONST COLOR_MEDIUMTURQUOISE As String = "#48D1CC"
+	Public CONST COLOR_DEEPPINK As String = "#FF1493"
+	Public CONST COLOR_GHOSTWHITE As String = "#F8F8FF"
+	Public CONST COLOR_GREEN As String = "#008000"
+	Public CONST COLOR_LIME As String = "#00FF00"
+	Public CONST COLOR_MEDIUMAQUAMARINE As String = "#66CDAA"
+	Public CONST COLOR_OLDLACE As String = "#FDF5E6"
+	Public CONST COLOR_GREY As String = "#808080"
+	Public CONST COLOR_ORANGE As String = "#FFA500"
+	Public CONST COLOR_DARKSLATEGREY As String = "#2F4F4F"
+	Public CONST COLOR_MEDIUMSLATEBLUE As String = "#7B68EE"
+	Public CONST COLOR_MAROON As String = "#800000"
+	Public CONST COLOR_PALEGOLDENROD As String = "#EEE8AA"
+	
+	
 End Sub
 
 '<code>
@@ -428,10 +578,9 @@ Public Sub Initialize (mCallback As Object)
 	End If
 	'
 	AppToast.Initialize(mCallback, "apptoast", "apptoast")
-	AppToast.ParentID = "body"
 	AppToast.Duration = ToastDuration
 	AppToast.Position = ToastPosition
-	AppToast.AddComponent
+	AppToast.TypeOf = AppToast.TYPEOF_INFO
 End Sub
 
 private Sub iconloaderror(e As BANanoEvent)				'ignoredeadcode
@@ -625,6 +774,11 @@ Sub UsesWhatsApp
 End Sub
 
 'valid
+Sub UsesLeaflet
+	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", "leaflet.js", "leaflet.rotatedMarker.js")))
+End Sub
+
+'valid
 Sub UsesTreeSpider
 	Banano.Await(UI.LoadAssetsOnDemand("TreeSpider", Array("treeSpider.bundle.min.js", "treeSpider.css")))
 End Sub
@@ -707,26 +861,31 @@ Sub UsesFontAwesome
 End Sub
 
 Sub ShowToast(msg As String)
+	AppToast.Title = ""
 	AppToast.Duration = ToastDuration
 	AppToast.ShowInfo(msg)
 End Sub
 
 Sub ShowToastSuccess(msg As String)
+	AppToast.Title = ""
 	AppToast.Duration = ToastDuration
 	AppToast.ShowSuccess(msg)
 End Sub
 
 Sub ShowToastError(msg As String)
+	AppToast.Title = ""
 	AppToast.Duration = ToastDuration
 	AppToast.ShowError(msg)
 End Sub
 
 Sub ShowToastWarning(msg As String)
+	AppToast.Title = ""
 	AppToast.Duration = ToastDuration
 	AppToast.ShowWarning(msg)
 End Sub
 
 Sub ShowToastInfo(msg As String)
+	AppToast.Title = ""
 	AppToast.Duration = ToastDuration
 	AppToast.ShowInfo(msg)
 End Sub

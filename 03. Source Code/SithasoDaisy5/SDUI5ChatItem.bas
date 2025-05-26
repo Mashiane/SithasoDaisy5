@@ -283,7 +283,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<li id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_fromavt" class="avatar">
         	<div id="${mName}_fromhost" class="${avtsize} ${avtshape}">
-          		<img id="${mName}_fromimg" src="${sFromAvatar}" alt="${sFromName}">
+          		<img id="${mName}_fromimg" class="bg-cover bg-center bg-no-repeat" src="${sFromAvatar}" alt="${sFromName}">
         	</div>
       	</div>
       	<div id="${mName}_flex1" class="flex-1">
@@ -298,7 +298,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
       	</div>
       	<div id="${mName}_helpavt" class="avatar ${shelpvisible}">
         	<div id="${mName}_helphost" class="${avtsize} ${avtshape}">
-          		<img id="${mName}_helpimg" src="${sHelpAvatar}" alt="">
+          		<img id="${mName}_helpimg" class="bg-cover bg-center bg-no-repeat" src="${sHelpAvatar}" alt="">
         	</div>
       	</div>
 	</li>"$).Get("#" & mName)

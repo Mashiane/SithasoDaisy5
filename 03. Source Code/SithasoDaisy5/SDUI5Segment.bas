@@ -13,6 +13,9 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: fit , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
+#DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: md, Description: Badge Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #0000ff, Description: Active Color
 #DesignerProperty: Key: ActiveTextColor, DisplayName: Active Text Color, FieldType: String, DefaultValue: #ffffff, Description: Active Text Color
 #DesignerProperty: Key: OptionWidth, DisplayName: Option Width, FieldType: String, DefaultValue: 32, Description: Option Width
@@ -56,6 +59,9 @@ Sub Class_Globals
 	Private sActiveTextColor As String = "#ffffff"
 	Private sOptionWidth As String = "32"
 	Private items As Map
+	Private sIconSize As String = "20px"
+	Private sBadgeColor As String = ""
+	Private sBadgeSize As String = "md"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -215,6 +221,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sActiveTextColor = UI.CStr(sActiveTextColor)
 		sOptionWidth = Props.GetDefault("OptionWidth", "32")
 		sOptionWidth = UI.CStr(sOptionWidth)
+		sBadgeColor = Props.GetDefault("BadgeColor", "")
+		sBadgeColor = UI.CStr(sBadgeColor)
+		sBadgeSize = Props.GetDefault("BadgeSize", "md")
+		sBadgeSize = UI.CStr(sBadgeSize)
+		If sBadgeSize = "none" Then sBadgeSize = ""
+		sIconSize = Props.GetDefault("IconSize", "20px")
+		sIconSize = UI.CStr(sIconSize)
 	End If
 	'
 	
@@ -240,6 +253,37 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	BANano.Await(setOptions(sRawOptions))
 	setActive(sActive)
 '	setVisible(bVisible)
+End Sub
+
+Sub setIconSize(s As String)
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+'set Badge Color
+Sub setBadgeColor(s As String)					'ignoredeadcode
+	sBadgeColor = s
+	CustProps.put("BadgeColor", s)
+End Sub
+
+'set Badge Size
+'options: xs|none|sm|md|lg|xl
+Sub setBadgeSize(s As String)
+	sBadgeSize = s
+	CustProps.put("BadgeSize", s)
+End Sub
+
+'get Badge Color
+Sub getBadgeColor As String
+	Return sBadgeColor
+End Sub
+'get Badge Size
+Sub getBadgeSize As String
+	Return sBadgeSize
 End Sub
 
 'set Active Color
@@ -315,14 +359,63 @@ Sub setOptions(s As String)			'ignoredeadcode
 	Next
 End Sub
 
+'Sub AddButton(sKey As String, sText As String)
+'	sKey = UI.CleanID(sKey)
+'	Dim oSize As String = UI.FixSize("w", sOptionWidth)
+'	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab ${oSize}" aria-label="${sText}"></input>"$
+'	mElement.Append(sTag)
+'	items.Put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
+'	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
+'End Sub
+
 Sub AddButton(sKey As String, sText As String)
 	sKey = UI.CleanID(sKey)
-	Dim oSize As String = UI.FixSize("w", sOptionWidth)
-	Dim sTag As String = $"<input id="${sKey}_${mName}" type="radio" name="${mName}" value="${sKey}" role="tab" class="tab ${oSize}" aria-label="${sText}"></input>"$
-	mElement.Append(sTag)
-	items.Put($"${sKey}_${mName}"$, $"${sKey}_${mName}"$)
+	Dim nKey As String = $"${sKey}_${mName}"$
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, sKey, sKey)
+	ni.ParentID = mName
+	ni.Text = sText
+	ni.Visible = True
+	ni.BadgeSize = sBadgeSize
+	ni.BadgeColor = sBadgeColor
+	ni.IconSize = sIconSize
+	ni.AddComponent
+	ni.HideContent(sKey)
+	items.Put(nKey, nKey)
 	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
 End Sub
+'
+Sub AddTabItem(sKey As String, sText As String, sIcon As String, sBadge As String) As SDUI5TabsItem
+	sKey = UI.CleanID(sKey)
+	Dim nKey As String = $"${sKey}_${mName}"$
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, sKey, sKey)
+	ni.ParentID = mName
+	ni.Text = sText
+	ni.Visible = True
+	ni.BadgeSize = sSize
+	ni.Badge = sBadge
+	ni.Icon = sIcon
+	ni.BadgeSize = sBadgeSize
+	ni.BadgeColor = sBadgeColor
+	ni.IconSize = sIconSize
+	ni.AddComponent
+	ni.HideContent(sKey)
+	items.Put(nKey, nKey)
+	UI.OnEventByID($"${sKey}_${mName}"$, "change", Me, "itemchange")
+	Return ni
+End Sub
+
+'get a tab item
+Sub TabItem(skey As String) As SDUI5TabsItem
+	skey = UI.CleanID(skey)
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, skey, skey)
+	ni.ParentID = mName
+	ni.LinkExisting
+	Return ni
+End Sub
+
 
 private Sub itemchange(e As BANanoEvent)			'ignoreDeadCode
 	e.PreventDefault
@@ -334,12 +427,12 @@ End Sub
 private Sub SetActiveInternal(item As String)
 	item = UI.CleanID(item)
 	For Each k As String In items.Keys
-		UI.SetBackgroundColorStyleByID(k, "")
-		UI.SetColorStyleByID(k, "")
+		UI.SetBackgroundColorStyleByID($"${k}_label"$, "")
+		UI.SetColorStyleByID($"${k}_label"$, "")
 	Next
 	If item <> "" Then
-		UI.SetBackgroundColorStyleByID($"${item}_${mName}"$, sActiveColor)
-		UI.SetColorStyleByID($"${item}_${mName}"$, sActiveTextColor)
+		UI.SetBackgroundColorStyleByID($"${item}_${mName}_label"$, sActiveColor)
+		UI.SetColorStyleByID($"${item}_${mName}_label"$, sActiveTextColor)
 	End If
 End Sub
 
@@ -368,13 +461,13 @@ Sub setActive(item As String)			'ignoredeadcode
 	CustProps.put("Active", item)
 	If mElement = Null Then Return
 	For Each k As String In items.Keys
-		UI.SetBackgroundColorStyleByID(k, "")
-		UI.SetColorStyleByID(k, "")
+		UI.SetBackgroundColorStyleByID($"${k}_label"$, "")
+		UI.SetColorStyleByID($"${k}_label"$, "")
 	Next
 	If item <> "" Then 
 		UI.SetCheckedByID($"${item}_${mName}"$, True)
-		UI.SetBackgroundColorStyleByID($"${item}_${mName}"$, sActiveColor)
-		UI.SetColorStyleByID($"${item}_${mName}"$, sActiveTextColor)
+		UI.SetBackgroundColorStyleByID($"${item}_${mName}_label"$, sActiveColor)
+		UI.SetColorStyleByID($"${item}_${mName}_label"$, sActiveTextColor)
 	End If
 End Sub
 
@@ -386,6 +479,7 @@ Sub setDisabled(sitems As String)
 	If sitems = "" Then Return
 	Dim itemsM As Map = UI.GetKeyValues(sitems, False)
 	For Each k As String In itemsM.Keys
+		UI.SetEnabledByID($"${k}_${mName}_label"$, False)
 		UI.SetEnabledByID($"${k}_${mName}"$, False)
 	Next
 End Sub

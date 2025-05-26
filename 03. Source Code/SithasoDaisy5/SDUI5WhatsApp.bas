@@ -375,7 +375,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<svg-renderer id="${mName}_backicon" style="pointer-events:none;"   class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/chevron-left-solid.svg"></svg-renderer>
 				</button>
             	<div class="wa-avatar">
-                	<img id="${mName}_sideavatar" src="${sSideAvatar}" alt="">
+                	<img id="${mName}_sideavatar" class="bg-cover bg-center bg-no-repeat" src="${sSideAvatar}" alt="">
             	</div>
             </div>
 			<div id="${mName}_sideactions" class="wa-chat-header-right items-center">
@@ -404,7 +404,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<div id="${mName}_online2" aria-label="status" class="status status-xl"></div>
 				</div>
                 <div class="wa-avatar">
-                    <img id="${mName}_rightavatar" src="${sRightAvatar}" alt="">
+                    <img id="${mName}_rightavatar" class="bg-cover bg-center bg-no-repeat" src="${sRightAvatar}" alt="">
                 </div>
                 <div class="wa-message-header-content flex items-center">
                     <h4 id="${mName}_rightname" class="font-semibold mr-2">${sRightName}</h4>
@@ -413,7 +413,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			</div>
             <div id="${mName}_rightactions" class="wa-chat-header-right items-center">
 				<div id="${mName}_righthelp" class="wa-avatar">
-                    <img id="${mName}_righthelpavatar" src="${sRightAvatar}" alt="" class="hidden">
+                    <img id="${mName}_righthelpavatar" class="bg-cover bg-center bg-no-repeat" src="${sRightAvatar}" alt="" class="hidden">
                 </div>
                 <img src="./assets/search-solid.svg" alt="" class="icon hidden">
                 <img src="./assets/more.svg" alt="" class="icon hidden">

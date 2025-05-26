@@ -14,6 +14,9 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
+#DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: md, Description: Badge Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -64,6 +67,9 @@ Sub Class_Globals
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Private items As Map
 	Private sActive As String = ""
+	Private sIconSize As String = "20px"
+	Private sBadgeColor As String = ""
+	Private sBadgeSize As String = "md"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -232,6 +238,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawOptions = UI.CStr(sRawOptions)
 		sActive = Props.GetDefault("Active", "btn1")
 		sActive = UI.CStr(sActive)
+		sBadgeColor = Props.GetDefault("BadgeColor", "")
+		sBadgeColor = UI.CStr(sBadgeColor)
+		sBadgeSize = Props.GetDefault("BadgeSize", "md")
+		sBadgeSize = UI.CStr(sBadgeSize)
+		If sBadgeSize = "none" Then sBadgeSize = ""
+		sIconSize = Props.GetDefault("IconSize", "20px")
+		sIconSize = UI.CStr(sIconSize)
 	End If
 	'
 	UI.AddClassDT("tabs whitespace-nowrap")
@@ -256,6 +269,37 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 	setOptions(sRawOptions)
 	setActive(sActive)
+End Sub
+
+Sub setIconSize(s As String)
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+'set Badge Color
+Sub setBadgeColor(s As String)					'ignoredeadcode
+	sBadgeColor = s
+	CustProps.put("BadgeColor", s)
+End Sub
+
+'set Badge Size
+'options: xs|none|sm|md|lg|xl
+Sub setBadgeSize(s As String)
+	sBadgeSize = s
+	CustProps.put("BadgeSize", s)
+End Sub
+
+'get Badge Color
+Sub getBadgeColor As String
+	Return sBadgeColor
+End Sub
+'get Badge Size
+Sub getBadgeSize As String
+	Return sBadgeSize
 End Sub
 
 Sub setOptions(s As String)			'ignoredeadcode
@@ -289,8 +333,40 @@ Sub AddOption(sKey As String, sText As String)
 	ni.ParentID = mName
 	ni.Text = sText
 	ni.Visible = True
+	ni.BadgeSize = sBadgeSize
+	ni.BadgeColor = sBadgeColor
+	ni.IconSize = sIconSize
 	ni.AddComponent
 	items.Put(nKey, nKey)
+End Sub
+
+Sub AddTabItem(sKey As String, sText As String, sIcon As String, sBadge As String) As SDUI5TabsItem
+	sKey = UI.CleanID(sKey)
+	Dim nKey As String = $"${sKey}_${mName}"$
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, sKey, sKey)
+	ni.ParentID = mName
+	ni.Text = sText
+	ni.Visible = True
+	ni.BadgeSize = sSize
+	ni.Badge = sBadge
+	ni.Icon = sIcon
+	ni.BadgeSize = sBadgeSize
+	ni.BadgeColor = sBadgeColor
+	ni.IconSize = sIconSize
+	ni.AddComponent
+	items.Put(nKey, nKey)
+	Return ni
+End Sub
+
+'get a tab item
+Sub TabItem(skey As String) As SDUI5TabsItem
+	skey = UI.CleanID(skey)
+	Dim ni As SDUI5TabsItem
+	ni.Initialize(mCallBack, skey, skey)
+	ni.ParentID = mName
+	ni.LinkExisting
+	Return ni
 End Sub
 
 'set Active
@@ -382,10 +458,37 @@ End Sub
 Sub SetTabItemText(btnID As String, text As String)
 	btnID = UI.CleanID(btnID)
 	UI.SetAttrByID($"${btnID}_${mName}"$, "aria-label", text)
+	UI.SetTextByID($"${btnID}_${mName}_text"$, text)
+End Sub
+
+'set button icon
+Sub SetTabItemIcon(btnID As String, text As String)
+	btnID = UI.CleanID(btnID)
+	UI.SetIconNameByID($"${btnID}_${mName}_icon"$, text)
+	If text = "" Then
+		UI.SetVisibleByID($"${btnID}_${mName}_icon"$, False)
+	Else	
+		UI.SetVisibleByID($"${btnID}_${mName}_icon"$, True)
+	End If
+End Sub
+
+Sub SetTabItemBadge(btnID As String, text As String)
+	btnID = UI.CleanID(btnID)
+	UI.SetIconNameByID($"${btnID}_${mName}_badge"$, text)
+	If text = "" Then
+		UI.SetVisibleByID($"${btnID}_${mName}_badge"$, False)
+	Else
+		UI.SetVisibleByID($"${btnID}_${mName}_badge"$, True)
+	End If
 End Sub
 
 'set a button active
 Sub SetTabItemActive(btnID As String, b As Boolean)
 	btnID = UI.CleanID(btnID)
 	UI.SetCheckedByID($"${btnID}_${mName}"$, b)
+	If b Then
+		UI.AddClassByID($"${btnID}_${mName}_label"$, "tab-active")
+	Else
+		UI.RemoveClassByID($"${btnID}_${mName}_label"$, "tab-active")
+	End If
 End Sub

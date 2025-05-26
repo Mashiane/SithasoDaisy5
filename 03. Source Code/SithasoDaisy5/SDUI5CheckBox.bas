@@ -318,7 +318,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "left-label"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex items-center justify-between gap-2" ${xattrs} style="${xstyles}">
-  				<label id="${mName}_labelhost" class="cursor-pointer select-none">
+  				<label id="${mName}_labelhost" class="label cursor-pointer select-none">
     				<span id="${mName}_label">${sLabel}</span>
   				</label>
     			<input id="${mName}" type="checkbox" class="checkbox">

@@ -490,7 +490,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<input id="${mName}_check" value="${mName}" type="checkbox" class="checkbox hidden" />
 					<div id="${mName}_avatar" class="avatar hidden">
 						<div id="${mName}_avatar_host">
-							<img id="${mName}_src" src="${sAvatar}" />
+							<img id="${mName}_src" class="bg-cover bg-center bg-no-repeat" src="${sAvatar}" />
 						</div>
 					</div>
 					<svg-renderer id="${mName}_icon"     data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
@@ -508,7 +508,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<input id="${mName}_check" value="${mName}" type="checkbox" class="checkbox hidden" />
 					<div id="${mName}_avatar" class="avatar hidden">
 						<div id="${mName}_avatar_host">
-							<img id="${mName}_src" src="${sAvatar}" />
+							<img id="${mName}_src" class="bg-cover bg-center bg-no-repeat" src="${sAvatar}" />
 						</div>
 					</div>
 					<svg-renderer id="${mName}_icon"    data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>

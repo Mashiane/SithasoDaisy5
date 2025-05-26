@@ -18,10 +18,33 @@ Sub Class_Globals
 	Public ExcludePosition As Boolean = False
 End Sub
 
+Sub ExtractDateOfBirthFromRSAID(IDNumber As String) As String
+	If IDNumber.Length <> 13 Then
+		IDNumber = PadRight(IDNumber, 13, "0")
+	End If
+	Dim yy As Int = IDNumber.SubString2(0, 2)
+	Dim mm As Int = IDNumber.SubString2(2, 4)
+	Dim dd As Int = IDNumber.SubString2(4, 6)
+	Dim lNow As Long = DateTime.Now
+	Dim currentYear As Int = DateTime.GetYear(lNow)
+	Dim currentCentury As Int = Floor(currentYear / 100)
+	currentCentury = currentCentury * 100
+	Dim fullYear As Int = BANano.parseInt(currentCentury) + BANano.parseInt(yy)
+	If fullYear > currentYear Then
+		fullYear = fullYear - 100
+	End If
+	Return NumberFormat2(fullYear,4,0,0,False) & "-" & NumberFormat2(mm,2,0,0,False) & "-" & NumberFormat2(dd,2,0,0,False)
+End Sub
+
+
 Sub PlayAudio(af As String)
+	Try
 	Dim Audio As BANanoObject
 	Audio.Initialize2("Audio", Array(af))
-	Audio.RunMethod("play", Null)
+Audio.RunMethod("play", Null)
+Catch
+		
+End Try				'ignore
 End Sub
 
 Sub AddCode(cd As StringBuilder, cl As String)
@@ -134,29 +157,45 @@ Public Sub Initialize(self As Object)
 End Sub
 
 Sub Focus(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
 	mElement.RunMethod("focus", Null)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub FocusByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	mElement.RunMethod("focus", Null)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetReadOnly(mElement As BANanoElement, b As Boolean)
+	Try
 	If mElement = Null Then Return 
 	If b Then
 		mElement.SetAttr("readonly", "readonly")
 	Else
 		mElement.RemoveAttr("readonly")
 	End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetNoArrows(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
 	AddClass(mElement, "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none")
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetElementByID(sID As String) As BANanoElement
@@ -175,6 +214,7 @@ End Sub
 
 'scroll into view
 Sub EnsureVisible(sID As String)
+	Try
 	sID = CleanID(sID)
 	If BANano.Exists($"#${sID}"$) = False Then Return
 	Dim opt As Map = CreateMap()
@@ -182,20 +222,31 @@ Sub EnsureVisible(sID As String)
 	opt.Put("block", "nearest")
 	opt.Put("inline", "nearest")
 	BANano.GetElement($"#${sID}"$).RunMethod("scrollIntoView", opt)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 ' internal use
 public Sub Trigger(mElement As BANanoElement, event As String, params() As String)
+	Try
 	If mElement = Null Then Return
 	mElement.Trigger(event, params)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveElementByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	mElement.Remove
 	mElement = Null
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 ' internal use
@@ -469,10 +520,14 @@ public Sub GetParentID() As String
 End Sub
 
 public Sub SetBorderRadius(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawBorderRadius", s)
 	If mElement = Null Then Return
 	Dim bb As Map = GetBordersMap("radius", s)
 	AddStyleMap(mElement, bb)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetBorderRadius() As String
@@ -480,10 +535,14 @@ public Sub GetBorderRadius() As String
 End Sub
 
 public Sub SetBorderWidth(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawBorderWidth", s)
 	If mElement = Null Then Return
 	Dim bb As Map = GetBordersMap("width", s)
 	AddStyleMap(mElement, bb)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetBorderWidth() As String
@@ -491,10 +550,14 @@ public Sub GetBorderWidth() As String
 End Sub
 
 public Sub SetBorderStyle(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawBorderStyle", s)
 	If mElement = Null Then Return
 	Dim bb As Map = GetBordersMap("style", s)
 	AddStyleMap(mElement, bb)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetBorderStyle() As String
@@ -502,24 +565,36 @@ public Sub GetBorderStyle() As String
 End Sub
 
 public Sub SetBorderColorStyle(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawBorderColor", s)
 	If mElement = Null Then Return
 	Dim bb As Map = GetBordersMap("color", s)
 	AddStyleMap(mElement, bb)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetBorderColor(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim ncolor As String = FixColor("border", s)
 	UpdateClass(mElement, "bordercolor", ncolor)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetBorderColorByID(sID As String, s As String)
+	Try
 	sID = CStr(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	Dim ncolor As String = FixColor("border", s)
 	UpdateClass(mElement, "bordercolor", ncolor)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 
@@ -528,21 +603,33 @@ public Sub GetBorderColor() As String
 End Sub
 
 public Sub SetSize(mElement As BANanoElement, sizeName As String, prefix As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim s1 As String = FixSize(prefix, s)
 	UpdateClass(mElement, sizeName, s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetSizeByID(sID As String, sizeName As String, prefix As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetSize(mElement, sizeName, prefix, s)
+SetSize(mElement, sizeName, prefix, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetColor(mElement As BANanoElement, colorName As String, prefix As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor(prefix, s)
 	UpdateClass(mElement, colorName, s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetColor() As String
@@ -550,53 +637,82 @@ public Sub GetColor() As String
 End Sub
 
 public Sub SetColorByID(sID As String, colorName As String, prefix As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetColor(mElement, colorName, prefix, s)
+SetColor(mElement, colorName, prefix, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetColorStyle(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim m As Map = CreateMap()
 	m.Put("color", s)
 	mElement.SetStyle(BANano.ToJson(m))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 
 public Sub SetColorStyleByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetColorStyle(mElement, s)
+SetColorStyle(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetBackgroundColorStyle(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim m As Map = CreateMap()
 	m.Put("background-color", s)
 	mElement.SetStyle(BANano.ToJson(m))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetBackgroundColorStyleByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetBackgroundColorStyle(mElement, s)
+SetBackgroundColorStyle(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetBackgroundColor(mElement As BANanoElement, s As String)		'ignoredeadcode
+	Try
 	BANano.SetP(mSelf, "sBackgroundColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor("bg", s)
 	UpdateClass(mElement, "color", s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub RemoveBackgroundColor(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
 	Dim lastColor As String = mElement.GetData("color")
 	lastColor = CStr(lastColor)
 	If lastColor <> "" Then mElement.RemoveClass(lastColor)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveBackgroundColorByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	Dim lastColor As String = mElement.GetData("color")
@@ -604,7 +720,10 @@ Sub RemoveBackgroundColorByID(sID As String)
 	If lastColor <> "" Then 
 		mElement.RemoveClass(lastColor)
 		mElement.RemoveAttr("data-color")
-	End If
+End If
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub GetBackgroundColor() As String
@@ -612,65 +731,102 @@ public Sub GetBackgroundColor() As String
 End Sub
 
 public Sub SetTextColor(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sTextColor", s)
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor("text", s)
 	UpdateClass(mElement, "textcolor", s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetCheckedColor(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor("checked:bg", s)
 	Dim s2 As String = FixColor("checked:border", s)
 	UpdateClass(mElement, "checkedbgcolor", s1)
 	UpdateClass(mElement, "checkedborder", s2)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetCheckedColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	SetCheckedColor(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetCheckedTextColor(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor("checked:text", s)
 	UpdateClass(mElement, "checkedtextcolor", s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetCheckedTextColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	SetCheckedTextColor(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub UpdateClassByID(sID As String, k As String, v As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	UpdateClass(mElement, k, v)
+UpdateClass(mElement, k, v)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub RemoveClassByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	RemoveClass(mElement, s)
+RemoveClass(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetBackgroundColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetBackgroundColor(mElement, s)
+SetBackgroundColor(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetTextColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetTextColor(mElement, s)
+SetTextColor(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 private Sub SetIconSizeStyle(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	If s = "" Then s = "md"
 	Select Case s
@@ -687,10 +843,14 @@ private Sub SetIconSizeStyle(mElement As BANanoElement, s As String)
 	End Select
 	SetStyle(mElement, "font-size", s)
 	SetStyle(mElement, "font-size", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'set Image Size
 Sub SetButtonImageSize(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	If s = "" Then s = "md"
 	Select Case s
@@ -706,101 +866,164 @@ Sub SetButtonImageSize(mElement As BANanoElement, s As String)
 		S = "48px" ' "56px"
 	End Select
 	SetSize(mElement, "width", "w", s)
-	SetSize(mElement, "height", "h", s)
+		SetSize(mElement, "height", "h", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'get icon size insize button
 Sub SetButtonImageSizeByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetButtonImageSize(mElement, s)
+SetButtonImageSize(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 private Sub SetIconSizeStyleByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetIconSizeStyle(mElement, s)
+SetIconSizeStyle(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetTextSizeByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetTextSize(mElement, s)
+SetTextSize(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetMaskByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMask(mElement, s)
+SetMask(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetRoundedByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetRounded(mElement, s)
+SetRounded(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetRoundedBoxByID(sID As String, b As Boolean)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetRoundedBox(mElement, b)
+SetRoundedBox(mElement, b)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetRingColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetRingColor(mElement, s)
+SetRingColor(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetTextByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetText(mElement, s)
+SetText(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetRingColor(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim xcolor As String = FixColor("ring", s)
 	UpdateClass(mElement, "ringcolor", xcolor)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetMask(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim xmask As String = FixMask(s)
 	UpdateClass(mElement, "mask", xmask)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetRounded(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim xmask As String = FixRounded(s)
 	UpdateClass(mElement, "rounded", xmask)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetRoundedBox(mElement As BANanoElement, b As Boolean)
+	Try
 	If mElement = Null Then Return
 	If b = True Then
 		AddClass(mElement, "rounded-box")
 	Else
 		RemoveClass(mElement, "rounded-box")
 	End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetShadow(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim xmask As String = FixShadow(s)
 	UpdateClass(mElement, "shadow", xmask)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetShadowByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetShadow(mElement, s)
+SetShadow(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetTextSize(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim s1 As String = FixColor("text", s)
 	UpdateClass(mElement, "textsize", s1)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetTextColor() As String
@@ -822,6 +1045,7 @@ End Sub
 
 'add a class to an element
 Sub AddClass(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	s = CStr(s)
 	s = s.Replace(" ", ";")
@@ -834,55 +1058,90 @@ Sub AddClass(mElement As BANanoElement, s As String)
 		If c = "" Then Continue
 		mElement.AddClass(c)
 	Next
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddClassList(mElement As BANanoElement, lst As List)
+	Try
 	If mElement = Null Then Return
 	Dim sList As String = Join(";", lst)
 	AddClass(mElement, sList)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddStyleMap(mElement As BANanoElement, ms As Map)
+	Try
 	If mElement = Null Then Return
 	If ms.Size = 0 Then Return
 	Dim svalue As String = BANano.ToJson(ms)
 	mElement.SetStyle(svalue)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ClearByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	mElement.empty
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub Clear(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
-	mElement.empty
+		mElement.empty
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub Append(mElement As BANanoElement, sContent As String)
+	Try
 	If mElement = Null Then Return
-	mElement.Append(sContent)
+		mElement.Append(sContent)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'append content to the specified element
 Sub AppendByID(sID As String, sContent As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	mElement.Append(sContent)
+mElement.Append(sContent)
+Catch
+		
+End Try				'ignore
 End Sub
 
 Sub SetHTML(mElement As BANanoElement, sContent As String)
+	Try
 	BANano.SetP(mSelf, "sHTML", sContent)
 	If mElement = Null Then Return
 	mElement.SetHTML(BANano.SF(sContent))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetHTMLByID(sID As String, sContent As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	mElement.SetHTML(BANano.SF(sContent))
+mElement.SetHTML(BANano.SF(sContent))
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub GetHTML() As String
@@ -891,6 +1150,7 @@ End Sub
 
 'set attributes that are delimited by :;
 public Sub SetAttributes(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawAttributes", s)
 	If mElement = Null Then Return
 	Dim mm As Map = GetKeyValues(s, False)
@@ -904,10 +1164,14 @@ public Sub SetAttributes(mElement As BANanoElement, s As String)
 		Case Else			
 			SetAttr(mElement, k, v)
 		End Select
-	Next
+		Next
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub SetAttributesByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
@@ -916,6 +1180,9 @@ public Sub SetAttributesByID(sID As String, s As String)
 		Dim v As String = mm.Get(k)
 		SetAttr(mElement, k, v)
 	Next
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetAttributes() As String
@@ -945,16 +1212,24 @@ private Sub GetPositionMap(varStyles As String) As Map
 End Sub
 
 Sub SetPositionByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetPosition(mElement, s)
+SetPosition(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub SetPosition(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sPosition", s)
 	If mElement = Null Then Return
 	Dim stylesx As Map = GetPositionMap(s)
 	AddStyleMap(mElement, stylesx)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetPosition() As String
@@ -963,17 +1238,25 @@ End Sub
 
 
 public Sub SetPaddingAXYTBLR(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sPaddingAXYTBLR", s)
 	If mElement = Null Then Return
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("p", mm)
 	AddClassList(mElement, classList)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetPaddingAXYTBLRByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetPaddingAXYTBLR(mElement, s)
+SetPaddingAXYTBLR(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 
@@ -983,17 +1266,25 @@ public Sub GetPaddingAXYTBLR() As String
 End Sub
 
 public Sub SetMarginAXYTBLR(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sMarginAXYTBLR", s)
 	If mElement = Null Then Return
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("m", mm)
 	AddClassList(mElement, classList)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMarginAXYTBLRByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMarginAXYTBLR(mElement, s)
+SetMarginAXYTBLR(mElement, s)
+Catch
+		
+End Try				'ignore
 End Sub
 
 public Sub GetMarginAXYTBLR() As String
@@ -1001,16 +1292,24 @@ public Sub GetMarginAXYTBLR() As String
 End Sub
 
 public Sub SetClasses(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawClasses", s)
 	If mElement = Null Then Return
 	AddClass(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetClassesByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	AddClass(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 
@@ -1019,9 +1318,13 @@ public Sub GetClasses() As String
 End Sub
 
 public Sub SetPositionStyle(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sPositionStyle", s)
 	If mElement = Null Then Return
 	AddStyle(mElement, "position", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 public Sub GetPositionStyle() As String
@@ -1029,20 +1332,28 @@ public Sub GetPositionStyle() As String
 End Sub
 
 public Sub SetStyles(mElement As BANanoElement, s As String)
+	Try
 	BANano.SetP(mSelf, "sRawStyles", s)
 	If mElement = Null Then Return
 	Dim ms As Map = GetKeyValues(s, True)
 	If ms.Size = 0 Then Return
 	mElement.SetStyle(BANano.ToJson(ms))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetStylesByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	Dim ms As Map = GetKeyValues(s, True)
 	If ms.Size = 0 Then Return
 	mElement.SetStyle(BANano.ToJson(ms))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 
@@ -1051,6 +1362,7 @@ public Sub GetStyles() As String
 End Sub
 
 public Sub SetVisible(mElement As BANanoElement, bVisible As Boolean)
+	Try
 	BANano.SetP(mSelf, "bVisible", bVisible)
 	If mElement = Null Then Return
 	If bVisible Then
@@ -1058,17 +1370,28 @@ public Sub SetVisible(mElement As BANanoElement, bVisible As Boolean)
 	Else
 		AddClass(mElement, "hidden")
 	End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetCursorPointer(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
 	AddClass(mElement, "cursor-pointer")
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetCursorPointerByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetCursorPointer(mElement)
+SetCursorPointer(mElement)
+Catch
+		
+End Try				'ignore
 End Sub
 
 Sub Show(sID As String)
@@ -1080,32 +1403,49 @@ Sub Hide(sID As String)
 End Sub
 
 Sub SetVisibleByID(sID As String, b As Boolean)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetVisible(mElement, b)
+SetVisible(mElement, b)
+Catch
+		
+End Try				'ignore
 End Sub
 
 Sub OnEventMethod(mElement As BANanoElement, event As String, Module As Object, MethodName As String)		'ignore
+	Try
 	If mElement = Null Then Return
 	Dim e As BANanoEvent
 	Dim cb As BANanoObject = BANano.CallBack(Module, MethodName, Array(e))
 	mElement.RunMethod("on", Array(event, cb))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub OnEventMethodByID(sID As String, event As String, CallBack As Object, MethodName As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	OnEventMethod(mElement, event, CallBack, MethodName)
+OnEventMethod(mElement, event, CallBack, MethodName)
+Catch
+		
+End Try				'ignore
 End Sub
 
 Sub OnEventByID(sID As String, event As String, CallBack As Object, MethodName As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	OnEvent(mElement, event, CallBack, MethodName)
+OnEvent(mElement, event, CallBack, MethodName)
+Catch
+		
+End Try				'ignore
 End Sub
 
 'add event
 Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, MethodName As String)
+	Try
 	If mElement = Null Then Return
 	event = event.Replace(":","")
 	event = event.Replace(".","")
@@ -1114,6 +1454,9 @@ Sub OnEvent(mElement As BANanoElement, event As String, CallBack As Object, Meth
 		mElement.Off(event)
 		mElement.On(event, CallBack, MethodName)
 	End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 ' internal use
@@ -1126,26 +1469,35 @@ End Sub
 
 ' internal use
 public Sub SetEnabled(mElement As BANanoElement, bEnabled As Boolean)
+	Try
 	BANano.SetP(mSelf, "bEnabled", bEnabled)
 	If mElement = Null Then Return
 	If bEnabled Then
 		RemoveAttr(mElement, "disabled")
 	Else
 		SetAttr(mElement, "disabled", True)
-	End If
+		End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetEnabledByID(sID As String, bEnabled As Boolean)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If bEnabled Then
 		RemoveAttr(mElement, "disabled")
 	Else
 		SetAttr(mElement, "disabled", True)
-	End If
+		End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetButtonEnabledByID(sID As String, bEnabled As Boolean)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If bEnabled Then
@@ -1154,7 +1506,10 @@ Sub SetButtonEnabledByID(sID As String, bEnabled As Boolean)
 	Else
 		SetAttr(mElement, "disabled", True)
 		AddClass(mElement, "btn-disabled")
-	End If
+		End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 ' internal use
@@ -1167,13 +1522,17 @@ End Sub
 
 'set a data attribute
 Sub SetData(mElement As BANanoElement, k As String, v As String)
+	Try
 	If mElement = Null Then Return
 	If k = "" Then Return
 	If v = "" Then
 		RemoveAttr(mElement, $"data-${k}"$)
 	Else	
 		SetAttr(mElement, $"data-${k}"$, v)
-	End If
+		End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'get a data attribute
@@ -1187,31 +1546,47 @@ End Sub
 
 'remove an attribute from the element
 Sub RemoveAttr(mElement As BANanoElement, attr As String)
+	Try
 	If mElement = Null Then Return
-	mElement.RemoveAttr(attr)
+		mElement.RemoveAttr(attr)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'add a styles to the element
 Sub SetStyle(mElement As BANanoElement, k As String, v As String)
+	Try
 	If mElement = Null Then Return
 	k = DeCamelCase(k)
 	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetStyleByID(sID As String, k As String, v As String)
-	sID = CleanID(sID)
-	k = DeCamelCase(k)
-	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	If mElement = Null Then Return
-	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Try
+		sID = CleanID(sID)
+		k = DeCamelCase(k)
+		Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		If mElement = Null Then Return
+		mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore		
 End Sub
 
 Sub RemoveStyleByID(sID As String, k As String)
+	Try
 	sID = CleanID(sID)
 	k = DeCamelCase(k)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.GetField("style").RunMethod("removeProperty", Array(k))
+		mElement.GetField("style").RunMethod("removeProperty", Array(k))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetStyleByID(sID As String, k As String) As String
@@ -1228,21 +1603,33 @@ End Sub
 
 'add a styles to the element
 Sub AddStyle(mElement As BANanoElement, k As String, v As String)			'ignoredeadcode
+	Try
 	If mElement = Null Then Return
 	k = DeCamelCase(k)
-	mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+		mElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddClassByID(sID As String, k As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	AddClass(mElement, k)
+		AddClass(mElement, k)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddStyleByID(sID As String, k As String, v As String)			'ignoredeadcode
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	AddStyle(mElement, k, v)
+		AddStyle(mElement, k, v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddStyleDT(k As String, v As String)
@@ -1250,31 +1637,51 @@ Sub AddStyleDT(k As String, v As String)
 End Sub
 
 Sub AddAttr(mElement As BANanoElement, attr As String, text As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr(attr, text)
+		mElement.SetAttr(attr, text)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddAttrByID(sID As String, k As String, v As String)			'ignoredeadcode
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetAttr(mElement, k, v)
+		SetAttr(mElement, k, v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttr(mElement As BANanoElement, Attr As String, text As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr(Attr, text)
+		mElement.SetAttr(Attr, text)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttrByID(sID As String, k As String, v As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetAttr(mElement, k, v)
+		SetAttr(mElement, k, v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveAttrByID(sID As String, k As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	RemoveAttr(mElement, k)
+		RemoveAttr(mElement, k)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddAttrDT(attr As String, text As Object)
@@ -1287,15 +1694,23 @@ End Sub
 
 'set a data attribute to the element
 Sub AddDataAttr(mElement As BANanoElement, attr As String, text As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetData(attr, text)
+		mElement.SetData(attr, text)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetDataAttrByID(sID As String, k As String, v As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetData(k, v)
+		mElement.SetData(k, v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetDataAttr(mElement As BANanoElement, k As String) As String
@@ -1337,12 +1752,16 @@ Sub GetAttrByID(sID As String, attr As String) As String
 End Sub
 
 Sub AddAttrMap(mElement As BANanoElement, ms As Map)
+	Try
 	If mElement = Null Then Return
 	If ms.Size = 0 Then Return
 	For Each k As String In ms.Keys
 		Dim v As String = ms.Get(k)
 		mElement.SetAttr(k,v)
-	Next
+		Next
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'uses font awesome
@@ -1359,18 +1778,27 @@ End Sub
 
 'uses svg
 Sub SetIconNameByID(elName As String, scontent As String)
+	Try
 	elName = CleanID(elName)
 	Dim el As BANanoElement = BANano.GetElement($"#${elName}"$)
-	SetSVGSrc(el, scontent)
+		SetSVGSrc(el, scontent)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveLastClassByID(sID As String, xClass As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	RemoveLastClass(mElement, xClass)
+		RemoveLastClass(mElement, xClass)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
+	Try
 	If mElement = Null Then Return
 	Dim mLast As String = mElement.GetData(xattr)
 	mLast = CStr(mLast)
@@ -1378,11 +1806,15 @@ Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
 	mElement.RemoveAttr($"data-${xattr}"$)
 	If mLast <> "" Then
 		RemoveClass(mElement, mLast)
-	End If
+		End If
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'this is for dynamic classes
 Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
+	Try
 	If mElement = Null Then Return
 	RemoveLastClass(mElement, rpClass)
 	If nv = "" Then Return
@@ -1390,7 +1822,10 @@ Sub UpdateClass(mElement As BANanoElement, rpClass As String, nv As String)
 	If nv.EndsWith("-") = True Then Return
 	If nv.EndsWith("-none") = True Then Return
 	mElement.SetData(rpClass, nv)
-	AddClass(mElement, nv)
+		AddClass(mElement, nv)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'Sub RemoveLastClass(mElement As BANanoElement, xattr As String)
@@ -1416,13 +1851,17 @@ End Sub
 'End Sub
 
 Sub UpdateClassOnly(mElement As BANanoElement, rpClass As String, nv As String)
+	Try
 	If mElement = Null Then Return
 	If nv = "" Then Return
 	If nv = "none" Then Return
 	If nv.EndsWith("-") = True Then Return
 	If nv.EndsWith("-none") = True Then Return
 	mElement.SetData(rpClass, nv)
-	AddClass(mElement, nv)
+		AddClass(mElement, nv)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub GetClassList(s As String) As List
@@ -1440,6 +1879,7 @@ End Sub
 
 'remove a class from the element you can delimiter by ;
 Sub RemoveClass(mElement As BANanoElement, xtext As String)
+	Try
 	If mElement = Null Then Return
 	xtext = CStr(xtext)
 	xtext = xtext.Replace(" ", ";")
@@ -1452,7 +1892,10 @@ Sub RemoveClass(mElement As BANanoElement, xtext As String)
 		c = c.trim
 		If c = "" Then Continue
 		mElement.RemoveClass(c)
-	Next
+		Next
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub ListRemoveItem(lst As List, item As String)
@@ -1630,6 +2073,7 @@ private Sub MarginPaddingToList(prefix As String, mm As Map) As List
 End Sub
 
 Sub OnChildEvent(child As String, event As String, Module As Object, methodName As String)		'ignore
+	Try
 	child = CleanID(child)
 	event = event.Replace(":","")
 	event = event.Replace(".","")
@@ -1638,12 +2082,19 @@ Sub OnChildEvent(child As String, event As String, Module As Object, methodName 
 	If SubExists(Module, methodName) = False Then Return
 	Dim el As BANanoElement = BANano.GetElement($"#${child}"$)
 	el.Off(event)
-	el.On(event, Module, methodName)
+		el.On(event, Module, methodName)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetChecked(mElement As BANanoElement, v As Boolean)
+	Try
 	If mElement = Null Then Return
-	mElement.SetChecked(v)
+		mElement.SetChecked(v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetChecked(mElement As BANanoElement) As Boolean
@@ -1652,39 +2103,63 @@ Sub GetChecked(mElement As BANanoElement) As Boolean
 End Sub
 
 Sub SetImage(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
-	SetAttr(mElement, "src", s)
+		SetAttr(mElement, "src", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetHeight(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("h", s)
-	UpdateClass(mElement, "height", sw)
+		UpdateClass(mElement, "height", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetHeightResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("h", s)
 	Dim nw As String = $"${breakpoint}:${sw}"$
-	UpdateClass(mElement, $"${breakpoint}height"$, nw)
+		UpdateClass(mElement, $"${breakpoint}height"$, nw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetHeightByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetHeight(mElement, s)
+		SetHeight(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetHeightResponsiveByID(sID As String, breakpoint As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetHeightResponsive(mElement, breakpoint, s)
+		SetHeightResponsive(mElement, breakpoint, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetWidth(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("w", s)
-	UpdateClass(mElement, "width", sw)
+		UpdateClass(mElement, "width", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub FixIconSize(s As String) As String
@@ -1708,6 +2183,7 @@ End Sub
 
 'set width and height of icon
 Sub SetIconSize(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim actualSize As String = ""
 	Select Case s
@@ -1726,49 +2202,77 @@ Sub SetIconSize(mElement As BANanoElement, s As String)
 	End Select
 	mElement.SetAttr("width", actualSize)
 	mElement.SetAttr("height", actualSize)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub SetSVGSrc(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr("data-src", s)
+		mElement.SetAttr("data-src", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconColor(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	If s = "" Then Return
 	mElement.SetAttr("fill", "currentColor")
-	SetStyle(mElement, "color", s)
+		SetStyle(mElement, "color", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconColorByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	If s = "" Then Return
 	mElement.SetAttr("fill", "currentColor")
-	SetStyle(mElement, "color", s)
+		SetStyle(mElement, "color", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetSVGFill(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr("fill", s)
+		mElement.SetAttr("fill", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetSVGFillByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetAttr("fill", s)
+		mElement.SetAttr("fill", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub SetSVGSrcByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetAttr("data-src", s)
+		mElement.SetAttr("data-src", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ResizeIconByID(sID As String, sPercentage As String)
+	Try
 	sID = CleanID(sID)
 	Dim sPerc As String = Val(sPercentage) & "%"
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
@@ -1776,7 +2280,10 @@ Sub ResizeIconByID(sID As String, sPercentage As String)
 	mElement.SetStyle(BANano.ToJson(m))
 	mElement.SetAttr("preserveAspectRatio", "xMidYMid meet")
 	mElement.RemoveAttr("width")
-	mElement.RemoveAttr("height")	
+		mElement.RemoveAttr("height")
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub Increment(ival As Int) As Int
@@ -1798,12 +2305,17 @@ End Sub
 
 'set width and height of icon
 Sub SetIconSizeByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetIconSize(mElement, s)
+		SetIconSize(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconWidth(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim actualSize As String = ""
 	Select Case s
@@ -1820,10 +2332,14 @@ Sub SetIconWidth(mElement As BANanoElement, s As String)
 	Case Else
 		actualSize = s
 	End Select
-	mElement.SetAttr("width", actualSize)
+		mElement.SetAttr("width", actualSize)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconHeight(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim actualSize As String = ""
 	Select Case s
@@ -1840,143 +2356,234 @@ Sub SetIconHeight(mElement As BANanoElement, s As String)
 	Case Else
 		actualSize = s
 	End Select
-	mElement.SetAttr("height", actualSize)
+		mElement.SetAttr("height", actualSize)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconWidthByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetIconWidth(mElement, s)
+		SetIconWidth(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetIconHeightByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetIconHeight(mElement, s)
+		SetIconHeight(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttrWidthByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetAttr("width", s)
+		mElement.SetAttr("width", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttrHeightByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetAttr("width", s)
+		mElement.SetAttr("width", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttrWidth(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr("width", s)
+		mElement.SetAttr("width", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetAttrHeight(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetAttr("height", s)
+		mElement.SetAttr("height", s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetWidthResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("w", s)
 	Dim nw As String = $"${breakpoint}:${sw}"$
-	UpdateClass(mElement, $"${breakpoint}width"$, nw)
+		UpdateClass(mElement, $"${breakpoint}width"$, nw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxWidthResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("max-w", s)
 	Dim nw As String = $"${breakpoint}:${sw}"$
-	UpdateClass(mElement, $"${breakpoint}maxwidth"$, nw)
+		UpdateClass(mElement, $"${breakpoint}maxwidth"$, nw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxWidthResponsiveByID(sID As String, breakpoint As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMaxWidthResponsive(mElement, breakpoint, s)
+		SetMaxWidthResponsive(mElement, breakpoint, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxHeightResponsiveByID(sID As String, breakpoint As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMaxHeightResponsive(mElement, breakpoint, s)
+		SetMaxHeightResponsive(mElement, breakpoint, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxHeightResponsive(mElement As BANanoElement, breakpoint As String, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("max-h", s)
 	Dim nw As String = $"${breakpoint}:${sw}"$
-	UpdateClass(mElement, $"${breakpoint}maxheight"$, nw)
+		UpdateClass(mElement, $"${breakpoint}maxheight"$, nw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetWidthResponsiveByID(sID As String, breakpoint As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetWidthResponsive(mElement, breakpoint, s)
+		SetWidthResponsive(mElement, breakpoint, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxHeight(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("max-h", s)
-	UpdateClass(mElement, "maxheight", sw)
+		UpdateClass(mElement, "maxheight", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMinHeight(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("min-h", s)
-	UpdateClass(mElement, "minheight", sw)
+		UpdateClass(mElement, "minheight", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxWidth(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("max-w", s)
-	UpdateClass(mElement, "maxwidth", sw)
+		UpdateClass(mElement, "maxwidth", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMinWidth(mElement As BANanoElement, s As String)
+	Try
 	If mElement = Null Then Return
 	Dim sw As String = FixSize("min-w", s)
-	UpdateClass(mElement, "minwidth", sw)
+		UpdateClass(mElement, "minwidth", sw)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxWidthByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMaxWidth(mElement, s)
+		SetMaxWidth(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMaxHeightByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMaxHeight(mElement, s)
+		SetMaxHeight(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMinHeightByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMinHeight(mElement, s)
+		SetMinHeight(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetMinWidthByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetMinWidth(mElement, s)
+		SetMinWidth(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetWidthByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetWidth(mElement, s)
+		SetWidth(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetImageByID(sID As String, s As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	SetImage(mElement, s)
+		SetImage(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetCheckedByID(sID As String) As Boolean
@@ -1989,10 +2596,14 @@ Sub GetCheckedByID(sID As String) As Boolean
 End Sub
 
 Sub SetCheckedByID(sID As String, b As Boolean)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetChecked(b)
+		mElement.SetChecked(b)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ToggleDropDownByID(sID As String)
@@ -2008,34 +2619,54 @@ Sub OpenDropDownByID(sID As String)
 End Sub
 
 Sub ToggleClassByID(sID As String, sClass As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.ToggleClass(sClass)
+		mElement.ToggleClass(sClass)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ToggleClass(mElement As BANanoElement, sClass As String)
+	Try
 	If mElement = Null Then Return
-	mElement.ToggleClass(sClass)
+		mElement.ToggleClass(sClass)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ToggleByID(sID As String)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
 	Dim b As Boolean = CBool(mElement.GetChecked)
-	mElement.SetChecked(Not(b))
+		mElement.SetChecked(Not(b))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub Toggle(mElement As BANanoElement)
+	Try
 	If mElement = Null Then Return
 	Dim b As Boolean = CBool(mElement.GetChecked)
-	mElement.SetChecked(Not(b))
+		mElement.SetChecked(Not(b))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetText(mElement As BANanoElement, hx As String)
+	Try
 	If mElement = Null Then Return
-	mElement.SetText(hx)
+		mElement.SetText(hx)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetText(mElement As BANanoElement) As String
@@ -2068,10 +2699,14 @@ Sub SetValue(mElement As BANanoElement, v As Object)
 End Sub
 
 Sub SetValueByID(sID As String, v As Object)
+	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return
-	mElement.SetValue(v)
+		mElement.SetValue(v)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub ResponsiveClass(mElement As BANanoElement, className As String, xs As Boolean, sm As Boolean, md As Boolean, lg As Boolean)
@@ -2083,9 +2718,13 @@ Sub ResponsiveClass(mElement As BANanoElement, className As String, xs As Boolea
 End Sub
 
 Sub AddTextColorDT(tc As String)   'ignoredeadcode
+	Try
 	Dim s As String = FixColor("text", tc)
 	AddAttrDT("data-textcolor", s)
-	AddClassDT(s)
+		AddClassDT(s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddBackgroundColorDT(tc As String)			'ignoredeadcode
@@ -2208,9 +2847,13 @@ Sub SetBackgroundImage(mElement As BANanoElement, s As String)			'ignoredeadcode
 End Sub
 
 Sub SetBackgroundImageByID(sID As String, s As String)			'ignoredeadcode
+	Try
 	sID = CStr(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-	SetBackgroundImage(mElement, s)
+		SetBackgroundImage(mElement, s)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddPlacementDT(sprefix As String, sPlacement As String)   'ignoredeadcode
@@ -3011,24 +3654,6 @@ Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate
 	End Try
 End Sub
 
-#if javascript
-var paginator = function paginate(items) {
-  var page = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
-  var perPage = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
-  var offset = perPage * (page - 1);
-  var totalPages = Math.ceil(items.length / perPage);
-  var paginatedItems = items.slice(offset, perPage * page);
-  return {
-    previousPage: page - 1 ? page - 1 : 0,
-    nextPage: totalPages > page ? page + 1 : 0,
-    total: items.length,
-    totalPages: totalPages,
-    items: paginatedItems
-  };
-};
-#End If
-
-
 'get alphabets only
 Sub Alpha(value As String) As String
 	value = CStr(value)
@@ -3507,21 +4132,6 @@ Sub ToBytes(kbSize As Int) As Long
 	Return maxs
 End Sub
 
-#if javascript
-function dataURLToBlob(dataURL) {
-  // Code taken from https://github.com/ebidel/filer.js
-  var parts = dataURL.split(';base64,');
-  var contentType = parts[0].split(":")[1];
-  var raw = window.atob(parts[1]);
-  var rawLength = raw.length;
-  var uInt8Array = new Uint8Array(rawLength);
-  for (var i = 0; i < rawLength; ++i) {
-    uInt8Array[i] = raw.charCodeAt(i);
-  }
-  return new Blob([uInt8Array], { type: contentType });
-}
-#End If
-
 Sub dataURLToBlob(dataURL As String) As Object
 	Dim blob As Object = BANano.Await(BANano.RunJavascriptMethod("dataURLToBlob", Array(dataURL)))
 	Return blob
@@ -3599,48 +4209,48 @@ Sub IsValidRSAID_Luhn(IDNumber As String) As Boolean
 	Return (sum Mod 10 = 0)
 End Sub
 
-Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
-	If idNumber.Length <> 13 Then
-		idNumber = PadRight(idNumber, 13, "0")
-	End If
-	Dim iyear As String = Left(idNumber,2)
-	Dim imonth As String = StrMid1(idNumber,3,2)
-	Dim iday As String = StrMid1(idNumber,5,2)
-	'
-	Dim dateObj As BANanoObject
-	dateObj.Initialize2("Date", $"${iyear}-${imonth}-${iday}"$)
-	Dim yyyy As String = dateObj.RunMethod("getFullYear", Null).result
-	Dim mm As Int = dateObj.RunMethod("getMonth", Null).result
-	Dim dd As String = dateObj.RunMethod("getDate", Null).result
-	mm = BANano.parseInt(mm) + 1
-	mm = PadRight(mm, 2, "0")
-	dd = PadRight(dd, 2, "0")
-	'
-	Select Case yyyy
-	Case "1900"
-		yyyy = "2000"
-	Case "1901"
-		yyyy = "2001"
-	Case "1902"
-		yyyy = "2002"
-	Case "1903"
-		yyyy = "2003"
-	Case "1904"
-		yyyy = "2004"
-	Case "1905"
-		yyyy = "2005"
-	Case "1906"
-		yyyy = "2006"
-	Case "1907"
-		yyyy = "2007"
-	Case "1908"
-		yyyy = "2008"
-	Case "1909"
-		yyyy = "2009"
-	End Select
-	Dim nDate As String = $"${yyyy}-${mm}-${dd}"$
-	Return nDate
-End Sub
+'Sub ExtractDateOfBirthFromRSAID(idNumber As String) As String
+'	If idNumber.Length <> 13 Then
+'		idNumber = PadRight(idNumber, 13, "0")
+'	End If
+'	Dim iyear As String = Left(idNumber,2)
+'	Dim imonth As String = StrMid1(idNumber,3,2)
+'	Dim iday As String = StrMid1(idNumber,5,2)
+'	'
+'	Dim dateObj As BANanoObject
+'	dateObj.Initialize2("Date", $"${iyear}-${imonth}-${iday}"$)
+'	Dim yyyy As String = dateObj.RunMethod("getFullYear", Null).result
+'	Dim mm As Int = dateObj.RunMethod("getMonth", Null).result
+'	Dim dd As String = dateObj.RunMethod("getDate", Null).result
+'	mm = BANano.parseInt(mm) + 1
+'	mm = PadRight(mm, 2, "0")
+'	dd = PadRight(dd, 2, "0")
+'	'
+'	Select Case yyyy
+'	Case "1900"
+'		yyyy = "2000"
+'	Case "1901"
+'		yyyy = "2001"
+'	Case "1902"
+'		yyyy = "2002"
+'	Case "1903"
+'		yyyy = "2003"
+'	Case "1904"
+'		yyyy = "2004"
+'	Case "1905"
+'		yyyy = "2005"
+'	Case "1906"
+'		yyyy = "2006"
+'	Case "1907"
+'		yyyy = "2007"
+'	Case "1908"
+'		yyyy = "2008"
+'	Case "1909"
+'		yyyy = "2009"
+'	End Select
+'	Dim nDate As String = $"${yyyy}-${mm}-${dd}"$
+'	Return nDate
+'End Sub
 
 Sub CalculateAge(birthDateString As String) As Int
 	If birthDateString = "" Then Return 0
