@@ -80,7 +80,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("qrcode.min.js")
+	BANano.DependsOnAsset("toastui-chart.min.css")
+	BANano.DependsOnAsset("toastui-chart.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String

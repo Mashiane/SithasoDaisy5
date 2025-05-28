@@ -344,6 +344,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement.SetField("extraData", extraData)
 	MapObject = L.RunMethod("map", mElement.ToObject)
 	mElement.GetField("extraData").SetField("storedMap", MapObject)
+	'
+	Dim coOpt As Map = CreateMap()
+	coOpt.Put("position", "bottomleft")
+	coOpt.Put("decimals", 2)
+	coOpt.Put("decimalSeperator", ",")
+	coOpt.Put("labelTemplateLat",  $"Latitude: {y}"$)
+	coOpt.Put("labelTemplateLng", $"Longitude: {x}"$)
+	'
+	Dim coordinates As BANanoObject = L.GetField("control").RunMethod("coordinates", coOpt)
+	coordinates.RunMethod("addTo", MapObject)
+	'
+	Dim copt1 As Map = CreateMap()
+	copt1.Put("position", "topright")
+	copt1.Put("useDMS", True)
+	copt1.Put("labelTemplateLat",  $"N {y}"$)
+	copt1.Put("labelTemplateLng", $"E {x}"$)
+	copt1.Put("useLatLngOrder", True)
+	Dim coordinates1 As BANanoObject = L.GetField("control").RunMethod("coordinates", copt1)
+	coordinates1.RunMethod("addTo", MapObject)
+	
 	'add map events
 	BindEvent("baselayerchange", Me, "LeafletMapEvent")
 	BindEvent("overlayadd", Me, "LeafletMapEvent")

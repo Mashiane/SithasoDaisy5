@@ -775,7 +775,8 @@ End Sub
 
 'valid
 Sub UsesLeaflet
-	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", "leaflet.js", "leaflet.rotatedMarker.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", _
+	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js")))
 End Sub
 
 'valid
@@ -1880,6 +1881,11 @@ End Sub
 'valid
 Sub UsesAES
 	Banano.Await(UI.LoadAssetsOnDemand("Crypto", Array("crypto-js.min.js")))
+End Sub
+
+'valid
+Sub UsesToastChart
+	Banano.Await(UI.LoadAssetsOnDemand("ToastChart", Array("toastui-chart.min.css", "toastui-chart.min.js")))
 End Sub
 
 'valid

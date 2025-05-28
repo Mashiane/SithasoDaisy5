@@ -189,6 +189,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("trees", "pg-treeview", "", "Tree View")
 	'
 	drawermenu.AddItemParent("plugins", "charts", "", "Charts")
+	drawermenu.AddItemChild("charts", "pg-toastcharts", "", "Toast Charts")
 	drawermenu.AddItemChild("charts", "pg-trendchart", "", "Trend Charts")
 	drawermenu.AddItemChild("charts", "pg-pivot", "", "Pivot")
 	drawermenu.AddItemChild("charts", "pg-infobox", "", "Infobox")
@@ -225,6 +226,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "toastcharts"
+				pgToastCharts.Show(App)
 			Case "leaflet"
 				pgLeafLet.Show(App)
 			Case "exceltoapp"

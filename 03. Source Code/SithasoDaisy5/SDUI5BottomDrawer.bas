@@ -2,25 +2,24 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=10
+Version=10.2
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: IndicatorColor, DisplayName: Indicator Color, FieldType: String, DefaultValue: white, Description: Indicator Color
-#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
-#DesignerProperty: Key: Duration, DisplayName: Duration, FieldType: String, DefaultValue: 500, Description: Duration
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
-#DesignerProperty: Key: Offset, DisplayName: Offset, FieldType: Int, DefaultValue: 50, MinRange: 0, MaxRange: 80, Description: Offset
-#DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: This is my bottom drawer content, Description: Content
-#DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
-#DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
-#DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
-#DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
-#DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
-#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
-#DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
-#DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
-#DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: bg-base-200, Description: Background Color
+#DesignerProperty: Key: Breakpoints, DisplayName: Breakpoints, FieldType: String, DefaultValue: , Description: Breakpoints
+#DesignerProperty: Key: Duration, DisplayName: Duration, FieldType: Int, DefaultValue: 300, Description: Duration
+#DesignerProperty: Key: ShowHandle, DisplayName: Show Handle, FieldType: Boolean, DefaultValue: True, Description: Show Handle
+#DesignerProperty: Key: HandleBg, DisplayName: Handle Bg, FieldType: String, DefaultValue: bg-base-300, Description: Handle Bg
+#DesignerProperty: Key: HandleShadow, DisplayName: Handle Shadow, FieldType: String, DefaultValue: md, Description: Handle Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: InitialBreakpoint, DisplayName: Initial Breakpoint, FieldType: String, DefaultValue: 0.5, Description: Initial Breakpoint
+#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: 90%, Description: Max Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 100%, Description: Width
+#DesignerProperty: Key: Showbackdrop, DisplayName: Showbackdrop, FieldType: Boolean, DefaultValue: False, Description: Showbackdrop
+#DesignerProperty: Key: BackdropColor, DisplayName: Backdrop Color, FieldType: String, DefaultValue: , Description: Backdrop Color
+#DesignerProperty: Key: Backdropdismiss, DisplayName: Backdropdismiss, FieldType: Boolean, DefaultValue: True, Description: Backdropdismiss
+
 'global variables in this module
 Sub Class_Globals
 	Public UI As UIShared 'ignore
@@ -31,23 +30,21 @@ Sub Class_Globals
 	Private mTarget As BANanoElement 'ignore
 	Private mName As String 'ignore
 	Private BANano As BANano   'ignore
-	Private sPosition As String = "t=?; b=?; r=?; l=?"
-	Private sPositionStyle As String = "none"
-	Private sRawClasses As String = ""
-	Private sRawStyles As String = ""
-	Private sRawAttributes As String = ""
-	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
-	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sParentID As String = ""
-	Private bVisible As Boolean = True	'ignore
-	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sBackgroundColor As String = "base-200"
-	Private sDuration As String = "500"
-	Private sIndicatorColor As String = "white"
+	Private sBackdropColor As String = "none"
+	Private bBackdropdismiss As Boolean = True
+	Private sBackgroundColor As String = "bg-base-200"
+	Private sBreakpoints As String = "0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8,1"
+	Private iDuration As Int = 300
+	Private sHandleBg As String = "bg-base-300"
+	Private sHandleShadow As String = "md"
+	Private sInitialBreakpoint As String = "0.5"
+	Private sMaxWidth As String = "90%"
 	Private bOpen As Boolean = False
-	Private iOffset As Int = 50
-	Private sRawContent As String = "This is my bottom drawer content"
+	Private bShowHandle As Boolean = True
+	Private bShowbackdrop As Boolean = False
+	Private sWidth As String = "100%"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -57,7 +54,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -89,105 +85,11 @@ End Sub
 Public Sub getHere() As String
 	Return $"#${mName}"$
 End Sub
-'set Visible
-Sub setVisible(b As Boolean)
-	bVisible = b
-	CustProps.Put("Visible", b)
-	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+'use to add an event to the element
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
 End Sub
-'get Visible
-Sub getVisible As Boolean
-	bVisible = UI.GetVisible(mElement)
-	Return bVisible
-End Sub
-'set Enabled
-Sub setEnabled(b As Boolean)
-	bEnabled = b
-	CustProps.Put("Enabled", b)
-	If mElement = Null Then Return
-	UI.SetEnabled(mElement, b)
-End Sub
-'get Enabled
-Sub getEnabled As Boolean
-	bEnabled = UI.GetEnabled(mElement)
-	Return bEnabled
-End Sub
-'set Position Style
-'options: static|relative|fixed|absolute|sticky|none
-Sub setPositionStyle(s As String)
-	sPositionStyle = s
-	CustProps.put("PositionStyle", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.AddStyle(mElement, "position", s)
-End Sub
-Sub getPositionStyle As String
-	Return sPositionStyle
-End Sub
-'set raw positions
-Sub setPosition(s As String)
-	sPosition = s
-	CustProps.Put("Position", sPosition)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetPosition(mElement, sPosition)
-End Sub
-Sub getPosition As String
-	Return sPosition
-End Sub
-Sub setAttributes(s As String)
-	sRawAttributes = s
-	CustProps.Put("RawAttributes", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
-End Sub
-'
-Sub setStyles(s As String)
-	sRawStyles = s
-	CustProps.Put("RawStyles", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
-End Sub
-'
-Sub setClasses(s As String)
-	sRawClasses = s
-	CustProps.put("RawClasses", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
-End Sub
-'
-Sub setPaddingAXYTBLR(s As String)
-	sPaddingAXYTBLR = s
-	CustProps.Put("PaddingAXYTBLR", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
-End Sub
-'
-Sub setMarginAXYTBLR(s As String)
-	sMarginAXYTBLR = s
-	CustProps.Put("MarginAXYTBLR", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
-End Sub
-'
-Sub getAttributes As String
-	Return sRawAttributes
-End Sub
-'
-Sub getStyles As String
-	Return sRawStyles
-End Sub
-'
-Sub getClasses As String
-	Return sRawClasses
-End Sub
-'
-Sub getPaddingAXYTBLR As String
-	Return sPaddingAXYTBLR
-End Sub
-'
-Sub getMarginAXYTBLR As String
-	Return sMarginAXYTBLR
-End Sub
+
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -198,22 +100,45 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
+		sBackdropColor = Props.GetDefault("BackdropColor", "rgba(0, 0, 0, 0.32)")
+		sBackdropColor = UI.CStr(sBackdropColor)
+		bBackdropdismiss = Props.GetDefault("Backdropdismiss", True)
+		bBackdropdismiss = UI.CBool(bBackdropdismiss)
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "bg-base-200")
 		sBackgroundColor = UI.CStr(sBackgroundColor)
-		sDuration = Props.GetDefault("Duration", "500")
-		sDuration = UI.CStr(sDuration)
-		sIndicatorColor = Props.GetDefault("IndicatorColor", "white")
-		sIndicatorColor = UI.CStr(sIndicatorColor)
+		sBreakpoints = Props.GetDefault("Breakpoints", "0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8,1")
+		sBreakpoints = UI.CStr(sBreakpoints)
+		iDuration = Props.GetDefault("Duration", 300)
+		iDuration = UI.CInt(iDuration)
+		sHandleBg = Props.GetDefault("HandleBg", "bg-base-300")
+		sHandleBg = UI.CStr(sHandleBg)
+		sHandleShadow = Props.GetDefault("HandleShadow", "md")
+		sHandleShadow = UI.CStr(sHandleShadow)
+		sInitialBreakpoint = Props.GetDefault("InitialBreakpoint", "0.5")
+		sInitialBreakpoint = UI.CStr(sInitialBreakpoint)
+		sMaxWidth = Props.GetDefault("MaxWidth", "90%")
+		sMaxWidth = UI.CStr(sMaxWidth)
 		bOpen = Props.GetDefault("Open", False)
 		bOpen = UI.CBool(bOpen)
-		iOffset = Props.GetDefault("Offset", 50)
-		iOffset = UI.CInt(iOffset)
-		sRawContent = Props.GetDefault("RawContent", "This is my bottom drawer content")
-		sRawContent = UI.CStr(sRawContent)
+		bShowHandle = Props.GetDefault("ShowHandle", True)
+		bShowHandle = UI.CBool(bShowHandle)
+		bShowbackdrop = Props.GetDefault("Showbackdrop", False)
+		bShowbackdrop = UI.CBool(bShowbackdrop)
+		sWidth = Props.GetDefault("Width", "100%")
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
-	UI.AddClassDT("fixed top-[calc(100vh-2rem)] rounded-box h-full w-full")
-	UI.AddClassDT($"transition-[top] has-[input:checked]:top-[${iOffset}vh]"$)
+	If bBackdropdismiss = True Then UI.AddAttrDT("backdropdismiss", bBackdropdismiss)
+	If sBackgroundColor <> "" Then UI.AddAttrDT("background-color", sBackgroundColor)
+	If sBreakpoints <> "" Then UI.AddAttrDT("breakpoints", sBreakpoints)
+	UI.AddAttrDT("duration", iDuration)
+	If sHandleBg <> "" Then UI.AddAttrDT("handle-bg", sHandleBg)
+	If sHandleShadow <> "" Then UI.AddAttrDT("handle-shadow", sHandleShadow)
+	If sInitialBreakpoint <> "" Then UI.AddAttrDT("initial-breakpoint", sInitialBreakpoint)
+	If sMaxWidth <> "" Then UI.AddAttrDT("max-width", sMaxWidth)
+	If bOpen = True Then UI.AddAttrDT("open", bOpen)
+	If bShowbackdrop = True Then UI.AddAttrDT("showbackdrop", bShowbackdrop)
+	If sWidth <> "100%" Then UI.AddAttrDT("width", sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -225,87 +150,172 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]
-	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-  		<label id="${mName}_box" class="relative block rounded-box w-full pt-3 flex items-center justify-center">
-    		<div id="${mName}_indicator" class="h-2 bg-white w-[200px] rounded-box mx-auto"></div>
-    		<input id="${mName}_chooser" type="checkbox" class="border-none absolute inset-0 cursor-pointer appearance-none" />
-  		</label>
-  		<div id="${mName}_content" class="pt-5 pl-10 pr-10">${sRawContent}</div>
-	</div>"$).Get("#" & mName)
-	setOpen(bOpen)
-	setBackgroundColor(sBackgroundColor)
-	setDuration(sDuration)
-	setIndicatorColor(sIndicatorColor)
+	mElement = mTarget.Append($"[BANCLEAN]<daisy-sheet id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></daisy-sheet>"$).Get("#" & mName)
 End Sub
 
-Sub setOpen(b As Boolean)				'ignoredeadcode
-	bOpen = b
-	CustProps.put("Open", b)
+'set Backdrop Color
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setBackdropColor(s As String)
+	sBackdropColor = s
+	CustProps.put("BackdropColor", s)
 	If mElement = Null Then Return
-	UI.SetCheckedByID($"${mName}_chooser"$, b)
+	UI.SetAttr(mElement, "backdrop-color", sBackdropColor)
 End Sub
 
-Sub getOpen As Boolean
-	Return bOpen
+'set Backdropdismiss
+Sub setBackdropdismiss(b As Boolean)
+	bBackdropdismiss = b
+	CustProps.put("Backdropdismiss", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "backdropdismiss", b)
+	Else
+		UI.RemoveAttr(mElement, "backdropdismiss")
+	End If
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)			'ignoredeadcode
+'options: primary|secondary|accent|neutral|info|success|warning|error|none
+Sub setBackgroundColor(s As String)
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.SetBackgroundColor(mElement, sBackgroundColor)
-		UI.SetBackgroundColorByID($"${mName}_box"$, sBackgroundColor)
-	End If
+	If s <> "" Then UI.AddAttr(mElement, "background-color", s)
+End Sub
+'set Breakpoints
+Sub setBreakpoints(s As String)
+	sBreakpoints = s
+	CustProps.put("Breakpoints", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "breakpoints", s)
 End Sub
 'set Duration
-Sub setDuration(s As String)			'ignoredeadcode
-	sDuration = s
-	CustProps.put("Duration", s)
+Sub setDuration(i As Int)
+	iDuration = i
+	CustProps.put("Duration", i)
 	If mElement = Null Then Return
-	If s <> "" Then UI.UpdateClass(mElement, "duration", "duration-" & s)
+	If i <> 0 Then UI.AddAttr(mElement, "duration", i)
 End Sub
-'set Indicator Color
-'options: primary|secondary|accent|neutral|info|success|warning|error|none
-Sub setIndicatorColor(s As String)					'ignoredeadcode
-	sIndicatorColor = s
-	CustProps.put("IndicatorColor", s)
+'set Handle Bg
+Sub setHandleBg(s As String)
+	sHandleBg = s
+	CustProps.put("HandleBg", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_indicator"$, sIndicatorColor)
+	If s <> "" Then UI.AddAttr(mElement, "handle-bg", s)
 End Sub
-'set Offset
-Sub setOffset(i As Int)
-    iOffset = i
-    CustProps.put("Offset", i)
-    If mElement = Null Then Return
-	UI.UpdateClass(mElement, "offset", $"has-[input:checked]:top-[${iOffset}vh]"$)
-End Sub
-'set Content
-Sub setContent(s As String)
-	sRawContent = s
-	CustProps.put("RawContent", s)
+'set Handle Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setHandleShadow(s As String)
+	sHandleShadow = s
+	CustProps.put("HandleShadow", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_content"$, sRawContent)
+	Dim sShadow As String = UI.FixShadow(sHandleShadow)
+	If s <> "" Then UI.AddAttr(mElement, "handle-shadow", sShadow)
+End Sub
+'set Initial Breakpoint
+Sub setInitialBreakpoint(s As String)
+	sInitialBreakpoint = s
+	CustProps.put("InitialBreakpoint", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "initial-breakpoint", s)
+End Sub
+'set Max Width
+Sub setMaxWidth(s As String)
+	sMaxWidth = s
+	CustProps.put("MaxWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "max-width", s)
+End Sub
+
+'set Open
+Sub setOpen(b As Boolean)
+	bOpen = b
+	CustProps.put("Open", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "open", b)
+	Else
+		UI.RemoveAttr(mElement, "open")
+	End If
+End Sub
+
+'set Show Handle
+Sub setShowHandle(b As Boolean)
+	bShowHandle = b
+	CustProps.put("ShowHandle", b)
+	If mElement = Null Then Return
+	mElement.SetField("handleVisible", bShowHandle)
+End Sub
+
+'set Showbackdrop
+Sub setShowbackdrop(b As Boolean)
+	bShowbackdrop = b
+	CustProps.put("Showbackdrop", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddAttr(mElement, "showbackdrop", b)
+	Else
+		UI.RemoveAttr(mElement, "showbackdrop")
+	End If
+End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddAttr(mElement, "width", s)
+End Sub
+
+'get Backdrop Color
+Sub getBackdropColor As String
+	Return sBackdropColor
+End Sub
+'get Backdropdismiss
+Sub getBackdropdismiss As Boolean
+	Return bBackdropdismiss
 End Sub
 'get Background Color
 Sub getBackgroundColor As String
-    Return sBackgroundColor
+	Return sBackgroundColor
+End Sub
+'get Breakpoints
+Sub getBreakpoints As String
+	Return sBreakpoints
 End Sub
 'get Duration
-Sub getDuration As String
-        Return sDuration
+Sub getDuration As Int
+	Return iDuration
 End Sub
-'get Indicator Color
-Sub getIndicatorColor As String
-        Return sIndicatorColor
+'get Handle Bg
+Sub getHandleBg As String
+	Return sHandleBg
 End Sub
-'get Offset
-Sub getOffset As Int
-        Return iOffset
+'get Handle Shadow
+Sub getHandleShadow As String
+	Return sHandleShadow
 End Sub
-'get Raw Content
-Sub getContent As String
-        Return sRawContent
+'get Initial Breakpoint
+Sub getInitialBreakpoint As String
+	Return sInitialBreakpoint
+End Sub
+'get Max Width
+Sub getMaxWidth As String
+	Return sMaxWidth
+End Sub
+'get Open
+Sub getOpen As Boolean
+	Return bOpen
+End Sub
+'get Show Handle
+Sub getShowHandle As Boolean
+	Return bShowHandle
+End Sub
+'get Showbackdrop
+Sub getShowbackdrop As Boolean
+	Return bShowbackdrop
+End Sub
+'get Width
+Sub getWidth As String
+	Return sWidth
 End Sub
