@@ -135,6 +135,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("dinput", "pg-groupselect", "", "Group Select")
 	drawermenu.AddItemChild("dinput", "pg-input", "", "Text Box")
 	drawermenu.AddItemChild("dinput", "pg-colorpicker", "", "Text Box - ColorPicker")
+	drawermenu.AddItemChild("dinput", "pg-otp", "", "Text Box - OTP")
 	drawermenu.AddItemChild("dinput", "pg-textarea", "", "Text Area")
 	drawermenu.AddItemChild("dinput", "pg-toggle", "", "Toggle")
 	drawermenu.AddItemChild("dinput", "pg-validator", "", "Validation")
@@ -226,6 +227,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "otp"
+				pgOTP.Show(App)
 			Case "toastcharts"
 				pgToastCharts.Show(App)
 			Case "leaflet"
