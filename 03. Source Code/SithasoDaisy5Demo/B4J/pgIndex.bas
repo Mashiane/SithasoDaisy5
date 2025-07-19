@@ -91,6 +91,10 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("tables", "pg-table", "", "Table 1")
 	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
 	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
+	'
+	drawermenu.AddItemParent("", "db", "", "Databases")
+	drawermenu.AddItemChild("db", "pg-phpsqlite", "", "PHP SQLite")
+	drawermenu.AddItemChild("db", "pg-phpmysql", "", "PHP MySQL")
 	
 	'
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
@@ -200,6 +204,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("other", "pg-whatsapp", "", "WhatsApp")
 	drawermenu.AddItemChild("other", "pg-officeribbon", "", "Office Ribbon")
 	drawermenu.AddItemChild("other", "pg-leaflet", "", "Leaflet Map")
+	drawermenu.AddItemChild("other", "pg-fullcalendar", "", "Full Calendar")
 	
 
 End Sub
@@ -227,6 +232,12 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "fullcalendar"
+				pgFullCalendar.Show(App)
+			Case "phpsqlite"
+				pgPHPSQLite.Show(App)
+			Case "phpmysql"
+				pgPHPMySQL.Show(App)
 			Case "otp"
 				pgOTP.Show(App)
 			Case "toastcharts"

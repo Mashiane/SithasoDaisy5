@@ -587,7 +587,7 @@ private Sub MessageClick(e As BANanoEvent)				'ignoredeadcode
 '	CloseInternalModals
 End Sub
 
-private Sub MessageChange(e As BANanoEvent)
+private Sub MessageChange(e As BANanoEvent)		'ignore
 '	CloseInternalModals
 	Dim msg As String = getMessage
 	If msg = "" Then

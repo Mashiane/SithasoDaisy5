@@ -253,7 +253,7 @@ Private Sub Class_Globals
 	Private datepickers As Map
 	Private sSearchWidth As String = "300px"
 	Private bPagination As Boolean = True
-	Private mEventName As String = ""
+	Private mEventName As String = ""			'ignore
 	Private sShadow As String = "none"
 	Private sAlphaChooserColumn As String = "name"
 	Private sAlphaChooserHeight As String = "8"
@@ -378,7 +378,8 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	Originals.Initialize 
 	
 	BANano.DependsOnAsset("flatpickr.min.css")
-	BANano.DependsOnAsset("material_blue.css")
+	BANano.DependsOnAsset("flatpickr.css")
+	'BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
 	BANano.DependsOnAsset("fplocale.min.js")
 	BANano.DependsOnAsset("numeral.min.js")
@@ -1584,97 +1585,97 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	Return btn
 End Sub
 
-Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String, textColor As String) As SDUI5DropDown
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIDropDown
-'	btn.AddDropDownIcon(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sButtonSize, sIcon)
-'	btn.MainButton.NoGhost
-'	btn.MainButton.Color = btnColor
-'	btn.Menu.mt(1)
-'	btn.Menu.border1
-'	btn.MainButton.Outline = bButtonsOutlined
-'	btn.MainButton.Size = sButtonSize
-'	btn.MainButton.Circle
-'	btn.Root.mx("1")
-'	Return btn
-End Sub
-Sub AddToolbarDropDown(btnID As String, btnColor As String, btnLabel As String, textColor As String) As SDUI5DropDown
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIDropDown
-'	btn.AddDropDown(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, btnLabel)
-'	btn.MainButton.Color = btnColor
-'	btn.Menu.mt(1)
-'	btn.Menu.border1
-'	btn.MainButton.Outline = bButtonsOutlined
-'	btn.MainButton.Size = sButtonSize
-'	btn.Root.mx("1")
-'	Return btn
-End Sub
-Sub AddToolbarDropDownAvatar(btnID As Object, sSize As String, ImgURL As String) As SDUI5DropDown
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIDropDown
-'	btn.AddDropDownAvatar(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sSize, ImgURL)
-'	btn.Menu.mt(1)
-'	btn.Menu.border1
-'	btn.Root.mx("1")
-'	Return btn
-End Sub
-Sub AddToolbarSelect(id As String, prependIcon As String, appendIcon As String, options As Map) As SDUI5Select
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	id = UI.CleanID(id)
-'	Dim el As SDUISelect
-'	el.AddSelect(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
-'	el.RemoveHint
-'	el.RemoveLabel
-'	el.Size = sComponentSize
-'	el.Root.mx("1")
-'	el.PrependIcon = prependIcon
-'	el.AppendIcon = appendIcon
-'	el.SetItems(options)
-'	Return el
-End Sub
-Sub AddToolbarSelectNormal(id As String, options As Map) As SDUI5Select
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	id = UI.CleanID(id)
-'	Dim el As SDUISelect
-'	el.AddSelectNormal(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, False)
-'	el.Size = sComponentSize
-'	el.Root.mx("1")
-'	el.SetItems(options)
-'	Return el
-End Sub
-Sub AddToolbarTextBox(id As String, prependIcon As String, appendIcon As String) As SDUI5TextBox
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	id = UI.CleanID(id)
-'	Dim el As SDUITextBox
-'	el.AddTextBoxGroup(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
-'	el.RemoveHint
-'	el.RemoveLabel
-'	el.Size = sComponentSize
-'	el.Root.mx("1")
-'	el.PrependIcon = prependIcon
-'	el.AppendIcon = appendIcon
-'	Return el
-End Sub
-Sub AddToolbarTextBoxNormal(id As String) As SDUI5TextBox
-	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
-	UI.Show($"${mName}_actions"$)
-	id = UI.CleanID(id)
-'	Dim el As SDUITextBox
-'	el.AddTextBox(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$)
-'	el.Size = sComponentSize
-'	el.Root.mx("1")
-'	Return el
-End Sub
+'Sub AddToolbarDropDownIcon(btnID As String, sIcon As String, btnColor As String, textColor As String) As SDUI5DropDown
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIDropDown
+''	btn.AddDropDownIcon(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sButtonSize, sIcon)
+''	btn.MainButton.NoGhost
+''	btn.MainButton.Color = btnColor
+''	btn.Menu.mt(1)
+''	btn.Menu.border1
+''	btn.MainButton.Outline = bButtonsOutlined
+''	btn.MainButton.Size = sButtonSize
+''	btn.MainButton.Circle
+''	btn.Root.mx("1")
+''	Return btn
+'End Sub
+'Sub AddToolbarDropDown(btnID As String, btnColor As String, btnLabel As String, textColor As String) As SDUI5DropDown
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIDropDown
+''	btn.AddDropDown(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, btnLabel)
+''	btn.MainButton.Color = btnColor
+''	btn.Menu.mt(1)
+''	btn.Menu.border1
+''	btn.MainButton.Outline = bButtonsOutlined
+''	btn.MainButton.Size = sButtonSize
+''	btn.Root.mx("1")
+''	Return btn
+'End Sub
+'Sub AddToolbarDropDownAvatar(btnID As Object, sSize As String, ImgURL As String) As SDUI5DropDown
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIDropDown
+''	btn.AddDropDownAvatar(mCallBack, $"${mName}_actions"$, $"${mName}_${btnID}"$, sSize, ImgURL)
+''	btn.Menu.mt(1)
+''	btn.Menu.border1
+''	btn.Root.mx("1")
+''	Return btn
+'End Sub
+'Sub AddToolbarSelect(id As String, prependIcon As String, appendIcon As String, options As Map) As SDUI5Select
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	id = UI.CleanID(id)
+''	Dim el As SDUISelect
+''	el.AddSelect(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
+''	el.RemoveHint
+''	el.RemoveLabel
+''	el.Size = sComponentSize
+''	el.Root.mx("1")
+''	el.PrependIcon = prependIcon
+''	el.AppendIcon = appendIcon
+''	el.SetItems(options)
+''	Return el
+'End Sub
+'Sub AddToolbarSelectNormal(id As String, options As Map) As SDUI5Select
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	id = UI.CleanID(id)
+''	Dim el As SDUISelect
+''	el.AddSelectNormal(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, False)
+''	el.Size = sComponentSize
+''	el.Root.mx("1")
+''	el.SetItems(options)
+''	Return el
+'End Sub
+'Sub AddToolbarTextBox(id As String, prependIcon As String, appendIcon As String) As SDUI5TextBox
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	id = UI.CleanID(id)
+''	Dim el As SDUITextBox
+''	el.AddTextBoxGroup(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$, "", "", "", "")
+''	el.RemoveHint
+''	el.RemoveLabel
+''	el.Size = sComponentSize
+''	el.Root.mx("1")
+''	el.PrependIcon = prependIcon
+''	el.AppendIcon = appendIcon
+''	Return el
+'End Sub
+'Sub AddToolbarTextBoxNormal(id As String) As SDUI5TextBox
+'	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
+'	UI.Show($"${mName}_actions"$)
+'	id = UI.CleanID(id)
+''	Dim el As SDUITextBox
+''	el.AddTextBox(mCallBack, $"${mName}_actions"$, $"${mName}_${id}"$)
+''	el.Size = sComponentSize
+''	el.Root.mx("1")
+''	Return el
+'End Sub
 Sub SetExportToCSVTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("ExportToCsvTooltip", tooltip)
 	If tooltip = "" Then Return
@@ -1952,15 +1953,19 @@ Sub setExportToXlsDisabled(b As Boolean)
 	End If
 End Sub
 Sub setPrevPageDisabled(b As Boolean)
-	If b Then
-		BANano.GetElement($"#${mName}_prevpage"$).AddClass("btn-disabled")
-		BANano.GetElement($"#${mName}_prevpage"$).SetAttr("disabled", "disabled")
-	Else
-		BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("btn-disabled")
-		BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("disabled")
-	End If
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_prevpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("disabled", "disabled")
+		Else
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("disabled")
+		End If
+	Catch
+	End Try		'ignore
 End Sub
 Sub setNextPageDisabled(b As Boolean)
+	Try
 	If b Then
 		BANano.GetElement($"#${mName}_nextpage"$).AddClass("btn-disabled")
 		BANano.GetElement($"#${mName}_nextpage"$).SetAttr("disabled", "disabled")
@@ -1968,6 +1973,8 @@ Sub setNextPageDisabled(b As Boolean)
 		BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("btn-disabled")
 		BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("disabled")
 	End If
+	Catch
+	End Try	'ignore	
 End Sub
 Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
@@ -4837,40 +4844,36 @@ End Sub
 'banano.Await(tb4.SetItemsPaginate(Items))
 '</code>
 Sub SetItemsPaginate(xItems As List)
-	Try
-		iCurrentPage = 1
-		'lastPage = 1
-		Originals = xItems
-		If bHasFilter Then ClearFilters
-		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
-		Dim yItems As List = paginater.items
-		iTotalPages = paginater.totalPages
-		If iCurrentPage = 1 Then
-			setPrevPageDisabled(True)
-		Else
-			setPrevPageDisabled(False)
-		End If
-		If iTotalPages = iCurrentPage Then
-			setNextPageDisabled(True)
-		Else
-			setNextPageDisabled(False)
-		End If
-		'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
-		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
-		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
-		BANano.Await(SetItems(yItems))
-		'update the visible colums
-		BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
-			'Allow filtering records by an alphabet from column
-		BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
-		If bShowTotalRecords Then
-			BANano.Await(ShowTotals(Originals))
-		Else
-			setFooterVisible(False)	
-		End If
-	Catch
-		Log($"SetItemsPaginate: "$ & LastException)
-	End Try
+	iCurrentPage = 1
+	'lastPage = 1
+	Originals = xItems
+	If bHasFilter Then ClearFilters
+	Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
+	Dim yItems As List = paginater.items
+	iTotalPages = paginater.totalPages
+	If iCurrentPage = 1 Then
+		setPrevPageDisabled(True)
+	Else
+		setPrevPageDisabled(False)
+	End If
+	If iTotalPages = iCurrentPage Then
+		setNextPageDisabled(True)
+	Else
+		setNextPageDisabled(False)
+	End If
+	'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
+	'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
+	'If paginater.nextPage = 0 Then setNextPageDisabled(True)
+	BANano.Await(SetItems(yItems))
+	'update the visible colums
+	If bHasColumnChooser Then BANano.Await(SetColumnChooser(bHasColumnChooser, sColumnChooserHeight, sColumnChooserColor))
+		'Allow filtering records by an alphabet from column
+	If bHasAlphaChooser Then BANano.Await(SetAlphaChooser(bHasAlphaChooser, sAlphaChooserHeight, sAlphaChooserColumn, Originals))
+	If bShowTotalRecords Then
+		BANano.Await(ShowTotals(Originals))
+	Else
+		setFooterVisible(False)	
+	End If
 End Sub
 
 Sub ShowTotals(DataSet As List)	
@@ -7420,7 +7423,7 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	
 	'
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
-	Dim iconSize As String = UI.FixIconSize(sButtonSize)
+'	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
@@ -8660,22 +8663,22 @@ private Sub PasswordPrepend(event As BANanoEvent)     'ignoredeadcode
 		BANano.CallSub(mCallBack, mName & "_PasswordPrependClick", Array(rowpos, action, rowc))
 	End If
 End Sub
-Sub SetRowColumnAppendIcon(colName As String, rowCnt As Int, iconName As String)
-	colName = UI.CleanID(colName)
-	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
-	If Columns.ContainsKey(colName) = False Then Return
-'	Dim AppendButton As SDUI5Button		'ignore
-'	AppendButton.AssignElement(mCallBack, $"#${mName}_${rowCnt1}_${colName}_append"$)
-'	AppendButton.IconName = iconName
-End Sub
-Sub SetRowColumnPrependIcon(colName As String, rowCnt As Int, iconName As String)
-	colName = UI.CleanID(colName)
-	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
-	If Columns.ContainsKey(colName) = False Then Return
-'	Dim AppendButton As SDUI5Button		'ignore
-'	AppendButton.AssignElement(mCallBack, $"#${mName}_${rowCnt1}_${colName}_prepend"$)
-'	AppendButton.IconName = iconName
-End Sub
+'Sub SetRowColumnAppendIcon(colName As String, rowCnt As Int, iconName As String)
+'	colName = UI.CleanID(colName)
+'	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
+'	If Columns.ContainsKey(colName) = False Then Return
+''	Dim AppendButton As SDUI5Button		'ignore
+''	AppendButton.AssignElement(mCallBack, $"#${mName}_${rowCnt1}_${colName}_append"$)
+''	AppendButton.IconName = iconName
+'End Sub
+'Sub SetRowColumnPrependIcon(colName As String, rowCnt As Int, iconName As String)
+'	colName = UI.CleanID(colName)
+'	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
+'	If Columns.ContainsKey(colName) = False Then Return
+''	Dim AppendButton As SDUI5Button		'ignore
+''	AppendButton.AssignElement(mCallBack, $"#${mName}_${rowCnt1}_${colName}_prepend"$)
+''	AppendButton.IconName = iconName
+'End Sub
 Sub SetRowColumnAppendLoading(colName As String, rowCnt As Int, b As Boolean)
 	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
@@ -8748,7 +8751,7 @@ private Sub PasswordAppend(event As BANanoEvent)     'ignore
 	'Dim tblname As String = UI.MvField(src, 1, "_")
 	Dim rowpos As Int = UI.MvField(src,2, "_")
 	rowpos = UI.CInt(rowpos)
-	Dim action As String = UI.MvField(src,3, "_")
+	Dim action As String = UI.MvField(src,3, "_")  'ignore
 	'
 '	Dim AppendButton As SDUI5Button		'ignore
 '	AppendButton.AssignElement(mCallBack, $"${mName}_${rowpos}_${action}_append"$)
@@ -8946,7 +8949,7 @@ Sub AddColumnAvatarGroup(name As String, title As String, ssize As String, mask 
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
-'</code>
+'<code>
 'tbl.AddColumnBadgeGroup("tags", "Tags", "10")
 'tbl.SetRowColumn("tags", 1, $"a:success; n:warning; e:primary; l:neutral; e:error"$)
 '</code>
@@ -8968,7 +8971,7 @@ Sub AddColumnBadgeGroup(name As String, title As String, sheight As String)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
 End Sub
-'</code>
+'<code>
 'tbl.AddColumnBadgeGroup("tags", "Tags", "10", "success")
 'tbl.SetRowColumn("tags", 1, $"a:success; n:warning; e:primary; l:neutral; e:error"$)
 '</code>

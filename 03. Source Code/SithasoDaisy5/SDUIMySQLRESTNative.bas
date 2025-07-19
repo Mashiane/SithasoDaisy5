@@ -466,7 +466,7 @@ Sub SELECT_ALL As List
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
-	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)	
 	fetch.NoCache = True
 '	fetch.NoCors = True
 	If scommand = "" Then
@@ -707,7 +707,7 @@ Sub DELETE(id As String) As Boolean
 		End If
 	End If
 	Try
-		Dim output As Object
+		'Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
@@ -720,8 +720,8 @@ Sub DELETE(id As String) As Boolean
 '		fetch.NoCors = True
 		BANano.Await(fetch.DeleteWait)
 		If fetch.Success Then
-			Dim Response As Map = fetch.response
-			output = Response
+			'Dim Response As Map = fetch.response
+			'output = Response
 			Return True
 		Else
 			Return False

@@ -116,7 +116,7 @@ Sub Class_Globals
 	Private popups As Map
 	Private OpenPopUpMap As Map
 	Private shapeFiles As Map
-	Private xMapType As String = ""
+	Private xMapType As String = ""		'ignore
 	Private L As BANanoObject
 	Private MapObject As BANanoObject
 	Private sTileLayer As String = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -1420,7 +1420,7 @@ End Sub
 
 '
 'Unbinds a Event from the map.
-private Sub UnbindEvent(Event As String, EventHandler As Object, Callback As String)
+private Sub UnbindEvent(Event As String, EventHandler As Object, Callback As String)			'ignore
 	BANano.ToElement(MapObject).Off(Event.ToLowerCase)
 End Sub
 

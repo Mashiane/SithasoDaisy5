@@ -168,7 +168,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	
 	options.Initialize
 	BANano.DependsOnAsset("flatpickr.min.css")
-	BANano.DependsOnAsset("material_blue.css")
+	BANano.DependsOnAsset("flatpickr.css")
+	'BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
 	BANano.DependsOnAsset("fplocale.min.js")
 	BANano.DependsOnAsset("reinvented-color-wheel.min.css")
@@ -1642,7 +1643,7 @@ Sub getValidatorHint As String
 End Sub
 
 'Not(IsMatch)
-Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean
+Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean			'ignore
 	Dim v As String = getValue
 	v = UI.CStr(v)
 	v = v.Trim
@@ -1664,7 +1665,7 @@ Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean
 		Return True
 	End If
 End Sub
-Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean
+Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean				'ignore
 	Dim v As String = getValue
 	v = UI.CStr(v)
 	v = v.Trim

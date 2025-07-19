@@ -533,8 +533,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setActive(bActive)
 		setEnabled(bEnabled)
 		setFocus(bFocus)
-		setTooltip(sTooltip)
-		setTooltipPosition(sTooltipPosition)
+'		setTooltip(sTooltip)
+'		setTooltipPosition(sTooltipPosition)
 		setBadge(sBadge)
 		setBadgeColor(sBadgeColor)
 		setBadgeSize(sBadgeSize)
@@ -814,30 +814,30 @@ Sub setTarget(s As String)			'ignoredeadcode
 	If s <> "" Then UI.SetAttrByID($"${mName}_anchor"$, "target", s)
 End Sub
 'set Tooltip
-Sub setTooltip(s As String)			'ignoredeadcode
-	sTooltip = s
-	CustProps.put("Tooltip", s)
-	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.AddClassByID($"${mName}_anchor"$, "tooltip")
-		UI.SetAttrByID($"${mName}_anchor"$, "data-tip", s)
-	Else
-		UI.RemoveClassByID($"${mName}_anchor"$, "tooltip")
-		UI.RemoveAttrByID($"${mName}_anchor"$, "data-tip")
-	End If
-End Sub
+'Sub setTooltip(s As String)			'ignoredeadcode
+'	sTooltip = s
+'	CustProps.put("Tooltip", s)
+'	If mElement = Null Then Return
+'	If s <> "" Then 
+'		UI.AddClassByID($"${mName}_anchor"$, "tooltip")
+'		UI.SetAttrByID($"${mName}_anchor"$, "data-tip", s)
+'	Else
+'		UI.RemoveClassByID($"${mName}_anchor"$, "tooltip")
+'		UI.RemoveAttrByID($"${mName}_anchor"$, "data-tip")
+'	End If
+'End Sub
 'set Tooltip Position
 'options: bottom|left|none|right|top
-Sub setTooltipPosition(s As String)			'ignoredeadcode
-	sTooltipPosition = s
-	CustProps.put("TooltipPosition", s)
-	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.AddClassByID($"${mName}_anchor"$, "tooltip-" & s)
-	Else
-		UI.RemoveClassByID($"${mName}_anchor"$, "tooltip-" & s)
-	End If
-End Sub
+'Sub setTooltipPosition(s As String)			'ignoredeadcode
+'	sTooltipPosition = s
+'	CustProps.put("TooltipPosition", s)
+'	If mElement = Null Then Return
+'	If s <> "" Then 
+'		UI.AddClassByID($"${mName}_anchor"$, "tooltip-" & s)
+'	Else
+'		UI.RemoveClassByID($"${mName}_anchor"$, "tooltip-" & s)
+'	End If
+'End Sub
 'get Active
 Sub getActive As Boolean
 	Return bActive

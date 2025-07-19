@@ -79,6 +79,12 @@ Private Sub Class_Globals
 	Private escapeCharStart As String
 	Private escapeCharEnd As String
 	Public MatchSchema As Boolean
+	Private sHost As String
+	Private sUser As String
+	Private sPassword As String
+	Private sDbName As String
+	Private sDriver As String
+	Private sPort As String
 End Sub
 
 '<code>
@@ -116,6 +122,25 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	MatchSchema = True
 	Return Me
 End Sub
+
+Sub SetMySQLConnection(xHost As String, xUser As String, xPassword As String, xDbName As String, xPort As String)
+	sHost = xHost
+	sUser = xUser
+	sPassword = xPassword
+	sDbName = xDbName
+	sDriver = "mysql"
+	sPort = xPort
+End Sub
+
+Sub SetSQLiteConnection(sPath As String)
+	sHost = sPath
+	sUser = ""
+	sPassword = ""
+	sDbName = ""
+	sDriver = "sqlite"
+	sPort = "3306"
+End Sub
+
 
 Public Sub EscapeField(f As String) As String
 	Return $"${escapeCharStart}${f}${escapeCharEnd}"$
@@ -461,6 +486,12 @@ Sub SELECT_ALL As List
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+	fetch.AddHeader("X-Host", sHost)
+	fetch.AddHeader("X-User", sUser)
+	fetch.AddHeader("X-Password", sPassword)
+	fetch.AddHeader("X-DBName", sDbName)
+	fetch.AddHeader("X-Driver", sDriver)
+	fetch.AddHeader("X-Port", sPort)
 	fetch.NoCache = True
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
@@ -535,6 +566,12 @@ Sub CREATE As String
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		fetch.AddHeader("X-Host", sHost)
+		fetch.AddHeader("X-User", sUser)
+		fetch.AddHeader("X-Password", sPassword)
+		fetch.AddHeader("X-DBName", sDbName)
+		fetch.AddHeader("X-Driver", sDriver)
+		fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If ShowLog Then
 			Log($"SDUIMySQLREST.CREATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
@@ -722,19 +759,25 @@ Sub DELETE(id As String) As Boolean
 	End If
 	End If
 	Try
-		Dim output As Object
+		'Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		fetch.AddHeader("X-Host", sHost)
+		fetch.AddHeader("X-User", sUser)
+		fetch.AddHeader("X-Password", sPassword)
+		fetch.AddHeader("X-DBName", sDbName)
+		fetch.AddHeader("X-Driver", sDriver)
+		fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If ShowLog Then
 			Log($"SDUIMySQLREST.DELETE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
 		BANano.Await(fetch.DeleteWait)
 		If fetch.Success Then
-			Dim Response As Map = fetch.response
-			output = Response
+			'Dim Response As Map = fetch.response
+			'output = Response
 			Return True
 		Else
 			Log(fetch.ErrorMessage)
@@ -804,6 +847,12 @@ Sub UPDATE As String
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		fetch.AddHeader("X-Host", sHost)
+		fetch.AddHeader("X-User", sUser)
+		fetch.AddHeader("X-Password", sPassword)
+		fetch.AddHeader("X-DBName", sDbName)
+		fetch.AddHeader("X-Driver", sDriver)
+		fetch.AddHeader("X-Port", sPort)
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 		If ShowLog Then
@@ -829,6 +878,51 @@ Sub UPDATE As String
 		Log(LastException.Message)
 		Return ""
 	End Try
+End Sub
+
+Sub UPDATE_PER_FIELD As String
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.UPDATE_PER_FIELD"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIMySQLREST.UPDATE_PER_FIELD. Please execute SchemaAdd?? first to define your table schema!"$)
+		Return ""
+	End If
+	If UseApiKey Then
+		If sApiKey = "" Then
+			BANano.Throw($"SDUIMySQLREST.UPDATE_PER_FIELD - The ApiKey has not been specified!"$)
+			Return ""
+		End If
+	End If
+	Dim currentRecord As Map = BANano.DeepClone(Record)
+	Dim pkValue As String = currentRecord.Get(PrimaryKey)
+	For Each k As String In currentRecord.Keys
+		If k = PrimaryKey Then Continue
+		'
+		Dim v As Object = currentRecord.Get(k)
+		Dim nrec As Map = CreateMap()
+		nrec.Put(k, v)
+		'
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.SetContentTypeApplicationJSON
+		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		fetch.AddHeader("X-Host", sHost)
+		fetch.AddHeader("X-User", sUser)
+		fetch.AddHeader("X-Password", sPassword)
+		fetch.AddHeader("X-DBName", sDbName)
+		fetch.AddHeader("X-Driver", sDriver)
+		fetch.AddHeader("X-Port", sPort)
+		'this is a post
+		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
+		If ShowLog Then
+			Log($"SDUIMySQLREST.UPDATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
+			Log(BANano.ToJson(Record))
+		End If
+		fetch.SetData(nrec)
+		BANano.Await(fetch.PutWait)
+	Next
+	Return pkValue
 End Sub
 
 'ensure the query only return the id only
@@ -864,6 +958,12 @@ Sub READ(id As String) As Map
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		fetch.AddHeader("X-Host", sHost)
+		fetch.AddHeader("X-User", sUser)
+		fetch.AddHeader("X-Password", sPassword)
+		fetch.AddHeader("X-DBName", sDbName)
+		fetch.AddHeader("X-Driver", sDriver)
+		fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If ShowLog Then
 			Log($"SDUIMySQLREST.READ.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
@@ -1924,6 +2024,12 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+	fetch.AddHeader("X-Host", sHost)
+	fetch.AddHeader("X-User", sUser)
+	fetch.AddHeader("X-Password", sPassword)
+	fetch.AddHeader("X-DBName", sDbName)
+	fetch.AddHeader("X-Driver", sDriver)
+	fetch.AddHeader("X-Port", sPort)
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If ShowLog Then

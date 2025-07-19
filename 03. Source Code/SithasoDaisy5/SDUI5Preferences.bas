@@ -183,7 +183,8 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	validations.Initialize
 	BANano.DependsOnAsset("flatpickr.min.css")
-	BANano.DependsOnAsset("material_blue.css")
+	BANano.DependsOnAsset("flatpickr.css")
+	'BANano.DependsOnAsset("material_blue.css")
 	BANano.DependsOnAsset("flatpickr.min.js")
 	BANano.DependsOnAsset("fplocale.min.js")
 	BANano.DependsOnAsset("reinvented-color-wheel.min.css")
@@ -2066,26 +2067,26 @@ End Sub
 'e.PreventDefault
 'End Sub
 '</code>
-Sub AddActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
-	UI.Show($"${mName}_bottomdivider"$)
-	UI.Show($"${mName}_bottomactions"$)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIButton
-'	btn.AddButton(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, btnCaption, "button")
-'	btn.On("click", mback, $"${mName}_${btnID}"$)
-'	btn.Color = btnColor
-'	btn.Size = sButtonSize
-'	btn.Root.mx("1")
-'	Return btn
-End Sub
+'Sub AddActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
+'	UI.Show($"${mName}_bottomdivider"$)
+'	UI.Show($"${mName}_bottomactions"$)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIButton
+''	btn.AddButton(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, btnCaption, "button")
+''	btn.On("click", mback, $"${mName}_${btnID}"$)
+''	btn.Color = btnColor
+''	btn.Size = sButtonSize
+''	btn.Root.mx("1")
+''	Return btn
+'End Sub
 
 'set the button to loading state
-Sub SetActionButtonLoading(btnID As String, bLoading As Boolean)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIButton			'ignore
-'	btn.AssignElement(mback, $"${mName}_${btnID}"$)
-'	btn.Loading = bLoading
-End Sub
+'Sub SetActionButtonLoading(btnID As String, bLoading As Boolean)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIButton			'ignore
+''	btn.AssignElement(mback, $"${mName}_${btnID}"$)
+''	btn.Loading = bLoading
+'End Sub
 
 Sub getToolBarButtonID(btnID As String) As String
 	btnID = UI.CleanID(btnID)
@@ -2097,30 +2098,30 @@ End Sub
 'Sub tblname_btnid (e As BANanoEven)
 'End Sub
 '</code>
-Sub AddActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
-	UI.Show($"${mName}_bottomactions"$)
-	UI.Show($"${mName}_bottomdivider"$)
-	btnID = UI.CleanID(btnID)
-'	Dim btn As SDUIButton
-'	btn.AddButtonIcon(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, "", sIcon)
-'	btn.On("click", mback, $"${mName}_${btnID}"$)
-'	btn.Color = btnColor
-'	btn.Outline = bButtonsOutlined
-'	btn.Size = sButtonSize
-'	btn.Circle
-'	btn.Root.mx("1")
-'	Return btn
-End Sub
+'Sub AddActionButtonIcon(btnID As String, sIcon As String, btnColor As String) As SDUI5Button
+'	UI.Show($"${mName}_bottomactions"$)
+'	UI.Show($"${mName}_bottomdivider"$)
+'	btnID = UI.CleanID(btnID)
+''	Dim btn As SDUIButton
+''	btn.AddButtonIcon(mback, $"${mName}_bottomactions"$, $"${mName}_${btnID}"$, "", sIcon)
+''	btn.On("click", mback, $"${mName}_${btnID}"$)
+''	btn.Color = btnColor
+''	btn.Outline = bButtonsOutlined
+''	btn.Size = sButtonSize
+''	btn.Circle
+''	btn.Root.mx("1")
+''	Return btn
+'End Sub
 'add an action button
 '<code>
 'Sub tblname_btnid (e As BANanoEven)
 'End Sub
 '</code>
-Sub AddActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
-'	Dim btn As SDUIButton = AddActionButtonIcon(btnID, sIcon, btnColor)
-'	btn.TextColor = btnTextColor
-'	Return btn
-End Sub
+'Sub AddActionButtonIconTextColor(btnID As String, sIcon As String, btnColor As String, btnTextColor As String) As SDUI5Button
+''	Dim btn As SDUIButton = AddActionButtonIcon(btnID, sIcon, btnColor)
+''	btn.TextColor = btnTextColor
+''	Return btn
+'End Sub
 
 'clear the property bag settings
 Sub Clear
@@ -2819,43 +2820,43 @@ End Sub
 '	sig.RemoveHint
 '	rolldate.Put(cname, sig)
 'End Sub
-Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean, Width As String, Height As String, ImageType As String)
-	propBagKeys.Put(Key, Title)
-	propBagValues.Put(Key, "")
-	Types.Put(Key, "String")
-	ComponentType.Put(Key, "Signature")
-	If Required Then Compulsory.Put(Key, Key)
-	Dim scode As String = $"[BANCLEAN]
-    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
-    <td id="${mName}_${Key}_th" >
-			<span id="${mName}_${Key}_tooltip">
-				<span id="${mName}_${Key}_title">${Title}</span>
-			</span>
-		</td>		
-    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div class="indicator w-full">
-    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    <div id="${mName}_${Key}" class="w-full"></div>
-    </div>
-    </td>
-    </tr>"$
-	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	If Required Then
-		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
-	Else
-		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
-	End If
-	'
-	Dim cname As String = $"${mName}_${Key}"$
-'	Dim sig As SDUISignaturePad
-'	sig.Initialize(mback, cname, cname)
-'	Dim opt As Map = CreateMap()
-'	opt.Put("Height", Height)
-'	opt.Put("Width", Width)
-'	opt.Put("ImageType", ImageType)
-'	sig.AddToParent($"${mName}_${Key}_tooltip"$, opt)
-'	signatures.Put(cname, sig)
-End Sub
+'Sub AddPropertySignaturePad(Key As String, Title As String, Required As Boolean, Width As String, Height As String, ImageType As String)
+'	propBagKeys.Put(Key, Title)
+'	propBagValues.Put(Key, "")
+'	Types.Put(Key, "String")
+'	ComponentType.Put(Key, "Signature")
+'	If Required Then Compulsory.Put(Key, Key)
+'	Dim scode As String = $"[BANCLEAN]
+'    <tr id="${mName}_${Key}row" class="grid grid-cols-1 sm:grid-cols-2 items-center">
+'    <td id="${mName}_${Key}_th" >
+'			<span id="${mName}_${Key}_tooltip">
+'				<span id="${mName}_${Key}_title">${Title}</span>
+'			</span>
+'		</td>		
+'    <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
+'    <div class="indicator w-full">
+'    <span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
+'    <div id="${mName}_${Key}" class="w-full"></div>
+'    </div>
+'    </td>
+'    </tr>"$
+'	BANano.GetElement($"#${mName}_body"$).Append(scode)
+'	If Required Then
+'		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
+'	Else
+'		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
+'	End If
+'	'
+'	Dim cname As String = $"${mName}_${Key}"$
+''	Dim sig As SDUISignaturePad
+''	sig.Initialize(mback, cname, cname)
+''	Dim opt As Map = CreateMap()
+''	opt.Put("Height", Height)
+''	opt.Put("Width", Width)
+''	opt.Put("ImageType", ImageType)
+''	sig.AddToParent($"${mName}_${Key}_tooltip"$, opt)
+''	signatures.Put(cname, sig)
+'End Sub
 
 'DateFormat: "Y-m-d H:i"
 'DisplayDateFormat: "F j, Y H:i"
@@ -3277,6 +3278,10 @@ End Sub
 
 Sub SetPropertyCaption(Key As String, value As String)
 	BANano.GetElement($"#${mName}_${Key}_title"$).SetHTML(BANano.SF(value))
+End Sub
+
+Sub SetPropertyPlaceHolder(Key As String, value As String)
+	BANano.GetElement($"#${mName}_${Key}"$).SetAttr("placeholder", value)
 End Sub
 
 Sub SetPropertyToolTip(Key As String, value As String)
@@ -4238,15 +4243,23 @@ End Sub
 'run validation
 'wrap it with banano.await
 Sub IsPropertyBlank(Key As String) As Boolean
-	Dim v As String = BANano.Await(GetPropertyValue(Key))
-	v = UI.CStr(v)
-	v = v.Trim
-	If v.length = 0 Then
-		SetPropertyColor(Key, "error")
-		Return True
-	End If
-	SetPropertyColor(Key, "success")
-	Return False
+	Dim sComponentType As String = ComponentType.Get(Key)
+	Select Case sComponentType
+	Case "CheckBox", "Toggle", "CheckBoxLegend", "ToggleLegend"
+		Dim bv As Boolean = BANano.Await(GetPropertyValue(Key))
+		bv = UI.cbool(bv)
+		Return Not(bv)
+	Case Else
+		Dim v As String = BANano.Await(GetPropertyValue(Key))
+		v = UI.CStr(v)
+		v = v.Trim
+		If v.length = 0 Then
+			SetPropertyColor(Key, "error")
+			Return True
+		End If
+		SetPropertyColor(Key, "success")
+		Return False
+	End Select	
 End Sub
 'return 1 if blank else zero
 'wrap it with banano.await
@@ -4918,6 +4931,7 @@ End Sub
 
 Sub setPropertyBag(values As Map)
 	For Each k As String In values.Keys
+		If propBagKeys.ContainsKey(k) = False Then Continue
 		Dim v As Object = values.Get(k)
 		SetPropertyValue(k, v)
 	Next
@@ -5083,7 +5097,7 @@ Sub ShowDesign(designName As String, compName As String)
 					Case "Image"
 						AddPropertyImage(skey, sdisplayname, "100px", "100px", "rounded", sdefaultvalue)
 					Case "Signature"
-						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
+'						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
 					Case "Progress"
 						sdefaultvalue = UI.cint(sdefaultvalue)
 						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100")

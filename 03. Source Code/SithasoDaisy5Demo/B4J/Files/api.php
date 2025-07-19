@@ -12762,14 +12762,23 @@ namespace Tqdev\PhpCrudApi {
     use Tqdev\PhpCrudApi\RequestFactory;
     use Tqdev\PhpCrudApi\ResponseUtils;
 
+    // --- Dynamic DB Configuration via Headers ---
+    $headers = getallheaders();
+    $host = $headers['X-Host'] ?? '';
+    $user = $headers['X-User'] ?? '';
+    $password = $headers['X-Password'] ?? '';
+    $dbname = $headers['X-DBName'] ?? '';
+    $driver = $headers['X-Driver'] ?? 'mysql';
+    $port = $headers['X-Port'] ?? '';
+
     $config = new Config([
-        'driver' => 'mysql',
-        'address' => '',
-        'port' => '3306',
-        'username' => '',
-        'password' => '',
-        'database' => '',
-        'debug' => false,
+        'driver' => $driver,
+        'address' => $host,
+        'port' => $port,
+        'username' => $user,
+        'password' => $password,
+        'database' => $dbname,
+        'debug' => true,
         'tables' => 'all',
         'controllers' => 'records,columns,tables,openapi,status',
         'middlewares' => 'apiKeyAuth,sanitation',

@@ -195,7 +195,7 @@ Private Sub Class_Globals
 	Public ImgHolder As String = "./assets/placeholderimg.jpg"
 	Public SDLogo As String = "./assets/600by600.jpg"
 	Private templates As Map
-	Type profileType(id As String, name As String, verified As Boolean, email As String, token As String, avatar As String, UserName As String, size As Int)
+	Type profileType(id As String, name As String, verified As Boolean, email As String, token As String, avatar As String, UserName As String, size As Int, idnumber As String)
 	Public UserProfile As profileType
 	Type FileObject(FileName As String, FileDate As String, FileSize As Long, FileType As String, Status As String, FullPath As String, FileDateOnly As String, FileOK As Boolean, FO As BANanoObject, Extension As String, webkitRelativePath As String)
 	'
@@ -583,6 +583,7 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
 End Sub
 
+
 private Sub iconloaderror(e As BANanoEvent)				'ignoredeadcode
 	e.PreventDefault
 End Sub
@@ -847,8 +848,9 @@ End Sub
 
 'valid
 Sub UsesDatePicker
-	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "material_blue.css", "flatpickr.min.js", "fplocale.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "flatpickr.css",  "flatpickr.min.js", "fplocale.min.js")))
 End Sub
+'"material_blue.css",
 
 Sub UsesOfficeRibbon
 	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
@@ -1247,6 +1249,13 @@ Sub ShowSwalConfirmWait(title As String, message As String, okText As String, ca
 	Return isConfirmed
 End Sub
 Sub ShowSwalAlertWait(title As String, message As String, okText As String) As Boolean
+	Dim bp As BANanoPromise
+	bp.CallSub(Me, "ShowSwalAlert", Array(title, message, okText))
+	Dim resp As Map = Banano.Await(bp)
+	Dim isConfirmed As Boolean = resp.Get("isConfirmed")
+	Return isConfirmed
+End Sub
+Sub ShowSwalInfoWait(title As String, message As String, okText As String) As Boolean
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalAlert", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1800,13 +1809,14 @@ End Sub
 '	Banano.GetElement($"#${item}toggle"$).SetChecked(True)
 'End Sub
 
-Sub OpenPocketBase(url As String) As BANanoObject
+Sub OpenPocketBase(url As String, autoCancellation As Boolean) As BANanoObject
 	If Banano.AssetsIsDefined("PocketBase") = False Then
 		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesPocketBase)' should be added!"$)
 		Return Me
 	End If
 	Dim client As BANanoObject
 	client.Initialize2("PocketBase", url)
+	client.RunMethod("autoCancellation", autoCancellation)
 	Return client
 End Sub
 
@@ -1879,8 +1889,28 @@ Sub UsesBarCode
 End Sub
 
 'valid
+Sub UsesFullCalendar
+	Banano.Await(UI.LoadAssetsOnDemand("FullCalendar", Array("fc.min.css",  "fc.min.js", "fclocales.min.js")))
+End Sub
+
+'valid
 Sub UsesAES
 	Banano.Await(UI.LoadAssetsOnDemand("Crypto", Array("crypto-js.min.js")))
+End Sub
+
+'valid
+Sub UsesEncryption
+	Banano.Await(UI.LoadAssetsOnDemand("Encryption", Array("encryption.min.js")))
+End Sub
+
+'valid
+Sub UsesClient
+	Banano.Await(UI.LoadAssetsOnDemand("Client", Array("client.base.min.js")))
+End Sub
+
+'valid
+Sub UsesPako
+	Banano.Await(UI.LoadAssetsOnDemand("Pako", Array("pako.min.js")))
 End Sub
 
 'valid
@@ -1898,9 +1928,10 @@ Sub UsesJSONQuery
 	Banano.Await(UI.LoadAssetsOnDemand("JSONQuery", Array("jsonquery.js")))
 End Sub
 
-'Sub UsesMath
-'	Banano.Await(UI.LoadAssetsOnDemand("Math", Array("math.min.js")))
-'End Sub
+'valid
+Sub UsesMath
+	Banano.Await(UI.LoadAssetsOnDemand("Math", Array("math.min.js")))
+End Sub
 
 ''add item as form
 'Sub AddAsForm(Module As Object, elID As String)
@@ -2746,4 +2777,29 @@ Sub GetFileDetails(fileObj As Map) As FileObject
 	ff.Extension = UI.MvLast(".", sname)
 	ff.webkitRelativePath = swebkitRelativePath
 	Return ff
+End Sub
+
+Sub PocketBase_DateTime(url As String) As Map
+	Dim finalURL As String = $"${url}/api/servertime"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(finalURL)
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCache = True
+	Banano.Await(fetch.PostWait)
+	Return fetch.Response
+End Sub
+
+Sub GetClientIP As String
+	Dim res As String = Banano.Await(Banano.RunJavascriptMethod("getClientIP", Null))
+	Return res
+End Sub
+
+Sub compressBase64(s As String) As String
+	Dim res As String = Banano.Await(Banano.RunJavascriptMethod("compressBase64", Array(s)))
+	Return res
+End Sub
+
+Sub decompressBase64(s As String) As String
+	Dim res As String = Banano.RunJavascriptMethod("decompressBase64", Array(s))
+	Return res
 End Sub

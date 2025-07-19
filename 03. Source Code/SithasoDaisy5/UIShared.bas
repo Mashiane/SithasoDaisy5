@@ -36,6 +36,13 @@ Sub ExtractDateOfBirthFromRSAID(IDNumber As String) As String
 	Return NumberFormat2(fullYear,4,0,0,False) & "-" & NumberFormat2(mm,2,0,0,False) & "-" & NumberFormat2(dd,2,0,0,False)
 End Sub
 
+'add a unique item to a list
+Sub ListAddUnique(lst As List, item As String)
+	item = item.Trim
+	If item = "" Then Return
+	Dim itemPos As Int = lst.IndexOf(item)
+	If itemPos = -1 Then lst.Add(item)
+End Sub
 
 Sub PlayAudio(af As String)
 	Try
@@ -4049,6 +4056,30 @@ Sub GetWorkingDates(startDate As String, endDate As String) As List
 	Return workingDates
 End Sub
 
+Sub GetWeekEnds(startDate As String, endDate As String) As List
+	DateTime.DateFormat = "yyyy-MM-dd"
+	' Initialize the list to hold working dates
+	Dim workingDates As List
+	workingDates.Initialize
+
+	' Parse the start and end dates
+	Dim sd As Long = DateTime.DateParse(startDate)
+	Dim ed As Long = DateTime.DateParse(endDate)
+
+	' Loop through all dates from start to end
+	For i = sd To ed Step DateTime.TicksPerDay
+		' Get the day of the week (1=Sunday, 7=Saturday)
+		Dim dayOfWeek As Int = DateTime.GetDayOfWeek(i)
+
+		' Check if it's a working day (Monday to Friday)
+		If dayOfWeek = 1 Or dayOfWeek = 7 Then
+			' Add the date to the list
+			workingDates.Add(DateTime.Date(i))
+		End If
+	Next
+	Return workingDates
+End Sub
+
 'open a url on a blank window
 Sub OpenURLTab(url As String)			'ignoredeadcode
 	Dim bo As BANanoObject = BANano.Window.RunMethod("open", Array(url, "_blank"))
@@ -4488,4 +4519,143 @@ Sub LoadAssetsOnDemand(Key As String, Items As List)
 			Log(path)
 		Next
 	End If
+End Sub
+
+
+'year now
+Sub YearNow() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "yyyy"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+
+'month now
+Sub MonthNow() As String
+	Dim lNow As Long
+	Dim dt As String
+	lNow = DateTime.Now
+	DateTime.DateFormat = "MM"
+	dt = DateTime.Date(lNow)
+	Return dt
+End Sub
+
+Sub ConvertMinutesToHours(totalMinutes As Int) As String
+	totalMinutes = BANano.parseInt(totalMinutes)
+	Dim hours As Int = Floor(totalMinutes / 60)
+	Dim minutes As Int = totalMinutes Mod 60
+	Dim sout As String = $"${hours}:${minutes}"$
+	Return sout
+End Sub
+
+Sub ConvertHoursToMinutes(hours As String) As Int
+	If hours.IndexOf(":") > -1 Then
+		' Input is in "HH:mm" format
+		Dim parts() As String = BANano.Split(":", hours)
+		If parts.Length = 2 Then
+			Dim hoursPart As Int
+			Dim minutesPart As Int
+			hoursPart = CInt(parts(0))
+			minutesPart = CInt(parts(1))
+            
+			Dim totalMinutes As Int
+			totalMinutes = BANano.parseInt(hoursPart) * 60
+			totalMinutes = BANano.parseInt(totalMinutes) + minutesPart
+            
+			Return totalMinutes
+		Else
+			Log("Invalid input format. Expected HH:mm")
+			Return -1 ' or any suitable error handling
+		End If
+	Else
+		' Input is a plain number representing hours
+		Try
+			Dim hoursAsInt As Int
+			hoursAsInt = CInt(hours)
+			Return hoursAsInt
+		Catch
+			Return -1 ' or any suitable error handling
+		End Try
+	End If
+End Sub
+
+'calculate the time added between 2 times
+Sub TimeAdd(currentTime As String, minutes2Add As String) As String
+	currentTime = CStr(currentTime)
+	minutes2Add = CStr(minutes2Add)
+	minutes2Add = ConvertHoursToMinutes(minutes2Add)
+	minutes2Add = CStr(minutes2Add)
+	'parse the current time
+	Dim ctObject As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array($"2000-01-01 ${currentTime}"$))
+	'add the specified minutes
+	Dim rsObject As BANanoObject = ctObject.RunMethod("add", Array(minutes2Add, "minute"))
+	Dim sTime As String = rsObject.RunMethod("format", Array("HH:mm")).Result
+	Return sTime
+End Sub
+
+'calculate the time added between 2 times
+Sub TimeAdd1(currentDate As String, currentTime As String, minutes2Add As String) As String
+	currentTime = CStr(currentTime)
+	minutes2Add = CStr(minutes2Add)
+	minutes2Add = ConvertHoursToMinutes(minutes2Add)
+	minutes2Add = CStr(minutes2Add)
+	'parse the current time
+	Dim ctObject As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array($"${currentDate} ${currentTime}"$))
+	'add the specified minutes
+	Dim rsObject As BANanoObject = ctObject.RunMethod("add", Array(minutes2Add, "minute"))
+	Dim sTime As String = rsObject.RunMethod("format", Array("YYYY-MM-DD HH:mm")).Result
+	Return sTime
+End Sub
+
+
+'add months to date
+Sub MonthAdd(mDate As String, HowManyMonths As Int) As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+    HowManyMonths = CInt(HowManyMonths)
+    Dim ConvertDate, NewDateDay As Long
+    ConvertDate = DateTime.DateParse(mDate)
+    NewDateDay = DateTime.Add(ConvertDate, 0, HowManyMonths, 0)
+    Return DateTime.Date(NewDateDay)
+End Sub
+'add years to date
+Sub YearsAdd(mDate As String, HowManyYears As Int) As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	HowManyYears = CInt(HowManyYears)
+    Dim ConvertDate, NewDateDay As Long
+    ConvertDate = DateTime.DateParse(mDate)
+	NewDateDay = DateTime.Add(ConvertDate, HowManyYears, 0, 0)
+    Return DateTime.Date(NewDateDay)
+End Sub
+'Returns the number of days that have passed between two dates.
+'Pass the dates as a String
+Sub NumberOfDaysBetweenDates(CurrentDate As String, OtherDate As String) As Int
+	DateTime.DateFormat = "yyyy-MM-dd"
+    Dim CurrDate, OthDate As Long
+    CurrDate = DateTime.DateParse(CurrentDate)
+    OthDate = DateTime.DateParse(OtherDate)
+    Dim tpd As Long = DateTime.TicksPerDay
+    Dim iOut As Long = (CurrDate - OthDate)/tpd
+    Return iOut
+End Sub
+Sub PeriodBetweenInDays(CurrentDate As String, OtherDate As String) As Int
+	DateTime.DateFormat = "yyyy-MM-dd"
+    Dim CurrDate, OthDate As Long
+    CurrDate = DateTime.DateParse(CurrentDate)
+    OthDate = DateTime.DateParse(OtherDate)
+    Dim tpd As Long = DateTime.TicksPerDay
+	Dim iOut As Long = (CurrDate - OthDate)/tpd
+	Return iOut
+End Sub
+
+'calculate the time difference between 2 times
+Sub TimeDiff(startTime As String, endTime As String) As String
+	startTime = CStr(startTime)
+	endTime = CStr(endTime)
+	Dim ot As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array($"2000-01-01 ${startTime}"$, "HH:mm"))
+	Dim nt As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array($"2000-01-01 ${endTime}"$, "HH:mm"))
+	Dim sTime As String = nt.RunMethod("diff", Array(ot, "minute")).Result
+	Dim xtime As String = ConvertMinutesToHours(CInt(sTime))
+	Return xtime
 End Sub

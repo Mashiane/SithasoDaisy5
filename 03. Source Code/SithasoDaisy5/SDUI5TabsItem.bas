@@ -208,7 +208,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'If sBadge <> "" Then UI.AddClassDT("badge-" & sBadge)
 	'If sBadgeColor <> "" Then UI.AddClassDT("badge-" & sBadgeColor)
 	'If sBorderColor <> "" Then UI.AddClassDT("border-color-" & sBorderColor)
-	UI.AddClassDT("tab flex items-center justify-center")
+	UI.AddClassDT("tab flex items-center justify-center gap-2 relative")
 	UI.AddAttrDT("role", "tab")
 	'UI.AddAttrDT("type", "radio")
 	'UI.AddAttrDT("name", sParentID)
@@ -230,13 +230,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     	<input id="${mName}_${sParentID}" type="radio" name="${sParentID}" value="${mName}"/>
 		<svg-renderer id="${mName}_${sParentID}_icon" class="mr-1" width="${sIconSize}" height="${sIconSize}" style="pointer-events:none;" fill="currentColor" data-js="enabled"></svg-renderer>
 		<span id="${mName}_${sParentID}_text">${sText}</span>
-		<span id="${mName}_${sParentID}_badge" class="ml-1 badge badge-sm">${sBadge}</div>
+		<span id="${mName}_${sParentID}_badge" class="ml-1 badge absolute -top-2 -right-2 rounded-full w-6 h-6 flex items-center justify-center p-0 text-xs shadow-md">${sBadge}</div>
   	</label>
   	<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
-	
-	'<input id="${mName}_${sParentID}" class="${xclasses}" ${xattrs} style="${xstyles}"></input>
-  	'<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
-	'
 	setActive(bActive)
 	setTextColor(sTextColor)
 	setBackgroundColor(sBackgroundColor)

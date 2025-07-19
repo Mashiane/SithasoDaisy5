@@ -248,7 +248,6 @@ Sub SetField(fldName As String, fldValue As Object)
 			fldValue = CBool(fldValue)
 		Case DB_INT
 			fldValue = CInt(fldValue)
-		Case DB_FILE
 		Case DB_REAL
 			fldValue = CDbl(fldValue)
 		Case DB_BLOB
