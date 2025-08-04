@@ -704,6 +704,15 @@ Sub toBlob As Object
 	Return res
 End Sub
 
+'convert the signature to a file
+Sub toFile(mFileName As String) As BANanoObject
+	Dim blob As BANanoObject = SignaturePad.RunMethod("toBlob", Null).Result
+	' make a new File object
+	Dim f As BANanoObject
+	f.Initialize2("File",Array(Array(blob), mFileName, CreateMap("type": blob.getfield("type"))))
+	Return f
+End Sub
+
 'Returns signature image as data URL
 Sub toDataURL As String
 	Dim res As String = ""

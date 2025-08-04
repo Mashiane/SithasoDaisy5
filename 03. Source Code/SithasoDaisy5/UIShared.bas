@@ -4168,6 +4168,35 @@ Sub dataURLToBlob(dataURL As String) As Object
 	Return blob
 End Sub
 
+Sub dataURLtoFile(dataURL As String, fileName As String) As Object
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("dataURLtoFile", Array(dataURL, fileName)))
+	Return fo
+End Sub
+
+Sub CompressBase64(dataURL As String) As String
+	Dim LZString As BANanoObject
+	LZString.Initialize("LZString")
+	Dim res As String = LZString.RunMethod("compressToBase64", dataURL).result
+	Return res
+End Sub
+
+Sub DeCompressBase64(dataURL As String) As String
+	Dim LZString As BANanoObject
+	LZString.Initialize("LZString")
+	Dim res As String = LZString.RunMethod("decompressFromBase64", dataURL).result
+	Return res
+End Sub
+
+Sub PakoCompressBase64(dataURL As String) As String
+	Dim res As String = BANano.RunJavascriptMethod("PakoCompressBase64", Array(dataURL))
+	Return res
+End Sub
+
+Sub PakoDeCompressBase64(dataURL As String) As String
+	Dim res As String = BANano.RunJavascriptMethod("PakoDecompressBase64", Array(dataURL))
+	Return res
+End Sub
+
 'get start and end dates of a month based on date
 Sub GetMonthStartEnd(dateString As String) As List
 	dateString = dateString.trim

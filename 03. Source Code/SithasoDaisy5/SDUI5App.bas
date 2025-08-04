@@ -607,6 +607,12 @@ Sub SetTheme(s As String)
 	html.SetData("theme", s)
 End Sub
 
+public Sub isBase64Image(imgURL As String) As Boolean
+	Dim bRes As Boolean = Banano.RunJavascriptMethod("isBase64Image", Array(imgURL))
+	bRes = UI.CBool(bRes)
+	Return bRes
+End Sub
+
 '
 'Sub SetRTL(b As Boolean)
 '	Select Case b
@@ -844,6 +850,11 @@ End Sub
 'valid
 Sub UsesSignaturePad
 	Banano.Await(UI.LoadAssetsOnDemand("SignaturePad", Array("signature_pad.umd.min.js")))
+End Sub
+
+'valid
+Sub UsesLZCompressString
+	Banano.Await(UI.LoadAssetsOnDemand("LZString", Array("lz-string.min.js")))
 End Sub
 
 'valid
@@ -1203,6 +1214,7 @@ Sub ShowSwalWarningNotification(message As String, time As Int)
 	swal.fire
 End Sub
 Sub ShowSwalInputWait(title As String, message As String, okText As String, cancelText As String) As String
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalInput", Array(title, message, okText, cancelText, ""))
 	Dim resp As Map = Banano.Await(bp)
@@ -1216,6 +1228,7 @@ Sub ShowSwalInputWait(title As String, message As String, okText As String, canc
 End Sub
 
 Sub ShowSwalInputWaitDefault(title As String, message As String, defaultText As String, okText As String, cancelText As String) As String
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalInput", Array(title, message, okText, cancelText, defaultText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1229,6 +1242,7 @@ Sub ShowSwalInputWaitDefault(title As String, message As String, defaultText As 
 End Sub
 
 Sub ShowSwalTextAreaWaitDefault(title As String, message As String, defaultText As String, okText As String, cancelText As String) As String
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalTextArea", Array(title, message, okText, cancelText, defaultText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1242,6 +1256,7 @@ Sub ShowSwalTextAreaWaitDefault(title As String, message As String, defaultText 
 End Sub
 
 Sub ShowSwalConfirmWait(title As String, message As String, okText As String, cancelText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalConfirm", Array(title, message, okText, cancelText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1249,6 +1264,7 @@ Sub ShowSwalConfirmWait(title As String, message As String, okText As String, ca
 	Return isConfirmed
 End Sub
 Sub ShowSwalAlertWait(title As String, message As String, okText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalAlert", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1256,6 +1272,7 @@ Sub ShowSwalAlertWait(title As String, message As String, okText As String) As B
 	Return isConfirmed
 End Sub
 Sub ShowSwalInfoWait(title As String, message As String, okText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalAlert", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1263,6 +1280,7 @@ Sub ShowSwalInfoWait(title As String, message As String, okText As String) As Bo
 	Return isConfirmed
 End Sub
 Sub ShowSwalSuccessWait(title As String, message As String, okText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalSuccess1", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1270,6 +1288,7 @@ Sub ShowSwalSuccessWait(title As String, message As String, okText As String) As
 	Return isConfirmed
 End Sub
 Sub ShowSwalErrorWait(title As String, message As String, okText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalError1", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1277,6 +1296,7 @@ Sub ShowSwalErrorWait(title As String, message As String, okText As String) As B
 	Return isConfirmed
 End Sub
 Sub ShowSwalWarningWait(title As String, message As String, okText As String) As Boolean
+	PageResume
 	Dim bp As BANanoPromise
 	bp.CallSub(Me, "ShowSwalWarning1", Array(title, message, okText))
 	Dim resp As Map = Banano.Await(bp)
@@ -1671,6 +1691,8 @@ Sub AddDataModel(TableName As String, PrimaryKey As String, AutoIncrement As Boo
 	DataModels.Put(TableName, tm)
 	If AutoIncrement Then
 		AddDataModelIntegers(TableName, Array(PrimaryKey))
+	Else
+		AddDataModelStrings(TableName, Array(PrimaryKey))	
 	End If
 End Sub
 
@@ -1781,6 +1803,47 @@ Sub AddDataModelDates(TableName As String, FieldNames As List)
 		Next
 		DataModels.Put(TableName, tm)
 	End If
+End Sub
+
+Sub AddDataModelFromPocketBase(tblName As String, flds As Map)
+	AddDataModel(tblName, "id", False)
+	Dim lstrings As List
+	lstrings.Initialize
+	Dim lintegers As List
+	lintegers.Initialize
+	Dim lbools As List
+	lbools.Initialize
+	Dim lfiles As List
+	lfiles.Initialize
+	For Each k As String In flds.Keys
+		Dim v As String = flds.Get(k)
+		Select Case v
+			Case "text","editor", "email","url","date","select", "relation","json"
+				lstrings.Add(k)
+			Case "number"
+				lintegers.Add(k)
+			Case "bool"
+				lbools.Add(k)
+			Case "file"
+				lfiles.Add(k)
+			Case Else
+				lstrings.Add(k)
+		End Select
+	Next
+	If lstrings.Size > 0 Then AddDataModelStrings(tblName, lstrings)
+	If lintegers.Size > 0 Then AddDataModelIntegers(tblName, lintegers)
+	If lbools.Size > 0 Then AddDataModelBooleans(tblName, lbools)
+	If lfiles.Size > 0 Then AddDataModelFiles(tblName, lfiles)
+End Sub
+
+Sub AddDataModelFrom(targetTable As String, sourceTable As String)
+	If DataModels.ContainsKey(sourceTable) = False Then
+		Banano.Throw($"AddDataModelFrom.${sourceTable} data-model does NOT exist!"$)
+		Return
+	End If
+	Dim tm As Map = DataModels.Get(sourceTable)
+	Dim nm As Map = Banano.DeepClone(tm)
+	DataModels.Put(targetTable, nm)
 End Sub
 
 'Sub UseGMap(GMapApiKey As String, mCallBack As Object, mapName As String)

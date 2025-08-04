@@ -19,11 +19,11 @@ Sub Show(MainApp As SDUI5App)
 	pgIndex.UpdateTitle("PHP SQLite")
 	'
 	Main.DBHost = "../assets/northwind.sqlite"
-'	Main.DBUser = ""
-'	Main.DBPassword = ""
-'	Main.DBDriver = "sqlite"
-'	Main.DBPort = "3306"
-'	Main.DBName = ""
+	Main.DBUser = ""
+	Main.DBPassword = ""
+	Main.DBDriver = "sqlite"
+	Main.DBPort = ""
+	Main.DBName = ""
 	'
 	phpsqlite.Initialize(Me, "phpsqlite", Main.ServerURL, "Customers")
 	phpsqlite.UseApiKey = True

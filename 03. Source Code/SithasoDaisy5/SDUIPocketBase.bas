@@ -22,7 +22,7 @@ Private Sub Class_Globals
 	Public const DB_FILE As String = "FILE"
 	Public const DB_STRING As String = "STRING"
 	Public const DB_REAL As String = "REAL"
-	Public const DB_BLOB As String = "BLOB"
+	Public const DB_BLOB As String = "FILE"
 	Public const DB_FLOAT As String = "FLOAT"
 	Public const DB_INTEGER As String = "INTEGER"
 	Public const DB_TEXT As String = "TEXT"
@@ -67,7 +67,7 @@ Private Sub Class_Globals
 	Private sApiKey As String = ""	'ignore
 	Public UsersCollectionName As String = "users"
 	Public skipTotal As Boolean = True
-	Public batchSize As Int = 100
+	Public batchSize As Int = 50
 	Public Upgrade As Boolean = False
 	Private headers As Map
 	Private batchObject As BANanoObject
@@ -84,8 +84,12 @@ Private Sub Class_Globals
 	Public CountRecords As Boolean
 	Private grpBy As List
 	Public UserRecord As Map
+	Public UserToken As String
+	Public UserModel As Map
+	Public UserValid As Boolean
+	Public GetFiles As Boolean
+	Private ownFilter As List
 End Sub
-
 
 '<code>
 ''initialize the connection to pocketbase with a collection to access
@@ -118,7 +122,7 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, Tabl
 	fileFields.Initialize
 	combineL.Initialize
 	ShowLog = False
-	batchSize = 100
+	batchSize = 50
 	Upgrade = False
 	headers.Initialize
 	bNoCache = False
@@ -134,6 +138,11 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, Tabl
 	PrepareSubs(Module, eventName)
 	CountRecords = False
 	grpBy.Initialize
+	UserToken = ""
+	UserModel = CreateMap()
+	UserValid = False
+	GetFiles = False
+	ownFilter.Initialize 
 	Return Me
 End Sub
 
@@ -164,7 +173,7 @@ Public Sub InitializeOnConnection(Module As Object, connection As BANanoObject, 
 	fileFields.Initialize
 	combineL.Initialize
 	ShowLog = False
-	batchSize = 100
+	batchSize = 50
 	Upgrade = False
 	headers.Initialize
 	bNoCache = False
@@ -180,9 +189,22 @@ Public Sub InitializeOnConnection(Module As Object, connection As BANanoObject, 
 	PrepareSubs(Module, eventName)
 	CountRecords = False
 	grpBy.Initialize
+	UserToken = ""
+	UserModel = CreateMap()
+	UserValid = False
+	GetFiles = False
+	ownFilter.Initialize 
 	Return Me
 End Sub
 
+Sub AddFilter(fltr As String)
+	fltr = fltr.Trim
+	If fltr <> "" Then ownFilter.Add(fltr)
+End Sub
+
+Sub ClearHeaders
+	headers.Initialize 
+End Sub
 
 Private Sub PrepareSubs(Module As Object, eventName As String)
 	If SubExists(Module, $"${eventName}_AuthChange"$) Then
@@ -284,12 +306,17 @@ Sub SEND(EndPoint As String, options As Map) As BANanoPromise
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SEND(${EndPoint},${BANano.ToJson(options)})"$)
 	End If
-	AddHeader("Content-Type", "application/json")
-	If headers.Size <> 0 Then
-		options.Put("headers", headers)
-	End If
-	Dim bp As BANanoPromise = client.RunMethod("send", Array(EndPoint, options))
-	Return bp
+	Try
+		AddHeader("Content-Type", "application/json")
+		If headers.Size <> 0 Then
+			options.Put("headers", headers)
+		End If
+		Dim bp As BANanoPromise = client.RunMethod("send", Array(EndPoint, options))
+		Return bp
+	Catch
+		Log($"SEND: ${LastException.message}"$)
+		Return Null
+	End Try		
 End Sub
 
 'put recursive object to a map
@@ -438,18 +465,24 @@ Sub SEND_EMAIL_REST(toEmail As String, Subject As String, Message As String) As 
 	If ShowLog Then
 		Log($"SDUIPocketBase.SEND_EMAIL_REST(${toEmail},${Subject},${Message})"$)
 	End If
-	Message = Message.Replace("</br>", "<br/>")
-	Message = Message.Replace(CRLF, "<br/>")
-	Dim finalURL As String = $"${baseURL}/api/sendemail"$
-	Dim fetch As SDUIFetch
-	fetch.Initialize(finalURL)
-	fetch.AddData("to", toEmail)
-	fetch.AddData("subject", Subject)
-	fetch.AddData("message", Message)
-	fetch.SetContentTypeApplicationJSON
-	fetch.NoCache = True
-	BANano.Await(fetch.PostWait)
-	Return fetch.Response
+	Try
+		Message = Message.Replace("</br>", "<br/>")
+		Message = Message.Replace(CRLF, "<br/>")
+		Dim finalURL As String = $"${baseURL}/api/sendemail"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddData("to", toEmail)
+		fetch.AddData("subject", Subject)
+		fetch.AddData("message", Message)
+		fetch.SetContentTypeApplicationJSON
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		Return fetch.Response
+	Catch
+		Log($"SEND_EMAIL_REST: ${LastException.message}"$)
+		Dim m As Map = CreateMap()
+		Return m
+	End Try	
 End Sub
 
 Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
@@ -471,17 +504,18 @@ Sub SetSchemaFromDataModel1(sourceTable As String, models As Map)
 		Select Case fldType
 			Case "LONGTEXT"
 				SchemaAddLongText1(fldName)
+			Case "FILE"
+				SchemaAddFile1(fldName)
 			Case "TEXT", "STRING"
 				SchemaAddText1(fldName)
 			Case "BLOB"
-				SchemaAddBlob1(fldName)
+				SchemaAddFile1(fldName)
 			Case "INT", "INTEGER"
 				SchemaAddInt1(fldName)
 			Case "DOUBLE", "REAL", "FLOAT"
 				SchemaAddDouble1(fldName)
 			Case "BOOL"
 				SchemaAddBoolean1(fldName)
-				
 		End Select
 	Next
 End Sub
@@ -511,7 +545,7 @@ Sub SetSchemaFromDataModel(models As Map)
 			Case "TEXT", "STRING"
 				SchemaAddText1(fldName)
 			Case "BLOB"
-				SchemaAddBlob1(fldName)
+				SchemaAddFile1(fldName)
 			Case "INT", "INTEGER"
 				SchemaAddInt1(fldName)
 			Case "DOUBLE", "REAL", "FLOAT"
@@ -611,6 +645,13 @@ End Sub
 Sub SchemaAddIndexes(idxNames1 As List) As SDUIPocketBase
 	For Each k As String In idxNames1
 		SchemaAddIndex(k, False)
+	Next
+	Return Me
+End Sub
+
+Sub SchemaAddUniqueIndexes(idxNames1 As List) As SDUIPocketBase
+	For Each k As String In idxNames1
+		SchemaAddIndex(k, True)
 	Next
 	Return Me
 End Sub
@@ -736,6 +777,56 @@ End Sub
 'Dim sid As String = pbComponents.GetString("id")
 'Loop
 '</code>
+'Sub SELECT_ALLX As List
+'	If ShowLog Then
+'		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL"$)
+'	End If
+'	If Schema.Size = 0 Then
+'		BANano.Throw($"SDUIPocketBase.SELECT_ALL: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+'		Return Null
+'	End If
+'	result.Initialize
+'	Dim qsort As String = Join(",", orderByL)
+'	Dim qflds As String = Join(",", flds)
+'	Dim qexpand As String = Join(",", expand)
+'	Try
+'		Dim opt As Map = CreateMap()
+'		If qsort <> "" Then opt.Put("sort", qsort)
+'		If qflds <> "" Then opt.Put("fields", qflds)
+'		If qexpand <> "" Then opt.Put("expand", qexpand)
+'		opt.Put("batch", batchSize)
+'		opt.Put("skipTotal", skipTotal)
+'		opt.Put("cache", "no-store")
+'		If headers.Size <> 0 Then
+'			opt.Put("headers", headers)
+'		End If
+'		If ShowLog Then
+'			Log($"SDUIPocketBase.SELECT_ALL(${BANano.ToJson(opt)})"$)
+'		End If
+'		result = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getFullList", Array(opt)))
+'		If fileFields.Size > 0 Then
+'			Dim rTot As Int = result.Size - 1
+'			Dim rCnt As Int = 0
+'			For rCnt = 0 To rTot
+'				Dim r As Map = result.Get(rCnt)
+'				For Each fk As String In fileFields.keys
+'					Dim fv As String = fileFields.Get(fk)
+'					Dim fk1 As String = r.Get(fk)
+'					Dim pk1 As String = r.Get(PrimaryKey)
+'					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+'					R.Put(fv, fk2)
+'				Next
+'				result.Set(rCnt, r)
+'			Next
+'		End If
+'	Catch
+'		Log(LastException)
+'	End Try			'ignore
+'	RowCount = result.Size
+'	lastPosition = -1
+'	Return result
+'End Sub
+
 Sub SELECT_ALL As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL"$)
@@ -744,46 +835,89 @@ Sub SELECT_ALL As List
 		BANano.Throw($"SDUIPocketBase.SELECT_ALL: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
+	' 
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+
 	result.Initialize
 	Dim qsort As String = Join(",", orderByL)
 	Dim qflds As String = Join(",", flds)
 	Dim qexpand As String = Join(",", expand)
+
+	'Dim allRecords As List
+	'allRecords.Initialize
+
 	Try
-		Dim opt As Map = CreateMap()
-		If qsort <> "" Then opt.Put("sort", qsort)
-		If qflds <> "" Then opt.Put("fields", qflds)
-		If qexpand <> "" Then opt.Put("expand", qexpand)
-		opt.Put("batch", batchSize)
-		opt.Put("skipTotal", skipTotal)
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		If ShowLog Then
-			Log($"SDUIPocketBase.SELECT_ALL(${BANano.ToJson(opt)})"$)
-		End If
-		result = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getFullList", Array(opt)))
-		If fileFields.Size > 0 Then
-			Dim rTot As Int = result.Size - 1
-			Dim rCnt As Int = 0
-			For rCnt = 0 To rTot
-				Dim r As Map = result.Get(rCnt)
-				For Each fk As String In fileFields.keys
-					Dim fv As String = fileFields.Get(fk)
-					Dim fk1 As String = r.Get(fk)
-					Dim pk1 As String = r.Get(PrimaryKey)
-					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-					R.Put(fv, fk2)
+		Dim page As Int = 1
+		Dim totalPages As Int = 1
+
+		Do While page <= totalPages
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qexpand <> "" Then opt.Put("expand", qexpand)
+			opt.Put("cache", "no-store")
+			'If skipTotal <> "" Then opt.Put("skipTotal", skipTotal)
+			If headers.Size > 0 Then opt.Put("headers", headers)
+
+			If ShowLog Then
+				Log($"SDUIPocketBase.SELECT_ALL page ${page} => ${BANano.ToJson(opt)}"$)
+			End If
+
+			Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getList", Array(page, batchSize, opt)))
+			Dim items As List = res.Get("items")
+			If page = 1 Then totalPages = res.Get("totalPages")
+			
+			' Process file fields if needed
+			If fileFields.Size > 0 Then
+				For rCnt = 0 To items.Size - 1
+					Dim r As Map = items.Get(rCnt)
+					For Each fk As String In fileFields.Keys
+						Dim fv As String = fileFields.Get(fk)
+						Dim fk1 As String = r.Get(fk)
+						Dim pk1 As String = r.Get(PrimaryKey)
+						fk1 = CStr(fk1).trim
+						If fk1 <> "" Then
+							Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+							r.Put(fv, fk2)
+							If GetFiles Then
+								Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+								Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+								If bisBase64Image Then 
+									r.Put(fk, fdata)
+								Else
+									r.Put(fk, "")	
+								End If
+							End If
+						End If
+					Next
+					items.Set(rCnt, r)
 				Next
-				result.Set(rCnt, r)
-			Next
-		End If
+			End If
+
+			result.AddAll(items)
+			page = page + 1
+		Loop
+
 	Catch
-		Log(LastException)
-	End Try			'ignore
+		Log($"SELECT_ALL: ${LastException.message}"$)
+	End Try
+
 	RowCount = result.Size
 	lastPosition = -1
 	Return result
+End Sub
+
+private Sub isBase64Image(imgURL As String) As Boolean
+	Dim bRes As Boolean = BANano.RunJavascriptMethod("isBase64Image", Array(imgURL))
+	bRes = CBool(bRes)
+	Return bRes
 End Sub
 
 'join list to mv string
@@ -814,6 +948,59 @@ End Sub
 'Dim sid As String = pbComponents.GetString("id")
 'Loop
 '</code>
+'Sub SELECT_ALL_USERS As List
+'	If ShowLog Then
+'		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS"$)
+'	End If
+'	If Schema.Size = 0 Then
+'		BANano.Throw($"SDUIPocketBase.SELECT_ALL: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+'		Return Null
+'	End If
+'	lastPosition = -1
+'	result.Initialize
+'	Dim qsort As String = Join(",", orderByL)
+'	Dim qflds As String = Join(",", flds)
+'	Dim qexpand As String = Join(",", expand)
+'	'
+'	Dim nl As List
+'	nl.Initialize
+'	Try
+'		Dim opt As Map = CreateMap()
+'		If qsort <> "" Then opt.Put("sort", qsort)
+'		If qflds <> "" Then opt.Put("fields", qflds)
+'		If qexpand <> "" Then opt.Put("expand", qexpand)
+'		opt.Put("batch", batchSize)
+'		opt.Put("skipTotal", skipTotal)
+'		opt.Put("cache", "no-store")
+'		If headers.Size <> 0 Then
+'			opt.Put("headers", headers)
+'		End If
+'		If ShowLog Then
+'			Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS(${BANano.ToJson(opt)})"$)
+'		End If
+'		result = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("getFullList", Array(opt)))
+'		If fileFields.Size > 0 Then
+'			Dim rTot As Int = result.Size - 1
+'			Dim rCnt As Int = 0
+'			For rCnt = 0 To rTot
+'				Dim r As Map = result.Get(rCnt)
+'				For Each fk As String In fileFields.keys
+'					Dim fv As String = fileFields.Get(fk)
+'					Dim fk1 As String = r.Get(fk)
+'					Dim pk1 As String = r.Get(PrimaryKey)
+'					Dim fk2 As String = $"${baseURL}/api/files/${UsersCollectionName}/${pk1}/${fk1}"$
+'					R.Put(fv, fk2)
+'				Next
+'				result.Set(rCnt, r)
+'			Next
+'		End If
+'	Catch
+'		Log(LastException)
+'	End Try			'ignore
+'	RowCount = result.Size
+'	lastPosition = -1
+'	Return result
+'End Sub
 Sub SELECT_ALL_USERS As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS"$)
@@ -822,51 +1009,81 @@ Sub SELECT_ALL_USERS As List
 		BANano.Throw($"SDUIPocketBase.SELECT_ALL: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	
 	lastPosition = -1
 	result.Initialize
 	Dim qsort As String = Join(",", orderByL)
 	Dim qflds As String = Join(",", flds)
 	Dim qexpand As String = Join(",", expand)
-	'
-	Dim nl As List
-	nl.Initialize
+	
+	Dim page As Int = 1
+	Dim totalPages As Int = 1
+	
 	Try
-		Dim opt As Map = CreateMap()
-		If qsort <> "" Then opt.Put("sort", qsort)
-		If qflds <> "" Then opt.Put("fields", qflds)
-		If qexpand <> "" Then opt.Put("expand", qexpand)
-		opt.Put("batch", batchSize)
-		opt.Put("skipTotal", skipTotal)
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		If ShowLog Then
-			Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS(${BANano.ToJson(opt)})"$)
-		End If
-		result = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("getFullList", Array(opt)))
-		If fileFields.Size > 0 Then
-			Dim rTot As Int = result.Size - 1
-			Dim rCnt As Int = 0
-			For rCnt = 0 To rTot
-				Dim r As Map = result.Get(rCnt)
-				For Each fk As String In fileFields.keys
-					Dim fv As String = fileFields.Get(fk)
-					Dim fk1 As String = r.Get(fk)
-					Dim pk1 As String = r.Get(PrimaryKey)
-					Dim fk2 As String = $"${baseURL}/api/files/${UsersCollectionName}/${pk1}/${fk1}"$
-					R.Put(fv, fk2)
+		Do While page <= totalPages
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			opt.Put("cache", "no-store")
+			
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qexpand <> "" Then opt.Put("expand", qexpand)
+			If headers.Size <> 0 Then opt.Put("headers", headers)
+			
+			If ShowLog Then
+				Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS - Page ${page} (${BANano.ToJson(opt)})"$)
+			End If
+			
+			Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("getList", Array(page, batchSize, opt)))
+			Dim items As List = res.Get("items")
+			If page = 1 Then totalPages = res.Get("totalPages")
+			
+			' Update file fields if present
+			If fileFields.Size > 0 Then
+				For Each r As Map In items
+					For Each fk As String In fileFields.Keys
+						Dim fv As String = fileFields.Get(fk)
+						Dim fk1 As String = r.Get(fk)
+						Dim pk1 As String = r.Get(PrimaryKey)
+						fk1 = CStr(fk1).trim
+						If fk1 <> "" Then
+							Dim fk2 As String = $"${baseURL}/api/files/${UsersCollectionName}/${pk1}/${fk1}"$
+							r.Put(fv, fk2)
+							If GetFiles Then
+								Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+								Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+								If bisBase64Image Then
+									r.Put(fk, fdata)
+								Else
+									r.Put(fk, "")
+								End If
+							End If
+						End If
+					Next
 				Next
-				result.Set(rCnt, r)
-			Next
-		End If
+			End If
+			
+			result.AddAll(items)
+			page = page + 1
+		Loop
 	Catch
-		Log(LastException)
-	End Try			'ignore
+		Log($"SELECT_ALL_USERS: ${LastException.message}"$)
+	End Try
+	
 	RowCount = result.Size
 	lastPosition = -1
 	Return result
 End Sub
+
+
+
 
 'get records from a collection
 '<code>
@@ -877,6 +1094,62 @@ End Sub
 'Dim sid As String = pbComponents.GetString("id")
 'Loop
 '</code>
+'Sub SELECT_ALL_ADMINS As List
+'	If ShowLog Then
+'		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_ADMINS"$)
+'	End If
+'	If Schema.Size = 0 Then
+'		BANano.Throw($"SDUIPocketBase.SELECT_ALL_ADMINS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+'		Return Null
+'	End If
+'	lastPosition = -1
+'	result.Initialize
+'	Dim qsort As String = Join(",", orderByL)
+'	Dim qflds As String = Join(",", flds)
+'	Dim qexpand As String = Join(",", expand)
+'	'
+'	Try
+'		Dim opt As Map = CreateMap()
+'		If qsort <> "" Then opt.Put("sort", qsort)
+'		If qflds <> "" Then opt.Put("fields", qflds)
+'		If qexpand <> "" Then opt.Put("expand", qexpand)
+'		opt.Put("perPage", batchSize)
+'		opt.Put("skipTotal", skipTotal)
+'		opt.Put("cache", "no-store")
+'		If headers.Size <> 0 Then
+'			opt.Put("headers", headers)
+'		End If
+'		Dim xtablename As String = "admins"
+'		Select Case Upgrade
+'			Case False
+'				result = BANano.Await(client.GetField("admins").RunMethod("getFullList", Array(opt)))
+'			Case Else
+'				xtablename = "_superusers"
+'				result = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("getFullList", Array(opt)))
+'		End Select
+'		'
+'		If fileFields.Size > 0 Then
+'			Dim rTot As Int = result.Size - 1
+'			Dim rCnt As Int = 0
+'			For rCnt = 0 To rTot
+'				Dim r As Map = result.Get(rCnt)
+'				For Each fk As String In fileFields.keys
+'					Dim fv As String = fileFields.Get(fk)
+'					Dim fk1 As String = r.Get(fk)
+'					Dim pk1 As String = r.Get(PrimaryKey)
+'					Dim fk2 As String = $"${baseURL}/api/files/${xtablename}/${pk1}/${fk1}"$
+'					R.Put(fv, fk2)
+'				Next
+'				result.Set(rCnt, r)
+'			Next
+'		End If
+'	Catch
+'		Log(LastException)
+'	End Try			'ignore
+'	RowCount = result.Size
+'	lastPosition = -1
+'	Return result
+'End Sub
 Sub SELECT_ALL_ADMINS As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_ADMINS"$)
@@ -885,61 +1158,185 @@ Sub SELECT_ALL_ADMINS As List
 		BANano.Throw($"SDUIPocketBase.SELECT_ALL_ADMINS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
+
 	lastPosition = -1
 	result.Initialize
 	Dim qsort As String = Join(",", orderByL)
 	Dim qflds As String = Join(",", flds)
 	Dim qexpand As String = Join(",", expand)
-	'
+	Dim xtablename As String = "admins"
+
 	Try
-		Dim opt As Map = CreateMap()
-		If qsort <> "" Then opt.Put("sort", qsort)
-		If qflds <> "" Then opt.Put("fields", qflds)
-		If qexpand <> "" Then opt.Put("expand", qexpand)
-		opt.Put("batch", batchSize)
-		opt.Put("skipTotal", skipTotal)
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
+		Dim page As Int = 1
+		Dim totalPages As Int = 1
+
+		If Upgrade Then
+			xtablename = "_superusers"
 		End If
-		Dim xtablename As String = "admins"
-		Select Case Upgrade
-			Case False
-				result = BANano.Await(client.GetField("admins").RunMethod("getFullList", Array(opt)))
-			Case Else
+
+		Do While page <= totalPages
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			opt.Put("cache", "no-store")
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qexpand <> "" Then opt.Put("expand", qexpand)
+'			If skipTotal <> "" Then opt.Put("skipTotal", skipTotal)
+			If headers.Size <> 0 Then opt.Put("headers", headers)
+
+			If ShowLog Then
+				Log($"SDUIPocketBase.SELECT_ALL_ADMINS page ${page} (${BANano.ToJson(opt)})"$)
+			End If
+			
+			Dim res As Map
+			If Upgrade = False Then
+				res = BANano.Await(client.GetField("admins").RunMethod("getList", Array(page, batchSize, opt)))
+			Else
 				xtablename = "_superusers"
-				result = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("getFullList", Array(opt)))
-		End Select
-		'
-		If fileFields.Size > 0 Then
-			Dim rTot As Int = result.Size - 1
-			Dim rCnt As Int = 0
-			For rCnt = 0 To rTot
-				Dim r As Map = result.Get(rCnt)
-				For Each fk As String In fileFields.keys
-					Dim fv As String = fileFields.Get(fk)
-					Dim fk1 As String = r.Get(fk)
-					Dim pk1 As String = r.Get(PrimaryKey)
-					Dim fk2 As String = $"${baseURL}/api/files/${xtablename}/${pk1}/${fk1}"$
-					R.Put(fv, fk2)
+				res = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("getList", Array(page, batchSize, opt)))
+			End If
+
+			If page = 1 Then totalPages = res.Get("totalPages")
+			Dim items As List = res.Get("items")
+
+			' Process file fields
+			If fileFields.Size > 0 Then
+				For Each r As Map In items
+					For Each fk As String In fileFields.Keys
+						Dim fv As String = fileFields.Get(fk)
+						Dim fk1 As String = r.Get(fk)
+						Dim pk1 As String = r.Get(PrimaryKey)
+						fk1 = CStr(fk1).trim
+						If fk1 <> "" Then
+							Dim fk2 As String = $"${baseURL}/api/files/${xtablename}/${pk1}/${fk1}"$
+							r.Put(fv, fk2)
+							If GetFiles Then
+								Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+								Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+								If bisBase64Image Then
+									r.Put(fk, fdata)
+								Else
+									r.Put(fk, "")
+								End If
+							End If
+						End If
+					Next
 				Next
-				result.Set(rCnt, r)
-			Next
-		End If
+			End If
+
+			result.AddAll(items)
+			page = page + 1
+		Loop
 	Catch
-		Log(LastException)
-	End Try			'ignore
+		Log($"SELECT_ALL_ADMINS: ${LastException.message}"$)
+	End Try
+
 	RowCount = result.Size
 	lastPosition = -1
 	Return result
 End Sub
 
-'get all table names
-Sub SELECT_ALL_COLLECTIONS_NAMES As List
+'get the data model for the current table
+Sub GetDataModel As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.GetDataModel"$)
+	End If
+	selectFields(Array("name", "schema"))
+	whereEqual("type", "base")
+	whereEqual("name", sTableName)
+	orderBy(Array("name"))
+	Dim tblNames As List = BANano.Await(SELECT_COLLECTIONS)
+	'text,editor,number,bool,email,url,date,select,file,relation,json
+	Dim tbl As Map = tblNames.Get(0)
+	Dim xflds As Map = CreateMap()
+'	Dim sname As String = tbl.Get("name")
+	Dim xSchema As List = tbl.Get("schema")
+	For Each fld As Map In xSchema
+		Dim fldname As String = fld.Get("name")
+		Dim fldtype As String = fld.Get("type")
+		xflds.Put(fldname, fldtype)
+	Next
+	xflds.Put("id", "text")
+	xflds.Put("created", "text")
+	xflds.Put("updated", "text")
+	Return xflds
+End Sub
+
+'get the data model for the current table
+Sub GetDataModelOfTable(tblName As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.GetDataModelOfTable"$)
+	End If
+	selectFields(Array("name", "schema"))
+	whereEqual("type", "base")
+	whereEqual("name", tblName)
+	orderBy(Array("name"))
+	Dim tblNames As List = BANano.Await(SELECT_COLLECTIONS)
+	'text,editor,number,bool,email,url,date,select,file,relation,json
+	Dim tbl As Map = tblNames.Get(0)
+	Dim xflds As Map = CreateMap()
+'	Dim sname As String = tbl.Get("name")
+	Dim xSchema As List = tbl.Get("schema")
+	For Each fld As Map In xSchema
+		Dim fldname As String = fld.Get("name")
+		Dim fldtype As String = fld.Get("type")
+		xflds.Put(fldname, fldtype)
+	Next
+	xflds.Put("id", "text")
+	xflds.Put("created", "text")
+	xflds.Put("updated", "text")
+	Return xflds
+End Sub
+
+Sub GetDataModels(e As String, p As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.GetDataModels"$)
+	End If
+	selectFields(Array("name", "schema"))
+	whereEqual("type", "base")
+	orderBy(Array("name"))
+	Dim tblNames As List = BANano.Await(SELECT_ALL_COLLECTIONS(e, p))
+	'text,editor,number,bool,email,url,date,select,file,relation,json
+	Dim models As Map = CreateMap()
+	For Each tbl As Map In tblNames
+		Dim xflds As Map = CreateMap()
+		Dim sname As String = tbl.Get("name")
+		Dim xSchema As List = tbl.Get("schema")
+		For Each fld As Map In xSchema
+			Dim fldname As String = fld.Get("name")
+			Dim fldtype As String = fld.Get("type")
+			xflds.Put(fldname, fldtype)
+		Next
+		xflds.Put("id", "text")
+		xflds.Put("created", "text")
+		xflds.Put("updated", "text")
+		models.Put(sname, xflds)
+	Next
+	Return models
+End Sub
+
+Sub GetViews(e As String, p As String) As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.GetViews"$)
+	End If
+	selectFields(Array("name"))
+	whereEqual("type", "view")
+	orderBy(Array("name"))
+	Dim tblNames As List = BANano.Await(SELECT_ALL_COLLECTIONS(e, p))
+	Dim vnames As List = ListOfMapsGetProperty(tblNames, "name")
+	Return vnames
+End Sub
+
+'get all table names excluding views
+Sub SELECT_ALL_COLLECTIONS_NAMES(e As String, p As String) As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS_NAMES"$)
 	End If
-	Dim tblNames As List = BANano.Await(SELECT_ALL_COLLECTIONS)
+	selectFields(Array("name"))
+	whereEqual("type", "base")
+	orderBy(Array("name"))
+	Dim tblNames As List = BANano.Await(SELECT_ALL_COLLECTIONS(e, p))
 	Dim tbNames As List = ListOfMapsGetProperty(tblNames, "name")
 	Return tbNames
 End Sub
@@ -970,6 +1367,171 @@ private Sub ListOfMapsGetProperty(lst As List, key As String) As List
 	Return nList
 End Sub
 
+
+Sub SELECT_COLLECTIONS() As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.SELECT_COLLECTIONS"$)
+	End If
+	'
+	lastPosition = -1
+	result.Initialize
+
+	' Build the filter
+	Dim sb As StringBuilder
+	sb.Initialize
+	If ownFilter.Size > 0 Then
+		Dim nfilter As String = Join(" ", ownFilter)
+		nfilter = nfilter.trim
+		sb.Append(nfilter)
+	End If
+	Dim i As Int
+	Dim iWhere As Int = whereField.Size - 1
+	For i = 0 To iWhere
+		Dim col As String = whereField.GetKeyAt(i)
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
+		Dim xVal As String = whereField.GetValueAt(i)
+		Dim opr As String = ops.Get(i)
+		Dim com As String = combineL.Get(i)
+		sb.Append(col)
+		sb.Append($" ${opr} "$)
+		sb.Append(xVal)
+		sb.Append($" ${com} "$)
+	Next
+
+	Dim qfilter As String = sb.ToString
+	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+	qfilter = afilter.Trim
+
+	Dim qsort As String = Join(",", orderByL)
+	Dim qflds As String = Join(",", flds)
+
+	Try
+		Dim page As Int = 1
+		Dim totalPages As Int = 1 ' Will be updated after first request
+
+		Do While page <= totalPages
+			'set the user token
+			SetAuthorizationBearerToken(UserToken)
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			opt.Put("cache", "no-store")
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qfilter <> "" Then opt.Put("filter", qfilter)
+			If headers.Size > 0 Then opt.Put("headers", headers)
+
+			If ShowLog Then
+				Log($"SDUIPocketBase.${sTableName}.SELECT_COLLECTIONS page ${page} (${BANano.ToJson(opt)})"$)
+			End If
+			
+			Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("getList", Array(page, batchSize, opt)))
+			If page = 1 Then totalPages = res.Get("totalPages")
+			Dim items As List = res.Get("items")
+			result.AddAll(items)
+			page = page + 1
+		Loop
+	Catch
+		Log($"SELECT_COLLECTIONS: ${LastException.message}"$)
+	End Try
+
+	RowCount = result.Size
+	Return result
+End Sub
+
+
+
+Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.SELECT_ALL_COLLECTIONS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	'
+	Dim auth As Map = CreateMap()
+	Select Case Upgrade
+	Case False
+		auth = BANano.Await(client.GetField("admins").RunMethod("authWithPassword", Array(e, p)))
+	Case Else
+		auth = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("authWithPassword", Array(e, p)))
+	End Select
+	'get the token
+	UserToken = auth.Get("token")
+	'
+	lastPosition = -1
+	result.Initialize
+
+	' Build the filter
+	Dim sb As StringBuilder
+	sb.Initialize
+	If ownFilter.Size > 0 Then
+		Dim nfilter As String = Join(" ", ownFilter)
+		nfilter = nfilter.trim
+		sb.Append(nfilter)
+	End If
+	Dim i As Int
+	Dim iWhere As Int = whereField.Size - 1
+	For i = 0 To iWhere
+		Dim col As String = whereField.GetKeyAt(i)
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
+		Dim xVal As String = whereField.GetValueAt(i)
+		Dim opr As String = ops.Get(i)
+		Dim com As String = combineL.Get(i)
+		sb.Append(col)
+		sb.Append($" ${opr} "$)
+		sb.Append(xVal)
+		sb.Append($" ${com} "$)
+	Next
+
+	Dim qfilter As String = sb.ToString
+	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+	qfilter = afilter.Trim
+
+	Dim qsort As String = Join(",", orderByL)
+	Dim qflds As String = Join(",", flds)
+
+	Try
+		Dim page As Int = 1
+		Dim totalPages As Int = 1 ' Will be updated after first request
+
+		Do While page <= totalPages
+			'set the user token
+			SetAuthorizationBearerToken(UserToken)
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			opt.Put("cache", "no-store")
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qfilter <> "" Then opt.Put("filter", qfilter)
+			If headers.Size > 0 Then opt.Put("headers", headers)
+
+			If ShowLog Then
+				Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_COLLECTIONS page ${page} (${BANano.ToJson(opt)})"$)
+			End If
+			
+			Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("getList", Array(page, batchSize, opt)))
+			If page = 1 Then totalPages = res.Get("totalPages")
+			Dim items As List = res.Get("items")
+			result.AddAll(items)
+			page = page + 1
+		Loop
+	Catch
+		Log($"SELECT_ALL_COLLECTIONS: ${LastException.message}"$)
+	End Try
+
+	RowCount = result.Size
+	Return result
+End Sub
+
+
+
+
+
 'get records from a collection
 '<code>
 'BANano.Await(pbComponents.SELECT_ALL_COLLECTIONS)
@@ -978,36 +1540,62 @@ End Sub
 'Dim sid As String = pbComponents.GetString("id")
 'Loop
 '</code>
-Sub SELECT_ALL_COLLECTIONS As List
-	If ShowLog Then
-		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS"$)
-	End If
-	If Schema.Size = 0 Then
-		BANano.Throw($"SDUIPocketBase.SELECT_ALL_COLLECTIONS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
-		Return Null
-	End If
-	lastPosition = -1
-	result.Initialize
-	Dim qsort As String = Join(",", orderByL)
-	'
-	Dim nl As List
-	nl.Initialize
-	Try
-		Dim opt As Map = CreateMap()
-		If qsort <> "" Then opt.Put("sort", qsort)
-		opt.Put("cache", "no-store")
-		opt.Put("skipTotal", skipTotal)
-		opt.Put("batch", batchSize)
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		result = BANano.Await(client.GetField("collections").RunMethod("getFullList", Array(opt)))
-	Catch
-		Log(LastException)
-	End Try			'ignore
-	RowCount = result.Size
-	Return result
-End Sub
+'Sub SELECT_ALL_COLLECTIONS As List
+'	If ShowLog Then
+'		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS"$)
+'	End If
+'	If Schema.Size = 0 Then
+'		BANano.Throw($"SDUIPocketBase.SELECT_ALL_COLLECTIONS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+'		Return Null
+'	End If
+'	lastPosition = -1
+'	result.Initialize
+'	'we build the filter
+'	Dim sb As StringBuilder
+'	sb.Initialize
+'	Dim i As Int
+'	Dim iWhere As Int = whereField.Size - 1
+'	For i = 0 To iWhere
+'		Dim col As String = whereField.GetKeyAt(i)
+'		col = MvField(col, 1,".")
+'		col = col.replace("&","")
+'		Dim xVal As String = whereField.GetValueAt(i)
+'		Dim opr As String = ops.Get(i)
+'		Dim com As String = combineL.Get(i)
+'		sb.Append(col)
+'		sb.Append($" ${opr} "$)
+'		sb.append(xVal)
+'		sb.Append($" ${com} "$)
+'	Next
+'	'
+'	Dim qfilter As String = sb.tostring
+'	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+'	qfilter = afilter.Trim
+'	'
+'	Dim qsort As String = Join(",", orderByL)
+'	Dim qflds As String = Join(",", flds)
+'	
+'	Try
+'		Dim opt As Map = CreateMap()
+'		If qsort <> "" Then opt.Put("sort", qsort)
+'		If qflds <> "" Then opt.Put("fields", qflds)
+'		opt.Put("batch", batchSize)
+'		opt.Put("skipTotal", skipTotal)
+'		opt.Put("cache", "no-store")
+'		If headers.Size <> 0 Then
+'			opt.Put("headers", headers)
+'		End If
+'		If qfilter <> "" Then opt.Put("filter", qfilter)
+'		If ShowLog Then
+'			Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_COLLECTIONS(${BANano.ToJson(opt)})"$)
+'		End If
+'		result = BANano.Await(client.GetField("collections").RunMethod("getFullList", Array(opt)))
+'	Catch
+'		Log(LastException)
+'	End Try			'ignore
+'	RowCount = result.Size
+'	Return result
+'End Sub
 
 '<code>
 'Sub pb_Change (Action As String, Record As Map, TableName As String)
@@ -1048,7 +1636,7 @@ Sub Subscribe(Module As Object, TableName As String)
 		End If
 		
 	Catch
-		Log(LastException)
+		Log($"Subscribe: ${LastException.message}"$)
 	End Try			'ignore
 End Sub
 
@@ -1109,7 +1697,7 @@ Sub SubscribeToRecord(Module As Object, TableName As String, id As String)
 			BANano.Console.Warn($"SDUIPocketBase.SubscribeToRecord.'${mEvent}_changes' callback is missing!"$)
 		End If
 	Catch
-		Log(LastException)
+		Log($"SubscribeToRecord: ${LastException.message}"$)
 	End Try			'ignore
 End Sub
 
@@ -1125,7 +1713,7 @@ Sub UnSubscribe(TableName As String)
 			BANano.Await(client.RunMethod("collection", TableName).RunMethod("unsubscribe", "*"))
 		End If
 	Catch
-		Log(LastException)
+		Log($"UnSubscribe: ${LastException.message}"$)
 	End Try			'ignore
 End Sub
 
@@ -1136,7 +1724,7 @@ Sub UnSubscribeToRecord(TableName As String, id As String)
 	Try
 		BANano.Await(client.RunMethod("collection", TableName).RunMethod("unsubscribe", id))
 	Catch
-		Log(LastException)
+		Log($"UnSubscribeToRecord: ${LastException.message}"$)
 	End Try			'ignore
 End Sub
 
@@ -1182,10 +1770,9 @@ Sub CREATE_OR_UPDATE As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE(${BANano.ToJson(opt)})"$)
 			End If
-			Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt)))
-			If res.ContainsKey("id") Then
-				Record = BANano.DeepClone(res)
-				Dim k As String = res.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
@@ -1206,16 +1793,15 @@ Sub CREATE_OR_UPDATE As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE(${BANano.ToJson(opt)})"$)
 			End If
-			Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
-			If r.ContainsKey("id") Then
-				Record = BANano.DeepClone(r)
-				Dim k As String = r.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
 		End If
 	Catch
-		Log(LastException)
+		Log($"CREATE_OR_UPDATE: ${LastException.message}"$)
 		Return ""
 	End Try			' ignore
 End Sub
@@ -1269,10 +1855,9 @@ Sub CREATE_OR_UPDATE_FORM(sID As String) As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE_FORM(${BANano.ToJson(opt)})"$)
 			End If
-			Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(formData,opt)))
-			If res.ContainsKey("id") Then
-				Record = BANano.DeepClone(res)
-				Dim k As String = res.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(formData,opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
@@ -1290,16 +1875,15 @@ Sub CREATE_OR_UPDATE_FORM(sID As String) As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE_FORM(${BANano.ToJson(opt)})"$)
 			End If
-			Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sID, formData, opt)))
-			If r.ContainsKey("id") Then
-				Record = BANano.DeepClone(r)
-				Dim k As String = r.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sID, formData, opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
 		End If
 	Catch
-		Log(LastException)
+		Log($"CREATE_OR_UPDATE_FORM: ${LastException.message}"$)
 		Return ""
 	End Try			' ignore
 End Sub
@@ -1347,10 +1931,9 @@ Sub CREATE_OR_UPDATE_BY_FIELD(fldName As String) As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE_BY_FIELD(${BANano.ToJson(opt)})"$)
 			End If
-			Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt)))
-			If res.ContainsKey("id") Then
-				Record = BANano.DeepClone(res)
-				Dim k As String = res.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
@@ -1369,43 +1952,46 @@ Sub CREATE_OR_UPDATE_BY_FIELD(fldName As String) As String
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.CREATE_OR_UPDATE_BY_FIELD(${BANano.ToJson(opt)})"$)
 			End If
-			Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
-			If r.ContainsKey("id") Then
-				Record = BANano.DeepClone(r)
-				Dim k As String = r.Get("id")
+			Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
+			If Record.ContainsKey("id") Then
+				Dim k As String = Record.Get("id")
 				Return k
 			End If
 			Return ""
 		End If
 	Catch
-		Log(LastException)
+		Log($"CREATE_OR_UPDATE_BY_FIELD: ${LastException.message}"$)
 		Return ""
 	End Try			' ignore
 End Sub
 
 Sub UPDATE_FILE(sid As String, fileField As String, fileObj As Map) As String
-	formData.Initialize2("FormData", Null)
-	formData.RunMethod("set", Array(fileField, fileObj))
-	Dim qflds As String = Join(",", flds)
-	Dim qexpand As String = Join(",", expand)
+	Try
+		formData.Initialize2("FormData", Null)
+		formData.RunMethod("set", Array(fileField, fileObj))
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
 
-	Dim opt As Map = CreateMap()
-	opt.Put("cache", "no-store")
-	If headers.Size <> 0 Then
-		opt.Put("headers", headers)
-	End If
-	If qflds <> "" Then opt.Put("fields", qflds)
-	If qexpand <> "" Then opt.Put("expand", qexpand)
-	If ShowLog Then
-		Log($"SDUIPocketBase.${sTableName}.UPDATE_FILE(${BANano.ToJson(opt)})"$)
-	End If
-	Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sid, formData,opt)))
-	If r.ContainsKey("id") Then
-		Record = BANano.DeepClone(r)
-		Dim k As String = r.Get("id")
-		Return k
-	End If
-	Return ""
+		Dim opt As Map = CreateMap()
+		opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.${sTableName}.UPDATE_FILE(${BANano.ToJson(opt)})"$)
+		End If
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sid, formData,opt)))
+		If Record.ContainsKey("id") Then
+			Dim k As String = Record.Get("id")
+			Return k
+		End If
+		Return ""
+	Catch
+		Log($"UPDATE_FILE: ${LastException.message}"$)
+		Return ""
+	End Try		
 End Sub
 
 
@@ -1426,38 +2012,196 @@ Sub CREATE As String
 		Return Null
 	End If
 	'
-	Dim qflds As String = Join(",", flds)
-	Dim qexpand As String = Join(",", expand)
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
 
-	Dim opt As Map = CreateMap()
-	opt.Put("cache", "no-store")
-	If headers.Size <> 0 Then
-		opt.Put("headers", headers)
-	End If
-	If qflds <> "" Then opt.Put("fields", qflds)
-	If qexpand <> "" Then opt.Put("expand", qexpand)
-	If ShowLog Then
-		Log($"SDUIPocketBase.${sTableName}.CREATE(${BANano.ToJson(opt)})"$)
-	End If
-	Dim bpRes As Object
-	Dim bpErr As Object
-	Dim bpPro As BANanoPromise
+		Dim opt As Map = CreateMap()
+		opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.${sTableName}.CREATE(${BANano.ToJson(opt)})"$)
+		End If
 	'
-	bpPro = client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt))
-	bpPro.ThenWait(bpRes)
-		Dim m As Map = bpRes
-		If m.ContainsKey("id") Then
-			Record = BANano.DeepClone(m)
-			Dim k As String = m.Get("id")
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt)))
+		If Record.ContainsKey("id") Then
+			Dim k As String = Record.Get("id")
 			Return k
 		End If
 		Return ""
-	bpPro.ElseWait(bpErr)			'ignore
-		Log(bpErr)
+	Catch
+		Log($"CREATE: ${LastException.message}"$)
 		Return ""
-	bpPro.End
+	End Try
+	
+		
+'	Dim bpRes As Object
+'	Dim bpErr As Object
+'	Dim bpPro As BANanoPromise
+'	bpPro = client.RunMethod("collection", sTableName).RunMethod("create", Array(Record,opt))
+'	bpPro.ThenWait(bpRes)
+'		Dim m As Map = bpRes
+'		If m.ContainsKey("id") Then
+'			Record = BANano.DeepClone(m)
+'			Dim k As String = m.Get("id")
+'			Return k
+'		End If
+'		Return ""
+'	bpPro.ElseWait(bpErr)			'ignore
+'		Log(bpErr)
+'		Return ""
+'	bpPro.End
 End Sub
 '
+
+'ceate a ecod using fomdata
+'<code>
+'pb.PrepareForm
+'pb.SetFormFile("fileobj", fileObj)
+'pb.SetFormField("username", "user1")
+'dim m As map = BANano.Await(pb.CREATE_FORM)
+'dim id as String = m.get("id")
+'dim url as String = m.get("fileurl")
+'</code>
+Sub CREATE_FORM As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.CREATE_FORM"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.CREATE_FORM: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
+
+		Dim opt As Map = CreateMap()
+		'opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.${sTableName}.CREATE_FORMDATA(${formData})"$)
+		End If
+		'
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(formData,opt)))
+		If Record.ContainsKey("id") Then
+			If fileFields.Size > 0 Then
+				For Each fk As String In fileFields.keys
+					Dim fv As String = fileFields.Get(fk)
+					Dim fk1 As String = Record.Get(fk)
+					Dim pk1 As String = Record.Get(PrimaryKey)
+					fk1 = CStr(fk1).trim
+					If fk1 <> "" Then
+						Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+						Record.Put(fv, fk2)
+						If GetFiles Then
+							Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+							Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+							If bisBase64Image Then
+								Record.Put(fk, fdata)
+							Else
+								Record.Put(fk, "")
+							End If
+						End If
+					End If
+				Next
+			End If
+			Return Record
+		Else
+			Record = CreateMap()
+			Return Record
+		End If
+	Catch
+		Log($"CREATE_FORM: ${LastException.message}"$)
+		Record = CreateMap()
+		Return Record
+	End Try
+End Sub
+
+'record is saved as json string
+'returns the record id
+'<code>
+'pb.PrepareForm
+'pb.SetFormFile("avatar", fileObj)
+'pb.SetFormField("username", "user1")
+'BANano.Await(pb.UPDATE_FORM)
+'</code>
+Sub UPDATE_FORM(sID As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.UPDATE_FORMDATA"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.UPDATE: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
+
+		Dim opt As Map = CreateMap()
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		'
+		If ShowLog Then
+			Log($"SDUIPocketBase.${sTableName}.UPDATE_FORMDATA(${BANano.ToJson(opt)})"$)
+		End If
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sID, formData, opt)))
+		If Record.ContainsKey(PrimaryKey) Then
+			If fileFields.Size > 0 Then
+				For Each fk As String In fileFields.keys
+					Dim fv As String = fileFields.Get(fk)
+					Dim fk1 As String = Record.Get(fk)
+					Dim pk1 As String = Record.Get(PrimaryKey)
+					fk1 = CStr(fk1).trim
+					If fk1 <> "" Then
+						Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+						Record.Put(fv, fk2)
+						If GetFiles Then
+							Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+							Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+							If bisBase64Image Then
+								Record.Put(fk, fdata)
+							Else
+								Record.Put(fk, "")
+							End If
+						End If
+					End If
+				Next
+			End If
+			Return Record
+		Else
+			Record = CreateMap()
+			Return Record
+		End If
+	Catch
+		Log($"UPDATE_FORM: ${LastException.message}"$)
+		Record = CreateMap()
+		Return Record
+	End Try
+End Sub
+
 'ceate a ecod using fomdata
 '<code>
 'pb.PrepareForm
@@ -1468,7 +2212,8 @@ End Sub
 'dim url as String = m.get("fileurl")
 '</code>
 Sub CREATE_FORMDATA(fileField As String) As Map
-	fileFields.Put(fileField, "fileurl")
+	Dim nfieldName As String = $"${fileField}url"$
+	fileFields.Put(fileField, nfieldName)
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.CREATE_FORMDATA"$)
 	End If
@@ -1476,37 +2221,60 @@ Sub CREATE_FORMDATA(fileField As String) As Map
 		BANano.Throw($"SDUIPocketBase.CREATE_FORMDATA: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
-	Dim qflds As String = Join(",", flds)
-	Dim qexpand As String = Join(",", expand)
-
-	Dim opt As Map = CreateMap()
-	'opt.Put("cache", "no-store")
-	If headers.Size <> 0 Then
-		opt.Put("headers", headers)
-	End If
-	If qflds <> "" Then opt.Put("fields", qflds)
-	If qexpand <> "" Then opt.Put("expand", qexpand)
-	If ShowLog Then
-		Log($"SDUIPocketBase.${sTableName}.CREATE_FORMDATA(${formData})"$)
-	End If
-	'
-	Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(formData,opt)))
-	If res.ContainsKey("id") Then
-		Record = BANano.DeepClone(res)
-		If fileFields.Size > 0 Then
-			For Each fk As String In fileFields.keys
-				Dim fv As String = fileFields.Get(fk)
-				Dim fk1 As String = Record.Get(fk)
-				Dim pk1 As String = Record.Get(PrimaryKey)
-				Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-				Record.Put(fv, fk2)
-			Next
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
 		End If
-		Return Record
-	Else
+	Next
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
+
+		Dim opt As Map = CreateMap()
+		'opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.${sTableName}.CREATE_FORMDATA(${formData})"$)
+		End If
+		'
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("create", Array(formData,opt)))
+		If Record.ContainsKey("id") Then
+			If fileFields.Size > 0 Then
+				For Each fk As String In fileFields.keys
+					Dim fv As String = fileFields.Get(fk)
+					Dim fk1 As String = Record.Get(fk)
+					Dim pk1 As String = Record.Get(PrimaryKey)
+					fk1 = CStr(fk1).trim
+					If fk1 <> "" Then
+						Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+						Record.Put(fv, fk2)
+						If GetFiles Then
+							Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+							Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+							If bisBase64Image Then
+								Record.Put(fk, fdata)
+							Else
+								Record.Put(fk, "")
+							End If
+						End If
+					End If
+				Next
+			End If
+			Return Record
+		Else
+			Record = CreateMap()
+			Return Record
+		End If
+	Catch
+		Log($"CREATE_FORMDATA: ${LastException.message}"$)
 		Record = CreateMap()
 		Return Record
-	End If
+	End Try		
 End Sub
 
 '<code>
@@ -1520,30 +2288,39 @@ Sub EstablishFileUrl(fileField As String, urlField As String)
 		Log($"SDUIPocketBase.${sTableName}.EstablishFileUrl(${fileField},${urlField})"$)
 	End If
 	BANano.Console.warn($"DEPRECATED - ${mEvent}.EstablishFileUrl.${sTableName}.${fileField}.${urlField}, change to ${mEvent}.FILE_FIELD("${fileField}", "${urlField}")"$)
-	Dim rTot As Int = result.Size - 1
-	Dim rCnt As Int
-	For rCnt = 0 To rTot
-		Dim r As Map = result.Get(rCnt)
-		Dim firstFilename As String = r.Get(fileField)
-		Dim opt As Map = CreateMap()
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		Dim url As String = client.GetField("files").RunMethod("getUrl", Array(r, firstFilename,opt)).result
-		r.Put(urlField, url)
-		result.Set(rCnt, r)
-	Next
+	Try
+		Dim rTot As Int = result.Size - 1
+		Dim rCnt As Int
+		For rCnt = 0 To rTot
+			Dim r As Map = result.Get(rCnt)
+			Dim firstFilename As String = r.Get(fileField)
+			Dim opt As Map = CreateMap()
+			opt.Put("cache", "no-store")
+			If headers.Size <> 0 Then
+				opt.Put("headers", headers)
+			End If
+			Dim url As String = client.GetField("files").RunMethod("getUrl", Array(r, firstFilename,opt)).result
+			r.Put(urlField, url)
+			result.Set(rCnt, r)
+		Next
+	Catch
+		Log($"EstablishFileUrl: ${LastException.message}"$)
+	End Try	
 End Sub
 
-private Sub SELECT_VIEW(viewName As String)
-	sTableName = viewName
-	Dim cfileFields As Map = BANano.DeepClone(fileFields)
-	Reset
-	CLEAR_WHERE
-	skipTotal = False
-	fileFields = BANano.DeepClone(cfileFields)
-	BANano.Await(SELECT_ALL)
+'select existings fields to create a view
+Sub SELECT_VIEW(viewName As String)
+	Try
+		sTableName = viewName
+		Dim cfileFields As Map = BANano.DeepClone(fileFields)
+		Reset
+		CLEAR_WHERE
+		skipTotal = False
+		fileFields = BANano.DeepClone(cfileFields)
+		BANano.Await(SELECT_ALL)
+	Catch
+		Log($"SELECT_VIEW: ${LastException.message}"$)
+	End Try		
 End Sub
 
 'return the value of the first "records" field
@@ -1616,6 +2393,12 @@ Sub UPDATE_FORMDATA(sID As String) As String
 		BANano.Throw($"SDUIPocketBase.UPDATE: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
 	Try
 		Dim qflds As String = Join(",", flds)
 		Dim qexpand As String = Join(",", expand)
@@ -1630,26 +2413,37 @@ Sub UPDATE_FORMDATA(sID As String) As String
 		If ShowLog Then
 			Log($"SDUIPocketBase.${sTableName}.UPDATE_FORMDATA(${BANano.ToJson(opt)})"$)
 		End If
-		Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sID, formData, opt)))
-		If r.ContainsKey(PrimaryKey) Then
-			Record = BANano.DeepClone(r)
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(sID, formData, opt)))
+		If Record.ContainsKey(PrimaryKey) Then
 			If fileFields.Size > 0 Then
 				For Each fk As String In fileFields.keys
 					Dim fv As String = fileFields.Get(fk)
 					Dim fk1 As String = Record.Get(fk)
 					Dim pk1 As String = Record.Get(PrimaryKey)
-					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-					Record.Put(fv, fk2)
+					fk1 = CStr(fk1).trim
+					If fk1 <> "" Then
+						Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+						Record.Put(fv, fk2)
+						If GetFiles Then
+							Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+							Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+							If bisBase64Image Then
+								Record.Put(fk, fdata)
+							Else
+								Record.Put(fk, "")
+							End If
+						End If
+					End If
 				Next
 			End If
-			Dim k As String = r.Get("id")
+			Dim k As String = Record.Get("id")
 			Return k
 		Else
 			Record = CreateMap()
 			Return ""
 		End If
 	Catch
-		Log(LastException)
+		Log($"UPDATE_FORMDATA: ${LastException.message}"$)
 		Record = CreateMap()
 		Return ""
 	End Try
@@ -1663,20 +2457,9 @@ Sub GET_ID_BY_FIELD(fldName As String, fldValue As String) As String
 	CLEAR_WHERE
 	ADD_FIELD("id")
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return ""
-	Else
-		m = res.Get(0)
-		Dim sid As String = m.GetDefault("id", "")
-		Return sid
-	End If
-	
-	
-	'Dim rec As Map = BANano.Await(READ_BY_STRING(fldName, fldValue))
-	'Dim sid As String = rec.GetDefault("id", "")
-	'Return sid
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
 End Sub
 
 
@@ -1734,15 +2517,14 @@ Sub UPDATE As String
 			Log($"SDUIPocketBase.${sTableName}.UPDATE(${BANano.ToJson(opt)})"$)
 		End If
 		
-		Dim r As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
-		If r.ContainsKey("id") Then
-			Record = BANano.DeepClone(r)
-			Dim k As String = r.Get("id")
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("update", Array(id, Record,opt)))
+		If Record.ContainsKey("id") Then
+			Dim k As String = Record.Get("id")
 			Return k
 		End If
 		Return ""
 	Catch
-		Log(LastException)
+		Log($"UPDATE: ${LastException.message}"$)
 		Return ""
 	End Try
 End Sub
@@ -1795,7 +2577,7 @@ Sub UPDATE_PER_FIELD As String
 				End If
 			End If
 		Catch
-			Log(LastException)
+			Log($"UPDATE_PER_FIELD: ${LastException.message}"$)
 		End Try
 	Next
 	If usize = msize Then
@@ -1818,7 +2600,12 @@ Sub READ(id As String) As Map
 		BANano.Throw($"SDUIPocketBase.READ: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
-	Dim m As Map = CreateMap()
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
 	Try
 		Dim qflds As String = Join(",", flds)
 		Dim qexpand As String = Join(",", expand)
@@ -1835,23 +2622,33 @@ Sub READ(id As String) As Map
 		If ShowLog Then
 			Log($"SDUIPocketBase.${sTableName}.READ(${BANano.ToJson(opt)})"$)
 		End If
-		m = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getOne", Array(id, opt)))
-		Record = m
+		Record = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getOne", Array(id, opt)))
 		If fileFields.Size > 0 Then
 			For Each fk As String In fileFields.keys
 				Dim fv As String = fileFields.Get(fk)
 				Dim fk1 As String = Record.Get(fk)
 				Dim pk1 As String = Record.Get(PrimaryKey)
-				Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-				Record.Put(fv, fk2)
-				m.Put(fv, fk2)
+				fk1 = CStr(fk1).trim
+				If fk1 <> "" Then
+					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+					Record.Put(fv, fk2)
+					If GetFiles Then
+						Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+						Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+						If bisBase64Image Then
+							Record.Put(fk, fdata)
+						Else
+							Record.Put(fk, "")
+						End If
+					End If
+				End If				
 			Next
 		End If
-		Return m
+		Return Record
 	Catch
-		Log(LastException)
-		Record = m
-		Return m
+		Log($"READ: ${LastException.message}"$)
+		Record = CreateMap()
+		Return Record
 	End Try
 End Sub
 
@@ -1867,7 +2664,12 @@ Sub READ_USER(id As String) As Map
 		BANano.Throw($"SDUIPocketBase.READ_USER: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
-	Dim m As Map = CreateMap()
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
 	Try
 		Dim qflds As String = Join(",", flds)
 		Dim qexpand As String = Join(",", expand)
@@ -1884,23 +2686,33 @@ Sub READ_USER(id As String) As Map
 		If ShowLog Then
 			Log($"SDUIPocketBase.${sTableName}.READ_USER(${BANano.ToJson(opt)})"$)
 		End If
-		m = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("getOne", Array(id,opt)))
-		Record = m
+		Record = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("getOne", Array(id,opt)))
 		If fileFields.Size > 0 Then
 			For Each fk As String In fileFields.keys
 				Dim fv As String = fileFields.Get(fk)
 				Dim fk1 As String = Record.Get(fk)
 				Dim pk1 As String = Record.Get(PrimaryKey)
-				Dim fk2 As String = $"${baseURL}/api/files/${UsersCollectionName}/${pk1}/${fk1}"$
-				Record.Put(fv, fk2)
-				m.Put(fv, fk2)
+				fk1 = CStr(fk1).trim
+				If fk1 <> "" Then
+					Dim fk2 As String = $"${baseURL}/api/files/${UsersCollectionName}/${pk1}/${fk1}"$
+					Record.Put(fv, fk2)
+					If GetFiles Then
+						Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+						Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+						If bisBase64Image Then
+							Record.Put(fk, fdata)
+						Else
+							Record.Put(fk, "")
+						End If
+					End If
+				End If
 			Next
 		End If
-		Return m
+		Return Record
 	Catch
-		Log(LastException)
-		Record = m
-		Return m
+		Log($"READ_USER: ${LastException.message}"$)
+		Record = CreateMap()
+		Return Record
 	End Try
 End Sub
 
@@ -1916,6 +2728,12 @@ Sub READ_ADMIN(id As String) As Map
 		BANano.Throw($"SDUIPocketBase.READ_USER: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
 	Dim m As Map = CreateMap()
 	Try
 		Dim qflds As String = Join(",", flds)
@@ -1943,14 +2761,26 @@ Sub READ_ADMIN(id As String) As Map
 				Dim fv As String = fileFields.Get(fk)
 				Dim fk1 As String = Record.Get(fk)
 				Dim pk1 As String = Record.Get(PrimaryKey)
-				Dim fk2 As String = $"${baseURL}/api/files/${xtablename}/${pk1}/${fk1}"$
-				Record.Put(fv, fk2)
-				m.Put(fv, fk2)
+				fk1 = CStr(fk1).trim
+				If fk1 <> "" Then
+					Dim fk2 As String = $"${baseURL}/api/files/${xtablename}/${pk1}/${fk1}"$
+					Record.Put(fv, fk2)
+					If GetFiles Then
+						Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+						Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+						If bisBase64Image Then
+							Record.Put(fk, fdata)
+						Else
+							Record.Put(fk, "")
+						End If
+					End If
+					m.Put(fv, fk2)
+				End If
 			Next
 		End If
 		Return m
 	Catch
-		Log(LastException)
+		Log($"READ_ADMIN: ${LastException.message}"$)
 		Record = m
 		Return m
 	End Try
@@ -1966,6 +2796,7 @@ Sub READ_COLLECTION(id As String) As Map
 	End If
 	Dim m As Map = CreateMap()
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim opt As Map = CreateMap()
 		opt.Put("cache", "no-store")
 		If headers.Size <> 0 Then
@@ -1991,14 +2822,14 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 	End If
 	CLEAR_WHERE
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return m
-	Else
-		m = res.Get(0)
-		Return m
-	End If
+	For Each fld As String In Schema.Keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
 End Sub
 
 '<code>
@@ -2012,15 +2843,15 @@ Sub READ_BY_STRING_FIELDS(fldName As String, fldValue As Object, theseFlds As Li
 	End If
 	CLEAR_WHERE
 	ADD_FIELDS(theseFlds)
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then 
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return m
-	Else
-		m = res.Get(0)
-		Return m
-	End If
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
 End Sub
 
 '<code>
@@ -2036,14 +2867,14 @@ Sub READ_BY_STRING_FIELDS1(fldName As String, fldValue As Object) As Map
 	CLEAR_WHERE
 	ADD_FIELDS(cf)
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return m
-	Else
-		m = res.Get(0)
-		Return m
-	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
 End Sub
 
 'return an id of a record by reading a unique string field
@@ -2054,19 +2885,9 @@ Sub READ_ID_BY_STRING(fldName As String, fldValue As String) As String
 	CLEAR_WHERE
 	ADD_FIELD("id")
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return ""
-	Else
-		m = res.Get(0)
-		Dim sid As String = m.GetDefault("id", "")
-		Return sid
-	End If
-	
-'	Dim rec As Map = BANano.Await(READ_BY_STRING(fldName, fldValue))
-'	Dim sid As String = rec.GetDefault("id", "")
-'	Return sid
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
 End Sub
 
 '<code>
@@ -2080,14 +2901,14 @@ Sub READ_BY(fldName As String, fldValue As Object) As Map
 	End If
 	CLEAR_WHERE
 	ADD_WHERE(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return m
-	Else
-		m = res.Get(0)
-		Return m
-	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
 End Sub
 
 '<code>
@@ -2102,14 +2923,14 @@ Sub READ_BY_FIELDS(fldName As String, fldValue As Object, theseFlds As List) As 
 	CLEAR_WHERE
 	ADD_FIELDS(theseFlds)
 	ADD_WHERE(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	Dim m As Map = CreateMap()
-	If res.size = 0 Then
-		Return m
-	Else
-		m = res.Get(0)
-		Return m
-	End If
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
 End Sub
 
 
@@ -2128,8 +2949,8 @@ Sub ContainsKey(id As String) As Boolean
 	CLEAR_WHERE
 	ADD_FIELD("id")
 	ADD_WHERE("id", "=", $"'${id}'"$)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	If res.Size = 0 Then
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.Size = 0 Then
 		Return False
 	Else
 		Return True
@@ -2147,8 +2968,8 @@ Sub ContainsField(fldName As String, id As String) As Boolean
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
 	ADD_WHERE(fldName, "=", $"'${id}'"$)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	If res.Size = 0 Then
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.Size = 0 Then
 		Return False
 	Else
 		Return True
@@ -2185,18 +3006,21 @@ Sub DELETE_ALL
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.DELETE_ALL"$)
 	End If
-
-	Dim keys As List = BANano.Await(ListKeys)
-	If keys.size = 0 Then Return
-	Dim collection As BANanoObject = client.RunMethod("collection", sTableName)
-	For Each k As String In keys
-		Dim opt As Map = CreateMap()
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		BANano.Await(collection.RunMethod("delete", Array(k, opt)))
-	Next
+	Try
+		Dim keys As List = BANano.Await(ListKeys)
+		If keys.size = 0 Then Return
+		Dim collection As BANanoObject = client.RunMethod("collection", sTableName)
+		For Each k As String In keys
+			Dim opt As Map = CreateMap()
+			opt.Put("cache", "no-store")
+			If headers.Size <> 0 Then
+				opt.Put("headers", headers)
+			End If
+			BANano.Await(collection.RunMethod("delete", Array(k, opt)))
+		Next
+	Catch
+		Log($"DELETE_ALL: ${LastException.message}"$)
+	End Try		
 End Sub
 
 'get keyvalues for combos etc
@@ -2270,7 +3094,7 @@ Sub DELETE(id As String) As Boolean
 		Dim r As Boolean = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("delete", Array(id,opt)))
 		Return r
 	Catch
-		Log(LastException)
+		Log($"DELETE: ${LastException.message}"$)
 		Return False
 	End Try
 End Sub
@@ -2301,7 +3125,7 @@ Sub DELETE_MULTIPLE(items As List) As Boolean
 		Next
 		Return True
 	Catch
-		Log(LastException)
+		Log($"DELETE_MULTIPLE: ${LastException.message}"$)
 		Return False
 	End Try
 End Sub
@@ -2322,7 +3146,6 @@ Sub SetField(fldName As String, fldValue As Object) As SDUIPocketBase
 				fldValue = CStr(fldValue)
 			Case DB_REAL
 				fldValue = CDbl(fldValue)
-			Case DB_BLOB
 			Case DB_FLOAT
 				fldValue = CDbl(fldValue)
 			Case DB_INTEGER
@@ -2541,6 +3364,26 @@ Sub ADD_WHERE_STRING(fld As String, operator As String, value As Object) As SDUI
 	Return Me
 End Sub
 
+Sub ADD_OR_WHERE_STRING(fld As String, operator As String, value As Object) As SDUIPocketBase
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ADD_OR_WHERE_STRING(${fld},${operator},${value})"$)
+	End If
+	Dim combineLen As Int = combineL.Size - 1
+	WHERE_OR(combineLen)
+	ADD_WHERE(fld, operator, $"'${value}'"$)
+	Return Me
+End Sub
+
+Sub ADD_OR_WHERE(fld As String, operator As String, value As Object) As SDUIPocketBase
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ADD_OR_WHERE(${fld},${operator},${value})"$)
+	End If
+	Dim combineLen As Int = combineL.Size - 1
+	WHERE_OR(combineLen)
+	ADD_WHERE(fld, operator, value)
+	Return Me
+End Sub
+
 'change the selection at position from AND to OR
 Sub WHERE_OR(pos As Int) As SDUIPocketBase
 	If ShowLog Then
@@ -2612,7 +3455,6 @@ Sub SetRecord(rec As Map)
 				v = CStr(v)
 			Case DB_REAL
 				v = CDbl(v)
-			Case DB_BLOB
 			Case DB_FLOAT
 				v = CDbl(v)
 			Case DB_INTEGER
@@ -2667,7 +3509,6 @@ Sub SetFormFile(fldName As String, fldValue As Object) As SDUIPocketBase
 			fldValue = CStr(fldValue)
 		Case DB_REAL
 			fldValue = CDbl(fldValue)
-		Case DB_BLOB
 		Case DB_FLOAT
 			fldValue = CDbl(fldValue)
 		Case DB_INTEGER
@@ -2705,7 +3546,6 @@ Sub SetFormField(fldName As String, fldValue As Object) As SDUIPocketBase
 			fldValue = CStr(fldValue)
 		Case DB_REAL
 			fldValue = CDbl(fldValue)
-		Case DB_BLOB
 		Case DB_FLOAT
 			fldValue = CDbl(fldValue)
 		Case DB_INTEGER
@@ -2728,6 +3568,10 @@ Sub setPosition(pos As Int)
 		lastPosition = -1
 		Record.Initialize
 	End If
+End Sub
+
+Sub SetRecordAt(pos As Int, rec As Map)
+	result.Set(pos, rec)
 End Sub
 
 Sub getPosition As Int
@@ -2847,6 +3691,89 @@ End Sub
 '<code>
 'Dim WhereRecords As List = BANano.Await(pb.findWhereOrderBy(m, array("="), orderBy)
 '</code>
+'Sub findWhereOrderByX(whereMap As Map, whereOps As List, orderByx As List) As List
+'	If ShowLog Then
+'		Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderByx})"$)
+'	End If
+'	If Schema.Size = 0 Then
+'		BANano.Throw($"SDUIPocketBase.findWhereOrderBy: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+'		Return Null
+'	End If
+'	'we build the filter
+'	Dim sb As StringBuilder
+'	sb.Initialize
+'	Dim i As Int
+'	Dim iWhere As Int = whereMap.Size - 1
+'	For i = 0 To iWhere
+'		'If i > 0 Then
+'		'	sb.Append(" && ")
+'		'End If
+'		Dim col As String = whereMap.GetKeyAt(i)
+'		col = MvField(col, 1,".")
+'		col = col.replace("&","")
+'		Dim xVal As String = whereMap.GetValueAt(i)
+'		Dim opr As String = whereOps.Get(i)
+'		Dim com As String = combineL.Get(i)
+'		sb.Append(col)
+'		sb.Append($" ${opr} "$)
+'		sb.append(xVal)
+'		sb.Append($" ${com} "$)
+'	Next
+'	'
+'	Dim qfilter As String = sb.tostring
+'	sb.Initialize
+'	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+'	qfilter = afilter.Trim
+'	'
+'	Dim qsort As String = ""
+'	If BANano.IsNull(orderByx) = False Then
+'		qsort = Join(",", orderByx)
+'	End If
+'	'
+'	Dim qflds As String = Join(",", flds)
+'	Dim qexpand As String = Join(",", expand)
+'	
+'	Dim nl As List
+'	nl.Initialize
+'	Try
+'		Dim opt As Map = CreateMap()
+'		If qsort <> "" Then opt.Put("sort", qsort)
+'		If qflds <> "" Then opt.Put("fields", qflds)
+'		If qexpand <> "" Then opt.Put("expand", qexpand)
+'		opt.Put("batch", batchSize)
+'		opt.Put("skipTotal", skipTotal)
+'		opt.Put("cache", "no-store")
+'		If headers.Size <> 0 Then
+'			opt.Put("headers", headers)
+'		End If
+'		If qfilter <> "" Then opt.Put("filter", qfilter)
+'		If ShowLog Then
+'			Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(opt)})"$)
+'		End If
+'		nl = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getFullList", Array(opt)))
+'		'
+'		If fileFields.Size > 0 Then
+'			Dim rTot As Int = nl.Size - 1
+'			Dim rCnt As Int = 0
+'			For rCnt = 0 To rTot
+'				Dim r As Map = nl.Get(rCnt)
+'				For Each fk As String In fileFields.keys
+'					Dim fv As String = fileFields.Get(fk)
+'					Dim fk1 As String = r.Get(fk)
+'					Dim pk1 As String = r.Get(PrimaryKey)
+'					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+'					R.Put(fv, fk2)
+'				Next
+'				nl.Set(rCnt, r)
+'			Next
+'		End If
+'	Catch
+'		Log(LastException)
+'	End Try			'ignore
+'	Return nl
+'End Sub
+'
+
 Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByx As List) As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderByx})"$)
@@ -2855,80 +3782,115 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByx As List) As Lis
 		BANano.Throw($"SDUIPocketBase.findWhereOrderBy: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
-	'we build the filter
+	'
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	
+	' Build filter
 	Dim sb As StringBuilder
 	sb.Initialize
+	If ownFilter.Size > 0 Then
+		Dim nfilter As String = Join(" ", ownFilter)
+		nfilter = nfilter.trim
+		sb.Append(nfilter)
+	End If
 	Dim i As Int
 	Dim iWhere As Int = whereMap.Size - 1
 	For i = 0 To iWhere
-		'If i > 0 Then
-		'	sb.Append(" && ")
-		'End If
 		Dim col As String = whereMap.GetKeyAt(i)
-		col = MvField(col, 1,".")
-		col = col.replace("&","")
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
 		Dim xVal As String = whereMap.GetValueAt(i)
 		Dim opr As String = whereOps.Get(i)
 		Dim com As String = combineL.Get(i)
 		sb.Append(col)
 		sb.Append($" ${opr} "$)
-		sb.append(xVal)
+		sb.Append(xVal)
 		sb.Append($" ${com} "$)
 	Next
-	'
-	Dim qfilter As String = sb.tostring
-	sb.Initialize
-	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
-	qfilter = afilter.Trim
-	'
+	Dim qfilter As String = RemDelim(sb.ToString, $" ${com} "$).Trim
+	
+	' Build sort, fields, expand
 	Dim qsort As String = ""
 	If BANano.IsNull(orderByx) = False Then
 		qsort = Join(",", orderByx)
 	End If
-	'
 	Dim qflds As String = Join(",", flds)
 	Dim qexpand As String = Join(",", expand)
-	
-	Dim nl As List
-	nl.Initialize
+
+	' Initialize result list
+	Dim allRecords As List
+	allRecords.Initialize
+
 	Try
-		Dim opt As Map = CreateMap()
-		If qsort <> "" Then opt.Put("sort", qsort)
-		If qflds <> "" Then opt.Put("fields", qflds)
-		If qexpand <> "" Then opt.Put("expand", qexpand)
-		opt.Put("batch", batchSize)
-		opt.Put("skipTotal", skipTotal)
-		opt.Put("cache", "no-store")
-		If headers.Size <> 0 Then
-			opt.Put("headers", headers)
-		End If
-		If qfilter <> "" Then opt.Put("filter", qfilter)
-		If ShowLog Then
-			Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(opt)})"$)
-		End If
-		nl = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getFullList", Array(opt)))
-		'
-		If fileFields.Size > 0 Then
-			Dim rTot As Int = nl.Size - 1
-			Dim rCnt As Int = 0
-			For rCnt = 0 To rTot
-				Dim r As Map = nl.Get(rCnt)
-				For Each fk As String In fileFields.keys
-					Dim fv As String = fileFields.Get(fk)
-					Dim fk1 As String = r.Get(fk)
-					Dim pk1 As String = r.Get(PrimaryKey)
-					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-					R.Put(fv, fk2)
+		Dim page As Int = 1
+		Dim totalPages As Int = 1  ' Will be updated after first call
+
+		Do While page <= totalPages
+			Dim opt As Map = CreateMap()
+			opt.Put("page", page)
+			opt.Put("perPage", batchSize)
+			If qsort <> "" Then opt.Put("sort", qsort)
+			If qflds <> "" Then opt.Put("fields", qflds)
+			If qexpand <> "" Then opt.Put("expand", qexpand)
+			If qfilter <> "" Then opt.Put("filter", qfilter)
+			If headers.Size <> 0 Then opt.Put("headers", headers)
+			opt.Put("cache", "no-store")
+
+			If ShowLog Then
+				Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy PAGE ${page}: ${BANano.ToJson(opt)}"$)
+			End If
+
+			' Fetch paginated result
+			Dim res As Map = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getList", Array(page, batchSize, opt)))
+			Dim items As List = res.Get("items")
+			If page = 1 Then totalPages = res.Get("totalPages")
+			
+			' Process file fields if needed
+			If fileFields.Size > 0 Then
+				For rCnt = 0 To items.Size - 1
+					Dim r As Map = items.Get(rCnt)
+					For Each fk As String In fileFields.Keys
+						Dim fv As String = fileFields.Get(fk)
+						Dim fk1 As String = r.Get(fk)
+						Dim pk1 As String = r.Get(PrimaryKey)
+						fk1 = CStr(fk1).trim
+						If fk1 <> "" Then
+							Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+							r.Put(fv, fk2)
+							If GetFiles Then
+								Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+								Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+								If bisBase64Image Then
+									r.Put(fk, fdata)
+								Else
+									r.Put(fk, "")
+								End If
+							End If
+						End If
+					Next
+					items.Set(rCnt, r)
 				Next
-				nl.Set(rCnt, r)
-			Next
-		End If	
+			End If
+
+			' Add to full result list
+			allRecords.AddAll(items)
+
+			page = page + 1
+		Loop
+
 	Catch
-		Log(LastException)
-	End Try			'ignore
-	Return nl
+		Log($"findWhereOrderBy: ${LastException.message}"$)
+	End Try
+
+	Return allRecords
 End Sub
-'
+
+
 
 'mvfield sub
 private Sub MvField(sValue As String, iPosition As Int, Delimiter As String) As String
@@ -3092,8 +4054,8 @@ Sub ExistsByString(fldName As String, fldValue As Object) As Boolean
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
 	ADD_WHERE_STRING(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	If res.size = 0 Then
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.size = 0 Then
 		Return False
 	Else
 		Return True
@@ -3110,8 +4072,8 @@ Sub Exists(fldName As String, fldValue As Object) As Boolean
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
 	ADD_WHERE(fldName, "=", fldValue)
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	If res.size = 0 Then
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.size = 0 Then
 		Return False
 	Else
 		Return True
@@ -3131,8 +4093,8 @@ Sub ExistsWhere(where As Map) As Boolean
 		Dim v As String = where.Get(k)
 		ADD_WHERE_STRING(k, "=", v)
 	Next
-	Dim res As List = BANano.Await(SELECT_WHERE)
-	If res.size = 0 Then
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.size = 0 Then
 		Return False
 	Else
 		Return True
@@ -3156,6 +4118,100 @@ Sub SELECT_WHERE As List
 	End If
 	Dim res As List = BANano.Await(findWhereOrderBy(whereField, ops, orderByL))
 	Return res
+End Sub
+
+'get the first item that matches your filter
+Sub GetFirstListItem(tableName As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.getFirstListItem"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.GetFirstListItem: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	'
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+
+	' Build filter
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim i As Int
+	Dim iWhere As Int = whereField.Size - 1
+	For i = 0 To iWhere
+		Dim col As String = whereField.GetKeyAt(i)
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
+		Dim xVal As String = whereField.GetValueAt(i)
+		Dim opr As String = ops.Get(i)
+		Dim com As String = combineL.Get(i)
+		sb.Append(col)
+		sb.Append($" ${opr} "$)
+		sb.Append(xVal)
+		sb.Append($" ${com} "$)
+	Next
+	Dim qfilter As String = RemDelim(sb.ToString, $" ${com} "$).Trim
+	'we dont have a filter
+	If qfilter = "" Then
+		Dim m As Map = CreateMap()
+		Return m
+	End If
+	'we have a filter, process further
+	'Build sort, fields, expand
+	Dim qsort As String = ""
+	If BANano.IsNull(orderByL) = False Then
+		qsort = Join(",", orderByL)
+	End If
+	Dim qflds As String = Join(",", flds)
+	Dim qexpand As String = Join(",", expand)
+
+	Dim opt As Map = CreateMap()
+	If qsort <> "" Then opt.Put("sort", qsort)
+	If qflds <> "" Then opt.Put("fields", qflds)
+	If qexpand <> "" Then opt.Put("expand", qexpand)
+	If headers.Size <> 0 Then opt.Put("headers", headers)
+	opt.Put("cache", "no-store")
+	'
+	If ShowLog Then
+		Log($"SDUIPocketBase.${tableName}.GetFirstListItem: ${BANano.ToJson(opt)}"$)
+	End If
+	
+	Try
+		Dim res As Map = BANano.Await(client.RunMethod("collection", tableName).RunMethod("getFirstListItem", Array(qfilter, opt)))
+		' Process file fields if needed
+		If fileFields.Size > 0 Then
+			For Each fk As String In fileFields.Keys
+				If res.ContainsKey(fk) Then
+					Dim fv As String = fileFields.Get(fk)
+					Dim fk1 As String = res.Get(fk)
+					Dim pk1 As String = res.Get(PrimaryKey)
+					fk1 = CStr(fk1).trim
+					If fk1 <> "" Then
+						Dim fk2 As String = $"${baseURL}/api/files/${tableName}/${pk1}/${fk1}"$
+						res.Put(fv, fk2)
+						If GetFiles Then
+							Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
+							Dim bisBase64Image As Boolean = BANano.Await(isBase64Image(fdata))
+							If bisBase64Image Then
+								res.Put(fk, fdata)
+							Else
+								res.Put(fk, "")
+							End If
+						End If
+					End If
+				End If
+			Next
+		End If
+		Return res
+	Catch
+		Log($"GetFirstListItem: ${LastException.message}"$)
+		Dim m As Map = CreateMap()
+		Return m
+	End Try
 End Sub
 
 '<code>
@@ -3293,7 +4349,7 @@ Sub CREATE_USER(profile As Map) As Map
 			Return Null
 		End If
 	Catch
-		Log(LastException)
+		Log($"CREATE_USER: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3328,7 +4384,7 @@ Sub CHANGE_USER_PASSWORD(uEmail As String, newPassword As String, confirmPasswor
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("update", Array(uID, uProfile,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"CHANGE_USER_PASSWORD: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3399,7 +4455,7 @@ Sub CREATE_ADMIN(profile As Map) As Map
 			Return Null
 		End If
 	Catch
-		Log(LastException)
+		Log($"CREATE_ADMIN: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3412,6 +4468,7 @@ Sub CREATE_COLLECTION(nameOf As String, colType As String, colSchema As List) As
 		Log($"SDUIPocketBase.CREATE_COLLECTION(${nameOf},${colType})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", colType)
@@ -3430,7 +4487,7 @@ Sub CREATE_COLLECTION(nameOf As String, colType As String, colSchema As List) As
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"CREATE_COLLECTION: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3442,10 +4499,6 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 	If ShowLog Then
 		Log($"SDUIPocketBase.Schema_CreateCollection(${nameOf},${colType})"$)
 	End If
-	'if the collection exists, return it
-	Dim colmap As Map = BANano.Await(READ_COLLECTION(nameOf))
-	If colmap.Size > 0 Then Return colmap
-	'
 	Dim colSchema As List
 	colSchema.Initialize
 	For Each k As String In Schema.Keys
@@ -3473,6 +4526,7 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 	Next
 	'
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", colType)
@@ -3492,10 +4546,14 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 		Dim idxList As List
 		idxList.Initialize
 		For Each idx As String In uniqueIdxNames.Keys
-			idxList.Add($""CREATE UNIQUE INDEX `${nameOf}_${idx}` ON `${nameOf}` (`${idx}`)""$)
+			Dim idxName As String = idx.Replace(",", "")
+			Dim joinIdx As String = JoinIndexNames(idx)
+			idxList.Add($""CREATE UNIQUE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})""$)
 		Next
 		For Each idx As String In idxNames.Keys
-			idxList.Add($""CREATE INDEX `${nameOf}_${idx}` ON `${nameOf}` (`${idx}`)""$)
+			Dim idxName As String = idx.Replace(",", "")
+			Dim joinIdx As String = JoinIndexNames(idx)
+			idxList.Add($""CREATE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})""$)
 		Next
 		If idxList.Size > 0 Then
 			col.put("indexes", idxList)
@@ -3514,11 +4572,24 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"Schema_CreateCollection: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
 
+private Sub JoinIndexNames(idx As String) As String
+	Dim lst As List = StrParse(",", idx)
+	Dim lTot As Int = lst.Size - 1
+	Dim lCnt As Int
+	For lCnt = 0 To lTot
+		Dim lItem As String = lst.Get(lCnt)
+		lItem = lItem.Replace("`", "")
+		lItem = $"`${lItem}`"$
+		lst.Set(lCnt, lItem)
+	Next
+	Dim sout As String = Join(",", lst)
+	Return sout
+End Sub
 
 '<code>
 'dim profile As Map = BANano.Await(pb.CREATE_COLLECTION1("people", schema, "", "", "", "", ""))
@@ -3529,6 +4600,7 @@ Sub CREATE_COLLECTION1(nameOf As String, colSchema As List, screateRule As Strin
 		Log($"SDUIPocketBase.CREATE_COLLECTION1(${nameOf})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", "base")
@@ -3552,7 +4624,7 @@ Sub CREATE_COLLECTION1(nameOf As String, colSchema As List, screateRule As Strin
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"CREATE_COLLECTION1: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3563,6 +4635,7 @@ Sub CREATE_COLLECTION2(nameOf As String, typeOf As String, colSchema As List, sc
 		Log($"SDUIPocketBase.CREATE_COLLECTION2(${nameOf})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", typeOf)
@@ -3588,7 +4661,7 @@ Sub CREATE_COLLECTION2(nameOf As String, typeOf As String, colSchema As List, sc
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"CREATE_COLLECTION2: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3598,6 +4671,7 @@ Sub CREATE_COLLECTION_ORIGINAL(col As Map) As Map
 		Log($"SDUIPocketBase.CREATE_COLLECTION_ORIGINAL"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim qflds As String = Join(",", flds)
 		Dim qexpand As String = Join(",", expand)
 
@@ -3612,7 +4686,7 @@ Sub CREATE_COLLECTION_ORIGINAL(col As Map) As Map
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"CREATE_COLLECTION_ORIGINAL: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3626,6 +4700,7 @@ Sub UPDATE_COLLECTION(colName As String, colSchema As Map) As Map
 		Log($"SDUIPocketBase.UPDATE_COLLECTION(${colName})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("schema", colSchema)
 		Dim qflds As String = Join(",", flds)
@@ -3641,7 +4716,7 @@ Sub UPDATE_COLLECTION(colName As String, colSchema As Map) As Map
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("update", Array(colName, col,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_COLLECTION: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3654,6 +4729,7 @@ Sub UPDATE_COLLECTION_ORIGINAL(col As Map) As Map
 		Log($"SDUIPocketBase.UPDATE_COLLECTION()"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim colName As String = col.get("name")
 		Dim nc As Map = CreateMap()
 		nc.put("name", colName)
@@ -3680,7 +4756,7 @@ Sub UPDATE_COLLECTION_ORIGINAL(col As Map) As Map
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("update", Array(colName, nc, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_COLLECTION_ORIGINAL: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3694,6 +4770,7 @@ Sub UPDATE_COLLECTION1(nameOf As String, colSchema As List, screateRule As Strin
 		Log($"SDUIPocketBase.UPDATE_COLLECTION1(${nameOf})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", "base")
@@ -3717,7 +4794,7 @@ Sub UPDATE_COLLECTION1(nameOf As String, colSchema As List, screateRule As Strin
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("update", Array(nameOf, col,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_COLLECTION1: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3728,6 +4805,7 @@ Sub UPDATE_COLLECTION2(nameOf As String, typeOf As String, colSchema As List, sc
 		Log($"SDUIPocketBase.UPDATE_COLLECTION2(${nameOf})"$)
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim col As Map = CreateMap()
 		col.Put("name", nameOf)
 		col.Put("type", typeOf)
@@ -3753,7 +4831,7 @@ Sub UPDATE_COLLECTION2(nameOf As String, typeOf As String, colSchema As List, sc
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("update", Array(col,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_COLLECTION2: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3786,7 +4864,7 @@ Sub UPDATE_USER(id As String, profile As Map) As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("update", Array(id, profile,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_USER: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3820,7 +4898,7 @@ Sub UPDATE_ADMIN(id As String, profile As Map) As Map
 		End Select
 		Return res
 	Catch
-		Log(LastException)
+		Log($"UPDATE_ADMIN: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3851,7 +4929,7 @@ Sub DELETE_USER(id As String) As Boolean
 		Dim r As Boolean = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("delete", Array(id, opt)))
 		Return r
 	Catch
-		Log(LastException)
+		Log($"DELETE_USER: ${LastException.message}"$)
 		Return False
 	End Try
 End Sub
@@ -3880,9 +4958,9 @@ Sub DELETE_ADMIN(id As String) As Boolean
 			Case Else
 				Dim r As Boolean = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("delete", Array(id, opt)))
 		End Select
-		Return r
+		Return r		
 	Catch
-		Log(LastException)
+		Log($"DELETE_ADMIN: ${LastException.message}"$)
 		Return False
 	End Try
 End Sub
@@ -3900,6 +4978,7 @@ Sub DELETE_COLLECTION(colName As String) As Boolean
 		Return False
 	End If
 	Try
+		SetAuthorizationBearerToken(UserToken)
 		Dim opt As Map = CreateMap()
 		opt.Put("cache", "no-store")
 		If headers.Size <> 0 Then
@@ -3908,7 +4987,7 @@ Sub DELETE_COLLECTION(colName As String) As Boolean
 		Dim r As Boolean = BANano.Await(client.GetField("collections").RunMethod("delete", Array(colName,opt)))
 		Return r
 	Catch
-		Log(LastException)
+		Log($"DELETE_COLLECTION: ${LastException.message}"$)
 		Return False
 	End Try
 End Sub
@@ -3933,7 +5012,7 @@ Sub USER_REQUEST_VERIFICATION(email As String) As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("requestVerification", Array(email, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_REQUEST_VERIFICATION: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3964,7 +5043,7 @@ Sub USER_REQUEST_PASSWORD_RESET(email As String) As Boolean
 		Dim res As Boolean = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("requestPasswordReset", Array(email,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_REQUEST_PASSWORD_RESET: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -3989,7 +5068,7 @@ Sub USER_REQUEST_EMAIL_CHANGE(email As String) As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("requestEmailChange", Array(email,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_REQUEST_EMAIL_CHANGE: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4014,7 +5093,7 @@ Sub USER_CONFIRM_EMAIL_CHANGE(token As String, email As String) As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("confirmEmailChange", Array(token, email,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_CONFIRM_EMAIL_CHANGE: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4040,7 +5119,7 @@ Sub USER_CONFIRM_VERIFICATION(token As String) As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("confirmVerification", Array(token,opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_CONFIRM_VERIFICATION: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4064,7 +5143,7 @@ Sub USER_CONFIRM_PASSWORD_RESET(token As String, newPassword As String, confimPa
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("confirmPasswordReset", Array(token, newPassword, confimPassword, opt)))
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_CONFIRM_PASSWORD_RESET: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4084,6 +5163,9 @@ Sub USER_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 	UserProfile.size = 0
 	IsAuthenticated = False
 	UserRecord = CreateMap()
+	UserToken = ""
+	UserModel = CreateMap()
+	UserValid = False
 	Try
 		Dim opt As Map = CreateMap()
 		opt.Put("cache", "no-store")
@@ -4094,6 +5176,9 @@ Sub USER_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 			Log($"SDUIPocketBase.USER_AUTH_WITH_PASSWORD(${BANano.ToJson(opt)})"$)
 		End If
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("authWithPassword", Array(email, pwd,opt)))
+		UserToken = client.getfield("authStore").GetField("token").Result
+		UserModel = client.getfield("authStore").GetField("model").Result
+		UserValid = client.getfield("authStore").GetField("isValid").Result
 		UserProfile.token = res.GetDefault("token", "")
 		If res.ContainsKey("record") Then
 			UserRecord = res.Get("record")
@@ -4109,7 +5194,7 @@ Sub USER_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 		End If
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_AUTH_WITH_PASSWORD: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4139,6 +5224,7 @@ Sub USER_AUTH_REFRESH As Map
 		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("authRefresh", opt))
 		UserProfile.token = res.GetDefault("token", "")
 		If res.ContainsKey("record") Then
+			UserRecord = res.Get("record")
 			UserProfile.id = GetRecursive(res, "record.id")
 			UserProfile.email = GetRecursive(res, "record.email")
 			UserProfile.avatar = GetRecursive(res, "record.avatar")
@@ -4150,7 +5236,7 @@ Sub USER_AUTH_REFRESH As Map
 		End If
 		Return res
 	Catch
-		Log(LastException)
+		Log($"USER_AUTH_REFRESH: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4170,6 +5256,9 @@ Sub ADMIN_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 	UserProfile.Initialize
 	UserProfile.size = 0
 	IsAuthenticated = False
+	UserToken =  ""
+	UserModel = CreateMap()
+	UserValid = False
 	Try
 		Dim opt As Map = CreateMap()
 		opt.Put("cache", "no-store")
@@ -4182,8 +5271,12 @@ Sub ADMIN_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 			Case Else
 				Dim res As Map = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("authWithPassword", Array(email, pwd, opt)))
 		End Select
+		UserToken = client.getfield("authStore").GetField("token").Result
+		UserModel = client.getfield("authStore").GetField("model").Result
+		UserValid = client.getfield("authStore").GetField("isValid").Result
 		UserProfile.token = res.GetDefault("token", "")
 		If res.ContainsKey("admin") Then
+			UserRecord = res.Get("admin")
 			UserProfile.id = GetRecursive(res, "admin.id")
 			UserProfile.email = GetRecursive(res, "admin.email")
 			UserProfile.avatar = GetRecursive(res, "admin.avatar")
@@ -4196,7 +5289,7 @@ Sub ADMIN_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 		End If
 		Return res
 	Catch
-		Log(LastException)
+		Log($"ADMIN_AUTH_WITH_PASSWORD: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4228,7 +5321,7 @@ Sub ADMIN_REQUEST_PASSWORD_RESET(email As String) As Boolean
 		End Select
 		Return res
 	Catch
-		Log(LastException)
+		Log($"ADMIN_REQUEST_PASSWORD_RESET: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4254,7 +5347,7 @@ Sub ADMIN_CONFIRM_PASSWORD_RESET(token As String, newPassword As String, confimP
 		End Select
 		Return res
 	Catch
-		Log(LastException)
+		Log($"ADMIN_CONFIRM_PASSWORD_RESET: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4273,6 +5366,9 @@ Sub ADMIN_AUTH_REFRESH As Map
 	End If
 	UserProfile.Initialize
 	UserProfile.size = 0
+	UserToken = ""
+	UserModel = CreateMap()
+	UserValid = False
 	Try
 		Dim opt As Map = CreateMap()
 		opt.Put("cache", "no-store")
@@ -4285,8 +5381,12 @@ Sub ADMIN_AUTH_REFRESH As Map
 			Case Else
 				Dim res As Map = BANano.Await(client.RunMethod("collection", "_superusers").RunMethod("authRefresh", Array(opt)))
 		End Select
+		UserToken = client.getfield("authStore").GetField("token").Result
+		UserModel = client.getfield("authStore").GetField("model").Result
+		UserValid = client.getfield("authStore").GetField("isValid").Result
 		UserProfile.token = res.GetDefault("token", "")
 		If res.ContainsKey("admin") Then
+			UserRecord = res.Get("admin")
 			UserProfile.id = GetRecursive(res, "admin.id")
 			UserProfile.email = GetRecursive(res, "admin.email")
 			UserProfile.avatar = GetRecursive(res, "admin.avatar")
@@ -4298,7 +5398,7 @@ Sub ADMIN_AUTH_REFRESH As Map
 		End If
 		Return res
 	Catch
-		Log(LastException)
+		Log($"ADMIN_AUTH_REFRESH: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub
@@ -4529,7 +5629,7 @@ Sub SchemaRestore(surl As String, semail As String, spassword As String, collect
 	If sProfile.Size = 0 Then Return False
 	'
 	'get collection names
-	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES)
+	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES(semail, spassword))
 	'
 	For Each collection As Map In collections
 		Dim screateRule As String = collection.Get("createRule")
@@ -4574,7 +5674,7 @@ Sub SchemaAdd(surl As String, semail As String, spassword As String, collections
 	If sProfile.Size = 0 Then Return False
 	'
 	'get collection names
-	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES)
+	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES(semail, spassword))
 	'
 	For Each collection As Map In collections
 		Dim sname As String = collection.Get("name")
@@ -4606,7 +5706,7 @@ Sub SchemaUpdate(surl As String, semail As String, spassword As String, collecti
 	If sProfile.Size = 0 Then Return False
 	'
 	'get collection names
-	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES)
+	Dim tblNames As List = BANano.Await(dbSource.SELECT_ALL_COLLECTIONS_NAMES(semail, spassword))
 	'
 	For Each collection As Map In collections
 		Dim sname As String = collection.Get("name")
@@ -4642,7 +5742,7 @@ Sub SchemaBackUp(prjName As String, surl As String, semail As String, spassword 
 	prjName = prjName.ToLowerCase
 	Dim prjSearch As String = $"${prjName}_"$
 	'get all collection
-	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS)
+	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS(semail, spassword))
 	'
 	Dim prjTables As List
 	prjTables.Initialize
@@ -4716,7 +5816,7 @@ Sub SchemaGet(prjName As String, surl As String, semail As String, spassword As 
 	prjName = prjName.ToLowerCase
 	Dim prjSearch As String = $"${prjName}_"$
 	'get all collection
-	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS)
+	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS(semail, spassword))
 	dbSource.MoveStart
 	
 	'extract collections for project
@@ -4750,7 +5850,7 @@ Sub SchemaTableGet(ftblName As String, surl As String, semail As String, spasswo
 	If sProfile.Size = 0 Then Return prjTables
 	
 	'get all collection
-	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS)
+	BANano.Await(dbSource.SELECT_ALL_COLLECTIONS(semail, spassword))
 	dbSource.MoveStart
 	
 	'extract collections for project
@@ -4859,6 +5959,7 @@ End Sub
 
 '<code>
 'pbComponents.SELECT_TO_VIEW("viewname")
+'pbComponents.SELECT_VIEW("viewname")
 'Do While pbComponents.NextRow
 'Dim rec As Map = pbComponents.Record
 'Dim sid As String = pbComponents.GetString("id")
@@ -4868,12 +5969,8 @@ Sub SELECT_TO_VIEW(nameOf As String)
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_TO_VIEW(${nameOf})"$)
 	End If
-	Dim colmap As Map = BANano.Await(READ_COLLECTION(nameOf))
-	If colmap.Size > 0 Then
-		BANano.Await(SELECT_VIEW(nameOf))
-		Return
-	End If
-	'
+	Try
+		SetAuthorizationBearerToken(UserToken)
 	Dim sb As StringBuilder
 	sb.Initialize
 	'
@@ -4968,8 +6065,15 @@ Sub SELECT_TO_VIEW(nameOf As String)
 	col.Put("updateRule", Null)
 	col.Put("deleteRule", Null)
 	PutRecursive(col, "options.query", sout)
-	BANano.Await(client.GetField("collections").RunMethod("create", col))
-	BANano.Await(SELECT_VIEW(nameOf))
+		'
+	Dim opt As Map = CreateMap()
+	opt.Put("cache", "no-store")
+	If headers.Size > 0 Then opt.Put("headers", headers)
+
+	BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
+	Catch
+		Log($"SELECT_TO_VIEW: ${LastException.message}"$)
+	End Try	
 End Sub
 
 '<code>
@@ -4980,8 +6084,10 @@ Sub SELECT_TO_VIEW_ONLY(nameOf As String)
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_TO_VIEW_ONLY(${nameOf})"$)
 	End If
-	BANano.Await(client.GetField("collections").RunMethod("delete", nameOf))
+	BANano.Await(DELETE_COLLECTION(nameOf))
 	'
+	Try
+		SetAuthorizationBearerToken(UserToken)
 	Dim sb As StringBuilder
 	sb.Initialize
 	'
@@ -5076,7 +6182,15 @@ Sub SELECT_TO_VIEW_ONLY(nameOf As String)
 	col.Put("updateRule", Null)
 	col.Put("deleteRule", Null)
 	PutRecursive(col, "options.query", sout)
-	BANano.Await(client.GetField("collections").RunMethod("create", col))
+		'
+	Dim opt As Map = CreateMap()
+	opt.Put("cache", "no-store")
+	If headers.Size > 0 Then opt.Put("headers", headers)
+		
+	BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
+	Catch
+		Log($"SELECT_TO_VIEW_ONLY: ${LastException.message}"$)
+	End Try	
 End Sub
 
 Sub orderBy(fldNames As List) As SDUIPocketBase
@@ -5098,6 +6212,7 @@ Sub orderByDesc(fldNames As List) As SDUIPocketBase
 	Return Me
 End Sub
 
+'this executes a clear_where first
 Sub selectFields(fldNames As List) As SDUIPocketBase
 	CLEAR_WHERE
 	ADD_FIELDS(fldNames)
@@ -5106,6 +6221,71 @@ End Sub
 
 Sub whereEqual(fldName As String, fldValue As Object) As SDUIPocketBase
 	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereEqual(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "=", fldValue)
+	Return Me
+End Sub
+
+Sub whereGreaterThan(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, ">", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereGreaterThan(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, ">", fldValue)
+	Return Me
+End Sub
+
+Sub whereGreaterThanEqualTo(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, ">=", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereGreaterThanEqualTo(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, ">=", fldValue)
+	Return Me
+End Sub
+
+Sub whereLike(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, "~", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereLike(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "~", fldValue)
+	Return Me
+End Sub
+
+Sub whereNotLike(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, "!~", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereNotLike(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "!~", fldValue)
+	Return Me
+End Sub
+
+Sub whereLessThanEqualTo(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, "<=", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereLessThanEqualTo(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "<=", fldValue)
+	Return Me
+End Sub
+
+Sub whereLessThan(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_WHERE_STRING(fldName, "<", fldValue)
+	Return Me
+End Sub
+
+Sub OrWhereLessThan(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "<", fldValue)
 	Return Me
 End Sub
 
@@ -5120,21 +6300,20 @@ Sub whereNotEqual(fldName As String, fldValue As Object) As SDUIPocketBase
 	Return Me
 End Sub
 
-Sub DELETE_VIEW(nameOf As String) As Boolean
-	If ShowLog Then
-		Log($"SDUIPocketBase.DELETE_VIEW(${nameOf})"$)
-	End If
-	Try
-		Dim b As Boolean = BANano.Await(client.GetField("collections").RunMethod("delete", nameOf))
-		Return b
-	Catch
-		Log(LastException)
-		Return False
-	End Try
+Sub OrWhereNotEqual(fldName As String, fldValue As Object) As SDUIPocketBase
+	ADD_OR_WHERE_STRING(fldName, "<>", fldValue)
+	Return Me
+End Sub
+
+Sub SetAuthorizationBearerToken(sToken As String)
+	sToken = sToken.Trim
+	If sToken = "" Then Return
+	AddHeader("Authorization", $"Bearer ${sToken}"$)
 End Sub
 
 '<code>
 'pbComponents.CREATE_VIEW("viewname", "select id, name from...")
+'pbComponents.SELECT_VIEW("viewname")
 'Do While pbComponents.NextRow
 'Dim rec As Map = pbComponents.Record
 'Dim sid As String = pbComponents.GetString("id")
@@ -5144,23 +6323,25 @@ Sub CREATE_VIEW(nameOf As String, qry As String)
 	If ShowLog Then
 		Log($"SDUIPocketBase.CREATE_VIEW(${nameOf})"$)
 	End If
-	'delete the view if it exists
-	Dim colmap As Map = BANano.Await(READ_COLLECTION(nameOf))
-	If colmap.Size > 0 Then
-		BANano.Await(SELECT_VIEW(nameOf))
-		Return
-	End If
-	'
-	Dim col As Map = CreateMap()
-	col.Put("name", nameOf)
-	col.Put("type", "view")
-	col.Put("system", False)
-	col.Put("listRule", "")
-	col.Put("viewRule", "")
-	col.Put("createRule", Null)
-	col.Put("updateRule", Null)
-	col.Put("deleteRule", Null)
-	PutRecursive(col, "options.query", qry)
-	BANano.Await(client.GetField("collections").RunMethod("create", col))
-	BANano.Await(SELECT_VIEW(nameOf))
+	Try
+		SetAuthorizationBearerToken(UserToken)
+		Dim col As Map = CreateMap()
+		col.Put("name", nameOf)
+		col.Put("type", "view")
+		col.Put("system", False)
+		col.Put("listRule", "")
+		col.Put("viewRule", "")
+		col.Put("createRule", Null)
+		col.Put("updateRule", Null)
+		col.Put("deleteRule", Null)
+		PutRecursive(col, "options.query", qry)
+		'
+		Dim opt As Map = CreateMap()
+		opt.Put("cache", "no-store")
+		If headers.Size > 0 Then opt.Put("headers", headers)
+		'
+		BANano.Await(client.GetField("collections").RunMethod("create", Array(col,opt)))
+	Catch
+		Log($"CREATE_VIEW: ${LastException.message}"$)
+	End Try
 End Sub
