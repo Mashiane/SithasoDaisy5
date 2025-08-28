@@ -23,7 +23,6 @@ Private Sub Class_Globals
 	Private bNoCache As Boolean = False
 	Private sReferrerPolicy As String
 	Private obaseURL As String
-	Public fetchError As Object
 	Public fetchOptions As BANanoFetchOptions
 	Public fetch As BANanoFetch
 	Public fetchResponse As BANanoFetchResponse
@@ -38,6 +37,7 @@ Private Sub Class_Globals
 	Private formData As BANanoObject
 	Public GetHeadersFromFormData As Boolean = False
 	Private bHasFormData As Boolean = False
+	Public Mode As String 
 End Sub
 
 
@@ -85,6 +85,7 @@ Public Sub Initialize(url As String)
 	schema.Initialize 
 	GetHeadersFromFormData = False
 	bHasFormData = False
+	Mode = ""
 End Sub
 
 Sub SchemaClear
@@ -147,6 +148,13 @@ End Sub
 'add a header value
 Sub AddHeader(prop As String, value As String)
 	headers.Put(prop, value)
+End Sub
+
+Sub AddHeaders(hdrs As Map)
+	For Each k As String In hdrs.Keys
+		Dim v As String = hdrs.Get(k)
+		AddHeader(k, v)
+	Next
 End Sub
 
 'add a parameter value
@@ -329,9 +337,8 @@ Private Sub fetchit(method As String)
 	If sredirect <> "" Then
 		fetchOptions.SetField("redirect", sredirect)
 	End If
-	If bNoCors Then
-		fetchOptions.Mode = "no-cors"
-	End If
+	If bNoCors Then Mode = "no-cors"
+	If Mode <> "" Then fetchOptions.Mode = Mode
 	If bNoCache Then
 		fetchOptions.cache = "no-store"
 	Else
@@ -350,7 +357,11 @@ Private Sub fetchit(method As String)
 			fetchOptions.Body = obj
 		End If
 	Else
-		fetchOptions.Body = Null
+		Select Case method.ToLowerCase
+		Case "get", "head"
+		Case Else	
+			fetchOptions.Body = Null
+		End Select
 	End If
 	'set our own body
 	If Body <> "" Then fetchOptions.Body = Body

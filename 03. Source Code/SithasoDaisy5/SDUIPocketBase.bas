@@ -15,6 +15,7 @@ Version=9.8
 #Event: BeforeSend (url As object, options As Object)
 #Event: AfterSend (response As Object, data As Object)
 'https://pocketbase.io/old/
+'https://pocketbase.io/v023upgrade/jsvm/
 
 Private Sub Class_Globals
 	Public const DB_BOOL As String = "BOOL"
@@ -827,6 +828,41 @@ End Sub
 '	Return result
 'End Sub
 
+'add a header value
+Sub AddHeader(prop As String, value As String)
+	headers.Put(prop, value)
+End Sub
+
+'this does not process files, use it to execute RAW SQL Commands on your collection
+Sub SELECT_RAW(qry As String) As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.SELECT_RAW"$)
+	End If
+	RowCount = 0
+	lastPosition = -1
+	result.Initialize 
+	Try
+		Dim finalURL As String = $"${baseURL}/api/rawselect"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddHeaders(headers)		
+		fetch.AddData("query", qry)
+		fetch.AddData("perPage", batchSize)
+		fetch.AddData("skipTotal", skipTotal)
+		fetch.SetContentTypeApplicationJSON
+		fetch.NoCache = True
+		BANano.Await(fetch.PostWait)
+		Dim m As Map = fetch.Response
+		result = m.Get("items")
+		RowCount = result.Size
+		Return result
+	Catch
+		Log($"SELECT_RAW: ${LastException.message}"$)
+		Return result
+	End Try	
+End Sub
+
+
 Sub SELECT_ALL As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL"$)
@@ -863,8 +899,8 @@ Sub SELECT_ALL As List
 			If qflds <> "" Then opt.Put("fields", qflds)
 			If qexpand <> "" Then opt.Put("expand", qexpand)
 			opt.Put("cache", "no-store")
-			'If skipTotal <> "" Then opt.Put("skipTotal", skipTotal)
 			If headers.Size > 0 Then opt.Put("headers", headers)
+			If page <> 1 Then opt.Put("skipTotal", True)
 
 			If ShowLog Then
 				Log($"SDUIPocketBase.SELECT_ALL page ${page} => ${BANano.ToJson(opt)}"$)
@@ -874,17 +910,26 @@ Sub SELECT_ALL As List
 			Dim items As List = res.Get("items")
 			If page = 1 Then totalPages = res.Get("totalPages")
 			
-			' Process file fields if needed
+			' if we have file files
 			If fileFields.Size > 0 Then
+				'loop through each item in the array by index
 				For rCnt = 0 To items.Size - 1
+					'get the item in that index position of the array
 					Dim r As Map = items.Get(rCnt)
+					'for each file field in the array
 					For Each fk As String In fileFields.Keys
+						'fv below will be the value of file field concatenated with 'url'
 						Dim fv As String = fileFields.Get(fk)
+						'get its value from the item
 						Dim fk1 As String = r.Get(fk)
+						'get the value of the 'id' key from the item
 						Dim pk1 As String = r.Get(PrimaryKey)
+						'trim the value of the 'id'
 						fk1 = CStr(fk1).trim
 						If fk1 <> "" Then
+							'if the 'id' is not blank
 							Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
+							'update the item 'url' key with the computed value 
 							r.Put(fv, fk2)
 							If GetFiles Then
 								Dim fdata As String = BANano.Await(BANano.GetFileAsDataURL(fk2, Null))
@@ -897,6 +942,7 @@ Sub SELECT_ALL As List
 							End If
 						End If
 					Next
+					'update the item at that index position with the new 
 					items.Set(rCnt, r)
 				Next
 			End If
@@ -913,6 +959,284 @@ Sub SELECT_ALL As List
 	lastPosition = -1
 	Return result
 End Sub
+
+Sub SELECT_ALL_FETCH As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_FETCH"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.SELECT_ALL_FETCH: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	
+	lastPosition = -1
+	result.Initialize
+	'
+	Dim qsort As String = Join(",", orderByL)
+	Dim qflds As String = Join(",", flds)
+	'
+	Try
+		Dim page As Int = 1
+		Dim totalPages As Int = 1
+
+		Do While page <= totalPages
+			Dim finalURL As String = $"${baseURL}/api/getlist"$
+			Dim fetch As SDUIFetch
+			fetch.Initialize(finalURL)
+			fetch.AddHeaders(headers)
+			fetch.AddData("collection", sTableName)
+			fetch.AddData("perPage", batchSize)
+			fetch.AddData("page", page)
+			fetch.AddData("getFiles", GetFiles)
+			fetch.AddData("sort", qsort)
+			fetch.AddData("fields", qflds)
+			If page <> 1 Then fetch.AddData("skipTotal", True)
+			fetch.NoCache = True
+			fetch.SetContentTypeApplicationJSON
+			BANano.Await(fetch.PostWait)
+			Dim mx As Map = fetch.Response
+			Dim items As List = mx.Get("items")
+			If page = 1 Then totalPages = mx.Get("totalPages")
+			result.AddAll(items)
+			page = page + 1
+		Loop
+	Catch
+		Log($"SELECT_ALL_FETCH: ${LastException.message}"$)
+	End Try
+	RowCount = result.Size
+	Return result
+End Sub
+
+'record is saved as json string
+'returns the record id
+'<code>
+'pb.PrepareRecord
+'pb.SetField("id", 1)
+'pb.SetField("username", "user1")
+'BANano.Await(pb.CREATE_FETCH)
+'</code>
+Sub CREATE_FETCH As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.CREATE_FETCH"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.CREATE_FETCH: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	
+	Try
+		'get the fields to return to user
+		Dim qflds As String = Join(",", flds)
+		'get the id of this record, it should always be specified
+		Dim newid As String = Record.GetDefault("id", "")
+		'if the id does not exist, create it
+		If newid = "" Then newid = NextID
+		'
+		Dim finalURL As String = $"${baseURL}/api/rawinsert/${sTableName}/${newid}"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddHeaders(headers)
+		fetch.AddData("fields", qflds)
+		For Each k As String In Record.Keys
+			Dim v As Object = Record.Get(k)
+			fetch.AddData($"record.${k}"$, v)
+		Next
+		fetch.NoCache = True
+		fetch.SetContentTypeApplicationJSON
+		BANano.Await(fetch.PostWait)
+		Dim mx As Map = fetch.Response
+		Record = mx.Get("record")
+		Dim rid As String = Record.GetDefault("id", "")
+		Return rid
+	Catch
+		Log($"CREATE_FETCH: ${LastException.message}"$)
+		Record = CreateMap()
+		Return ""
+	End Try
+End Sub
+'
+'record is saved as json string
+'returns the record id
+'<code>
+'pb.PrepareRecord
+'pb.SetField("id", 1)
+'pb.SetField("username", "user1")
+'BANano.Await(pb.UPDATE_FETCH)
+'</code>
+Sub UPDATE_FETCH As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.UPDATE_FETCH"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.UPDATE_FETCH: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	'get the id of this record, it should always be specified
+	Dim newid As String = Record.GetDefault("id", "")
+	'if the id does not exist, create it
+	If newid = "" Then
+		BANano.Throw($"SDUIPocketBase.UPDATE_FETCH: ${sTableName} - ID has not been specified!"$)
+		Return Null
+	End If
+	'
+	Try
+		'get the fields to return to user
+		Dim qflds As String = Join(",", flds)
+		Dim finalURL As String = $"${baseURL}/api/rawupdate/${sTableName}"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddHeaders(headers)
+		fetch.AddData("fields", qflds)
+		fetch.AddData("filter", $"id='${newid}'"$)
+		Record.Remove("id")
+		For Each k As String In Record.Keys
+			Dim v As Object = Record.Get(k)
+			fetch.AddData($"record.${k}"$, v)
+		Next
+		fetch.NoCache = True
+		fetch.SetContentTypeApplicationJSON
+		BANano.Await(fetch.PostWait)
+		Dim mx As Map = fetch.Response
+		Record = mx.Get("record")
+		Dim rid As String = Record.GetDefault("id", "")
+		Return rid
+	Catch
+		Log($"UPDATE_FETCH: ${LastException.message}"$)
+		Record = CreateMap()
+		Return ""
+	End Try
+End Sub
+
+'record is saved as json string
+'returns the record id
+'<code>
+'BANano.Await(pb.DELETE_FETCH("id"))
+'</code>
+Sub DELETE_FETCH(delID As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.DELETE_FETCH"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.DELETE_FETCH: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	'if the id does not exist, create it
+	If delID = "" Then
+		BANano.Throw($"SDUIPocketBase.DELETE_FETCH: ${sTableName} - ID has not been specified!"$)
+		Return Null
+	End If
+	'
+	Try
+		'get the fields to return to user
+		Dim finalURL As String = $"${baseURL}/api/rawdelete/${sTableName}"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddHeaders(headers)
+		fetch.AddData("filter", $"id='${delID}'"$)
+		fetch.NoCache = True
+		fetch.SetContentTypeApplicationJSON
+		BANano.Await(fetch.PostWait)
+		Dim mx As Map = fetch.Response
+		Dim bdeleted As Boolean = mx.GetDefault("deleted", False)
+		bdeleted = CBool(bdeleted)
+		Return bdeleted
+	Catch
+		Log($"DELETE_FETCH: ${LastException.message}"$)
+		Return False
+	End Try
+End Sub
+
+Sub findWhereOrderByFetch(whereMap As Map, whereOps As List, orderByx As List) As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.findWhereOrderByFetch(${BANano.ToJson(whereMap)},${whereOps},${orderByx})"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.findWhereOrderByFetch: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	
+	' Build filter
+	Dim nFilter As String = ""
+	If ownFilter.Size > 0 Then
+		nFilter = Join(" ", ownFilter)
+		nFilter = nFilter.trim
+		nFilter = nFilter.replace("!=", "<>")
+		nFilter = nFilter.replace("&&", "AND")
+		nFilter = nFilter.replace("||", "OR")
+		nFilter = nFilter.replace("~", "LIKE")
+		nFilter = nFilter.trim
+		nFilter = RemDelim(nFilter, "AND")
+	End If
+	'
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim i As Int
+	Dim iWhere As Int = whereMap.Size - 1
+	For i = 0 To iWhere
+		Dim col As String = whereMap.GetKeyAt(i)
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
+		Dim xVal As String = whereMap.GetValueAt(i)
+		Dim opr As String = whereOps.Get(i)
+		opr = opr.Replace("!=", " <> ")
+		opr = opr.Replace("~", " LIKE ")
+		Dim com As String = combineL.Get(i)
+		com = com.Replace("&&", " AND ")
+		com = com.Replace("||", " OR ")
+		sb.Append(col)
+		sb.Append(opr)
+		sb.Append(xVal)
+		sb.Append(com)
+	Next
+	Dim qfilter As String = RemDelim(sb.ToString, com).Trim
+	
+	' Build sort, fields, expand
+	Dim qsort As String = ""
+	If BANano.IsList(orderByx) Then
+		qsort = Join(",", orderByx)
+	End If
+	Dim qflds As String = Join(",", flds)
+	'Dim qexpand As String = Join(",", expand)
+
+	' Initialize result list
+	Dim allRecords As List
+	allRecords.Initialize
+
+	Try
+		Dim page As Int = 1
+		Dim totalPages As Int = 1
+
+		Do While page <= totalPages
+			Dim finalURL As String = $"${baseURL}/api/getlist"$
+			Dim fetch As SDUIFetch
+			fetch.Initialize(finalURL)
+			fetch.AddHeaders(headers)
+			fetch.SchemaAddBoolean(Array("getFiles"))
+			fetch.AddData("collection", sTableName)
+			fetch.AddData("perPage", batchSize)
+			fetch.AddData("page", page)
+			fetch.AddData("getFiles", GetFiles)
+			fetch.AddData("sort", qsort)
+			fetch.AddData("fields", qflds)
+			fetch.adddata("ownFilter", nFilter)
+			fetch.AddData("filter", qfilter)
+			If page <> 1 Then fetch.AddData("skipTotal", True)
+			fetch.NoCache = True
+			fetch.SetContentTypeApplicationJSON
+			BANano.Await(fetch.PostWait)
+			Dim mx As Map = fetch.Response
+			Dim items As List = mx.Get("items")
+			If page = 1 Then totalPages = mx.Get("totalPages")
+			allRecords.AddAll(items)
+			page = page + 1
+		Loop
+	Catch
+		Log($"findWhereOrderByFetch: ${LastException.message}"$)
+	End Try
+	Return allRecords
+End Sub
+
+
 
 private Sub isBase64Image(imgURL As String) As Boolean
 	Dim bRes As Boolean = BANano.RunJavascriptMethod("isBase64Image", Array(imgURL))
@@ -1036,6 +1360,7 @@ Sub SELECT_ALL_USERS As List
 			If qflds <> "" Then opt.Put("fields", qflds)
 			If qexpand <> "" Then opt.Put("expand", qexpand)
 			If headers.Size <> 0 Then opt.Put("headers", headers)
+			If page <> 1 Then opt.Put("skipTotal", True)
 			
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_USERS - Page ${page} (${BANano.ToJson(opt)})"$)
@@ -1182,8 +1507,8 @@ Sub SELECT_ALL_ADMINS As List
 			If qsort <> "" Then opt.Put("sort", qsort)
 			If qflds <> "" Then opt.Put("fields", qflds)
 			If qexpand <> "" Then opt.Put("expand", qexpand)
-'			If skipTotal <> "" Then opt.Put("skipTotal", skipTotal)
 			If headers.Size <> 0 Then opt.Put("headers", headers)
+			If page <> 1 Then opt.Put("skipTotal", True)
 
 			If ShowLog Then
 				Log($"SDUIPocketBase.SELECT_ALL_ADMINS page ${page} (${BANano.ToJson(opt)})"$)
@@ -1394,13 +1719,13 @@ Sub SELECT_COLLECTIONS() As List
 		Dim opr As String = ops.Get(i)
 		Dim com As String = combineL.Get(i)
 		sb.Append(col)
-		sb.Append($" ${opr} "$)
+		sb.Append(opr)
 		sb.Append(xVal)
-		sb.Append($" ${com} "$)
+		sb.Append(com)
 	Next
 
-	Dim qfilter As String = sb.ToString
-	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+	Dim qfilter As String = sb.ToString.trim
+	Dim afilter As String = RemDelim(qfilter, com)
 	qfilter = afilter.Trim
 
 	Dim qsort As String = Join(",", orderByL)
@@ -1421,6 +1746,7 @@ Sub SELECT_COLLECTIONS() As List
 			If qflds <> "" Then opt.Put("fields", qflds)
 			If qfilter <> "" Then opt.Put("filter", qfilter)
 			If headers.Size > 0 Then opt.Put("headers", headers)
+			If page <> 1 Then opt.Put("skipTotal", True)
 
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.SELECT_COLLECTIONS page ${page} (${BANano.ToJson(opt)})"$)
@@ -1482,13 +1808,13 @@ Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
 		Dim opr As String = ops.Get(i)
 		Dim com As String = combineL.Get(i)
 		sb.Append(col)
-		sb.Append($" ${opr} "$)
+		sb.Append(opr)
 		sb.Append(xVal)
-		sb.Append($" ${com} "$)
+		sb.Append(com)
 	Next
 
-	Dim qfilter As String = sb.ToString
-	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
+	Dim qfilter As String = sb.ToString.trim
+	Dim afilter As String = RemDelim(qfilter, com)
 	qfilter = afilter.Trim
 
 	Dim qsort As String = Join(",", orderByL)
@@ -1509,6 +1835,7 @@ Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
 			If qflds <> "" Then opt.Put("fields", qflds)
 			If qfilter <> "" Then opt.Put("filter", qfilter)
 			If headers.Size > 0 Then opt.Put("headers", headers)
+			If page <> 1 Then opt.Put("skipTotal", True)
 
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_COLLECTIONS page ${page} (${BANano.ToJson(opt)})"$)
@@ -1527,75 +1854,6 @@ Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
 	RowCount = result.Size
 	Return result
 End Sub
-
-
-
-
-
-'get records from a collection
-'<code>
-'BANano.Await(pbComponents.SELECT_ALL_COLLECTIONS)
-'Do While pbComponents.NextRow
-'Dim rec As Map = pbComponents.Record
-'Dim sid As String = pbComponents.GetString("id")
-'Loop
-'</code>
-'Sub SELECT_ALL_COLLECTIONS As List
-'	If ShowLog Then
-'		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS"$)
-'	End If
-'	If Schema.Size = 0 Then
-'		BANano.Throw($"SDUIPocketBase.SELECT_ALL_COLLECTIONS: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
-'		Return Null
-'	End If
-'	lastPosition = -1
-'	result.Initialize
-'	'we build the filter
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim i As Int
-'	Dim iWhere As Int = whereField.Size - 1
-'	For i = 0 To iWhere
-'		Dim col As String = whereField.GetKeyAt(i)
-'		col = MvField(col, 1,".")
-'		col = col.replace("&","")
-'		Dim xVal As String = whereField.GetValueAt(i)
-'		Dim opr As String = ops.Get(i)
-'		Dim com As String = combineL.Get(i)
-'		sb.Append(col)
-'		sb.Append($" ${opr} "$)
-'		sb.append(xVal)
-'		sb.Append($" ${com} "$)
-'	Next
-'	'
-'	Dim qfilter As String = sb.tostring
-'	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
-'	qfilter = afilter.Trim
-'	'
-'	Dim qsort As String = Join(",", orderByL)
-'	Dim qflds As String = Join(",", flds)
-'	
-'	Try
-'		Dim opt As Map = CreateMap()
-'		If qsort <> "" Then opt.Put("sort", qsort)
-'		If qflds <> "" Then opt.Put("fields", qflds)
-'		opt.Put("batch", batchSize)
-'		opt.Put("skipTotal", skipTotal)
-'		opt.Put("cache", "no-store")
-'		If headers.Size <> 0 Then
-'			opt.Put("headers", headers)
-'		End If
-'		If qfilter <> "" Then opt.Put("filter", qfilter)
-'		If ShowLog Then
-'			Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_COLLECTIONS(${BANano.ToJson(opt)})"$)
-'		End If
-'		result = BANano.Await(client.GetField("collections").RunMethod("getFullList", Array(opt)))
-'	Catch
-'		Log(LastException)
-'	End Try			'ignore
-'	RowCount = result.Size
-'	Return result
-'End Sub
 
 '<code>
 'Sub pb_Change (Action As String, Record As Map, TableName As String)
@@ -2462,6 +2720,18 @@ Sub GET_ID_BY_FIELD(fldName As String, fldValue As String) As String
 	Return sid
 End Sub
 
+Sub GET_ID_BY_FIELD_FETCH(fldName As String, fldValue As String) As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.GET_ID_BY_FIELD_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
+End Sub
+
 
 Sub UPDATE_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
@@ -2652,6 +2922,28 @@ Sub READ(id As String) As Map
 	End Try
 End Sub
 
+'<code>
+'read a record by a unique field and return listed fields
+'Dim result As Map = BANano.Await(pbComponents.READ_FIELDS("xxx", array("id", "name")))
+'</code>
+Sub READ_FIELDS(fldValue As Object, theseFlds As List) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_FIELDS(${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELDS(theseFlds)
+	ADD_WHERE_STRING("id", "=", fldValue)
+	For Each fld As String In Schema.keys
+		Dim fldType As String = Schema.Get(fld)
+		If fldType = DB_FILE Then
+			FILE_FIELD(fld, $"${fld}url"$)
+		End If
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
+End Sub
+
+
 'get a value using key
 '<code>
 'Dim res As Map = BANano.Await(pb.READ_USER("name"))
@@ -2833,6 +3125,19 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 End Sub
 
 '<code>
+'Dim result As Map = BANano.Await(pbComponents.READ_BY_STRING_FETCH("name", "xxx"))
+'</code>
+Sub READ_BY_STRING_FETCH(fldName As String, fldValue As Object) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_BY_STRING_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Return m
+End Sub
+
+'<code>
 'read a record using a unique field and return listed fields
 'pbComponents.FILE_FIELD("fileobj", "fileurl")
 'Dim result As Map = BANano.Await(pbComponents.READ_BY_STRING_FIELDS("name", "xxx", array("id", "name"))))
@@ -2853,6 +3158,47 @@ Sub READ_BY_STRING_FIELDS(fldName As String, fldValue As Object, theseFlds As Li
 	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
 	Return m
 End Sub
+
+'<code>
+''use fetch to read specified fields from a collection
+'Dim result As Map = BANano.Await(pbComponents.READ_BY_STRING_FIELDS_FETCH("name", "xxx", array("id", "name"))))
+'</code>
+Sub READ_BY_STRING_FIELDS_FETCH(fldName As String, fldValue As Object, theseFlds As List) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_BY_STRING_FIELDS_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELDS(theseFlds)
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Return m
+End Sub
+
+'get a value using key
+'<code>
+'Dim res As Map = BANano.Await(pb.READ_FETCH("name"))
+'</code>
+Sub READ_FETCH(id As String) As Map
+	whereEqual("id", id)
+	Record = BANano.Await(GetFirstListItemFetch(sTableName))
+	Return Record
+End Sub
+
+'<code>
+''use fetch to read specified fields from a collection
+'Dim result As Map = BANano.Await(pbComponents.READ_FIELDS_FETCH("id", array("id", "name"))))
+'</code>
+Sub READ_FIELDS_FETCH(fldValue As Object, theseFlds As List) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_FIELDS_FETCH(${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELDS(theseFlds)
+	whereEqual("id", fldValue)
+	Record = BANano.Await(GetFirstListItemFetch(sTableName))
+	Return Record
+End Sub
+
 
 '<code>
 'read a record using a unique field and return listed fields
@@ -2890,6 +3236,19 @@ Sub READ_ID_BY_STRING(fldName As String, fldValue As String) As String
 	Return sid
 End Sub
 
+'return an id of a record by reading a unique string field
+Sub READ_ID_BY_STRING_FETCH(fldName As String, fldValue As String) As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_ID_BY_STRING_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
+End Sub
+
 '<code>
 'read a record by a unique field
 'pbComponents.FILE_FIELD("fileobj", "fileurl")
@@ -2912,6 +3271,20 @@ Sub READ_BY(fldName As String, fldValue As Object) As Map
 End Sub
 
 '<code>
+'read a record by a unique field
+'Dim result As Map = BANano.Await(pbComponents.READ_BY_FETCH("name", "xxx"))
+'</code>
+Sub READ_BY_FETCH(fldName As String, fldValue As Object) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_BY_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_WHERE(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Return m
+End Sub
+
+'<code>
 'read a record by a unique field and return listed fields
 'pbComponents.FILE_FIELD("fileobj", "fileurl")
 'Dim result As Map = BANano.Await(pbComponents.READ_BY_FIELDS("name", "xxx", array("id", "name")))
@@ -2930,6 +3303,20 @@ Sub READ_BY_FIELDS(fldName As String, fldValue As Object, theseFlds As List) As 
 		End If
 	Next
 	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Return m
+End Sub
+
+'<code>
+'Dim result As Map = BANano.Await(pbComponents.READ_BY_FIELDS_FETCH("name", "xxx", array("id", "name")))
+'</code>
+Sub READ_BY_FIELDS_FETCH(fldName As String, fldValue As Object, theseFlds As List) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_BY_FIELDS_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELDS(theseFlds)
+	ADD_WHERE(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
 	Return m
 End Sub
 
@@ -2957,6 +3344,29 @@ Sub ContainsKey(id As String) As Boolean
 	End If
 End Sub
 
+'Tests whether a key is available in the store.
+'<code>
+'Dim res as boolean = BANano.Await(pb.ContainsKeyFetch("a"))
+'</code>
+Sub ContainsKeyFetch(id As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ContainsKeyFetch(${id})"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.ContainsKeyFetch: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return ""
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	ADD_WHERE("id", "=", $"'${id}'"$)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	If m.Size = 0 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
 Sub ContainsField(fldName As String, id As String) As Boolean
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.ContainsField(${fldName},${id})"$)
@@ -2969,6 +3379,25 @@ Sub ContainsField(fldName As String, id As String) As Boolean
 	ADD_FIELD(fldName)
 	ADD_WHERE(fldName, "=", $"'${id}'"$)
 	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.Size = 0 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+Sub ContainsFieldFetch(fldName As String, id As String) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ContainsFieldFetch(${fldName},${id})"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.ContainsFieldFetch: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return ""
+	End If
+	CLEAR_WHERE
+	ADD_FIELD(fldName)
+	ADD_WHERE(fldName, "=", $"'${id}'"$)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
 	If m.Size = 0 Then
 		Return False
 	Else
@@ -3305,6 +3734,17 @@ Sub ADD_FIELD(fld As String) As SDUIPocketBase
 	Return Me
 End Sub
 
+Sub getFields As List
+	Return flds
+End Sub
+
+Sub setFields(tflds As List)
+	flds.Clear
+	For Each k As String In tflds
+		flds.Add(k)
+	Next
+End Sub
+
 'add a file field and its url counterpart
 Sub FILE_FIELD(fld As String, fldUrl As String) As SDUIPocketBase
 	fileFields.Put(fld, fldUrl)
@@ -3329,10 +3769,6 @@ Sub ADD_EXPAND(sexpand As String) As SDUIPocketBase
 		expand.Add(sexpand)
 	End If
 	Return Me
-End Sub
-
-Sub AddHeader(hdrKey As String, hdrValue As String)
-	headers.Put(hdrKey, hdrValue)
 End Sub
 
 'add a where clause for your select where
@@ -3685,95 +4121,6 @@ Sub MoveNext
 	setPosition(lastPosition)
 End Sub
 
-
-'Execute a where clause on the records
-'The result is a list with the values.
-'<code>
-'Dim WhereRecords As List = BANano.Await(pb.findWhereOrderBy(m, array("="), orderBy)
-'</code>
-'Sub findWhereOrderByX(whereMap As Map, whereOps As List, orderByx As List) As List
-'	If ShowLog Then
-'		Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderByx})"$)
-'	End If
-'	If Schema.Size = 0 Then
-'		BANano.Throw($"SDUIPocketBase.findWhereOrderBy: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
-'		Return Null
-'	End If
-'	'we build the filter
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim i As Int
-'	Dim iWhere As Int = whereMap.Size - 1
-'	For i = 0 To iWhere
-'		'If i > 0 Then
-'		'	sb.Append(" && ")
-'		'End If
-'		Dim col As String = whereMap.GetKeyAt(i)
-'		col = MvField(col, 1,".")
-'		col = col.replace("&","")
-'		Dim xVal As String = whereMap.GetValueAt(i)
-'		Dim opr As String = whereOps.Get(i)
-'		Dim com As String = combineL.Get(i)
-'		sb.Append(col)
-'		sb.Append($" ${opr} "$)
-'		sb.append(xVal)
-'		sb.Append($" ${com} "$)
-'	Next
-'	'
-'	Dim qfilter As String = sb.tostring
-'	sb.Initialize
-'	Dim afilter As String = RemDelim(qfilter, $" ${com} "$)
-'	qfilter = afilter.Trim
-'	'
-'	Dim qsort As String = ""
-'	If BANano.IsNull(orderByx) = False Then
-'		qsort = Join(",", orderByx)
-'	End If
-'	'
-'	Dim qflds As String = Join(",", flds)
-'	Dim qexpand As String = Join(",", expand)
-'	
-'	Dim nl As List
-'	nl.Initialize
-'	Try
-'		Dim opt As Map = CreateMap()
-'		If qsort <> "" Then opt.Put("sort", qsort)
-'		If qflds <> "" Then opt.Put("fields", qflds)
-'		If qexpand <> "" Then opt.Put("expand", qexpand)
-'		opt.Put("batch", batchSize)
-'		opt.Put("skipTotal", skipTotal)
-'		opt.Put("cache", "no-store")
-'		If headers.Size <> 0 Then
-'			opt.Put("headers", headers)
-'		End If
-'		If qfilter <> "" Then opt.Put("filter", qfilter)
-'		If ShowLog Then
-'			Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(opt)})"$)
-'		End If
-'		nl = BANano.Await(client.RunMethod("collection", sTableName).RunMethod("getFullList", Array(opt)))
-'		'
-'		If fileFields.Size > 0 Then
-'			Dim rTot As Int = nl.Size - 1
-'			Dim rCnt As Int = 0
-'			For rCnt = 0 To rTot
-'				Dim r As Map = nl.Get(rCnt)
-'				For Each fk As String In fileFields.keys
-'					Dim fv As String = fileFields.Get(fk)
-'					Dim fk1 As String = r.Get(fk)
-'					Dim pk1 As String = r.Get(PrimaryKey)
-'					Dim fk2 As String = $"${baseURL}/api/files/${sTableName}/${pk1}/${fk1}"$
-'					R.Put(fv, fk2)
-'				Next
-'				nl.Set(rCnt, r)
-'			Next
-'		End If
-'	Catch
-'		Log(LastException)
-'	End Try			'ignore
-'	Return nl
-'End Sub
-'
-
 Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByx As List) As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderByx})"$)
@@ -3808,15 +4155,15 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByx As List) As Lis
 		Dim opr As String = whereOps.Get(i)
 		Dim com As String = combineL.Get(i)
 		sb.Append(col)
-		sb.Append($" ${opr} "$)
+		sb.Append(opr)
 		sb.Append(xVal)
-		sb.Append($" ${com} "$)
+		sb.Append(com)
 	Next
-	Dim qfilter As String = RemDelim(sb.ToString, $" ${com} "$).Trim
+	Dim qfilter As String = RemDelim(sb.ToString, com).Trim
 	
 	' Build sort, fields, expand
 	Dim qsort As String = ""
-	If BANano.IsNull(orderByx) = False Then
+	If BANano.IsList(orderByx) Then
 		qsort = Join(",", orderByx)
 	End If
 	Dim qflds As String = Join(",", flds)
@@ -3840,6 +4187,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByx As List) As Lis
 			If qfilter <> "" Then opt.Put("filter", qfilter)
 			If headers.Size <> 0 Then opt.Put("headers", headers)
 			opt.Put("cache", "no-store")
+			If page <> 1 Then opt.Put("skipTotal", True)
 
 			If ShowLog Then
 				Log($"SDUIPocketBase.${sTableName}.findWhereOrderBy PAGE ${page}: ${BANano.ToJson(opt)}"$)
@@ -3978,6 +4326,19 @@ Sub findWhere(whereMap As Map, whereOps As List) As List
 	Return res
 End Sub
 
+'Execute a where clause on the records
+'The result is a list with the values.
+'<code>
+'Dim WhereRecords As List = BANano.Await(pb.findWhereOR(m, array("="))
+'</code>
+Sub findWhereFetch(whereMap As Map, whereOps As List) As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.findWhereFetch(${BANano.ToJson(whereMap)},${whereOps})"$)
+	End If
+	Dim res As List = BANano.Await(findWhereOrderByFetch(whereMap, whereOps, Null))
+	Return res
+End Sub
+
 '<code>
 'BANano.Await(pb.DELETE_BY(1))
 '</code>
@@ -4063,6 +4424,24 @@ Sub ExistsByString(fldName As String, fldValue As Object) As Boolean
 End Sub
 
 '<code>
+'Dim result As Boolean = BANano.Await(pbComponents.ExistsByStringFetch("name", "xxx"))
+'</code>
+Sub ExistsByStringFetch(fldName As String, fldValue As Object) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ExistsByStringFetch(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD(fldName)
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	If m.size = 0 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+'<code>
 'Dim result As Boolean = BANano.Await(pbComponents.Exists("id", 1))
 '</code>
 Sub Exists(fldName As String, fldValue As Object) As Boolean
@@ -4081,7 +4460,25 @@ Sub Exists(fldName As String, fldValue As Object) As Boolean
 End Sub
 
 '<code>
-'Dim result As Boolean = BANano.Await(pbComponents.Exists("id", 1))
+'Dim result As Boolean = BANano.Await(pbComponents.ExistsFetch("id", 1))
+'</code>
+Sub ExistsFetch(fldName As String, fldValue As Object) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ExistsFetch(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD(fldName)
+	ADD_WHERE(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	If m.size = 0 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+'<code>
+'Dim result As Boolean = BANano.Await(pbComponents.ExistsWhere(CreateMap("id": "1")))
 '</code>
 Sub ExistsWhere(where As Map) As Boolean
 	If ShowLog Then
@@ -4094,6 +4491,27 @@ Sub ExistsWhere(where As Map) As Boolean
 		ADD_WHERE_STRING(k, "=", v)
 	Next
 	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	If m.size = 0 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+'<code>
+'Dim result As Boolean = BANano.Await(pbComponents.ExistsWhereFetch(CreateMap("id": "1")))
+'</code>
+Sub ExistsWhereFetch(where As Map) As Boolean
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.ExistsWhere(${BANano.ToJson(where)})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	For Each k As String In where.Keys
+		Dim v As String = where.Get(k)
+		ADD_WHERE_STRING(k, "=", v)
+	Next
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
 	If m.size = 0 Then
 		Return False
 	Else
@@ -4120,13 +4538,31 @@ Sub SELECT_WHERE As List
 	Return res
 End Sub
 
+'<code>
+'pbComponents.CLEAR_WHERE
+'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
+'pbComponents.ADD_ORDER_BY("attrname")
+'pbComponents.FILE_FIELD("fileobj", "fileurl")
+'Dim result As List = BANano.Await(pbComponents.SELECT_WHERE_FETCH)
+'For Each record As Map In result
+'Dim sid As String = record.Get("id")
+'Next
+'</code>
+Sub SELECT_WHERE_FETCH As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.SELECT_WHERE_FETCH"$)
+	End If
+	Dim res As List = BANano.Await(findWhereOrderByFetch(whereField, ops, orderByL))
+	Return res
+End Sub
+
 'get the first item that matches your filter
 Sub GetFirstListItem(tableName As String) As Map
 	If ShowLog Then
-		Log($"SDUIPocketBase.${sTableName}.getFirstListItem"$)
+		Log($"SDUIPocketBase.${tableName}.getFirstListItem"$)
 	End If
 	If Schema.Size = 0 Then
-		BANano.Throw($"SDUIPocketBase.GetFirstListItem: ${sTableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		BANano.Throw($"SDUIPocketBase.GetFirstListItem: ${tableName} - please execute SchemaAdd?? first to define your table schema!"$)
 		Return Null
 	End If
 	'
@@ -4150,11 +4586,11 @@ Sub GetFirstListItem(tableName As String) As Map
 		Dim opr As String = ops.Get(i)
 		Dim com As String = combineL.Get(i)
 		sb.Append(col)
-		sb.Append($" ${opr} "$)
+		sb.Append(opr)
 		sb.Append(xVal)
-		sb.Append($" ${com} "$)
+		sb.Append(com)
 	Next
-	Dim qfilter As String = RemDelim(sb.ToString, $" ${com} "$).Trim
+	Dim qfilter As String = RemDelim(sb.ToString, com).Trim
 	'we dont have a filter
 	If qfilter = "" Then
 		Dim m As Map = CreateMap()
@@ -4162,10 +4598,7 @@ Sub GetFirstListItem(tableName As String) As Map
 	End If
 	'we have a filter, process further
 	'Build sort, fields, expand
-	Dim qsort As String = ""
-	If BANano.IsNull(orderByL) = False Then
-		qsort = Join(",", orderByL)
-	End If
+	Dim qsort As String = Join(",", orderByL)
 	Dim qflds As String = Join(",", flds)
 	Dim qexpand As String = Join(",", expand)
 
@@ -4214,6 +4647,88 @@ Sub GetFirstListItem(tableName As String) As Map
 	End Try
 End Sub
 
+'get the first item that matches your filter
+Sub GetFirstListItemFetch(tableName As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${tableName}.GetFirstListItemFetch"$)
+	End If
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIPocketBase.GetFirstListItemFetch: ${tableName} - please execute SchemaAdd?? first to define your table schema!"$)
+		Return Null
+	End If
+	
+	' Build filter
+	Dim sb As StringBuilder
+	sb.Initialize
+	Dim i As Int
+	Dim iWhere As Int = whereField.Size - 1
+	For i = 0 To iWhere
+		Dim col As String = whereField.GetKeyAt(i)
+		col = MvField(col, 1, ".")
+		col = col.Replace("&", "")
+		Dim xVal As String = whereField.GetValueAt(i)
+		Dim opr As String = ops.Get(i)
+		Dim com As String = combineL.Get(i)
+		sb.Append(col)
+		sb.Append(opr)
+		sb.Append(xVal)
+		sb.Append(com)
+	Next
+	Dim qfilter As String = RemDelim(sb.ToString, com).Trim
+	'we dont have a filter
+	If qfilter = "" Then
+		Dim m As Map = CreateMap()
+		Return m
+	End If
+	'we have a filter, process further
+	'Build sort, fields, expand
+	Dim qsort As String = Join(",", orderByL)
+	Dim qflds As String = Join(",", flds)
+	Dim qexpand As String = Join(",", expand)
+
+	Dim opt As Map = CreateMap()
+	If qsort <> "" Then opt.Put("sort", qsort)
+	If qflds <> "" Then opt.Put("fields", qflds)
+	If qexpand <> "" Then opt.Put("expand", qexpand)
+	If headers.Size <> 0 Then opt.Put("headers", headers)
+	opt.Put("cache", "no-store")
+	'
+	If ShowLog Then
+		Log($"SDUIPocketBase.${tableName}.GetFirstListItemFetch: ${BANano.ToJson(opt)}"$)
+	End If
+	'
+	RowCount = 0
+	lastPosition = -1
+	result.Initialize
+	Try
+		Dim finalURL As String = $"${baseURL}/api/getlist"$
+		Dim fetch As SDUIFetch
+		fetch.Initialize(finalURL)
+		fetch.AddHeaders(headers)
+		fetch.AddData("collection", tableName)
+		fetch.AddData("perPage", "1")
+		fetch.AddData("page", "1")
+		fetch.AddData("getFiles", GetFiles)
+		fetch.AddData("filter", qfilter)
+		fetch.AddData("sort", qsort)
+		fetch.AddData("fields", qflds)
+		fetch.AddData("skipTotal", True)
+		fetch.NoCache = True
+		fetch.SetContentTypeApplicationJSON
+		BANano.Await(fetch.PostWait)
+		Dim m As Map = fetch.Response
+		result = m.Get("items")
+		RowCount = result.Size
+		Dim mx As Map = CreateMap()
+		If result.Size = 1 Then mx = result.Get(0)
+		Return mx
+	Catch
+		Log($"GetFirstListItemFetch: ${LastException.message}"$)
+		Dim mx As Map = CreateMap()
+		Return mx
+	End Try
+End Sub
+
 '<code>
 'pbComponents.CLEAR_WHERE
 'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
@@ -4230,6 +4745,27 @@ Sub SELECT_WHERE1 As List
 		Log($"SDUIPocketBase.${sTableName}.SELECT_WHERE1"$)
 	End If
 	result = BANano.Await(findWhereOrderBy(whereField, ops, orderByL))
+	RowCount = result.Size
+	lastPosition = -1
+	Return result
+End Sub
+
+'<code>
+'pbComponents.CLEAR_WHERE
+'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
+'pbComponents.ADD_ORDER_BY("attrname")
+'pbComponents.FILE_FIELD("fileobj", "fileurl")
+'BANano.Await(pbComponents.SELECT_WHERE1_FETCH)
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
+Sub SELECT_WHERE1_FETCH As List
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.SELECT_WHERE1_FETCH"$)
+	End If
+	result = BANano.Await(findWhereOrderByFetch(whereField, ops, orderByL))
 	RowCount = result.Size
 	lastPosition = -1
 	Return result
@@ -5275,6 +5811,7 @@ Sub ADMIN_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
 		UserModel = client.getfield("authStore").GetField("model").Result
 		UserValid = client.getfield("authStore").GetField("isValid").Result
 		UserProfile.token = res.GetDefault("token", "")
+		SetAuthorizationBearerToken(UserToken)
 		If res.ContainsKey("admin") Then
 			UserRecord = res.Get("admin")
 			UserProfile.id = GetRecursive(res, "admin.id")
@@ -5385,6 +5922,7 @@ Sub ADMIN_AUTH_REFRESH As Map
 		UserModel = client.getfield("authStore").GetField("model").Result
 		UserValid = client.getfield("authStore").GetField("isValid").Result
 		UserProfile.token = res.GetDefault("token", "")
+		SetAuthorizationBearerToken(UserToken)
 		If res.ContainsKey("admin") Then
 			UserRecord = res.Get("admin")
 			UserProfile.id = GetRecursive(res, "admin.id")
@@ -6307,7 +6845,10 @@ End Sub
 
 Sub SetAuthorizationBearerToken(sToken As String)
 	sToken = sToken.Trim
-	If sToken = "" Then Return
+	If sToken = "" Then 
+		headers.remove("Authorization")
+		Return
+	End If
 	AddHeader("Authorization", $"Bearer ${sToken}"$)
 End Sub
 

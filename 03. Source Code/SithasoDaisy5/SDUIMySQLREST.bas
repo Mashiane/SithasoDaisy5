@@ -85,6 +85,12 @@ Private Sub Class_Globals
 	Private sDbName As String
 	Private sDriver As String
 	Private sPort As String
+	Private UseBaseURL As Boolean
+	Public NoCORS As Boolean
+	Public Redirect As String
+	Public NoCache As Boolean
+	Public ReferrerPolicy As String
+	Public Mode As String
 End Sub
 
 '<code>
@@ -120,6 +126,15 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	escapeCharStart = "`"
 	escapeCharEnd = "`"
 	MatchSchema = True
+	UseBaseURL = False
+	If url.EndsWith(".php") Then 
+		UseBaseURL = True
+	End If
+	NoCORS = False
+	Redirect = ""
+	NoCache = True
+	ReferrerPolicy = ""
+	Mode = ""
 	Return Me
 End Sub
 
@@ -132,13 +147,43 @@ Sub SetMySQLConnection(xHost As String, xUser As String, xPassword As String, xD
 	sPort = xPort
 End Sub
 
+Sub SetMySQLConnectionApiKey(xHost As String, xUser As String, xPassword As String, xDbName As String, xPort As String, xApiKey As String)
+	sHost = xHost
+	sUser = xUser
+	sPassword = xPassword
+	sDbName = xDbName
+	sDriver = "mysql"
+	sPort = xPort
+	sApiKey = xApiKey
+	UseApiKey = True
+End Sub
+
 Sub SetSQLiteConnection(sPath As String)
 	sHost = sPath
 	sUser = ""
 	sPassword = ""
 	sDbName = ""
 	sDriver = "sqlite"
-	sPort = ""
+	sPort = "3306"
+	UseApiKey = False
+	sApiKey = ""
+	NoCORS = False
+	Redirect = "follow"
+	NoCache = True
+End Sub
+
+Sub SetSQLiteConnectionApiKey(sPath As String, xApiKey As String)
+	sHost = sPath
+	sUser = ""
+	sPassword = ""
+	sDbName = ""
+	sDriver = "sqlite"
+	sPort = "3306"
+	sApiKey = xApiKey
+	UseApiKey = True
+	NoCORS = False
+	Redirect = "follow"
+	NoCache = True
 End Sub
 
 
@@ -485,21 +530,31 @@ Sub SELECT_ALL As List
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.Redirect = Redirect
+	fetch.ReferrerPolicy = ReferrerPolicy
+	fetch.Mode = Mode 
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-	fetch.AddHeader("X-Host", sHost)
-	fetch.AddHeader("X-User", sUser)
-	fetch.AddHeader("X-Password", sPassword)
-	fetch.AddHeader("X-DBName", sDbName)
-	fetch.AddHeader("X-Driver", sDriver)
-	fetch.AddHeader("X-Port", sPort)
-	fetch.NoCache = True
+	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	fetch.NoCache = NoCache
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.SELECT_ALL.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
 		End If
 	Else
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}?${scommand}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.SELECT_ALL.${baseURL}/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		End If
@@ -565,20 +620,27 @@ Sub CREATE As String
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.AddHeader("X-Host", sHost)
-		fetch.AddHeader("X-User", sUser)
-		fetch.AddHeader("X-Password", sPassword)
-		fetch.AddHeader("X-DBName", sDbName)
-		fetch.AddHeader("X-Driver", sDriver)
-		fetch.AddHeader("X-Port", sPort)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.CREATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
 			Log(BANano.ToJson(Record))
 		End If
 		fetch.SetData(Record)
-		fetch.NoCache = True
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -608,9 +670,15 @@ Sub USER_CREATE(username As String, password As String) As Boolean
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.SetURL($"/assets/${ApiFile}.php/register"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/register"$) 
+		End If
 		fetch.SetData(Record)
-		fetch.NoCache = True
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -646,9 +714,15 @@ Sub USER_CHANGE_PASSWORD(username As String, password As String, newPassword As 
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.SetURL($"/assets/${ApiFile}.php/password"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/password"$)
+		End If
 		fetch.SetData(Record)
-		fetch.NoCache = True
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -684,9 +758,15 @@ Sub USER_LOGIN(username As String, password As String) As Boolean
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.SetURL($"/assets/${ApiFile}.php/login"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/login"$)
+		End If
 		fetch.SetData(Record)
-		fetch.NoCache = True
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -718,8 +798,14 @@ Sub USER_LOGOUT As Boolean
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.SetURL($"/assets/${ApiFile}.php/logout"$)
-		fetch.NoCache = True
+		If UseBaseURL Then
+			fetch.SetURL($"/logout"$)
+		End If
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -763,14 +849,21 @@ Sub DELETE(id As String) As Boolean
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.AddHeader("X-Host", sHost)
-		fetch.AddHeader("X-User", sUser)
-		fetch.AddHeader("X-Password", sPassword)
-		fetch.AddHeader("X-DBName", sDbName)
-		fetch.AddHeader("X-Driver", sDriver)
-		fetch.AddHeader("X-Port", sPort)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}/${id}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.DELETE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
@@ -846,15 +939,22 @@ Sub UPDATE As String
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.AddHeader("X-Host", sHost)
-		fetch.AddHeader("X-User", sUser)
-		fetch.AddHeader("X-Password", sPassword)
-		fetch.AddHeader("X-DBName", sDbName)
-		fetch.AddHeader("X-Driver", sDriver)
-		fetch.AddHeader("X-Port", sPort)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}/${pkValue}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.UPDATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 			Log(BANano.ToJson(Record))
@@ -906,15 +1006,22 @@ Sub UPDATE_PER_FIELD As String
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.AddHeader("X-Host", sHost)
-		fetch.AddHeader("X-User", sUser)
-		fetch.AddHeader("X-Password", sPassword)
-		fetch.AddHeader("X-DBName", sDbName)
-		fetch.AddHeader("X-Driver", sDriver)
-		fetch.AddHeader("X-Port", sPort)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}/${pkValue}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.UPDATE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 			Log(BANano.ToJson(Record))
@@ -957,18 +1064,25 @@ Sub READ(id As String) As Map
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
 		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		fetch.AddHeader("X-Host", sHost)
-		fetch.AddHeader("X-User", sUser)
-		fetch.AddHeader("X-Password", sPassword)
-		fetch.AddHeader("X-DBName", sDbName)
-		fetch.AddHeader("X-Driver", sDriver)
-		fetch.AddHeader("X-Port", sPort)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}/${id}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.READ.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
-		fetch.NoCache = True
+		fetch.NoCache = NoCache
 		BANano.Await(fetch.GetWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
@@ -2020,6 +2134,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	'
 	Dim scommand As String = Join("&", xcommand)
 	scommand = RemDelim(scommand, "&")
+	scommand = scommand.trim
 
 	Dim nresult As List
 	nresult.Initialize
@@ -2028,25 +2143,35 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
 	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.Redirect = Redirect
+	fetch.ReferrerPolicy = ReferrerPolicy
+	fetch.Mode = Mode
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-	fetch.AddHeader("X-Host", sHost)
-	fetch.AddHeader("X-User", sUser)
-	fetch.AddHeader("X-Password", sPassword)
-	fetch.AddHeader("X-DBName", sDbName)
-	fetch.AddHeader("X-Driver", sDriver)
-	fetch.AddHeader("X-Port", sPort)
+	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.findWhereOrderBy.${baseURL}/assets/${ApiFile}.php/records/${TableName}"$)
 		End If
 	Else
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/records/${TableName}?${scommand}"$)
+		End If
 		If ShowLog Then
 			Log($"SDUIMySQLREST.findWhereOrderBy.${baseURL}/assets/${ApiFile}.php/records/${TableName}?${scommand}"$)
 		End If
 	End If
-	fetch.NoCache = True
+	fetch.NoCache = NoCache
 	BANano.Await(fetch.GetWait)
 	If fetch.Success Then
 		Dim Response As Map = fetch.response

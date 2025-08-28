@@ -7,7 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Caption, DisplayName: Caption, FieldType: String, DefaultValue: Source Code, Description: Caption
-#DesignerProperty: Key: Language, DisplayName: Language, FieldType: String, DefaultValue: vb, Description: Language, List: css|html|js|vb
+#DesignerProperty: Key: Language, DisplayName: Language, FieldType: String, DefaultValue: vb, Description: Language, List: css|html|js|vb|json
 #DesignerProperty: Key: CodeType, DisplayName: Code Type, FieldType: String, DefaultValue: default, Description: Code Type, List: card|default
 #DesignerProperty: Key: FileName, DisplayName: File Name, FieldType: String, DefaultValue: code.bas, Description: File Name
 #DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: , Description: Content
@@ -55,6 +55,7 @@ Sub Class_Globals
 	Public CODE_HTML As String = "html"
 	Public CODE_VB As String = "vb"
 	Public CODE_OTHER As String = ""
+	Public CODE_JSON As String = "json"
 	Private sFileName As String
 	Private sCaption As String
 	Private sFileName As String
@@ -452,6 +453,11 @@ private Sub BeautifySourceCode(sc As String) As String
 				'Dim res As String = SDUIShared.BeautifyPHP(sc)
 			Case "vb"
 				Dim res As String = UI.BeautifyB4X(sc)
+			Case "json"
+				Dim opt As Map = CreateMap()
+				opt.Put("indent_size", 4)
+				opt.Put("space_in_empty_paren", True)
+				Dim res As String = BANano.RunJavascriptMethod("js_beautify", Array(sc, opt))
 			Case Else
 				Dim res As String = UI.PrettierCode(sc)
 		End Select

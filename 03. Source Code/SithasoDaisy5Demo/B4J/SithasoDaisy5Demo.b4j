@@ -940,8 +940,8 @@ Sub Process_Globals
 	'the name of the application &
 	'this is the folder on your development server.
 	Public AppName As String = "sd5demo"
-	Public AppTitle As String = "SithasoDaisy 5.50 Demo"
-	Public AppVersion As String = "SithasoDaisy 5.50"
+	Public AppTitle As String = "SithasoDaisy 5.54 Demo"
+	Public AppVersion As String = "SithasoDaisy 5.54"
 	'whe the app should
 	Public Publish As String = "C:\laragon\www"
 	Public Version As String = "0.01"

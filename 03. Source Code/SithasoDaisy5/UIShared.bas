@@ -4173,6 +4173,11 @@ Sub dataURLtoFile(dataURL As String, fileName As String) As Object
 	Return fo
 End Sub
 
+Sub fileToDataURL(fileObj As Object) As String
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("fileToDataURL", Array(fileObj)))
+	Return fo
+End Sub
+
 Sub CompressBase64(dataURL As String) As String
 	Dim LZString As BANanoObject
 	LZString.Initialize("LZString")

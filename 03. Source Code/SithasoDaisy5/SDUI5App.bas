@@ -2678,6 +2678,53 @@ Sub ImportCSV(Module As Object, event As String, content As String, delimiter As
 	Papa.RunMethod("parse", Array(content, config))
 End Sub
 
+'<code>
+'DownloadGoogleSheet(Me, "mycsv", csvData, "http://")
+'
+''will fire in each iteration
+'Sub mycsv_step(row As Map)
+'End Sub
+'
+''will fire when completed
+'Sub mycsv_complete(results As Map)
+'Dim data As list = results.get("data")
+'Dim errors As List = results.get("errors")
+'Dim meta As Map = results.get("meta")
+'Dim fields As List = meta.get("fields")
+'End Sub
+'</code>
+Sub DownloadGoogleSheet(Module As Object, event As String, urlLink As String, hasHeader As Boolean, dynamicTyping As Boolean)
+	If Banano.AssetsIsDefined("CSV") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesCSVParser)' should be added!"$)
+		Return
+	End If
+	event = event.tolowercase
+	Dim config As Map = CreateMap()
+	config.Put("download", True)
+	config.Put("worker", True)
+	config.Put("header", hasHeader)
+	config.Put("dynamicTyping", dynamicTyping)
+	config.put("skipEmptyLines", True)
+	config.put("fastMode", True)
+	'
+	Dim xstep As String = $"${event}_step"$
+	Dim results As Object
+	If SubExists(Module, xstep) Then
+		Dim stepCB As BANanoObject = Banano.CallBack(Module, xstep, Array(results))
+		config.Put("step", stepCB)
+	End If
+	'
+	Dim xcomplete As String = $"${event}_complete"$
+	If SubExists(Module, xcomplete) Then
+		Dim completeCB As BANanoObject = Banano.CallBack(Module, xcomplete, Array(results))
+		config.Put("complete", completeCB)
+	End If
+	'
+	Dim Papa As BANanoObject
+	Papa.Initialize("Papa")
+	Papa.RunMethod("parse", Array(urlLink, config))
+End Sub
+
 Sub GetString(m As Map, fld As String) As String
 	Dim x As String = m.Get(fld)
 	x = UI.CStr(x)

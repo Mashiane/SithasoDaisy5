@@ -16,7 +16,7 @@ Version=10.2
 #DesignerProperty: Key: ButtonDisabled, DisplayName: Button Disabled, FieldType: Boolean, DefaultValue: False, Description: Button Disabled
 #DesignerProperty: Key: ButtonTextColor, DisplayName: Button Text Color, FieldType: String, DefaultValue: none, Description: Button Text Color
 #DesignerProperty: Key: SaveColor, DisplayName: Save Color, FieldType: String, DefaultValue: success, Description: Save Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: SaveTextColor, DisplayName: Save Text Color, FieldType: String, DefaultValue: none, Description: Save Text Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: SaveTextColor, DisplayName: Save Text Color, FieldType: String, DefaultValue: none, Description: Save Text Color
 #DesignerProperty: Key: ErrorMessage, DisplayName: Error Message, FieldType: String, DefaultValue: The signature is required, Description: Error Message
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: Please sign within the box area, Description: Hint
 #DesignerProperty: Key: DotSize, DisplayName: Dot Size, FieldType: String, DefaultValue: 0, Description: Dot Size
