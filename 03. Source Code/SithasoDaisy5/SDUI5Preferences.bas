@@ -437,7 +437,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
-						<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_searchbtnicon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
 					</button>
 	    		</div>
 				<div id="${mName}_actions" class="hidden flex flex-1 mr-0 justify-end gap-1"></div>
@@ -2352,12 +2352,12 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hidden"></span>
     					<button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_prepend_icon" fit="true" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hidden"></span>
     					<button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_append_icon" fit="true" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     				</label>
     			</div>
@@ -2398,13 +2398,13 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hidden"></span>
     <button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_prepend_icon"  style="pointer-events:none;"  data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_prepend_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hidden"></span>
     <button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_append_icon" fit="true" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -2458,12 +2458,12 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hidden"></span>
     <button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <input id="${mName}_${Key}" type="password" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     <span id="${mName}_${Key}_suffix" class="hidden"></span>
     <button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -2702,12 +2702,12 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hidden"></span>
     					<button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_prepend_icon" fit="true" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hidden"></span>
     					<button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_append_icon" fit="true" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     				</label>
 					<ul id="${mName}_${Key}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
@@ -3241,12 +3241,12 @@ Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, 
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hidden"></span>
     <button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" fit="true"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <textarea id="${mName}_${Key}" placeholder="${Title}" name="${mName}_${Key}" class="textarea break-normal textarea-bordered textarea-${sComponentSize} w-full tlradius blradius trradius brradius resize-y"></textarea>
     <span id="${mName}_${Key}_suffix" class="hidden"></span>
     <button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;" fit="true"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -3778,7 +3778,7 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     		<div id="${mName}_${Key}_formcontrol" class="flex items-center w-full">
     			<button id="${mName}_${Key}_button" class="btn btn-circle ${btnColor} ${btnW} ${btnH}">
-    				<svg-renderer id="${mName}_${Key}_icon" style="pointer-events:none;"   fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg-renderer>
+    				<svg-renderer id="${mName}_${Key}_icon" style="pointer-events:none;" fit="true"  fill="currentColor" data-js="enabled" data-src="${xIcon}"></svg-renderer>
     				<div id="${mName}_${Key}_progress" role="progressbar" class="radial-progress text-white bg-${xColor}" style="--size:${xSize}; --thickness: 1px;"></div>
     			</button>
     			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="hidden"/>

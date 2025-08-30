@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: CheckBoxType, DisplayName: CheckBox Type, FieldType: String, DefaultValue: normal, Description: CheckBox Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Options , Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox , Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: TermsConditionsCaption, DisplayName: Terms Conditions Caption, FieldType: String, DefaultValue: , Description: Terms Conditions Caption
 #DesignerProperty: Key: TermsConditionsUrl, DisplayName: Terms Conditions Url, FieldType: String, DefaultValue: , Description: Terms Conditions Url
 #DesignerProperty: Key: PrivacyPolicyCaption, DisplayName: Privacy Policy Caption, FieldType: String, DefaultValue: , Description: Privacy Policy Caption
@@ -84,6 +85,7 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -124,6 +126,16 @@ End Sub
 'return the #ID of the element
 Public Sub getHere() As String
 	Return $"#${mName}"$
+End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
 End Sub
 'set Visible
 Sub setVisible(b As Boolean)
@@ -235,6 +247,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		bChecked = Props.GetDefault("Checked", False)
 		bChecked = UI.CBool(bChecked)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
@@ -313,6 +327,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
+			setLabelColor(sLabelColor)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} checkbox" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		Case "left-label"
@@ -507,7 +522,22 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Indeterminate
 Sub setIndeterminate(b As Boolean)				'ignoredeadcode
 	bIndeterminate = b
@@ -641,6 +671,8 @@ Sub IsBlank As Boolean
 		Else
 			setColor("error")
 		End If
+		HintError($"The ${sLabel.tolowercase} is required."$)
+		Focus
 		Return True
 	End If
 	If sCheckBoxType = "legend" Then
@@ -648,6 +680,7 @@ Sub IsBlank As Boolean
 	Else
 		setColor("success")
 	End If
+	setHint(sHint)
 	Return False
 End Sub
 

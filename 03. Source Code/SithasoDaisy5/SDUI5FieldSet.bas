@@ -10,6 +10,7 @@ Version=10
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Legend, Description: Legend
 #DesignerProperty: Key: LegendVisible, DisplayName: Legend Visible, FieldType: Boolean, DefaultValue: True, Description: Legend Visible
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Label, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: LabelVisible, DisplayName: Label Visible, FieldType: Boolean, DefaultValue: True, Description: Label Visible
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
@@ -61,6 +62,7 @@ Sub Class_Globals
 	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
 	Private sWidth As String = "xs"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -237,6 +239,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sWidth = Props.GetDefault("Width", "xs")
 		sWidth = UI.CStr(sWidth)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -265,7 +269,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	</fieldset>"$).Get("#" & mName)
 	setLabelVisible(bLabelVisible)
 	setLegendVisible(bLegendVisible)
+	setLabelColor(sLabelColor)
 '	setVisible(bVisible)
+End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
 End Sub
 
 'set Background Color

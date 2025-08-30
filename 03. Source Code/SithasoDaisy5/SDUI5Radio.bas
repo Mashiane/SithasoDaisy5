@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: RadioType, DisplayName: Radio Type, FieldType: String, DefaultValue: normal, Description: Toggle Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -62,6 +63,7 @@ Sub Class_Globals
 	Private sValue As String = ""
 	Private sLegend As String = ""
 	Private sRadioType As String = "normal"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -89,6 +91,17 @@ Public Sub Remove()
 	mElement.Remove
 	BANano.SetMeToNull
 End Sub
+
+Sub setLabelColor(s As String)				'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 'set the parent id
 Sub setParentID(s As String)
 	s = UI.CleanID(s)
@@ -213,6 +226,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		sAriaLabel = Props.GetDefault("AriaLabel", "")
 		sAriaLabel = UI.CStr(sAriaLabel)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
@@ -262,6 +277,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</fieldset>"$).Get("#" & mName)
+			setLabelColor(sLabelColor)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="radio" class="${xclasses} radio" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 		Case "left-label"
@@ -388,7 +404,22 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Label
 Sub setLabel(s As String)
 	sLabel = s

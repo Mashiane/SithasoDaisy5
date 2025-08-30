@@ -288,7 +288,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<li id="${mName}_li">
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<div id="${mName}_host" class="inline-flex items-center">
-						<svg-renderer id="${mName}_icon"    fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden mr-2"></svg-renderer>
+						<svg-renderer id="${mName}_icon"  fit="true"  fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden mr-2"></svg-renderer>
 						<span id="${mName}_text"></span>
 					</div>	
 				</a>
@@ -307,7 +307,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 					<div id="${mName}_host" class="inline-flex items-center">
-						<svg-renderer id="${mName}_icon"    data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden mr-2 hidden"></svg-renderer>
+						<svg-renderer id="${mName}_icon" fit="true"    data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden mr-2 hidden"></svg-renderer>
 						<span id="${mName}_text"></span>
 					</div>	
 				</a>"$).Get("#" & mName)

@@ -295,7 +295,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_figure" class="stat-figure hidden">
-			<svg-renderer id="${mName}_icon"    fill="currentColor" class="hidden" data-js="enabled"></svg-renderer>
+			<svg-renderer id="${mName}_icon"  fit="true"  fill="currentColor" class="hidden" data-js="enabled"></svg-renderer>
       		<img id="${mName}_image" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 			<div id="${mName}_avatar" class="avatar hidden">
         		<div id="${mName}_avatar_host">

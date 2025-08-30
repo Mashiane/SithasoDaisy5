@@ -8,6 +8,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: ProgressType, DisplayName: Progress Type, FieldType: String, DefaultValue: normal, Description: Progress Type, List: legend|normal|tooltip|normal-text
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: ProgressBackgroundColor, DisplayName: Progress Background Color, FieldType: String, DefaultValue: , Description: Progress Background Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
@@ -89,6 +90,7 @@ Sub Class_Globals
 	Private sTextColor As String = "#ffffff"
 	Private sTextSize As String = "xs"
 	Private bTextVisible As Boolean = False
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -115,6 +117,17 @@ Public Sub Remove()
 	mElement.Remove
 	BANano.SetMeToNull
 End Sub
+
+Sub setLabelColor(s As String)				'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 'set the parent id
 Sub setParentID(s As String)
 	s = UI.CleanID(s)
@@ -256,6 +269,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		UI.ExcludeBackgroundColor = True
 		UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "none")
@@ -372,6 +387,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setTextColor(sTextColor)
 			setTextSize(sTextSize)
 			setTextVisible(bTextVisible)
+			setLabelColor(sLabelColor)
 		Case "tooltip"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
@@ -592,6 +608,20 @@ Sub setHint(s As String)
 		UI.SetVisibleByID($"${mName}_hint"$, False)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
+	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
+End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
 	End If
 End Sub
 

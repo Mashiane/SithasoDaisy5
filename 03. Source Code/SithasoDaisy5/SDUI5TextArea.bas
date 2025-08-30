@@ -14,6 +14,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Text Area, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -110,6 +111,7 @@ Sub Class_Globals
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
 	Private sRows As String = "4"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -121,6 +123,17 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
+
+Sub setLabelColor(s As String)					'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -265,6 +278,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -361,7 +376,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -369,7 +384,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
@@ -379,6 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
+			setLabelColor(sLabelColor)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"
@@ -386,7 +402,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -394,7 +410,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</img></button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -410,7 +426,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label textarea join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -421,7 +437,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
       			</div>"$).Get("#" & mName)	
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -892,7 +908,22 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Label
 Sub setLabel(s As String)
 	sLabel = s
@@ -1026,6 +1057,8 @@ Sub IsBlank As Boolean
 		Else
 			setColor("error")
 		End If
+		HintError($"The ${sLabel.tolowercase} is required."$)
+		Focus
 		Return True
 	End If
 	If sInputType = "legend" Then
@@ -1033,6 +1066,7 @@ Sub IsBlank As Boolean
 	Else
 		setColor("success")
 	End If
+	setHint(sHint)
 	Return False
 End Sub
 

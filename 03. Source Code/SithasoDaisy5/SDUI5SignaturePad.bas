@@ -516,6 +516,20 @@ Sub setHint(s As String)
 	UI.SetTextByID($"${mName}_hint"$, s)
 	UI.SetTextColorByID($"${mName}_hint"$, $"gray-500"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Image Type
 'options: jpeg|png|svg
 Sub setImageType(s As String)

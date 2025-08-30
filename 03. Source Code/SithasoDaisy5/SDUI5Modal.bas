@@ -16,6 +16,7 @@ Version=10
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _box|_title|_form|_action, Description: Child Item _box|_title|_form|_action
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Modal Dialog, Description: Title
+#DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: RawHtml, DisplayName: HTML Message, FieldType: String, DefaultValue: , Description: HTML Message
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: Closable, DisplayName: Closable, FieldType: Boolean, DefaultValue: True, Description: Closable
@@ -127,6 +128,7 @@ Sub Class_Globals
 	Private sButtonsShadow As String = "md"
 	Private sButtonsRounded As String = "md"
 	Public Form As SDUI5Form
+	Private sTitleTextColor As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -350,6 +352,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
 		If sButtonsRounded = "none" Then sButtonsRounded = ""
+		sTitleTextColor = Props.GetDefault("TitleTextColor", "")
+		sTitleTextColor = UI.CStr(sTitleTextColor)
 	End If
 	'
 	UI.AddClassDT("modal")
@@ -405,6 +409,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '    		<button>close</button>
 '  		</form>
 '	</dialog>"$).Get("#" & mName)
+	setTitleTextColor(sTitleTextColor)
 	setActionsVisible(bActionsVisible)
 	setBackdrop(bBackdrop)
 	setClosable(bClosable)
@@ -413,6 +418,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setFullScreen(bFullScreen)
 	setTitle(sTitle)
 	setHTML(sRawHtml)
+	setGlass(bGlass)
 	'sort action buttons
 	Select Case sActionType
 	Case "ok-cancel", "retry-cancel"
@@ -434,6 +440,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 End Sub
 
+Sub setTitleTextColor(s As String)			'ignoredeadcode
+	sTitleTextColor = s
+	CustProps.Put("TitleTextColor", s)
+	UI.SetTextColorByID($"${mName}_title"$, sTitleTextColor)
+End Sub
+
+Sub getTitleTextColor As String
+	Return sTitleTextColor
+End Sub
 
 'set Buttons Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -601,15 +616,15 @@ Sub setClosable(b As Boolean)			'ignoredeadcode
 	End If
 End Sub
 'set Glass
-Sub setGlass(b As Boolean)
+Sub setGlass(b As Boolean)			'ignoredeadcode
 	bGlass = b
 	CustProps.put("Glass", b)
 	If mElement = Null Then Return
-'	If b = True Then
-'		UI.AddClass(mElement, "glass")
-'	Else
-'		UI.RemoveClass(mElement, "glass")
-'	End If
+	If b = True Then
+		UI.AddClassByID($"${mName}_box"$, "glass")
+	Else
+		UI.RemoveClassByID($"${mName}_box"$, "glass")
+	End If
 End Sub
 'set Height
 Sub setHeight(s As String)			'ignoredeadcode

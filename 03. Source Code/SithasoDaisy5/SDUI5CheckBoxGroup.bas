@@ -10,6 +10,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: checkbox, Description: Type Of, List: checkbox|toggle
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox Group, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -77,6 +78,7 @@ Sub Class_Globals
 	Private sSelected As String = ""
 	Private sShadow As String = "none"
 	Private sTypeOf As String = "checkbox"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -267,6 +269,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sTypeOf = Props.GetDefault("TypeOf", "checkbox")
 		sTypeOf = UI.CStr(sTypeOf)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -307,7 +311,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 	setOptions(sRawOptions)
 	setSelected(sSelected)
+	setLabelColor(sLabelColor)
 '	setVisible(bVisible)
+End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
 End Sub
 
 'set Shadow
@@ -657,7 +672,22 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Label
 Sub setLabel(s As String)
 	sLabel = s

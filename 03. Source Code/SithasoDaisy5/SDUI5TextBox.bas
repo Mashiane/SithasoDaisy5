@@ -15,6 +15,7 @@ Version=10
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url|color-wheel
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -155,6 +156,7 @@ Sub Class_Globals
 	Private sWheelPlacement As String = "top-end"
 	Private bToggleColorPicker As Boolean = False
 	Private bDPTwentyFour As Boolean = True
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -180,6 +182,17 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -407,6 +420,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bToggleColorPicker = UI.CBool(bToggleColorPicker)
 		bDPTwentyFour = Props.GetDefault("DPTwentyFour", False)
 		bDPTwentyFour = UI.CBool(bDPTwentyFour)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		End If
         'we have a color wheel
 		If sTypeOf = "color-wheel" Then 
@@ -436,7 +451,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<div id="${mName}_join" class="join">
 	          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 							<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-							<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+							<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fit="true" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 						</button>
 	          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
@@ -444,7 +459,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 							<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-							<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+							<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"  data-js="enabled" fit="true" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 						</button>
 	        		</div>          
 	        		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>					
@@ -459,6 +474,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				setBorderColor(sBorderColor)
 				setRoundedBox(bRoundedBox)
 				setShadow(sShadow)
+				setLabelColor(sLabelColor)
 				sDataTypeOf = $"${mName}_control"$
 				If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 				If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
@@ -467,7 +483,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"    data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fit="true" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
@@ -475,7 +491,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-id="${mName}_append_icon" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" data-id="${mName}_append_icon" fit="true" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
 					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -498,7 +514,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fit="true" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label input join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -509,7 +525,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" data-js="enabled" fit="true" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
 					<ul id="${mName}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_anchor">
 						<div class="card-body">
@@ -1369,7 +1385,22 @@ Sub setHint(s As String)			'ignoredeadcode
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+    If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Label
 Sub setLabel(s As String)
     sLabel = s
@@ -1696,6 +1727,8 @@ Sub IsBlank As Boolean
 		Else
 			setColor("error")
 		End If
+		HintError($"The ${sLabel.tolowercase} is required."$)
+		Focus		
 		Return True
 	End If
 	If sInputType = "legend" Then
@@ -1703,6 +1736,7 @@ Sub IsBlank As Boolean
 	Else
 		setColor("success")
 	End If
+	setHint(sHint)
 	Return False
 End Sub
 

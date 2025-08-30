@@ -9,6 +9,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Group Select, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: group1, Description: Group Name
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
@@ -71,6 +72,7 @@ Sub Class_Globals
 	Private items As Map
 	Private sChipColor As String = "neutral"
 	Private sTextColor As String = "#ffffff"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -255,6 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sChipColor = UI.CStr(sChipColor)
 		sTextColor = Props.GetDefault("TextColor", "#ffffff")
 		sTextColor = UI.CStr(sTextColor)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -283,6 +287,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</fieldset>"$).Get("#" & mName)
 	setOptions(sRawOptions)
 	setSelected(sSelected)
+	setLabelColor(sLabelColor)
+End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
 End Sub
 
 'set Text Color
@@ -407,7 +422,7 @@ Sub SetOptionsFromMap(mItems As Map)			'ignoredeadcode
 		Dim nk As String = $"${mName}_${k}"$
 		sb.Append($"[BANCLEAN]
 		<div id="${mName}_${k}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${mName}_${k}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<svg-renderer id="${mName}_${k}_icon" fit="true" width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
 			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
@@ -463,7 +478,7 @@ Sub AddOption(k As String, v As String)
 	
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
 		<div id="${mName}_${K}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${mName}_${k}_icon"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<svg-renderer id="${mName}_${k}_icon" fit="true"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
 			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	

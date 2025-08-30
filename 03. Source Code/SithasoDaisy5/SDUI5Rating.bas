@@ -11,6 +11,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Rating, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: star, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: primary, Description: Color, List: accent|error|info|neutral|primary|secondary|success|warning|none
 #DesignerProperty: Key: RatingBackgroundColor, DisplayName: Rating Background Color, FieldType: String, DefaultValue: , Description: Rating Background Color
@@ -78,6 +79,7 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -131,6 +133,18 @@ Sub setVisible(b As Boolean)
 		UI.SetVisibleByID($"${mName}_control"$, b)
 	End Select
 End Sub
+
+
+Sub setLabelColor(s As String)					'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 'get Visible
 Sub getVisible As Boolean
 	bVisible = UI.GetVisible(mElement)
@@ -234,6 +248,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		sRatingBackgroundColor = Props.GetDefault("RatingBackgroundColor", "none")
 		sRatingBackgroundColor = UI.CStr(sRatingBackgroundColor)
 		If sRatingBackgroundColor = "none" Then sRatingBackgroundColor = ""
@@ -301,6 +317,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
+			setLabelColor(sLabelColor)
 	Case "normal"
 		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses} rating" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 	End Select
@@ -542,7 +559,22 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
 End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
+End Sub
+
 'set Label
 Sub setLabel(s As String)
 	sLabel = s
@@ -648,6 +680,8 @@ Sub IsBlank As Boolean
 		Else
 			setColor("error")
 		End If
+		HintError($"The ${sLabel.tolowercase} is required."$)
+		Focus
 		Return True
 	End If
 	If sInputType = "legend" Then
@@ -655,6 +689,7 @@ Sub IsBlank As Boolean
 	Else
 		setColor("success")
 	End If
+	setHint(sHint)
 	Return False
 End Sub
 

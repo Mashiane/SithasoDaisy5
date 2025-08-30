@@ -10,6 +10,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|microphone|progress|camera|camcorder
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: HideSelectorButton, DisplayName: Hide Selector Button, FieldType: Boolean, DefaultValue: False, Description: Hide Selector Button
@@ -89,6 +90,7 @@ Sub Class_Globals
 	Public CONST CAPTURE_ENVIRONMENT As String = "environment"
 	Public CONST CAPTURE_NONE As String = "none"
 	Public CONST CAPTURE_USER As String = "user"
+	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -116,6 +118,17 @@ Public Sub Remove()
 	mElement.Remove
 	BANano.SetMeToNull
 End Sub
+
+Sub setLabelColor(s As String)				'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
+End Sub
+
 'set the parent id
 Sub setParentID(s As String)
 	s = UI.CleanID(s)
@@ -244,6 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -329,6 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
+			setLabelColor(sLabelColor)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
@@ -349,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
-    				<svg-renderer id="${mName}_icon" style="pointer-events:none;"   fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
+    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" fit="true" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>
@@ -690,6 +706,20 @@ Sub setHint(s As String)
 	Else
 		UI.SetVisibleByID($"${mName}_hint"$, True)
 	End If
+	UI.SetTextColorByID($"${mName}_hint"$, $"base-content"$)
+End Sub
+
+'set Hint
+Sub HintError(s As String)			'ignoredeadcode
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_hint"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_hint"$, False)
+		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
+	Else
+		UI.SetVisibleByID($"${mName}_hint"$, True)
+		UI.SetTextColorByID($"${mName}_hint"$, "error")
+	End If
 End Sub
 'set Label
 Sub setLabel(s As String)
@@ -918,6 +948,8 @@ Sub IsBlank As Boolean
 		Else
 			setColor("error")
 		End If
+		HintError($"The ${sLabel.tolowercase} is required."$)
+		Focus
 		Return True
 	End If
 	If sInputType = "legend" Then
@@ -925,6 +957,7 @@ Sub IsBlank As Boolean
 	Else
 		setColor("success")
 	End If
+	setHint(sHint)
 	Return False
 End Sub
 

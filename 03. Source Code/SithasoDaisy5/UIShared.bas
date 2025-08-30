@@ -2270,7 +2270,7 @@ End Sub
 
 private Sub SetSVGSrc(mElement As BANanoElement, s As String)
 	Try
-	If mElement = Null Then Return
+		If mElement = Null Then Return
 		mElement.SetAttr("data-src", s)
 	Catch
 		
@@ -2339,9 +2339,8 @@ Sub ResizeIconByID(sID As String, sPercentage As String)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	Dim m As Map = CreateMap("width": sPerc, "height":sPerc)
 	mElement.SetStyle(BANano.ToJson(m))
-	mElement.SetAttr("preserveAspectRatio", "xMidYMid meet")
 	mElement.RemoveAttr("width")
-		mElement.RemoveAttr("height")
+	mElement.RemoveAttr("height")
 	Catch
 		
 	End Try				'ignore
