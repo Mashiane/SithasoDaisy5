@@ -29,6 +29,10 @@ Version=10
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: GradientActive, DisplayName: GradientActive, FieldType: Boolean, DefaultValue: false, Description: Gradient should be set
+#DesignerProperty: Key: Gradient, DisplayName: Gradient, FieldType: String, DefaultValue: , Description: Gradient, List: bl_tr|bottom_top|br_tl|left_right|right_left|tl_br|top_bottom|tr_bl
+#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Gradient Color 1.
+#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Gradient Color 2.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
@@ -101,6 +105,10 @@ Sub Class_Globals
 	Private sMinWidth As String = ""
 	Private sBackgroundImage As String = ""
 	Private bPageView As Boolean = False
+	Private bGradientActive As String
+	Private sGradient As String
+	Private sGradientColor1 As String
+	Private sGradientColor2 As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -307,6 +315,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBackgroundImage = UI.CStr(sBackgroundImage)
 		bPageView = Props.GetDefault("PageView", False)
 		bPageView = UI.CBool(bPageView)
+		bGradientActive = Props.GetDefault("GradientActive", False)
+		bGradientActive = UI.CBool(bGradientActive)
+		sGradient = Props.GetDefault("Gradient", "")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 	End If
 	'
 	If bPageView Then UI.AddClassDT("max-w-[100vw] px-6 pb-16 xl:pe-2 relative")
@@ -343,6 +356,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradient(mElement, agradient, sGradientColor1, sGradientColor2)
+	End If
 End Sub
 
 Sub setPageView(b As Boolean)

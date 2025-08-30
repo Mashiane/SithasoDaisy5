@@ -18,6 +18,29 @@ Sub Class_Globals
 	Public ExcludePosition As Boolean = False
 End Sub
 
+Sub GetDeviceSizes(varOffsets As String) As Map
+	Dim mm As Map = CreateMap("xs":"", "sm":"", "md":"", "lg":"", "xl":"", "2xl":"")
+	varOffsets = CStr(varOffsets)
+	varOffsets = varOffsets.Replace(":", "=")
+	varOffsets = varOffsets.replace("-","|")
+	varOffsets = varOffsets.replace(",","|")
+	varOffsets = varOffsets.replace(";","|")
+	varOffsets = varOffsets.replace("|",",")
+	varOffsets = varOffsets.replace("?","")
+	varOffsets = varOffsets.replace(" ","")
+	varOffsets = varOffsets.trim
+	'
+	Dim ss As List = StrParse(",", varOffsets)
+	For Each item As String In ss
+		Dim k As String = MvField(item,1,"=")
+		Dim v As String = MvField(item,2,"=")
+		k = CStr(k).trim
+		v = CStr(v).trim
+		mm.Put(k, v)
+	Next
+	Return mm
+End Sub
+
 Sub ExtractDateOfBirthFromRSAID(IDNumber As String) As String
 	If IDNumber.Length <> 13 Then
 		IDNumber = PadRight(IDNumber, 13, "0")
@@ -619,6 +642,16 @@ public Sub SetSize(mElement As BANanoElement, sizeName As String, prefix As Stri
 	End Try				'ignore
 End Sub
 
+public Sub SetGap(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim s1 As String = FixSize("gap", s)
+	UpdateClass(mElement, "gap", s1)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 public Sub SetSizeByID(sID As String, sizeName As String, prefix As String, s As String)
 	Try
 	sID = CleanID(sID)
@@ -638,6 +671,27 @@ public Sub SetColor(mElement As BANanoElement, colorName As String, prefix As St
 		
 	End Try				'ignore
 End Sub
+
+public Sub SetColumns(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim s1 As String = $"columns-${s}"$
+	UpdateClass(mElement, "columns", s1)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+public Sub SetGridCols(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim s1 As String = $"grid-cols-" & s"$
+	UpdateClass(mElement, "gridcols", s1)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 
 public Sub GetColor() As String
 	Return BANano.GetP(mSelf, "sColor")
@@ -4692,4 +4746,39 @@ Sub TimeDiff(startTime As String, endTime As String) As String
 	Dim sTime As String = nt.RunMethod("diff", Array(ot, "minute")).Result
 	Dim xtime As String = ConvertMinutesToHours(CInt(sTime))
 	Return xtime
+End Sub
+
+Sub GetBase64BlackPercentage(base64 As String) As Int
+	Dim res As Int = BANano.Await(BANano.RunJavascriptMethod("getBlackPercentage", Array(base64)))
+	Return CInt(res)
+End Sub
+
+'from property value to actual
+Sub GetActualGradient(source As String) As String			'ignoredeadcode
+	Select Case source
+		Case "top_bottom"
+			Return "to bottom"
+		Case "right_left"
+			Return "to left"
+		Case "bottom_top"
+			Return "to top"
+		Case "left_right"
+			Return "to right"
+		Case "tl_br"
+			Return "to bottom right"
+		Case "bl_tr"
+			Return "to top right"
+		Case "tr_bl"
+			Return "to bottom left"
+		Case "br_tl"
+			Return "to top left"
+	End Select
+End Sub
+
+Sub SetLinearGradient(mElement As BANanoElement, orientation As String, firstColor As String, secondColor As String)  'ignoredeadcode
+	If mElement = Null Then Return
+	AddStyle(mElement, "background-image", $"-webkit-linear-gradient(${orientation},${firstColor},${secondColor})"$)
+	AddStyle(mElement, "background-image", $"-o-linear-gradient(${orientation},${firstColor},${secondColor})"$)
+	AddStyle(mElement, "background-image", $"-moz-linear-gradient(${orientation},${firstColor},${secondColor})"$)
+	AddStyle(mElement, "background-image", $"linear-gradient(${orientation},${firstColor},${secondColor})"$)
 End Sub

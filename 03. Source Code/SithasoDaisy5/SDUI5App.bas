@@ -198,6 +198,8 @@ Private Sub Class_Globals
 	Type profileType(id As String, name As String, verified As Boolean, email As String, token As String, avatar As String, UserName As String, size As Int, idnumber As String)
 	Public UserProfile As profileType
 	Type FileObject(FileName As String, FileDate As String, FileSize As Long, FileType As String, Status As String, FullPath As String, FileDateOnly As String, FileOK As Boolean, FO As BANanoObject, Extension As String, webkitRelativePath As String)
+	Type Address(suburb As String, name As String, city As String, country As String, countryCode As String, _
+	municipality As String, postcode As String, road As String, state As String, displayName As String, lat As String, lon As String)
 	'
 	'Private sApiKey As String = ""
 	'Private sDatabaseType As String = "pocketbase"
@@ -2912,4 +2914,41 @@ End Sub
 Sub decompressBase64(s As String) As String
 	Dim res As String = Banano.RunJavascriptMethod("decompressBase64", Array(s))
 	Return res
+End Sub
+
+
+Sub GetAddressFromLatLon(dLat As Double, dLon As Double, limitTo As Int) As Address
+	Dim sSearch As String = $"${dLat},${dLon}"$
+	Dim j As SDUIFetch
+	j.Initialize("https://nominatim.openstreetmap.org/search")
+	j.AddParameter("q", sSearch)
+	j.AddParameter("format", "json")
+	j.AddParameter("limit", limitTo)
+	j.AddParameter("addressdetails", "1")
+	j.SetContentTypeApplicationJSON
+	j.NoCache = True
+	'execute the post
+	Banano.Await(J.GetWait)
+	Dim address As Map = CreateMap()
+	Dim addr As Address
+	addr.Initialize
+	If j.Success Then
+		Dim items As List = j.ResponseList
+		If items.Size >= 0 Then
+			address = items.Get(0)
+			addr.city = UI.GetRecursive(address, "address.city")
+			addr.road = UI.GetRecursive(address, "address.road")
+			addr.suburb = UI.GetRecursive(address, "address.suburb")
+			addr.municipality = UI.GetRecursive(address, "address.municipality")
+			addr.state = UI.GetRecursive(address, "address.state")
+			addr.postcode = UI.GetRecursive(address, "address.postcode")
+			addr.country = UI.GetRecursive(address, "address.country")
+			addr.countrycode = UI.GetRecursive(address, "address.country_code")
+			addr.displayname = address.Get("display_name")
+			addr.name = address.Get("name")
+			addr.lat = address.Get("lat")
+			addr.lon = address.Get("lon")
+		End If
+	End If
+	Return addr
 End Sub
