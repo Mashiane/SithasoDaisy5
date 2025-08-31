@@ -10,8 +10,9 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: CheckBoxType, DisplayName: CheckBox Type, FieldType: String, DefaultValue: normal, Description: CheckBox Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Options , Description: Legend
+#DesignerProperty: Key: LegendColor, DisplayName: Legend Color, FieldType: String, DefaultValue: , Description: Legend Color
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox , Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Legend Color
 #DesignerProperty: Key: TermsConditionsCaption, DisplayName: Terms Conditions Caption, FieldType: String, DefaultValue: , Description: Terms Conditions Caption
 #DesignerProperty: Key: TermsConditionsUrl, DisplayName: Terms Conditions Url, FieldType: String, DefaultValue: , Description: Terms Conditions Url
 #DesignerProperty: Key: PrivacyPolicyCaption, DisplayName: Privacy Policy Caption, FieldType: String, DefaultValue: , Description: Privacy Policy Caption
@@ -85,6 +86,7 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
+	Private sLegendColor As String = ""
 	Private sLabelColor As String = ""
 End Sub
 'initialize the custom view class
@@ -128,15 +130,26 @@ Public Sub getHere() As String
 	Return $"#${mName}"$
 End Sub
 
+Sub setLegendColor(s As String)			'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
+	UI.SetTextColorByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLegendColor As String
+	Return sLegendColor
+End Sub
+
 Sub setLabelColor(s As String)			'ignoredeadcode
 	sLabelColor = s
 	CustProps.Put("LabelColor", s)
-	UI.SetTextColorByID($"${mName}_legend"$, s)
+	UI.SetTextColorByID($"${mName}_label"$, s)
 End Sub
 
 Sub getLabelColor As String
 	Return sLabelColor
 End Sub
+
 'set Visible
 Sub setVisible(b As Boolean)
 	bVisible = b
@@ -247,8 +260,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		bChecked = Props.GetDefault("Checked", False)
 		bChecked = UI.CBool(bChecked)
 		sCheckedColor = Props.GetDefault("CheckedColor", "")
@@ -298,6 +311,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -327,6 +342,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
+			setLegendColor(sLegendColor)
 			setLabelColor(sLabelColor)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="checkbox" class="${xclasses} checkbox" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
@@ -338,6 +354,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   				</label>
     			<input id="${mName}" type="checkbox" class="checkbox">
 			</div>"$).Get("#" & mName)
+			setLabelColor(sLabelColor)
 		Case "right-label"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
@@ -346,6 +363,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</div>"$).Get("#" & mName)
+			setLabelColor(sLabelColor)
 	End Select
 	'
 	setEnabled(bEnabled)

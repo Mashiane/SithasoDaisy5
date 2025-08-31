@@ -10,7 +10,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: checkbox, Description: Type Of, List: checkbox|toggle
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: CheckBox Group, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -78,7 +78,7 @@ Sub Class_Globals
 	Private sSelected As String = ""
 	Private sShadow As String = "none"
 	Private sTypeOf As String = "checkbox"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -269,8 +269,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sTypeOf = Props.GetDefault("TypeOf", "checkbox")
 		sTypeOf = UI.CStr(sTypeOf)
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -311,18 +311,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 	setOptions(sRawOptions)
 	setSelected(sSelected)
-	setLabelColor(sLabelColor)
+	setLegendColor(sLegendColor)
 '	setVisible(bVisible)
 End Sub
 
-Sub setLabelColor(s As String)			'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)			'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'set Shadow

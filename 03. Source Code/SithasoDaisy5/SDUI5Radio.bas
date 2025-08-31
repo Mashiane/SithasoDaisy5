@@ -10,8 +10,9 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RadioType, DisplayName: Radio Type, FieldType: String, DefaultValue: normal, Description: Toggle Type, List: legend|normal|left-label|right-label
 #DesignerProperty: Key: Legend, DisplayName: Legend, FieldType: String, DefaultValue: Toggle, Description: Legend
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Radio, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Legend Color
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -63,7 +64,8 @@ Sub Class_Globals
 	Private sValue As String = ""
 	Private sLegend As String = ""
 	Private sRadioType As String = "normal"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
+	Private sLabelColor As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -92,14 +94,14 @@ Public Sub Remove()
 	BANano.SetMeToNull
 End Sub
 
-Sub setLabelColor(s As String)				'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)				'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'set the parent id
@@ -226,8 +228,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		sAriaLabel = Props.GetDefault("AriaLabel", "")
 		sAriaLabel = UI.CStr(sAriaLabel)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
@@ -254,6 +256,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sLegend = UI.CStr(sLegend)
 		sRadioType = Props.GetDefault("RadioType", "normal")
 		sRadioType = UI.CStr(sRadioType)
+		sLabelColor = Props.GetDefault("LabelColor", "")
+		sLabelColor = UI.CStr(sLabelColor)
 	End If
 
 	Dim xattrs As String = UI.BuildExAttributes
@@ -277,6 +281,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</fieldset>"$).Get("#" & mName)
+			setLegendColor(sLegendColor)
 			setLabelColor(sLabelColor)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="radio" class="${xclasses} radio" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
@@ -288,6 +293,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
   				</label>
     			<input id="${mName}" type="radio" class="radio">
 			</div>"$).Get("#" & mName)
+			setLabelColor(sLabelColor)
 		Case "right-label"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex flex-col gap-2" ${xattrs} style="${xstyles}">
@@ -296,6 +302,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<span id="${mName}_label">${sLabel}</span>
 				</label>
 			</div>"$).Get("#" & mName)
+			setLabelColor(sLabelColor)
 	End Select
 		
 	setColor(sColor)
@@ -309,6 +316,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setCheckedColor(sCheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+Sub setLabelColor(s As String)			'ignoredeadcode
+	sLabelColor = s
+	CustProps.Put("LabelColor", s)
+	UI.SetTextColorByID($"${mName}_label"$, s)
+End Sub
+
+Sub getLabelColor As String
+	Return sLabelColor
 End Sub
 
 

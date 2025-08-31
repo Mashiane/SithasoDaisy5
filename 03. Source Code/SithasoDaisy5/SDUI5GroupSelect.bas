@@ -9,7 +9,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Group Select, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: group1, Description: Group Name
 #DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
@@ -72,7 +72,7 @@ Sub Class_Globals
 	Private items As Map
 	Private sChipColor As String = "neutral"
 	Private sTextColor As String = "#ffffff"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -257,8 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sChipColor = UI.CStr(sChipColor)
 		sTextColor = Props.GetDefault("TextColor", "#ffffff")
 		sTextColor = UI.CStr(sTextColor)
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -287,17 +287,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</fieldset>"$).Get("#" & mName)
 	setOptions(sRawOptions)
 	setSelected(sSelected)
-	setLabelColor(sLabelColor)
+	setLegendColor(sLegendColor)
 End Sub
 
-Sub setLabelColor(s As String)			'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)			'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'set Text Color

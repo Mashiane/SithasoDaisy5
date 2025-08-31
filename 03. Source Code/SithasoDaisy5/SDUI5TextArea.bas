@@ -14,7 +14,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Text Area, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -111,7 +111,7 @@ Sub Class_Globals
 	Private sPrependColor As String = "none"
 	Private sPrependIconColor As String = "none"
 	Private sRows As String = "4"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -124,14 +124,14 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 
-Sub setLabelColor(s As String)					'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)					'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 ' returns the element id
@@ -278,8 +278,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -394,7 +394,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
-			setLabelColor(sLabelColor)
+			setLegendColor(sLegendColor)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 			If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)
 	Case "buttons"

@@ -15,7 +15,7 @@ Version=10
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url|color-wheel
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -156,7 +156,7 @@ Sub Class_Globals
 	Private sWheelPlacement As String = "top-end"
 	Private bToggleColorPicker As Boolean = False
 	Private bDPTwentyFour As Boolean = True
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -183,14 +183,14 @@ Public Sub getID() As String
 	Return mName
 End Sub
 
-Sub setLabelColor(s As String)			'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)			'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'add this element to an existing parent element using current props
@@ -420,8 +420,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bToggleColorPicker = UI.CBool(bToggleColorPicker)
 		bDPTwentyFour = Props.GetDefault("DPTwentyFour", False)
 		bDPTwentyFour = UI.CBool(bDPTwentyFour)
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		End If
         'we have a color wheel
 		If sTypeOf = "color-wheel" Then 
@@ -474,7 +474,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				setBorderColor(sBorderColor)
 				setRoundedBox(bRoundedBox)
 				setShadow(sShadow)
-				setLabelColor(sLabelColor)
+				setLegendColor(sLegendColor)
 				sDataTypeOf = $"${mName}_control"$
 				If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
 				If sAppendIcon <> "" Or sAppendImage <> "" Then UI.OnEventByID($"${mName}_append"$, "click", mCallBack, $"${mName}_append"$)

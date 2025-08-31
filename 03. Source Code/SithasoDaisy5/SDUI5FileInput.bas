@@ -10,7 +10,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|microphone|progress|camera|camcorder
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: HideSelectorButton, DisplayName: Hide Selector Button, FieldType: Boolean, DefaultValue: False, Description: Hide Selector Button
@@ -90,7 +90,7 @@ Sub Class_Globals
 	Public CONST CAPTURE_ENVIRONMENT As String = "environment"
 	Public CONST CAPTURE_NONE As String = "none"
 	Public CONST CAPTURE_USER As String = "user"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -119,14 +119,14 @@ Public Sub Remove()
 	BANano.SetMeToNull
 End Sub
 
-Sub setLabelColor(s As String)				'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)				'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'set the parent id
@@ -257,8 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""
@@ -344,7 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
-			setLabelColor(sLabelColor)
+			setLegendColor(sLegendColor)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">

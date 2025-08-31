@@ -10,7 +10,7 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: RangeType, DisplayName: Range Type, FieldType: String, DefaultValue: normal, Description: Range Type, List: legend|normal|tooltip
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Range, Description: Label
-#DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
+#DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 10, Description: Value
 #DesignerProperty: Key: MinValue, DisplayName: Min Value, FieldType: String, DefaultValue: 0, Description: Min Value
 #DesignerProperty: Key: StepValue, DisplayName: Step Value, FieldType: String, DefaultValue: 1, Description: Step Value
@@ -79,7 +79,7 @@ Sub Class_Globals
 	Private sBorderColor As String = "base-300"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
-	Private sLabelColor As String = ""
+	Private sLegendColor As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -134,14 +134,14 @@ Sub setVisible(b As Boolean)
 	End Select
 End Sub
 
-Sub setLabelColor(s As String)					'ignoredeadcode
-	sLabelColor = s
-	CustProps.Put("LabelColor", s)
+Sub setLegendColor(s As String)					'ignoredeadcode
+	sLegendColor = s
+	CustProps.Put("LegendColor", s)
 	UI.SetTextColorByID($"${mName}_legend"$, s)
 End Sub
 
-Sub getLabelColor As String
-	Return sLabelColor
+Sub getLegendColor As String
+	Return sLegendColor
 End Sub
 
 'get Visible
@@ -246,8 +246,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabelColor = Props.GetDefault("LabelColor", "")
-		sLabelColor = UI.CStr(sLabelColor)
+		sLegendColor = Props.GetDefault("LegendColor", "")
+		sLegendColor = UI.CStr(sLegendColor)
 		sRangeBackgroundColor = Props.GetDefault("RangeBackgroundColor", "")
 		sRangeBackgroundColor = UI.CStr(sRangeBackgroundColor)
 		sColor = Props.GetDefault("Color", "none")
@@ -343,7 +343,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			setBorderColor(sBorderColor)
 			setRoundedBox(bRoundedBox)
 			setShadow(sShadow)
-			setLabelColor(sLabelColor)
+			setLegendColor(sLegendColor)
 	Case "tooltip"
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses}" ${xattrs} style="${xstyles}">
