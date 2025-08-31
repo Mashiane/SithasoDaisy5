@@ -2952,3 +2952,15 @@ Sub GetAddressFromLatLon(dLat As Double, dLon As Double, limitTo As Int) As Addr
 	End If
 	Return addr
 End Sub
+
+Sub isValidEmail(s As String) As Boolean
+	Dim b As Boolean = Banano.RunJavascriptMethod("isValidEmail", Array(s))
+	b = UI.CBool(b)
+	Return b
+End Sub
+
+Sub isStrongPassword(s As String) As Boolean
+	Dim b As Boolean = Banano.RunJavascriptMethod("isStrongPassword", Array(s))
+	b = UI.CBool(b)
+	Return b
+End Sub

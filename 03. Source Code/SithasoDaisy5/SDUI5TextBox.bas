@@ -1379,7 +1379,7 @@ Sub setHint(s As String)			'ignoredeadcode
         sHint = s
         CustProps.put("Hint", s)
         If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_hint"$, s)
+	UI.SetHTMLByID($"${mName}_hint"$, s)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_hint"$, False)
 	Else
@@ -1391,7 +1391,7 @@ End Sub
 'set Hint
 Sub HintError(s As String)			'ignoredeadcode
     If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_hint"$, s)
+	UI.SetHTMLByID($"${mName}_hint"$, s)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_hint"$, False)
 		UI.SetTextColorByID($"${mName}_hint"$, "base-content")
@@ -1686,17 +1686,21 @@ Sub IsMatch(otherValue As String, tErrorMessage As String) As Boolean			'ignore
 		Else
 			setColor("success")
 		End If
-		Return False
+		setHint(sHint)
+		Return True
 	Else
 		If sInputType = "legend" Then
 			setBorderColor("error")
 		Else
 			setColor("error")
 		End If
-		Return True
+		HintError(tErrorMessage)
+		Focus
+		Return False
 	End If
 End Sub
-Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean				'ignore
+
+Sub IsMinLength(minLen As Int) As Boolean				'ignore
 	Dim v As String = getValue
 	v = UI.CStr(v)
 	v = v.Trim
@@ -1706,16 +1710,68 @@ Sub IsMinLength(minLen As Int, tErrorMessage As String) As Boolean				'ignore
 		Else
 			setColor("success")
 		End If
-		Return False
+		setHint(sHint)
+		Return True
 	Else
 		If sInputType = "legend" Then
 			setBorderColor("error")
 		Else
 			setColor("error")
 		End If
-		Return True
+		HintError($"The ${sLabel.tolowercase} should be at least ${minLen} characters long."$)
+		Focus
+		Return False
 	End If
 End Sub
+
+Sub IsMaxLength(minLen As Int) As Boolean				'ignore
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	If v.Length >= minLen Then
+		If sInputType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
+		setHint(sHint)
+		Return True
+	Else
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} should be equal to or more than ${minLen} characters long."$)
+		Focus
+		Return False
+	End If
+End Sub
+
+Sub IsLength(minLen As Int) As Boolean				'ignore
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	If v.Length = minLen Then
+		If sInputType = "legend" Then
+			setBorderColor("success")
+		Else
+			setColor("success")
+		End If
+		setHint(sHint)
+		Return True
+	Else
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} should be ${minLen} characters long."$)
+		Focus
+		Return False
+	End If
+End Sub
+
 'run validation
 Sub IsBlank As Boolean
 	Dim v As String = getValue
@@ -1738,6 +1794,131 @@ Sub IsBlank As Boolean
 	End If
 	setHint(sHint)
 	Return False
+End Sub
+
+Sub IsValidEmail As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	Dim b As Boolean = BANano.RunJavascriptMethod("isValidEmail", Array(v))
+	b = UI.CBool(b)
+	If b = False Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} is not a valid email address."$)
+		Focus		
+		Return False
+	End If
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
+	setHint(sHint)
+	Return True
+End Sub
+
+Sub IsValidUrl As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	Dim b As Boolean = BANano.RunJavascriptMethod("isValidUrl", Array(v))
+	b = UI.CBool(b)
+	If b = False Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} is not a valid URL."$)
+		Focus		
+		Return False
+	End If
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
+	setHint(sHint)
+	Return True
+End Sub
+
+Sub IsAlphanumeric As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	Dim b As Boolean = BANano.RunJavascriptMethod("isAlphanumeric", Array(v))
+	b = UI.CBool(b)
+	If b = False Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} is not alpha-numeric."$)
+		Focus		
+		Return False
+	End If
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
+	setHint(sHint)
+	Return True
+End Sub
+
+Sub IsNumeric As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	Dim b As Boolean = BANano.RunJavascriptMethod("isNumeric", Array(v))
+	b = UI.CBool(b)
+	If b = False Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} is not numeric."$)
+		Focus		
+		Return False
+	End If
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
+	setHint(sHint)
+	Return True
+End Sub
+
+Sub IsStrongPassword As Boolean
+	Dim v As String = getValue
+	v = UI.CStr(v)
+	v = v.Trim
+	Dim b As Boolean = BANano.RunJavascriptMethod("isStrongPassword", Array(v))
+	b = UI.CBool(b)
+	If b = False Then
+		If sInputType = "legend" Then
+			setBorderColor("error")
+		Else
+			setColor("error")
+		End If
+		HintError($"The ${sLabel.tolowercase} is not a strong password."$)
+		Focus		
+		Return False
+	End If
+	If sInputType = "legend" Then
+		setBorderColor("success")
+	Else
+		setColor("success")
+	End If
+	setHint(sHint)
+	Return True
 End Sub
 
 Sub ResetValidation

@@ -555,7 +555,7 @@ Sub setHint(s As String)
 	sHint = s
 	CustProps.put("Hint", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_hint"$, s)
+	UI.SetHTMLByID($"${mName}_hint"$, s)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_hint"$, False)
 	Else
@@ -567,7 +567,7 @@ End Sub
 'set Hint
 Sub HintError(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_hint"$, s)
+	UI.SetHTMLByID($"${mName}_hint"$, s)
 	If s = "" Then
 		UI.SetVisibleByID($"${mName}_hint"$, False)
 		UI.SetTextColorByID($"${mName}_hint"$, "base-content")

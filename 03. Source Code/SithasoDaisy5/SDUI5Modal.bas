@@ -17,6 +17,10 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Modal Dialog, Description: Title
 #DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
+#DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: RawHtml, DisplayName: HTML Message, FieldType: String, DefaultValue: , Description: HTML Message
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: Closable, DisplayName: Closable, FieldType: Boolean, DefaultValue: True, Description: Closable
@@ -129,6 +133,10 @@ Sub Class_Globals
 	Private sButtonsRounded As String = "md"
 	Public Form As SDUI5Form
 	Private sTitleTextColor As String
+	Private sIcon As String
+	Private sIconColor As String
+	Private sIconSize As String
+	Private bIconVisible As Boolean
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -138,7 +146,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -354,6 +362,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sButtonsRounded = "none" Then sButtonsRounded = ""
 		sTitleTextColor = Props.GetDefault("TitleTextColor", "")
 		sTitleTextColor = UI.CStr(sTitleTextColor)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
+		sIcon = Props.GetDefault("Icon", "")
+		sIcon = UI.CStr(sIcon)
+		sIconColor = Props.GetDefault("IconColor", "")
+		sIconColor = UI.CStr(sIconColor)
+		sIconSize = Props.GetDefault("IconSize", "")
+		sIconSize = UI.CStr(sIconSize)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
 	End If
 	'
 	UI.AddClassDT("modal")
@@ -378,12 +396,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	mElement = mTarget.Append($"[BANCLEAN]
 	<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
-	<div id="${mName}" role="dialog" class="${xclasses}" ${xattrs} style="${xstyles}">
+	<div id="${mName}" role="dialog" aria-modal="true" aria-labelledby="${mName}_title" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_box" class="modal-box relative">
 			<form id="${mName}_closeform">
       			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
     		</form>
-    		<h3 id="${mName}_title" class="text-lg font-bold">${sTitle}</h3>
+    		<h3 id="${mName}_title" class="text-lg font-bold flex items-center gap-2">
+				<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
+				<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
+			</h3>
     		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
         	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
 		</div>
@@ -419,6 +440,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setTitle(sTitle)
 	setHTML(sRawHtml)
 	setGlass(bGlass)
+	setIcon(sIcon)
+	setIconColor(sIconColor)
+	setIconSize(sIconSize)
+	setIconVisible(bIconVisible)
 	'sort action buttons
 	Select Case sActionType
 	Case "ok-cancel", "retry-cancel"
@@ -440,10 +465,51 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 End Sub
 
+Sub setIconSize(s As String)			'ignoredeadcode
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+	UI.SetAttrByID($"${mName}_icon"$, "width", s)
+	UI.SetAttrByID($"${mName}_icon"$, "height", s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+Sub setIconVisible(b As Boolean)				'ignoredeadcode
+	bIconVisible = b
+	CustProps.Put("IconVisible", b)
+	UI.SetVisibleByID($"${mName}_icon"$, b)
+End Sub
+
+Sub getIconVisible As Boolean
+	Return bIconVisible
+End Sub
+
+Sub setIcon(s As String)			'ignoredeadcode
+	sIcon = s
+	CustProps.Put("Icon", s)
+	UI.SetAttrByID($"${mName}_icon"$, "data-src", s)
+End Sub
+
+Sub getIcon As String
+	Return sIcon
+End Sub
+
+Sub setIconColor(s As String)			'ignoredeadcode
+	sIconColor = s
+	CustProps.Put("IconColor", s)
+	UI.SetStyleByID($"${mName}_icon"$, "color", s)
+End Sub
+
+Sub getIconColor As String
+	Return sIconColor
+End Sub
+
 Sub setTitleTextColor(s As String)			'ignoredeadcode
 	sTitleTextColor = s
 	CustProps.Put("TitleTextColor", s)
-	UI.SetTextColorByID($"${mName}_title"$, sTitleTextColor)
+	UI.SetTextColorByID($"${mName}_text"$, sTitleTextColor)
 End Sub
 
 Sub getTitleTextColor As String
@@ -684,7 +750,7 @@ Sub setTitle(s As String)					'ignoredeadcode
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_title"$, s)
+	UI.SetTextByID($"${mName}_text"$, s)
 End Sub
 'set Width
 Sub setWidth(s As String)			'ignoredeadcode

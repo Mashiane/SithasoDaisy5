@@ -1008,11 +1008,12 @@ public Sub SetTextByID(sID As String, s As String)
 	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-SetText(mElement, s)
+	SetText(mElement, s)
 Catch
 		
 End Try				'ignore
 End Sub
+
 
 public Sub SetRingColor(mElement As BANanoElement, s As String)
 	Try
@@ -1199,7 +1200,7 @@ Sub SetHTMLByID(sID As String, sContent As String)
 	Try
 	sID = CleanID(sID)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
-mElement.SetHTML(BANano.SF(sContent))
+	mElement.SetHTML(BANano.SF(sContent))
 Catch
 		
 End Try				'ignore
