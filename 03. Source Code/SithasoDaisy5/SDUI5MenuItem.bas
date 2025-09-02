@@ -493,7 +493,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<img id="${mName}_src" class="bg-cover bg-center bg-no-repeat" src="${sAvatar}" />
 						</div>
 					</div>
-					<svg-renderer id="${mName}_icon" fit="true"     data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
+					<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 					<span id="${mName}_text">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</summary>	
@@ -511,7 +511,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<img id="${mName}_src" class="bg-cover bg-center bg-no-repeat" src="${sAvatar}" />
 						</div>
 					</div>
-					<svg-renderer id="${mName}_icon" fit="true"   data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
+					<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 					<span id="${mName}_text" class="hidden">${sText}</span>
 					<span id="${mName}_badge" class="badge rounded-full hidden">${sBadge}</span>
 				</a>

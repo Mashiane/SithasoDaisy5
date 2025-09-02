@@ -417,7 +417,7 @@ End Sub
 
 
 Sub GetMonthName3(sMonth As String) As String
-	Dim Months As Map = modSD5.Months
+	Dim Months As SDUIMap = modSD5.Months
 	If Months.ContainsKey(sMonth) Then
 		Dim xn As String = Months.Get(sMonth)
 		Dim nn As String = Left(xn, 3)
@@ -4781,4 +4781,15 @@ Sub SetLinearGradient(mElement As BANanoElement, orientation As String, firstCol
 	AddStyle(mElement, "background-image", $"-o-linear-gradient(${orientation},${firstColor},${secondColor})"$)
 	AddStyle(mElement, "background-image", $"-moz-linear-gradient(${orientation},${firstColor},${secondColor})"$)
 	AddStyle(mElement, "background-image", $"linear-gradient(${orientation},${firstColor},${secondColor})"$)
+End Sub
+
+Sub MapLowerKeys(m As Map) As Map
+	Dim nm As Map
+	nm.initialize
+	For Each strKey As String In m.Keys
+		Dim objValue As Object = m.Get(strKey)
+		If BANano.IsNull(objValue) Then objValue = ""
+		nm.Put(strKey.ToLowerCase,objValue)
+	Next
+	Return nm
 End Sub

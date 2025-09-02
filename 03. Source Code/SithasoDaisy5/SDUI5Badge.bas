@@ -342,9 +342,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${xtag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<img id="${mName}_leftimage" src="${sLeftImage}" alt="" class="hidden rounded-full bg-cover bg-center bg-no-repeat"></img>
-		<svg-renderer id="${mName}_lefticon" class="hidden rounded-full" fit="true" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg-renderer>
+		<svg-renderer id="${mName}_lefticon" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sLeftIcon}"></svg-renderer>
 		<span id="${mName}_text" class="whitespace-nowrap">${sText}</span>
-		<svg-renderer id="${mName}_righticon" class="hidden rounded-full" fit="true" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg-renderer>
+		<svg-renderer id="${mName}_righticon" class="hidden rounded-full" data-js="enabled" fill="currentColor" data-src="${sRightIcon}"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden rounded-full bg-cover bg-center bg-no-repeat"></img>
 	</${xtag}>"$).Get("#" & mName)
 	

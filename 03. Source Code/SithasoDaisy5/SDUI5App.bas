@@ -554,6 +554,8 @@ Public Sub Initialize (mCallback As Object)
 	mback = mCallback
 	AddLoader
 	Banano.Await(modSD5.InitColors)
+	Banano.Await(modSD5.InitLanguages)
+	Banano.Await(modSD5.InitCountries)
 	Themes.Initialize
 	templates.Initialize
 	templateViews.Initialize

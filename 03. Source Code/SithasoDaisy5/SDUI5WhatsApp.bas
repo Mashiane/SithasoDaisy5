@@ -372,7 +372,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         <div id="${mName}_sideheader" class="wa-chat-header">
 			<div class="flex">
 				<button id="${mName}_back" class="btn btn-ghost btn-circle hidden mr-2 tooltip tooltip-right" data-tip="Exit Messenger">
-					<svg-renderer id="${mName}_backicon" style="pointer-events:none;" fit="true"  class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/chevron-left-solid.svg"></svg-renderer>
+					<svg-renderer id="${mName}_backicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/chevron-left-solid.svg"></svg-renderer>
 				</button>
             	<div class="wa-avatar">
                 	<img id="${mName}_sideavatar" class="bg-cover bg-center bg-no-repeat" src="${sSideAvatar}" alt="">
@@ -383,7 +383,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
                 <img src="./assets/chat.svg" alt="" class="icon hidden">
                 <img src="./assets/more.svg" alt="" class="icon hidden">
 				<button id="${mName}_refreshchats" class="btn btn-ghost btn-circle ml-2 tooltip tooltip-left" data-tip="Refresh Chats">
-					<svg-renderer id="${mName}_refreshchatsicon" fit="true" style="pointer-events:none;"   class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/rotate-solid.svg"></svg-renderer>
+					<svg-renderer id="${mName}_refreshchatsicon" style="pointer-events:none;"   class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/rotate-solid.svg"></svg-renderer>
 				</button>
             </div>
         </div>
@@ -423,20 +423,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         </div>
         <div id="${mName}_footer" class="wa-message-footer">
 			<button id="${mName}_emoji" data-tip="Send Emoji" class="btn btn-ghost btn-circle tooltip tooltip-right">
-				<svg-renderer id="${mName}_emojiicon" style="pointer-events:none;" fit="true"  class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/face-smile-solid.svg"></svg-renderer>
+				<svg-renderer id="${mName}_emojiicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/face-smile-solid.svg"></svg-renderer>
 			</button>
 			<button id="${mName}_attach" class="btn btn-ghost btn-circle mr-2 tooltip tooltip-right" data-tip="Send Document, Image or Video">
-				<svg-renderer id="${mName}_attachicon" style="pointer-events:none;" fit="true"  class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/paperclip-solid.svg"></svg-renderer>
+				<svg-renderer id="${mName}_attachicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/paperclip-solid.svg"></svg-renderer>
 			</button>
             <input id="${mName}_message" type="text" placeholder="Type a message here" class="flex-grow"></input>
 			<button id="${mName}_cancelreply" data-tip="Cancel Reply" class="btn btn-ghost btn-circle ml-2 hidden tooltip tooltip-left">
-				<svg-renderer id="${mName}_cancelreplyicon" style="pointer-events:none;" fit="true"   class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/xmark-solid.svg"></svg-renderer>
+				<svg-renderer id="${mName}_cancelreplyicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/xmark-solid.svg"></svg-renderer>
 			</button>
             <button id="${mName}_send" data-tip="Send Message" class="btn btn-ghost btn-circle ml-2 tooltip tooltip-left hidden">
-				<svg-renderer id="${mName}_sendicon" style="pointer-events:none;" fit="true"   class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/paper-plane-solid.svg"></svg-renderer>
+				<svg-renderer id="${mName}_sendicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/paper-plane-solid.svg"></svg-renderer>
 			</button>
 			<button id="${mName}_voice" class="btn btn-ghost btn-circle ml-2 ">
-				<svg-renderer id="${mName}_voiceicon" style="pointer-events:none;" fit="true"  class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/microphone.svg"></svg-renderer>
+				<svg-renderer id="${mName}_voiceicon" style="pointer-events:none;" class="rounded-full" fill="currentColor" data-js="enabled" data-src="./assets/microphone.svg"></svg-renderer>
 			</button>
         </div>
 		<ul id="${mName}_attachments" class="flex-nowrap card dropdown menu menu-lg z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-4 mb-4" popover style="position-anchor:--${mName}_attachanchor"></ul>

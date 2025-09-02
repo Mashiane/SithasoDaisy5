@@ -19,6 +19,7 @@ Version=10
 #Event: CustomButton (e As BANanoEvent)
 #Event: SelectAll (Checked As Boolean)
 #Event: EditRow (Row As Int, item As Map)
+#Event: ExpandRow (Row As Int, item As Map, Hidden As Boolean)
 #Event: CloneRow (Row As Int, item As Map)
 #Event: MenuRow (Row As Int, item As Map)
 #Event: DownloadRow (Row As Int, item As Map)
@@ -66,6 +67,7 @@ Version=10
 #DesignerProperty: Key: PdfTheme, DisplayName: PDF Theme, FieldType: String, DefaultValue: striped, Description: Pdf theme, List: css|grid|none|plain|striped
 #DesignerProperty: Key: ItemsPerPage, DisplayName: Items Per Page, FieldType: String, DefaultValue: 10, Description: Items Per Page
 #DesignerProperty: Key: HasFilter, DisplayName: Has Filter, FieldType: Boolean, DefaultValue: False, Description: Has Filter
+#DesignerProperty: Key: HasExpand, DisplayName: Has Expand, FieldType: Boolean, DefaultValue: False, Description: Has Expand
 #DesignerProperty: Key: IsCompact, DisplayName: Is Compact, FieldType: Boolean, DefaultValue: False, Description: Is Compact
 #DesignerProperty: Key: NormalCase, DisplayName: Normal Case Titles, FieldType: Boolean, DefaultValue: False, Description: Columns Titles Is Normal Case
 #DesignerProperty: Key: WrapHeadings, DisplayName: Wrap Headings, FieldType: Boolean, DefaultValue: False, Description: Wrap Headings
@@ -165,7 +167,7 @@ Private Sub Class_Globals
 	Private bHasDeleteSingle As Boolean
 	Public Rows As List
 	Public Columns As Map
-	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String)
+	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -267,6 +269,7 @@ Private Sub Class_Globals
 	Private sColumnChooserTextColor As String = "#ffffff"
 	Private bHasToolbarDownload As Boolean = False
 	Private sDownloadToolbarTooltip As String = ""
+	Private bHasExpand As Boolean = False
 End Sub
 
 ' returns the element id
@@ -559,6 +562,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHasToolbarDownload = UI.CBool(bHasToolbarDownload)
 		sDownloadToolbarTooltip = Props.GetDefault("DownloadToolbarTooltip", "")
 		sDownloadToolbarTooltip = UI.CStr(sDownloadToolbarTooltip)
+		bHasExpand = Props.GetDefault("HasExpand", False)
+		bHasExpand = UI.CBool(bHasExpand)
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -581,8 +586,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
         	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
-	          	<button id="${mName}_searchbtn" class="btn join-item hidden ">
-					<svg-renderer id="${mName}_searchbtnicon" fit="true" style="pointer-events:none;" width="50%" height="50%"   fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
+	          	<button id="${mName}_searchbtn" class="btn join-item hidden flex justify-center items-center">
+					<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;" width="50%" height="50%" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
 				</button>
 			</div>
 			<div id="${mName}_actions" class="hidden flex flex-1 m-4 mr-0 justify-end gap-1"></div>
@@ -670,6 +675,15 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
+End Sub
+
+Sub setHasExpand(b As Boolean)
+	bHasExpand = b
+	CustProps.Put("HasExpand", bHasExpand)
+End Sub
+
+Sub getHasExpand As Boolean
+	Return bHasExpand
 End Sub
 
 'set Alpha Chooser Text Color
@@ -1053,6 +1067,7 @@ Sub AddDesignerColums					'ignoredeadcode
 	If bHasUpload Then AddColumnUpload("#00bcd4")
 	If bHasDownload Then AddColumnDownload("#2196f3")
 	If bHasMenu Then AddColumnMenu("#3f51b5")
+	If bHasExpand Then AddColumnExpand("transparent")
 End Sub
 
 Sub getHeadingID As String
@@ -1205,7 +1220,7 @@ private Sub SetColumnChooser(Status As Boolean, Height As String, Color As Strin
 		End If
 		'
 		Dim sItem As String = $"<div id="${mName}_${tc.name}_column" data-visible="${tc.visible}" class="unselectable rounded-full mr-2 mb-2 py-2 px-4 badge badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer">
-        <svg-renderer id="${mName}_${tc.name}_icon" fit="true" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};" width="${iconsize}" height="${iconsize}" data-visible="${tc.visible}"  data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
+        <svg-renderer id="${mName}_${tc.name}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};" width="${iconsize}" height="${iconsize}" data-visible="${tc.visible}"  data-src="./assets/check-solid.svg" class="mr-2 ${shidden}">
 		</svg-renderer>${tc.title}</div>"$
 		sbOptions.Append(sItem)
 		clicks1.Add($"${mName}_${tc.name}_column"$)
@@ -1360,7 +1375,7 @@ private Sub SetAlphaChooser(Status As Boolean, Height As String, ColumnName As S
 		End Select
 		'
 		Dim sItem As String = $"<div id="${mName}_${initl}_column" class="unselectable badge rounded-full badge-sm text-sm ${sh} ${boutline} ${bcolor} ${iconColor} cursor-pointer mr-2 mb-2 py-2 px-4">
-        <svg-renderer id="${mName}_${initl}_icon" fit="true" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};" width="${iconsize}" height="${iconsize}"  data-src="./assets/check-solid.svg" class="mr-2 hidden">
+        <svg-renderer id="${mName}_${initl}_icon" data-js="enabled" fill="currentColor" style="${BuildIconColor(iconColor)};" width="${iconsize}" height="${iconsize}"  data-src="./assets/check-solid.svg" class="mr-2 hidden">
 		</svg-renderer>${initx}</div>"$
 		sbOptions.Append(sItem)
 		clicks.Add($"${mName}_${initl}_column"$)
@@ -1582,6 +1597,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.AddClass("mx-1")
 	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	btn.AddClass("flex justify-center items-center")
 	Return btn
 End Sub
 
@@ -4343,6 +4359,21 @@ End Sub
 Sub AddColumnEdit(color As String)
 	AddColumnAction("edit", "Edit", "./assets/pencil-solid.svg", color, "#ffffff")
 End Sub
+
+'add edit action
+'<code>
+'tb4.AddColumnExpand(app.COLOR_PRIMARY)
+'</code>
+Sub AddColumnExpand(color As String)
+	AddColumnAction("expand", "", "./assets/chevron-down-solid.svg", color, "#000000")
+	Dim tc As TableColumn = Columns.Get("expand")
+	tc.ReplaceSvg = False
+	tc.FitSvg = False
+	tc.Ghost = True
+	tc.SvgSize = "70%"
+	Columns.Put("expand", tc)
+End Sub
+
 '<code>
 'tb4.AddColumnClone(app.COLOR_PRIMARY)
 '</code>
@@ -5154,7 +5185,7 @@ Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String,
 '	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  fit="true" data-js="enabled" style="${BuildIconColor(btnColor)};width:${iconsize};height:${iconsize}" data-src="${theicon}" fill="currentColor" class="${cClass}"></svg-renderer>
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  data-js="enabled" style="${BuildIconColor(btnColor)};width:${iconsize};height:${iconsize}" data-src="${theicon}" fill="currentColor" class="${cClass}"></svg-renderer>
     </td>"$
 	Return act
 End Sub
@@ -5210,7 +5241,7 @@ Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As St
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor}  ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
-    <div><svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  fit="true"  fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)};" data-js="enabled" class="${cClass}"></svg-renderer></div>
+    <div><svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  fill="currentColor" data-src="${theicon}" width="${iconsize}" height="${iconsize}" style="${BuildIconColor(btnColor)};" data-js="enabled" class="${cClass}"></svg-renderer></div>
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
     </td>"$
@@ -5269,7 +5300,7 @@ Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As St
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${btnColor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex items-center">
     <div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
-    <div><svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="true"  data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)};" class="${cClass}"></svg-renderer></div>
+    <div><svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" fill="currentColor" data-src="${theicon}" height="${iconsize}" width="${iconsize}" style="${BuildIconColor(btnColor)};" class="${cClass}"></svg-renderer></div>
     </div>
     </td>"$
 	Return act
@@ -5405,7 +5436,7 @@ Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_flex" class="flex inline-flex items-center">
+    <div id="${mName}_${RowCnt}_${fldName}_flex" class="inline-flex items-center">
     	<div id="${mName}_${RowCnt}_${fldName}_color" class="ml-2 mr-1 rounded-full w-4 h-4 ${btnColor} ${cClass}"></div>
     	<div id="${mName}_${RowCnt}_${fldName}_subtitle" class="pl-1 pr-2 text-gray-700 text-base">${subtitle}</div>
     </div>
@@ -5940,13 +5971,13 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6022,14 +6053,14 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6091,13 +6122,13 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6157,13 +6188,13 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
-    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" fit="true" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6221,12 +6252,12 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control flex items-center">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
-    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" fit="true" style="pointer-events:none;"  data-src="./assets/minus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-src="./assets/minus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="text-center input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
-    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" fit="true" style="pointer-events:none;" data-src="./assets/plus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    <button id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent flex justify-center items-center">
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;" data-src="./assets/plus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6332,7 +6363,7 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    	<svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  fit="true" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    	<svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
     </button>
     <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hidden radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
     <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
@@ -6386,8 +6417,8 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="true"  data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg-renderer></button>
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} flex justify-center items-center">
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg-renderer></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
 	'********
@@ -6767,7 +6798,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
             <span class="flex-none">
-				<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" fit="true" style="width:70%;height:70%"  data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg-renderer></span>
+				<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" style="width:70%;height:70%"  data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg-renderer></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6794,7 +6825,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="true" width:${iconSize} height:${iconSize} data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg-renderer>
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" width:${iconSize} height:${iconSize} data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg-renderer>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -7401,6 +7432,9 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 		Dim subName1 As String = tc.ComputeClass
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
+	If tc.Ghost = True Then cClass = cClass & "btn-ghost"
+	cClass = cClass.Trim
+	'
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
 	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
@@ -7420,7 +7454,6 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	
 	'
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
 '	Dim iconSize As String = UI.FixIconSize(sButtonSize)
@@ -7428,8 +7461,8 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="true" width="50%" height="50%" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}"></svg-renderer></button>
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} inline-flex justify-center items-center">
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" width="${tc.SvgSize}" fit="${tc.FitSvg}" replace="${tc.ReplaceSvg}" height="${tc.SvgSize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}"></svg-renderer></button>
     </td>"$
 	'********
 	Return act
@@ -7818,6 +7851,22 @@ Sub AddRow(rowdata As Map)
 	Dim strRow As String = sbRow.tostring
 	sbRow.Initialize
 	BANano.Await(UI.AppendByID($"${mName}_body"$, strRow))
+	'add expand row
+	If bHasExpand Then
+		Dim numCols As Int = Columns.Size
+		sbRow.Initialize 
+		sbRow.append($"[BANCLEAN]
+		<tr id="${mName}_${RowCnt}_expandrow" class="hidden expandable-content">
+			<td id="${mName}_${RowCnt}_expandcol" colspan="${numCols}" class="p-4 bg-base-200">
+				<div id="${mName}_${RowCnt}_expanddata" class="w-full">
+					Row ${RowCnt} Expand Data
+				</div>
+			</td>
+		</tr>"$)
+		Dim strRow As String = sbRow.tostring
+		BANano.Await(UI.AppendByID($"${mName}_body"$, strRow))
+	End If
+	
 	'do we have computed row stuff
 	If tblComputeRowColor <> "" Then
 		Dim rtColor As String = BANano.CallSub(mCallBack, tblComputeRowColor, Array(rowdata))
@@ -8786,6 +8835,34 @@ private Sub HandleClick(event As BANanoEvent)     'ignoredeadcode
 	Dim rowpos As Int = UI.MvField(src,2, "_")
 	Dim action As String = UI.MvField(src,3, "_")
 	rowpos = UI.CInt(rowpos)
+	'we are expanding a row/collapsing it
+	If action = "expand" Then
+		Dim iconKey As String = $"${mName}_${rowpos}_expand_icon"$
+		Dim rowKey As String = $"${mName}_${rowpos}_expandrow"$
+		Dim svgRenderer As BANanoElement = BANano.GetElement($"#${iconKey}"$)
+		Dim svgEl As BANanoObject = svgRenderer.GetField("shadowRoot").RunMethod("querySelector", "svg")
+		Dim curTransform As String = svgEl.GetField("style").GetField("transform").result
+		curTransform = UI.CStr(curTransform)
+		
+		Select Case curTransform
+		Case "rotate(180deg)"
+			svgEl.GetField("style").SetField("transform", "rotate(0deg)")
+		Case Else
+			svgEl.GetField("style").SetField("transform", "rotate(180deg)")
+		End Select
+		svgEl.GetField("style").SetField("transition", "transform 0.3s ease")
+		BANano.Await(BANano.GetElement($"#${rowKey}"$).ToggleClass("hidden"))
+		Dim bHasHidden As Boolean = BANano.GetElement($"#${rowKey}"$).HasClass("hidden")
+		'
+		If SubExists(mCallBack, $"${mName}_expandrow"$) Then
+			rowpos = BANano.parseInt(rowpos) - 1
+			Dim Rowx As Map = GetRow(rowpos)
+			Dim rowc As Map = BANano.DeepClone(Rowx)
+			BANano.CallSub(mCallBack, mName & "_expandrow", Array(rowpos, rowc, bHasHidden))
+		End If
+		Return
+	End If
+	'
 	Dim ename As String = $"${mName}_${action}Row"$
 	If SubExists(mCallBack, $"${mName}_${action}"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
@@ -8819,6 +8896,10 @@ private Sub NewColumn As TableColumn
 	Dim nc As TableColumn
 	nc.Initialize
 	nc.name = ""
+	nc.ReplaceSvg = True
+	nc.FitSvg = False
+	nc.Ghost = False
+	nc.SvgSize = "50%"
 	nc.SumValues = False
 	nc.colWidth = ""
 	nc.colHeight = ""
@@ -10655,3 +10736,25 @@ End Sub
 Sub FileChangeMultiple
 End Sub
 
+'return the expandrow id
+Sub GetExpandRowID(pos As Int) As String
+	Dim skey As String = $"${mName}_${pos}_expandrow"$
+	Return skey
+End Sub
+
+'return the expandrow id
+Sub GetExpandColumnID(pos As Int) As String
+	Dim skey As String = $"${mName}_${pos}_expandcol"$
+	Return skey
+End Sub
+
+'return the expandrow id
+Sub GetExpandColumnDataID(pos As Int) As String
+	Dim skey As String = $"${mName}_${pos}_expanddata"$
+	Return skey
+End Sub
+
+Sub ClearRowExpandData(pos As Int)
+	Dim skey As String = $"${mName}_${pos}_expanddata"$
+	BANano.GetElement($"#${skey}"$).empty	
+End Sub

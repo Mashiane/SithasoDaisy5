@@ -360,7 +360,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_join" class="join">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
@@ -370,7 +370,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
@@ -388,7 +388,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden ${sPrependIcon}"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden ${sPrependIcon}"></svg-renderer>
 					</button>
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
@@ -398,7 +398,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -416,7 +416,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
 					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label select join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -429,7 +429,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
       			</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -1035,4 +1035,62 @@ Sub ResetValidation
 	Catch
 		
 	End Try		'ignore
+End Sub
+
+Sub SetLanguages
+	BANano.Await(Clear)
+	Dim Languages As Map = modSD5.Languages
+	For Each k As String In Languages.Keys
+		Dim v As String = Languages.Get(k)
+		AddOption(v, k)
+	Next
+End Sub
+
+Sub SetCountries
+	BANano.Await(Clear)
+	Dim Countries As Map = modSD5.Countries
+	For Each k As String In Countries.Keys
+		Dim v As String = Countries.Get(k)
+		AddOption(k, v)
+	Next
+End Sub
+
+Sub SetYears(yearsIntoPast As Int, yearsIntoFuture As Int)
+	BANano.Await(Clear)
+	Dim thisYear As Int = UI.YearNow
+	Dim pStart As Int = BANano.parseInt(thisYear) - UI.CInt(yearsIntoPast)
+	Dim fEnd As Int = BANano.parseInt(thisYear) + UI.CInt(yearsIntoFuture)
+	Dim cntYear As Int = 0
+	For cntYear = pStart To fEnd
+		AddOption(cntYear, cntYear)
+	Next
+End Sub
+Sub SetMonths
+	BANano.Await(Clear)
+	Dim Months As SDUIMap = modSD5.Months
+	Dim mItems As List = Months.Keys
+	For Each k As String In mItems
+		Dim v As String = Months.Get(k)
+		AddOption(k, v)
+	Next
+End Sub
+Sub SetDays
+	BANano.Await(Clear)
+	Dim Days As SDUIMap = modSD5.Days
+	Dim mItems As List = Days.Keys
+	For Each k As String In mItems
+		Dim v As String = Days.Get(k)
+		AddOption(k, v)
+	Next
+End Sub
+
+Sub SetThemes
+	Dim aThemes As List
+	aThemes.Initialize
+	aThemes.AddAll(Array("light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"))
+	aThemes.Sort(True)
+	BANano.Await(Clear)
+	For Each k As String In aThemes
+		AddOption(k, k)
+	Next
 End Sub

@@ -228,7 +228,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]	
 	<label id="${mName}_${sParentID}_label" class="${xclasses}" ${xattrs} style="${xstyles}">
     	<input id="${mName}_${sParentID}" type="radio" name="${sParentID}" value="${mName}"/>
-		<svg-renderer id="${mName}_${sParentID}_icon" fit="true" class="mr-1" width="${sIconSize}" height="${sIconSize}" style="pointer-events:none;" fill="currentColor" data-js="enabled"></svg-renderer>
+		<svg-renderer id="${mName}_${sParentID}_icon" class="mr-1" width="${sIconSize}" height="${sIconSize}" style="pointer-events:none;" fill="currentColor" data-js="enabled"></svg-renderer>
 		<span id="${mName}_${sParentID}_text">${sText}</span>
 		<span id="${mName}_${sParentID}_badge" class="ml-1 badge absolute -top-2 -right-2 rounded-full w-6 h-6 flex items-center justify-center p-0 text-xs shadow-md">${sBadge}</div>
   	</label>

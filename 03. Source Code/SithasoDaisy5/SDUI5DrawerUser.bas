@@ -236,7 +236,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             </div>
         </a>
         <a id="${mName}_exit" class="btn btn-sm mr-3 btn-ghost btn-circle" title="Logout">
-			<svg-renderer id="${mName}_exit_icon" style="pointer-events:none;" fit="true" style="width:70%;height:70%"   data-js="enabled" fill="currentColor" data-src="./assets/door-open-solid.svg"></svg-renderer>
+			<svg-renderer id="${mName}_exit_icon" style="pointer-events:none;" style="width:70%;height:70%"   data-js="enabled" fill="currentColor" data-src="./assets/door-open-solid.svg"></svg-renderer>
         </a>
     </div>"$).Get("#" & mName)
 	setAvatar(sAvatar)

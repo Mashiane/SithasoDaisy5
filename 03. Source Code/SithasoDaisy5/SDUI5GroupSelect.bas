@@ -422,7 +422,7 @@ Sub SetOptionsFromMap(mItems As Map)			'ignoredeadcode
 		Dim nk As String = $"${mName}_${k}"$
 		sb.Append($"[BANCLEAN]
 		<div id="${mName}_${k}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${mName}_${k}_icon" fit="true" width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<svg-renderer id="${mName}_${k}_icon" width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
 			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
@@ -478,7 +478,7 @@ Sub AddOption(k As String, v As String)
 	
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
 		<div id="${mName}_${K}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
-			<svg-renderer id="${mName}_${k}_icon" fit="true"  width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
+			<svg-renderer id="${mName}_${k}_icon" width="${iconsize}"  data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
 			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	

@@ -374,17 +374,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
-          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
+          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius flex justify-center items-center">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
+          			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
         		</div>          
         		<p id="${mName}_hint" class="fieldset-label hidden">${sHint}</p>
@@ -400,17 +400,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
-          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
+          			<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius flex justify-center items-center">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<textarea id="${mName}" class="textarea join-item tlradius trradius blradius brradius w-full"></textarea>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
+          			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</img></button>
         		</div>"$).Get("#" & mName)
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
@@ -424,9 +424,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "buttons-floating"
 			mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join w-full ${xclasses}" ${xattrs} style="${xstyles}">
-					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius">
+					<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius flex justify-center items-center">
 						<img id="${mName}_prependimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sPrependImage}" alt=""></img>
-						<svg-renderer id="${mName}_prepend_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
         			<label id="${mName}_floating" class="floating-label textarea join-item w-full tlradius trradius blradius brradius">
           				<span id="${mName}_legend" class="label">${sLabel}</span>
@@ -435,9 +435,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 					<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
-          			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
+          			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">
 						<img id="${mName}_appendimage" class="hidden bg-cover bg-center bg-no-repeat" src="${sAppendImage}" alt=""></img>
-						<svg-renderer id="${mName}_append_icon" fit="true" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
+						<svg-renderer id="${mName}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sAppendIcon}" class="hidden"></svg-renderer>
 					</button>
       			</div>"$).Get("#" & mName)	
 			If sPrependIcon <> "" Or sPrependImage <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
