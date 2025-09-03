@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _figure|_image|_figure1|_image1|_content|_title|_actions, Description: Child Item _content|_title|_actions|_figure|_image|_figure1|_image1
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: HoverGallery, DisplayName: Hover Gallery, FieldType: Boolean, DefaultValue: False, Description: Hover Gallery
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
 #DesignerProperty: Key: ImagePosition, DisplayName: Image Position, FieldType: String, DefaultValue: start, Description: Image Position, List: end|start
 #DesignerProperty: Key: ImageFull, DisplayName: Image Full, FieldType: Boolean, DefaultValue: False, Description: Image Full
@@ -19,9 +20,10 @@ Version=10
 #DesignerProperty: Key: Side, DisplayName: Image on Side, FieldType: Boolean, DefaultValue: False, Description: Image on Side
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Card Title, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
+#DesignerProperty: Key: TitleClasses, DisplayName: Title Classes, FieldType: String, DefaultValue: , Description: Title Classes
 #DesignerProperty: Key: RawContent, DisplayName: Content, FieldType: String, DefaultValue: Card Content, Description: Content
-#DesignerProperty: Key: ContentClasses, DisplayName: Content Classes, FieldType: String, DefaultValue: , Description: Content Classes
 #DesignerProperty: Key: BodyClasses, DisplayName: Body Classes, FieldType: String, DefaultValue: , Description: Body Classes
+#DesignerProperty: Key: ContentClasses, DisplayName: Content Classes, FieldType: String, DefaultValue: , Description: Content Classes
 #DesignerProperty: Key: Shrink, DisplayName: Shrink, FieldType: String, DefaultValue: none, Description: Shrink, List: 0|1|none
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
@@ -101,6 +103,8 @@ Sub Class_Globals
 	Private sImageClasses As String = ""
 	Private sBodyClasses As String = ""
 	Private sShrink As String = "none"
+	Private bHoverGallery As Boolean = False
+	Private sTitleClasses As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -318,6 +322,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShrink = Props.GetDefault("Shrink", "none")
 		sShrink = UI.CStr(sShrink)
 		If sShrink = "none" Then sShrink = ""
+		bHoverGallery = Props.GetDefault("HoverGallery", False)
+		bHoverGallery = UI.CBool(bHoverGallery)
+		sTitleClasses = Props.GetDefault("TitleClasses", "")
+		sTitleClasses = UI.CStr(sTitleClasses)
 	End If
 	'
 	UI.AddClassDT("card")
@@ -383,8 +391,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setImageHeight(sImageHeight)
 		setImageClasses(sImageClasses)
 	End If	
+	setHoverGallery(bHoverGallery)
 '	setVisible(bVisible)
 End Sub
+
+Sub setTitleClasses(s As String)
+	sTitleClasses = s
+	CustProps.Put("TitleClasses", s)
+	If mElement = Null Then Return
+	UI.AddClassByID($"${mName}_title"$, sTitleClasses)
+End Sub
+
+Sub getTitleClasses As String
+	Return sTitleClasses
+End Sub
+
+Sub setHoverGallery(b As Boolean)				'ignoredeadcode
+	bHoverGallery = b
+	CustProps.put("HoverGallery", b)
+	If mElement = Null Then Return
+	If b Then 
+		Select Case sImagePosition
+		Case "start"
+			UI.AddClassByID($"${mName}_figure"$, "hover-gallery")
+			UI.SetVisibleByID($"${mName}_figure"$, True)
+		Case "end"
+			UI.AddClassByID($"${mName}_figure1"$, "hover-gallery")
+			UI.SetVisibleByID($"${mName}_figure1"$, True)
+		End Select
+	Else
+		Select Case sImagePosition
+		Case "start"
+			UI.RemoveClassByID($"${mName}_figure"$, "hover-gallery")
+		Case "end"
+			UI.RemoveClassByID($"${mName}_figure1"$, "hover-gallery")
+		End Select
+	End If
+End Sub
+
 
 'set Shrink
 'options: 0|1|none

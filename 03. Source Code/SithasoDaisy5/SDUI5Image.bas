@@ -12,6 +12,9 @@ Version=10
 #DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: Cover, DisplayName: Cover, FieldType: Boolean, DefaultValue: True, Description: Cover
+#DesignerProperty: Key: Center, DisplayName: Center, FieldType: Boolean, DefaultValue: True, Description: Center
+#DesignerProperty: Key: NoRepeat, DisplayName: NoRepeat, FieldType: Boolean, DefaultValue: True, Description: No Repeat
 #DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
 #DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
@@ -62,6 +65,9 @@ Sub Class_Globals
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
 	Private sPopOverTarget As String = ""
+	Private bCover As Boolean = False
+	Private bCenter As Boolean = False
+	Private bNoRepeat As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -235,9 +241,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMinWidth = UI.CStr(sMinWidth)
 		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
+		bCover = Props.GetDefault("Cover", True)
+		bCover = UI.CBool(bCover)
+		bCenter = Props.GetDefault("Center", True)
+		bCenter = UI.CBool(bCenter)
+		bNoRepeat = Props.GetDefault("NoRepeat", True)
+		bNoRepeat = UI.CBool(bNoRepeat)
 	End If
 	'
-	UI.AddClassDT("bg-cover bg-center bg-no-repeat")
+	If bCover Then UI.AddClassDT("bg-cover")
+	If bCenter Then UI.AddClassDT("bg-center")
+	If bNoRepeat Then UI.AddClassDT("bg-no-repeat")
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
@@ -267,6 +281,48 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If SubExists(mCallBack, $"${mName}_click"$) Then
 		UI.SetCursorPointer(mElement)
 	End If
+End Sub
+
+Sub setCover(b As Boolean)
+	bCover = b
+	CustProps.Put("Cover", bCover)
+	If bCover Then 
+		UI.AddClass(mElement, "bg-cover")
+	Else
+		UI.RemoveClass(mElement, "bg-cover")	
+	End If
+End Sub
+
+Sub getCover As Boolean
+	Return bCover
+End Sub
+'
+Sub setCenter(b As Boolean)
+	bCenter = b
+	CustProps.Put("Center", bCover)
+	If bCenter Then 
+		UI.AddClass(mElement, "bg-center")
+	Else
+		UI.RemoveClass(mElement, "bg-center")	
+	End If
+End Sub
+
+Sub getCenter As Boolean
+	Return bCenter
+End Sub
+
+Sub setNoRepeat(b As Boolean)
+	bNoRepeat = b
+	CustProps.Put("NoRepeat", bNoRepeat)
+	If bNoRepeat Then
+		UI.AddClass(mElement, "bg-no-repeat")
+	Else
+		UI.RemoveClass(mElement, "bg-no-repeat")
+	End If
+End Sub
+
+Sub getNoRepeat As Boolean
+	Return bNoRepeat
 End Sub
 
 'set Pop Over Target
@@ -340,7 +396,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then Ui.SetWidth(mElement, sWidth)
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 'get Alt
 Sub getAlt As String

@@ -52,6 +52,10 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
+	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
+	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
+	
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
 	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
@@ -232,6 +236,13 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "login"
+				appdrawer.ForceClose
+				appnavbar.Visible = False
+				pgGhostLogin.Show(App)
+				pgGhostLogin.ShowLogin
+			Case "hovergallery"
+				pgHoverGallery.show(App)
 			Case "fullcalendar"
 				pgFullCalendar.Show(App)
 			Case "phpsqlite"
