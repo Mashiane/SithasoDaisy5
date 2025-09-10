@@ -1303,6 +1303,14 @@ public Sub SetPaddingAXYTBLR(mElement As BANanoElement, s As String)
 	Try
 	BANano.SetP(mSelf, "sPaddingAXYTBLR", s)
 	If mElement = Null Then Return
+	Dim oldp As String = mElement.GetData("padding")
+	oldp = CStr(oldp)
+	If oldp <> "" Then 
+		Dim mmx As Map = GetMarginPaddingMap(oldp)
+		Dim classList As List = MarginPaddingToList("p", mmx)
+		RemoveClassList(mElement, classList)
+	End If
+	mElement.SetData("padding",s)
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("p", mm)
 	AddClassList(mElement, classList)
@@ -1331,6 +1339,14 @@ public Sub SetMarginAXYTBLR(mElement As BANanoElement, s As String)
 	Try
 	BANano.SetP(mSelf, "sMarginAXYTBLR", s)
 	If mElement = Null Then Return
+	Dim oldp As String = mElement.GetData("margin")
+	oldp = CStr(oldp)
+	If oldp <> "" Then
+		Dim mmx As Map = GetMarginPaddingMap(oldp)
+		Dim classList As List = MarginPaddingToList("m", mmx)
+		RemoveClassList(mElement, classList)
+	End If
+	mElement.SetData("margin", s)
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("m", mm)
 	AddClassList(mElement, classList)
@@ -1958,6 +1974,19 @@ Sub RemoveClass(mElement As BANanoElement, xtext As String)
 	Catch
 		
 	End Try				'ignore
+End Sub
+
+Sub RemoveClassList(mElement As BANanoElement, lst As List)
+	Try
+		If mElement = Null Then Return
+		For Each c As String In lst
+			c = c.trim
+			If c = "" Then Continue
+			mElement.RemoveClass(c)
+		Next
+	Catch
+		
+	End Try		'ignore
 End Sub
 
 private Sub ListRemoveItem(lst As List, item As String)
