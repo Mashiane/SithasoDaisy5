@@ -1976,9 +1976,9 @@ Sub UsesClient
 End Sub
 
 'valid
-Sub UsesPako
-	Banano.Await(UI.LoadAssetsOnDemand("Pako", Array("pako.min.js")))
-End Sub
+'Sub UsesPako
+'	Banano.Await(UI.LoadAssetsOnDemand("Pako", Array("pako.min.js")))
+'End Sub
 
 'valid
 Sub UsesToastChart

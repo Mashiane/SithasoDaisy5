@@ -6,8 +6,8 @@ Version=10.3
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: pageview, Description: The ParentID of this page
-#DesignerProperty: Key: ClearParent, DisplayName: Clear Parent, FieldType: Boolean, DefaultValue: True, Description: Clear Parent First
-#DesignerProperty: Key: PageName, DisplayName: Page Name*, FieldType: String, DefaultValue: page1, Description: The unique name of the page this should match your module 'name' variable
+#DesignerProperty: Key: ClearParent, DisplayName: Clear Parent, FieldType: Boolean, DefaultValue: False, Description: Clear Parent First
+'#DesignerProperty: Key: PageName, DisplayName: Page Name*, FieldType: String, DefaultValue: page1, Description: The unique name of the page this should match your module 'name' variable
 #DesignerProperty: Key: Active, DisplayName: Active Page, FieldType: Boolean, DefaultValue: True, Description: Active Page
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: My SDUIPage, Description: Title of the page
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: fa-solid fa-swatchbook, Description: Icon of the page
@@ -72,7 +72,7 @@ Private Sub Class_Globals
 	Private BANano As BANano			'ignore
 	Private bFullScreen As Boolean
 	Public Tag As Object
-	Private sPageName As String
+'	Private sPageName As String
 	Private sDescription As String
 	Private sKeywords As String
 	Private sTitle As String
@@ -107,7 +107,7 @@ Private Sub Class_Globals
 	Private bVisible As Boolean = True
 	Private sColor As String = "#000000"
 	Private sIcon As String = "fa-solid fa-swatchbook"
-	Private bClearParent As Boolean = True
+	Private bClearParent As Boolean = False
 	Private bActive As Boolean = True
 	Private sPosition As String = "t=?; b=?; r=?; l=?"
 	Private sPositionStyle As String = "none"
@@ -126,15 +126,17 @@ Public Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = CallBack
 	CustProps.Initialize
-	If mName <> "page" Then
-		BANano.Console.Warn($"Page.Initialize Error (${mName}) - the 'name' property should be 'page', use the 'Page Name' property to give the page a unique name."$)
-	End If
+'	If mName <> "page" Then
+'		BANano.Console.Warn($"Page.Initialize Error (${mName}) - the 'name' property should be 'page', use the 'Page Name' property to give the page a unique name."$)
+'	End If
 End Sub
 '
 ' returns the element id
 Public Sub getID() As String
 	Return mName
 End Sub
+
+
 
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -164,7 +166,7 @@ End Sub
 
 'return the #ID of the element
 Public Sub getHere() As String
-	Return $"#${sPageName}"$
+	Return $"#${mName}"$
 End Sub
 
 'set Visible
@@ -280,8 +282,8 @@ Private Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""		
-		sPageName = Props.GetDefault("PageName", "page1")
-		sPageName = UI.CleanID(sPageName)
+'		sPageName = Props.GetDefault("PageName", "page1")
+'		sPageName = UI.CleanID(sPageName)
 		sDescription = Props.GetDefault("RawDescription", "")
 		sDescription = UI.CStr(sDescription)
 		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
@@ -340,7 +342,7 @@ Private Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = UI.CStr(sIcon)
 		sColor = Props.GetDefault("Color", "#000000")
 		sColor = UI.CStr(sColor)
-		bClearParent = Props.GetDefault("ClearParent", True)
+		bClearParent = Props.GetDefault("ClearParent", False)
 		bClearParent = UI.CBool(bClearParent)
 		bActive = Props.GetDefault("Active", True)
 		bActive = UI.CBool(bActive)
@@ -399,9 +401,9 @@ Private Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bClearParent Then mTarget.Empty	
 	Dim sTag As String = "div"
 	If bAsForm Then sTag = "form"
-	mElement = mTarget.Append($"[BANCLEAN]<${sTag} id="${sPageName}" class="${xclasses}" ${xattrs} style="${xstyles}"></${sTag}>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></${sTag}>"$).Get("#" & mName)
 	'
-	Root.Initialize(mCallBack, sPageName, sPageName)
+	Root.Initialize(mCallBack, mName, mName)
 	Root.linkexisting
 	'
 	setResizePageView(bResizePageView)
@@ -618,9 +620,9 @@ Sub getDescription As String
 	Return sDescription
 End Sub
 
-Sub getPageName As String
-	Return sPageName
-End Sub
+'Sub getPageName As String
+'	Return sPageName
+'End Sub
 
 'Set Keywords
 Sub setKeywords(v As String)
@@ -647,6 +649,12 @@ End Sub
 'get the cell id
 Sub CellID(r As Int, c As Int) As String
 	Return Root.CellID(r, c)
+End Sub
+
+'get the cell id
+Sub CellHere(r As Int, c As Int) As String
+	Dim s As String = Root.CellID(r, c)
+	Return $"#${s}"$
 End Sub
 
 'get the row/column div
@@ -774,20 +782,20 @@ Sub IsValid As Boolean
 End Sub
 
 Sub LinkExisting(xPage As String)
-	sPageName = xPage
-	CustProps.put("PageName", sPageName)
-	mElement.Initialize($"#${sPageName}"$)
-	Root.Initialize(mCallBack, sPageName, sPageName)
+	mName = xPage
+	CustProps.put("PageName", mName)
+	mElement.Initialize($"#${mName}"$)
+	Root.Initialize(mCallBack, mName, mName)
 	Root.LinkExisting
 End Sub
-'
-'set Page Name*
-Sub setPageName(s As String)
-	sPageName = UI.CStr(s)
-	sPageName = UI.CleanID(sPageName)
-	mName = sPageName
-	CustProps.put("PageName", s)
-End Sub
+''
+''set Page Name*
+'Sub setPageName(s As String)
+'	sPageName = UI.CStr(s)
+'	sPageName = UI.CleanID(sPageName)
+'	mName = sPageName
+'	CustProps.put("PageName", s)
+'End Sub
 
 'set Container
 Sub setContainer(b As Boolean)

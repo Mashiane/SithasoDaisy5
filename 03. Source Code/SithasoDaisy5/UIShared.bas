@@ -4246,15 +4246,15 @@ Sub DeCompressBase64(dataURL As String) As String
 	Return res
 End Sub
 
-Sub PakoCompressBase64(dataURL As String) As String
-	Dim res As String = BANano.RunJavascriptMethod("PakoCompressBase64", Array(dataURL))
-	Return res
-End Sub
+'Sub PakoCompressBase64(dataURL As String) As String
+'	Dim res As String = BANano.RunJavascriptMethod("PakoCompressBase64", Array(dataURL))
+'	Return res
+'End Sub
 
-Sub PakoDeCompressBase64(dataURL As String) As String
-	Dim res As String = BANano.RunJavascriptMethod("PakoDecompressBase64", Array(dataURL))
-	Return res
-End Sub
+'Sub PakoDeCompressBase64(dataURL As String) As String
+'	Dim res As String = BANano.RunJavascriptMethod("PakoDecompressBase64", Array(dataURL))
+'	Return res
+'End Sub
 
 'get start and end dates of a month based on date
 Sub GetMonthStartEnd(dateString As String) As List
@@ -4381,15 +4381,27 @@ Sub CalculateAge(birthDateString As String) As Int
 End Sub
 
 'date difference
-Sub DateDiff(currentDate As String, otherDate As String) As Int
-	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
-	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
-	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
-	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
-	'
-	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "day")).Result
-	Return rslt
+'Sub DateDiff(currentDate As String, otherDate As String) As Int
+'	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+'	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+'	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+'	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+'	'
+'	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "day")).Result
+'	Return rslt
+'End Sub
+
+Public Sub DateDiff(dateStr1 As String, dateStr2 As String) As Int
+	DateTime.DateFormat = "yyyy-MM-dd"
+	dateStr1 = CStr(dateStr1)
+	dateStr2 = CStr(dateStr2)
+	Dim date1 As Long = DateTime.DateParse(dateStr1) ' Parses yyyy-mm-dd to milliseconds
+	Dim date2 As Long = DateTime.DateParse(dateStr2)
+	Dim diffMilliseconds As Long = Abs(date2 - date1)
+	Dim diffDays As Int = diffMilliseconds / (1000 * 60 * 60 * 24)
+	Return diffDays
 End Sub
+
 
 'year difference
 Sub YearDiff(currentDate As String, otherDate As String) As Int
@@ -4412,6 +4424,55 @@ Sub MonthDiff(currentDate As String, otherDate As String) As Int
 	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "month")).Result
 	Return rslt
 End Sub
+
+
+'Public Sub YearDiff1(dateStr1 As String, dateStr2 As String) As Int
+'	DateTime.DateFormat = "yyyy-MM-dd"
+'    Dim d1 As Long = DateTime.DateParse(dateStr1)
+'    Dim d2 As Long = DateTime.DateParse(dateStr2)
+'
+'    Dim year1 As Int = DateTime.GetYear(d1)
+'    Dim year2 As Int = DateTime.GetYear(d2)
+'    Dim month1 As Int = DateTime.GetMonth(d1)
+'    Dim month2 As Int = DateTime.GetMonth(d2)
+'    Dim day1 As Int = DateTime.GetDayOfMonth(d1)
+'    Dim day2 As Int = DateTime.GetDayOfMonth(d2)
+'
+'    Dim years As Int = year2 - year1
+'
+'    ' If second date is before first date's month/day, subtract 1
+'    If month2 < month1 Or (month2 = month1 And day2 < day1) Then
+'        years = years - 1
+'    End If
+'
+'    Return Abs(years)
+'End Sub
+
+'Public Sub MonthDiff1(dateStr1 As String, dateStr2 As String) As Int
+'	DateTime.DateFormat = "yyyy-MM-dd"
+'    Dim d1 As Long = DateTime.DateParse(dateStr1)
+'    Dim d2 As Long = DateTime.DateParse(dateStr2)
+'
+'    Dim year1 As Int = DateTime.GetYear(d1)
+'    Dim year2 As Int = DateTime.GetYear(d2)
+'    Dim month1 As Int = DateTime.GetMonth(d1)
+'    Dim month2 As Int = DateTime.GetMonth(d2)
+'    Dim day1 As Int = DateTime.GetDayOfMonth(d1)
+'    Dim day2 As Int = DateTime.GetDayOfMonth(d2)
+'
+'    Dim months As Int = (year2 - year1) * 12 + (month2 - month1)
+'
+'    ' If second date day is before first date day, subtract 1 month
+'    If day2 < day1 Then
+'        months = months - 1
+'    End If
+'
+'    Return Abs(months)
+'End Sub
+
+
+
+
 
 'minute difference
 Sub MinuteDiff(currentDate As String, otherDate As String) As Int

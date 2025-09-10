@@ -600,6 +600,12 @@ Sub CellID(r As Int, c As Int) As String
 	Return rid
 End Sub
 
+'get the cell id
+Sub CellHere(r As Int, c As Int) As String
+	Dim s As String = CellID(r, c)
+	Return $"#${s}"$
+End Sub
+
 Sub CellCenter(r As Int, c As Int)
 	Dim cid As String = CellID(r, c)
 	UI.SetCenterChildrenByID(cid, True)
