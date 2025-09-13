@@ -167,7 +167,11 @@ Private Sub Class_Globals
 	Private bHasDeleteSingle As Boolean
 	Public Rows As List
 	Public Columns As Map
-	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
+	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, _
+	icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, _
+	suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, _
+	NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, _
+	noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -2241,7 +2245,6 @@ End Sub
 private Sub SearchClear(e As BANanoEvent)
 	e.PreventDefault
 	PagePause
-	BANano.await(ClearRows)
 	BANano.await(SetItemsPaginate(Originals))
 	PageResume
 End Sub
@@ -2280,7 +2283,7 @@ Sub ClearRows			'ignoredeadcode
 	Rows.Initialize
 	DPValue.Initialize
 	datepickers.Initialize
-	BANano.GetElement($"#${mName}_body"$).Empty
+	BANano.Await(UI.ClearByID($"#${mName}_body"$))
 	'clear footer
 	For Each k As String In Columns.Keys
 		If BANano.Exists($"#${mName}_${k}_tf"$) Then BANano.GetElement($"#${mName}_${k}_tf"$).SetText("")
@@ -4555,6 +4558,26 @@ Sub SetColumnWidth(colName As String, width As String)
 		UI.SetWidthByID($"${mName}_${colName}_th"$, width)
 	End If
 End Sub
+Sub SetColumnMaxWidth(colName As String, width As String)
+	colName = UI.CleanID(colName)
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn = Columns.Get(colName)
+		nc.maxwidth = width
+		Columns.Put(colName, nc)
+		'adjust on the header
+		UI.SetMaxWidthByID($"${mName}_${colName}_th"$, width)
+	End If
+End Sub
+Sub SetColumnMinWidth(colName As String, width As String)
+	colName = UI.CleanID(colName)
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn = Columns.Get(colName)
+		nc.minwidth = width
+		Columns.Put(colName, nc)
+		'adjust on the header
+		UI.SetMinWidthByID($"${mName}_${colName}_th"$, width)
+	End If
+End Sub
 'set the actual table height
 Sub SetTableColumnHeight(colName As String, height As String)
 	colName = UI.CleanID(colName)
@@ -4875,6 +4898,7 @@ End Sub
 'banano.Await(tb4.SetItemsPaginate(Items))
 '</code>
 Sub SetItemsPaginate(xItems As List)
+	BANano.await(ClearRows)
 	iCurrentPage = 1
 	'lastPage = 1
 	Originals = xItems
@@ -5093,13 +5117,14 @@ Sub setLowerCase(b As Boolean)
 End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
+	BANano.Await(ClearRows)
 	If bLowerCase Then
 		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
 	End If
 	Dim obj As BANanoObject
 	obj.Initialize("Object")
 	obj.RunMethod("freeze", xitems)
-	BANano.Await(ClearRows)
+	
 	For Each rec As Map In xitems
 		BANano.Await(AddRow(rec))
 	Next
@@ -6202,6 +6227,9 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 	'********
 	Return act
 End Sub
+
+
+
 Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then
@@ -6265,6 +6293,7 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 	'********
 	Return act
 End Sub
+
 Private Sub BuildRowTextBox(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then
