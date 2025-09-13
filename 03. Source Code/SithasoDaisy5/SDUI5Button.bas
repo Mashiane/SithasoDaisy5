@@ -9,6 +9,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: DockItem, DisplayName: Dock Item, FieldType: Boolean, DefaultValue: False, Description: Dock Item
+#DesignerProperty: Key: ButtonIcon, DisplayName: Button Icon, FieldType: Boolean, DefaultValue: False, Description: Button Icon
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Button, Description: Text
 #DesignerProperty: Key: TextVisible, DisplayName: Text Visible, FieldType: Boolean, DefaultValue: True, Description: Text Visible
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: lg|md|none|sm|xl|xs
@@ -163,6 +164,7 @@ Sub Class_Globals
 	Public CONST INDICATORPOSITION_TOP_CENTER As String = "top-center"
 	Public CONST INDICATORPOSITION_TOP_END As String = "top-end"
 	Public CONST INDICATORPOSITION_TOP_START As String = "top-start"
+	Private bButtonIcon As Boolean
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -470,6 +472,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIndicatorValue = UI.CStr(sIndicatorValue)
 		bIndicatorVisible = Props.GetDefault("IndicatorVisible", False)
 		bIndicatorVisible = UI.CBool(bIndicatorVisible)
+		bButtonIcon = Props.GetDefault("ButtonIcon", False)
+		bButtonIcon = UI.CBool(bButtonIcon)
 	End If
 	'
 	If sParentID <> "" Then
@@ -573,6 +577,60 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndicatorSize(sIndicatorSize)
 	setIndicatorTextColor(sIndicatorTextColor)
 	setIndicatorValue(sIndicatorValue)
+	setButtonIcon(bButtonIcon)
+End Sub
+
+Sub setButtonIcon(b As Boolean)				'ignore
+	bButtonIcon = b
+	CustProps.Put("ButtonIcon", bButtonIcon)
+	If mElement = Null Then Return
+	If b = False Then Return
+	RemoveBadge
+	RemoveRightImage
+	RemoveRightIcon
+	RemoveText
+	RemoveLeftImage
+	UI.AddClass(mElement, "flex justify-center items-center rounded-full aspect-square")
+End Sub
+
+Sub getButtonIcon As Boolean
+	Return bButtonIcon	
+End Sub
+
+
+Sub RemoveIndicator				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_indicator"$)
+End Sub
+
+Sub RemoveBadge					'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_badge"$)
+End Sub
+
+Sub RemoveRightImage				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_rightimage"$)
+End Sub
+
+Sub RemoveLeftIcon				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_lefticon"$)
+End Sub
+
+Sub RemoveRightIcon				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_righticon"$)
+End Sub
+
+Sub RemoveText					'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_text"$)
+End Sub
+
+Sub RemoveLeftImage				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_leftimage"$)
 End Sub
 
 'set Indicator Visible

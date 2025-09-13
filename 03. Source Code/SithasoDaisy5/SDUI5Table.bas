@@ -1597,11 +1597,17 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
 	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
-	btn.AddClass("flex justify-center items-center")
+	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
 	Return btn
 End Sub
 
@@ -2055,26 +2061,26 @@ End Sub
 Sub SetToolbarButtonBadge(btn As String, value As String)
 	btn = UI.CleanID(btn)
 	If value = "" Or value = "0" Then
-		UI.Hide($"#${mName}_${btn}_badge"$)
+		UI.Hide($"#${mName}_${btn}_indicator"$)
 	Else
-		UI.Show($"#${mName}_${btn}_badge"$)
-		UI.SetTextByID($"#${mName}_${btn}_badge_text"$, BANano.SF(value))
+		UI.Show($"#${mName}_${btn}_indicator"$)
+		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
 	End If
 End Sub
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_badge"$, "color", "badge", value)
+	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_badge"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_badge"$, value)
+	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_badge"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_badge"$, "aspect-square")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_badge"$, value)
+	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
 	UI.SetTextColorByID($"#${mName}_${btn}"$, value)

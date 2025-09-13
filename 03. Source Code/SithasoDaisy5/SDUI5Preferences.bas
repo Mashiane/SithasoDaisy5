@@ -5449,11 +5449,17 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
 	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
 	btn.AddComponent
 	btn.AddClass("mx-1")
 	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
-	btn.AddClass("flex justify-center items-center")
+	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
 	Return btn
 End Sub
 

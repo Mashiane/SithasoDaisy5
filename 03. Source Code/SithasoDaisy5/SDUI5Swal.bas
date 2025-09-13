@@ -155,6 +155,11 @@ Sub padding(s As String) As SDUI5Swal
 	Return Me
 End Sub
 
+Sub rows(s As String) As SDUI5Swal
+	UI.PutRecursive(options, "inputAttributes.rows", s)
+	Return Me
+End Sub
+
 Sub timerProgressBar(b As Boolean) As SDUI5Swal
 	options.Put("timerProgressBar", b)
 	Return Me

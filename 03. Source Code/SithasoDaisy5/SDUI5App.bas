@@ -1259,6 +1259,21 @@ Sub ShowSwalTextAreaWaitDefault(title As String, message As String, defaultText 
 	End If
 End Sub
 
+Sub ShowSwalTextAreaRowsWaitDefault(title As String, message As String, defaultText As String, okText As String, cancelText As String, rows As String, width As String) As String
+	PageResume
+	Dim bp As BANanoPromise
+	bp.CallSub(Me, "ShowSwalTextAreaRows", Array(title, message, okText, cancelText, defaultText, rows, width))
+	Dim resp As Map = Banano.Await(bp)
+	Dim isConfirmed As Boolean = resp.Get("isConfirmed")
+	If isConfirmed = False Then
+		Return ""
+	Else
+		Dim value As String = resp.Get("value")
+		Return value
+	End If
+End Sub
+
+
 Sub ShowSwalConfirmWait(title As String, message As String, okText As String, cancelText As String) As Boolean
 	PageResume
 	Dim bp As BANanoPromise
@@ -1425,6 +1440,34 @@ private Sub ShowSwalTextArea(title As String, message As String, okText As Strin
 		swal.title(title)
 	End If
 	swal.input("textarea")
+	If message <> "" Then
+		swal.html(message)
+	End If
+	swal.icon("question")
+	swal.confirmButtonText(okText)
+	swal.cancelButtonText(cancelText)
+	swal.showCancelButton(True)
+	swal.confirmButtonColor("#4caf50")
+	swal.cancelButtonColor("#f44336")
+	swal.allowOutsideClick(False)
+	swal.showCloseButton(False)
+	swal.focusConfirm(True)
+	swal.showDenyButton(False)
+	swal.allowEscapeKey(False)
+	swal.inputValue(inputValue)
+	Dim resp As Map = swal.fire
+	Banano.ReturnThen(resp)
+End Sub
+
+private Sub ShowSwalTextAreaRows(title As String, message As String, okText As String, cancelText As String, inputValue As String, rows As String, width As String) As Map   'ignore
+	Dim swal As SDUI5Swal
+	swal.Initialize
+	If title <> "" Then
+		swal.title(title)
+	End If
+	swal.input("textarea")
+	swal.rows(rows)
+	swal.width(width)
 	If message <> "" Then
 		swal.html(message)
 	End If
