@@ -386,8 +386,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<figure id="${mName}_figure1" class="hidden">
     		<img id="${mName}_image1" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
   		</figure>
-	</div>"$).Get("#" & mName)
-	'
+	</div>"$).Get("#" & mName)	
+	
 	setActionsVisible(bActionsVisible)
 	setContentClasses(sContentClasses)
 	setContent(sRawContent)

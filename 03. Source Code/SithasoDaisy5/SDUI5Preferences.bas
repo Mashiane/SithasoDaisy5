@@ -2161,7 +2161,7 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	AddPropertyTextBoxGroup(Key, Title, DefaultValue, Required)
 	SetPropertyType(Key, "number")
 	ComponentType.Put(Key, "Dialer")
-	SetPropertyAddClass(Key, "text-center tabular-nums")
+	SetPropertyAddClass(Key, "px-3 text-center tabular-nums w-full grow focus:outline-hidden")
 	SetPropertyMaxValue(Key, iMaxValue)
 	SetPropertyMinValue(Key, iMinValue)
 	SetPropertyStepValue(Key, iStepValue)

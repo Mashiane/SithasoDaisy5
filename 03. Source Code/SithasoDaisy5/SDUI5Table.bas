@@ -55,6 +55,7 @@ Version=10
 #Event: SearchKeyUp (e As BANanoEvent)
 #Event: SearchClear (e As BANanoEvent)
 '
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _toolbar|_actions, Description: Child Item _toolbar|_actions
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this div
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Table, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
@@ -274,6 +275,7 @@ Private Sub Class_Globals
 	Private bHasToolbarDownload As Boolean = False
 	Private sDownloadToolbarTooltip As String = ""
 	Private bHasExpand As Boolean = False
+	Private colSelectAll As TableColumn
 End Sub
 
 ' returns the element id
@@ -679,6 +681,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
+	If (bHasAlphaChooser = False) And (bHasColumnChooser = False) Then
+		UI.Hide($"${mName}_divider1"$)
+		UI.Hide($"${mName}_divider2"$)
+	End If
 End Sub
 
 Sub setHasExpand(b As Boolean)
@@ -2300,13 +2306,20 @@ End Sub
 Sub AddColumnSelectAll			'ignoredeadcode
 	bSelectAll = True
 	Dim name As String = "selectall"
-	Dim nc As TableColumn = NewColumn
-	nc.name = name
-	nc.title = ""
+	colSelectAll = NewColumn
+	colSelectAll.name = name
+	colSelectAll.title = ""
+	colSelectAll.width = "80px"
+	colSelectAll.alignment = "left"
 	'
-	Dim hr As String = $"<th id="${mName}_th"  class=" w-[5rem]"><label id="${mName}_selectalllabel"><input id="${mName}_selectall" type="checkbox" class="checkbox"></check></label></th>"$
+	Dim hr As String = $"[BANCLEAN]
+	<th id="${mName}_selectall_th" style="${BuildStyle(colSelectAll)}">
+		<label id="${mName}_selectalllabel">
+			<input id="${mName}_selectall" type="checkbox" class="checkbox checkbox-success"></check>
+		</label>
+	</th>"$
 	UI.AppendByID($"${mName}_theadtr"$, hr)
-	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_tf_${name}"></td>"$)
+	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_tf_${name}" style="${BuildStyle(colSelectAll)}"></td>"$)
 	Dim el As BANanoElement
 	el.Initialize($"#${mName}_selectall"$)
 	el.HandleEvents("change", Me, "HandleSelectAll")
@@ -2906,6 +2919,11 @@ Sub AddColumnDropDownIcon(name As String, title As String, icon As String, color
 End Sub
 Sub SetColumnMinMaxWidth(colName As String, minwidth As String, maxwidth As String)
 	colName = colName.ToLowerCase
+	If colName = "selectall" Then
+		colSelectAll.minwidth = minwidth
+		colSelectAll.maxwidth = maxwidth
+		Return	
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn
 		nc = Columns.Get(colName)
@@ -4556,6 +4574,10 @@ Sub SetColumnWidthMultiple(width As String, colNames As List)
 End Sub
 Sub SetColumnWidth(colName As String, width As String)
 	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.width = width
+		Return
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.width = width
@@ -4566,6 +4588,10 @@ Sub SetColumnWidth(colName As String, width As String)
 End Sub
 Sub SetColumnMaxWidth(colName As String, width As String)
 	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.maxwidth = width
+		Return
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.maxwidth = width
@@ -4576,6 +4602,10 @@ Sub SetColumnMaxWidth(colName As String, width As String)
 End Sub
 Sub SetColumnMinWidth(colName As String, width As String)
 	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.minwidth = width
+		Return
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.minwidth = width
@@ -4907,7 +4937,7 @@ Sub SetItemsPaginate(xItems As List)
 	BANano.await(ClearRows)
 	iCurrentPage = 1
 	'lastPage = 1
-	Originals = xItems
+	Originals = BANano.DeepClone(xItems)
 	If bHasFilter Then ClearFilters
 	Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
 	Dim yItems As List = paginater.items
@@ -5127,11 +5157,8 @@ Sub SetItems(xitems As List)			'ignoreDeadCode
 	If bLowerCase Then
 		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
 	End If
-	Dim obj As BANanoObject
-	obj.Initialize("Object")
-	obj.RunMethod("freeze", xitems)
-	
-	For Each rec As Map In xitems
+	Dim nitems As List = BANano.DeepClone(xitems)
+	For Each rec As Map In nitems
 		BANano.Await(AddRow(rec))
 	Next
 End Sub
@@ -7534,6 +7561,11 @@ End Sub
 'add a row using a map
 'affects visible ones only
 Sub AddRow(rowdata As Map)
+	'how many rows do we have	
+	Dim RowCnt As Int = BANano.parseInt(Rows.Size) + 1
+	Dim rowID As String = $"${mName}_${RowCnt}"$
+	If BANano.Exists($"#${rowID}"$) Then Return
+	'
 	'clicks for this row
 	Dim clicks As Map = CreateMap()
 	Dim menus As Map = CreateMap()
@@ -7556,7 +7588,7 @@ Sub AddRow(rowdata As Map)
 	If bHover Then sbClass.Append("hover")
 	Dim sbRow As StringBuilder
 	sbRow.Initialize
-	Dim RowCnt As Int = BANano.parseInt(Rows.Size) + 1
+	
 	Dim colCnt As Int = 0
 	'
 	If bLowerCase Then
@@ -7577,7 +7609,12 @@ Sub AddRow(rowdata As Map)
 	sbClass.Initialize
 	'has select all
 	If bSelectAll Then
-		Dim sa As String = $"<th id="${mName}_${RowCnt}_th" class="w-[5rem]"><label><input id="${mName}_${RowCnt}_selectall" type="checkbox" class="checkbox"></input></label></th>"$
+		Dim sa As String = $"[BANCLEAN]
+		<th id="${mName}_${RowCnt}_th" style="${BuildStyle(colSelectAll)}">
+			<label>
+				<input id="${mName}_${RowCnt}_selectall" type="checkbox" class="checkbox checkbox-success"></input>
+			</label>
+		</th>"$
 		sbRow.Append(sa)
 		selection.Put($"${mName}_${RowCnt}_selectall"$, "")
 	End If
@@ -7883,9 +7920,9 @@ Sub AddRow(rowdata As Map)
 		End Select
 	Next
 	sbRow.Append("</tr>")
-	Dim strRow As String = sbRow.tostring
-	sbRow.Initialize
+	Dim strRow As String = sbRow.tostring	
 	BANano.Await(UI.AppendByID($"${mName}_body"$, strRow))
+	sbRow.Initialize
 	'add expand row
 	If bHasExpand Then
 		Dim numCols As Int = Columns.Size
@@ -9038,7 +9075,7 @@ Sub getBadgesSize As String
 End Sub
 'show last accessed page
 Sub ShowLastAccessedPage
-	ShowPage(lastPage)
+	BANano.await(ShowPage(lastPage))
 End Sub
 
 'add an avatar group column
