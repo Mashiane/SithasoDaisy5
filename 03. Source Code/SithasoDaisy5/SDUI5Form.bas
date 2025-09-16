@@ -94,6 +94,7 @@ Sub Class_Globals
 	Private IntGrid As StringBuilder
 	Public GridCode As String
 	Private centerMap As Map
+	Public UseModal As Boolean 
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -119,7 +120,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	ntxRow = 0
 	IsLive = False
 	MdlName = ""
-	IntGrid.Initialize 
+	IntGrid.Initialize
+	UseModal = False
 End Sub
 '
 'empty the contents of the container
@@ -214,50 +216,134 @@ Sub PrepareRC
 End Sub
 
 Sub BuildGridFromRC
-	If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.Clear"$)
+	If IsLive = False Then 
+		If UseModal Then 
+			UI.AddCode(IntGrid, $"${MdlName}.Form.Clear"$)
+		Else
+			UI.AddCode(IntGrid, $"${MdlName}.Clear"$)
+		End If
+	End If
 	For Each k As String In matrixMap.Keys
 		Dim v As Int = matrixMap.Get(k)
 		v = UI.CInt(v)
 		AddRows1
-		If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddRows1"$)
+		If IsLive = False Then 
+			If UseModal Then
+				UI.AddCode(IntGrid, $"${MdlName}.Form.AddRows1"$)
+			Else
+				UI.AddCode(IntGrid, $"${MdlName}.AddRows1"$)
+			End If		
+		End If
 		Select Case v
 			Case 1
 				'add columns12
 				AddColumns12
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns12"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns12"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns12"$)
+					End If
+				End If
 			Case 2
 				AddColumns2x6
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns2x6"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns2x6"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns2x6"$)
+					End If
+				End If
 			Case 3
 				AddColumns3x4
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns3x4"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns3x4"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns3x4"$)
+					End If
+				End If
 			Case 4
 				AddColumns4x3
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns4x3"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns4x3"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns4x3"$)
+					End If
+				End If
 			Case 5
 				AddColumns5x2
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns5x2"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns5x2"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns5x2"$)
+					End If
+				End If
 			Case 6
 				AddColumns6x2
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns6x2"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns6x2"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns6x2"$)
+					End If
+				End If
 			Case 7
 				AddColumns7x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns7x1"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns7x1"$)
+						Else
+								UI.AddCode(IntGrid, $"${MdlName}.AddColumns7x1"$)
+						End If
+				End If		
 			Case 8
 				AddColumns8x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns8x1"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns8x1"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns8x1"$)
+					End If
+				End If
 			Case 9
 				AddColumns9x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns9x1"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns9x1"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns9x1"$)
+					End If
+				End If
 			Case 10
 				AddColumns10x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns10x1"$)
+				If IsLive = False Then 
+													If UseModal Then
+					UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns10x1"$)
+							Else
+								UI.AddCode(IntGrid, $"${MdlName}.AddColumns10x1"$)
+							End If
+				End If
 			Case 11
 				AddColumns11x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns11x1"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns11x1"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns11x1"$)
+					End If
+				End If
 			Case 12
 				AddColumns12x1
-				If IsLive = False Then UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns12x1"$)
+				If IsLive = False Then 
+					If UseModal Then
+						UI.AddCode(IntGrid, $"${MdlName}.Form.AddColumns12x1"$)
+					Else
+						UI.AddCode(IntGrid, $"${MdlName}.AddColumns12x1"$)
+					End If
+				End If
 		End Select
 	Next
 	'do we have centered items
@@ -267,13 +353,25 @@ Sub BuildGridFromRC
 		centerSort.Add(k)
 	Next
 	centerSort.Sort(True)
-	If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.BuildGrid)"$)
+	If IsLive = False Then 
+		If UseModal Then
+			UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.BuildGrid)"$)
+		Else
+			UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.BuildGrid)"$)
+		End If	
+	End If
 	For Each k As String In centerSort
 		Dim sr As String = UI.MvField(k,1,".")
 		Dim sc As String = UI.MvField(k,2,".")
 		sr = UI.CInt(sr)
 		sc = UI.CInt(sc)
-		If IsLive = False Then UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.CellCenter(${sr}, ${sc}))"$)
+		If IsLive = False Then 
+			If UseModal Then
+				UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.Form.CellCenter(${sr}, ${sc}))"$)
+			Else
+				UI.AddCode(IntGrid, $"BANano.Await(${MdlName}.CellCenter(${sr}, ${sc}))"$)
+			End If	
+		End If
 	Next
 	GridCode = IntGrid.tostring
 	BANano.Await(BuildGrid)

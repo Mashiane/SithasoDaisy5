@@ -57,6 +57,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
 	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
 	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
+	drawermenu.AddItemChild("wnew", "pg-formcard", "", "Form Card")
 	
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
@@ -231,8 +232,9 @@ Private Sub drawermenu_ItemClick (item As String)
 	'close the swap button
 	appnavbar.Hamburger.Active = False
 	'reset pageview padding
-'	pageView.PaddingAXYTBLR = "a:20px"
-
+	pageView.PaddingAXYTBLR = "a:20px"
+	App.PageViewToFullScreenHeight(Array("appnavbar"))
+	
 	Dim sprefix As String = App.UI.MvField(item, 1, "-")
 	Dim ssuffix As String = App.UI.MvField(item, 2, "-")
 	Select Case sprefix
@@ -244,7 +246,7 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgFAB.Show(App)
 			Case "login"
 				'remove all padding on pageview
-'				pageView.PaddingAXYTBLR = "a:0px"
+				pageView.PaddingAXYTBLR = "a:0px"
 				appdrawer.ForceClose
 				appnavbar.Visible = False
 				pgGhostLogin.Show(App)
@@ -263,6 +265,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgToastCharts.Show(App)
 			Case "leaflet"
 				pgLeafLet.Show(App)
+			Case "formcard"
+				pgformcard.Show(App)
 			Case "exceltoapp"
 				pgExcelToApp.Show(App)			
 			Case "officeribbon"

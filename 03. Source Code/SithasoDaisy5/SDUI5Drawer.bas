@@ -8,7 +8,7 @@ Version=10
 
 #Event: Opened (Status As Boolean)
 
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Items _content|_side|_sidecontent, Description: Child Item _content|_side|_sidecontent
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Items _content|_side|_sidecontent|actions, Description: Child Item _content|_side|_sidecontent|_actions
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: SmOpen, DisplayName: SM Open, FieldType: Boolean, DefaultValue: False, Description: Sm Open
@@ -247,7 +247,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
-		<main id="${mName}_content" class="drawer-content"></main>
+		<main id="${mName}_content" class="drawer-content min-h-screen"></main>
 		<div id="${mName}_side" class="drawer-side z-50" style="scroll-behavior: smooth; scroll-padding-top: 5rem;">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 			<aside id="${mName}_sidecontent" class="min-h-screen sticky top-0 flex flex-col overflow-y-auto"></aside>

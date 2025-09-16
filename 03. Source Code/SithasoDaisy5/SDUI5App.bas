@@ -3009,3 +3009,21 @@ Sub isStrongPassword(s As String) As Boolean
 	b = UI.CBool(b)
 	Return b
 End Sub
+
+'adjust the pageview with other parent elements
+Sub PageViewToFullScreenHeight(otherElements As List)
+	Dim dHeight As Int = 0
+	UI.RemoveClassByID("pageview", "h-screen w-screen w-full h-full")
+	UI.RemoveLastClassByID("pageview", "height")
+	For Each elID As String In otherElements
+		elID = UI.CleanID(elID)
+		If Banano.Exists($"#${elID}"$) Then
+			Dim el As BANanoElement = Banano.GetElement($"#${elID}"$)
+			Dim offsetHeight As Int = el.GetField("offsetHeight")
+			offsetHeight = UI.CInt(offsetHeight)
+			dHeight = Banano.parseInt(offsetHeight)
+		End If	
+	Next
+	Dim nHeight As String = $"calc(100vh - ${dHeight}px)"$
+	UI.SetStyleByID("pageview", "height", nHeight)
+End Sub
