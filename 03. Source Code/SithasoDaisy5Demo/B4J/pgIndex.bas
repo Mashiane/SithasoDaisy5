@@ -57,8 +57,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
 	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
 	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
-	drawermenu.AddItemChild("wnew", "pg-formcard", "", "Form Card")
-	
+		
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
 	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
@@ -265,8 +264,6 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgToastCharts.Show(App)
 			Case "leaflet"
 				pgLeafLet.Show(App)
-			Case "formcard"
-				pgformcard.Show(App)
 			Case "exceltoapp"
 				pgExcelToApp.Show(App)			
 			Case "officeribbon"
