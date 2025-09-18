@@ -22,7 +22,7 @@ Version=10
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
 #DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: RawHtml, DisplayName: HTML Message, FieldType: String, DefaultValue: , Description: HTML Message
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
@@ -144,7 +144,7 @@ Sub Class_Globals
 	Private sTitleTextColor As String
 	Private sIcon As String
 	Private sIconColor As String
-	Private sIconSize As String
+	Private sIconSize As String = "32px"
 	Private bIconVisible As Boolean
 	Private bIsCard As Boolean
 	Private sBackgroundColor As String = "base-100"
@@ -421,7 +421,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
 		sIconColor = UI.CStr(sIconColor)
-		sIconSize = Props.GetDefault("IconSize", "")
+		sIconSize = Props.GetDefault("IconSize", "32px")
 		sIconSize = UI.CStr(sIconSize)
 		bIconVisible = Props.GetDefault("IconVisible", False)
 		bIconVisible = UI.CBool(bIconVisible)
@@ -638,6 +638,8 @@ End Sub
 Sub setIconSize(s As String)			'ignoredeadcode
 	sIconSize = s
 	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetAttrByID($"${mName}_icon"$, "width", s)
 	UI.SetAttrByID($"${mName}_icon"$, "height", s)
 End Sub
@@ -649,6 +651,7 @@ End Sub
 Sub setIconVisible(b As Boolean)				'ignoredeadcode
 	bIconVisible = b
 	CustProps.Put("IconVisible", b)
+	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_icon"$, b)
 End Sub
 
@@ -659,6 +662,8 @@ End Sub
 Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.Put("Icon", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetAttrByID($"${mName}_icon"$, "data-src", s)
 End Sub
 
@@ -669,6 +674,8 @@ End Sub
 Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.Put("IconColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetStyleByID($"${mName}_icon"$, "color", s)
 End Sub
 

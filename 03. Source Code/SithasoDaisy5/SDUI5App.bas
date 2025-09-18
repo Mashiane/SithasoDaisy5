@@ -549,7 +549,7 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
-	UI.AddClass(mElement, "relative min-h-screen h-screen w-screen m-0 p-0")
+	UI.AddClass(mElement, "relative flex flex-col min-h-screen h-screen w-screen m-0 p-0")
 	UI.AddStyle(mElement, "text-rendering", "optimizeSpeed")
 	mback = mCallback
 	AddLoader
@@ -570,11 +570,9 @@ Public Sub Initialize (mCallback As Object)
 	Banano.Await(modSD5.InitDays)
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
-	Dim ie As BANanoObject = Banano.CallBack(Me, "iconloaderror", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
 	Banano.window.addEventListener("offline", ch, True)
-	Banano.Window.AddEventListener("iconloaderror", ie, True)
-	'
+		'
 	If SubExists(mCallback, "DarkTheme") Then
 		Dim cbTheme As Object = Banano.CallBack(mCallback, "DarkTheme", Null)
 		Dim matchMedia As BANanoObject = Banano.Window.RunMethod("matchMedia", "(prefers-color-scheme: dark)")
@@ -585,11 +583,6 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Duration = ToastDuration
 	AppToast.Position = ToastPosition
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
-End Sub
-
-
-private Sub iconloaderror(e As BANanoEvent)				'ignoredeadcode
-	e.PreventDefault
 End Sub
 
 'get own unique key with 15 chars alphabets only

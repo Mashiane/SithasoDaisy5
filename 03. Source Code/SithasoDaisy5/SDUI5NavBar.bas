@@ -9,8 +9,8 @@ Version=10
 #Event: BurgerClick (value As Boolean)
 #Event: Back (e As BANanoEvent)
 #Event: FileChange (e As BANanoEvent)
-#Event: SearchClick (e As BANanoEvent)
-#Event: SearchKeyUp (e As BANanoEvent)
+#Event: SearchClick (Value As String)
+#Event: SearchKeyUp (Value As String)
 #Event: SearchClear (e As BANanoEvent)
 #Event: CustomButton (e As BANanoEvent)
 #Event: Custom_FileChange (e As BANanoEvent)
@@ -37,7 +37,7 @@ Version=10
 #DesignerProperty: Key: HideTitle, DisplayName: Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title
 #DesignerProperty: Key: HideTitleOnLargeScreen, DisplayName: LG - Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title On Large Screen
 #DesignerProperty: Key: TitlePosition, DisplayName: Title Position, FieldType: String, DefaultValue: left, Description: Title Position, List: center|left|right
-#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: TextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: HasSearch, DisplayName: Has Search, FieldType: Boolean, DefaultValue: False, Description: Has Search
 #DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: md, Description: Search Size, List: lg|md|sm|xs|none
@@ -256,7 +256,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bGlass = Props.GetDefault("Glass", False)
@@ -382,11 +382,29 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHideLogoOnLargeScreen(bHideLogoOnLargeScreen)
 	setTitlePosition(sTitlePosition)
 	setTitle(sTitle)
+	setTextColor(sTextColor)
 	setHideTitleOnLargeScreen(bHideTitleOnLargeScreen)
 	setHideLogo(bHideLogo)
 	setHideTitle(bHideTitle)
 '	setVisible(bVisible)
 	setHasBackButton(bHasBackButton)
+End Sub
+
+private Sub SearchClick(e As BANanoEvent)
+	e.PreventDefault
+	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(sfind))
+End Sub
+
+private Sub SearchInternal(e As BANanoEvent)		'ignore
+	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(sfind))
+End Sub
+
+private Sub SearchClear(e As BANanoEvent)
+	e.PreventDefault
+	Dim e1 As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_SearchClear"$, Array(e1))
 End Sub
 
 'size constants
@@ -1039,11 +1057,11 @@ Sub setHeight(s As String)
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_title"$, sTextColor)
 End Sub
 'set Width
 Sub setWidth(s As String)

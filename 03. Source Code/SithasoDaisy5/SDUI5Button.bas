@@ -17,7 +17,7 @@ Version=10
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: primary|secondary|accent|neutral|info|success|warning|error|none
 #DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color, List: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
-#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: 6, Description: Size
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
 #DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -121,7 +121,7 @@ Sub Class_Globals
 	Private sBadge As String = ""
 	Private sBadgeColor As String = ""
 	Private bBadgeVisible As Boolean = False
-	Private sBadgeSize As String = "sm"
+	Private sBadgeSize As String = "6"
 	Private sHeight As String = ""
 	Private sWidth As String = ""
 	Private bJoinItem As Boolean = False
@@ -359,6 +359,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
+		UI.ExcludeTextColor = True
 		bActive = Props.GetDefault("Active", False)
 		bActive = UI.CBool(bActive)
 		bBlock = Props.GetDefault("Block", False)
@@ -414,7 +415,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
 		sBadgeColor = UI.CStr(sBadgeColor)
-		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
+		sBadgeSize = Props.GetDefault("BadgeSize", "6")
 		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sHeight = Props.GetDefault("Height", "")
@@ -535,14 +536,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<span id="${mName}_indicator" class="badge indicator-item"></span>
+		<span id="${mName}_indicator" class="badge indicator-item rounded-full aspect-square flex items-center justify-center p-0 text-xs"></span>
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
 		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
-		<div id="${mName}_badge" class="badge rounded-full hidden"></div>
+		<div id="${mName}_badge" class="badge rounded-full hidden flex items-center justify-center p-0"></div>
 	</${sTag}>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	setText(sText)
@@ -670,13 +671,13 @@ Sub setIndicatorPosition(s As String)					'ignoredeadcode
 	UI.UpdateClassByID($"${mName}_indicator"$, "position", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Size
-'options: xs|none|sm|md|lg|xl
 Sub setIndicatorSize(s As String)									'ignoredeadcode
 	sIndicatorSize = s
 	CustProps.put("IndicatorSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetSizeByID($"${mName}_indicator"$, "size", "badge", s)
+	UI.SetWidthByID($"${mName}_indicator"$, s)
+	UI.SetHeightByID($"${mName}_indicator"$, s)
 End Sub
 'set Indicator Text Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -896,12 +897,14 @@ Sub getBadgeSize As String
 End Sub
 
 'set Size
-'options: xs|none|sm|md|lg|xl
 Sub setBadgeSize(s As String)			'ignoredeadcode
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizebyid($"${mName}_badge"$, "size", "badge", s)
+	If s <> "" Then 
+		UI.SetWidthByID($"${mName}_badge"$, s)
+		UI.SetHeightByID($"${mName}_badge"$, s)
+	End If
 End Sub
 
 'set Active

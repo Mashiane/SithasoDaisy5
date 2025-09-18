@@ -263,6 +263,7 @@ Sub setIconSize(s As String)
 	sIconSize = s
 	CustProps.Put("IconSize", s)
 	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetAttrByID($"${mName}_${sParentID}_icon"$, "height", sIconSize)
 	UI.SetAttrByID($"${mName}_${sParentID}_icon"$, "width", sIconSize)
 End Sub

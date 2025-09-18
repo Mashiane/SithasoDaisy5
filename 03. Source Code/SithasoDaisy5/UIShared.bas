@@ -3708,12 +3708,12 @@ Sub Initials(FullName As String) As String
 End Sub
 
 'insert a css rule
-Sub InsertCSSRule(selector As String, styles As Object)
+Sub InsertCSSRule(selector As String, styles As Object)			'ignoredeadcode
 	BANano.RunJavascriptMethod("insertRule", Array(selector, styles))
 End Sub
 
 'remove a css rule 
-Sub RemoveCSSRule(selector As String)
+Sub RemoveCSSRule(selector As String)						'ignoredeadcode
 	Dim i As BANanoObject
 	i.Initialize("insertRule")
 	i.RunMethod("remove", selector)

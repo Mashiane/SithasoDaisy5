@@ -365,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	UI.AddClassDT("menu")
-		
+	UI.AddClassDT("overflow-y-auto")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass

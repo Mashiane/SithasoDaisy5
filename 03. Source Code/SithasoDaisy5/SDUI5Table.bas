@@ -59,6 +59,10 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this div
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Table, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
+#DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: ExcelTitle, DisplayName: Export Title , FieldType: String, DefaultValue:  Table, Description: Title for Excel Reports
 #DesignerProperty: Key: PageSize, DisplayName: PDF Page Size, FieldType: String, DefaultValue: a4, Description: Page Size for pdf printing, List: a0|a1|a10|a10|a2|a3|a4|a5|a6|a7|a8|a9|b0|b1|b10|b10|b2|b3|b4|b5|b6|b7|b8|b9|c0|c1|c10|c10|c2|c3|c4|c5|c6|c7|c8|c9|credit-card|dl|government-letter|junior-legal|ledger|legal|letter|tabloid
 #DesignerProperty: Key: FontSize, DisplayName: PDF Font Size, FieldType: String, DefaultValue: 11, Description: Font Size for pdf printing
@@ -276,6 +280,10 @@ Private Sub Class_Globals
 	Private sDownloadToolbarTooltip As String = ""
 	Private bHasExpand As Boolean = False
 	Private colSelectAll As TableColumn
+	Private sIcon As String
+	Private sIconColor As String
+	Private sIconSize As String = "32px"
+	Private bIconVisible As Boolean
 End Sub
 
 ' returns the element id
@@ -570,6 +578,16 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sDownloadToolbarTooltip = UI.CStr(sDownloadToolbarTooltip)
 		bHasExpand = Props.GetDefault("HasExpand", False)
 		bHasExpand = UI.CBool(bHasExpand)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
+		sIcon = Props.GetDefault("Icon", "")
+		sIcon = UI.CStr(sIcon)
+		sIconColor = Props.GetDefault("IconColor", "")
+		sIconColor = UI.CStr(sIconColor)
+		sIconSize = Props.GetDefault("IconSize", "32px")
+		sIconSize = UI.CStr(sIconSize)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -589,7 +607,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
-        	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
+        	<h2 id="${mName}_title" class="ml-3 card-title flex items-center gap-2 w-full">
+				<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
+				<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
+			</h2>
         	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          	<button id="${mName}_searchbtn" class="btn join-item hidden flex justify-center items-center">
@@ -653,6 +674,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIsNormal(bIsNormal)
 	setIsCompact(bIsCompact)
 	setIsZebra(bIsZebra)
+	setIcon(sIcon)
+	setIconColor(sIconColor)
+	setIconSize(sIconSize)
+	setIconVisible(bIconVisible)
 	If bHasExportMenu Then
 '		'***Add code to export to pdf, xls, csv
 '		Dim ddown As SDUIDropDown = AddToolbarDropDownIcon("ddown", "fa-solid fa-bars", "orange")
@@ -681,11 +706,61 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
-	If (bHasAlphaChooser = False) And (bHasColumnChooser = False) Then
-		UI.Hide($"${mName}_divider1"$)
+	If (bHasColumnChooser = False) Then
 		UI.Hide($"${mName}_divider2"$)
 	End If
 End Sub
+
+
+
+Sub setIconSize(s As String)			'ignoredeadcode
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetAttrByID($"${mName}_icon"$, "width", s)
+	UI.SetAttrByID($"${mName}_icon"$, "height", s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+Sub setIconVisible(b As Boolean)				'ignoredeadcode
+	bIconVisible = b
+	CustProps.Put("IconVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_icon"$, b)
+End Sub
+
+Sub getIconVisible As Boolean
+	Return bIconVisible
+End Sub
+
+Sub setIcon(s As String)			'ignoredeadcode
+	sIcon = s
+	CustProps.Put("Icon", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetAttrByID($"${mName}_icon"$, "data-src", s)
+End Sub
+
+Sub getIcon As String
+	Return sIcon
+End Sub
+
+Sub setIconColor(s As String)			'ignoredeadcode
+	sIconColor = s
+	CustProps.Put("IconColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetStyleByID($"${mName}_icon"$, "color", s)
+End Sub
+
+Sub getIconColor As String
+	Return sIconColor
+End Sub
+
 
 Sub setHasExpand(b As Boolean)
 	bHasExpand = b
@@ -744,6 +819,14 @@ End Sub
 Sub setHasColumnChooser(b As Boolean)
 	bHasColumnChooser = b
 	CustProps.put("HasColumnChooser", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.Show($"${mName}_columnchooser"$)
+		UI.Show($"${mName}_divider2"$)
+	Else
+		UI.Hide($"${mName}_columnchooser"$)
+		UI.Hide($"${mName}_divider2"$)
+	End If
 End Sub
 'get Column Chooser Color
 Sub getColumnChooserColor As String
@@ -1541,8 +1624,8 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
-Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, iconColor)
+Sub AddToolbarButtonIcon(btnID As String, xIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, xIcon, btnColor, iconColor)
 	Return btn
 End Sub
 
@@ -1552,11 +1635,11 @@ End Sub
 'tblName.FileChangeEvent
 'End Sub
 '</code>
-Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
+Sub AddToolbarFileUpload(btnID As String, xIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, xIcon, btnColor, "")
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
@@ -1586,7 +1669,7 @@ End Sub
 'Sub tblname_btnid (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+Sub AddToolbarActionButtonIcon(btnID As String, xIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -1598,7 +1681,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.BackgroundColor = btnColor
 	btn.Shape = "circle"
 	btn.Outline = bButtonsOutlined
-	btn.LeftIcon = sIcon
+	btn.LeftIcon = xIcon
 	btn.Size = sButtonSize
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
@@ -1825,8 +1908,11 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	AddToolbarActionButtonIcon("deleteall", "./assets/trash-can-solid.svg", "#FF0000", "white")
 	SetToolbarButtonBadge("deleteall", "0")
 	SetToolbarButtonBadgeRound("deleteall")
-	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 	SetToolbarButtonEnable("deleteall", False)
+	SetToolbarButtonBadgeColor("deleteall", "primary")
+	SetToolbarButtonBadgeRound("deleteall")
+	SetToolbarButtonTextColor("deleteall", "#FFFFFF")
+	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 End Sub
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("UploadToolbarTooltip", tooltip)
@@ -2224,7 +2310,7 @@ Sub setTitle(t As String)
 	sTitle = t
 	CustProps.put("Title", t)
 	If mElement = Null Then Return
-	BANano.GetElement($"#${mName}_title"$).SetText(BANano.SF(t))
+	BANano.GetElement($"#${mName}_text"$).SetText(BANano.SF(t))
 End Sub
 
 Sub SetPrevPageTooltip(tooltip As String, color As String, position As String)
