@@ -25,8 +25,8 @@ Version=10
 #DesignerProperty: Key: SearchVisible, DisplayName: Search Visible, FieldType: Boolean, DefaultValue: True, Description: Search Visible
 #DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: sm, Description: Search Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: SearchWidth, DisplayName: Search Width, FieldType: String, DefaultValue: 300px, Description: Search Width
-#DesignerProperty: Key: ButtonSize, DisplayName: Button Size, FieldType: String, DefaultValue: sm, Description: Button Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: ButtonsOutlined, DisplayName: Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
+#DesignerProperty: Key: ButtonSize, DisplayName: Toolbar Button Size, FieldType: String, DefaultValue: sm, Description: Button Size, List: lg|md|none|sm|xs
+#DesignerProperty: Key: ButtonsOutlined, DisplayName: Toolbar Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
 #DesignerProperty: Key: ComponentSize, DisplayName: Component Size, FieldType: String, DefaultValue: sm, Description: Component Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: IncludeProjectName, DisplayName: Include Project Name, FieldType: Boolean, DefaultValue: False, Description: Include Project Name
 #DesignerProperty: Key: IncludeViewName, DisplayName: Include View Name, FieldType: Boolean, DefaultValue: False, Description: Include View Name
@@ -453,6 +453,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_bottomactions" class="card-actions hidden justify-end p-2"></div>
         	</div>
         </div>"$).Get($"#${mName}"$)
+	'define icon size
+	'
 	setTitle(sTitle)	
 	setIsZebra(bIsZebra)
 	setWrapActions(bWrapActions)
@@ -880,7 +882,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 '	UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "50")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_searchbtnicon"$, sSearchSize)
 End Sub
 'set Search Visible
 Sub setSearchVisible(b As Boolean)		'ignoredeadcode
@@ -2161,7 +2163,7 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	AddPropertyTextBoxGroup(Key, Title, DefaultValue, Required)
 	SetPropertyType(Key, "number")
 	ComponentType.Put(Key, "Dialer")
-	SetPropertyAddClass(Key, "text-center tabular-nums")
+	SetPropertyAddClass(Key, "px-3 text-center tabular-nums w-full grow focus:outline-hidden")
 	SetPropertyMaxValue(Key, iMaxValue)
 	SetPropertyMinValue(Key, iMinValue)
 	SetPropertyStepValue(Key, iStepValue)
@@ -2504,7 +2506,7 @@ Sub SetPropertyPrependIcon(Key As String, picon As String)
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).Remove
 	UI.SetIconNameByID($"${mName}_${Key}_prepend_icon"$, picon)	'
 	UI.SetSizeByID($"${mName}_${Key}_prepend"$, "size", "btn", sComponentSize)
-	UI.ResizeIconByID($"${mName}_${Key}_prepend_icon"$, "70")	'
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${Key}_prepend_icon"$, scomponentsize)	'
 	UI.Show($"${mName}_${Key}_prepend"$)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
@@ -2564,7 +2566,7 @@ Sub SetPropertyAppendIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).Remove
 	UI.SetIconNameByID($"${mName}_${Key}_append_icon"$, picon)
-	UI.ResizeIconByID($"${mName}_${Key}_append_icon"$, "70")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${Key}_append_icon"$, sComponentSize)
 	UI.SetSizeByID($"${mName}_${Key}_append"$, "size", "btn", sComponentSize)
 	UI.Show($"${mName}_${Key}_append"$)
 	UI.RemoveClassByID($"#${mName}_${Key}"$, "trradius brradius")
@@ -5449,11 +5451,17 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
 	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
 	btn.AddComponent
 	btn.AddClass("mx-1")
-	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
-	btn.AddClass("flex justify-center items-center")
+	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
 	Return btn
 End Sub
 

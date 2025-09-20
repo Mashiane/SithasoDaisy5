@@ -732,13 +732,13 @@ Sub setButtonSize(s As String)				'ignoredeadcode
 	UI.SetSizeByID($"${mName}_rightstatus"$, "size", "btn", s)
 	UI.SetSizeByID($"${mName}_refreshchats"$, "size", "btn", s)
 	
-	UI.ResizeIconByID($"${mName}_emojiicon"$, "70")
-	UI.ResizeIconByID($"${mName}_attachicon"$, "70")
-	UI.ResizeIconByID($"${mName}_voiceicon"$, "70")
-	UI.ResizeIconByID($"${mName}_sendicon"$, "70")
-	UI.ResizeIconByID($"${mName}_cancelreplyicon"$, "70")
-	UI.ResizeIconByID($"${mName}_backicon"$, "70")
-	UI.ResizeIconByID($"${mName}_refreshchatsicon"$, "70")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_emojiicon"$, s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_attachicon"$, s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_voiceicon"$, s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_sendicon"$, s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_cancelreplyicon"$, S)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_backicon"$, s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_refreshchatsicon"$, s)
 End Sub
 
 Sub ShowSend

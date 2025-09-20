@@ -49,6 +49,7 @@ Sub Show(MainApp As SDUI5App)
 '	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
 	table1.MoveBackButton
 	'
+	Log(Items)
 	BANano.Await(table1.SetItemsPaginate(Items))
 	'Allow filtering records by an alphabet from column
 	'table1.SetAlphaChooser(True, "8", "name")

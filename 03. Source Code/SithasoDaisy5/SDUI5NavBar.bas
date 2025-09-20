@@ -8,6 +8,12 @@ Version=10
 #Event: TitleClick (e As BANanoEvent)
 #Event: BurgerClick (value As Boolean)
 #Event: Back (e As BANanoEvent)
+#Event: FileChange (e As BANanoEvent)
+#Event: SearchClick (Value As String)
+#Event: SearchKeyUp (Value As String)
+#Event: SearchClear (e As BANanoEvent)
+#Event: CustomButton (e As BANanoEvent)
+#Event: Custom_FileChange (e As BANanoEvent)
 '
 #DesignerProperty: Key: ReadMe, DisplayName: Read Me, FieldType: String, DefaultValue: Child Items - _left|_logo|_burger|_center|_right, Description: Child Items - _left|_logo|_burger|_center|_right
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
@@ -31,13 +37,22 @@ Version=10
 #DesignerProperty: Key: HideTitle, DisplayName: Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title
 #DesignerProperty: Key: HideTitleOnLargeScreen, DisplayName: LG - Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title On Large Screen
 #DesignerProperty: Key: TitlePosition, DisplayName: Title Position, FieldType: String, DefaultValue: left, Description: Title Position, List: center|left|right
-#DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: TextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
+#DesignerProperty: Key: HasSearch, DisplayName: Has Search, FieldType: Boolean, DefaultValue: False, Description: Has Search
+#DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: md, Description: Search Size, List: lg|md|sm|xs|none
+#DesignerProperty: Key: SearchWidth, DisplayName: Search Width, FieldType: String, DefaultValue: 300px, Description: Search Width
+#DesignerProperty: Key: ButtonSize, DisplayName: Button Size, FieldType: String, DefaultValue: md, Description: Button Size, List: lg|md|sm|xs|none
+#DesignerProperty: Key: ButtonsOutlined, DisplayName: Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
 #DesignerProperty: Key: Glass, DisplayName: Glass, FieldType: Boolean, DefaultValue: False, Description: Glass
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 16, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: GradientActive, DisplayName: GradientActive, FieldType: Boolean, DefaultValue: false, Description: Gradient should be set
+#DesignerProperty: Key: Gradient, DisplayName: Gradient, FieldType: String, DefaultValue: , Description: Gradient, List: bl_tr|bottom_top|br_tl|left_right|right_left|tl_br|top_bottom|tr_bl
+#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Gradient Color 1.
+#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Gradient Color 2.
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -98,6 +113,15 @@ Sub Class_Globals
 	Private sBackLabel As String = "Back"
 	Private bBackLabelVisible As Boolean = False
 	Public BackButton As SDUI5Button
+	Private sSearchSize As String = "md"
+	Private sSearchWidth As String = "300px"
+	Private bHasSearch As Boolean = False	
+	Private sButtonSize As String = "md"
+	Private bButtonsOutlined As Boolean
+	Private bGradientActive As String
+	Private sGradient As String
+	Private sGradientColor1 As String
+	Private sGradientColor2 As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -107,6 +131,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
+	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -238,10 +263,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "transparent")
+		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bGlass = Props.GetDefault("Glass", False)
 		bGlass = UI.CBool(bGlass)
 		sHeight = Props.GetDefault("Height", "16")
@@ -294,9 +321,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBackLabel = UI.CStr(sBackLabel)
 		bBackLabelVisible = Props.GetDefault("BackLabelVisible", False)
 		bBackLabelVisible = UI.CBool(bBackLabelVisible)
+		sSearchSize = Props.GetDefault("SearchSize", "md")
+		sSearchSize = UI.CStr(sSearchSize)
+		If sSearchSize = "none" Then sSearchSize = "md"
+		sSearchWidth = Props.GetDefault("SearchWidth", "300px")
+		sSearchWidth= UI.CStr(sSearchWidth)
+		bHasSearch = Props.GetDefault("HasSearch", False)
+		bHasSearch = UI.CBool(bHasSearch)
+		sButtonSize = Props.GetDefault("ButtonSize", "md")
+		sButtonSize = UI.CStr(sButtonSize)
+		bButtonsOutlined = Props.GetDefault("ButtonsOutlined", False)
+		bButtonsOutlined = UI.CBool(bButtonsOutlined)
+		bGradientActive = Props.GetDefault("GradientActive", False)
+		bGradientActive = UI.CBool(bGradientActive)
+		sGradient = Props.GetDefault("Gradient", "")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 	End If
 	'
-'	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	If bGradientActive Then sBackgroundColor = ""
+	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("navbar justify-center")
 	If bGlass = True Then UI.AddClassDT("glass")
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
@@ -310,6 +354,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
+	Dim SearchIconSize As String = UI.FixIconSizeByButtonSize(sSearchSize)
 	If sParentID <> "" Then
 		'does the parent exist
 		If BANano.Exists($"#${sParentID}"$) = False Then
@@ -319,15 +364,33 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-	<nav id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_left" class="navbar-start flex items-center gap-2">
 			<div id="${mName}_back" class="hidden"></div>
 			<div id="${mName}_burger" class="hidden"></div>
 			<div id="${mName}_logo" class="hidden"></div>
 		</div>	
-		<div id="${mName}_center" class="navbar-center flex items-center"></div>
+		<div id="${mName}_center" class="navbar-center flex items-center">
+			<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
+	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
+	          	<button id="${mName}_searchbtn" class="btn join-item hidden flex justify-center items-center">
+					<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;width:${SearchIconSize};height:${SearchIconSize};" fill="currentColor" data-js="enabled" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
+				</button>
+			</div>		
+		</div>
 		<div id="${mName}_right" class="navbar-end flex items-center"></div>
-	</nav>"$).Get("#" & mName)
+		<input id="${mName}_file" type="file" class="hidden"></input>
+	</div>"$).Get("#" & mName)
+	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
+	If bHasSearch Then
+		setHasSearch(bHasSearch)
+		setSearchWidth(sSearchWidth)
+		Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
+		txtsearch.On("keyup", Me, "SearchInternal")
+		txtsearch.On("search", Me, "SearchClear")
+		setSearchSize(sSearchSize)
+		BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
+	End If
 	'set the title position
 	setHasBurger(bHasBurger)
 	setHideHamburger(bHideHamburger)
@@ -336,11 +399,322 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHideLogoOnLargeScreen(bHideLogoOnLargeScreen)
 	setTitlePosition(sTitlePosition)
 	setTitle(sTitle)
+	setTextColor(sTextColor)
 	setHideTitleOnLargeScreen(bHideTitleOnLargeScreen)
 	setHideLogo(bHideLogo)
 	setHideTitle(bHideTitle)
 '	setVisible(bVisible)
 	setHasBackButton(bHasBackButton)
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradient(mElement, agradient, sGradientColor1, sGradientColor2)
+	End If
+End Sub
+
+private Sub SearchClick(e As BANanoEvent)
+	e.PreventDefault
+	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(sfind))
+End Sub
+
+private Sub SearchInternal(e As BANanoEvent)		'ignore
+	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(sfind))
+End Sub
+
+private Sub SearchClear(e As BANanoEvent)
+	e.PreventDefault
+	Dim e1 As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_SearchClear"$, Array(e1))
+End Sub
+
+'size constants
+Sub setSearchSize(s As String)			'ignoredeadcode
+	sSearchSize = s
+	CustProps.put("SearchSize", s)
+	If mElement = Null Then Return
+	If s = "none" Then s = ""
+	If s = "" Then Return
+	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
+	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
+	'UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
+	UI.ResizeIconByIDFromButtonSize($"${mName}_searchbtnicon"$, sSearchSize)
+End Sub
+
+Sub getSearchSize As String
+	Return sSearchSize
+End Sub
+
+'get the list of selected files
+Sub GetFiles As List
+	'get the selected files, if any
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim files As Object = xFile.GetField("files").Result
+		Dim res As List = files.As(List)
+		Return res
+	End If
+End Sub
+
+'get selected file
+Sub GetFile As Map
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim obj() As BANanoObject = xFile.GetField("files").Result
+		Return obj(0)
+	End If
+End Sub
+
+'ensure we can select the same file again
+Sub Nullify
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	xFile.SetValue(Null)
+End Sub
+
+Sub setSearchWidth(s As String)			'ignoredeadcode
+	sSearchWidth = s
+	CustProps.Put("SearchWidth", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidthByID($"${mName}_search"$, s)
+End Sub
+
+Sub getSearchWidth As String
+	Return sSearchWidth
+End Sub
+
+Sub RemoveSearch
+	BANano.getelement($"#${mName}_searchbox"$).Remove
+End Sub
+
+Sub setHasSearch(b As Boolean)			'ignoredeadcode
+	CustProps.Put("HasSearch", b)
+	bHasSearch = b
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"#${mName}_search"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+End Sub
+
+Sub getHasSearch As Boolean
+	Return bHasSearch
+End Sub
+
+Sub getSearchValue As String
+	Dim s As String = BANano.GetElement($"#${mName}_search"$).GetValue
+	Return s
+End Sub
+
+Sub setSearchValue(s As String)
+	If mElement = Null Then Return
+	BANano.GetElement($"#${mName}_search"$).SetValue(s)
+End Sub
+
+'change the search placeholder
+'<code>
+'tbl.SetSearchPlaceholder("Buscar")
+'</code>
+Sub SetSearchPlaceholder(s As String)
+	BANano.GetElement($"#${mName}_search"$).SetAttr("placeholder", s)
+End Sub
+
+Sub getSearchID As String
+	Return $"${mName}_search"$
+End Sub
+
+Sub getToolBarButtonID(btnID As String) As String
+	btnID = UI.CleanID(btnID)
+	Return $"${mName}_${btnID}"$
+End Sub
+
+Sub AddToolbarButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
+	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
+	Return btn
+End Sub
+'add an action button
+'<code>
+'Sub tblname_btnid (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_right"$) = False Then Return Null
+	UI.Show($"${mName}_right"$)
+	btnID = UI.CleanID(btnID)
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_right"$
+	btn.Text = btnCaption
+	btn.BackgroundColor = btnColor
+	btn.Outline = bButtonsOutlined
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	Return btn
+End Sub
+
+Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
+	btnID = UI.CleanID(btnID)
+	Dim col As String = UI.FixColor("tooltip", color)
+	Dim pos As String = UI.FixSize("tooltip", position)
+	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
+End Sub
+
+Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, iconColor)
+	Return btn
+End Sub
+
+Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+	End If
+End Sub
+Sub SetToolbarButtonEnable(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+	End If
+End Sub
+Sub SetToolbarButtonLoading(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+	End If
+End Sub
+
+Sub SetToolbarButtonBadge(btn As String, value As String)
+	btn = UI.CleanID(btn)
+	If value = "" Or value = "0" Then
+		UI.Hide($"#${mName}_${btn}_indicator"$)
+	Else
+		UI.Show($"#${mName}_${btn}_indicator"$)
+		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+	End If
+End Sub
+Sub SetToolbarButtonBadgeColor(btn As String, value As String)
+	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+End Sub
+'make the badge round
+Sub SetToolbarButtonBadgeSize(btn As String, value As String)
+	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+End Sub
+Sub SetToolbarButtonBadgeRound(btn As String)
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+End Sub
+Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
+	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+End Sub
+Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
+	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+End Sub
+'change the visibility of a button
+Sub SetToolbarButtonVisible(btn As String, value As Boolean)
+	If value Then
+		UI.Show($"#${mName}_${btn}"$)
+		UI.Show($"#${mName}_${btn}_indicator"$)
+	Else
+		UI.Hide($"#${mName}_${btn}"$)
+		UI.Hide($"#${mName}_${btn}_indicator"$)
+	End If
+End Sub
+'change a toolbar button color
+Sub SetToolbarButtonColor(btn As String, value As String)
+	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+End Sub
+
+
+Sub SetToolbarButtonTextColorWhite(id As String)
+	SetToolbarButtonTextColor(id, "#ffffff")
+End Sub
+
+'add an action button
+'<code>
+'Sub tblname_btnid (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	If BANano.Exists($"#${mName}_right"$) = False Then Return Null
+	UI.Show($"${mName}_right"$)
+	btnID = UI.CleanID(btnID)
+	'
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_right"$
+	btn.Text = ""
+	btn.BackgroundColor = btnColor
+	btn.Shape = "circle"
+	btn.Outline = bButtonsOutlined
+	btn.LeftIcon = sIcon
+	btn.Size = sButtonSize
+	btn.IconSize = sButtonSize
+	btn.LeftIconColor = iconColor
+	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
+	Return btn
+End Sub
+
+private Sub FileUploadHandler(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	e.StopPropagation
+	Dim src As String = e.OtherField("srcElement").GetField("id").Result
+	If src = "" Then Return
+	Dim p2 As String = UI.MvField(src, 2, "_")
+	Dim el As BANanoElement = BANano.GetElement($"#${mName}_${p2}_file"$)
+	'click the file input to fire change event
+	el.SetValue(Null)
+	el.RunMethod("click", Null)
+End Sub
+
+'add a file upload button with table event
+'<code>
+'Sub tblName_{btnid}_filechange (e As BANAnoEvent)
+'tblName.FileChangeEvent
+'End Sub
+'</code>
+Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_right"$) = False Then Return Null
+	UI.Show($"${mName}_right"$)
+	btnID = UI.CleanID(btnID)
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
+	BANano.GetElement($"#${mName}_right"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
+	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
+	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
+	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
+	Return btn
 End Sub
 
 'set Hide Logo
@@ -704,11 +1078,11 @@ Sub setHeight(s As String)
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
 'set Text Color
-Sub setTextColor(s As String)
+Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_title"$, sTextColor)
 End Sub
 'set Width
 Sub setWidth(s As String)
@@ -765,4 +1139,121 @@ End Sub
 
 public Sub getParentID() As String
 	Return sParentID
+End Sub
+
+
+Sub HideOnSmall
+	UI.AddClass(mElement, "max-md:hidden")
+End Sub
+Sub HideOnMedium
+	UI.AddClass(mElement, "max-lg:hidden")
+End Sub
+Sub HideOnLarge
+	UI.AddClass(mElement, "max-xl:hidden")
+End Sub
+
+'<code>
+'Sub fi1_change(e As BANanoEvent)
+''has the file been specified
+'Dim fileObj As Map = = UI.GetFileFromEvent(e)
+'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
+''get file details
+'Dim fileDet As FileObject
+'fileDet = UI.GetFileDetails(fileObj)
+''get the file name
+'Dim fn As String = fileDet.FileName
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = UI.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''**** UPLOAD
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+''Dim fn As String = fileDet.FileName
+''get the status of the upload
+''Dim sstatus As String = fileDet.Status
+''Select Case sstatus
+''Case "error"
+''Case "success"
+''End Select
+''the the full upload path of the file
+''Dim fp As String = fileDet.FullPath
+''**** UPLOAD
+''Dim fJSON As Map = BANano.Await(App.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(App.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(App.readAsDataURLWait(fileObj))
+''update state of some element like an image
+''for vfield use SetValue
+''vimage.src = fText
+''clear the file input
+''fil1.Value = ""
+'End Sub
+'</code>
+Sub FileChangeSingle
+End Sub
+'<code>
+''****for multiple files
+'Sub fi1_change(e As BANanoEvent)
+''has the files been selected
+'Dim fileList As List = UI.GetFilesFromEvent(e)
+'If banano.IsNull(fileList) Or banano.IsUndefined(fileList) Then Return
+''will store list of uploaded file
+'Dim uploads As List
+'uploads.Initialize
+''loop through each selected file
+'for each fileObj As Map in fileList
+''get file details
+'Dim fileDet As FileObject
+'fileDet = UI.GetFileDetails(fileObj)
+''you can check the size here
+'Dim fs As Long = fileDet.FileSize
+'Dim maxSize As Int = UI.ToKiloBytes(500)
+'If fs > maxSize Then
+'	app.ShowToastError("File is limited to 500KB!")
+'	Return
+'End If
+''start uploading the file
+'fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
+''get the file name
+'Dim fn As String = fileDet.FileName
+''get the status of the upload
+'Dim sstatus As String = fileDet.Status
+'Select Case sstatus
+'Case "error"
+'Case "success"
+'End Select
+''the the full upload path of the file
+'Dim fp As String = fileDet.FullPath
+''update the lists of uploaded file with the path
+''uploads.Add(fp)
+'next
+''clear the file input
+'fil1.Value = ""
+'End Sub
+'</code>
+Sub FileChangeMultiple
+End Sub
+
+Sub setButtonsOutlined(b As Boolean)
+	CustProps.put("ButtonsOutlined", b)
+	bButtonsOutlined = b
+End Sub
+
+Sub getButtonsOutlined As Boolean
+	Return bButtonsOutlined
+End Sub
+
+Sub setButtonSize(s As String)
+	CustProps.put("ButtonSize", s)
+	sButtonSize = UI.CStr(s)
+End Sub
+
+Sub getButtonSize As String
+	Return sButtonSize
 End Sub

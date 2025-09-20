@@ -55,9 +55,14 @@ Version=10
 #Event: SearchKeyUp (e As BANanoEvent)
 #Event: SearchClear (e As BANanoEvent)
 '
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _toolbar|_actions, Description: Child Item _toolbar|_actions
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this div
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Table, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
+#DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: ExcelTitle, DisplayName: Export Title , FieldType: String, DefaultValue:  Table, Description: Title for Excel Reports
 #DesignerProperty: Key: PageSize, DisplayName: PDF Page Size, FieldType: String, DefaultValue: a4, Description: Page Size for pdf printing, List: a0|a1|a10|a10|a2|a3|a4|a5|a6|a7|a8|a9|b0|b1|b10|b10|b2|b3|b4|b5|b6|b7|b8|b9|c0|c1|c10|c10|c2|c3|c4|c5|c6|c7|c8|c9|credit-card|dl|government-letter|junior-legal|ledger|legal|letter|tabloid
 #DesignerProperty: Key: FontSize, DisplayName: PDF Font Size, FieldType: String, DefaultValue: 11, Description: Font Size for pdf printing
@@ -66,6 +71,7 @@ Version=10
 #DesignerProperty: Key: PageBreakRepeat, DisplayName: PDF PageBreakRepeat, FieldType: String, DefaultValue: , Description: Field For Page Break Repeat
 #DesignerProperty: Key: PdfTheme, DisplayName: PDF Theme, FieldType: String, DefaultValue: striped, Description: Pdf theme, List: css|grid|none|plain|striped
 #DesignerProperty: Key: ItemsPerPage, DisplayName: Items Per Page, FieldType: String, DefaultValue: 10, Description: Items Per Page
+#DesignerProperty: Key: ListViewMode, DisplayName: ListView Mode, FieldType: Boolean, DefaultValue: False, Description: ListView Mode
 #DesignerProperty: Key: HasFilter, DisplayName: Has Filter, FieldType: Boolean, DefaultValue: False, Description: Has Filter
 #DesignerProperty: Key: HasExpand, DisplayName: Has Expand, FieldType: Boolean, DefaultValue: False, Description: Has Expand
 #DesignerProperty: Key: IsCompact, DisplayName: Is Compact, FieldType: Boolean, DefaultValue: False, Description: Is Compact
@@ -167,7 +173,11 @@ Private Sub Class_Globals
 	Private bHasDeleteSingle As Boolean
 	Public Rows As List
 	Public Columns As Map
-	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
+	Type TableColumn(name As String, title As String,typeof As String,Size As String, subtitle As String, subtitle1 As String, _
+	icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, _
+	suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, _
+	NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, _
+	noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -270,6 +280,12 @@ Private Sub Class_Globals
 	Private bHasToolbarDownload As Boolean = False
 	Private sDownloadToolbarTooltip As String = ""
 	Private bHasExpand As Boolean = False
+	Private colSelectAll As TableColumn
+	Private sIcon As String
+	Private sIconColor As String
+	Private sIconSize As String = "32px"
+	Private bIconVisible As Boolean
+	Private bListViewMode As Boolean
 End Sub
 
 ' returns the element id
@@ -396,10 +412,12 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
 	If Props <> Null Then
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		bListViewMode = Props.GetDefault("ListViewMode", False)
+		bListViewMode = UI.CBool(bListViewMode)
 		sItemsPerPage = Props.GetDefault("ItemsPerPage", "10")
 		sItemsPerPage = UI.CStr(sItemsPerPage)
 		iItemsPerPage = UI.CInt(sItemsPerPage)
@@ -564,6 +582,32 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sDownloadToolbarTooltip = UI.CStr(sDownloadToolbarTooltip)
 		bHasExpand = Props.GetDefault("HasExpand", False)
 		bHasExpand = UI.CBool(bHasExpand)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
+		sIcon = Props.GetDefault("Icon", "")
+		sIcon = UI.CStr(sIcon)
+		sIconColor = Props.GetDefault("IconColor", "")
+		sIconColor = UI.CStr(sIconColor)
+		sIconSize = Props.GetDefault("IconSize", "32px")
+		sIconSize = UI.CStr(sIconSize)
+		bIconVisible = Props.GetDefault("IconVisible", False)
+		bIconVisible = UI.CBool(bIconVisible)
+	End If
+	'
+	If bListViewMode Then
+		bHasAddnew = False
+		bHasAlphaChooser = False
+		bHasBack = False
+		bHasDeleteAll = False
+		bHasDeleteSingle = False
+		bHasExportMenu = False
+		bHasFilter = False
+		bHasGrid = False
+		bHasRefresh = False
+		bHasSearch = False
+		bHasToolbarDownload = False
+		bHasToolbarUpload = False
+		bShowTotalRecords = false
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -583,7 +627,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
         <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
-        	<h2 id="${mName}_title" class="ml-3 card-title w-full">${sTitle}</h2>
+        	<h2 id="${mName}_title" class="ml-3 card-title flex items-center gap-2 w-full">
+				<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
+				<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
+			</h2>
         	<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
 	          	<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          	<button id="${mName}_searchbtn" class="btn join-item hidden flex justify-center items-center">
@@ -647,6 +694,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIsNormal(bIsNormal)
 	setIsCompact(bIsCompact)
 	setIsZebra(bIsZebra)
+	setIcon(sIcon)
+	setIconColor(sIconColor)
+	setIconSize(sIconSize)
+	setIconVisible(bIconVisible)
 	If bHasExportMenu Then
 '		'***Add code to export to pdf, xls, csv
 '		Dim ddown As SDUIDropDown = AddToolbarDropDownIcon("ddown", "fa-solid fa-bars", "orange")
@@ -675,7 +726,78 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
+	If (bHasColumnChooser = False) Then
+		UI.Hide($"${mName}_divider2"$)
+	End If
+	setListViewMode(bListViewMode)
 End Sub
+
+Sub setListViewMode(b As Boolean) 		'ignoredeadcode
+	bListViewMode = b
+	CustProps.Put("ListViewMode", bListViewMode)
+	If mElement = Null Then Return
+	If b = False Then Return
+	UI.SetVisibleByID($"${mName}_toolbar"$, False)
+	UI.SetVisibleByID($"${mName}_divider1"$, False)
+	UI.SetVisibleByID($"${mName}_aphabets"$, False)
+	UI.SetVisibleByID($"${mName}_divider2"$, False)
+	UI.SetVisibleByID($"${mName}_thead"$, False)
+	UI.SetVisibleByID($"${mName}_foot"$, False)
+End Sub
+
+Sub getListViewMode As Boolean
+	Return bListViewMode
+End Sub
+
+
+Sub setIconSize(s As String)			'ignoredeadcode
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetAttrByID($"${mName}_icon"$, "width", s)
+	UI.SetAttrByID($"${mName}_icon"$, "height", s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
+End Sub
+
+Sub setIconVisible(b As Boolean)				'ignoredeadcode
+	bIconVisible = b
+	CustProps.Put("IconVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_icon"$, b)
+End Sub
+
+Sub getIconVisible As Boolean
+	Return bIconVisible
+End Sub
+
+Sub setIcon(s As String)			'ignoredeadcode
+	sIcon = s
+	CustProps.Put("Icon", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetAttrByID($"${mName}_icon"$, "data-src", s)
+End Sub
+
+Sub getIcon As String
+	Return sIcon
+End Sub
+
+Sub setIconColor(s As String)			'ignoredeadcode
+	sIconColor = s
+	CustProps.Put("IconColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetStyleByID($"${mName}_icon"$, "color", s)
+End Sub
+
+Sub getIconColor As String
+	Return sIconColor
+End Sub
+
 
 Sub setHasExpand(b As Boolean)
 	bHasExpand = b
@@ -734,6 +856,14 @@ End Sub
 Sub setHasColumnChooser(b As Boolean)
 	bHasColumnChooser = b
 	CustProps.put("HasColumnChooser", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.Show($"${mName}_columnchooser"$)
+		UI.Show($"${mName}_divider2"$)
+	Else
+		UI.Hide($"${mName}_columnchooser"$)
+		UI.Hide($"${mName}_divider2"$)
+	End If
 End Sub
 'get Column Chooser Color
 Sub getColumnChooserColor As String
@@ -1531,8 +1661,8 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
-Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, iconColor)
+Sub AddToolbarButtonIcon(btnID As String, xIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, xIcon, btnColor, iconColor)
 	Return btn
 End Sub
 
@@ -1542,11 +1672,11 @@ End Sub
 'tblName.FileChangeEvent
 'End Sub
 '</code>
-Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
+Sub AddToolbarFileUpload(btnID As String, xIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
-	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, xIcon, btnColor, "")
 	BANano.GetElement($"#${mName}_actions"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
 	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
 	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
@@ -1576,7 +1706,7 @@ End Sub
 'Sub tblname_btnid (e As BANanoEvent)
 'End Sub
 '</code>
-Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+Sub AddToolbarActionButtonIcon(btnID As String, xIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
 	If BANano.Exists($"#${mName}_actions"$) = False Then Return Null
 	UI.Show($"${mName}_actions"$)
 	btnID = UI.CleanID(btnID)
@@ -1588,16 +1718,22 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.BackgroundColor = btnColor
 	btn.Shape = "circle"
 	btn.Outline = bButtonsOutlined
-	btn.LeftIcon = sIcon
+	btn.LeftIcon = xIcon
 	btn.Size = sButtonSize
 	btn.IconSize = sButtonSize
 	btn.LeftIconColor = iconColor
 	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
 	btn.AddComponent
 	btn.AddClass("mx-1")
-	UI.ResizeIconByID($"${mName}_${btnID}_lefticon"$, "50")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
-	btn.AddClass("flex justify-center items-center")
+	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
 	Return btn
 End Sub
 
@@ -1809,8 +1945,11 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	AddToolbarActionButtonIcon("deleteall", "./assets/trash-can-solid.svg", "#FF0000", "white")
 	SetToolbarButtonBadge("deleteall", "0")
 	SetToolbarButtonBadgeRound("deleteall")
-	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 	SetToolbarButtonEnable("deleteall", False)
+	SetToolbarButtonBadgeColor("deleteall", "primary")
+	SetToolbarButtonBadgeRound("deleteall")
+	SetToolbarButtonTextColor("deleteall", "#FFFFFF")
+	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 End Sub
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("UploadToolbarTooltip", tooltip)
@@ -1968,6 +2107,34 @@ Sub setExportToXlsDisabled(b As Boolean)
 		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveAttr("disabled")
 	End If
 End Sub
+
+Sub setPrevPageEnabled(b As Boolean)
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("disabled")
+		Else	
+			BANano.GetElement($"#${mName}_prevpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("disabled", "disabled")
+		End If
+	Catch
+	End Try		'ignore
+End Sub
+
+Sub setNextPageEnabled(b As Boolean)
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("disabled")
+		Else
+			BANano.GetElement($"#${mName}_nextpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).SetAttr("disabled", "disabled")
+		End If
+	Catch
+	End Try	'ignore
+End Sub
+
+
 Sub setPrevPageDisabled(b As Boolean)
 	Try
 		If b Then
@@ -2051,26 +2218,26 @@ End Sub
 Sub SetToolbarButtonBadge(btn As String, value As String)
 	btn = UI.CleanID(btn)
 	If value = "" Or value = "0" Then
-		UI.Hide($"#${mName}_${btn}_badge"$)
+		UI.Hide($"#${mName}_${btn}_indicator"$)
 	Else
-		UI.Show($"#${mName}_${btn}_badge"$)
-		UI.SetTextByID($"#${mName}_${btn}_badge_text"$, BANano.SF(value))
+		UI.Show($"#${mName}_${btn}_indicator"$)
+		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
 	End If
 End Sub
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_badge"$, "color", "badge", value)
+	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_badge"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_badge"$, value)
+	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_badge"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_badge"$, "aspect-square")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_badge"$, value)
+	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
 	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
@@ -2208,7 +2375,7 @@ Sub setTitle(t As String)
 	sTitle = t
 	CustProps.put("Title", t)
 	If mElement = Null Then Return
-	BANano.GetElement($"#${mName}_title"$).SetText(BANano.SF(t))
+	BANano.GetElement($"#${mName}_text"$).SetText(BANano.SF(t))
 End Sub
 
 Sub SetPrevPageTooltip(tooltip As String, color As String, position As String)
@@ -2241,7 +2408,6 @@ End Sub
 private Sub SearchClear(e As BANanoEvent)
 	e.PreventDefault
 	PagePause
-	BANano.await(ClearRows)
 	BANano.await(SetItemsPaginate(Originals))
 	PageResume
 End Sub
@@ -2280,7 +2446,7 @@ Sub ClearRows			'ignoredeadcode
 	Rows.Initialize
 	DPValue.Initialize
 	datepickers.Initialize
-	BANano.GetElement($"#${mName}_body"$).Empty
+	BANano.Await(UI.ClearByID($"#${mName}_body"$))
 	'clear footer
 	For Each k As String In Columns.Keys
 		If BANano.Exists($"#${mName}_${k}_tf"$) Then BANano.GetElement($"#${mName}_${k}_tf"$).SetText("")
@@ -2291,13 +2457,20 @@ End Sub
 Sub AddColumnSelectAll			'ignoredeadcode
 	bSelectAll = True
 	Dim name As String = "selectall"
-	Dim nc As TableColumn = NewColumn
-	nc.name = name
-	nc.title = ""
+	colSelectAll = NewColumn
+	colSelectAll.name = name
+	colSelectAll.title = ""
+	colSelectAll.width = "80px"
+	colSelectAll.alignment = "left"
 	'
-	Dim hr As String = $"<th id="${mName}_th"  class=" w-[5rem]"><label id="${mName}_selectalllabel"><input id="${mName}_selectall" type="checkbox" class="checkbox"></check></label></th>"$
+	Dim hr As String = $"[BANCLEAN]
+	<th id="${mName}_selectall_th" style="${BuildStyle(colSelectAll)}">
+		<label id="${mName}_selectalllabel">
+			<input id="${mName}_selectall" type="checkbox" class="checkbox checkbox-success"></check>
+		</label>
+	</th>"$
 	UI.AppendByID($"${mName}_theadtr"$, hr)
-	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_tf_${name}"></td>"$)
+	UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_tf_${name}" style="${BuildStyle(colSelectAll)}"></td>"$)
 	Dim el As BANanoElement
 	el.Initialize($"#${mName}_selectall"$)
 	el.HandleEvents("change", Me, "HandleSelectAll")
@@ -2897,6 +3070,11 @@ Sub AddColumnDropDownIcon(name As String, title As String, icon As String, color
 End Sub
 Sub SetColumnMinMaxWidth(colName As String, minwidth As String, maxwidth As String)
 	colName = colName.ToLowerCase
+	If colName = "selectall" Then
+		colSelectAll.minwidth = minwidth
+		colSelectAll.maxwidth = maxwidth
+		Return	
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn
 		nc = Columns.Get(colName)
@@ -4370,7 +4548,18 @@ Sub AddColumnExpand(color As String)
 	tc.ReplaceSvg = False
 	tc.FitSvg = False
 	tc.Ghost = True
-	tc.SvgSize = "70%"
+	Dim aIconSize As String = "65"
+	Select Case sComponentSize
+	Case "xs"
+		aIconSize = "50"
+	Case "sm"
+		aIconSize = "60"
+	Case "md"
+		aIconSize = "65"
+	Case "lg"
+		aIconSize = "70"
+	End Select
+	tc.SvgSize = $"${aIconSize}%"$
 	Columns.Put("expand", tc)
 End Sub
 
@@ -4547,12 +4736,44 @@ Sub SetColumnWidthMultiple(width As String, colNames As List)
 End Sub
 Sub SetColumnWidth(colName As String, width As String)
 	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.width = width
+		Return
+	End If
 	If Columns.ContainsKey(colName) Then
 		Dim nc As TableColumn = Columns.Get(colName)
 		nc.width = width
 		Columns.Put(colName, nc)
 		'adjust on the header
 		UI.SetWidthByID($"${mName}_${colName}_th"$, width)
+	End If
+End Sub
+Sub SetColumnMaxWidth(colName As String, width As String)
+	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.maxwidth = width
+		Return
+	End If
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn = Columns.Get(colName)
+		nc.maxwidth = width
+		Columns.Put(colName, nc)
+		'adjust on the header
+		UI.SetMaxWidthByID($"${mName}_${colName}_th"$, width)
+	End If
+End Sub
+Sub SetColumnMinWidth(colName As String, width As String)
+	colName = UI.CleanID(colName)
+	If colName = "selectall" Then
+		colSelectAll.minwidth = width
+		Return
+	End If
+	If Columns.ContainsKey(colName) Then
+		Dim nc As TableColumn = Columns.Get(colName)
+		nc.minwidth = width
+		Columns.Put(colName, nc)
+		'adjust on the header
+		UI.SetMinWidthByID($"${mName}_${colName}_th"$, width)
 	End If
 End Sub
 'set the actual table height
@@ -4875,23 +5096,28 @@ End Sub
 'banano.Await(tb4.SetItemsPaginate(Items))
 '</code>
 Sub SetItemsPaginate(xItems As List)
+	BANano.await(ClearRows)
 	iCurrentPage = 1
 	'lastPage = 1
-	Originals = xItems
+	Originals = BANano.DeepClone(xItems)
 	If bHasFilter Then ClearFilters
 	Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
 	Dim yItems As List = paginater.items
 	iTotalPages = paginater.totalPages
-	If iCurrentPage = 1 Then
-		setPrevPageDisabled(True)
-	Else
-		setPrevPageDisabled(False)
-	End If
-	If iTotalPages = iCurrentPage Then
-		setNextPageDisabled(True)
-	Else
-		setNextPageDisabled(False)
-	End If
+	setPrevPageEnabled(paginater.hasPreviousPage)
+	setNextPageEnabled(paginater.hasNextPage)
+	
+	'old code
+'	If iCurrentPage = 1 Then
+'		setPrevPageDisabled(True)
+'	Else
+'		setPrevPageDisabled(False)
+'	End If
+'	If iTotalPages = iCurrentPage Then
+'		setNextPageDisabled(True)
+'	Else
+'		setNextPageDisabled(False)
+'	End If
 	'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
 	'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 	'If paginater.nextPage = 0 Then setNextPageDisabled(True)
@@ -4978,16 +5204,19 @@ private Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 		If iCurrentPage <= 0 Then iCurrentPage = 1
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xItems As List = paginater.items
-		If iCurrentPage = 1 Then
-			setPrevPageDisabled(True)
-		Else
-			setPrevPageDisabled(False)
-		End If
-		If iTotalPages = iCurrentPage Then
-			setNextPageDisabled(True)
-		Else
-			setNextPageDisabled(False)
-		End If
+		setPrevPageEnabled(paginater.hasPreviousPage)
+		setNextPageEnabled(paginater.hasNextPage)
+		
+'		If iCurrentPage = 1 Then
+'			setPrevPageDisabled(True)
+'		Else
+'			setPrevPageDisabled(False)
+'		End If
+'		If iTotalPages = iCurrentPage Then
+'			setNextPageDisabled(True)
+'		Else
+'			setNextPageDisabled(False)
+'		End If
 		'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
 		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
@@ -5017,16 +5246,20 @@ private Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 		If iCurrentPage >= iTotalPages Then iCurrentPage = iTotalPages
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
-		If iCurrentPage = 1 Then
-			setPrevPageDisabled(True)
-		Else
-			setPrevPageDisabled(False)
-		End If
-		If iTotalPages = iCurrentPage Then
-			setNextPageDisabled(True)
-		Else
-			setNextPageDisabled(False)
-		End If
+		setPrevPageEnabled(paginater.hasPreviousPage)
+		setNextPageEnabled(paginater.hasNextPage)
+		
+		
+'		If iCurrentPage = 1 Then
+'			setPrevPageDisabled(True)
+'		Else
+'			setPrevPageDisabled(False)
+'		End If
+'		If iTotalPages = iCurrentPage Then
+'			setNextPageDisabled(True)
+'		Else
+'			setNextPageDisabled(False)
+'		End If
 		'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
 		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
@@ -5058,16 +5291,19 @@ Sub ShowPage(pgNumber As Int)
 		If iCurrentPage <= 0 Then iCurrentPage = 1
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
-		If iCurrentPage = 1 Then
-			setPrevPageDisabled(True)
-		Else
-			setPrevPageDisabled(False)
-		End If
-		If iTotalPages = iCurrentPage Then
-			setNextPageDisabled(True)
-		Else
-			setNextPageDisabled(False)
-		End If
+		setPrevPageEnabled(paginater.hasPreviousPage)
+		setNextPageEnabled(paginater.hasNextPage)
+		
+'		If iCurrentPage = 1 Then
+'			setPrevPageDisabled(True)
+'		Else
+'			setPrevPageDisabled(False)
+'		End If
+'		If iTotalPages = iCurrentPage Then
+'			setNextPageDisabled(True)
+'		Else
+'			setNextPageDisabled(False)
+'		End If
 		'If paginater.nextPage <= paginater.totalPages Then setNextPageDisabled(False)
 		'If paginater.previousPage > 0 Then setPrevPageDisabled(False)
 		'If paginater.nextPage = 0 Then setNextPageDisabled(True)
@@ -5093,14 +5329,12 @@ Sub setLowerCase(b As Boolean)
 End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
+	BANano.Await(ClearRows)
 	If bLowerCase Then
 		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
 	End If
-	Dim obj As BANanoObject
-	obj.Initialize("Object")
-	obj.RunMethod("freeze", xitems)
-	BANano.Await(ClearRows)
-	For Each rec As Map In xitems
+	Dim nitems As List = BANano.DeepClone(xitems)
+	For Each rec As Map In nitems
 		BANano.Await(AddRow(rec))
 	Next
 End Sub
@@ -5250,12 +5484,12 @@ End Sub
 Private Sub BuildRowTitleIcon(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String						'ignore
 	Dim bColor As String = tc.color
 	'is icon from records
-	Dim sicon As String = tc.icon
+	Dim sIcon As String = tc.icon
 	Dim theicon As String = ""
-	If sicon.indexof(".") = -1 Then
+	If sIcon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = UI.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sIcon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
 		scolor = UI.CStr(scolor)
 		theicon = scolor
@@ -5965,19 +6199,19 @@ Private Sub BuildRowPasswordGroup(Module As Object, fldName As String, fldValu A
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(sComponentSize)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="password" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6047,20 +6281,20 @@ Private Sub BuildRowSelectGroup(Module As Object, fldName As String, fldValu As 
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(sComponentSize)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <select id="${mName}_${RowCnt}_${fldName}_select" value="${fldValu}" name="${mName}_${RowCnt}_${fldName}" class="select select-${sComponentSize} ${btnColor} select-bordered grow ${cClass} rounded-lg tlradius blradius trradius brradius" ${creadonly}>${sbOptions.ToString}
     </select>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6116,19 +6350,19 @@ Private Sub BuildRowTextBoxGroup(Module As Object, fldName As String, fldValu As
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(sComponentSize)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="text" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6182,19 +6416,19 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(sComponentSize)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <span id="${mName}_${RowCnt}_${fldName}_prefix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" ${smaxlen} value="${fldValu}" type="tel" name="${mName}_${RowCnt}_${fldName}" class="input input-${sComponentSize} ${btnColor}  w-full ${cClass} rounded-lg ${tAlign} tlradius blradius trradius brradius" ${creadonly}></input>
     <span id="${mName}_${RowCnt}_${fldName}_suffix" class="hidden"></span>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn hidden  btn-${sComponentSize} flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6202,6 +6436,9 @@ Private Sub BuildRowTelephone(Module As Object, fldName As String, fldValu As St
 	'********
 	Return act
 End Sub
+
+
+
 Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then
@@ -6247,17 +6484,17 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(sComponentSize)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(sComponentSize)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_formcontrol" class="form-control flex items-center">
     <label id="${mName}_${RowCnt}_${fldName}_inputgroup" class="input-group">
     <button id="${mName}_${RowCnt}_${fldName}_prepend" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;"  data-src="./assets/minus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_prepend_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};"  data-src="./assets/minus-solid.svg" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <input id="${mName}_${RowCnt}_${fldName}_input" inputmode="numeric" value="${fldValu}" type="number" name="${mName}_${RowCnt}_${fldName}" class="text-center input input-${sComponentSize} ${btnColor}  w-full ${cClass} [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${tAlign}" ${creadonly}></input>
     <button id="${mName}_${RowCnt}_${fldName}_append" class="btn btn-${sComponentSize} text-current bg-base-100 hover:bg-transparent flex justify-center items-center">
-		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;" data-src="./assets/plus-solid.svg" data-js="enabled" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+		<svg-renderer id="${mName}_${RowCnt}_${fldName}_append_icon" style="pointer-events:none;width:${iconsize};height:${iconsize};" data-src="./assets/plus-solid.svg" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -6265,6 +6502,7 @@ Private Sub BuildRowDialer(Module As Object, fldName As String, fldValu As Strin
 	'********
 	Return act
 End Sub
+
 Private Sub BuildRowTextBox(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then
@@ -6359,11 +6597,11 @@ Private Sub BuildRowFileInputProgress(Module As Object, fldName As String, fldVa
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconsize As String = UI.FixIconSize(tc.size)
+	Dim iconsize As String = UI.FixIconSizeByButtonSize(tc.size)
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    	<svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}" fill="currentColor" width="${iconsize}" height="${iconsize}"></svg-renderer>
+    	<svg-renderer id="${mName}_${RowCnt}_${fldName}_icon"  data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconsize};height:${iconsize};" data-src="${tc.icon}" fill="currentColor"></svg-renderer>
     </button>
     <div id="${mName}_${RowCnt}_${fldName}_progress" role="progressbar" class="hidden radial-progress text-white bg-${tc.color}" style="--size:${tc.width}; --thickness: 1px;"></div>
     <input id="${mName}_${RowCnt}_${fldName}_input" accept="${tc.accept}" capture="${tc.capture}" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
@@ -6412,13 +6650,13 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	End If
 	
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
-	Dim iconSize As String = UI.FixIconSize(sButtonSize)
+	Dim iconSize As String = UI.FixIconSizeByButtonSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} flex justify-center items-center">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;" fill="currentColor" data-src="${tc.icon}" width="${iconSize}" height="${iconSize}"></svg-renderer></button>
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize};" fill="currentColor" data-src="${tc.icon}"></svg-renderer></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
 	'********
@@ -6776,7 +7014,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
-	Dim iconSize As String = UI.FixIconSize(sButtonSize)
+	Dim iconSize As String = UI.FixIconSizeByButtonSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	'
@@ -6798,7 +7036,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
             <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
             <span class="flex-none">
-				<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" style="width:70%;height:70%"  data-js="enabled" fill="currentColor" data-src="${i}" width="${iconSize}" height="${iconSize}"></svg-renderer></span>
+				<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" style="width:${iconSize};height:${sIconSize}"  data-js="enabled" fill="currentColor" data-src="${i}"></svg-renderer></span>
             <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
             </a>
             </li>"$
@@ -6819,13 +7057,12 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		tcolor = BANano.CallSub(Module, subName, Array(rowdata))
 		tcolor = UI.FixColor("text", tcolor)
 	End If
-	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	'
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" width:${iconSize} height:${iconSize} data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none" data-src="${tc.icon}" fill="currentColor" width="${iconSize}" height="${iconSize}"></svg-renderer>
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize};" data-src="${tc.icon}" fill="currentColor"></svg-renderer>
     </label>
     <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
     ${sbOptions.ToString}
@@ -7456,13 +7693,14 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	End If
 	'
 	Dim btnsize As String = UI.FixSize("btn", sButtonSize)
+	Dim iconSize As String = UI.FixIconSizeByButtonSize(sButtonSize)
 '	Dim iconSize As String = UI.FixIconSize(sButtonSize)
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
     <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} inline-flex justify-center items-center">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" width="${tc.SvgSize}" fit="${tc.FitSvg}" replace="${tc.ReplaceSvg}" height="${tc.SvgSize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;" data-src="${tc.icon}"></svg-renderer></button>
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="${tc.FitSvg}" replace="${tc.ReplaceSvg}" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize}" data-src="${tc.icon}"></svg-renderer></button>
     </td>"$
 	'********
 	Return act
@@ -7499,6 +7737,11 @@ End Sub
 'add a row using a map
 'affects visible ones only
 Sub AddRow(rowdata As Map)
+	'how many rows do we have	
+	Dim RowCnt As Int = BANano.parseInt(Rows.Size) + 1
+	Dim rowID As String = $"${mName}_${RowCnt}"$
+	If BANano.Exists($"#${rowID}"$) Then Return
+	'
 	'clicks for this row
 	Dim clicks As Map = CreateMap()
 	Dim menus As Map = CreateMap()
@@ -7521,7 +7764,7 @@ Sub AddRow(rowdata As Map)
 	If bHover Then sbClass.Append("hover")
 	Dim sbRow As StringBuilder
 	sbRow.Initialize
-	Dim RowCnt As Int = BANano.parseInt(Rows.Size) + 1
+	
 	Dim colCnt As Int = 0
 	'
 	If bLowerCase Then
@@ -7539,10 +7782,18 @@ Sub AddRow(rowdata As Map)
 	'
 	'add the row data
 	sbRow.append($"<tr id="${mName}_${RowCnt}" class="${mName}tblrow ${sbClass.tostring}">"$)
+	Dim rowKey As String = $"${mName}_${RowCnt}"$
+	rowclick.Put(rowKey, rowKey)
+	'
 	sbClass.Initialize
 	'has select all
 	If bSelectAll Then
-		Dim sa As String = $"<th id="${mName}_${RowCnt}_th" class="w-[5rem]"><label><input id="${mName}_${RowCnt}_selectall" type="checkbox" class="checkbox"></input></label></th>"$
+		Dim sa As String = $"[BANCLEAN]
+		<th id="${mName}_${RowCnt}_th" style="${BuildStyle(colSelectAll)}">
+			<label>
+				<input id="${mName}_${RowCnt}_selectall" type="checkbox" class="checkbox checkbox-success"></input>
+			</label>
+		</th>"$
 		sbRow.Append(sa)
 		selection.Put($"${mName}_${RowCnt}_selectall"$, "")
 	End If
@@ -7574,12 +7825,12 @@ Sub AddRow(rowdata As Map)
 			Case "icon"
 				Dim act As String = BANano.Await(BuildRowIcon(mCallBack, fldName, fldValu, rowdata, RowCnt, tc))
 				'is icon from records
-				Dim sicon As String = tc.icon
+				Dim sIcon As String = tc.icon
 				Dim theicon As String = ""
-				If sicon.indexof(".") = -1 Then
+				If sIcon.indexof(".") = -1 Then
 					theicon = tc.icon
 				Else
-					Dim fld2 As String = UI.MvField(sicon, 2, ".")
+					Dim fld2 As String = UI.MvField(sIcon, 2, ".")
 					Dim fld1 As String = rowdata.GetDefault(fld2, "")
 					fld1 = UI.CStr(fld1)
 					theicon = fld1
@@ -7848,9 +8099,9 @@ Sub AddRow(rowdata As Map)
 		End Select
 	Next
 	sbRow.Append("</tr>")
-	Dim strRow As String = sbRow.tostring
-	sbRow.Initialize
+	Dim strRow As String = sbRow.tostring	
 	BANano.Await(UI.AppendByID($"${mName}_body"$, strRow))
+	sbRow.Initialize
 	'add expand row
 	If bHasExpand Then
 		Dim numCols As Int = Columns.Size
@@ -8899,7 +9150,7 @@ private Sub NewColumn As TableColumn
 	nc.ReplaceSvg = True
 	nc.FitSvg = False
 	nc.Ghost = False
-	nc.SvgSize = "50%"
+	nc.SvgSize = "65%"
 	nc.SumValues = False
 	nc.colWidth = ""
 	nc.colHeight = ""
@@ -9003,7 +9254,7 @@ Sub getBadgesSize As String
 End Sub
 'show last accessed page
 Sub ShowLastAccessedPage
-	ShowPage(lastPage)
+	BANano.await(ShowPage(lastPage))
 End Sub
 
 'add an avatar group column
@@ -9126,7 +9377,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
 	UI.SetSizeByID($"${mName}_searchbtn"$, "size", "btn", s)
 	'UI.SetSizeByID($"${mName}_searchboxlabel"$, "size", "input", s)
-	UI.ResizeIconByID($"${mName}_searchbtnicon"$, "70")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_searchbtnicon"$, sSearchSize)
 End Sub
 Sub SetSelectListItems(colName As String, options As List)
 	Dim options1 As Map = UI.ListToSelectOptions(options)

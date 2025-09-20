@@ -8,6 +8,9 @@ Version=10
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _title|_content, Description: Child Item _title|_content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: GroupName, DisplayName: Group Name, FieldType: String, DefaultValue: , Description: Group Name
+#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Collapse, Description: Title
 #DesignerProperty: Key: RawContent, DisplayName: HTML Content, FieldType: String, DefaultValue: Collapse Content, Description: HTML Content
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
@@ -77,6 +80,9 @@ Sub Class_Globals
 	Public CONST RIGHTICON_PLUS As String = "plus"
 	Private bActive As Boolean = False
 	Private sGroupName As String = ""
+	Private sIcon As String = ""
+	Private sIconColor As String = ""
+	Private sIconSize As String = "32px"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,8 +91,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
+	CustProps.Initialize	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -265,7 +270,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bActive = Props.GetDefault("Active", False)
 		bActive = UI.CBool(bActive)
 		sGroupName = Props.GetDefault("GroupName", "")
-		sGroupName = UI.CStr(sGroupName)        
+		sGroupName = UI.CStr(sGroupName)    
+		sIcon = Props.GetDefault("Icon", "")
+		sIconSize = Props.GetDefault("IconSize", "32px")
+		sIconColor = Props.GetDefault("IconColor", "")
+		sIcon = UI.CStr(sIcon)
+		sIconColor = UI.CStr(sIconColor)
+		sIconSize = UI.CStr(sIconSize)    
 	End If
 	'
 	UI.AddClassDT("collapse")
@@ -290,7 +301,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_check" type="radio"></input>
-		<div id="${mName}_title" class="collapse-title font-semibold">${sTitle}</div>
+		<div id="${mName}_title" class="collapse-title">
+			<svg-renderer id="${mName}_titleicon" style="pointer-events:none;" replace="false" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
+			<div id="${mName}_titletext" class="font-semibold">${sTitle}</div>
+		</div>
 		<div id="${mName}_content" class="collapse-content">${sRawContent}</div>
 	</div>"$).Get("#" & mName)
 	setContentBackgroundColor(sContentBackgroundColor)
@@ -301,8 +315,51 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setActive(bActive)
 	setGroupName(sGroupName)
 	setJoinItem(bJoinItem)
+	setIcon(sIcon)
+	setIconColor(sIconColor)
+	setIconSize(sIconSize)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
+End Sub
+
+Sub setIcon(s As String)				'ignoredeadcode
+	sIcon = s
+	CustProps.Put("Icon", s)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_titleicon"$, False)
+	If s = "" Then Return
+	UI.SetAttrByID($"${mName}_titleicon"$, "data-src", sIcon)
+	UI.AddClassByID($"${mName}_title"$, "flex items-center gap-3")
+	UI.SetVisibleByID($"${mName}_titleicon"$, True)
+End Sub
+
+Sub getIcon As String
+	Return sIcon
+End Sub
+
+Sub setIconColor(s As String)				'ignoredeadcode
+	sIconColor = s
+	CustProps.Put("IconColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetTextColorByID($"${mName}_titleicon"$, s)
+End Sub
+
+Sub getIconColor As String
+	Return sIconColor
+End Sub
+
+Sub setIconSize(s As String)			'ignoredeadcode
+	sIconSize = s
+	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	UI.SetWidthByID($"${mName}_titleicon"$, s)
+	UI.SetHeightByID($"${mName}_titleicon"$, s)
+End Sub
+
+Sub getIconSize As String
+	Return sIconSize
 End Sub
 
 private Sub itemchange(e As BANanoEvent)			'ignoredeadcode
@@ -436,7 +493,7 @@ Sub setTitle(s As String)
 	sTitle = s
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_title"$, s)
+	UI.SetTextByID($"${mName}_titletext"$, s)
 End Sub
 'set Title Background Color
 Sub setTitleBackgroundColor(s As String)			'ignoredeadcode

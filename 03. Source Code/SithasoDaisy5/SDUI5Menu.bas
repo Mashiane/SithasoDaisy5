@@ -17,6 +17,7 @@ Version=10
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
 #DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
 #DesignerProperty: Key: ItemActiveColor, DisplayName: Item Active Color, FieldType: String, DefaultValue: , Description: Item Active Color
+#DesignerProperty: Key: ItemActiveTextColor, DisplayName: Item Active Text Color, FieldType: String, DefaultValue: , Description: Item Active Text Color
 #DesignerProperty: Key: ItemFocusColor, DisplayName: Item Focus Color, FieldType: String, DefaultValue: , Description: Item Focus Color
 #DesignerProperty: Key: ItemHoverColor, DisplayName: Item Hover Color, FieldType: String, DefaultValue: , Description: Item Hover Color
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
@@ -126,6 +127,7 @@ Sub Class_Globals
 	Private sItemColor As String = ""
 	Private sItemFocusColor As String = ""
 	Private sItemHoverColor As String = ""
+	Private sItemActiveTextColor As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -358,6 +360,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sItemFocusColor = UI.CStr(sItemFocusColor)
 		sItemHoverColor = Props.GetDefault("ItemHoverColor", "")
 		sItemHoverColor = UI.CStr(sItemHoverColor)
+		sItemActiveTextColor = Props.GetDefault("ItemActiveTextColor", "")
+		sItemActiveTextColor = UI.CStr(sItemActiveTextColor)
 	End If
 	'
 	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
@@ -416,6 +420,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<ul id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></ul>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	If sItemActiveTextColor <> "" Or sItemActiveColor <> "" Then
+		Dim selName As String = $"#${mName} .menu-active"$
+		Dim objStyle As Map = CreateMap()
+		If sItemActiveColor <> "" Then objStyle.Put("background-color", $"${sItemActiveColor} !important"$)
+		If sItemActiveTextColor <> "" Then objStyle.Put("color", $"${sItemActiveTextColor} !important"$)
+		UI.InsertCSSRule(selName, objStyle)
+	End If
+End Sub
+
+Sub setItemActiveTextColor(s As String)
+	sItemActiveTextColor = s
+	CustProps.Put("ItemActiveTextColor", s)
+End Sub
+
+Sub getItemActiveTextColor As String
+	Return sItemActiveTextColor
 End Sub
 
 'set Item Active Color

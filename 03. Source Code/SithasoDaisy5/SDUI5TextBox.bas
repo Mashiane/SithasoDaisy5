@@ -1498,8 +1498,8 @@ Sub setSize(s As String)				'ignoredeadcode
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_prependimage"$, sSize))
 		BANano.Await(UI.SetSizeByID($"${mName}_append"$, "size", "btn", sSize))
 		BANano.Await(UI.SetButtonImageSizeByID($"${mName}_appendimage"$, sSize))
-		BANano.Await(UI.ResizeIconByID($"${mName}_prepend_icon"$,"70"))
-		BANano.Await(UI.ResizeIconByID($"${mName}_append_icon"$, "70"))
+		BANano.Await(UI.ResizeIconByIDFromButtonSize($"${mName}_prepend_icon"$,sSize))
+		BANano.Await(UI.ResizeIconByIDFromButtonSize($"${mName}_append_icon"$, sSize))
 	End Select
 	If sInputType = "buttons-floating" Then
 		BANano.Await(UI.SetSizeByID($"${mName}_floating"$, "size", "input", sSize))
@@ -1531,7 +1531,7 @@ Sub setTypeOf(s As String)				'ignoredeadcode
 		If sMaxValue = "" Then sMaxValue = "100"
 		If sStepValue = "" Then sStepValue = "1"
 		UI.SetAttr(mElement, "type", "number")
-		UI.AddClass(mElement, "text-center tabular-nums ")
+		UI.AddClass(mElement, "px-3 text-center tabular-nums w-full grow focus:outline-hidden")
 		UI.AddClassByID($"${mName}_control"$, "flex items-center")
 		sPrependImage = ""
 		sAppendImage = ""

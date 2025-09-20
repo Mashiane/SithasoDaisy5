@@ -244,7 +244,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setAvatarSize(sAvatarSize)
 	setEmailAddress(sEmailAddress)
 	setUserName(sUserName)
-	UI.ResizeIconByID($"${mName}_exit_icon"$, "70")
+	UI.ResizeIconByIDFromButtonSize($"${mName}_exit_icon"$, "sm")
 	UI.OnEventByID($"${mName}_exit"$, "click", mCallBack, $"${mName}_exit"$)
 	UI.OnEventByID($"${mName}_btn"$, "click", mCallBack, $"${mName}_click"$)
 End Sub

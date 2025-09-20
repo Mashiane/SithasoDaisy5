@@ -62,7 +62,19 @@ Private Sub Class_Globals
 	Public CONST TEXTSIZE_SM As String = "sm"
 	Public CONST TEXTSIZE_XL As String = "xl"
 	Public CONST TEXTSIZE_XS As String = "xs"
-
+	'
+	Public CONST BORDERSTYLE_DASHED As String = "dashed"
+	Public CONST BORDERSTYLE_DOTTED As String = "dotted"
+	Public CONST BORDERSTYLE_DOUBLE As String = "double"
+	Public CONST BORDERSTYLE_GROOVE As String = "groove"
+	Public CONST BORDERSTYLE_HIDDEN As String = "hidden"
+	Public CONST BORDERSTYLE_INHERIT As String = "inherit"
+	Public CONST BORDERSTYLE_INITIAL As String = "initial"
+	Public CONST BORDERSTYLE_INSET As String = "inset"
+	Public CONST BORDERSTYLE_NONE As String = "none"
+	Public CONST BORDERSTYLE_OUTSET As String = "outset"
+	Public CONST BORDERSTYLE_RIDGE As String = "ridge"
+	Public CONST BORDERSTYLE_SOLID As String = "solid"
 	'
 	Public CONST TAB_BORDERED As String = "bordered"
 	Public CONST TAB_LIFTED As String = "lifted"
@@ -549,7 +561,7 @@ Public Sub Initialize (mCallback As Object)
 	UI.Initialize(Me)
 	Process = ""
 	mElement.Initialize($"#body"$)
-	UI.AddClass(mElement, "relative min-h-screen h-screen w-screen m-0 p-0")
+	UI.AddClass(mElement, "relative flex flex-col min-h-screen h-screen w-screen m-0 p-0")
 	UI.AddStyle(mElement, "text-rendering", "optimizeSpeed")
 	mback = mCallback
 	AddLoader
@@ -570,11 +582,9 @@ Public Sub Initialize (mCallback As Object)
 	Banano.Await(modSD5.InitDays)
 	Dim e As BANanoEvent
 	Dim ch As BANanoObject = Banano.CallBack(Me, "handleConnectionChange", Array(e))
-	Dim ie As BANanoObject = Banano.CallBack(Me, "iconloaderror", Array(e))
 	Banano.window.AddEventListener("online", ch, True)
 	Banano.window.addEventListener("offline", ch, True)
-	Banano.Window.AddEventListener("iconloaderror", ie, True)
-	'
+		'
 	If SubExists(mCallback, "DarkTheme") Then
 		Dim cbTheme As Object = Banano.CallBack(mCallback, "DarkTheme", Null)
 		Dim matchMedia As BANanoObject = Banano.Window.RunMethod("matchMedia", "(prefers-color-scheme: dark)")
@@ -585,11 +595,6 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Duration = ToastDuration
 	AppToast.Position = ToastPosition
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
-End Sub
-
-
-private Sub iconloaderror(e As BANanoEvent)				'ignoredeadcode
-	e.PreventDefault
 End Sub
 
 'get own unique key with 15 chars alphabets only
@@ -1051,7 +1056,39 @@ End Sub
 '	Container.BuildGrid
 'End Sub
 
-'
+'open or close a drawer
+Sub OpenDrawer(drawerID As String, b As Boolean)
+	UI.SetCheckedByID($"${drawerID}_toggle"$, b)
+End Sub
+
+'clear the main content of the drawer
+Sub ClearDrawerMainContent(drawerID As String)
+	UI.ClearByID($"${drawerID}_content"$)
+End Sub
+
+'clear the side content of the drawer
+Sub ClearDrawerSideContent(drawerID As String)
+	UI.ClearByID($"${drawerID}_sidecontent"$)
+End Sub
+
+'clear the drawer actions
+Sub ClearDrawerActions(drawerID As String)
+	If mElement = Null Then Return
+	UI.ClearByID($"${drawerID}_actions"$)
+End Sub
+
+'toggle the drawer
+Sub ToggleDrawer(drawerID As String)
+	Dim bChecked As Boolean = UI.GetCheckedByID($"${drawerID}_toggle"$)
+	UI.SetCheckedByID($"${drawerID}_toggle"$, Not(bChecked))
+End Sub
+
+'remove all open classes from the drawer
+Sub ForceCloseDrawer(drawerID As String)
+	OpenDrawer(drawerID, False)
+	UI.RemoveClassbyId(drawerID, "lg:drawer-open md:drawer-open drawer-open sm:drawer-open")
+End Sub
+
 '
 'Sub HideDrawer
 '	Banano.GetElement($"#${sDrawerName}"$).AddClass("hidden")
@@ -1259,6 +1296,21 @@ Sub ShowSwalTextAreaWaitDefault(title As String, message As String, defaultText 
 	End If
 End Sub
 
+Sub ShowSwalTextAreaRowsWaitDefault(title As String, message As String, defaultText As String, okText As String, cancelText As String, rows As String, width As String) As String
+	PageResume
+	Dim bp As BANanoPromise
+	bp.CallSub(Me, "ShowSwalTextAreaRows", Array(title, message, okText, cancelText, defaultText, rows, width))
+	Dim resp As Map = Banano.Await(bp)
+	Dim isConfirmed As Boolean = resp.Get("isConfirmed")
+	If isConfirmed = False Then
+		Return ""
+	Else
+		Dim value As String = resp.Get("value")
+		Return value
+	End If
+End Sub
+
+
 Sub ShowSwalConfirmWait(title As String, message As String, okText As String, cancelText As String) As Boolean
 	PageResume
 	Dim bp As BANanoPromise
@@ -1425,6 +1477,34 @@ private Sub ShowSwalTextArea(title As String, message As String, okText As Strin
 		swal.title(title)
 	End If
 	swal.input("textarea")
+	If message <> "" Then
+		swal.html(message)
+	End If
+	swal.icon("question")
+	swal.confirmButtonText(okText)
+	swal.cancelButtonText(cancelText)
+	swal.showCancelButton(True)
+	swal.confirmButtonColor("#4caf50")
+	swal.cancelButtonColor("#f44336")
+	swal.allowOutsideClick(False)
+	swal.showCloseButton(False)
+	swal.focusConfirm(True)
+	swal.showDenyButton(False)
+	swal.allowEscapeKey(False)
+	swal.inputValue(inputValue)
+	Dim resp As Map = swal.fire
+	Banano.ReturnThen(resp)
+End Sub
+
+private Sub ShowSwalTextAreaRows(title As String, message As String, okText As String, cancelText As String, inputValue As String, rows As String, width As String) As Map   'ignore
+	Dim swal As SDUI5Swal
+	swal.Initialize
+	If title <> "" Then
+		swal.title(title)
+	End If
+	swal.input("textarea")
+	swal.rows(rows)
+	swal.width(width)
 	If message <> "" Then
 		swal.html(message)
 	End If
@@ -1976,9 +2056,9 @@ Sub UsesClient
 End Sub
 
 'valid
-Sub UsesPako
-	Banano.Await(UI.LoadAssetsOnDemand("Pako", Array("pako.min.js")))
-End Sub
+'Sub UsesPako
+'	Banano.Await(UI.LoadAssetsOnDemand("Pako", Array("pako.min.js")))
+'End Sub
 
 'valid
 Sub UsesToastChart
@@ -2965,4 +3045,22 @@ Sub isStrongPassword(s As String) As Boolean
 	Dim b As Boolean = Banano.RunJavascriptMethod("isStrongPassword", Array(s))
 	b = UI.CBool(b)
 	Return b
+End Sub
+
+'adjust the pageview with other parent elements
+Sub PageViewToFullScreenHeight(otherElements As List)
+	Dim dHeight As Int = 0
+	UI.RemoveClassByID("pageview", "h-screen w-screen w-full h-full")
+	UI.RemoveLastClassByID("pageview", "height")
+	For Each elID As String In otherElements
+		elID = UI.CleanID(elID)
+		If Banano.Exists($"#${elID}"$) Then
+			Dim el As BANanoElement = Banano.GetElement($"#${elID}"$)
+			Dim offsetHeight As Int = el.GetField("offsetHeight")
+			offsetHeight = UI.CInt(offsetHeight)
+			dHeight = Banano.parseInt(offsetHeight)
+		End If	
+	Next
+	Dim nHeight As String = $"calc(100vh - ${dHeight}px)"$
+	UI.SetStyleByID("pageview", "height", nHeight)
 End Sub

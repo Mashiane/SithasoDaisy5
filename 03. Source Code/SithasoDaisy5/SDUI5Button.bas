@@ -9,6 +9,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: DockItem, DisplayName: Dock Item, FieldType: Boolean, DefaultValue: False, Description: Dock Item
+#DesignerProperty: Key: ButtonIcon, DisplayName: Button Icon, FieldType: Boolean, DefaultValue: False, Description: Button Icon
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Button, Description: Text
 #DesignerProperty: Key: TextVisible, DisplayName: Text Visible, FieldType: Boolean, DefaultValue: True, Description: Text Visible
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: lg|md|none|sm|xl|xs
@@ -16,7 +17,7 @@ Version=10
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: primary|secondary|accent|neutral|info|success|warning|error|none
 #DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color, List: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
-#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: 6, Description: Size
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
 #DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -46,11 +47,11 @@ Version=10
 #DesignerProperty: Key: RightImage, DisplayName: Right Image, FieldType: String, DefaultValue: , Description: Right Image
 #DesignerProperty: Key: RightImageHeight, DisplayName: Right Image Height, FieldType: String, DefaultValue: 32px, Description: Right Image Height
 #DesignerProperty: Key: RightImageWidth, DisplayName: Right Image Width, FieldType: String, DefaultValue: 32px, Description: Right Image Width
-#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeLarge, DisplayName: LG Size, FieldType: String, DefaultValue: none, Description: Size Large, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeMedium, DisplayName: MD Size, FieldType: String, DefaultValue: none, Description: Size Medium, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeSmall, DisplayName: SM Size, FieldType: String, DefaultValue: none, Description: Size Small, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: SizeXLarge, DisplayName: XL Size, FieldType: String, DefaultValue: none, Description: Size X Large, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xs
+#DesignerProperty: Key: SizeLarge, DisplayName: LG Size, FieldType: String, DefaultValue: none, Description: Size Large, List: lg|md|none|sm|xs
+#DesignerProperty: Key: SizeMedium, DisplayName: MD Size, FieldType: String, DefaultValue: none, Description: Size Medium, List: lg|md|none|sm|xs
+#DesignerProperty: Key: SizeSmall, DisplayName: SM Size, FieldType: String, DefaultValue: none, Description: Size Small, List: lg|md|none|sm|xs
+#DesignerProperty: Key: SizeXLarge, DisplayName: XL Size, FieldType: String, DefaultValue: none, Description: Size X Large, List: lg|md|none|sm|xs
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
@@ -107,7 +108,7 @@ Sub Class_Globals
 	Private bLoading As Boolean = False
 	Private bOutline As Boolean = False
 	Private sRightImage As String = ""
-	Private sSize As String = "none"
+	Private sSize As String = "md"
 	Private sSizeLarge As String = "none"
 	Private sSizeMedium As String = "none"
 	Private sSizeSmall As String = "none"
@@ -120,7 +121,7 @@ Sub Class_Globals
 	Private sBadge As String = ""
 	Private sBadgeColor As String = ""
 	Private bBadgeVisible As Boolean = False
-	Private sBadgeSize As String = "sm"
+	Private sBadgeSize As String = "6"
 	Private sHeight As String = ""
 	Private sWidth As String = ""
 	Private bJoinItem As Boolean = False
@@ -163,6 +164,7 @@ Sub Class_Globals
 	Public CONST INDICATORPOSITION_TOP_CENTER As String = "top-center"
 	Public CONST INDICATORPOSITION_TOP_END As String = "top-end"
 	Public CONST INDICATORPOSITION_TOP_START As String = "top-start"
+	Private bButtonIcon As Boolean
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -357,6 +359,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
+		UI.ExcludeTextColor = True
 		bActive = Props.GetDefault("Active", False)
 		bActive = UI.CBool(bActive)
 		bBlock = Props.GetDefault("Block", False)
@@ -385,9 +388,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bOutline = UI.CBool(bOutline)
 		sRightImage = Props.GetDefault("RightImage", "")
 		sRightImage = UI.CStr(sRightImage)
-		sSize = Props.GetDefault("Size", "none")
+		sSize = Props.GetDefault("Size", "md")
 		sSize = UI.CStr(sSize)
-		If sSize = "none" Then sSize = ""
+		If sSize = "none" Then sSize = "md"
+		If sSize = "" Then sSize = "md"
 		sSizeLarge = Props.GetDefault("SizeLarge", "none")
 		sSizeLarge = UI.CStr(sSizeLarge)
 		If sSizeLarge = "none" Then sSizeLarge = ""
@@ -412,7 +416,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
 		sBadgeColor = UI.CStr(sBadgeColor)
-		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
+		sBadgeSize = Props.GetDefault("BadgeSize", "6")
 		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sHeight = Props.GetDefault("Height", "")
@@ -470,7 +474,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIndicatorValue = UI.CStr(sIndicatorValue)
 		bIndicatorVisible = Props.GetDefault("IndicatorVisible", False)
 		bIndicatorVisible = UI.CBool(bIndicatorVisible)
+		bButtonIcon = Props.GetDefault("ButtonIcon", False)
+		bButtonIcon = UI.CBool(bButtonIcon)
 	End If
+	If bButtonIcon Then sShape = "circle"
+	Select Case sSize
+	Case "xs"
+		sIconSize = "50"
+	Case "sm"
+		sIconSize = "60"
+	Case "md"
+		sIconSize = "65"
+	Case "lg"
+		sIconSize = "70"
+	End Select
 	'
 	If sParentID <> "" Then
 		'does the parent exist
@@ -531,16 +548,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<span id="${mName}_indicator" class="badge indicator-item"></span>
+		<span id="${mName}_indicator" class="badge indicator-item rounded-full aspect-square flex items-center justify-center p-0 text-xs"></span>
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
 		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
-		<div id="${mName}_badge" class="badge rounded-full hidden"></div>
+		<div id="${mName}_badge" class="badge rounded-full hidden flex items-center justify-center p-0"></div>
 	</${sTag}>"$).Get("#" & mName)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
+	'
 	setText(sText)
 	setTextVisible(bTextVisible)
 	setTextSize(sTextSize)
@@ -573,6 +591,60 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndicatorSize(sIndicatorSize)
 	setIndicatorTextColor(sIndicatorTextColor)
 	setIndicatorValue(sIndicatorValue)
+	setButtonIcon(bButtonIcon)
+End Sub
+
+Sub setButtonIcon(b As Boolean)				'ignore
+	bButtonIcon = b
+	CustProps.Put("ButtonIcon", bButtonIcon)
+	If mElement = Null Then Return
+	If b = False Then Return
+	RemoveBadge
+	RemoveRightImage
+	RemoveRightIcon
+	RemoveText
+	RemoveLeftImage
+	UI.AddClass(mElement, "flex justify-center items-center rounded-full aspect-square")
+End Sub
+
+Sub getButtonIcon As Boolean
+	Return bButtonIcon	
+End Sub
+
+
+Sub RemoveIndicator				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_indicator"$)
+End Sub
+
+Sub RemoveBadge					'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_badge"$)
+End Sub
+
+Sub RemoveRightImage				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_rightimage"$)
+End Sub
+
+Sub RemoveLeftIcon				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_lefticon"$)
+End Sub
+
+Sub RemoveRightIcon				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_righticon"$)
+End Sub
+
+Sub RemoveText					'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_text"$)
+End Sub
+
+Sub RemoveLeftImage				'ignoredeadcode
+	If mElement = Null Then Return
+	UI.RemoveElementByID($"${mName}_leftimage"$)
 End Sub
 
 'set Indicator Visible
@@ -612,13 +684,13 @@ Sub setIndicatorPosition(s As String)					'ignoredeadcode
 	UI.UpdateClassByID($"${mName}_indicator"$, "position", $"indicator-${fpart} indicator-${spart}"$)
 End Sub
 'set Indicator Size
-'options: xs|none|sm|md|lg|xl
 Sub setIndicatorSize(s As String)									'ignoredeadcode
 	sIndicatorSize = s
 	CustProps.put("IndicatorSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetSizeByID($"${mName}_indicator"$, "size", "badge", s)
+	UI.SetWidthByID($"${mName}_indicator"$, s)
+	UI.SetHeightByID($"${mName}_indicator"$, s)
 End Sub
 'set Indicator Text Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
@@ -838,12 +910,14 @@ Sub getBadgeSize As String
 End Sub
 
 'set Size
-'options: xs|none|sm|md|lg|xl
 Sub setBadgeSize(s As String)			'ignoredeadcode
 	sBadgeSize = s
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetSizebyid($"${mName}_badge"$, "size", "badge", s)
+	If s <> "" Then 
+		UI.SetWidthByID($"${mName}_badge"$, s)
+		UI.SetHeightByID($"${mName}_badge"$, s)
+	End If
 End Sub
 
 'set Active

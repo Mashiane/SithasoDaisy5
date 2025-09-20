@@ -12,13 +12,41 @@ Sub Process_Globals
 	Private hints As Map			'ignore
 	Private BANano As BANano		'ignore
 '	Private math As BANanoObject	'ignore
-	Type Paginate(previousPage As Int, nextPage As Int, totalPages As Int, items As List)
+	Type Paginate(previousPage As Int, nextPage As Int, totalPages As Int, items As List, hasPreviousPage As Boolean, hasNextPage As Boolean)
 	Public ColorMap As Map
 	Public Months As SDUIMap
 	Public Days As SDUIMap
 	Public Languages As Map
 	Public Countries As Map
 End Sub
+
+'remove the gutter when drawer is opened
+#if css
+
+html {
+  scrollbar-gutter: auto !important;
+}
+
+html:has(body.content-overflow-y) {
+  scrollbar-gutter: stable !important;
+}
+
+:root:has(.drawer-toggle:checked) {
+  scrollbar-gutter: unset !important;
+}
+
+:root:has(
+    :is(
+        .modal-open,
+        .modal:target,
+        .modal-toggle:checked + .modal,
+        .modal[open]
+      )
+  ) {
+  scrollbar-gutter: unset !important;
+}
+#End If
+
 
 'https://www.b4x.com/android/forum/threads/banano-numberformat2-gives-a-different-behavior-in-banano-than-in-b4j.134409/#post-850371
 public Sub NumberFormat2Fix(number As Double, minimumIntegers As Int, maximumFractions As Int, minimumFractions As Int, groupingUsed As Boolean) As Double

@@ -102,6 +102,7 @@ Sub Class_Globals
 	Private bReplace As Boolean = False
 	Private sTextBoxSize As String = ""
 	Private bUseLocalstorage As Boolean = True
+	Type TreeNode (nodeId As String, parentId As String, iconUrl As String, text As String, href As String, hasCheckbox As Boolean, expanded As Boolean)
 End Sub
 
 #if css
@@ -364,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	UI.AddClassDT("menu")
-		
+	UI.AddClassDT("overflow-y-auto")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -719,6 +720,22 @@ End Sub
 'get Multiple Select
 Sub getMultipleSelect As Boolean
 	Return bMultipleSelect
+End Sub
+
+Sub GetNodeFromEvent(e As BANanoEvent) As TreeNode
+	Dim det As Object = e.Detail
+	Dim detx As Map = det
+	Dim det1 As Map = detx.Get("node")
+	Dim tn As TreeNode
+	tn.Initialize 
+	tn.nodeId = det1.Get("nodeId")
+	tn.parentId = det1.Get("parentId")
+	tn.iconUrl = det1.Get("iconUrl")
+	tn.text = det1.Get("text")
+	tn.href = det1.Get("href")
+	tn.hasCheckbox = det1.Get("hasCheckbox")
+	tn.expanded = det1.Get("expanded")
+	Return tn
 End Sub
 
 'set Background Color

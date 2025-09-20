@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _figure|_image|_figure1|_image1|_content|_title|_actions, Description: Child Item _content|_title|_actions|_figure|_image|_figure1|_image1
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Size, DisplayName: Card Size, FieldType: String, DefaultValue: none, Description: Card Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: HoverGallery, DisplayName: Hover Gallery, FieldType: Boolean, DefaultValue: False, Description: Hover Gallery
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
 #DesignerProperty: Key: ImagePosition, DisplayName: Image Position, FieldType: String, DefaultValue: start, Description: Image Position, List: end|start
@@ -17,6 +18,9 @@ Version=10
 #DesignerProperty: Key: ImageShadow, DisplayName: Image Shadow, FieldType: String, DefaultValue: none, Description: Image Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: ImageVisible, DisplayName: Image Visible, FieldType: Boolean, DefaultValue: False, Description: Image Visible
 #DesignerProperty: Key: ImageClasses, DisplayName: Image Classes, FieldType: String, DefaultValue: , Description: Image Classes
+#DesignerProperty: Key: ImageCover, DisplayName: Image Cover, FieldType: Boolean, DefaultValue: True, Description: Image Cover
+#DesignerProperty: Key: ImageCenter, DisplayName: Image Center, FieldType: Boolean, DefaultValue: True, Description: Image Center
+#DesignerProperty: Key: ImageNoRepeat, DisplayName: Image NoRepeat, FieldType: Boolean, DefaultValue: True, Description: Image No Repeat
 #DesignerProperty: Key: Side, DisplayName: Image on Side, FieldType: Boolean, DefaultValue: False, Description: Image on Side
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Card Title, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
@@ -25,7 +29,6 @@ Version=10
 #DesignerProperty: Key: BodyClasses, DisplayName: Body Classes, FieldType: String, DefaultValue: , Description: Body Classes
 #DesignerProperty: Key: ContentClasses, DisplayName: Content Classes, FieldType: String, DefaultValue: , Description: Content Classes
 #DesignerProperty: Key: Shrink, DisplayName: Shrink, FieldType: String, DefaultValue: none, Description: Shrink, List: 0|1|none
-#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
@@ -105,6 +108,9 @@ Sub Class_Globals
 	Private sShrink As String = "none"
 	Private bHoverGallery As Boolean = False
 	Private sTitleClasses As String
+	Private bImageCover As Boolean = False
+	Private bImageCenter As Boolean = False
+	Private bImageNoRepeat As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -326,6 +332,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHoverGallery = UI.CBool(bHoverGallery)
 		sTitleClasses = Props.GetDefault("TitleClasses", "")
 		sTitleClasses = UI.CStr(sTitleClasses)
+		bImageCover = Props.GetDefault("ImageCover", True)
+		bImageCover = UI.CBool(bImageCover)
+		bImageCenter = Props.GetDefault("ImageCenter", True)
+		bImageCenter = UI.CBool(bImageCenter)
+		bImageNoRepeat = Props.GetDefault("ImageNoRepeat", True)
+		bImageNoRepeat = UI.CBool(bImageNoRepeat)
 	End If
 	'
 	UI.AddClassDT("card")
@@ -364,7 +376,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<figure id="${mName}_figure" class="hidden">
-    		<img id="${mName}_image" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
+    		<img id="${mName}_image" src="${sImage}" alt="" class="hidden"></img>
   		</figure>
   		<div id="${mName}_body" class="card-body">
 			<h2 id="${mName}_title" class="card-title hidden">${sTitle}</h2>
@@ -374,13 +386,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<figure id="${mName}_figure1" class="hidden">
     		<img id="${mName}_image1" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
   		</figure>
-	</div>"$).Get("#" & mName)
-	'
+	</div>"$).Get("#" & mName)	
+	
 	setActionsVisible(bActionsVisible)
 	setContentClasses(sContentClasses)
 	setContent(sRawContent)
 	setTitle(sTitle)
 	setTitleVisible(bTitleVisible)
+	setTitleClasses(sTitleClasses)
 	setBodyClasses(sBodyClasses)
 	If sImage <> "" Then
 		setImage(sImage)
@@ -390,12 +403,57 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setImageWidth(sImageWidth)
 		setImageHeight(sImageHeight)
 		setImageClasses(sImageClasses)
+		setImageCover(bImageCover)
+		setImageCenter(bImageCenter)
+		setImageNoRepeat(bImageNoRepeat)
 	End If	
 	setHoverGallery(bHoverGallery)
 '	setVisible(bVisible)
 End Sub
 
-Sub setTitleClasses(s As String)
+Sub setImageCover(b As Boolean)			'ignoredeadcode
+	bImageCover = b
+	CustProps.Put("ImageCover", bImageCover)
+	If bImageCover Then
+		UI.AddClassByID($"${mName}_image"$, "bg-cover")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "bg-cover")
+	End If
+End Sub
+
+Sub getImageCover As Boolean
+	Return bImageCover
+End Sub
+'
+Sub setImageCenter(b As Boolean)			'ignoredeadcode
+	bImageCenter = b
+	CustProps.Put("ImageCenter", bImageCover)
+	If bImageCenter Then
+		UI.AddClassByID($"${mName}_image"$, "bg-center")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "bg-center")
+	End If
+End Sub
+
+Sub getImageCenter As Boolean
+	Return bImageCenter
+End Sub
+
+Sub setImageNoRepeat(b As Boolean)		'ignoredeadcode
+	bImageNoRepeat = b
+	CustProps.Put("ImageNoRepeat", bImageNoRepeat)
+	If bImageNoRepeat Then
+		UI.AddClassByID($"${mName}_image"$, "bg-no-repeat")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "bg-no-repeat")
+	End If
+End Sub
+
+Sub getImageNoRepeat As Boolean
+	Return bImageNoRepeat
+End Sub
+
+Sub setTitleClasses(s As String)			'ignoredeadcode
 	sTitleClasses = s
 	CustProps.Put("TitleClasses", s)
 	If mElement = Null Then Return
@@ -419,6 +477,8 @@ Sub setHoverGallery(b As Boolean)				'ignoredeadcode
 			UI.AddClassByID($"${mName}_figure1"$, "hover-gallery")
 			UI.SetVisibleByID($"${mName}_figure1"$, True)
 		End Select
+		bImageVisible = True
+		setImageVisible(True)
 	Else
 		Select Case sImagePosition
 		Case "start"

@@ -1045,6 +1045,46 @@ public Sub SetRounded(mElement As BANanoElement, s As String)
 	End Try				'ignore
 End Sub
 
+public Sub SetRoundedTL(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim xmask As String = FixRounded($"tl-${s}"$)
+	UpdateClass(mElement, "rounded-tl", xmask)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+public Sub SetRoundedTR(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim xmask As String = FixRounded($"tr-${s}"$)
+	UpdateClass(mElement, "rounded-tr", xmask)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+public Sub SetRoundedBR(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim xmask As String = FixRounded($"br-${s}"$)
+	UpdateClass(mElement, "rounded-br", xmask)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+public Sub SetRoundedBL(mElement As BANanoElement, s As String)
+	Try
+	If mElement = Null Then Return
+	Dim xmask As String = FixRounded($"bl-${s}"$)
+	UpdateClass(mElement, "rounded-bl", xmask)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 public Sub SetRoundedBox(mElement As BANanoElement, b As Boolean)
 	Try
 	If mElement = Null Then Return
@@ -1077,6 +1117,48 @@ Catch
 		
 End Try				'ignore
 End Sub
+
+Sub SetRoundedTLByID(sID As String, s As String)
+	Try
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRoundedTL(mElement, s)
+Catch
+		
+End Try				'ignore
+End Sub
+
+Sub SetRoundedTRByID(sID As String, s As String)
+	Try
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRoundedTR(mElement, s)
+Catch
+		
+End Try				'ignore
+End Sub
+
+Sub SetRoundedBLByID(sID As String, s As String)
+	Try
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRoundedBL(mElement, s)
+Catch
+		
+End Try				'ignore
+End Sub
+
+Sub SetRoundedBRByID(sID As String, s As String)
+	Try
+	sID = CleanID(sID)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetRoundedBR(mElement, s)
+Catch
+		
+End Try				'ignore
+End Sub
+
+
 
 public Sub SetTextSize(mElement As BANanoElement, s As String)
 	Try
@@ -1303,6 +1385,14 @@ public Sub SetPaddingAXYTBLR(mElement As BANanoElement, s As String)
 	Try
 	BANano.SetP(mSelf, "sPaddingAXYTBLR", s)
 	If mElement = Null Then Return
+	Dim oldp As String = mElement.GetData("padding")
+	oldp = CStr(oldp)
+	If oldp <> "" Then 
+		Dim mmx As Map = GetMarginPaddingMap(oldp)
+		Dim classList As List = MarginPaddingToList("p", mmx)
+		RemoveClassList(mElement, classList)
+	End If
+	mElement.SetData("padding",s)
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("p", mm)
 	AddClassList(mElement, classList)
@@ -1331,6 +1421,14 @@ public Sub SetMarginAXYTBLR(mElement As BANanoElement, s As String)
 	Try
 	BANano.SetP(mSelf, "sMarginAXYTBLR", s)
 	If mElement = Null Then Return
+	Dim oldp As String = mElement.GetData("margin")
+	oldp = CStr(oldp)
+	If oldp <> "" Then
+		Dim mmx As Map = GetMarginPaddingMap(oldp)
+		Dim classList As List = MarginPaddingToList("m", mmx)
+		RemoveClassList(mElement, classList)
+	End If
+	mElement.SetData("margin", s)
 	Dim mm As Map = GetMarginPaddingMap(s)
 	Dim classList As List = MarginPaddingToList("m", mm)
 	AddClassList(mElement, classList)
@@ -1636,7 +1734,17 @@ Sub SetStyleByID(sID As String, k As String, v As String)
 		mElement.GetField("style").RunMethod("setProperty", Array(k, v))
 	Catch
 		
-	End Try				'ignore		
+	End Try				'ignore
+End Sub
+
+Sub RemoveStyle(mElement As BANanoElement, k As String)
+	Try
+		If mElement = Null Then Return
+		k = DeCamelCase(k)
+		mElement.GetField("style").RunMethod("removeProperty", Array(k))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub RemoveStyleByID(sID As String, k As String)
@@ -1960,6 +2068,19 @@ Sub RemoveClass(mElement As BANanoElement, xtext As String)
 	End Try				'ignore
 End Sub
 
+Sub RemoveClassList(mElement As BANanoElement, lst As List)
+	Try
+		If mElement = Null Then Return
+		For Each c As String In lst
+			c = c.trim
+			If c = "" Then Continue
+			mElement.RemoveClass(c)
+		Next
+	Catch
+		
+	End Try		'ignore
+End Sub
+
 private Sub ListRemoveItem(lst As List, item As String)
 	Dim cPos As Int = lst.IndexOf(item)
 	If cPos <> -1 Then lst.RemoveAt(cPos)
@@ -2227,18 +2348,18 @@ End Sub
 Sub FixIconSize(s As String) As String
 	Dim actualSize As String = ""
 	Select Case s
-	Case "xs"
-		actualSize = "14px"   '"24px"
-	Case "sm"
-		actualSize = "18px"  ' "32px"
-	Case "md"
-		actualSize = "24px" ' "40px"
-	Case "lg"
-		actualSize =  "32px" ' "48px"
-	Case "xl"
-		actualSize = "40px" ' "56px"
-	Case Else
-		actualSize = s
+		Case "xs"
+			actualSize = "14px"   '"24px"
+		Case "sm"
+			actualSize = "18px"  ' "32px"
+		Case "md"
+			actualSize = "24px" ' "40px"
+		Case "lg"
+			actualSize =  "32px" ' "48px"
+		Case "xl"
+			actualSize = "40px" ' "56px"
+		Case Else
+			actualSize = s
 	End Select
 	Return actualSize
 End Sub
@@ -2246,24 +2367,24 @@ End Sub
 'set width and height of icon
 Sub SetIconSize(mElement As BANanoElement, s As String)
 	Try
-	If mElement = Null Then Return
-	Dim actualSize As String = ""
-	Select Case s
-	Case "xs"
-		actualSize = "14px"   '"24px"
-	Case "sm"
-		actualSize = "18px"  ' "32px"
-	Case "md"
-		actualSize = "24px" ' "40px"
-	Case "lg"
-		actualSize =  "32px" ' "48px"
-	Case "xl"
-		actualSize = "40px" ' "56px"
-	Case Else
-		actualSize = s
-	End Select
-	mElement.SetAttr("width", actualSize)
-	mElement.SetAttr("height", actualSize)
+		If mElement = Null Then Return
+		Dim actualSize As String = ""
+		Select Case s
+			Case "xs"
+				actualSize = "14px"   '"24px"
+			Case "sm"
+				actualSize = "18px"  ' "32px"
+			Case "md"
+				actualSize = "24px" ' "40px"
+			Case "lg"
+				actualSize =  "32px" ' "48px"
+			Case "xl"
+				actualSize = "40px" ' "56px"
+			Case Else
+				actualSize = s
+		End Select
+		mElement.SetAttr("width", actualSize)
+		mElement.SetAttr("height", actualSize)
 	Catch
 		
 	End Try				'ignore
@@ -2330,6 +2451,50 @@ private Sub SetSVGSrcByID(sID As String, s As String)
 		mElement.SetAttr("data-src", s)
 	Catch
 		
+	End Try				'ignore
+End Sub
+
+Sub FixIconSizeByButtonSize(s As String) As String
+	Dim aIconSize As String = "65"
+	Select Case s
+		Case "xs"
+			aIconSize = "50"
+		Case "sm"
+			aIconSize = "60"
+		Case "md"
+			aIconSize = "65"
+		Case "lg"
+			aIconSize = "70"
+	End Select
+	'
+	Dim sPerc As String = Val(aIconSize) & "%"
+	Return sPerc
+End Sub
+
+
+'resize an icon based on an icon size
+Sub ResizeIconByIDFromButtonSize(sID As String, btnSize As String)
+	Try
+		sID = CleanID(sID)
+		Dim aIconSize As String = "65"
+		Select Case btnSize
+		Case "xs"
+			 aIconSize = "50"
+		Case "sm"
+			aIconSize = "60"
+		Case "md"
+			aIconSize = "65"
+		Case "lg"
+			aIconSize = "70"
+		End Select
+		'
+		Dim sPerc As String = Val(aIconSize) & "%"
+		Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		Dim m As Map = CreateMap("width": sPerc, "height":sPerc)
+		mElement.SetStyle(BANano.ToJson(m))
+		mElement.RemoveAttr("width")
+		mElement.RemoveAttr("height")
+	Catch
 	End Try				'ignore
 End Sub
 
@@ -2864,6 +3029,30 @@ End Sub
 Sub AddRoundedDT(tc As String)
 	Dim s As String = FixRounded(tc)
 	AddAttrDT("data-rounded", s)
+	AddClassDT(s)
+End Sub
+
+Sub AddRoundedTLDT(tc As String)
+	Dim s As String = FixRounded($"tl-${tc}"$)
+	AddAttrDT("data-rounded-tl", s)
+	AddClassDT(s)
+End Sub
+
+Sub AddRoundedTRDT(tc As String)
+	Dim s As String = FixRounded($"tr-${tc}"$)
+	AddAttrDT("data-rounded-tr", s)
+	AddClassDT(s)
+End Sub
+
+Sub AddRoundedBRDT(tc As String)
+	Dim s As String = FixRounded($"br-${tc}"$)
+	AddAttrDT("data-rounded-br", s)
+	AddClassDT(s)
+End Sub
+
+Sub AddRoundedBLDT(tc As String)
+	Dim s As String = FixRounded($"bl-${tc}"$)
+	AddAttrDT("data-rounded-bl", s)
 	AddClassDT(s)
 End Sub
 
@@ -3679,12 +3868,12 @@ Sub Initials(FullName As String) As String
 End Sub
 
 'insert a css rule
-Sub InsertCSSRule(selector As String, styles As Object)
+Sub InsertCSSRule(selector As String, styles As Object)			'ignoredeadcode
 	BANano.RunJavascriptMethod("insertRule", Array(selector, styles))
 End Sub
 
 'remove a css rule 
-Sub RemoveCSSRule(selector As String)
+Sub RemoveCSSRule(selector As String)						'ignoredeadcode
 	Dim i As BANanoObject
 	i.Initialize("insertRule")
 	i.RunMethod("remove", selector)
@@ -3695,19 +3884,23 @@ End Sub
 Sub ListPaginate(lst As List, pageSize As Int, pageNumber As Int) As Paginate
 	Dim xx As Paginate
 	xx.initialize
+	xx.previousPage = 0
+	xx.nextPage = 0
+	xx.totalPages = 0
+	xx.items.Initialize
+	xx.hasPreviousPage = False
+	xx.hasNextPage = False		
 	Try
-		If lst.Size = 0 Then
-			xx.previousPage = 0
-			xx.nextPage = 0
-			xx.totalPages = 0
-			xx.items.Initialize
-			Return xx
-		End If
+		If lst.Size = 0 Then Return xx
 		Dim res As Map = BANano.RunJavascriptMethod("paginator", Array(lst, pageNumber, pageSize))
+		Dim xx As Paginate
+		xx.initialize
 		xx.previousPage = res.Get("previousPage")
 		xx.nextPage = res.Get("nextPage")
 		xx.totalPages = res.Get("totalPages")
 		xx.items = res.Get("items")
+		xx.hasPreviousPage = res.Get("hasPreviousPage")
+		xx.hasNextPage = res.Get("hasNextPage")
 		Return xx
 	Catch
 		Log($"ListPaginate: ${LastException}"$)
@@ -4246,15 +4439,15 @@ Sub DeCompressBase64(dataURL As String) As String
 	Return res
 End Sub
 
-Sub PakoCompressBase64(dataURL As String) As String
-	Dim res As String = BANano.RunJavascriptMethod("PakoCompressBase64", Array(dataURL))
-	Return res
-End Sub
+'Sub PakoCompressBase64(dataURL As String) As String
+'	Dim res As String = BANano.RunJavascriptMethod("PakoCompressBase64", Array(dataURL))
+'	Return res
+'End Sub
 
-Sub PakoDeCompressBase64(dataURL As String) As String
-	Dim res As String = BANano.RunJavascriptMethod("PakoDecompressBase64", Array(dataURL))
-	Return res
-End Sub
+'Sub PakoDeCompressBase64(dataURL As String) As String
+'	Dim res As String = BANano.RunJavascriptMethod("PakoDecompressBase64", Array(dataURL))
+'	Return res
+'End Sub
 
 'get start and end dates of a month based on date
 Sub GetMonthStartEnd(dateString As String) As List
@@ -4381,15 +4574,27 @@ Sub CalculateAge(birthDateString As String) As Int
 End Sub
 
 'date difference
-Sub DateDiff(currentDate As String, otherDate As String) As Int
-	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
-	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
-	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
-	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
-	'
-	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "day")).Result
-	Return rslt
+'Sub DateDiff(currentDate As String, otherDate As String) As Int
+'	If BANano.IsNull(currentDate) Or BANano.IsUndefined(currentDate) Then Return 0
+'	If BANano.IsNull(otherDate) Or BANano.IsUndefined(otherDate) Then Return 0
+'	Dim bo As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(currentDate))
+'	Dim bo1 As BANanoObject = BANano.RunJavascriptMethod("dayjs", Array(otherDate))
+'	'
+'	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "day")).Result
+'	Return rslt
+'End Sub
+
+Public Sub DateDiff(dateStr1 As String, dateStr2 As String) As Int
+	DateTime.DateFormat = "yyyy-MM-dd"
+	dateStr1 = CStr(dateStr1)
+	dateStr2 = CStr(dateStr2)
+	Dim date1 As Long = DateTime.DateParse(dateStr1) ' Parses yyyy-mm-dd to milliseconds
+	Dim date2 As Long = DateTime.DateParse(dateStr2)
+	Dim diffMilliseconds As Long = Abs(date2 - date1)
+	Dim diffDays As Int = diffMilliseconds / (1000 * 60 * 60 * 24)
+	Return diffDays
 End Sub
+
 
 'year difference
 Sub YearDiff(currentDate As String, otherDate As String) As Int
@@ -4412,6 +4617,55 @@ Sub MonthDiff(currentDate As String, otherDate As String) As Int
 	Dim rslt As String = bo.RunMethod("diff", Array(bo1, "month")).Result
 	Return rslt
 End Sub
+
+
+'Public Sub YearDiff1(dateStr1 As String, dateStr2 As String) As Int
+'	DateTime.DateFormat = "yyyy-MM-dd"
+'    Dim d1 As Long = DateTime.DateParse(dateStr1)
+'    Dim d2 As Long = DateTime.DateParse(dateStr2)
+'
+'    Dim year1 As Int = DateTime.GetYear(d1)
+'    Dim year2 As Int = DateTime.GetYear(d2)
+'    Dim month1 As Int = DateTime.GetMonth(d1)
+'    Dim month2 As Int = DateTime.GetMonth(d2)
+'    Dim day1 As Int = DateTime.GetDayOfMonth(d1)
+'    Dim day2 As Int = DateTime.GetDayOfMonth(d2)
+'
+'    Dim years As Int = year2 - year1
+'
+'    ' If second date is before first date's month/day, subtract 1
+'    If month2 < month1 Or (month2 = month1 And day2 < day1) Then
+'        years = years - 1
+'    End If
+'
+'    Return Abs(years)
+'End Sub
+
+'Public Sub MonthDiff1(dateStr1 As String, dateStr2 As String) As Int
+'	DateTime.DateFormat = "yyyy-MM-dd"
+'    Dim d1 As Long = DateTime.DateParse(dateStr1)
+'    Dim d2 As Long = DateTime.DateParse(dateStr2)
+'
+'    Dim year1 As Int = DateTime.GetYear(d1)
+'    Dim year2 As Int = DateTime.GetYear(d2)
+'    Dim month1 As Int = DateTime.GetMonth(d1)
+'    Dim month2 As Int = DateTime.GetMonth(d2)
+'    Dim day1 As Int = DateTime.GetDayOfMonth(d1)
+'    Dim day2 As Int = DateTime.GetDayOfMonth(d2)
+'
+'    Dim months As Int = (year2 - year1) * 12 + (month2 - month1)
+'
+'    ' If second date day is before first date day, subtract 1 month
+'    If day2 < day1 Then
+'        months = months - 1
+'    End If
+'
+'    Return Abs(months)
+'End Sub
+
+
+
+
 
 'minute difference
 Sub MinuteDiff(currentDate As String, otherDate As String) As Int

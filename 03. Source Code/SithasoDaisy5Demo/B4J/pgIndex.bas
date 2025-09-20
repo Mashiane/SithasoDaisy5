@@ -26,6 +26,7 @@ Sub Initialize					'ignoreDeadCode
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppVersion
+	
 	BANano.Await(pgTypography.Show(App))
 
 	'set the font of the app
@@ -55,6 +56,8 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
 	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
 	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
+	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
+	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
 	
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
@@ -228,6 +231,12 @@ Private Sub drawermenu_ItemClick (item As String)
 	appdrawer.MdOpen = True
 	'close the swap button
 	appnavbar.Hamburger.Active = False
+	'reset pageview padding
+	appnavbar.Hamburger.Active = False
+	pageView.PaddingAXYTBLR = "a:10px"
+	App.PageViewToFullScreenHeight(Array("appnavbar"))
+	
+'	pageView.PaddingAXYTBLR = "a:20px"
 
 	Dim sprefix As String = App.UI.MvField(item, 1, "-")
 	Dim ssuffix As String = App.UI.MvField(item, 2, "-")
@@ -236,7 +245,13 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "tableexpand"
+				pgTableExpand.Show(App)
+			Case "fab"
+				pgFAB.Show(App)
 			Case "login"
+				'remove all padding on pageview
+				pageView.PaddingAXYTBLR = "a:0px"
 				appdrawer.ForceClose
 				appnavbar.Visible = False
 				pgGhostLogin.Show(App)
@@ -491,6 +506,12 @@ End Select
 		
 	End Select
 End Sub
+
+
+Sub PageViewPaddingTo10px
+	pageView.PaddingAXYTBLR = "a:10px"
+End Sub
+
 
 
 Private Sub btnLogOff_Click (e As BANanoEvent)

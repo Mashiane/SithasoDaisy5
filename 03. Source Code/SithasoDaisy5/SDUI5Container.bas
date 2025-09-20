@@ -1279,3 +1279,9 @@ End Sub
 Sub getContainer As Boolean
 	Return bContainer
 End Sub
+
+'get the cell id
+Sub CellHere(r As Int, c As Int) As String
+	Dim s As String = CellID(r, c)
+	Return $"#${s}"$
+End Sub

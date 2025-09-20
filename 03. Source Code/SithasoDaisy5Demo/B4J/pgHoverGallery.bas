@@ -12,17 +12,17 @@ Sub Process_Globals
 	Public title As String = ""
 	Public icon As String = "./assets/page.svg"
 	Public color As String = "#000000"
-	Private page As SDUI5Page						'ignore
+	Private page3 As SDUI5Page						'ignore
 End Sub
 
 Sub Show(MainApp As SDUI5App)			'ignore
 	app = MainApp
 	BANano.LoadLayout(app.PageView, "hovergalleryview")
-	pgIndex.UpdateTitle(page.title)
-	name = page.PageName
-	icon = page.Icon
-	color = page.color
-	title = page.title
+	pgIndex.UpdateTitle(page3.title)
+	name = page3.ID
+	icon = page3.Icon
+	color = page3.color
+	title = page3.title
 End Sub
 
 Sub getName As String		'ignore

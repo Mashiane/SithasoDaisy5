@@ -6,7 +6,7 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|ul|ol|section|nav
+#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|section|nav
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
@@ -151,6 +151,34 @@ Sub Class_Globals
 	Private sWidth As String = ""
 	Private sBackgroundImage As String = ""
 	Private sBackgroundColor As String = ""
+	'abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|ul|ol|section|nav
+	Public CONST TAG_ABBR As String = "abbr"
+	Public CONST TAG_BLOCKQUOTE As String = "blockquote"
+	Public CONST TAG_DEL As String = "del"
+	Public CONST TAG_EM As String = "em"
+	Public CONST TAG_H1 As String = "h1"
+	Public CONST TAG_H2 As String = "h2"
+	Public CONST TAG_H3 As String = "h3"
+	Public CONST TAG_H4 As String = "h4"
+	Public CONST TAG_H5 As String = "h5"
+	Public CONST TAG_H6 As String = "h6"
+	Public CONST TAG_INS As String = "ins"
+	Public CONST TAG_MARK As String = "mark"
+	Public CONST TAG_P As String = "p"
+	Public CONST TAG_S As String = "s"
+	Public CONST TAG_SMALL As String = "small"
+	Public CONST TAG_SPAN As String = "span"
+	Public CONST TAG_STRONG As String = "strong"
+	Public CONST TAG_U As String = "u"
+	Public CONST TAG_ASIDE As String = "aside"
+	Public CONST TAG_FIGCAPTION As String = "figcaption"
+	Public CONST TAG_FIGURE As String = "figure"
+	Public CONST TAG_OL As String = "ol"
+	Public CONST TAG_UL As String = "ul"
+	Public CONST TAG_LI As String = "li"
+	Public CONST TAG_DIV As String = "div"
+	Public CONST TAG_SECTION As String = "section"
+	Public CONST TAG_NAV As String = "nav"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)

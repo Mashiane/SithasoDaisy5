@@ -13,13 +13,16 @@ Version=10
 #Event: Abort_Click (e As BANanoEvent)
 #Event: Ignore_Click (e As BANanoEvent)
 
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _box|_title|_form|_action, Description: Child Item _box|_title|_form|_action
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _body|_box|_title|_form|_action, Description: Child Item _body|_box|_title|_form|_action
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: IsCard, DisplayName: Is Card, FieldType: Boolean, DefaultValue: False, Description: Is Card
+#DesignerProperty: Key: Size, DisplayName: Card Size, FieldType: String, DefaultValue: lg, Description: Card Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Modal Dialog, Description: Title
 #DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
+#DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
 #DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
 #DesignerProperty: Key: RawHtml, DisplayName: HTML Message, FieldType: String, DefaultValue: , Description: HTML Message
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
@@ -47,6 +50,12 @@ Version=10
 #DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: fit, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700px , Description: Width
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
+#DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: FullScreen, DisplayName: Full Screen, FieldType: Boolean, DefaultValue: False , Description: Full Screen
 #DesignerProperty: Key: MoveFrom, DisplayName: Move From, FieldType: String, DefaultValue: middle, Description: Move From, List: bottom|end|middle|start|top
 #DesignerProperty: Key: SMMoveFrom, DisplayName: SM Move From, FieldType: String, DefaultValue: none, Description: S m Move From, List: bottom|end|middle|none|start|top
@@ -135,8 +144,17 @@ Sub Class_Globals
 	Private sTitleTextColor As String
 	Private sIcon As String
 	Private sIconColor As String
-	Private sIconSize As String
+	Private sIconSize As String = "32px"
 	Private bIconVisible As Boolean
+	Private bIsCard As Boolean
+	Private sBackgroundColor As String = "base-100"
+	Private bBorder As Boolean = True
+	Private bDash As Boolean = False
+	Private sSize As String = "lg"
+	Private bTitleVisible As Boolean = True
+	Private sRounded As String = "none"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "sm"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -262,6 +280,19 @@ Sub getAttributes As String
 	Return sRawAttributes
 End Sub
 '
+'set Title Visible
+Sub setTitleVisible(b As Boolean)			'ignoredeadcode
+	bTitleVisible = b
+	CustProps.put("TitleVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_title"$, b)
+End Sub
+
+'get Title Visible
+Sub getTitleVisible As Boolean
+	Return bTitleVisible
+End Sub
+
 Sub getStyles As String
 	Return sRawStyles
 End Sub
@@ -274,6 +305,16 @@ Sub getPaddingAXYTBLR As String
 	Return sPaddingAXYTBLR
 End Sub
 '
+Sub setIsCard(b As Boolean)
+	CustProps.put("IsCard", b)
+	bIsCard = b
+End Sub
+
+Sub getIsCard As Boolean
+	Return bIsCard
+End Sub
+
+
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
@@ -287,6 +328,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = UI.CBool(bBorder)
+		bDash = Props.GetDefault("Dash", False)
+		bDash = UI.CBool(bDash)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = UI.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "sm")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 		bActionsVisible = Props.GetDefault("ActionsVisible", True)
 		bActionsVisible = UI.CBool(bActionsVisible)
 		bBackdrop = Props.GetDefault("Backdrop", True)
@@ -368,19 +421,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = UI.CStr(sIcon)
 		sIconColor = Props.GetDefault("IconColor", "")
 		sIconColor = UI.CStr(sIconColor)
-		sIconSize = Props.GetDefault("IconSize", "")
+		sIconSize = Props.GetDefault("IconSize", "32px")
 		sIconSize = UI.CStr(sIconSize)
 		bIconVisible = Props.GetDefault("IconVisible", False)
 		bIconVisible = UI.CBool(bIconVisible)
+		bIsCard = Props.GetDefault("IsCard", False)
+		bIsCard = UI.CBool(bIsCard)
+		sSize = Props.GetDefault("Size", "lg")
+		sSize = UI.CStr(sSize)
+		If sSize = "none" Then sSize = ""
+		bTitleVisible = Props.GetDefault("TitleVisible", True)
+		bTitleVisible = UI.CBool(bTitleVisible)
 	End If
 	'
-	UI.AddClassDT("modal")
-	If sLGMoveFrom <> "" Then UI.AddClassDT("lg:modal-" & sLGMoveFrom)
-	If sMDMoveFrom <> "" Then UI.AddClassDT("md:modal-" & sMDMoveFrom)
-	If sMoveFrom <> "" Then UI.AddClassDT("modal-" & sMoveFrom)
-	If bOpen = True Then UI.AddClassDT("modal-open")
-	If sSMMoveFrom <> "" Then UI.AddClassDT("sm:modal-" & sSMMoveFrom)
-	If sXLMoveFrom <> "" Then UI.AddClassDT("xl:modal-" & sXLMoveFrom)
+	If bFullScreen Then
+		sHeight = ""
+		sWidth = ""
+	End If
+	
+	If bIsCard Then
+		UI.AddClassDT("card")
+		If bBorder = True Then UI.AddClassDT("card-border")
+		If bDash = True Then UI.AddClassDT("card-dash")
+		If sHeight <> "" Then UI.AddHeightDT(sHeight)
+		If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+		If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+		If sShadow <> "" Then UI.AddShadowDT(sShadow)
+		If sSize <> "" Then UI.AddSizeDT("card", sSize)
+		If sWidth <> "" Then UI.AddWidthDT(sWidth)
+	Else	
+		UI.AddClassDT("modal")
+		If sLGMoveFrom <> "" Then UI.AddClassDT("lg:modal-" & sLGMoveFrom)
+		If sMDMoveFrom <> "" Then UI.AddClassDT("md:modal-" & sMDMoveFrom)
+		If sMoveFrom <> "" Then UI.AddClassDT("modal-" & sMoveFrom)
+		If bOpen = True Then UI.AddClassDT("modal-open")
+		If sSMMoveFrom <> "" Then UI.AddClassDT("sm:modal-" & sSMMoveFrom)
+		If sXLMoveFrom <> "" Then UI.AddClassDT("xl:modal-" & sXLMoveFrom)
+	End If
+	' 
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -393,52 +471,56 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	
-	
-	mElement = mTarget.Append($"[BANCLEAN]
-	<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
-	<div id="${mName}" role="dialog" aria-modal="true" aria-labelledby="${mName}_title" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_box" class="modal-box relative">
-			<form id="${mName}_closeform">
-      			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
-    		</form>
-    		<h3 id="${mName}_title" class="text-lg font-bold flex items-center gap-2">
-				<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
-				<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
-			</h3>
-    		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
-        	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
-		</div>
-		<label id="${mName}_backdrop" class="modal-backdrop" for="${mName}_toggle">Close</label>
-	</div>"$).Get("#" & mName)
+	If bIsCard Then
+		mElement = mTarget.Append($"[BANCLEAN]
+		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<div id="${mName}_body" class="card-body p-4">
+				<h3 id="${mName}_title" class="card-title flex items-center gap-2">
+					<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
+					<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
+				</h3>
+	    		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
+	    		<div id="${mName}_action" class="justify-end card-actions"></div>
+			</div>
+		</div>"$).Get("#" & mName)
+	Else
+		mElement = mTarget.Append($"[BANCLEAN]
+		<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
+		<div id="${mName}" role="dialog" aria-modal="true" aria-labelledby="${mName}_title" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<div id="${mName}_box" class="modal-box relative">
+				<form id="${mName}_closeform">
+	      			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
+	    		</form>
+	    		<h3 id="${mName}_title" class="text-lg font-bold flex items-center gap-2">
+					<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
+					<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
+				</h3>
+	    		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
+	        	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
+			</div>
+			<label id="${mName}_backdrop" class="modal-backdrop" for="${mName}_toggle">Close</label>
+		</div>"$).Get("#" & mName)
+	End If
 	'
 	Form.Initialize(mCallBack, $"${mName}_form"$, $"${mName}_form"$)
 	Form.LinkExisting
 	Form.Clear
 	Form.MdlName = UI.CamelCase(mName)
-		
-'	mElement = mTarget.Append($"[BANCLEAN]
-'	<dialog id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-'		<div id="${mName}_box" class="modal-box relative sm:max-w-xl">
-'			<form id="${mName}_closeform" method="dialog">
-'      			<button id="${mName}_close" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-'    		</form>
-'    		<h3 id="${mName}_title" class="text-lg font-bold">${sTitle}</h3>
-'    		<form id="${mName}_form" name="${mName}" novalidate="novalidate" class="py-4"></form>
-'        	<div id="${mName}_action" class="modal-action mt-0 pt-0"></div>
-'		</div>
-'		<form id="${mName}_bdrop" method="dialog" class="modal-backdrop">
-'    		<button>close</button>
-'  		</form>
-'	</dialog>"$).Get("#" & mName)
+
 	setTitleTextColor(sTitleTextColor)
 	setActionsVisible(bActionsVisible)
-	setBackdrop(bBackdrop)
-	setClosable(bClosable)
+	If bIsCard = False Then 
+		setBackdrop(bBackdrop)
+		setClosable(bClosable)
+		setHTML(sRawHtml)
+	Else
+		setHeight(sHeight)
+		setWidth(sWidth)
+	End If
+	setFullScreen(bFullScreen)
 	If bFullScreen = False Then setHeight(sHeight)
 	If bFullScreen = False Then setWidth(sWidth)
-	setFullScreen(bFullScreen)
 	setTitle(sTitle)
-	setHTML(sRawHtml)
 	setGlass(bGlass)
 	setIcon(sIcon)
 	setIconColor(sIconColor)
@@ -460,14 +542,104 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(AddNoButton)
 	Case "yes-no-cancel", "abort-retry-ignore"
 		BANano.Await(AddYesButton)
-		BANano.Await(AddNoButton)
-		BANano.Await(AddCancelButton)
+			BANano.Await(AddNoButton)
+			BANano.Await(AddCancelButton)
 	End Select
 End Sub
+
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
+
+'set Dash
+Sub setDash(b As Boolean)
+	bDash = b
+	CustProps.put("Dash", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "card-dash")
+	Else
+		UI.RemoveClass(mElement, "card-dash")
+	End If
+End Sub
+
+'set Background Color
+Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+End Sub
+'set Border
+Sub setBorder(b As Boolean)
+	bBorder = b
+	CustProps.put("Border", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "card-border")
+	Else
+		UI.RemoveClass(mElement, "card-border")
+	End If
+End Sub
+
+
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+
+'get Dash
+Sub getDash As Boolean
+	Return bDash
+End Sub
+
+'get Background Color
+Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+'get Border
+Sub getBorder As Boolean
+	Return bBorder
+End Sub
+
+
 
 Sub setIconSize(s As String)			'ignoredeadcode
 	sIconSize = s
 	CustProps.Put("IconSize", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetAttrByID($"${mName}_icon"$, "width", s)
 	UI.SetAttrByID($"${mName}_icon"$, "height", s)
 End Sub
@@ -479,6 +651,7 @@ End Sub
 Sub setIconVisible(b As Boolean)				'ignoredeadcode
 	bIconVisible = b
 	CustProps.Put("IconVisible", b)
+	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_icon"$, b)
 End Sub
 
@@ -489,6 +662,8 @@ End Sub
 Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.Put("Icon", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetAttrByID($"${mName}_icon"$, "data-src", s)
 End Sub
 
@@ -499,6 +674,8 @@ End Sub
 Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.Put("IconColor", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
 	UI.SetStyleByID($"${mName}_icon"$, "color", s)
 End Sub
 
@@ -567,13 +744,20 @@ Sub setFullScreen(b As Boolean)		'ignoredeadcode
 	bFullScreen = b
 	CustProps.Put("FullScreen", b)
 	If mElement = Null Then Return
-	UI.RemoveClassByID($"${mName}_box"$, "rounded-none")
 	If b = False Then Return
-	UI.AddClassByID($"${mName}_box"$, "rounded-none")
-	UI.SetWidthByID($"${mName}_box"$, "full")
-	UI.SetHeightByID($"${mName}_box"$, "full")
-	UI.SetMaxWidthByID($"${mName}_box"$, "screen")
-	UI.SetMaxHeightByID($"${mName}_box"$, "screen")
+	If bIsCard Then
+		UI.AddClass(mElement, "rounded-none")
+		UI.SetWidth(mElement, "full")
+		UI.SetHeight(mElement, "full")
+		UI.SetMaxWidth(mElement, "screen")
+		UI.SetMaxHeight(mElement, "screen")
+	Else	
+		UI.AddClassByID($"${mName}_box"$, "rounded-none")
+		UI.SetWidthByID($"${mName}_box"$, "full")
+		UI.SetHeightByID($"${mName}_box"$, "full")
+		UI.SetMaxWidthByID($"${mName}_box"$, "screen")
+		UI.SetMaxHeightByID($"${mName}_box"$, "screen")
+	End If
 End Sub
 
 'set Raw Html
@@ -669,7 +853,7 @@ Sub setBackdrop(b As Boolean)			'ignoredeadcode
 	CustProps.put("Backdrop", b)
 	If mElement = Null Then Return
 	If b = False Then
-		UI.RemoveElementByID($"${mName}_bdrop"$)
+		UI.RemoveElementByID($"${mName}_backdrop"$)
 	End If
 End Sub
 'set Closable
@@ -686,20 +870,32 @@ Sub setGlass(b As Boolean)			'ignoredeadcode
 	bGlass = b
 	CustProps.put("Glass", b)
 	If mElement = Null Then Return
-	If b = True Then
-		UI.AddClassByID($"${mName}_box"$, "glass")
-	Else
-		UI.RemoveClassByID($"${mName}_box"$, "glass")
-	End If
+	If bIsCard Then
+		If b = True Then
+			UI.AddClass(mElement, "glass")
+		Else
+			UI.RemoveClass(mElement, "glass")
+		End If
+	Else	
+		If b = True Then
+			UI.AddClassByID($"${mName}_box"$, "glass")
+		Else
+			UI.RemoveClassByID($"${mName}_box"$, "glass")
+		End If
+	End If	
 End Sub
 'set Height
 Sub setHeight(s As String)			'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
-	If s <> "" Then 
-		UI.SetHeightResponsiveByID($"${mName}_box"$, "md", sHeight)
-		UI.SetMaxHeightResponsiveByID($"${mName}_box"$, "md", "90vh")
+	If s <> "" Then
+		If bIsCard Then
+			UI.SetHeight(mElement, sHeight)
+		Else
+			UI.SetHeightResponsiveByID($"${mName}_box"$, "md", sHeight)
+			UI.SetMaxHeightResponsiveByID($"${mName}_box"$, "md", "90vh")
+		End If
 	End If
 End Sub
 'set L g Move From
@@ -758,8 +954,12 @@ Sub setWidth(s As String)			'ignoredeadcode
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
-		UI.SetMaxWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+		If bIsCard Then
+			UI.SetWidth(mElement, sWidth)
+		Else	
+			UI.SetWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+			UI.SetMaxWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+		End If
 	End If
 End Sub
 'set X l Move From

@@ -254,7 +254,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeTextColor = True
 		sColor = Props.GetDefault("Color", "primary")
 		sColor = UI.CStr(sColor)
 		If sColor = "none" Then sColor = ""

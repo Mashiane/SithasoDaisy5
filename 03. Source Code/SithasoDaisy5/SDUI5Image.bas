@@ -225,6 +225,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMask = UI.CStr(sMask)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 		sSrc = Props.GetDefault("Src", "./assets/mashy.jpg")
 		sSrc = UI.CStr(sSrc)
 		sWidth = Props.GetDefault("Width", "12")
