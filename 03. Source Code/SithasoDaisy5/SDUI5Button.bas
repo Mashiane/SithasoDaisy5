@@ -15,9 +15,9 @@ Version=10
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: primary|secondary|accent|neutral|info|success|warning|error|none
-#DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
+#DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge (Appears on right)
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color, List: danger|dark|light|medium|none|primary|secondary|success|tertiary|warning
-#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: 6, Description: Size
+#DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: sm, Description: Bade Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
 #DesignerProperty: Key: Tooltip, DisplayName: Tooltip, FieldType: String, DefaultValue: , Description: Tooltip
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -56,12 +56,12 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: md, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
-#DesignerProperty: Key: IndicatorVisible, DisplayName: Indicator Visible, FieldType: Boolean, DefaultValue: False, Description: Indicator Visible
+#DesignerProperty: Key: IndicatorVisible, DisplayName: Indicator Visible, FieldType: Boolean, DefaultValue: False, Description: Indicator Visible (Top Right)
 #DesignerProperty: Key: IndicatorValue, DisplayName: Indicator Value, FieldType: String, DefaultValue: , Description: Indicator Value
 #DesignerProperty: Key: IndicatorColor, DisplayName: Indicator Color, FieldType: String, DefaultValue: error, Description: Indicator Color
 #DesignerProperty: Key: IndicatorTextColor, DisplayName: Indicator Text Color, FieldType: String, DefaultValue: none, Description: Indicator Text Color
 #DesignerProperty: Key: IndicatorPosition, DisplayName: Indicator Position, FieldType: String, DefaultValue: top-end, Description: Indicator Position, List: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
-#DesignerProperty: Key: IndicatorSize, DisplayName: Indicator Size, FieldType: String, DefaultValue: xs, Description: Indicator Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: IndicatorSize, DisplayName: Indicator Size, FieldType: String, DefaultValue: 6, Description: Indicator Size
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -121,7 +121,7 @@ Sub Class_Globals
 	Private sBadge As String = ""
 	Private sBadgeColor As String = ""
 	Private bBadgeVisible As Boolean = False
-	Private sBadgeSize As String = "6"
+	Private sBadgeSize As String = "sm"
 	Private sHeight As String = ""
 	Private sWidth As String = ""
 	Private bJoinItem As Boolean = False
@@ -151,7 +151,7 @@ Sub Class_Globals
 	Private sTextSize As String = "none"
 	Private sIndicatorColor As String = "error"
 	Private sIndicatorPosition As String = "top-end"
-	Private sIndicatorSize As String = "xs"
+	Private sIndicatorSize As String = "6"
 	Private sIndicatorTextColor As String = "none"
 	Private sIndicatorValue As String = ""
 	Private bIndicatorVisible As Boolean = False
@@ -416,7 +416,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sBadge = UI.CStr(sBadge)
 		sBadgeColor = Props.GetDefault("BadgeColor", "")
 		sBadgeColor = UI.CStr(sBadgeColor)
-		sBadgeSize = Props.GetDefault("BadgeSize", "6")
+		sBadgeSize = Props.GetDefault("BadgeSize", "sm")
 		sBadgeSize = UI.CStr(sBadgeSize)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sHeight = Props.GetDefault("Height", "")
@@ -466,7 +466,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIndicatorColor = UI.CStr(sIndicatorColor)
 		sIndicatorPosition = Props.GetDefault("IndicatorPosition", "top-end")
 		sIndicatorPosition = UI.CStr(sIndicatorPosition)
-		sIndicatorSize = Props.GetDefault("IndicatorSize", "xs")
+		sIndicatorSize = Props.GetDefault("IndicatorSize", "6")
 		sIndicatorSize = UI.CStr(sIndicatorSize)
 		sIndicatorTextColor = Props.GetDefault("IndicatorTextColor", "none")
 		sIndicatorTextColor = UI.CStr(sIndicatorTextColor)
@@ -550,10 +550,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<${sTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<span id="${mName}_indicator" class="badge indicator-item rounded-full aspect-square flex items-center justify-center p-0 text-xs"></span>
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
-		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
+		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<span id="${mName}_text"></span>
-		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
+		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<div id="${mName}_badge" class="badge rounded-full hidden flex items-center justify-center p-0"></div>
 	</${sTag}>"$).Get("#" & mName)
@@ -915,8 +915,7 @@ Sub setBadgeSize(s As String)			'ignoredeadcode
 	CustProps.put("BadgeSize", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetWidthByID($"${mName}_badge"$, s)
-		UI.SetHeightByID($"${mName}_badge"$, s)
+		UI.SetSizeByID($"${mName}_badge"$, "size", "badge", s)
 	End If
 End Sub
 

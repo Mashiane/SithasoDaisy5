@@ -59,10 +59,10 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this div
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Table, Description: Title
 #DesignerProperty: Key: TitleVisible, DisplayName: Title Visible, FieldType: Boolean, DefaultValue: True, Description: Title Visible
-#DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
-#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
-#DesignerProperty: Key: IconVisible, DisplayName: Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Icon Visible
+#DesignerProperty: Key: Icon, DisplayName: Title Icon, FieldType: String, DefaultValue: , Description: Title Icon
+#DesignerProperty: Key: IconColor, DisplayName: Title Icon Color, FieldType: String, DefaultValue: , Description: Title Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Title Icon Size, FieldType: String, DefaultValue: 32px, Description: Title Icon Size
+#DesignerProperty: Key: IconVisible, DisplayName: Title Icon Visible, FieldType: Boolean, DefaultValue: False, Description: Title Icon Visible
 #DesignerProperty: Key: ExcelTitle, DisplayName: Export Title , FieldType: String, DefaultValue:  Table, Description: Title for Excel Reports
 #DesignerProperty: Key: PageSize, DisplayName: PDF Page Size, FieldType: String, DefaultValue: a4, Description: Page Size for pdf printing, List: a0|a1|a10|a10|a2|a3|a4|a5|a6|a7|a8|a9|b0|b1|b10|b10|b2|b3|b4|b5|b6|b7|b8|b9|c0|c1|c10|c10|c2|c3|c4|c5|c6|c7|c8|c9|credit-card|dl|government-letter|junior-legal|ledger|legal|letter|tabloid
 #DesignerProperty: Key: FontSize, DisplayName: PDF Font Size, FieldType: String, DefaultValue: 11, Description: Font Size for pdf printing
@@ -72,9 +72,10 @@ Version=10
 #DesignerProperty: Key: PdfTheme, DisplayName: PDF Theme, FieldType: String, DefaultValue: striped, Description: Pdf theme, List: css|grid|none|plain|striped
 #DesignerProperty: Key: ItemsPerPage, DisplayName: Items Per Page, FieldType: String, DefaultValue: 10, Description: Items Per Page
 #DesignerProperty: Key: ListViewMode, DisplayName: ListView Mode, FieldType: Boolean, DefaultValue: False, Description: ListView Mode
+#DesignerProperty: Key: TrapRowClick, DisplayName: Trap Row Click, FieldType: Boolean, DefaultValue: False, Description: Trap Row Click
 #DesignerProperty: Key: HasFilter, DisplayName: Has Filter, FieldType: Boolean, DefaultValue: False, Description: Has Filter
 #DesignerProperty: Key: HasExpand, DisplayName: Has Expand, FieldType: Boolean, DefaultValue: False, Description: Has Expand
-#DesignerProperty: Key: IsCompact, DisplayName: Is Compact, FieldType: Boolean, DefaultValue: False, Description: Is Compact
+#DesignerProperty: Key: TableSize, DisplayName: Table Size, FieldType: String, DefaultValue: md, Description: Table Size, List: lg|md|sm|xs|none|xl
 #DesignerProperty: Key: NormalCase, DisplayName: Normal Case Titles, FieldType: Boolean, DefaultValue: False, Description: Columns Titles Is Normal Case
 #DesignerProperty: Key: WrapHeadings, DisplayName: Wrap Headings, FieldType: Boolean, DefaultValue: False, Description: Wrap Headings
 #DesignerProperty: Key: LowerCase, DisplayName: Lower Case Keys, FieldType: Boolean, DefaultValue: False, Description: Lower Case Keys
@@ -286,6 +287,8 @@ Private Sub Class_Globals
 	Private sIconSize As String = "32px"
 	Private bIconVisible As Boolean
 	Private bListViewMode As Boolean
+	Private sTableSize As String = "md"
+	Private bTrapRowClick As Boolean = False
 End Sub
 
 ' returns the element id
@@ -592,6 +595,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIconSize = UI.CStr(sIconSize)
 		bIconVisible = Props.GetDefault("IconVisible", False)
 		bIconVisible = UI.CBool(bIconVisible)
+		sTableSize = Props.GetDefault("TableSize", "md")
+		sTableSize = UI.CStr(sTableSize)
+		bTrapRowClick = Props.GetDefault("TrapRowClick", False)
+		bTrapRowClick = UI.CBool(bTrapRowClick)
 	End If
 	'
 	If bListViewMode Then
@@ -607,7 +614,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHasSearch = False
 		bHasToolbarDownload = False
 		bHasToolbarUpload = False
-		bShowTotalRecords = false
+		bShowTotalRecords = False
 	End If
 	'
 	UI.AddClassDT("card card-border w-full bg-base-100")
@@ -698,6 +705,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIconColor(sIconColor)
 	setIconSize(sIconSize)
 	setIconVisible(bIconVisible)
+	setTableSize(sTableSize)
 	If bHasExportMenu Then
 '		'***Add code to export to pdf, xls, csv
 '		Dim ddown As SDUIDropDown = AddToolbarDropDownIcon("ddown", "fa-solid fa-bars", "orange")
@@ -731,6 +739,18 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	setListViewMode(bListViewMode)
 End Sub
+
+Sub setTableSize(s As String)			'ignoredeadcode
+	sTableSize = s
+	CustProps.Put("TableSize", s)
+	If mElement = Null Then Return
+	UI.SetSizeByID($"${mName}_table"$, "size", "table", s) 
+End Sub
+
+Sub getTableSize As String
+	Return sTableSize	
+End Sub
+
 
 Sub setListViewMode(b As Boolean) 		'ignoredeadcode
 	bListViewMode = b
@@ -1833,7 +1853,12 @@ Sub SetExportToCSVTooltip1(tooltip As String, color As String, position As Strin
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("exporttocsv", tooltip, color, position)
 End Sub
+
 'set Has Export To Csv	
+'<code>
+'Sub tblName_exporttocsv (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasExportToCsv(b As Boolean)			'ignoredeadcode
 	bExportToCsv = UI.CBool(b)
 	CustProps.put("ExportToCsv", b)
@@ -1847,6 +1872,10 @@ Sub SetExportToPDFTooltip1(tooltip As String, color As String, position As Strin
 	SetToolbarButtonToolTip("exporttopdf", tooltip, color, position)
 End Sub
 'set Has Export To Pdf
+'<code>
+'Sub tblName_exporttocsv (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasExportToPdf(b As Boolean)			'ignoredeadcode
 	bExportToPdf = b
 	CustProps.Put("ExportToPdf", b)
@@ -1860,6 +1889,10 @@ Sub SetExportToXLSTooltip1(tooltip As String, color As String, position As Strin
 	SetToolbarButtonToolTip("exporttoxls", tooltip, color, position)
 End Sub
 'set Has Export To Xls
+'<code>
+'Sub tblName_exporttoxls (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasExportToXls(b As Boolean)				'ignoredeadcode
 	CustProps.Put("ExportToXls", b)
 	bExportToXls = b
@@ -1872,6 +1905,10 @@ Sub SetAddNewTooltip1(tooltip As String, color As String, position As String)
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("add", tooltip, color, position)
 End Sub
+'<code>
+'Sub tblName_add (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasAddNew(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasAddnew", b)
 	If b = False Then Return
@@ -1892,6 +1929,10 @@ Sub setGridTooltip(s As String)
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
 End Sub
 'set Has Grid
+'<code>
+'Sub tblName_gridview (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasGrid(b As Boolean)		'ignoredeadcode
 	bHasGrid = b
 	CustProps.put("HasGrid", b)
@@ -1915,12 +1956,20 @@ Sub SetSaveSingleTooltip1(tooltip As String, color As String, position As String
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("savesingle", tooltip, color, position)
 End Sub
+'<code>
+'Sub tblName_savesingle (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasSaveSingle(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasSaveSingle", b)
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("savesingle", "./assets/floppy-disk-solid.svg", "#7289da", "#ffffff")
 End Sub
+'<code>
+'Sub tblName_deletesingle (e As BANanoEvent)
+'End Sub
+'</code>
 Sub SetDeleteSingleTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("DeleteSingleTooltip", tooltip)
 	If tooltip = "" Then Return
@@ -1937,6 +1986,10 @@ Sub SetDeleteAllTooltip1(tooltip As String, color As String, position As String)
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("deleteall", tooltip, color, position)
 End Sub
+'<code>
+'Sub tblName_deleteall (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	bHasDeleteAll = b
 	CustProps.put("HasDeleteAll", b)
@@ -1947,10 +2000,11 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	SetToolbarButtonBadgeRound("deleteall")
 	SetToolbarButtonEnable("deleteall", False)
 	SetToolbarButtonBadgeColor("deleteall", "primary")
-	SetToolbarButtonBadgeRound("deleteall")
 	SetToolbarButtonTextColor("deleteall", "#FFFFFF")
+	SetToolbarButtonBadgeSize("deleteall", "6")
 	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 End Sub
+
 Sub SetUploadToolBarTooltip1(tooltip As String, color As String, position As String)
 	CustProps.put("UploadToolbarTooltip", tooltip)
 	If tooltip = "" Then Return
@@ -1961,6 +2015,10 @@ Sub SetDeleteAllEnable(b As Boolean)
 	SetToolbarButtonEnable("deleteall", b)
 End Sub
 
+'<code>
+'Sub tblName_downloadtoolbar (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasToolbarDownload(b As Boolean)				'ignoredeadcode
 	bHasToolbarDownload = b
 	CustProps.Put("HasToolbarDownload", b)
@@ -1977,6 +2035,10 @@ Sub getHasToolbarDownload As Boolean
 	Return bHasToolbarDownload
 End Sub
 
+'<code>
+'Sub tbl_FileChange (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasToolbarUpload(b As Boolean)				'ignoredeadcode
 	CustProps.put("HasToolbarUpload", b)
 	If b = False Then Return
@@ -2005,6 +2067,12 @@ Sub SetBackTooltip1(tooltip As String, color As String, position As String)
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("back", tooltip, color, position)
 End Sub
+
+
+'<code>
+'Sub tblName_back (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasBack(b As Boolean)				'ignoredeadcode
 	bHasBack = b
 	CustProps.put("HasBack", b)
@@ -2029,6 +2097,12 @@ Sub SetRefreshTooltip1(tooltip As String, color As String, position As String)
 	If tooltip = "" Then Return
 	SetToolbarButtonToolTip("refresh", tooltip, color, position)
 End Sub
+
+
+'<code>
+'Sub tblName_refresh (e As BANanoEvent)
+'End Sub
+'</code>
 Sub setHasRefresh(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasRefresh", b)
 	If b = False Then Return
@@ -6654,9 +6728,9 @@ Private Sub BuildRowFileAction(Module As Object, fldName As String, fldValu As S
 	Dim btnOutlined As String = ""
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} flex justify-center items-center">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize};" fill="currentColor" data-src="${tc.icon}"></svg-renderer></button>
+    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} flex justify-center items-center inline-flex rounded-full aspect-square">
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize};" fit="false" fill="currentColor" data-src="${tc.icon}"></svg-renderer></button>
 	<input id="${mName}_${RowCnt}_${fldName}_input" name="${mName}_${RowCnt}_${fldName}" type="file" class="hidden"/>
     </td>"$
 	'********
@@ -7699,8 +7773,8 @@ Private Sub BuildRowAction(Module As Object, fldName As String, fldValu As Strin
 	If bButtonsOutlined Then btnOutlined = "btn-outline"
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn  btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} inline-flex justify-center items-center">
-    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="${tc.FitSvg}" replace="${tc.ReplaceSvg}" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize}" data-src="${tc.icon}"></svg-renderer></button>
+    <button id="${mName}_${RowCnt}_${fldName}_button" class="${tcolor} btn btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass} inline-flex justify-center items-center flex rounded-full aspect-square">
+    <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" fit="false" replace="${tc.ReplaceSvg}" data-js="enabled" fill="currentColor" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize}" data-src="${tc.icon}"></svg-renderer></button>
     </td>"$
 	'********
 	Return act
@@ -8334,12 +8408,14 @@ Sub AddRow(rowdata As Map)
 		rowEL1.on("click", Me, "HandleMenuRow")
 	Next
 	'
-	For Each clickevent As String In rowclick.keys
-		Dim rowEL1 As BANanoElement
-		rowEL1.Initialize($"#${clickevent}"$)
-		rowEL1.Off("click")
-		rowEL1.on("click", Me, "HandleRowClick")
-	Next
+	If bTrapRowClick Then
+		For Each clickevent As String In rowclick.keys
+			Dim rowEL1 As BANanoElement
+			rowEL1.Initialize($"#${clickevent}"$)
+			rowEL1.Off("click")
+			rowEL1.on("click", Me, "HandleRowClick")
+		Next
+	End If
 	'button click per column
 	For Each clickevent As String In clicks.keys
 		Dim rowEL As BANanoElement
@@ -10271,7 +10347,7 @@ End Sub
 'Dim sourceID As String = UI.GetIDFromEvent(e)
 'Select Case sourceID
 'Case "?"
-'Dim fileObj As Map = tblcollectionnames.GetFileFromEvent(e)
+'Dim fileObj As Map = tblcollectionnames.GetFile
 'If BANano.IsNull(fileObj) Or BANano.IsUndefined(fileObj) Then Return
 'tbl.ToolbarButtonLoading("?", True)
 'Dim props As Map = BANano.Await(App.readAsJsonWait(fileObj))
@@ -10279,7 +10355,7 @@ End Sub
 'Return
 'End Select
 ''has the file been specified
-'Dim fileObj As Map = table.GetFileFromEvent(e)
+'Dim fileObj As Map = table.GetFile
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
@@ -10902,7 +10978,7 @@ End Sub
 '<code>
 'Sub fi1_change(e As BANanoEvent)
 ''has the file been specified
-'Dim fileObj As Map = = UI.GetFileFromEvent(e)
+'Dim fileObj As Map = = UI.GetFile
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
@@ -10947,7 +11023,7 @@ End Sub
 ''****for multiple files
 'Sub fi1_change(e As BANanoEvent)
 ''has the files been selected
-'Dim fileList As List = UI.GetFilesFromEvent(e)
+'Dim fileList As List = UI.GetFiles
 'If banano.IsNull(fileList) Or banano.IsUndefined(fileList) Then Return
 ''will store list of uploaded file
 'Dim uploads As List

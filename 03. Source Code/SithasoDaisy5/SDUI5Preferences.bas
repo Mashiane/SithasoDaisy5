@@ -22,6 +22,8 @@ Version=10
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Property Bag, Description: Title
+#DesignerProperty: Key: Card, DisplayName: Card, FieldType: Boolean, DefaultValue: True, Description: Card
+#DesignerProperty: Key: CardBorder, DisplayName: Card Border, FieldType: Boolean, DefaultValue: True, Description: Card Border
 #DesignerProperty: Key: SearchVisible, DisplayName: Search Visible, FieldType: Boolean, DefaultValue: True, Description: Search Visible
 #DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: sm, Description: Search Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: SearchWidth, DisplayName: Search Width, FieldType: String, DefaultValue: 300px, Description: Search Width
@@ -34,9 +36,10 @@ Version=10
 #DesignerProperty: Key: PropertyPadding, DisplayName: Property Padding, FieldType: String, DefaultValue: py-1, Description: Property Padding
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: right, Description: Position, List: bottom|left|right|top
-#DesignerProperty: Key: WrapActions, DisplayName: Wrap Actions, FieldType: Boolean, DefaultValue: True, Description: Wrap Actions
+#DesignerProperty: Key: TopActionsVisible, DisplayName: Top Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Top Actions Visible
+#DesignerProperty: Key: WrapActions, DisplayName: Wrap Top Actions, FieldType: Boolean, DefaultValue: True, Description: Wrap Top Actions
+#DesignerProperty: Key: ActionsVisible, DisplayName: Bottom Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Bottom Actions Visible
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
-#DesignerProperty: Key: ActionsVisible, DisplayName: Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Actions Visible
 #DesignerProperty: Key: ActionType, DisplayName: Action Type, FieldType: String, DefaultValue: yes-no, Description: Action Type, List: cancel|no|yes|yes-no|yes-no-cancel
 #DesignerProperty: Key: YesVisible, DisplayName: Yes Visible, FieldType: Boolean, DefaultValue: True, Description: Yes Visible
 #DesignerProperty: Key: NoVisible, DisplayName: No Visible, FieldType: Boolean, DefaultValue: True, Description: No Visible
@@ -121,6 +124,7 @@ Private Sub Class_Globals
 	Private sShadow As String = "none"
 	Private sTooltipPosition As String = "right"
 	Private bActionsVisible As Boolean = True
+	Private bTopActionsVisible As Boolean = True
 	Private sActionType As String = "yes-no"
 	Private sCancelColor As String = "gray"
 	Private bCancelLoading As Boolean = False
@@ -157,6 +161,9 @@ Private Sub Class_Globals
 '	propring As Boolean,propringcolor As String, propringoffset As String,propringoffsetcolor As String,proponlinestatus As Boolean,proponline As Boolean, _
 '	proptextcolor As String, proptextsize As String,propaccept As String,propmultiple As Boolean, propalign As String, propvisible As Boolean,propenabled As Boolean, _
 '	propreadonly As Boolean)
+	Private AllwaysVisible As Map
+	Private bCard As Boolean
+	Private bCardBorder As Boolean
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
@@ -182,6 +189,7 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	PropertyBuilder.Initialize
 	CustProps.Initialize
 	validations.Initialize
+	AllwaysVisible.Initialize 
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("flatpickr.css")
 	'BANano.DependsOnAsset("material_blue.css")
@@ -312,6 +320,22 @@ Sub setMarginAXYTBLR(s As String)
 	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
+Sub SetPropertyAlwaysVisible(lst As List)
+	For Each k As String In lst
+		AllwaysVisible.Put(k, k)
+	Next
+
+End Sub
+
+Sub ShowAlwaysVisible
+	If mElement = Null Then Return
+	BANano.Await(HideAllProperties)
+	For Each k As String In AllwaysVisible.keys
+		BANano.Await(SetPropertyVisible(k, True))
+	Next
+End Sub
+
+
 Sub getAttributes As String
 	Return sRawAttributes
 End Sub
@@ -374,6 +398,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "right")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
 		bActionsVisible = Props.GetDefault("ActionsVisible", True)
+		bTopActionsVisible = Props.GetDefault("TopActionsVisible", True)
+		bTopActionsVisible = UI.CBool(bTopActionsVisible)
 		bActionsVisible = UI.CBool(bActionsVisible)		
 		sActionType = Props.GetDefault("ActionType", "yes-no")
 		sActionType = UI.CStr(sActionType)
@@ -414,9 +440,15 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsRounded = Props.GetDefault("ButtonsRounded", "md")
 		sButtonsRounded = UI.CStr(sButtonsRounded)
 		If sButtonsRounded = "none" Then sButtonsRounded = ""
+		bCard = Props.GetDefault("Card", False)
+		bCard = UI.CBool(bCard)
+		bCardBorder = Props.GetDefault("CardBorder", False)
+		bCardBorder = UI.CBool(bCardBorder)
 	End If
 	'
-	UI.AddClassDT("card-border card w-full bg-base-100")
+	If bCard Then UI.AddClassDT("card")
+	If bCard Then UI.AddClassDT("card-border")
+	UI.AddClassDT("w-full bg-base-100")
 	If sShadow <> "" Then UI.AddClassDT("shadow-" & sShadow)
 	'If sBackgroundColor <> "base-100" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -457,6 +489,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	setTitle(sTitle)	
 	setIsZebra(bIsZebra)
+	setTopActionsVisible(bTopActionsVisible)
 	setWrapActions(bWrapActions)
 	If bSearchVisible Then
 		setSearchWidth(sSearchWidth)
@@ -483,6 +516,38 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(AddNoButton)
 		BANano.Await(AddCancelButton)
 	End Select
+End Sub
+
+Sub setCard(b As Boolean)
+	bCard = b
+	CustProps.Put("Card", bCard)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, "card")
+End Sub
+
+Sub getCard As Boolean
+	Return bCard
+End Sub
+
+Sub setCardBorder(b As Boolean)
+	bCardBorder = b
+	CustProps.Put("CardBorder", bCardBorder)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, "card-border")
+End Sub
+
+Sub getCardBorder As Boolean
+	Return bCardBorder
+End Sub
+
+Sub ShowSearch(b As Boolean)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_searchbox"$, b)
+End Sub
+
+Sub ShowActions(b As Boolean)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_actions"$, b)
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)			'ignoredeadcode
@@ -627,6 +692,10 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.Shape = sButtonsRounded
 	CancelButton.AddComponent
 	UI.OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)
+End Sub
+
+Sub getTopActionsVisible As Boolean
+	Return bTopActionsVisible
 End Sub
 
 'get Actions Visible
@@ -801,6 +870,12 @@ Sub getYesVisible As Boolean
 	Return bYesVisible
 End Sub
 
+Sub setTopActionsVisible(b As Boolean)				'ignoredeadcode
+	bTopActionsVisible = b
+	CustProps.Put("TopActionsVisible", b)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${mName}_actions"$, b)
+End Sub
 
 'set Actions Visible
 Sub setActionsVisible(b As Boolean)			'ignoredeadcode
@@ -889,17 +964,14 @@ Sub setSearchVisible(b As Boolean)		'ignoredeadcode
 	bSearchVisible = b
 	CustProps.put("SearchVisible", b)
 	If mElement = Null Then Return
-	If b Then
-		'search is visible leave at zero
-		UI.SetVisibleByID($"#${mName}_searchbox"$, b)
-		UI.SetVisibleByID($"#${mName}_search"$, b)
-		'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
-		UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
-		UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-		'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
-	Else
-		UI.RemoveClassByID($"${mName}_divider"$, "m-0")
-	End If
+	'search is visible leave at zero
+	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"#${mName}_search"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
+	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	If b = False Then UI.RemoveClassByID($"${mName}_divider"$, "m-0")
 End Sub
 'set Search Width
 Sub setSearchWidth(s As String)		'ignoredeadcode
