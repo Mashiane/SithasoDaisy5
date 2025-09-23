@@ -50,13 +50,13 @@ Version=10
 #DesignerProperty: Key: CancelVisible, DisplayName: Cancel Visible, FieldType: Boolean, DefaultValue: True, Description: Cancel Visible
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: fit, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700px , Description: Width
+#DesignerProperty: Key: FullScreen, DisplayName: Full Screen, FieldType: Boolean, DefaultValue: False , Description: Full Screen
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
-#DesignerProperty: Key: FullScreen, DisplayName: Full Screen, FieldType: Boolean, DefaultValue: False , Description: Full Screen
 #DesignerProperty: Key: MoveFrom, DisplayName: Move From, FieldType: String, DefaultValue: middle, Description: Move From, List: bottom|end|middle|start|top
 #DesignerProperty: Key: SMMoveFrom, DisplayName: SM Move From, FieldType: String, DefaultValue: none, Description: S m Move From, List: bottom|end|middle|none|start|top
 #DesignerProperty: Key: MDMoveFrom, DisplayName: MD Move From, FieldType: String, DefaultValue: none, Description: M d Move From, List: bottom|end|middle|none|start|top
@@ -435,8 +435,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	If bFullScreen Then
-		sHeight = ""
-		sWidth = ""
+		sHeight = "screen"
+		sWidth = "screen"
 	End If
 	
 	If bIsCard Then
@@ -513,13 +513,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setBackdrop(bBackdrop)
 		setClosable(bClosable)
 		setHTML(sRawHtml)
-	Else
-		setHeight(sHeight)
-		setWidth(sWidth)
 	End If
+	setHeight(sHeight)
+	setWidth(sWidth)
 	setFullScreen(bFullScreen)
-	If bFullScreen = False Then setHeight(sHeight)
-	If bFullScreen = False Then setWidth(sWidth)
 	setTitle(sTitle)
 	setGlass(bGlass)
 	setIcon(sIcon)
@@ -757,16 +754,12 @@ Sub setFullScreen(b As Boolean)		'ignoredeadcode
 	If b = False Then Return
 	If bIsCard Then
 		UI.AddClass(mElement, "rounded-none")
-		UI.SetWidth(mElement, "full")
-		UI.SetHeight(mElement, "full")
-		UI.SetMaxWidth(mElement, "screen")
-		UI.SetMaxHeight(mElement, "screen")
+		UI.SetWidth(mElement, "screen")
+		UI.SetHeight(mElement, "screen")
 	Else	
-		UI.AddClassByID($"${mName}_box"$, "rounded-none")
-		UI.SetWidthByID($"${mName}_box"$, "full")
-		UI.SetHeightByID($"${mName}_box"$, "full")
-		UI.SetMaxWidthByID($"${mName}_box"$, "screen")
-		UI.SetMaxHeightByID($"${mName}_box"$, "screen")
+		UI.AddClassByID($"${mName}_box"$, "max-w-none rounded-none")
+		UI.SetWidthByID($"${mName}_box"$, "screen")
+		UI.SetHeightByID($"${mName}_box"$, "screen")
 	End If
 End Sub
 
@@ -903,8 +896,8 @@ Sub setHeight(s As String)			'ignoredeadcode
 		If bIsCard Then
 			UI.SetHeight(mElement, sHeight)
 		Else
-			UI.SetHeightResponsiveByID($"${mName}_box"$, "md", sHeight)
-			UI.SetMaxHeightResponsiveByID($"${mName}_box"$, "md", "90vh")
+			UI.SetHeightByID($"${mName}_box"$, sHeight)
+			UI.SetMaxHeightByID($"${mName}_box"$, sHeight)
 		End If
 	End If
 End Sub
@@ -967,8 +960,8 @@ Sub setWidth(s As String)			'ignoredeadcode
 		If bIsCard Then
 			UI.SetWidth(mElement, sWidth)
 		Else	
-			UI.SetWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
-			UI.SetMaxWidthResponsiveByID($"${mName}_box"$, "md", sWidth)
+			UI.SetWidthByID($"${mName}_box"$, sWidth)
+			UI.SetMaxWidthByID($"${mName}_box"$, sWidth)
 		End If
 	End If
 End Sub
