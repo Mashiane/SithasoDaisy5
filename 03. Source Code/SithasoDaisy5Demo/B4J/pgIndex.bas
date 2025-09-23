@@ -11,10 +11,12 @@ Sub Process_Globals
 	Public App As SDUI5App
 	Private appdrawer As SDUI5Drawer		'ignore
 	Private appnavbar As SDUI5NavBar		'ignore
-	Private pageView As SDUI5Container	'ignore
-	Private drawermenu As SDUI5Menu
-	Private drawerNav As SDUI5NavBar
-	Private draweruser As SDUI5DrawerUser
+	Private pageView As SDUI5Container		'ignore
+	Private drawermenu As SDUI5Menu			'ignore
+	Private drawerNav As SDUI5NavBar		'ignore
+	Private draweruser As SDUI5DrawerUser	'ignore
+	Private bottomdrawer As SDUI5BottomDrawer	'ignore
+	Private rightdrawer As SDUI5Drawer			'ignore
 End Sub
 
 Sub Initialize					'ignoreDeadCode
@@ -25,10 +27,11 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.UsesJSONQuery)
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
-	drawerNav.Title = Main.AppVersion
+	drawerNav.Title = Main.AppTitle
 	
 	BANano.Await(pgTypography.Show(App))
-
+	BANano.Await(AddDatabaseSchemas)
+	
 	'set the font of the app
 	'app.Font = "font-sans"
 	'link this app to the drawer, this is needed
@@ -51,6 +54,36 @@ Private Sub appdrawer_Opened (Status As Boolean)
 	appnavbar.Hamburger.Active = Status
 End Sub
 
+Sub AddDatabaseSchemas
+	App.AddDataModel("categories", "id", False)
+	App.AddDataModelStrings("categories", Array("id","name"))
+	'create the table in WebSQL if it does not exist
+	Dim dbcategories As SDUIWebSQL
+	dbcategories.Initialize(Main.DBName, "categories")
+	'dbcategories.ShowLogs = True
+	dbcategories.SetSchemaFromDataModel(App.DataModels)
+	BANano.Await(dbcategories.SchemaCreateTable)
+	'
+	App.AddDataModel("provinces", "id", False)
+	App.AddDataModelStrings("provinces", Array("id","name"))
+	'create the table in WebSQL if it does not exist
+	Dim dbprovinces As SDUIWebSQL
+	dbprovinces.Initialize(Main.DBName, "provinces")
+	'dbprovinces.ShowLogs = True
+	dbprovinces.SetSchemaFromDataModel(App.DataModels)
+	BANano.Await(dbprovinces.SchemaCreateTable)
+	'
+	App.AddDataModel("contacts", "id", False)
+	App.AddDataModelStrings("contacts", Array("id", "fullname","mobile","telephone","emailaddress","category","streetaddress1","streetaddress2","city","state","province","postalcode"))
+	'create the table in WebSQL if it does not exist
+	Dim dbcontacts As SDUIWebSQL
+	dbcontacts.Initialize(Main.DBName, "contacts")
+	'dbcontacts.ShowLogs = True
+'	BANano.Await(dbcontacts.DropTable)
+	dbcontacts.SetSchemaFromDataModel(App.DataModels)
+	BANano.Await(dbcontacts.SchemaCreateTable)
+End Sub
+
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
@@ -58,6 +91,11 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
 	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
 	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
+	'
+	drawermenu.AddItemParent("wnew", "ab", "", "Address Book (BANanoSQL)")
+	drawermenu.AddItemChild("ab", "pg-categories", "", "Categories (Modal)")
+	drawermenu.AddItemChild("ab", "pg-provinces", "", "Provinces (Right Drawer)")
+	drawermenu.AddItemChild("ab", "pg-contacts", "", "Contacts (Bottom Drawer)")
 	
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
@@ -245,6 +283,12 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "categories"
+				pgCategories.Show(App)
+			Case "provinces"
+				pgProvinces.Show(App)
+			Case "contacts"
+				pgContacts.Show(App)
 			Case "tableexpand"
 				pgTableExpand.Show(App)
 			Case "fab"
@@ -578,4 +622,50 @@ End Sub
 
 Private Sub draweruser_Click (event As BANanoEvent)
 	App.ShowToastInfo("User Name")
+End Sub
+
+
+Sub GetSearchValue As String
+	Dim searchString As String = appnavbar.SearchValue
+	Return searchString
+End Sub
+
+Sub SetSearchValue(s As String)
+	appnavbar.SearchValue = s
+End Sub
+
+Private Sub appnavbar_SearchClick (Value As String)
+	App.ShowSwalSuccess($"You entered search: '${Value}'"$)
+End Sub
+
+Private Sub appnavbar_SearchKeyUp (Value As String)
+	Log(Value)
+End Sub
+
+Private Sub appnavbar_SearchClear (e As BANanoEvent)
+	App.ShowSwalSuccess($"Search was cleared!"$)
+End Sub
+
+Sub OpenRightDrawer
+	rightdrawer.OpenDrawer(True)
+End Sub
+
+Sub CloseRightDrawer
+	rightdrawer.OpenDrawer(False)
+End Sub
+
+Sub CloseRightDrawerByForce
+	rightdrawer.ForceClose
+End Sub
+
+Sub OpenBottomDrawer
+	bottomdrawer.ShowOnBreakPoint(0.5)
+End Sub
+
+Sub OpenBottomDrawerOn(bp As Double)
+	bottomdrawer.ShowOnBreakPoint(bp)
+End Sub
+
+Sub CloseBottomDrawer
+	bottomdrawer.Hide
 End Sub

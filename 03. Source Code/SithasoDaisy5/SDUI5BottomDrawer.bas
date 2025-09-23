@@ -8,17 +8,17 @@ Version=10.2
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: bg-base-200, Description: Background Color
-#DesignerProperty: Key: Breakpoints, DisplayName: Breakpoints, FieldType: String, DefaultValue: , Description: Breakpoints
+#DesignerProperty: Key: Breakpoints, DisplayName: Breakpoints, FieldType: String, DefaultValue: 0;0.1;0.2;0.3;0.4;0.5;0.7;0.8;1, Description: Breakpoints
+#DesignerProperty: Key: InitialBreakpoint, DisplayName: Initial Breakpoint, FieldType: String, DefaultValue: 0.5, Description: Initial Breakpoint
 #DesignerProperty: Key: Duration, DisplayName: Duration, FieldType: Int, DefaultValue: 300, Description: Duration
 #DesignerProperty: Key: ShowHandle, DisplayName: Show Handle, FieldType: Boolean, DefaultValue: True, Description: Show Handle
-#DesignerProperty: Key: HandleBg, DisplayName: Handle Bg, FieldType: String, DefaultValue: bg-base-300, Description: Handle Bg
+#DesignerProperty: Key: HandleBg, DisplayName: Handle Background, FieldType: String, DefaultValue: bg-base-300, Description: Handle Background
 #DesignerProperty: Key: HandleShadow, DisplayName: Handle Shadow, FieldType: String, DefaultValue: md, Description: Handle Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
-#DesignerProperty: Key: InitialBreakpoint, DisplayName: Initial Breakpoint, FieldType: String, DefaultValue: 0.5, Description: Initial Breakpoint
-#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: 90%, Description: Max Width
+#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: 100%, Description: Max Width
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 100%, Description: Width
-#DesignerProperty: Key: Showbackdrop, DisplayName: Showbackdrop, FieldType: Boolean, DefaultValue: False, Description: Showbackdrop
-#DesignerProperty: Key: BackdropColor, DisplayName: Backdrop Color, FieldType: String, DefaultValue: , Description: Backdrop Color
-#DesignerProperty: Key: Backdropdismiss, DisplayName: Backdropdismiss, FieldType: Boolean, DefaultValue: True, Description: Backdropdismiss
+#DesignerProperty: Key: Showbackdrop, DisplayName: Showbackdrop, FieldType: Boolean, DefaultValue: True, Description: Show Backdrop
+#DesignerProperty: Key: BackdropColor, DisplayName: Backdrop Color, FieldType: String, DefaultValue: #00000052, Description: Backdrop Color
+#DesignerProperty: Key: Backdropdismiss, DisplayName: Backdropdismiss, FieldType: Boolean, DefaultValue: True, Description: Backdrop Dismiss
 
 'global variables in this module
 Sub Class_Globals
@@ -32,18 +32,18 @@ Sub Class_Globals
 	Private BANano As BANano   'ignore
 	Private sParentID As String = ""
 	Public Tag As Object
-	Private sBackdropColor As String = "none"
+	Private sBackdropColor As String = "#00000052"
 	Private bBackdropdismiss As Boolean = True
 	Private sBackgroundColor As String = "bg-base-200"
-	Private sBreakpoints As String = "0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8,1"
+	Private sBreakpoints As String = "0;0.1;0.2;0.3;0.4;0.5;0.7;0.8;1"
 	Private iDuration As Int = 300
 	Private sHandleBg As String = "bg-base-300"
 	Private sHandleShadow As String = "md"
 	Private sInitialBreakpoint As String = "0.5"
-	Private sMaxWidth As String = "90%"
+	Private sMaxWidth As String = "100%"
 	Private bOpen As Boolean = False
 	Private bShowHandle As Boolean = True
-	Private bShowbackdrop As Boolean = False
+	Private bShowbackdrop As Boolean = True
 	Private sWidth As String = "100%"
 End Sub
 'initialize the custom view class
@@ -98,15 +98,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		'UI.ExcludeVisible = True
+		UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackdropColor = Props.GetDefault("BackdropColor", "rgba(0, 0, 0, 0.32)")
+		sBackdropColor = Props.GetDefault("BackdropColor", "#00000052")
 		sBackdropColor = UI.CStr(sBackdropColor)
 		bBackdropdismiss = Props.GetDefault("Backdropdismiss", True)
 		bBackdropdismiss = UI.CBool(bBackdropdismiss)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "bg-base-200")
 		sBackgroundColor = UI.CStr(sBackgroundColor)
-		sBreakpoints = Props.GetDefault("Breakpoints", "0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.7, 0.8,1")
+		sBreakpoints = Props.GetDefault("Breakpoints", "0;0.1;0.2;0.3;0.4;0.5;0.7;0.8;1")
 		sBreakpoints = UI.CStr(sBreakpoints)
 		iDuration = Props.GetDefault("Duration", 300)
 		iDuration = UI.CInt(iDuration)
@@ -116,18 +116,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHandleShadow = UI.CStr(sHandleShadow)
 		sInitialBreakpoint = Props.GetDefault("InitialBreakpoint", "0.5")
 		sInitialBreakpoint = UI.CStr(sInitialBreakpoint)
-		sMaxWidth = Props.GetDefault("MaxWidth", "90%")
+		sMaxWidth = Props.GetDefault("MaxWidth", "100%")
 		sMaxWidth = UI.CStr(sMaxWidth)
 		bOpen = Props.GetDefault("Open", False)
 		bOpen = UI.CBool(bOpen)
 		bShowHandle = Props.GetDefault("ShowHandle", True)
 		bShowHandle = UI.CBool(bShowHandle)
-		bShowbackdrop = Props.GetDefault("Showbackdrop", False)
+		bShowbackdrop = Props.GetDefault("Showbackdrop", True)
 		bShowbackdrop = UI.CBool(bShowbackdrop)
 		sWidth = Props.GetDefault("Width", "100%")
 		sWidth = UI.CStr(sWidth)
 	End If
 	'
+	sBreakpoints = sBreakpoints.Replace(";",",")
+	UI.AddClassDT("z-99")
 	If bBackdropdismiss = True Then UI.AddAttrDT("backdropdismiss", bBackdropdismiss)
 	If sBackgroundColor <> "" Then UI.AddAttrDT("background-color", sBackgroundColor)
 	If sBreakpoints <> "" Then UI.AddAttrDT("breakpoints", sBreakpoints)
@@ -138,7 +140,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sMaxWidth <> "" Then UI.AddAttrDT("max-width", sMaxWidth)
 	If bOpen = True Then UI.AddAttrDT("open", bOpen)
 	If bShowbackdrop = True Then UI.AddAttrDT("showbackdrop", bShowbackdrop)
-	If sWidth <> "100%" Then UI.AddAttrDT("width", sWidth)
+	If sWidth <> "" Then UI.AddAttrDT("width", sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -154,7 +156,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 End Sub
 
 'set Backdrop Color
-'options: primary|secondary|accent|neutral|info|success|warning|error|none
 Sub setBackdropColor(s As String)
 	sBackdropColor = s
 	CustProps.put("BackdropColor", s)
@@ -185,6 +186,7 @@ End Sub
 'set Breakpoints
 Sub setBreakpoints(s As String)
 	sBreakpoints = s
+	sBreakpoints = sBreakpoints.Replace(";",",")
 	CustProps.put("Breakpoints", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddAttr(mElement, "breakpoints", s)
@@ -194,7 +196,7 @@ Sub setDuration(i As Int)
 	iDuration = i
 	CustProps.put("Duration", i)
 	If mElement = Null Then Return
-	If i <> 0 Then UI.AddAttr(mElement, "duration", i)
+	UI.AddAttr(mElement, "duration", i)
 End Sub
 'set Handle Bg
 Sub setHandleBg(s As String)
@@ -265,6 +267,22 @@ Sub setWidth(s As String)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddAttr(mElement, "width", s)
+End Sub
+
+'show the bottom drawer
+Sub Show
+	If mElement = Null Then Return
+	mElement.RunMethod("show", Null)
+End Sub
+
+Sub ShowOnBreakPoint(bp As Double)
+	If mElement = Null Then Return
+	mElement.RunMethod("show", Array(bp))
+End Sub
+
+Sub Hide
+	If mElement = Null Then Return
+	mElement.RunMethod("hide", Null)
 End Sub
 
 'get Backdrop Color
