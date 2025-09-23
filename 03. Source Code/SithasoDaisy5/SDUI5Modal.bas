@@ -547,6 +547,16 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 End Sub
 
+Sub RemoveBodyPadding
+	If mElement = Null Then Return
+	UI.RemoveClassByID($"${mName}_body"$, "p-4")
+	UI.AddClassByID($"${mName}_body"$, "p-0")
+End Sub
+
+Sub RemoveFormPadding
+	If mElement = Null Then Return
+	UI.RemoveClassByID($"${mName}_form"$, "py-4")
+End Sub
 
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
