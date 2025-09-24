@@ -2509,10 +2509,14 @@ End Sub
 Sub ClearHeadings
 	UI.ClearByID($"${mName}_theadtr"$)
 	Columns.Initialize
+	If bSelectAll Then AddColumnSelectAll
 End Sub
 
 Sub ClearFooter			'ignoredeadcode
 	UI.ClearByID($"${mName}_footr"$)
+	If bSelectAll Then 
+		UI.AppendByID($"${mName}_footr"$, $"<td id="${mName}_tf_selectall" style="${BuildStyle(colSelectAll)}"></td>"$)
+	End If
 End Sub
 
 'clear the visible rows
