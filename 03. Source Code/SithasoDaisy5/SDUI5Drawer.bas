@@ -17,10 +17,10 @@ Version=10
 #DesignerProperty: Key: XlOpen, DisplayName: XL Open, FieldType: Boolean, DefaultValue: False, Description: Xl Open
 #DesignerProperty: Key: Overlay, DisplayName: Overlay, FieldType: Boolean, DefaultValue: True, Description: Overlay
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
-#DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: screen, Description: Min Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 80, Description: Width
-#DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
+#DesignerProperty: Key: Height, DisplayName: Side Height, FieldType: String, DefaultValue: , Description: Side Height
+#DesignerProperty: Key: MinHeight, DisplayName: Side Min Height, FieldType: String, DefaultValue: screen, Description: Side Min Height
+#DesignerProperty: Key: Width, DisplayName: Side Width, FieldType: String, DefaultValue: 80, Description: Side Content Width
+#DesignerProperty: Key: MinWidth, DisplayName: Side Content Min Width, FieldType: String, DefaultValue: , Description: Side Content Min Width
 #DesignerProperty: Key: RightSide, DisplayName: Right Side, FieldType: Boolean, DefaultValue: False, Description: Right Side
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.

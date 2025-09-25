@@ -288,6 +288,15 @@ Sub ReadSheetContentsByPos(pos As Int) As List
 	Return excelRows
 End Sub
 
+Sub GetExcelHeadings(lst As List) As List
+	Dim headers As List
+	headers.Initialize
+	Dim r1 As Map = lst.Get(0)
+	For Each k As String In r1.Keys
+		headers.Add(k)
+	Next
+	Return headers
+End Sub
 
 Sub GetSingleCode(lst As List) As String
 	Dim sbLine1 As StringBuilder
@@ -763,14 +772,4 @@ Sub ExportTable(mExcelTitle As String, border As Boolean, fieldNames As List, fi
 	End If
 	'download the report
 	Download(mback, $"${mEvent}_exceldownload"$)
-End Sub
-
-Sub GetExcelHeadings(lst As List) As List
-	Dim headers As List
-	headers.Initialize
-	Dim r1 As Map = lst.Get(0)
-	For Each k As String In r1.Keys
-		headers.Add(k)
-	Next
-	Return headers
 End Sub

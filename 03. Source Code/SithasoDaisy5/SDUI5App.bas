@@ -802,7 +802,7 @@ End Sub
 
 'valid
 Sub UsesExcel
-	Banano.Await(UI.LoadAssetsOnDemand("Excel", Array("jszip.min.js", "xlsx.full.min.js","oxml.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Excel", Array("jszip.min.js", "xlsx.full.min.js","oxml.min.js", "exceljs.min.js")))
 End Sub
 
 'valid

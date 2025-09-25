@@ -2235,43 +2235,55 @@ Sub setNextPageDisabled(b As Boolean)
 End Sub
 Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
-	If b Then
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
-		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
-	Else
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
-	End If
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		Else
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		End If
+	Catch
+	End Try			'ignore		
 End Sub
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
-	If b Then
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
-	Else
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
-		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
-	End If
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		Else
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		End If
+	Catch
+	End Try					'ignore		
 End Sub
 Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
-	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
-	Else
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
-	End If
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
+		Else
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
+			BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+		End If
+	Catch
+	End Try					'ignore		
 End Sub
 Sub ToolbarButtonLoading(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
-	If b Then
-		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
-	Else
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
-		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
-	End If
+	Try
+		If b Then
+			BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
+		Else
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
+			BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+		End If
+	Catch
+	End Try				'ignore		
 End Sub
 Sub SetToolbarSelectAllChecked(value As Boolean)
 	If BANano.Exists($"#${mName}_selectall"$) = False Then Return
@@ -2283,6 +2295,20 @@ Sub SetToolbarSelectAllChecked(value As Boolean)
 		Dim ck As String = $"${mName}_${rCnt1}_selectall"$
 		UI.SetCheckedByID(ck, value)
 	Next
+	'get all checked records in this page
+	Dim selected As List = GetAllChecked(True)
+	If selected.Size = 0 Then
+		'nothing has been selected
+		'disable delete all button
+		SetToolbarButtonEnable("deleteall", False)
+		'set badge for delete all button to zero
+		SetToolbarButtonBadge("deleteall", "0")
+	Else
+		'enable delete all button
+		SetToolbarButtonEnable("deleteall", True)
+		'set badge for delete all button to size
+		SetToolbarButtonBadge("deleteall", selected.size)
+	End If
 End Sub
 'check a row, 0 based
 Sub SetRowSelectChecked(rowPos As Int, value As Boolean)
@@ -2578,6 +2604,22 @@ private Sub HandleSelectAll(event As BANanoEvent)		'ignoredeadcode
 			Dim ck As String = $"${mName}_${rCnt1}_selectall"$
 			UI.SetCheckedByID(ck, b)
 		Next
+		'
+		'get all checked records in this page
+		Dim selected As List = GetAllChecked(True)
+		If selected.Size = 0 Then
+			'nothing has been selected
+			'disable delete all button
+			SetToolbarButtonEnable("deleteall", False)
+			'set badge for delete all button to zero
+			SetToolbarButtonBadge("deleteall", "0")
+		Else
+			'enable delete all button
+			SetToolbarButtonEnable("deleteall", True)
+			'set badge for delete all button to size
+			SetToolbarButtonBadge("deleteall", selected.size)
+		End If
+		
 		BANano.CallSub(mCallBack, mName & "_selectall", Array(b))
 	End If
 End Sub
@@ -8789,6 +8831,21 @@ private Sub HandleSelection(event As BANanoEvent)     'ignoredeadcode
 	If src = "" Then Return
 	Dim rowpos As Int = UI.MvField(src,2, "_")
 	rowpos = UI.CInt(rowpos)
+	'get all checked records in this page
+	Dim selected As List = GetAllChecked(True)
+	If selected.Size = 0 Then
+		'nothing has been selected
+		'disable delete all button
+		SetToolbarButtonEnable("deleteall", False)
+		'set badge for delete all button to zero
+		SetToolbarButtonBadge("deleteall", "0")
+	Else
+		'enable delete all button
+		SetToolbarButtonEnable("deleteall", True)
+		'set badge for delete all button to size
+		SetToolbarButtonBadge("deleteall", selected.size)
+	End If
+'
 	If SubExists(mCallBack, $"${mName}_SelectRow"$) Then
 		rowpos = BANano.parseInt(rowpos) - 1
 		Dim rowx As Map = GetRow(rowpos)
