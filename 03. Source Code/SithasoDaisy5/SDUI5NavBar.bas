@@ -39,6 +39,7 @@ Version=10
 #DesignerProperty: Key: TitlePosition, DisplayName: Title Position, FieldType: String, DefaultValue: left, Description: Title Position, List: center|left|right
 #DesignerProperty: Key: TextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
+#DesignerProperty: Key: HasFile, DisplayName: Has File, FieldType: Boolean, DefaultValue: False, Description: Has File
 #DesignerProperty: Key: HasSearch, DisplayName: Has Search, FieldType: Boolean, DefaultValue: False, Description: Has Search
 #DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: md, Description: Search Size, List: lg|md|sm|xs|none
 #DesignerProperty: Key: SearchWidth, DisplayName: Search Width, FieldType: String, DefaultValue: 300px, Description: Search Width
@@ -122,6 +123,8 @@ Sub Class_Globals
 	Private sGradient As String
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String
+	Public Children As Map
+	Private bHasFile As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -132,10 +135,20 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize	
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -337,8 +350,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGradient = Props.GetDefault("Gradient", "")
 		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
 		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		bHasFile = Props.GetDefault("HasFile", False)
+		bHasFile = UI.CBool(bHasFile)
 	End If
 	'
+	If bGradientActive Then sBackgroundColor = ""
+	If bGlass Then sBackgroundColor = ""
 	If bGradientActive Then sBackgroundColor = ""
 	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("navbar justify-center")
@@ -390,6 +407,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		txtsearch.On("search", Me, "SearchClear")
 		setSearchSize(sSearchSize)
 		BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
+	Else
+		UI.RemoveElementByID($"${mName}_searchbox"$)
 	End If
 	'set the title position
 	setHasBurger(bHasBurger)
@@ -405,25 +424,53 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHideTitle(bHideTitle)
 '	setVisible(bVisible)
 	setHasBackButton(bHasBackButton)
+	setHasFile(bHasFile)
 	If bGradientActive Then
 		Dim agradient As String = UI.GetActualGradient(sGradient)
 		UI.SetLinearGradient(mElement, agradient, sGradientColor1, sGradientColor2)
 	End If
+	Children.Put($"${mName}_left"$, "SDUI5Text")
+	Children.Put($"${mName}_center"$, "SDUI5Text")
+	Children.Put($"${mName}_right"$, "SDUI5Text")
+	If bHasBackButton Then
+		Children.Put($"${mName}_back"$, "SDUI5Text")
+		Children.Put($"${mName}_burger"$, "SDUI5Text")
+		Children.Put($"${mName}_logo"$, "SDUI5Text")
+	End If
+	If bHasSearch Then
+		Children.Put($"${mName}_searchbox"$, "SDUI5Text")
+	End If
+End Sub
+
+Sub setHasFile(b As Boolean)				'ignoredeadcode
+	bHasFile = b
+	CustProps.Put("HasFile", b)
+	If mElement = Null Then Return
+	If bHasFile = False Then
+		UI.RemoveElementByID($"${mName}_file"$)
+	End If
+End Sub
+
+Sub getHasFile As Boolean
+	Return bHasFile
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)
 	e.PreventDefault
+	If bHasSearch = False Then Return
 	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
 	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(sfind))
 End Sub
 
 private Sub SearchInternal(e As BANanoEvent)		'ignore
+	If bHasSearch = False Then Return
 	Dim sfind As String = BANano.getelement($"#${mName}_search"$).GetValue
 	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(sfind))
 End Sub
 
 private Sub SearchClear(e As BANanoEvent)
 	e.PreventDefault
+	If bHasSearch = False Then Return
 	Dim e1 As BANanoEvent
 	BANano.CallSub(mCallBack, $"${mName}_SearchClear"$, Array(e1))
 End Sub
@@ -433,6 +480,7 @@ Sub setSearchSize(s As String)			'ignoredeadcode
 	sSearchSize = s
 	CustProps.put("SearchSize", s)
 	If mElement = Null Then Return
+	If bHasSearch = False Then Return
 	If s = "none" Then s = ""
 	If s = "" Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
@@ -447,6 +495,7 @@ End Sub
 
 'get the list of selected files
 Sub GetFiles As List
+	If bHasFile = False Then Return Null
 	'get the selected files, if any
 	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
 	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
@@ -460,6 +509,7 @@ End Sub
 
 'get selected file
 Sub GetFile As Map
+	If bHasFile = False Then Return Null
 	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
 	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
 		Return Null
@@ -471,6 +521,7 @@ End Sub
 
 'ensure we can select the same file again
 Sub Nullify
+	If bHasFile = False Then Return
 	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
 	xFile.SetValue(Null)
 End Sub
@@ -479,6 +530,7 @@ Sub setSearchWidth(s As String)			'ignoredeadcode
 	sSearchWidth = s
 	CustProps.Put("SearchWidth", s)
 	If mElement = Null Then Return
+	If bHasSearch = False Then Return
 	If s <> "" Then UI.SetWidthByID($"${mName}_search"$, s)
 End Sub
 
@@ -494,6 +546,10 @@ Sub setHasSearch(b As Boolean)			'ignoredeadcode
 	CustProps.Put("HasSearch", b)
 	bHasSearch = b
 	If mElement = Null Then Return
+	If bHasSearch = False Then
+		UI.RemoveElementByID($"${mName}_searchbox"$)
+		Return
+	End If
 	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
 	UI.SetVisibleByID($"#${mName}_search"$, b)
 	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
@@ -507,12 +563,14 @@ Sub getHasSearch As Boolean
 End Sub
 
 Sub getSearchValue As String
+	If bHasSearch = False Then Return ""
 	Dim s As String = BANano.GetElement($"#${mName}_search"$).GetValue
 	Return s
 End Sub
 
 Sub setSearchValue(s As String)
 	If mElement = Null Then Return
+	If bHasSearch = False Then Return
 	BANano.GetElement($"#${mName}_search"$).SetValue(s)
 End Sub
 
@@ -521,6 +579,7 @@ End Sub
 'tbl.SetSearchPlaceholder("Buscar")
 '</code>
 Sub SetSearchPlaceholder(s As String)
+	If bHasSearch = False Then Return
 	BANano.GetElement($"#${mName}_search"$).SetAttr("placeholder", s)
 End Sub
 
@@ -722,6 +781,7 @@ Sub setHideLogo(b As Boolean)					'ignoredeadcode
 	bHideLogo = b
 	CustProps.put("HideLogo", b)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	UI.SetVisibleByID($"${mName}_logo"$, Not(b))
 End Sub
 'set Hide Title
@@ -747,6 +807,7 @@ Sub setHideHamburger(b As Boolean)				'ignoredeadcode
 	bHideHamburger = b
 	CustProps.put("HideHamburger", b)
 	If mElement = Null Then Return
+	If bHasBurger = False Then Return
 	UI.SetVisibleByID($"${mName}_burger"$, Not(b))
 End Sub
 
@@ -755,6 +816,7 @@ Sub setHideHamburgerOnLargeScreen(b As Boolean)			'ignoredeadcode
 	bHideHamburgerOnLargeScreen = b
 	CustProps.put("HideHamburgerOnLargeScreen", b)
 	If mElement = Null Then Return
+	If bHasBurger = False Then Return
 	If b = True Then
 		UI.AddClassByID($"${mName}_burger"$, "lg:hidden")
 	Else
@@ -767,6 +829,7 @@ Sub setHideLogoOnLargeScreen(b As Boolean)				'ignoredeadcode
 	bHideLogoOnLargeScreen = b
 	CustProps.put("HideLogoOnLargeScreen", b)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	If b = True Then
 		UI.AddClassByID($"${mName}_logo"$, "lg:hidden")
 	Else
@@ -854,7 +917,10 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	bHasBurger = b
 	CustProps.put("HasBurger", b)
 	If mElement = Null Then Return
-	If bHasBurger = False Then Return
+	If bHasBurger = False Then 
+		UI.RemoveElementByID($"${mName}_burger"$)
+		Return
+	End If
 	If BANano.Exists($"${mName}burger"$) = True Then Return
 	Hamburger.Initialize(mCallBack, $"${mName}burger"$, $"${mName}burger"$)
 	Hamburger.ParentID = $"${mName}_burger"$
@@ -867,8 +933,9 @@ Sub setHasBurger(b As Boolean)			'ignoredeadcode
 	Hamburger.Visible = True
 	Hamburger.Active = False
 	Hamburger.Enabled = True
-'	Hamburger.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
+	'Hamburger.MarginAXYTBLR = "a=5px; x=?; y=?; t=?; b=?; l=?; r=?"
 	Hamburger.AddComponent
+	UI.RemoveElementByID($"${mName}burger_indeterminate"$)
 	UI.OnChildEvent($"${mName}burger"$, "change", Me, "swapchange")
 	Hamburger.UI.AddClassByID($"${mName}_burger"$, "shrink-0 ml-2")
 End Sub
@@ -877,7 +944,10 @@ End Sub
 Sub setHasBackButton(b As Boolean)									'ignoredeadcode
 	bHasBackButton = b
 	CustProps.put("HasBackButton", b)
-	If bHasBackButton = False Then Return
+	If bHasBackButton = False Then 
+		UI.RemoveElementByID($"${mName}_back"$)
+		Return
+	End If
 	If mElement = Null Then Return
 	If BANano.Exists($"#${mName}back"$) = True Then Return
 	BackButton.Initialize(mCallBack, $"${mName}back"$, $"${mName}back"$)
@@ -940,7 +1010,10 @@ Sub setHasLogo(b As Boolean)			'ignoredeadcode
 	bHasLogo = b
 	CustProps.put("HasLogo", b)
 	If mElement = Null Then Return
-	If bHasLogo = False Then Return
+	If bHasLogo = False Then 
+		UI.RemoveElementByID($"${mName}_logo"$)
+		Return
+	End If
 	If BANano.Exists($"${mName}logo"$) = True Then Return
 	Logo.Initialize(mCallBack, $"${mName}logo"$, $"${mName}logo"$)
 	Logo.ParentID = $"${mName}_logo"$
@@ -960,6 +1033,7 @@ Sub setLogoHeight(s As String)							'ignoredeadcode
 	sLogoHeight = s
 	CustProps.put("LogoHeight", s)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	Logo.Height = s
 End Sub
 'set Logo Image
@@ -967,6 +1041,7 @@ Sub setLogoImage(s As String)							'ignoredeadcode
 	sLogoImage = s
 	CustProps.put("LogoImage", s)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	Logo.Src = s
 End Sub
 'set Logo Mask
@@ -975,6 +1050,7 @@ Sub setLogoMask(s As String)							'ignoredeadcode
 	sLogoMask = s
 	CustProps.put("LogoMask", s)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	Logo.Mask = s
 End Sub
 'set Logo Width
@@ -982,6 +1058,7 @@ Sub setLogoWidth(s As String)							'ignoredeadcode
 	sLogoWidth = s
 	CustProps.put("LogoWidth", s)
 	If mElement = Null Then Return
+	If bHasLogo = False Then Return
 	Logo.Width = s
 End Sub
 'get Logo Height
@@ -1008,6 +1085,7 @@ End Sub
 
 private Sub swapchange(e As BANanoEvent)		'ignoreDeadCode
 	e.PreventDefault
+	If bHasBurger = False Then Return
 	Dim b As Boolean = Hamburger.Active
 	BANano.CallSub(mCallBack, $"${mName}_BurgerClick"$, Array(b))
 End Sub

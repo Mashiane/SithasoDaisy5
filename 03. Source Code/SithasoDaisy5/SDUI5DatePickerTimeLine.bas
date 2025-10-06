@@ -98,6 +98,15 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -438,7 +447,7 @@ End Sub
 private Sub dateselected(e As BANanoEvent)					'ignoredeadcode
 	e.PreventDefault
 	Dim xitem As String = UI.MvField(e.ID, 2, "_")
-	BANano.Await(UI.EnsureVisible($"item_${xitem}"$))
+	BANano.Await(UI.EnsureVisibleByID($"item_${xitem}"$))
 	BANano.Await(MarkSelected(xitem))
 	BANano.CallSub(mCallBack, $"${mName}_change"$, Array(xitem))
 End Sub

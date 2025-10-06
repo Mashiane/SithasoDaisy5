@@ -13,7 +13,7 @@ Version=10
 #DesignerProperty: Key: OffTextColor, DisplayName: Off Text Color, FieldType: String, DefaultValue: none, Description: Off Text Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: ToastPlacement, DisplayName: Toast Placement, FieldType: String, DefaultValue: bottom-end, Description: Toast Placement, List: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
 #DesignerProperty: Key: DropdownPlacement, DisplayName: Dropdown Placement, FieldType: String, DefaultValue: , Description: Dropdown Placement, List: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 2xl, Description: Icon Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 2xl, Description: Icon Size
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: lg, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -68,6 +68,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent

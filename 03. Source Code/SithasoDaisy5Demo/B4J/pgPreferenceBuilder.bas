@@ -1261,7 +1261,7 @@ Private Sub tblDesign_EditRow (Row As Int, item As Map)
 	compToAdd.PropertyBag = item
 	
 	BANano.Await(GeneratePreview)
-	app.UI.EnsureVisible(compToAdd.Name)
+	app.UI.EnsureVisibleByID(compToAdd.Name)
 End Sub
 
 Private Sub tblDesign_DeleteRow (Row As Int, item As Map)

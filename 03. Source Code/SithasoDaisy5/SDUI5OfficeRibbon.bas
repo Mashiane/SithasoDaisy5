@@ -4,6 +4,7 @@ ModulesStructureVersion=1
 Type=Class
 Version=10.2
 @EndOfDesignText@
+'https://crg.syncfusion.com/
 #IgnoreWarnings:12
 #Event: ColorChange (value As String)
 #Event: ComboChange (id As String, value As String, text as string)
@@ -12,8 +13,10 @@ Version=10.2
 #Event: TabSelected (args As Map)
 #Event: LauncherIconClick (args As Map)
 #Event: FileMenu (args As Map)
+#Event: Button (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: LicenseKey, DisplayName: License Key, FieldType: String, DefaultValue: , Description: License Key
 #DesignerProperty: Key: FileMenuText, DisplayName: File Menu Text, FieldType: String, DefaultValue: File, Description: File Menu Text
 #DesignerProperty: Key: FileMenuVisible, DisplayName: File Menu Visible, FieldType: Boolean, DefaultValue: True, Description: File Menu Visible
 #DesignerProperty: Key: ShowItemOnClick, DisplayName: Show Item On Click, FieldType: Boolean, DefaultValue: False, Description: Show Item On Click
@@ -71,6 +74,7 @@ Sub Class_Globals
 	Private bFileMenuVisible As Boolean
 	Private bshowItemOnClick As Boolean
 	Private sFileMenuText As String
+	Private sLicenseKey As String
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -82,11 +86,22 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Options.Initialize
 	tabsm.Initialize 
-	menuItems.Initialize 
+	menuItems.Initialize
+	BANano.DependsOnAsset("sfribbon.min.css")
+	BANano.DependsOnAsset("sfribbon.min.js")
 End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -234,6 +249,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bshowItemOnClick = UI.CBool(bshowItemOnClick)
 		sFileMenuText = Props.GetDefault("FileMenuText", "File")
 		sFileMenuText = UI.CStr(sFileMenuText)
+		sLicenseKey = Props.GetDefault("LicenseKey", "")
+		sLicenseKey = UI.CStr(sLicenseKey)
 	End If
 	'
 	Options.put("activeLayout", sActiveLayout)
@@ -290,21 +307,44 @@ Sub ClearFileItems
 	menuItems.Initialize 
 End Sub
 
-Sub AddFileMenuItem(id As String, text As String, iconCss As String)
+'<code>
+'SDUI5OfficeRibbon1.AddFileMenuItem("new", "New", "e-icons e-file-new")
+'SDUI5OfficeRibbon1.AddFileMenuSeparator
+'Private Sub SDUI5OfficeRibbon1_FileMenu (args As Map)
+'	Dim actionID As String = SDUI5OfficeRibbon1.GetActionID(args)
+'	Log("SDUI5OfficeRibbon1_FileMenu")
+'	app.ShowToastInfo($"SDUI5OfficeRibbon1_FileMenu: ${actionID}"$)
+'	Log(args)
+'End Sub
+'</code>
+Sub AddFileMenuItem(id As String, text As String, iconCss As String) As SDUI5OfficeRibbon
 	Dim item As Map = CreateMap()
 	item.put("id", id)
 	item.Put("text", text)
 	item.Put("iconCss", iconCss)
 	menuItems.Add(item)
+	Return Me
 End Sub
 
-Sub AddFileMenuSeparator
+'add a separator to the file menu
+Sub AddFileMenuSeparator As SDUI5OfficeRibbon
 	Dim item As Map = CreateMap()
 	item.put("separator", True)
 	menuItems.Add(item)
+	Return Me
 End Sub
 
-Sub AddTab(tabID As String, tabCaption As String, cssClass As String, keyTip As String)
+
+
+'<code>
+''add a tab to the ribbon
+'SDUI5OfficeRibbon1.AddTab("home", "Home", "", "")
+''add a group to the tab, group name is clipboard
+'SDUI5OfficeRibbon1.AddGroup("home", "clipboard", "Clipboard", "e-icons e-paste", True)
+''add a collection to split the group items
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard", "col1", "")
+'</code>	
+Sub AddTab(tabID As String, tabCaption As String, cssClass As String, keyTip As String) As SDUI5OfficeRibbon
 	Dim groups As List
 	groups.Initialize 
 	'
@@ -316,17 +356,19 @@ Sub AddTab(tabID As String, tabCaption As String, cssClass As String, keyTip As 
 	tabmx.Put("keyTip", keyTip)
 	'
 	tabsm.Put(tabID, tabmx)
+	Return Me
 End Sub
 
-'enableGroupOverflow - Defines whether to add a separate popup for the overflow items in the group. 
-'isCollapsed - Defines whether the group is in collapsed state or not during classic mode.
-'isCollapsible - Defines whether the group can be collapsed on resize during classic mode.
-'keyTip - Specifies the keytip content
-'launcherIconKeyTip - Specifies the keytip content for launcher icon
-'orientation - Defines the alignment of the items in the ribbon group. Column/Row
-
-Sub AddGroup(groupName As String, groupID As String, groupHeader As String, groupIconCss As String, showLauncherIcon As Boolean) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(groupName, 1, ".")
+'<code>
+'SDUI5OfficeRibbon1.AddGroup("home.font", "Font", "e-icons e-bold", False, False)
+'SDUI5OfficeRibbon1.SetGroupEnableGroupOverflow("home.font", True)
+'SDUI5OfficeRibbon1.SetGroupOrientationRow("home.font")
+'SDUI5OfficeRibbon1.SetGroupCssClass("home.font", "font-group")
+'SDUI5OfficeRibbon1.AddCollection("home.font.col1", "")
+'</code>
+Sub AddGroup(tabGroup As String, groupHeader As String, groupIconCss As String, showLauncherIcon As Boolean, rowOrientation As Boolean) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroup, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroup,2,".")
 	If tabsm.ContainsKey(tabID) = False Then Return Me
 	
 	Dim collections As List
@@ -338,15 +380,27 @@ Sub AddGroup(groupName As String, groupID As String, groupHeader As String, grou
 	grp.put("showLauncherIcon", showLauncherIcon)
 	grp.Put("groupIconCss", groupIconCss)
 	grp.put("collections", collections)
+	If rowOrientation Then grp.Put("orientation", "Row")
 	
 	GetGroups(tabID).Add(grp)
 	Return Me
-End Sub 
+End Sub
 
-Sub AddCollection(colName As String, colID As String, cssClass As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(colName, 1, ".")
-	Dim groupID As String = UI.MvField(colName,2, ".")
-	'
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard.col1", "")
+'SDUI5OfficeRibbon1.AddButton("home.clipboard.col1", "cut", "e-icons e-cut", "Cut")
+'SDUI5OfficeRibbon1.AddButton("home.clipboard.col1", "copy", "e-icons e-copy", "Copy")
+'SDUI5OfficeRibbon1.AddButton("home.clipboard.col1", "formpainter", "e-icons e-format-painter", "Format Painter")
+'Private Sub SDUI5OfficeRibbon1_cut (ID As String)
+'	Log("SDUI5OfficeRibbon1_cut")
+'	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+'End Sub
+'</code>
+Sub AddCollection(tabGroupCol As String, cssClass As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupCol,1,".")
+	Dim groupID As String = UI.MvField(tabGroupCol,2,".")
+	Dim colID As String = UI.MvField(tabGroupCol,3,".")
+	
 	Dim items As List
 	items.Initialize
 	Dim collect As Map = CreateMap()
@@ -391,14 +445,30 @@ private Sub SearchList(lst As List, key As String, value As String) As Int
 	Return -1
 End Sub
 
-Sub AddSplitButton(itemName As String, itemID As String, iconCss As String, itemText As String) As Map
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+''add a split button to a collection
+'SDUI5OfficeRibbon1.AddSplitButton("home.clipboard.col1.paste", "e-icons e-paste", "Paste", CreateMap("a":1, "b":2, "c":3))
+'SDUI5OfficeRibbon1.AddSplitButtonItem("home.clipboard.col1.paste.keepsourceformat", "Keep Source Format")
+'SDUI5OfficeRibbon1.AddSplitButtonItem("home.clipboard.col1.paste.mergeformat", "Merge format")
+'SDUI5OfficeRibbon1.AddSplitButtonItem("home.clipboard.col1.paste.keeptextonly", "Keep text only")
+'SDUI5OfficeRibbon1.SetItemSizeLarge("home.clipboard.col1.paste")
+'</code>
+Sub AddSplitButton(tabGroupColItem As String, iconCss As String, itemText As String, childItems As Map) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim children As List
 	children.Initialize
+	For Each k As String In childItems.Keys
+		Dim v As String = childItems.Get(k)
+		Dim child As Map = CreateMap()
+		child.Put("id", k)
+		child.Put("text", v)
+		children.Add(child)
+	Next
 	
 	Dim args As Map
 	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(args))
@@ -414,25 +484,52 @@ Sub AddSplitButton(itemName As String, itemID As String, iconCss As String, item
 	UI.PutRecursive(item, "splitButtonSettings.click", cb)
 	UI.PutRecursive(item, "splitButtonSettings.select", cbSelect)
 	items.Add(item)
-	Return item
+	Return Me
 End Sub
 
-Sub AddSplitButtonItem(gb As Map, itemID As String, itemText As String)
-	Dim items As List = gb.Get("splitButtonSettings").As(Map).Get("items").As(List)
-	Dim item As Map = CreateMap()
-	item.Put("id", itemID)
-	item.Put("text", itemText)
-	items.Add(item)
+'<code>
+'SDUI5OfficeRibbon1.AddSplitButton("home.clipboard.col1.paste", "e-icons e-paste", "Paste")
+'SDUI5OfficeRibbon1.AddSplitButtonItem("home.clipboard.col1.paste.keepsourceformat", "Keep Source Format")
+'private Sub SDUI5OfficeRibbon1_paste(args As Map)
+'	Log("SDUI5OfficeRibbon1_paste")
+'	Log(args)
+'End Sub
+'</code>
+Sub AddSplitButtonItem(tabGroupColItem As String, itemText As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
+	Dim childID As String = UI.MvField(tabGroupColItem,5,".")
+	'
+	Dim items As List = GetItems(tabID, groupID, colID)
+	Dim itemPos As Int = SearchList(items, "id", itemID)
+	Dim item As Map = items.Get(itemPos)
+	Dim childItems As List = item.Get("splitButtonSettings").As(Map).Get("items").As(List)
+	Dim xitem As Map = CreateMap()
+	xitem.Put("id", childID)
+	xitem.Put("text", itemText)
+	childItems.Add(xitem)
+	Return Me
 End Sub
 
-Sub AddButton(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard.col2", "")
+'SDUI5OfficeRibbon1.AddButton("home.clipboard.col2.cut", "e-icons e-cut", "Cut")
+'Private Sub SDUI5OfficeRibbon1_cut (ID As String)
+'	Log("SDUI5OfficeRibbon1_cut")
+'	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+'End Sub
+'</code>
+Sub AddButton(tabGroupColItem As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
-	Dim args As Map
-	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(args))
+	Dim e As BANanoEvent
+	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(e))
 	'
 	Dim item As Map = CreateMap()
 	item.Put("id", itemID)
@@ -444,29 +541,66 @@ Sub AddButton(itemName As String, itemID As String, iconCss As String, itemText 
 	Return Me
 End Sub
 
-Sub AddButtonMedium(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
-	AddButton(itemName, itemID, iconCss, itemText)
-	SetItemSizeMedium(itemName, itemID)
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard.col2", "")
+'SDUI5OfficeRibbon1.AddButtonMedium("home.clipboard.col2.cut", "e-icons e-cut", "Cut")
+'Private Sub SDUI5OfficeRibbon1_cut (ID As String)
+'	Log("SDUI5OfficeRibbon1_cut")
+'	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+'End Sub
+'</code>
+Sub AddButtonMedium(tabGroupColItem As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(tabGroupColItem, iconCss, itemText)
+	SetItemSizeMedium(tabGroupColItem)
 	Return Me
 End Sub
 
-Sub AddButtonSmall(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
-	AddButton(itemName, itemID, iconCss, itemText)
-	SetItemSizeSmall(itemName, itemID)
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard.col2", "")
+'SDUI5OfficeRibbon1.AddButtonSmall("home.clipboard.col2.cut", "e-icons e-cut", "Cut")
+'Private Sub SDUI5OfficeRibbon1_cut (ID As String)
+'	Log("SDUI5OfficeRibbon1_cut")
+'	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+'End Sub
+'</code>
+Sub AddButtonSmall(tabGroupColItem As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(tabGroupColItem, iconCss, itemText)
+	SetItemSizeSmall(tabGroupColItem)
 	Return Me
 End Sub
 
-Sub AddButtonLarge(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
-	AddButton(itemName, itemID, iconCss, itemText)
-	SetItemSizeLarge(itemName, itemID)
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.clipboard.col2", "")
+'SDUI5OfficeRibbon1.AddButtonLarge("home.clipboard.col2.cut", "e-icons e-cut", "Cut")
+'Private Sub SDUI5OfficeRibbon1_cut (ID As String)
+'	Log("SDUI5OfficeRibbon1_cut")
+'	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+'End Sub
+'</code>
+Sub AddButtonLarge(tabGroupColItem As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	AddButton(tabGroupColItem, iconCss, itemText)
+	SetItemSizeLarge(tabGroupColItem)
 	Return Me
 End Sub
 
 'selection - Single (0), Multiple (1), None (2)
-Sub AddGroupButton(itemName As String, itemID As String, selection As Int) As Map
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.font.col3", "")
+'SDUI5OfficeRibbon1.AddButtonGroup("home.font.col3.bg1", 0)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbbold", "e-icons e-bold", True)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbitalic", "e-icons e-italic", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbunderline", "e-icons e-underline", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbstrikethrough", "e-icons e-strikethrough", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbcase", "e-icons e-change-case", False)
+'private Sub SDUI5OfficeRibbon1_gbbold(args As Map)
+'	app.ShowToastInfo($"SDUI5OfficeRibbon1_gbbold"$)
+'End Sub
+'</code>	
+Sub AddButtonGroup(tabGroupColItem As String, selection As Int) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim btnitems As List
@@ -478,27 +612,58 @@ Sub AddGroupButton(itemName As String, itemID As String, selection As Int) As Ma
 	UI.PutRecursive(item, "groupButtonSettings.selection", UI.CInt(selection))
 	UI.PutRecursive(item, "groupButtonSettings.items", btnitems)
 	items.Add(item)
-	Return item
-End Sub
-
-Sub AddGroupButtonItem(gb As Map, itemID As String, iconCss As String, bSelected As Boolean) As SDUI5OfficeRibbon
-	Dim items As List = gb.Get("groupButtonSettings").As(Map).Get("items").As(List)
-	Dim item As Map = CreateMap()
-	item.Put("id", itemID)
-	item.Put("iconCss", iconCss)
-	item.Put("selected", bSelected)
-	Dim args As Map
-	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(args))
-	item.Put("click", cb)
-	items.Add(item)
 	Return Me
 End Sub
 
-Sub AddColorPicker(itemName As String, itemID As String, itemValue As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.AddCollection("home.font.col3", "")
+'SDUI5OfficeRibbon1.AddButtonGroup("home.font.col3.bg1", 0)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbbold", "e-icons e-bold", True)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbitalic", "e-icons e-italic", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbunderline", "e-icons e-underline", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbstrikethrough", "e-icons e-strikethrough", False)
+'SDUI5OfficeRibbon1.AddButtonGroupItem("home.font.col3.bg1.gbcase", "e-icons e-change-case", False)
+'private Sub SDUI5OfficeRibbon1_gbbold(args As Map)
+'	app.ShowToastInfo($"SDUI5OfficeRibbon1_gbbold"$)
+'End Sub
+'</code>
+Sub AddButtonGroupItem(tabGroupColItemChild As String, iconCss As String, bSelected As Boolean) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItemChild, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItemChild,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItemChild,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItemChild,4,".")
+	Dim childID As String = UI.MvField(tabGroupColItemChild,5,".")
 	
+	Dim items As List = GetItems(tabID, groupID, colID)
+	Dim itemPos As Int = SearchList(items, "id", itemID)
+	Dim item As Map = items.Get(itemPos)
+	Dim childItems As List = item.Get("groupButtonSettings").As(Map).Get("items").As(List)
+	Dim xitem As Map = CreateMap()
+	xitem.Put("id", childID)
+	xitem.Put("iconCss", iconCss)
+	xitem.Put("selected", bSelected)
+	Dim e As BANanoEvent
+	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${childID}"$, Array(e))
+	xitem.Put("click", cb)
+	childItems.Add(item)
+	Return Me
+End Sub
+
+'<code>
+'SDUI5OfficeRibbon1.AddColorPicker("home.font.col2.colorpicker", "#123456")
+'SDUI5OfficeRibbon1.SetItemSizeSmall("home.font.col2.colorpicker")
+'private Sub SDUI5OfficeRibbon1_colorpicker(args As Map)
+'	Dim hexColor As String = SDUI5OfficeRibbon1.GetColor(args)
+'	Log("SDUI5OfficeRibbon1_colorpicker")
+'	app.ShowToastInfo($"SDUI5OfficeRibbon1_formpainter: ${hexColor}"$)
+'End Sub
+'</code>
+Sub AddColorPicker(tabGroupColItem As String, itemValue As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
+	'
 	Dim items As List = GetItems(tabID, groupID, colID)
 	'
 	Dim args As Object
@@ -528,11 +693,11 @@ Sub GetChecked(args As Map) As Boolean
 	Return bchecked
 End Sub
 
-Sub SetButtonIsToggle(itemName As String, itemID As String, isToggle As Boolean) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
-	
+Sub SetButtonIsToggle(tabGroupColItem As String, isToggle As Boolean) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
 	Dim item As Map = items.Get(itemPos)
@@ -540,11 +705,14 @@ Sub SetButtonIsToggle(itemName As String, itemID As String, isToggle As Boolean)
 	Return Me
 End Sub
 
-Sub SetItemToolTip(itemName As String, itemID As String, title As String, cssClass As String, iconCss As String, content As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
-	
+'<code>
+'SDUI5OfficeRibbon1.SetItemToolTip("home.clipboard.col1.paste", "Paste", "", "e-icons e-paste", "Paste content here.</br> Add content on the clipboard to your document.")
+'</code>	
+Sub SetItemToolTip(tabGroupColItem As String, title As String, cssClass As String, iconCss As String, content As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
 	Dim item As Map = items.Get(itemPos)
@@ -558,10 +726,14 @@ Sub SetItemToolTip(itemName As String, itemID As String, title As String, cssCla
 	Return Me
 End Sub
 
-Sub SetItemSizeLarge(itemName As String, itemID As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.SetItemSizeLarge("home.clipboard.col1.paste")
+'</code>
+Sub SetItemSizeLarge(tabGroupColItem As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
@@ -570,11 +742,13 @@ Sub SetItemSizeLarge(itemName As String, itemID As String) As SDUI5OfficeRibbon
 	Return Me
 End Sub
 
-Sub SetItemCssClass(itemName As String, itemID As String, cssClass As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
-	
+
+Sub SetItemCssClass(tabGroupColItem As String, cssClass As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
+	'
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
 	Dim item As Map = items.Get(itemPos)
@@ -582,10 +756,14 @@ Sub SetItemCssClass(itemName As String, itemID As String, cssClass As String) As
 	Return Me
 End Sub
 
-Sub SetItemSizeSmall(itemName As String, itemID As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.SetItemSizeSmall("home.clipboard.col1.paste")
+'</code>
+Sub SetItemSizeSmall(tabGroupColItem As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
@@ -594,10 +772,14 @@ Sub SetItemSizeSmall(itemName As String, itemID As String) As SDUI5OfficeRibbon
 	Return Me
 End Sub
 
-Sub SetItemSizeMedium(itemName As String, itemID As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.SetItemSizeMedium("home.clipboard.col1.paste")
+'</code>
+Sub SetItemSizeMedium(tabGroupColItem As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	Dim itemPos As Int = SearchList(items, "id", itemID)
@@ -606,10 +788,27 @@ Sub SetItemSizeMedium(itemName As String, itemID As String) As SDUI5OfficeRibbon
 	Return Me
 End Sub
 
-Sub AddCheckBox(itemName As String, itemID As String, itemLabel As String, checked As Boolean) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.SetItemEnabled("home.clipboard.col1.paste", false)
+'</code>
+Sub SetItemEnabled(tabGroupColItem As String, itemEnabled As Boolean) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem,4,".")
+	
+	Dim items As List = GetItems(tabID, groupID, colID)
+	Dim itemPos As Int = SearchList(items, "id", itemID)
+	Dim item As Map = items.Get(itemPos)
+	item.Put("disabled", Not(itemEnabled))
+	Return Me
+End Sub
+
+Sub AddCheckBox(tabGroupColItem As String, itemLabel As String, checked As Boolean) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	'
@@ -626,14 +825,15 @@ Sub AddCheckBox(itemName As String, itemID As String, itemLabel As String, check
 	Return Me
 End Sub
 
-Sub AddButtonIcon(itemName As String, itemID As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+Sub AddButtonIcon(tabGroupColItem As String, iconCss As String, itemText As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
-	Dim args As Map
-	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(args))
+	Dim e As BANanoEvent
+	Dim cb As BANanoObject = BANano.CallBack(mCallBack, $"${mName}_${itemID}"$, Array(e))
 	'
 	Dim item As Map = CreateMap()
 	item.Put("id", itemID)
@@ -646,10 +846,18 @@ Sub AddButtonIcon(itemName As String, itemID As String, iconCss As String, itemT
 	Return Me
 End Sub
 
-Sub AddComboBox(itemName As String, itemID As String, dataSource As Object, selectedIndex As Int, allowFiltering As Boolean, width As String) As SDUI5OfficeRibbon
-	Dim tabID As String = UI.MvField(itemName, 1, ".")
-	Dim groupID As String = UI.MvField(itemName,2, ".")
-	Dim colID As String = UI.MvField(itemName,3,".")
+'<code>
+'SDUI5OfficeRibbon1.AddComboBox("home.font.col1", "fontsize", Array(), 3, True, "65px")
+'Private Sub SDUI5OfficeRibbon1_ComboChange (id As String, value As String, text As String)
+'	Log("SDUI5OfficeRibbon1_ComboChange")
+'	app.ShowToastInfo($"ComboChange: ${id}, ${value}"$)
+'End Sub
+'</code>
+Sub AddComboBox(tabGroupColItem As String, dataSource As Object, selectedIndex As Int, allowFiltering As Boolean, width As String) As SDUI5OfficeRibbon
+	Dim tabID As String = UI.MvField(tabGroupColItem, 1, ".")
+	Dim groupID As String = UI.MvField(tabGroupColItem,2, ".")
+	Dim colID As String = UI.MvField(tabGroupColItem,3,".")
+	Dim itemID As String = UI.MvField(tabGroupColItem, 4, ".")
 	
 	Dim items As List = GetItems(tabID, groupID, colID)
 	
@@ -711,6 +919,9 @@ Sub SetGroupShowLauncherIcon(groupName As String, showLauncherIcon As Boolean) A
 	Return Me
 End Sub
 
+'<code>
+'SDUI5OfficeRibbon1.SetGroupCssClass("home.font", "font-group")
+'</code>
 Sub SetGroupCssClass(groupName As String, cssClass As String) As SDUI5OfficeRibbon
 	Dim tabID As String = UI.MvField(groupName, 1, ".")
 	Dim groupID As String = UI.MvField(groupName,2, ".")
@@ -722,7 +933,18 @@ Sub SetGroupCssClass(groupName As String, cssClass As String) As SDUI5OfficeRibb
 	Return Me
 End Sub
 
+'<code>
+'SDUI5OfficeRibbon1.SetGroupOrientationRow("home.font")
+'</code>
 Sub SetGroupOrientationRow(groupName As String) As SDUI5OfficeRibbon
+	SetGroupOrientation(groupName, "Row")
+	Return Me
+End Sub
+
+'<code>
+'SDUI5OfficeRibbon1.SetGroupOrientationColumn("home.font")
+'</code>
+Sub SetGroupOrientationColumn(groupName As String) As SDUI5OfficeRibbon
 	SetGroupOrientation(groupName, "Row")
 	Return Me
 End Sub
@@ -738,6 +960,9 @@ Sub SetGroupOrientation(groupName As String, orientation As String) As SDUI5Offi
 	Return Me
 End Sub
 
+'<code>
+'SDUI5OfficeRibbon1.SetGroupEnableGroupOverflow("home.font", True)
+'</code>
 Sub SetGroupEnableGroupOverflow(groupName As String, enableGroupOverflow As Boolean) As SDUI5OfficeRibbon
 	Dim tabID As String = UI.MvField(groupName, 1, ".")
 	Dim groupID As String = UI.MvField(groupName,2, ".")
@@ -806,6 +1031,13 @@ Sub Refresh
 	opt.Put("launcherIconClick", cblauncherIconClick)
 	If menuItems.Size > 0 Then
 		opt.Put("fileMenu", fileMenu)
+	End If
+	'
+	'ej.base.registerLicense("YOUR_LICENSE_KEY_HERE");
+	If sLicenseKey <> "" Then
+		BANano.RunJavascriptMethod("ej.base.registerLicense", Array(sLicenseKey))
+		'Dim ej As BANanoObject
+		'ej. .Initialize("ej").getfield("base").RunMethod("registerLicense", sLicenseKey)
 	End If
 	'
 	ribbon.Initialize2("ej.ribbon.Ribbon", opt)

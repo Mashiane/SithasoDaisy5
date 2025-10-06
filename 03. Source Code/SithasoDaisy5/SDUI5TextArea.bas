@@ -138,6 +138,15 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -718,6 +727,7 @@ Sub setWidth(s As String)			'ignoredeadcode
 	Select Case sInputType
 	Case "legend"
 		UI.SetWidthByID($"${mName}_join"$, s)
+		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "buttons", "label-input", "chip-group"
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "normal"

@@ -6,6 +6,9 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: RawImages, DisplayName: Images (JSON), FieldType: String, DefaultValue: "one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg", Description: Images (JSON)
+#DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
+#DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: 6, Description: Width & Height
 #DesignerProperty: Key: Space, DisplayName: Space, FieldType: String, DefaultValue: 6, Description: Space
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -39,6 +42,9 @@ Sub Class_Globals
 	Public Tag As Object
 	'Public Root As SDUIElement
 	Private sSpace As String = "6"
+	Private sRawImages As String = "one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg"
+	Private sMask As String = "circle"
+	Private sSize As String = "12"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -52,6 +58,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -179,6 +194,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		sSpace = Props.GetDefault("Space", "6")
 		sSpace = UI.CStr(sSpace)
+		sRawImages = Props.GetDefault("RawImages", "one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg")
+		sRawImages = UI.CStr(sRawImages)
+		sMask = Props.GetDefault("Mask", "circle")
+		sMask = UI.CStr(sMask)
+		If sMask = "none" Then sMask = ""
 	End If
 	'
 	If sParentID <> "" Then
@@ -189,13 +209,60 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	UI.AddClassDT($"avatar-group"$)
+	UI.AddClassDT($"avatar-group h-fit"$)
 	UI.UpdateClassDT("space", $"-space-x-${sSpace}"$)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
+	setImages(sRawImages)
+End Sub
+
+Sub setMask(s As String)
+	sMask = s
+	CustProps.Put("Mask", s)
+End Sub
+
+Sub getMask As String
+	Return sMask
+End Sub
+
+Sub setSize(s As String)
+	sSize = s
+	CustProps.put("Size", s)
+End Sub
+
+Sub getSize As String
+	Return sSize
+End Sub
+
+'set Images from a MV field
+'one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg
+Sub setImages(s As String)		'ignoredeadcode
+	sRawImages = s
+	CustProps.put("RawOptions", s)
+	If mElement = Null Then Return
+	mElement.empty
+	Dim m As Map = UI.GetKeyValues(s, False)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		Dim skey As String = $"${mName}${k}"$
+		skey = UI.CleanID(skey)
+		Dim avt As SDUI5Avatar
+		avt.Initialize(Me, skey, skey)
+		avt.AvatarType = avt.AVATARTYPE_IMAGE
+		avt.Mask = sMask
+		avt.Size = sSize
+		avt.ParentID = mName
+		avt.HasBadge = False
+		avt.Image = v
+		avt.addcomponent
+	Next
+End Sub
+
+Sub getImages As String
+	Return sRawImages
 End Sub
 
 Sub Clear

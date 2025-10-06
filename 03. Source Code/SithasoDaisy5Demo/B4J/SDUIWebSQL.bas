@@ -56,6 +56,7 @@ Sub Class_Globals
 	Private isOpen As Boolean = False
 	Private ownFilter As List
 	Public ShowLogs As Boolean
+	Public LimitTo As String
 End Sub
 
 'initialize the class, a field named "id" is assumed to be an integer
@@ -94,6 +95,7 @@ Sub Initialize(dbName As String, tblName As String) As SDUIWebSQL
 	ops.Initialize
 	RowCount = 0
 	lastPosition = -1
+	LimitTo = ""
 	CLEAR_WHERE
 	If isOpen = False Then
 		'use a local variable, a global variable does not work
@@ -223,6 +225,7 @@ Sub CLEAR_WHERE
 	orderByL.Initialize
 	flds.Initialize
 	ownFilter.Initialize 
+	LimitTo = ""
 End Sub
 
 Sub ADD_FIELD(fld As String) As SDUIWebSQL
@@ -1333,6 +1336,45 @@ Sub READ_BY(fldName As String, fldValue As String) As Map
 	End If
 End Sub
 
+Sub READ_WHERE(whereIs As Map) As Map
+	If Schema.Size = 0 Then
+		Log($"SDUIWebSQL.READ_WHERE: '${TableName}' schema is not set!"$)
+	End If
+	CLEAR_WHERE
+	For Each k As String In whereIs.keys
+		Dim v As String = whereIs.Get(k)
+		ADD_WHERE(k, "=", v)
+	Next
+	Dim res As List = BANano.Await(SELECT_WHERE)
+	Dim rec As Map = CreateMap()
+	If res.size = 0 Then
+		Return rec
+	Else
+		rec = res.Get(0)
+		Return rec
+	End If
+End Sub
+
+Sub READ_ID_WHERE(whereIs As Map) As String
+	If Schema.Size = 0 Then
+		Log($"SDUIWebSQL.READ_ID_WHERE: '${TableName}' schema is not set!"$)
+	End If
+	CLEAR_WHERE
+	For Each k As String In whereIs.keys
+		Dim v As String = whereIs.Get(k)
+		ADD_WHERE(k, "=", v)
+	Next
+	ADD_FIELD("id")
+	Dim res As List = BANano.Await(SELECT_WHERE)
+	If res.size = 0 Then
+		Return ""
+	Else
+		Dim rec As Map = res.Get(0)
+		Dim sid As String = rec.GetDefault("id", "")
+		Return sid
+	End If
+End Sub
+
 Sub READ_ID_BY(fldName As String, fldValue As String) As String
 	If Schema.Size = 0 Then
 		Log($"SDUIWebSQL.READ_ID_BY: '${TableName}' schema is not set!"$)
@@ -1400,6 +1442,7 @@ private Sub GetMaxWhere(fldName As String, tblWhere As Map, operators As List) A
         Dim opr As String = operators.Get(i)
         sb.Append($" ${opr} ?"$)
     Next
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     args = listOfValues
     types = listOfTypes
@@ -1447,6 +1490,7 @@ Sub SelectDistinctAll(tblfields As List, lorderBy As List) As SDUIWebSQL
             sb.Append(" ORDER BY ").Append(stro)
         End If
     End If
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     command =  "select"
     Return Me
@@ -1520,6 +1564,7 @@ Sub SelectDistinctWhere(tblfields As List, tblWhere As Map, operators As List, l
             sb.Append(" ORDER BY ").Append(stro)
         End If
     End If
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     args = listOfValues
     types = listOfTypes
@@ -1602,6 +1647,7 @@ private Sub SelectWhere(tblfields As List, tblWhere As Map, operators As List, l
             sb.Append(" ORDER BY ").Append(stro)
         End If
     End If
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     args = listOfValues
     types = listOfTypes
@@ -1668,6 +1714,7 @@ Sub SelectMaxWhere(fld As String, tblWhere As Map, operators As List) As SDUIWeb
         Dim opr As String = operators.Get(i)
         sb.Append($" ${opr} ?"$)
     Next
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     args = listOfValues
     types = listOfTypes
@@ -1732,6 +1779,7 @@ Sub SELECT_ALL As List
             sb.Append(" ORDER BY ").Append(stro)
         End If
     End If
+	If LimitTo <> "" Then sb.Append($" LIMIT ${LimitTo}"$)
     query = sb.tostring
     command = "select"
     response = ""
@@ -1785,7 +1833,6 @@ Sub getPosition As Int
 End Sub
 'get an integer from the current record
 Sub GetInt(fld As String) As Int
-    fld = fld.tolowercase
     If BANano.IsUndefined(Record) Then Return 0
     If Record.ContainsKey(fld) Then
         Dim obj As Int = Record.GetDefault(fld, 0)
@@ -1801,7 +1848,6 @@ Sub GetLong(fld As String) As Long
 End Sub
 'get a string from the current record
 Sub GetString(fld As String) As String
-    fld = fld.tolowercase
     If BANano.IsUndefined(Record) Then Return ""
     If Record.ContainsKey(fld) Then
         Dim obj As String = Record.GetDefault(fld, "")
@@ -1813,7 +1859,6 @@ Sub GetString(fld As String) As String
 End Sub
 'get a boolean from the current record
 Sub GetBoolean(fld As String) As Boolean
-    fld = fld.tolowercase
     If BANano.IsUndefined(Record) Then Return False
     If Record.ContainsKey(fld) Then
         Dim obj As Boolean = Record.GetDefault(fld, False)
@@ -1825,7 +1870,6 @@ Sub GetBoolean(fld As String) As Boolean
 End Sub
 'get a double from the current record
 Sub GetDouble(fld As String) As Double
-    fld = fld.tolowercase
     If Record.ContainsKey(fld) Then
         Dim obj As Double = Record.GetDefault(fld, 0)
         obj = CDbl(obj)

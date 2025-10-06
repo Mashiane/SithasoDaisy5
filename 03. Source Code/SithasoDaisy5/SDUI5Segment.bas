@@ -10,7 +10,7 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: fit, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: fit , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
@@ -53,7 +53,7 @@ Sub Class_Globals
 	Private sRawAttributes As String = ""
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
-	Private sHeight As String = ""
+	Private sHeight As String = "fit"
 	Private sWidth As String = "fit"
 	Private sActiveColor As String = "#0000ff"
 	Private sActiveTextColor As String = "#ffffff"
@@ -153,6 +153,15 @@ End Sub
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -211,7 +220,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = Props.GetDefault("Size", "md")
 		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		sHeight = Props.GetDefault("Height", "")
+		sHeight = Props.GetDefault("Height", "fit")
 		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "fit")
 		sWidth = UI.CStr(sWidth)
@@ -374,6 +383,7 @@ Sub AddButton(sKey As String, sText As String)
 	Dim ni As SDUI5TabsItem
 	ni.Initialize(mCallBack, sKey, sKey)
 	ni.ParentID = mName
+	ni.width = sOptionWidth
 	ni.Text = sText
 	ni.Visible = True
 	ni.BadgeSize = sBadgeSize

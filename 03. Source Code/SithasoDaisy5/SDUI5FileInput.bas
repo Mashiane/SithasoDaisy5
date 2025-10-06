@@ -30,8 +30,8 @@ Version=10
 #DesignerProperty: Key: Multiple, DisplayName: Multiple, FieldType: Boolean, DefaultValue: False, Description: Multiple
 #DesignerProperty: Key: ButtonSize, DisplayName: Button Size, FieldType: String, DefaultValue: 80px, Description: Button Size
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
-#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: #ffffff, Description: Icon Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 42px, Description: Icon Size, List: lg|md|none|sm|xl|xs
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: #ffffff, Description: Icon Color
+#DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 42px, Description: Icon Size
 #DesignerProperty: Key: ProgressValue, DisplayName: Progress Value, FieldType: String, DefaultValue: , Description: Progress Value
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -105,6 +105,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -365,7 +374,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
-    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
+    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" replace="false" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>
@@ -647,6 +656,7 @@ Sub setWidth(s As String)				'ignoredeadcode
 	Select Case sInputType
 		Case "legend"
 			UI.SetWidthByID($"${mName}_join"$, s)
+			UI.SetWidthByID($"${mName}_control"$, s)
 		Case "buttons", "label-input"
 			UI.SetWidthByID($"${mName}_control"$, s)
 		Case "normal"

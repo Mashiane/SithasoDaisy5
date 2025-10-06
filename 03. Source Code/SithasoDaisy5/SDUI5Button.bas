@@ -131,7 +131,7 @@ Sub Class_Globals
 	Private sTag As String = "button"
 	Private sShape As String = "none"
 	Private sTooltip As String = ""
-	Private sTooltipColor As String = "none"
+	Private sTooltipColor As String = "primary"
 	Private bTooltipOpen As Boolean = False
 	Private sTooltipPosition As String = "none"
 	Public CONST TOOLTIPPOSITION_BOTTOM As String = "bottom"
@@ -186,6 +186,15 @@ Public Sub getID() As String
 	Return mName
 End Sub
 
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current properties
 Public Sub AddComponent
 	If sParentID = "" Then Return

@@ -62,6 +62,17 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	
 	items.Initialize 
 End Sub
+
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

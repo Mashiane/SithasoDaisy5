@@ -16,6 +16,9 @@ Sub Class_Globals
 	Public ExcludeVisible As Boolean = False
 	Public ExcludeEnabled As Boolean = False
 	Public ExcludePosition As Boolean = False
+	Private styles As Map
+	Private clsName As String
+	Private bImportant As Boolean
 End Sub
 
 Sub GetDeviceSizes(varOffsets As String) As Map
@@ -40,6 +43,34 @@ Sub GetDeviceSizes(varOffsets As String) As Map
 	Next
 	Return mm
 End Sub
+
+Sub ExcelColumnName(n As Int) As String
+	Dim result As String = ""
+	Do While n > 0
+		n = BANano.ParseInt(n) - 1
+		Dim modValue As Int = BANano.ParseInt(n) Mod 26
+		Dim charCode As Int = 65 + BANano.ParseInt(modValue)
+		If charCode >= 65 And charCode <= 90 Then
+			Dim letter As String = Chr(charCode)
+			result = letter & result
+		End If
+		n = BANano.ParseInt(n) / 26
+	Loop
+	Return result
+End Sub
+
+' Converts an Excel column name to its 1-based column index (e.g., "A" -> 1, "AA" -> 27)
+Sub ExcelColumnIndex(ColumnName As String) As Int
+	ColumnName = ColumnName.ToUpperCase
+	Dim Result As Int = 0
+	For i = 0 To ColumnName.Length - 1
+		Dim c As Int = Asc(ColumnName.CharAt(i)) - 64   ' A=1, B=2, ..., Z=26
+		Result = (Result * 26) + BANano.parseInt(c)
+	Next
+	Return Result
+End Sub
+
+
 
 Sub ExtractDateOfBirthFromRSAID(IDNumber As String) As String
 	If IDNumber.Length <> 13 Then
@@ -184,6 +215,9 @@ Public Sub Initialize(self As Object)
 	ExcludeVisible = False
 	ExcludeEnabled = False
 	ExcludePosition = False
+	styles.Initialize
+	clsName = ""
+	bImportant = False
 End Sub
 
 Sub Focus(mElement As BANanoElement)
@@ -243,7 +277,7 @@ Sub GetElementObjectByID(sID As String) As BANanoObject
 End Sub
 
 'scroll into view
-Sub EnsureVisible(sID As String)
+Sub EnsureVisibleByID(sID As String)
 	Try
 	sID = CleanID(sID)
 	If BANano.Exists($"#${sID}"$) = False Then Return
@@ -1178,13 +1212,13 @@ Sub AddVisibleDT(b As Boolean)
 	If b = False Then AddClassDT("hidden")
 End Sub
 
-Sub AddClassDT(clsName As String)
-	iClasses.Add(clsName)
+Sub AddClassDT(sclsName As String)
+	iClasses.Add(sclsName)
 End Sub
 
-Sub UpdateClassDT(className As String, clsName As String)
-	iClasses.Add(clsName)
-	iAttributes.Put($"data-${className}"$, clsName)
+Sub UpdateClassDT(className As String, sclsName As String)
+	iClasses.Add(sclsName)
+	iAttributes.Put($"data-${className}"$, sclsName)
 End Sub
 
 'add a class to an element
@@ -2383,8 +2417,10 @@ Sub SetIconSize(mElement As BANanoElement, s As String)
 			Case Else
 				actualSize = s
 		End Select
-		mElement.SetAttr("width", actualSize)
-		mElement.SetAttr("height", actualSize)
+		Dim mstyle As Map = CreateMap()
+		mstyle.Put("width", actualSize)
+		mstyle.Put("height", actualSize)
+		AddStyleMap(mElement, mstyle)
 	Catch
 		
 	End Try				'ignore
@@ -2417,7 +2453,7 @@ Sub SetIconColorByID(sID As String, s As String)
 	If mElement = Null Then Return
 	If s = "" Then Return
 	mElement.SetAttr("fill", "currentColor")
-		SetStyle(mElement, "color", s)
+	SetStyle(mElement, "color", s)
 	Catch
 		
 	End Try				'ignore
@@ -3210,6 +3246,127 @@ Sub ProperSubName(vx As String, removePref As Boolean) As String
 	Return subName1
 End Sub
 
+Sub GetAvatarColor(color As String) As String
+	Dim colors As Map = GetAvatarColorMap
+	color = color.ToUpperCase
+	color = Left(color, 1)
+	If colors.ContainsKey(color) Then
+		Dim res As String = colors.Get(color)
+	Else
+		Dim res As String = "#BDBDBD"
+	End If
+	Return res
+End Sub
+
+Sub GetAvatarTextColor(color As String) As String
+	Dim colors As Map = GetAvatarTextColorMap
+	color = color.ToUpperCase
+	color = Left(color, 1)
+	If colors.ContainsKey(color) Then
+		Dim res As String = colors.Get(color)
+	Else
+		Dim res As String = "#111827"
+	End If
+	Return res
+End Sub
+
+Sub GetAvatarColorMap As Map
+	Dim avatarColors As Map
+	avatarColors.Initialize
+    
+	avatarColors.Put("A", "#F44336")   ' Red
+	avatarColors.Put("B", "#E91E63")   ' Pink
+	avatarColors.Put("C", "#9C27B0")   ' Purple
+	avatarColors.Put("D", "#673AB7")   ' Deep Purple
+	avatarColors.Put("E", "#3F51B5")   ' Indigo
+	avatarColors.Put("F", "#2196F3")   ' Blue
+	avatarColors.Put("G", "#03A9F4")   ' Light Blue
+	avatarColors.Put("H", "#00BCD4")   ' Cyan
+	avatarColors.Put("I", "#009688")   ' Teal
+	avatarColors.Put("J", "#4CAF50")   ' Green
+	avatarColors.Put("K", "#8BC34A")   ' Light Green
+	avatarColors.Put("L", "#CDDC39")   ' Lime
+	avatarColors.Put("M", "#FFEB3B")   ' Yellow
+	avatarColors.Put("N", "#FFC107")   ' Amber
+	avatarColors.Put("O", "#FF9800")   ' Orange
+	avatarColors.Put("P", "#FF5722")   ' Deep Orange
+	avatarColors.Put("Q", "#795548")   ' Brown
+	avatarColors.Put("R", "#9E9E9E")   ' Grey
+	avatarColors.Put("S", "#607D8B")   ' Blue Grey
+	avatarColors.Put("T", "#F06292")   ' Pink Accent
+	avatarColors.Put("U", "#BA68C8")   ' Purple Accent
+	avatarColors.Put("V", "#64B5F6")   ' Blue Accent
+	avatarColors.Put("W", "#4DD0E1")   ' Cyan Accent
+	avatarColors.Put("X", "#81C784")   ' Green Accent
+	avatarColors.Put("Y", "#FFD54F")   ' Amber Accent
+	avatarColors.Put("Z", "#A1887F")   ' Brown Grey
+    
+	' Numbers 0-9 (using vibrant Material colors)
+	avatarColors.Put("0", "#F44336")
+	avatarColors.Put("1", "#E91E63")
+	avatarColors.Put("2", "#9C27B0")
+	avatarColors.Put("3", "#3F51B5")
+	avatarColors.Put("4", "#03A9F4")
+	avatarColors.Put("5", "#009688")
+	avatarColors.Put("6", "#8BC34A")
+	avatarColors.Put("7", "#CDDC39")
+	avatarColors.Put("8", "#FF9800")
+	avatarColors.Put("9", "#795548")
+
+	Return avatarColors
+End Sub
+
+Sub GetAvatarTextColorMap As Map
+	Dim textColors As Map
+	textColors.Initialize
+    
+	' Dark backgrounds - use white text (#FFFFFF)
+	textColors.Put("A", "#FFFFFF")   ' Red
+	textColors.Put("B", "#FFFFFF")   ' Pink
+	textColors.Put("C", "#FFFFFF")   ' Purple
+	textColors.Put("D", "#FFFFFF")   ' Deep Purple
+	textColors.Put("E", "#FFFFFF")   ' Indigo
+	textColors.Put("F", "#FFFFFF")   ' Blue
+	textColors.Put("G", "#FFFFFF")   ' Light Blue
+	textColors.Put("H", "#FFFFFF")   ' Cyan
+	textColors.Put("I", "#FFFFFF")   ' Teal
+	textColors.Put("J", "#FFFFFF")   ' Green
+	textColors.Put("P", "#FFFFFF")   ' Deep Orange
+	textColors.Put("Q", "#FFFFFF")   ' Brown
+	textColors.Put("S", "#FFFFFF")   ' Blue Grey
+	textColors.Put("T", "#FFFFFF")   ' Pink Accent
+	textColors.Put("U", "#FFFFFF")   ' Purple Accent
+	textColors.Put("Z", "#FFFFFF")   ' Brown Grey
+    
+	' Numbers with dark backgrounds
+	textColors.Put("0", "#FFFFFF")
+	textColors.Put("1", "#FFFFFF")
+	textColors.Put("2", "#FFFFFF")
+	textColors.Put("3", "#FFFFFF")
+	textColors.Put("4", "#FFFFFF")
+	textColors.Put("9", "#FFFFFF")
+    
+	' Light backgrounds - use dark text (#111827 = Tailwind text-gray-900)
+	textColors.Put("K", "#111827")   ' Light Green
+	textColors.Put("L", "#111827")   ' Lime
+	textColors.Put("M", "#111827")   ' Yellow
+	textColors.Put("N", "#111827")   ' Amber
+	textColors.Put("O", "#111827")   ' Orange
+	textColors.Put("R", "#111827")   ' Grey
+	textColors.Put("V", "#111827")   ' Blue Accent
+	textColors.Put("W", "#111827")   ' Cyan Accent
+	textColors.Put("X", "#111827")   ' Green Accent
+	textColors.Put("Y", "#111827")   ' Amber Accent
+    
+	' Numbers with light backgrounds
+	textColors.Put("5", "#111827")
+	textColors.Put("6", "#111827")
+	textColors.Put("7", "#111827")
+	textColors.Put("8", "#111827")
+    
+	Return textColors
+End Sub
+
 Sub ProperCase(myStr As String) As String
 	Try
 		If myStr.trim.length = 0 Then Return ""
@@ -3868,8 +4025,8 @@ Sub Initials(FullName As String) As String
 End Sub
 
 'insert a css rule
-Sub InsertCSSRule(selector As String, styles As Object)			'ignoredeadcode
-	BANano.RunJavascriptMethod("insertRule", Array(selector, styles))
+Sub InsertCSSRule(selector As String, ostyles As Object)			'ignoredeadcode
+	BANano.RunJavascriptMethod("insertRule", Array(selector, ostyles))
 End Sub
 
 'remove a css rule 
@@ -4746,7 +4903,7 @@ End Sub
 Sub AESEncrypt(v As String, s As String) As String
 	If BANano.AssetsIsDefined("Crypto") = False Then
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesAES)' should be added!"$)
-		Return Me
+		Return ""
 	End If
 	Dim CryptoJS As BANanoObject
 	CryptoJS.Initialize("CryptoJS")
@@ -4760,7 +4917,7 @@ End Sub
 Sub AESDecrypt(v As String, s As String) As String
 	If BANano.AssetsIsDefined("Crypto") = False Then
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesAES)' should be added!"$)
-		Return Me
+		Return ""
 	End If
 	Dim CryptoJS As BANanoObject
 	CryptoJS.Initialize("CryptoJS")
@@ -5046,4 +5203,658 @@ Sub MapLowerKeys(m As Map) As Map
 		nm.Put(strKey.ToLowerCase,objValue)
 	Next
 	Return nm
+End Sub
+
+'from css utils
+Public Sub SetBorder(mElement As BANanoElement, width As String, color As String, radius As String)
+	Dim m As Map = CreateMap()
+	m.put("border-color", color)
+	M.put("border-width", width)
+	M.put("border-radius", radius)
+	m.Put("border-style", "solid")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowNone(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 0 #0000")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowInner(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "inset 0 2px 4px 0 rgb(0 0 0 / 0.05)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowSM(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 1px 2px 0 rgb(0 0 0 / 0.05)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowMD(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowLG(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadowXL(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadow2XL(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 25px 50px -12px rgb(0 0 0 / 0.25)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub SetBoxShadow(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("box-shadow", "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+
+Sub FieldExists(el As BANanoElement, fldName As String) As Boolean
+	If el.ToObject.GetField(fldName) = BANano.UNDEFINED Then Return False
+	Return True
+End Sub
+
+Public Sub SetRotate(mElement As BANanoElement, deg As String)
+	Dim m As Map = CreateMap()
+	m.put("rotate", $"${deg}deg"$)
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetColorAndBorder (mElement As BANanoElement, BackGroundColor As String, BorderWidth As String, BorderColor As String, BorderCornerRadius As String)
+	Dim m As Map = CreateMap()
+	m.put("border-color", BorderColor)
+	M.put("border-width", MakePx(BorderWidth))
+	M.put("border-radius", MakePx(BorderCornerRadius))
+	m.Put("border-style", "solid")
+	m.put("background-color", BackGroundColor)
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetLayout(mElement As BANanoElement, sLeft As String, sTop As String, sWidth As String, sHeight As String)
+	sLeft = MakePx(sLeft)
+	sWidth = MakePx(sWidth)
+	sHeight = MakePx(sHeight)
+	sTop = MakePx(sTop)
+	Dim m As Map = CreateMap()
+	m.put("left", sLeft)
+	m.put("width", sWidth)
+	m.put("height", sHeight)
+	m.put("top", sTop)
+	m.put("position", "absolute")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetLayoutRadius(mElement As BANanoElement, sLeft As String, stop As String, swidth As String, sheight As String, sradius As String)
+	sLeft = MakePx(sLeft)
+	swidth = MakePx(swidth)
+	sheight = MakePx(sheight)
+	stop = MakePx(stop)
+	Dim m As Map = CreateMap()
+	m.put("left", sLeft)
+	m.put("width", swidth)
+	m.put("height", sheight)
+	m.put("top", stop)
+	m.put("border-radius", sradius)
+	m.put("position", "absolute")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub CenterHorizontally(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("text-align", "center")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub CenterVertically(mElement As BANanoElement)
+	Dim m As Map = CreateMap()
+	m.put("vertical-align", "middle")
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetRadius(mElement As BANanoElement, radius As String)
+	Dim m As Map = CreateMap()
+	m.put("border-radius", MakePx(radius))
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetScale(mElement As BANanoElement, scale As Double)
+	Dim m As Map = CreateMap()
+	m.put("scale", scale)
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+'change the font size
+Sub SetFontSize(mElement As BANanoElement, size As String)
+	Dim m As Map = CreateMap()
+	m.put("font-size", MakePx(size))
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+'change the opacity
+Sub SetOpacity(mElement As BANanoElement, b As Boolean)
+	Dim m As Map = CreateMap()
+	If b Then
+		m.Put("opacity", "1")
+	Else
+		m.Put("opacity", "0")
+	End If	
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetAlpha(mElement As BANanoElement, v As Double)
+	SetStyleProperty(mElement, "opacity", v)
+End Sub
+
+public Sub SetStyleProperty(mElement As BANanoElement, key As String, value As String)
+	Dim m As Map = CreateMap()
+	m.put(key, value)
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Public Sub GetStyleProperty(mElement As BANanoElement, key As String) As Object
+	If mElement <> Null Then
+		Dim sout As String = mElement.GetStyle(key)
+		Return sout
+	Else
+		Return ""
+	End If
+End Sub
+
+'Sub EnsureVisible(mElement As BANanoElement)
+'	Dim opt As Map = CreateMap("behavior": "smooth")
+'	If mElement <> Null Then mElement.RunMethod("scrollIntoView", opt)
+'End Sub
+
+Sub GetComputedStyle(mElement As BANanoElement, var As String) As Object
+	If mElement <> Null Then
+		Dim computed As BANanoObject
+		computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
+		Return computed.RunMethod("getPropertyValue", var)
+	Else
+		Return ""
+	End If
+End Sub
+
+Sub SetPadding(mElement As BANanoElement, LeftM As Int, TopM As Int, RightM As Int, BottomM As Int)
+	Dim m As Map = CreateMap()
+	m.put("padding-left", MakePx(LeftM))
+	m.put("padding-top", MakePx(TopM))
+	m.put("padding-right", MakePx(RightM))
+	m.put("padding-bottom", MakePx(BottomM))
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub SetMargin(mElement As BANanoElement, LeftM As Int, TopM As Int, RightM As Int, BottomM As Int)
+	Dim m As Map = CreateMap()
+	m.put("margin-left", MakePx(LeftM))
+	m.put("margin-top", MakePx(TopM))
+	m.put("margin-right", MakePx(RightM))
+	m.put("margin-bottom", MakePx(BottomM))
+	If mElement <> Null Then mElement.SetStyle(BANano.ToJson(m))
+End Sub
+
+Sub GetPaddingLeft(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "padding-left")
+End Sub
+
+Sub GetPaddingTop(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "padding-top")
+End Sub
+
+Sub GetPaddingBottom(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "padding-bottom")
+End Sub
+
+Sub GetPaddingRight(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "padding-right")
+End Sub
+
+Sub GetMarginLeft(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "margin-left")
+End Sub
+
+Sub GetMarginTop(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "margin-top")
+End Sub
+
+Sub GetMarginBottom(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "margin-bottom")
+End Sub
+
+Sub GetMarginRight(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "margin-right")
+End Sub
+
+Sub GetTopStyle(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "top")
+End Sub
+
+Sub GetBottomStyle(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "bottom")
+End Sub
+
+Sub GetLeftStyle(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "left")
+End Sub
+
+Sub GetRightStyle(mElement As BANanoElement) As String
+	Return GetStyleProperty(mElement, "right")
+End Sub
+
+private Sub MakePx(sValue As String) As String
+	sValue = CStr(sValue)
+	sValue = sValue.trim
+	If sValue = "?" Then Return sValue
+	If sValue = "" Then Return sValue
+	If sValue.EndsWith("%") Then
+		Return sValue
+	else If sValue.EndsWith("vm") Then
+		Return sValue
+	else If sValue.EndsWith("px") Then
+		Return sValue
+	else If sValue.EndsWith("cm") Then
+		Return sValue
+	else If sValue.EndsWith("mm") Then
+		Return sValue
+	else If sValue.EndsWith("in") Then
+		Return sValue
+	else If sValue.EndsWith("pt") Then
+		Return sValue
+	else If sValue.EndsWith("pc") Then
+		Return sValue
+	else If sValue.EndsWith("em") Then
+		Return sValue
+	else If sValue.EndsWith("ex") Then
+		Return sValue
+	else If sValue.EndsWith("ch") Then
+		Return sValue
+	else If sValue.EndsWith("rem") Then
+		Return sValue
+	else If sValue.EndsWith("vw") Then
+		Return sValue
+	else If sValue.EndsWith("vh") Then
+		Return sValue
+	else If sValue.EndsWith("vmin") Then
+		Return sValue
+	else If sValue.EndsWith("vmax") Then
+		Return sValue
+	else If sValue.EndsWith(";") Then
+		Return sValue
+	Else
+		sValue = sValue.Replace("px","")
+		sValue = $"${sValue}px"$
+		If sValue = "px" Then sValue = ""
+		Return sValue
+	End If
+End Sub
+
+Sub SetTop(mElement As BANanoElement, s As String)
+	s = MakePx(s)
+	SetStyleProperty(mElement,"top", s)
+End Sub
+
+Sub SetLeft(mElement As BANanoElement, s As String)
+	s = MakePx(s)
+	SetStyleProperty(mElement,"left", s)
+End Sub
+
+Sub SetWidth1(mElement As BANanoElement, s As String)
+	s = MakePx(s)
+	SetStyleProperty(mElement,"width", s)
+End Sub
+
+Sub SetHeigh1(mElement As BANanoElement, s As String)
+	s = MakePx(s)
+	SetStyleProperty(mElement,"height", s)
+End Sub
+
+private Sub TargetID(s As String) As String
+	s = CStr(s)
+	s = s.tolowercase
+	s = s.Replace("#", "")
+	s = s.Replace(" ", "")
+	s = s.Trim
+	s = $"#${s}"$
+	Return s
+End Sub
+
+Sub SetColorAnimated(mElement As BANanoElement,duration As Int, FromColor As String, ToColor As String) As BANanoAnimeJS
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.backgroundColor1(FromColor, ToColor)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetScaleAnimated(mElement As BANanoElement,duration As Int, FromScale As Double, ToScale As Double) As BANanoAnimeJS
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.scale1(FromScale, ToScale)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetVisibleAnimated(mElement As BANanoElement,duration As Int, b As Boolean) As BANanoAnimeJS
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.visibility(b)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetAlphaAnimated(mElement As BANanoElement,duration As Int, dAlpha As Double) As BANanoAnimeJS
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.opacity(dAlpha)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetLayoutAnimated(mElement As BANanoElement, duration As Int, sLeft As String, stop As String, swidth As String, sheight As String) As BANanoAnimeJS
+	sLeft = MakePx(sLeft)
+	swidth = MakePx(swidth)
+	sheight = MakePx(sheight)
+	stop = MakePx(stop)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.left(sLeft)
+	a1.anime.width(swidth)
+	a1.anime.height(sheight)
+	a1.anime.top(stop)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetLayoutAnimatedRadius(mElement As BANanoElement,duration As Int, sLeft As String, stop As String, swidth As String, sheight As String, sradius As String) As BANanoAnimeJS
+	sLeft = MakePx(sLeft)
+	swidth = MakePx(swidth)
+	sheight = MakePx(sheight)
+	stop = MakePx(stop)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.left(sLeft)
+	a1.anime.width(swidth)
+	a1.anime.height(sheight)
+	a1.anime.top(stop)
+	a1.anime.borderRadius(sradius)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetWidthAnimated(mElement As BANanoElement,duration As Int, width As String) As BANanoAnimeJS
+	width = MakePx(width)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.width(width)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetHeightAnimated(mElement As BANanoElement,duration As Int, height As String) As BANanoAnimeJS
+	height = MakePx(height)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.height(height)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetRadiusAnimated(mElement As BANanoElement,duration As Int, radius As String) As BANanoAnimeJS
+	radius = MakePx(radius)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.borderRadius(radius)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetTextSizeAnimated(mElement As BANanoElement,duration As Int, textSize As String) As BANanoAnimeJS
+	textSize = MakePx(textSize)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.fontSize(textSize)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetLeftAnimated(mElement As BANanoElement,duration As Int, sLeft As String) As BANanoAnimeJS
+	sLeft = MakePx(sLeft)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.left(sLeft)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetTopAnimated(mElement As BANanoElement,duration As Int, top As String) As BANanoAnimeJS
+	top = MakePx(top)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.duration(duration)
+	a1.anime.top(top)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub SetRotationAnimated(mElement As BANanoElement,duration As Int, degrees As Int) As BANanoAnimeJS
+	degrees = CStr(degrees)
+	Dim a1 As BANanoAnimeJS
+	a1.Initialize(Me, "animation", TargetID(mElement.Name))
+	a1.anime.rotate(degrees)
+	a1.anime.duration(duration)
+	a1.anime.easing("easeInOutQuad")
+	a1.play
+	Return a1
+End Sub
+
+Sub ColorToHSL(n As String) As String
+	Dim res As String = BANano.RunJavascriptMethod("nameToHSL", Array(n))
+	Return res
+End Sub
+
+Sub ColorToHex(n As String) As String
+	Dim res As String = BANano.RunJavascriptMethod("nameToHex", Array(n))
+	Return res
+End Sub
+
+Sub HexToHSL(h As String) As String
+	Dim res As String = BANano.RunJavascriptMethod("hexToHSL", Array(h))
+	Return res
+End Sub
+
+Sub GetHTML1(mElement As BANanoElement) As String
+	If mElement <> Null Then
+		Dim tmp As String = mElement.getfield("outerHTML").Result
+		Return tmp
+	Else
+		Return ""
+	End If
+End Sub
+
+Sub GetHTMLByID(sid As String) As String
+	sid = CleanID(sid)
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sid}"$)
+	Dim sout As String = GetHTML1(mElement)
+	Return sout
+End Sub
+
+'get element by data
+Sub GetElementByData(dataattr As String, value As String) As BANanoElement
+	dataattr = dataattr.tolowercase
+	Dim skey As String = $"[data-${dataattr}='${value}']"$
+	Dim dataId As BANanoElement
+	dataId.Initialize(skey)
+	Return dataId
+End Sub
+
+'get the content of a template tag
+Sub GetHTMLTemplate(mElement As BANanoElement) As String
+	If mElement <> Null Then
+		Dim clon As BANanoObject = mElement.RunMethod("cloneNode", True)
+		Dim fc As String = clon.GetField("firstElementChild").GetField("outerHTML").result
+		Return fc
+	Else
+		Return ""
+	End If
+End Sub
+
+Public Sub CreateCSSRule(className As String, important As Boolean)
+	styles.Initialize
+	clsName = className
+	bImportant = important
+End Sub
+
+Sub ClearCSSRule
+	styles.Initialize
+End Sub
+
+Sub AddCSSRuleMap(m As Map)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		AddCSSRule(k, v)
+	Next
+End Sub
+
+Sub AddCSSRule(key As String, value As String)
+	If bImportant Then
+		styles.Put(key, $"${value} !important"$)
+	Else
+		styles.Put(key, value)
+	End If
+End Sub
+
+Sub ApplyCSSRule
+	BANano.RunJavascriptMethod("insertRule", Array(clsName, styles))
+End Sub
+
+Sub GetAbbreviations(fullName As String) As String
+	fullName = fullName.trim
+	If fullName.Length = 0 Then Return ""
+    Dim parts As List = StrParseTrim(" ", fullName)
+	Dim pTot As Int = parts.Size - 1
+	Dim p1 As String = parts.Get(0)
+	Dim p2 As String = parts.Get(pTot)
+	p2 = p2.Trim
+	If pTot = 0 Then
+		Dim res As String = Left(p1,1)
+	Else
+		Dim res As String = Left(p1,1) & Left(p2,1)
+	End If
+	res = res.ToUpperCase
+	Return res
+End Sub
+
+Sub Json2CreateMap(svalue As String) As String
+	Dim sbRes As StringBuilder
+	sbRes.Initialize
+	sbRes.Append("CreateMap(")
+	svalue = svalue.Replace(CRLF, ";").Replace("<br/>", ";")
+	Dim items As List = StrParse(";", svalue)
+	For Each item As String In items
+		Dim k As String = MvField(item,1,":")
+		Dim v As String = MvField(item,2,":")
+		k = CStr(k)
+		v = CStr(v)
+		k = k.Trim
+		v = v.trim
+		If k <> "" Then
+			sbRes.Append($""${k}":"${v}""$)
+			sbRes.Append(",")
+		End If
+	Next
+	Dim sout As String = sbRes.ToString
+	sbRes.Initialize
+	sout = RemDelim(sout, ",")
+	sout = sout & ")"
+	sout = sout.replace("<br/>", "")
+	Return sout
+End Sub
+
+Sub AddCodeLine(lst As List, cl As String)
+	cl = cl.Replace("~","$")
+	lst.Add(cl)
+End Sub
+
+Sub BuildCodeLine(lst As List) As String
+	Dim AllCode As String = Join(CRLF, lst)
+	AllCode = AllCode.Replace("~","$")
+	Return AllCode
+End Sub
+
+Sub AddComment(sb1 As StringBuilder, cl As String)
+	cl = cl.Replace("~","$")
+	sb1.Append($"'${cl}"$).Append(CRLF)
+End Sub
+
+Sub BuildCode(sb1 As StringBuilder) As String
+	Dim AllCode As String = sb1.ToString
+	sb1.Initialize
+	AllCode = AllCode.Replace("~","$")
+	Return AllCode
+End Sub
+
+
+'convert multi value string to options
+Sub OptionsToMap(opt As String) As Map
+	opt = opt.replace("|", ";")
+	opt = opt.replace("<br>", ";")
+	opt = opt.replace("<br/>", ";")
+	opt = opt.replace(CRLF, ";")
+	
+	Dim litems As List = StrParse(";", opt)
+	litems = ListTrimItems(litems)
+	Dim m As Map = CreateMap()
+	For Each item As String In litems
+		item = item.Trim
+		If item = "" Then Continue
+		Dim hascolon As Int = item.IndexOf(":")
+		If hascolon = -1 Then
+			m.Put(item, item)
+		Else
+			Dim fpart As String = MvField(item, 1, ":")
+			fpart = fpart.Trim
+			Dim spart As String = MvField(item, 2, ":")
+			spart = spart.Trim
+			m.Put(fpart, spart)
+		End If
+	Next
+	Return m
 End Sub

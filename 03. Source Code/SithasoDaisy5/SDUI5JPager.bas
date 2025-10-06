@@ -87,6 +87,15 @@ Public Sub getID() As String
 	Return sName
 End Sub
 
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 Public Sub AddComponent
 	If sParentID = "" Then Return
 	mTarget = BANano.GetElement("#" & sParentID)

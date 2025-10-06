@@ -8,6 +8,7 @@ Version=10
 
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _content, Description: Child Item _content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
@@ -61,6 +62,7 @@ Sub Class_Globals
 	Public CONST BADGESIZE_XS As String = "xs"
 	Private sIcon As String = ""
 	Private sIconSize As String = "20px"
+	Private sWidth As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -81,6 +83,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -201,6 +212,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = UI.CStr(sIcon)
 		sIconSize = Props.GetDefault("IconSize", "20px")
 		sIconSize = UI.CStr(sIconSize)
+		sWidth = Props.GetDefault("Width", "")
+		sWidth = UI.CStr(sWidth)
 	End If
 	'
 	'If bActive = True Then UI.AddClassDT("tab-active")
@@ -210,6 +223,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'If sBorderColor <> "" Then UI.AddClassDT("border-color-" & sBorderColor)
 	UI.AddClassDT("tab flex items-center justify-center gap-2 relative")
 	UI.AddAttrDT("role", "tab")
+	UI.AddWidthDT(sWidth)
 	'UI.AddAttrDT("type", "radio")
 	'UI.AddAttrDT("name", sParentID)
 	UI.AddAttrDT("aria-label", sText)
@@ -244,6 +258,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadge(sBadge)
 '	setVisible(bVisible)
 	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
+End Sub
+
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.Put("Width", s)
+	If mElement = Null Then Return
+	UI.SetWidth(mElement, sWidth)
+End Sub
+
+Sub getWidth As String
+	Return sWidth
+End Sub
+
+Sub ClearContent
+	If mElement = Null Then Return
+	UI.ClearByID($"${mName}_${sParentID}_content"$)
 End Sub
 
 Sub HideContent(skey As String)

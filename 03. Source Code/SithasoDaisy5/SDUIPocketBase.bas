@@ -4771,6 +4771,12 @@ Sub SELECT_WHERE1_FETCH As List
 	Return result
 End Sub
 
+Sub SetRecords(lst As List)
+	lastPosition = -1
+	RowCount = lst.Size
+	result = lst
+End Sub
+
 'get own unique key with 15 chars alphabets only
 'this is a controlled id
 Sub NextID As String

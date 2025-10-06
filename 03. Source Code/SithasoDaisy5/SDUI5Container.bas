@@ -128,6 +128,15 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -1284,4 +1293,15 @@ End Sub
 Sub CellHere(r As Int, c As Int) As String
 	Dim s As String = CellID(r, c)
 	Return $"#${s}"$
+End Sub
+
+'clear everything from this element
+Sub Clear
+	If mElement = Null Then Return
+	mElement.empty
+End Sub
+
+Sub Append(s As String)
+	If mElement = Null Then Return
+	mElement.Append(s)
 End Sub

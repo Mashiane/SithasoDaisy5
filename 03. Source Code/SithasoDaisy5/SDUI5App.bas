@@ -267,7 +267,6 @@ Private Sub Class_Globals
 	Public ShowTabBarM As Map
 	Public Tag As Object
 	Private validations As Map
-	Public MissingParents As Map
 	
 	'
 	Public CONST MASK_CIRCLE As String = "circle"
@@ -549,6 +548,18 @@ Private Sub Class_Globals
 	
 End Sub
 
+#if css
+.badgepulse {
+  animation: pulse-fade 1.5s ease-in-out infinite;
+}
+@keyframes pulse-fade {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+#End If
+
+
 '<code>
 'Banano.Await(app.UsesPocketBase)
 'Banano.Await(app.UsesFlatPickDateTime)
@@ -595,6 +606,12 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Duration = ToastDuration
 	AppToast.Position = ToastPosition
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
+End Sub
+
+Sub CreateList As List
+	Dim nl As List
+	nl.Initialize
+	Return nl
 End Sub
 
 'get own unique key with 15 chars alphabets only
@@ -800,6 +817,10 @@ Sub UsesTreeSpider
 	Banano.Await(UI.LoadAssetsOnDemand("TreeSpider", Array("treeSpider.bundle.min.js", "treeSpider.css")))
 End Sub
 
+Sub UseAnime
+	Banano.Await(UI.LoadAssetsOnDemand("Anime", Array("anime.min.js")))
+End Sub
+
 'valid
 Sub UsesExcel
 	Banano.Await(UI.LoadAssetsOnDemand("Excel", Array("jszip.min.js", "xlsx.full.min.js","oxml.min.js", "exceljs.min.js")))
@@ -873,10 +894,12 @@ End Sub
 '"material_blue.css",
 
 Sub UsesOfficeRibbon
-	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
-	"ejsplitbuttontailwind.css", "ejinputstailwind.css", "ejliststailwind.css", "ejdropdownstailwind.css", "ejnavigationtailwind.css", "ejribbontailwind.css", "ej2-base.min.js", "ej2-data.min.js", "ej2-buttons.min.js", _
-	"ej2-popups.min.js", "ej2-splitbuttons.min.js", "ej2-inputs.min.js", "ej2-lists.min.js", "ej2-dropdowns.min.js", _
-	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js", "ejsfontawesome.css")))
+	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("sfribbon.min.css", "sfribbon.min.js")))
+	
+'	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
+'	"ejsplitbuttontailwind.css", "ejinputstailwind.css", "ejliststailwind.css", "ejdropdownstailwind.css", "ejnavigationtailwind.css", "ejribbontailwind.css", "ej2-base.min.js", "ej2-data.min.js", "ej2-buttons.min.js", _
+'	"ej2-popups.min.js", "ej2-splitbuttons.min.js", "ej2-inputs.min.js", "ej2-lists.min.js", "ej2-dropdowns.min.js", _
+'	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js", "ejsfontawesome.css")))
 End Sub
 
 Sub UsesFontAwesome
@@ -1959,7 +1982,7 @@ End Sub
 Sub OpenPocketBase(url As String, autoCancellation As Boolean) As BANanoObject
 	If Banano.AssetsIsDefined("PocketBase") = False Then
 		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesPocketBase)' should be added!"$)
-		Return Me
+		Return Null
 	End If
 	Dim client As BANanoObject
 	client.Initialize2("PocketBase", url)
@@ -2351,80 +2374,196 @@ Sub GetMyPos(elID As String) As String
 	Return spos
 End Sub
 
-'unflatten as list of map objects using id, parentid, data attributes
-Sub ListToTree(tdata As List, idField As String, parentField As String, childname As String) As List
-	Try
-		'id, parentid, data
-		Dim tree As List
-		Dim mappedArr As Map
-		MissingParents.Initialize
-		'
-		tree.Initialize
-		mappedArr.Initialize
-		'
-		'create a temp map to hold everything with 'children' as 'data'
-		For Each arrElem As Map In tdata
-			Dim dID As String = arrElem.Get(idField)
-			'
-			Dim cdata As List
-			cdata.Initialize
-			arrElem.Put(childname, cdata)
-			'
-			mappedArr.Put(dID, arrElem)
+' Converts a flat list of maps to a tree structure.
+' list        -> List of Maps, each with idKey and parentKey
+' idKey       -> key name for the id field
+' parentKey   -> key name for the parent id field
+' childrenKey -> key name to store children under
+Public Sub ListToTree(list As List, idKey As String, parentKey As String, childrenKey As String) As List
+	Dim lookup As Map
+	lookup.Initialize
+    
+	' Clone items into lookup with empty children lists
+	For Each item As Map In list
+		Dim node As Map
+		node.Initialize
+		For Each k As String In item.Keys
+			node.Put(k, item.Get(k))
 		Next
-		'
-		For Each dID As String In mappedArr.Keys
-			Dim mappedElem As Map = mappedArr.Get(dID)
-			Dim parentid As String = mappedElem.Get(parentField)
-			' If the element is at the root level, add it to first level elements list.
-			If parentid = "" Or parentid = "0" Then
-				tree.Add(mappedElem)
-			Else
-				'If the element is not at the root level, add it to its parent list of children.
-				If mappedArr.ContainsKey(parentid) Then
-					Dim parentElem As Map = mappedArr.Get(parentid)
-					Dim children As List = parentElem.Get(childname)
-					children.Add(mappedElem)
-					parentElem.Put(childname, children)
-					mappedArr.Put(parentid, parentElem)
-				Else
-					MissingParents.Put(parentid, parentid)
-				End If
-			End If
-		Next
-		'
-		For Each mk As String In mappedArr.Keys
-			Dim mi As Map = mappedArr.Get(mk)
-			Dim childs As List = mi.Get(childname)
-			If childs.Size = 0 Then mi.Remove(childname)
-		Next
-		Return tree
-	Catch
-		'Log(LastException)
-		Return tree
-	End Try
+		Dim children As List
+		children.Initialize
+		node.Put(childrenKey, children)
+		lookup.Put(item.Get(idKey), node)
+	Next
+    
+	Dim tree As List
+	tree.Initialize
+    
+	' Link children to parents
+	For Each item As Map In list
+		Dim node As Map = lookup.Get(item.Get(idKey))
+		Dim parentId As String = item.Get(parentKey)
+        
+		If parentId = "" Or Not(lookup.ContainsKey(parentId)) Then
+			' Root node
+			tree.Add(node)
+		Else
+			' Attach to parent
+			Dim parent As Map = lookup.Get(parentId)
+			Dim children As List = parent.Get(childrenKey)
+			children.Add(node)
+		End If
+	Next
+    
+	Return tree
 End Sub
 
-Sub TreeToList(sourceList As List) As List
-	treeSchema.Initialize
-	Dim treex As Map = CreateMap()
-	treex.Put("children", sourceList)
-	TreeToList1(treex)
-	Return treeSchema
+' Flattens a tree structure back into a list of records, keeping original parentId
+Public Sub TreeToList(tree As List, idKey As String, parentKey As String, childrenKey As String) As List
+	Dim lFlat As List
+	lFlat.Initialize
+	For Each mNode As Map In tree
+		FlattenNode(mNode, lFlat, idKey, parentKey, childrenKey)
+	Next
+	Return lFlat
 End Sub
 
-private Sub TreeToList1(Rootx As Map)
-	'does this contains children
-	If Rootx.ContainsKey("children") Then
-		'get the children
-		Dim children As List = Rootx.Get("children")
-		'loop through each child
-		For Each child As Map In children
-			treeSchema.Add(child)
-			TreeToList1(child)
+Private Sub FlattenNode(mNode As Map, lFlat As List, idKey As String, parentKey As String, childrenKey As String)
+	' Create a copy of the node, preserving all original fields
+	Dim mEntry As Map
+	mEntry.Initialize
+	For Each sKey As String In mNode.Keys
+		' Copy everything except the children array
+		If sKey <> childrenKey Then
+			mEntry.Put(sKey, mNode.Get(sKey))
+		End If
+	Next
+	lFlat.Add(mEntry)
+    
+	' Recurse into children
+	Dim lChildren As List = mNode.Get(childrenKey)
+	If lChildren.Size > 0 Then
+		For Each mChild As Map In lChildren
+			FlattenNode(mChild, lFlat, idKey, parentKey, childrenKey)
 		Next
 	End If
 End Sub
+
+' ============================================================
+' GetBranch: Flatten a tree branch starting from a given node
+' ============================================================
+' pRecords    -> The unordered list of records (each record is a Map)
+' sRootId     -> The id of the root node where we start
+' sIdKey      -> The key name used for "id" in each record
+' sParentKey  -> The key name used for "parentId" in each record
+' Returns a List of Maps, each containing only id and parentId,
+' ordered so that parent always comes before children.
+Public Sub GetBranch(pRecords As List, sRootId As String, sIdKey As String, sParentKey As String) As List
+
+	' -----------------------------------------------------------------
+	' Step 1: Prepare the result list that will hold the flattened branch
+	' -----------------------------------------------------------------
+	Dim lFlat As List
+	lFlat.Initialize
+	' lFlat will store the final ordered records, starting with the root
+
+	' -----------------------------------------------------------------
+	' Step 2: Prepare helper structures
+	' -----------------------------------------------------------------
+
+	' mChildren will store parentId -> list of children
+	Dim mChildren As Map
+	mChildren.Initialize
+
+	' mLookup will store id -> record map for fast access
+	Dim mLookup As Map
+	mLookup.Initialize
+
+	' -----------------------------------------------------------------
+	' Step 3: Populate mChildren and mLookup
+	' -----------------------------------------------------------------
+	For Each mItem As Map In pRecords
+		' Get the parentId of this record
+		Dim sParentId As String = mItem.Get(sParentKey)
+
+		' If parentId is Null, treat it as empty string (means root node)
+		If sParentId = Null Then sParentId = ""
+
+		' If this parentId is not yet in mChildren, create a new list
+		If mChildren.ContainsKey(sParentId) = False Then
+			Dim lTmp As List
+			lTmp.Initialize
+			mChildren.Put(sParentId, lTmp)
+		End If
+
+		' Add this record to its parent's list of children
+		Dim lChildList As List = mChildren.Get(sParentId)
+		lChildList.Add(mItem)
+
+		' Also add this record to the lookup map by its id
+		mLookup.Put(mItem.Get(sIdKey), mItem)
+	Next
+
+	' -----------------------------------------------------------------
+	' Step 4: Find the starting node (rootId)
+	' -----------------------------------------------------------------
+	Dim mStartNode As Map = mLookup.Get(sRootId)
+	If mStartNode = Null Then
+		' If root not found, return empty list
+		Return lFlat
+	End If
+
+	' -----------------------------------------------------------------
+	' Step 5: Recursively expand the branch starting from root
+	' -----------------------------------------------------------------
+	ExpandNode(mStartNode, lFlat, mChildren, sIdKey, sParentKey)
+
+	' -----------------------------------------------------------------
+	' Step 6: Return the final flattened list
+	' -----------------------------------------------------------------
+	Return lFlat
+End Sub
+
+
+' ============================================================
+' ExpandNode: Recursive helper function
+' ============================================================
+' mNode      -> The current node to process
+' lFlat      -> The flattened result list to append to
+' mChildren  -> Map of parentId -> list of children
+' sIdKey     -> Key name for id
+' sParentKey -> Key name for parentId
+Private Sub ExpandNode(mNode As Map, lFlat As List, mChildren As Map, sIdKey As String, sParentKey As String)
+
+	' -----------------------------------------------------------------
+	' Step 1: Add the current node to the flat list
+	' -----------------------------------------------------------------
+	' Instead of CreateMap, do this:
+	Dim mEntry As Map
+	mEntry.Initialize
+	mEntry.Put(sIdKey, mNode.Get(sIdKey))
+	mEntry.Put(sParentKey, mNode.Get(sParentKey))
+	lFlat.Add(mEntry)
+
+	' -----------------------------------------------------------------
+	' Step 2: Look for children of this node
+	' -----------------------------------------------------------------
+	Dim sNodeId As String = mNode.Get(sIdKey)
+	If mChildren.ContainsKey(sNodeId) Then
+		' Get the list of children
+		Dim lChildren As List = mChildren.Get(sNodeId)
+
+		' -----------------------------------------------------------------
+		' Step 3: Process each child recursively
+		' -----------------------------------------------------------------
+		For Each mChild As Map In lChildren
+			ExpandNode(mChild, lFlat, mChildren, sIdKey, sParentKey)
+		Next
+	End If
+End Sub
+
+
+
 
 'reset the validations
 'validate an element

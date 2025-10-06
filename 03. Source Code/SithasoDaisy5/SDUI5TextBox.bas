@@ -192,7 +192,15 @@ End Sub
 Sub getLegendColor As String
 	Return sLegendColor
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
 
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -579,7 +587,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.AddStyleByID($"${mName}_append"$, "anchor-name", $"--${mName}_anchor"$)
 		setWheelPlacement(sWheelPlacement)
 		UI.Show($"${mName}_popover"$)
+	Case Else
+		'remove pop-over
+		UI.RemoveElementByID($"${mName}_popover"$)
 	End Select
+	
 
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
@@ -1141,6 +1153,7 @@ Sub setWidth(s As String)			'ignoredeadcode
 	Select Case sInputType
 	Case "legend"
 		UI.SetWidthByID($"${mName}_join"$, s)
+		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "buttons", "label-input", "buttons-floating"
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "normal"

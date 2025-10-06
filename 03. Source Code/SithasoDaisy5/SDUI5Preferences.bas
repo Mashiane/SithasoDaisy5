@@ -5,6 +5,7 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: PropertyChange (ID As String, Item As Map)
 #Event: Change (item As Map)
 #Event: SearchClick (e As BANanoEvent)
 #Event: SearchKeyUp (e As BANanoEvent)
@@ -19,19 +20,40 @@ Version=10
 #Event: Yes_Click (e As BANanoEvent)
 #Event: No_Click (e As BANanoEvent)
 #Event: Cancel_Click (e As BANanoEvent)
+#Event: Download_Click (e As BANanoEvent)
+#Event: Add_Click (e As BANanoEvent)
+#Event: Save_Click (e As BANanoEvent)
+#Event: Delete_Click (e As BANanoEvent)
+#Event: Refresh_Click (e As BANanoEvent)
+#Event: Back_Click (e As BANanoEvent)
+#Event: FileChange (e As BANanoEvent)
 '
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Property Bag, Description: Title
 #DesignerProperty: Key: Card, DisplayName: Card, FieldType: Boolean, DefaultValue: True, Description: Card
 #DesignerProperty: Key: CardBorder, DisplayName: Card Border, FieldType: Boolean, DefaultValue: True, Description: Card Border
+#DesignerProperty: Key: HasSearch, DisplayName: Has Search, FieldType: Boolean, DefaultValue: True, Description: Has Search
+#DesignerProperty: Key: HasActions, DisplayName: Has Actions, FieldType: Boolean, DefaultValue: True, Description: Has Actions
 #DesignerProperty: Key: SearchVisible, DisplayName: Search Visible, FieldType: Boolean, DefaultValue: True, Description: Search Visible
 #DesignerProperty: Key: SearchSize, DisplayName: Search Size, FieldType: String, DefaultValue: sm, Description: Search Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: SearchWidth, DisplayName: Search Width, FieldType: String, DefaultValue: 300px, Description: Search Width
 #DesignerProperty: Key: ButtonSize, DisplayName: Toolbar Button Size, FieldType: String, DefaultValue: sm, Description: Button Size, List: lg|md|none|sm|xs
 #DesignerProperty: Key: ButtonsOutlined, DisplayName: Toolbar Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
+#DesignerProperty: Key: HasAddNew, DisplayName: Has AddNew, FieldType: Boolean, DefaultValue: False, Description: Has Addnew
+#DesignerProperty: Key: AddNewTooltip, DisplayName: AddNew Tooltip, FieldType: String, DefaultValue: , Description: Add New Tooltip
+#DesignerProperty: Key: HasSave, DisplayName: Has Save, FieldType: Boolean, DefaultValue: False, Description: Has Save on ToolBar
+#DesignerProperty: Key: SaveTooltip, DisplayName: Save Single, FieldType: String, DefaultValue: , Description: Save Tooltip
+#DesignerProperty: Key: HasDelete, DisplayName: Has Delete, FieldType: Boolean, DefaultValue: False, Description: Has Delete on ToolBar
+#DesignerProperty: Key: DeleteTooltip, DisplayName: Delete Single, FieldType: String, DefaultValue: , Description: Delete Tooltip
+#DesignerProperty: Key: HasRefresh, DisplayName: Has Refresh, FieldType: Boolean, DefaultValue: False, Description: Has Refresh
+#DesignerProperty: Key: RefreshTooltip, DisplayName: Refresh Tooltip, FieldType: String, DefaultValue: , Description: Refresh Tooltip
+#DesignerProperty: Key: HasUpload, DisplayName: Has Upload, FieldType: Boolean, DefaultValue: False, Description: Has Upload
+#DesignerProperty: Key: UploadTooltip, DisplayName: Upload Tooltip, FieldType: String, DefaultValue: , Description: Upload Tooltip
+#DesignerProperty: Key: HasDownload, DisplayName: Has Download, FieldType: Boolean, DefaultValue: False, Description: Has Download
+#DesignerProperty: Key: DownloadTooltip, DisplayName: Download Tooltip, FieldType: String, DefaultValue: , Description: Download Tooltip
+#DesignerProperty: Key: HasBack, DisplayName: Has Back, FieldType: Boolean, DefaultValue: False, Description: Has Back
+#DesignerProperty: Key: BackTooltip, DisplayName: Back Tooltip, FieldType: String, DefaultValue: , Description: Back Tooltip
 #DesignerProperty: Key: ComponentSize, DisplayName: Component Size, FieldType: String, DefaultValue: sm, Description: Component Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: IncludeProjectName, DisplayName: Include Project Name, FieldType: Boolean, DefaultValue: False, Description: Include Project Name
-#DesignerProperty: Key: IncludeViewName, DisplayName: Include View Name, FieldType: Boolean, DefaultValue: False, Description: Include View Name
 #DesignerProperty: Key: IsZebra, DisplayName: Is Zebra, FieldType: Boolean, DefaultValue: False, Description: Is Zebra
 #DesignerProperty: Key: PropertyPadding, DisplayName: Property Padding, FieldType: String, DefaultValue: py-1, Description: Property Padding
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
@@ -92,16 +114,28 @@ Private Sub Class_Globals
 	Private sButtonSize As String = "sm"
 	Private bButtonsOutlined As Boolean = False
 	Private sComponentSize As String = "sm"
-	Private bIncludeProjectName As Boolean = False
-	Private bIncludeViewName As Boolean = False
 	Private bIsZebra As Boolean = False
 	Private sPropertyPadding As String = "py-2"
 	Private sSearchSize As String = "sm"
 	Private bSearchVisible As Boolean = True
 	Private sSearchWidth As String = "300px"
 	Private sTitle As String = "Property Bag"
-	Private sTooltipColor As String = "none"
+	Private sTooltipColor As String = "primary"
 	Private bWrapActions As Boolean = True
+	Private bHasSave As Boolean
+	Private bHasDelete As Boolean
+	Private bHasAddNew As Boolean
+	Private bHasBack As Boolean
+	Private bHasRefresh As Boolean
+	Private sAddNewTooltip As String = ""
+	Private sBackTooltip As String = ""
+	Private sDeleteTooltip As String = ""
+	Private sSaveTooltip As String = ""
+	Private sRefreshTooltip As String = ""
+	Private bHasDownload As Boolean
+	Private sDownloadTooltip As String = ""
+	Private bHasUpload As Boolean
+	Private sUploadTooltip As String = ""
 	
 	Private propBagKeys As Map
 	Private propBagValues As Map
@@ -164,6 +198,9 @@ Private Sub Class_Globals
 	Private AllwaysVisible As Map
 	Private bCard As Boolean
 	Private bCardBorder As Boolean
+	Public Designs As Map
+	Private bHasSearch As Boolean = True
+	Private bHasActions As Boolean = True
 End Sub
 
 Sub Initialize (CallBack As Object, Name As String, EventName As String)
@@ -200,9 +237,68 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 End Sub
 
+'clear designs
+Sub ClearDesigns
+	Designs.Initialize
+End Sub
+
+'load and save design for later use
+Sub LoadDesign(designName As String) As Boolean
+	Dim jsonFile As Map = BANano.Await(BANano.GetFileAsJSON($"./assets/${designName}.json?${DateTime.Now}"$, Null))
+	Dim properties As List = jsonFile.Get("properties")
+	Designs.Put(designName, properties)
+	Return True
+End Sub
+
+'get the design properties and exclude all ReadMe properties
+Sub GetDesign(designName As String) As Map
+	Dim prop As Map = CreateMap()
+	Dim properties As List
+	properties.initialize
+	If Designs.ContainsKey(designName) Then
+		properties = Designs.Get(designName)
+		'
+		For Each rec As Map In  properties
+			Dim skey As String = rec.Getdefault("Key","")
+			Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
+			'ignore all readmes
+			If skey.StartsWith("ReadMe") Then Continue
+			If skey = "" Then Continue
+			prop.Put(skey, sdefaultvalue)
+		Next
+	End If
+	Return prop
+End Sub
+
+'get the design properties and exclude all ReadMe properties
+Sub GetDesignComplete(designName As String) As List
+	Dim properties As List
+	properties.initialize
+	If Designs.ContainsKey(designName) Then
+		properties = Designs.Get(designName)
+		Dim propCnt As Int = 0
+		Dim propTot As Int = properties.Size - 1
+		For propCnt = 0 To propTot
+			Dim rec As Map = properties.get(propCnt)
+			rec.Remove("ReadMe")
+			properties.Set(propCnt, rec)
+		Next
+	End If
+	Return properties
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 
 'add this element to an existing parent element using current props
@@ -365,16 +461,36 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		bHasSearch = Props.GetDefault("HasSearch", True)
+		bHasSearch = UI.cbool(bHasSearch)
+		bHasActions = Props.getdefault("HasActions", True)
+		bHasActions = UI.CBool(bHasActions)
+		bHasAddNew = Props.GetDefault("HasAddNew", False)
+		bHasAddNew = UI.CBool(bHasAddNew)
+		sAddNewTooltip = Props.GetDefault("AddNewTooltip", "")
+		sAddNewTooltip = UI.CStr(sAddNewTooltip)
+		bHasBack = Props.GetDefault("HasBack", False)
+		bHasBack = UI.CBool(bHasBack)
+		sBackTooltip = Props.GetDefault("BackTooltip", "")
+		sBackTooltip = UI.cstr(sBackTooltip)
+		bHasDelete = Props.GetDefault("HasDelete", False)
+		bHasDelete = UI.CBool(bHasDelete)
+		sDeleteTooltip = Props.GetDefault("DeleteTooltip", "")
+		sDeleteTooltip = UI.CStr(sDeleteTooltip)
+		bHasRefresh = Props.GetDefault("HasRefresh", False)
+		bHasRefresh = UI.CBool(bHasRefresh)
+		sRefreshTooltip = Props.GetDefault("RefreshTooltip", "")
+		sRefreshTooltip = UI.CStr(sRefreshTooltip)
+		bHasSave = Props.GetDefault("HasSave", False)
+		bHasSave = UI.CBool(bHasSave)
+		sSaveTooltip = Props.GetDefault("SaveTooltip", "")
+		sSaveTooltip = UI.CStr(sSaveTooltip)
 		sButtonSize = Props.GetDefault("ButtonSize", "sm")
 		sButtonSize = UI.CStr(sButtonSize)
 		bButtonsOutlined = Props.GetDefault("ButtonsOutlined", False)
 		bButtonsOutlined = UI.CBool(bButtonsOutlined)
 		sComponentSize = Props.GetDefault("ComponentSize", "sm")
 		sComponentSize = UI.CStr(sComponentSize)
-		bIncludeProjectName = Props.GetDefault("IncludeProjectName", False)
-		bIncludeProjectName = UI.CBool(bIncludeProjectName)
-		bIncludeViewName = Props.GetDefault("IncludeViewName", False)
-		bIncludeViewName = UI.CBool(bIncludeViewName)
 		bIsZebra = Props.GetDefault("IsZebra", False)
 		bIsZebra = UI.CBool(bIsZebra)
 		sPropertyPadding = Props.GetDefault("PropertyPadding", "py-1")
@@ -444,6 +560,14 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bCard = UI.CBool(bCard)
 		bCardBorder = Props.GetDefault("CardBorder", False)
 		bCardBorder = UI.CBool(bCardBorder)
+		bHasDownload = Props.GetDefault("HasDownload", False)
+		bHasDownload = UI.CBool(bHasDownload)
+		bHasUpload = Props.GetDefault("HasUpload", False)
+		bHasUpload = UI.CBool(bHasUpload)
+		sDownloadTooltip = Props.GetDefault("DownloadTooltip", "")
+		sDownloadTooltip = UI.CStr(sDownloadTooltip)
+		sUploadTooltip = Props.GetDefault("UploadTooltip", "")
+		sUploadTooltip = UI.CStr(sUploadTooltip)
 	End If
 	'
 	If bCard Then UI.AddClassDT("card")
@@ -464,16 +588,17 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
         <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-        	<div id="${mName}_toolbar" class="m-3 -mb-3 flex">
+			<div id="${mName}_actions" class="hidden flex flex-1 justify-end gap-1 items-center"></div>
+			<div id="${mName}_divider1" class="m-0 divider"></div>
+        	<div id="${mName}_toolbar" class="m-1 flex items-center">			
         		<h2 id="${mName}_toolbartitle" class="ml-1 card-title w-full">${sTitle}</h2>
-				<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2">
+				<div id="${mName}_searchbox" class="join hidden justify-end py-4 mx-2 w-full">
 	          		<input id="${mName}_search" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius blradius"/>
 	          		<button id="${mName}_searchbtn" class="btn join-item hidden">
 						<svg-renderer id="${mName}_searchbtnicon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg" class="hidden"></svg-renderer>
 					</button>
-	    		</div>
-				<div id="${mName}_actions" class="hidden flex flex-1 mr-0 justify-end gap-1"></div>
-        	</div>
+	    		</div>				
+        	</div>			
 			<div id="${mName}_divider" class="m-0 divider"></div>
         	<div id="${mName}_card" class="overflow-x-auto">
         		<form id="${mName}_form" name="${mName}" novalidate="novalidate">
@@ -484,23 +609,47 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<div id="${mName}_bottomdivider" class="divider hidden m-0 p-0"></div>
         		<div id="${mName}_bottomactions" class="card-actions hidden justify-end p-2"></div>
         	</div>
+			<input id="${mName}_file" class="hidden"></input>
         </div>"$).Get($"#${mName}"$)
 	'define icon size
 	'
 	setTitle(sTitle)	
 	setIsZebra(bIsZebra)
-	setTopActionsVisible(bTopActionsVisible)
-	setWrapActions(bWrapActions)
-	If bSearchVisible Then
-		setSearchWidth(sSearchWidth)
-		setSearchSize(sSearchSize)
-		BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
-		Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
-		txtsearch.On("keyup", Me, "SearchKeyUp")
-		txtsearch.On("search", Me, "SearchClear")
-	End If
-	setSearchVisible(bSearchVisible)
 	setActionsVisible(bActionsVisible)
+	If bHasActions Then
+		setTopActionsVisible(bTopActionsVisible)
+		setWrapActions(bWrapActions)		
+		setHasAddNew(bHasAddNew)
+		setAddNewTooltip(sAddNewTooltip)
+		setHasSave(bHasSave)
+		setSaveTooltip(sSaveTooltip)
+		setHasDelete(bHasDelete)
+		setDeleteTooltip(sDeleteTooltip)
+		setHasUpload(bHasUpload)
+		setUploadTooltip(sUploadTooltip)
+		setHasDownload(bHasDownload)
+		setHasRefresh(bHasRefresh)
+		setRefreshTooltip(sRefreshTooltip)
+		setHasBack(bHasBack)
+		setBackTooltip(sBackTooltip)
+	Else
+		setHasActions(bHasActions)
+	End If
+	'
+	setHasSearch(bHasSearch)
+	
+	If bHasSearch Then
+		If bSearchVisible Then
+			setSearchWidth(sSearchWidth)
+			setSearchSize(sSearchSize)
+			BANano.GetElement($"#${mName}_searchbtn"$).On("click", Me, "SearchClick")
+			Dim txtsearch As BANanoElement = BANano.GetElement($"#${mName}_search"$)
+			txtsearch.On("keyup", Me, "SearchKeyUp")
+			txtsearch.On("search", Me, "SearchClear")
+		End If
+		setSearchVisible(bSearchVisible)
+	End If
+	'
 	Select Case sActionType
 	Case "cancel"
 		BANano.Await(AddCancelButton)
@@ -516,6 +665,268 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(AddNoButton)
 		BANano.Await(AddCancelButton)
 	End Select
+End Sub
+
+Sub setHasSearch(b As Boolean)				'ignoredeadcode
+	bHasSearch = b
+	CustProps.Put("HasSearch", b)
+	If mElement = Null Then Return
+	If b = False Then UI.RemoveElementByID($"${mName}_searchbox"$)
+End Sub
+
+Sub getHasSearch As Boolean
+	Return bHasSearch
+End Sub
+
+Sub setHasActions(b As Boolean)				'ignoredeadcode
+	bHasActions = b
+	CustProps.Put("HasActions", b)
+	If mElement = Null Then Return
+	If b = False Then 
+		UI.RemoveElementByID($"${mName}_actions"$)
+		UI.RemoveElementByID($"${mName}_divider1"$)
+	End If
+End Sub
+
+'<code>
+'Sub tblName_downloadtoolbar (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasDownload(b As Boolean)				'ignoredeadcode
+	bHasDownload = b
+	CustProps.Put("HasDownload", b)
+	If bHasActions = False Then Return
+	If bHasDownload = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("download", "./assets/download-solid.svg", "#FFFF99", "#000000")
+	BANano.GetElement($"#${mName}_download"$).On("click", mCallBack, $"${mName}_Download"$)
+End Sub
+
+Sub getHasDownload As Boolean
+	Return bHasDownload
+End Sub
+
+'<code>
+'Sub tbl_FileChange (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasUpload(b As Boolean)				'ignoredeadcode
+	bHasUpload = b
+	CustProps.put("HasUpload", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("upload", "./assets/upload-solid.svg", "#2196f3", "#ffffff")
+	BANano.GetElement($"#${mName}_upload"$).off("click")
+	BANano.GetElement($"#${mName}_upload"$).On("click", Me, "UploadHandler")
+	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_FileChange"$)
+End Sub	
+
+private Sub UploadHandler(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	e.StopPropagation
+	'click the file input to fire change event
+	BANano.GetElement($"#${mName}_file"$).SetValue(Null)
+	BANano.GetElement($"#${mName}_file"$).RunMethod("click", Null)
+End Sub
+
+'get Upload Tooltip
+Sub getUploadTooltip As String
+	Return sUploadTooltip
+End Sub
+
+'get Download Tooltip
+Sub getDownloadTooltip As String
+	Return sDownloadTooltip
+End Sub
+
+'set Upload Tooltip
+Sub setUploadTooltip(s As String)				'ignoredeadcode
+	sUploadTooltip = s
+	CustProps.put("UploadTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sUploadTooltip <> "" Then SetToolbarButtonToolTip("upload", sUploadTooltip, sTooltipColor, "left")
+End Sub
+
+
+'ensure we can select the same file again
+Sub Nullify
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	xFile.SetValue(Null)
+End Sub
+
+
+'get the list of selected files
+Sub GetFiles As List
+	'get the selected files, if any
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim files As Object = xFile.GetField("files").Result
+		Dim res As List = files.As(List)
+		Return res
+	End If
+End Sub
+
+'get selected file
+Sub GetFile As Map
+	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
+	If xFile.GetField("files").GetField("length").Result = 0 Then 'ignore
+		Return Null
+	Else
+		Dim obj() As BANanoObject = xFile.GetField("files").Result
+		Return obj(0)
+	End If
+End Sub
+
+
+'<code>
+'Sub tblName_refresh (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasRefresh(b As Boolean)			'ignoredeadcode
+	bHasRefresh = b
+	CustProps.put("HasRefresh", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#2196f3", "#ffffff")
+End Sub
+
+'<code>
+'Sub tblName_back (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasBack(b As Boolean)				'ignoredeadcode
+	bHasBack = b
+	CustProps.put("HasBack", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("back", "./assets/arrow-right-from-bracket-solid.svg", "#3f51b5", "#ffffff")
+End Sub
+
+'move the back button to the end
+Sub MoveBackButton							'ignoredeadcode
+	If bHasActions = False Then Return
+	If bHasBack = False Then Return
+	Dim backKey As String = $"#${mName}_back"$
+	If BANano.Exists(backKey) Then
+		Dim bBtn As BANanoElement = BANano.GetElement(backKey)
+		bBtn.Remove
+		setHasBack(True)
+	End If
+End Sub
+
+'<code>
+'Sub tblName_delete (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasDelete(b As Boolean)				'ignoredeadcode
+	bHasDelete = b
+	CustProps.put("HasDelete", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("delete", "./assets/trash-solid.svg", "#ff9900", "#ffffff")
+End Sub
+
+'<code>
+'Sub tblName_save (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasSave(b As Boolean)				'ignoredeadcode
+	bHasSave = b
+	CustProps.put("HasSave", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("save", "./assets/floppy-disk-solid.svg", "#7289da", "#ffffff")
+End Sub
+
+'<code>
+'Sub tblName_add (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasAddNew(b As Boolean)			'ignoredeadcode
+	bHasAddNew = b
+	CustProps.put("HasAddnew", b)
+	If bHasActions = False Then Return
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("add", "./assets/plus-solid.svg", "#418448", "#ffffff")
+End Sub
+
+
+'get Add New Tooltip
+Sub getAddNewTooltip As String
+	Return sAddNewTooltip
+End Sub
+
+'get Back Tooltip
+Sub getBackTooltip As String
+	Return sBackTooltip
+End Sub
+
+'get Delete Tooltip
+Sub getDeleteTooltip As String
+	Return sDeleteTooltip
+End Sub
+
+'get Save Tooltip
+Sub getSaveTooltip As String
+	Return sSaveTooltip
+End Sub
+
+'get Refresh Tooltip
+Sub getRefreshTooltip As String
+	Return sRefreshTooltip
+End Sub
+
+'set Add New Tooltip
+Sub setAddNewTooltip(s As String)				'ignoredeadcode
+	sAddNewTooltip = s
+	CustProps.put("AddNewTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sAddNewTooltip <> "" Then SetToolbarButtonToolTip("add", sAddNewTooltip, sTooltipColor, "left")
+End Sub
+
+'set Back Tooltip
+Sub setBackTooltip(s As String)				'ignoredeadcode
+	sBackTooltip = s
+	CustProps.put("BackTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
+End Sub
+
+'set Delete Single Tooltip
+Sub setDeleteTooltip(s As String)				'ignoredeadcode
+	sDeleteTooltip = s
+	CustProps.put("DeleteTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sDeleteTooltip <> "" Then SetToolbarButtonToolTip("delete", sDeleteTooltip, sTooltipColor, "left")
+End Sub
+
+'set Refresh Tooltip
+Sub setRefreshTooltip(s As String)				'ignoredeadcode
+	sRefreshTooltip = s
+	CustProps.put("RefreshTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
+End Sub
+'set Save Single Tooltip
+Sub setSaveTooltip(s As String)				'ignoredeadcode
+	sSaveTooltip = s
+	CustProps.put("SaveTooltip", s)
+	If bHasActions = False Then Return
+	If mElement = Null Then Return
+	If sSaveTooltip <> "" Then SetToolbarButtonToolTip("save", sSaveTooltip, sTooltipColor, "left")
 End Sub
 
 Sub setCard(b As Boolean)
@@ -546,12 +957,14 @@ Sub ShowSearch(b As Boolean)
 End Sub
 
 Sub ShowActions(b As Boolean)
+	If bHasActions = False Then Return
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_actions"$, b)
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
+	If bHasSearch = False Then Return
 	BANano.Await(SearchPropertyBag)
 	Dim e1 As BANanoEvent
 	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(e1))
@@ -559,6 +972,7 @@ End Sub
 
 private Sub SearchKeyUp(e As BANanoEvent)			'ignoredeadcode
 	Dim e1 As BANanoEvent
+	If bHasSearch = False Then Return
 	BANano.await(SearchPropertyBag)
 	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(e1))
 End Sub
@@ -589,6 +1003,7 @@ End Sub
 
 private Sub SearchClear(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
+	If bHasSearch = False Then Return
 	'get all the properties listed
 	Dim bag As Map = BANano.Await(getPropertyBag)	'
 	'loop through each bag key
@@ -873,6 +1288,7 @@ End Sub
 Sub setTopActionsVisible(b As Boolean)				'ignoredeadcode
 	bTopActionsVisible = b
 	CustProps.Put("TopActionsVisible", b)
+	If bHasActions = False Then Return
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_actions"$, b)
 End Sub
@@ -920,16 +1336,7 @@ Sub setComponentSize(s As String)
 	sComponentSize = s
 	CustProps.put("ComponentSize", s)
 End Sub
-'set Include Project Name
-Sub setIncludeProjectName(b As Boolean)
-	bIncludeProjectName = b
-	CustProps.put("IncludeProjectName", b)
-End Sub
-'set Include View Name
-Sub setIncludeViewName(b As Boolean)
-	bIncludeViewName = b
-	CustProps.put("IncludeViewName", b)
-End Sub
+
 'set Is Zebra
 Sub setIsZebra(b As Boolean)			'ignoredeadcode
 	bIsZebra = b
@@ -952,6 +1359,7 @@ End Sub
 Sub setSearchSize(s As String)			'ignoredeadcode
 	sSearchSize = s
 	CustProps.put("SearchSize", s)
+	If bHasSearch = False Then Return
 	If mElement = Null Then Return
 	If s = "" Then Return
 	UI.SetSizeByID($"${mName}_search"$, "size", "input", s)
@@ -963,6 +1371,7 @@ End Sub
 Sub setSearchVisible(b As Boolean)		'ignoredeadcode
 	bSearchVisible = b
 	CustProps.put("SearchVisible", b)
+	If bHasSearch = False Then Return
 	If mElement = Null Then Return
 	'search is visible leave at zero
 	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
@@ -977,6 +1386,7 @@ End Sub
 Sub setSearchWidth(s As String)		'ignoredeadcode
 	sSearchWidth = s
 	CustProps.put("SearchWidth", s)
+	If bHasSearch = False Then Return
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidthByID($"${mName}_search"$, s)
 End Sub
@@ -1002,6 +1412,7 @@ End Sub
 Sub setWrapActions(b As Boolean)			'ignoredeadcode
 	bWrapActions = b
 	CustProps.put("WrapActions", b)
+	If bHasActions = False Then Return
 	If mElement = Null Then Return
 	If b Then
 		BANano.GetElement($"#${mName}_actions"$).AddClass("flex-wrap")
@@ -1020,14 +1431,6 @@ End Sub
 'get Component Size
 Sub getComponentSize As String
 	Return sComponentSize
-End Sub
-'get Include Project Name
-Sub getIncludeProjectName As Boolean
-	Return bIncludeProjectName
-End Sub
-'get Include View Name
-Sub getIncludeViewName As Boolean
-	Return bIncludeViewName
 End Sub
 'get Is Zebra
 Sub getIsZebra As Boolean
@@ -1519,7 +1922,7 @@ Sub PropertyBagFromList(fContents As List)
 					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
 				End If
 			Case "SelectGroup"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertySelectGroup(spropname, sproptitle, spropvalue,sproprequired, optm)
 				If IsLive = False Then
 					PropertyBuilderMap(PropertyBuilder, spropname, optm)
@@ -1581,7 +1984,7 @@ Sub PropertyBagFromList(fContents As List)
 					If IsLive = False Then PropertyBuilder.Append($"${mName}.SetPropertyMaxLength("${spropname}", "${spropmaxlen}")"$).Append(CRLF)
 				End If
 			Case "Select"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertySelect(spropname, sproptitle, spropvalue,sproprequired,optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertySelect("${spropname}", "${sproptitle}", "${spropvalue}", ${sproprequired}, ${spropname}options)"$).Append(CRLF)
@@ -1688,27 +2091,27 @@ Sub PropertyBagFromList(fContents As List)
 				AddPropertyRating(spropname,sproptitle, spropvalue, spropcolor, spropshape)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRating("${spropname}", "${sproptitle}", ${spropvalue}, "${spropcolor}", "${spropshape}")"$).Append(CRLF)
 			Case "RadioGroup"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertyRadioGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyRadioGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 			Case "GroupSelect"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertyGroupSelect(spropname, sproptitle, spropvalue, spropcolor, bpropsingleselect, spropactivecolor, optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyGroupSelect("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", ${bpropsingleselect}, "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 			Case "CheckBoxGroup"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertyCheckBoxGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyCheckBoxGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 			Case "ToggleGroup"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertyToggleGroup(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyToggleGroup("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
 			Case "Filter"
-				Dim optm As Map = OptionsToMap(spropoptions)
+				Dim optm As Map = UI.OptionsToMap(spropoptions)
 				AddPropertyFilter(spropname, sproptitle, spropvalue, spropcolor, spropactivecolor, optm)
 				If IsLive = False Then PropertyBuilderMap(PropertyBuilder, spropname, optm)
 				If IsLive = False Then PropertyBuilder.Append($"${mName}.AddPropertyFilter("${spropname}", "${sproptitle}", "${spropvalue}", "${spropcolor}", "${spropactivecolor}", ${spropname}options)"$).Append(CRLF)
@@ -1801,28 +2204,6 @@ Sub PropertyBuilderMap(sb As StringBuilder, spropName As String, m As Map)
 	Next
 End Sub
 
-'convert multi value string to options
-private Sub OptionsToMap(opt As String) As Map
-	opt = opt.replace("|", ";")
-	Dim litems As List = UI.StrParse(";", opt)
-	litems = UI.ListTrimItems(litems)
-	Dim m As Map = CreateMap()
-	For Each item As String In litems
-		item = item.Trim
-		If item = "" Then Continue
-		Dim hascolon As Int = item.IndexOf(":")
-		If hascolon = -1 Then
-			m.Put(item, item)
-		Else
-			Dim fpart As String = UI.MvField(item, 1, ":")
-			fpart = fpart.Trim
-			Dim spart As String = UI.MvField(item, 2, ":")
-			spart = spart.Trim
-			m.Put(fpart, spart)
-		End If
-	Next
-	Return m
-End Sub
 
 'set a property as required or not
 Sub SetPropertyRequired(Key As String, status As Boolean)
@@ -2114,11 +2495,13 @@ Sub getFooterID As String
 End Sub
 
 Sub getSearchValue As String
+	If bHasSearch = False Then Return ""
 	Dim s As String = BANano.GetElement($"#${mName}_search"$).GetValue
 	Return s
 End Sub
 
 Sub setSearchValue(s As String)
+	If bHasSearch = False Then Return
 	BANano.GetElement($"#${mName}_search"$).SetValue(s)
 End Sub
 
@@ -2127,6 +2510,7 @@ End Sub
 'tbl.SetSearchPlaceholder("Buscar")
 '</code>
 Sub SetSearchPlaceholder(s As String)
+	If bHasSearch = False Then Return
 	BANano.GetElement($"#${mName}_search"$).SetAttr("placeholder", s)
 End Sub
 
@@ -2220,10 +2604,6 @@ End Sub
 
 Sub ClearOverwrites
 	Overwrites.Initialize
-End Sub
-
-Sub ClearDesigns
-	Designs.Initialize
 End Sub
 
 'get the id of the component
@@ -2333,6 +2713,33 @@ End Sub
 '	AppendButton.AssignElement(mback, $"${mName}_${key}_prepend"$)
 '	Return AppendButton
 'End Sub
+
+Sub ClearAllGuides
+	For Each k As String In propBagKeys.Keys
+		Dim skey As String = $"${mName}_${k}badge"$
+		If BANano.Exists($"#${skey}"$) Then
+			UI.AddClassByID(skey, "badge-error")
+			UI.RemoveClassByID(skey, "badge-success badgepulse")
+			If Compulsory.ContainsKey(k) Then
+				UI.SetVisibleByID(skey, True)
+			Else
+				UI.SetVisibleByID(skey, False)
+			End If
+		End If
+	Next
+End Sub
+
+Sub SetGuides(propKeys As List)
+	For Each k As String In propKeys
+		Dim skey As String = $"${mName}_${k}badge"$
+		If BANano.Exists($"#${skey}"$) Then
+			UI.RemoveClassByID(skey, "badge-error")
+			UI.AddClassByID(skey, "badge-success badgepulse")
+			UI.SetVisibleByid(skey, True)
+		End If
+	Next
+End Sub
+
 
 Sub AddPropertyTextBox(Key As String, Title As String, DefaultValue As String, Required As Boolean)
 	propBagKeys.Put(Key, Title)
@@ -3247,7 +3654,7 @@ End Sub
 
 Sub SetPropertyEnsureVisible(Key As String)
 	Dim xKey As String = $"${mName}_${Key}"$
-	UI.EnsureVisible(xKey)
+	UI.EnsureVisibleByID(xKey)
 End Sub
 
 'check only some properties
@@ -4115,7 +4522,7 @@ Sub AddPropertyAvatarPlaceholder(Key As String, Title As String, DefaultValue As
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
     <div id="${mName}_${Key}_avatar" class="avatar avatar-placeholder">
-    <div id="${mName}_${Key}_host" class="${acolor} ${smask} ${UI.FixSize("w",sSize)}">
+    <div id="${mName}_${Key}_host" class="${acolor} rounded-full ${smask} ${UI.FixSize("w",sSize)}">
     <span id="${mName}_${Key}_span" class="${tsize}" name="${mName}_${Key}">${DefaultValue}</img>
     </div>
     </div>
@@ -4140,7 +4547,7 @@ Sub AddPropertyAvatarGroup(Key As String, Title As String, sSize As String, Shap
 			</span>
 		</td>		
     <td id="${mName}_${Key}_td" class="${sPropertyPadding}">
-    <div id="${mName}_${Key}_group" class="avatar-group -space-x-3" data-size="${sSize}" data-shape="${Shape}">
+    <div id="${mName}_${Key}_group" class="avatar-group -space-x-3 h-fit" data-size="${sSize}" data-shape="${Shape}">
     </div>
     </td>
     </tr>"$
@@ -4611,6 +5018,16 @@ Sub SetPropertyVisible(Key As String, bStatus As Boolean)
 	End If
 End Sub
 
+Sub SetPropertyVisibleMultiple(bStatus As Boolean, props As List)
+	For Each key As String In props
+		If bStatus Then
+			BANano.GetElement($"#${mName}_${key}row"$).RemoveClass("hidden")
+		Else
+			BANano.GetElement($"#${mName}_${key}row"$).AddClass("hidden")
+		End If
+	Next
+End Sub
+
 Sub RequireProperty(status As Boolean, keys As List)
 	For Each k As String In keys
 		SetPropertyRequired(k, status)
@@ -5024,19 +5441,21 @@ End Sub
 Private Sub OnPropChangeInternal(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
 	e.StopPropagation
+	'detect the property that changed
+	If SubExists(mCallBack, $"${mName}_PropertyChange"$) Then
+		Dim eID As String = e.ID
+		Dim sLast As String = UI.MvField(eID, -1, "_")
+		Dim data As Map = BANano.Await(getPropertyBag)
+		CallSub3(mCallBack, $"${mName}_PropertyChange"$, sLast, data)		'ignore
+		Return
+	End If
+	'detect all property bag changes
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
 		Dim data As Map = BANano.Await(getPropertyBag)
 		CallSub2(mCallBack, $"${mName}_Change"$, data)		'ignore
 	End If
 End Sub
 
-'load and save design for later use
-Sub LoadDesignWait(designName As String) As Boolean
-	Dim jsonFile As Map = BANano.Await(BANano.GetFileAsJSON($"./assets/${designName}.json?${DateTime.Now}"$, Null))
-	Dim properties As List = jsonFile.Get("properties")
-	Designs.Put(designName, properties)
-	Return True
-End Sub
 '<code>
 'LoadFromJSON("./assets/abc.json")
 '</code>
@@ -5050,184 +5469,159 @@ Sub SetPropertyOverwrite(Key As String, NewType As String)
 	Overwrites.Put(Key, NewType)
 End Sub
 
-'get design properties
-Sub GetDesign(designName As String, compName As String) As Map
-	Dim prop As Map = CreateMap()
-	prop.Put("ComponentType", designName)
-	prop.Put("ComponentName", compName)
-	If bIncludeProjectName Then prop.Put("ProjectName", compName)
-	If bIncludeViewName Then prop.Put("ViewName", compName)
-	'
-	Dim properties As List
-	properties.initialize
-	If Designs.ContainsKey(designName) Then
-		properties = Designs.Get(designName)
-		'
-		For Each rec As Map In  properties
-			Dim skey As String = rec.Getdefault("Key","")
-			Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-			'ignore all readmes
-			If skey.StartsWith("ReadMe") Then Continue
-			If skey = "" Then Continue
-			prop.Put(skey, sdefaultvalue)
-		Next
-	End If
-	Return prop
-End Sub
-
 'show the design in the property bag
-Sub ShowDesign(designName As String, compName As String)
-	BANano.Await(Clear)
-	'this is not a dropdown
-	AddPropertyTextBox("ComponentType", "Custom Type", designName, False)
-	SetPropertyEnabled("ComponentType", False)
-	'
-	'component name
-	AddPropertyTextBox("ComponentName", "Item Name", compName, False)
-	SetPropertyAutoFocus("ComponentName", True)
-	If bIncludeProjectName Then
-		AddPropertyTextBox("ProjectName", "Project Name", compName, False)
-	End If
-	'
-	If bIncludeViewName Then
-		AddPropertyTextBox("ViewName", "View Name", compName, False)
-	End If
-	'
-	Dim properties As List
-	properties.initialize
-	If Designs.ContainsKey(designName) Then
-		properties = Designs.Get(designName)
-		'
-		For Each rec As Map In  properties
-			Dim skey As String = rec.Getdefault("Key","")
-			Dim sdisplayname As String = rec.Getdefault("DisplayName","")
-			Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
-			Dim sfieldtype As String = rec.getdefault("FieldType","")
-			'Dim sMinRange As String = rec.GetDefault("minrange", "0")
-			'Dim sMaxRange As String = rec.GetDefault("maxrange", "0")
-			Dim sList As String = rec.GetDefault("List", "")
-			'ignore all readmes
-			If skey.StartsWith("ReadMe") Then Continue
-			If skey = "" Then Continue
-			'
-			If Overwrites.ContainsKey(skey) = True Then
-				'we have an overwrite of a type
-				Dim nType As String = Overwrites.Get(skey)
-				Select Case nType
-					Case "DatePicker"
-						AddPropertyDatePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d", "F j, Y", "en")
-					Case "DateTimePicker"
-						AddPropertyDateTimePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d H:i", "F j, Y  H:i", True, "en")
-					Case "TimePicker"
-						AddPropertyTimePicker(skey, sdisplayname, sdefaultvalue, False, "H:i", "H:i", True, "en")
-					Case "TextBox"
-						AddPropertyTextBox(skey, sdisplayname, sdefaultvalue,False)
-					Case "Dialer"
-						sdefaultvalue = UI.CInt(sdefaultvalue)
-						AddPropertyDialer(skey,sdisplayname, sdefaultvalue, False, 0, 1, 100)
-					Case "TextBoxGroup"
-						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,False)
-					Case "ColorWheel"
-					Case "PasswordGroup"
-						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,False)
-					Case "Password"
-						AddPropertyPassword(skey, sdisplayname, sdefaultvalue,False)
-					Case "Color", "ColorWheel"
-						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
-					Case "Number"
-						sdefaultvalue = UI.Val(sdefaultvalue)
-						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
-					Case "Telephone"
-						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,False)
-					Case "TextArea"
-						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False,"")
-						'AddPropertyTextArea(skey, sdisplayname, "","", False, "left")
-						'SetPropertyValue(skey, sdefaultvalue)
-						SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
-						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")						
-					Case "Select"
-						AddPropertySelect(skey, sdisplayname, sdefaultvalue,False,CreateMap())
-					Case "SelectGroup"
-						AddPropertySelectGroup(skey, sdisplayname, sdefaultvalue,False,CreateMap())
-					Case "FileInput"
-						AddPropertyFileInput(skey, sdisplayname,False, "", False)
-					Case "FileInputProgress"
-						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "./assets/arrow-up-from-bracket-solid.svg", "42px", "success", "#ffffff")
-					Case "CamCorder"
-						AddPropertyCamCorder(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
-					Case "Camera"
-						AddPropertyCamera(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
-					Case "Microphone"
-						AddPropertyMicrophone(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
-					Case "Avatar"
-						AddPropertyAvatar(skey, sdisplayname, "12", "rounded", sdefaultvalue)
-					Case "AvatarPlaceholder"
-						sdefaultvalue = UI.Val(sdefaultvalue)
-						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "white", "8xl")
-					Case "AvatarGroup"
-						Dim imags As List
-						imags.Initialize
-						AddPropertyAvatarGroup(skey, sdisplayname, "12", "rounded", imags)
-					Case "Image"
-						AddPropertyImage(skey, sdisplayname, "100px", "100px", "rounded", sdefaultvalue)
-					Case "Signature"
-'						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
-					Case "Progress"
-						sdefaultvalue = UI.cint(sdefaultvalue)
-						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100")
-					Case "Range"
-						sdefaultvalue = UI.CInt(sdefaultvalue)
-						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100")
-					Case "CheckBox", "CheckBoxLegend"
-						sdefaultvalue = UI.CBool(sdefaultvalue)
-						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
-					Case "Toggle", "ToggleLegend"
-						sdefaultvalue = UI.CBool(sdefaultvalue)
-						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success")
-					Case "RadialProgress"
-						AddPropertyRadialProgress(skey,sdisplayname, sdefaultvalue, "success", "", "")
-					Case "Rating"
-						AddPropertyRating(skey,sdisplayname, sdefaultvalue, "success", "mask-star-2")
-					Case "RadioGroup"
-						AddPropertyRadioGroup(skey, sdisplayname, sdefaultvalue, "", "success", CreateMap())
-				End Select
-			Else
-				Select Case sfieldtype
-					Case "String"
-						sdefaultvalue = UI.CStr(sdefaultvalue)
-						Select Case sList
-							Case ""
-								'this is not a dropdown
-								If skey.StartsWith("Raw") Then
-									AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,"")
-									SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
-									BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
-								Else	
-									AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
-								End If
-							Case Else
-								'this is a drop down
-								AddPropertySelect(skey, sdisplayname, sdefaultvalue, False, CreateMap())
-								Dim lstItems As List = UI.StrParse("|", sList)
-								SetPropertySelectItemsListSort(skey, lstItems)
-						End Select
-					Case "Boolean"
-						sdefaultvalue = UI.CBool(sdefaultvalue)
-						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
-					Case "Int"
-						sdefaultvalue = UI.CInt(sdefaultvalue)
-						'sMinRange = UI.CInt(sMinRange)
-						'sMaxRange = UI.CInt(sMaxRange)
-						'If sMaxRange = 0 Then sMaxRange = 100
-						AddPropertyNumber(skey, sdisplayname, sdefaultvalue, False)
-					Case "Color", "ColorWheel"
-						sdefaultvalue = UI.CStr(sdefaultvalue)
-						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
-				End Select
-			End If
-		Next
-	End If
-End Sub
+'Sub ShowDesign(designName As String, compName As String)
+'	BANano.Await(Clear)
+'	'this is not a dropdown
+'	AddPropertyTextBox("ComponentType", "Custom Type", designName, False)
+'	SetPropertyEnabled("ComponentType", False)
+'	'
+'	'component name
+'	AddPropertyTextBox("ComponentName", "Item Name", compName, False)
+'	SetPropertyAutoFocus("ComponentName", True)
+'	If bIncludeProjectName Then
+'		AddPropertyTextBox("ProjectName", "Project Name", compName, False)
+'	End If
+'	'
+'	If bIncludeViewName Then
+'		AddPropertyTextBox("ViewName", "View Name", compName, False)
+'	End If
+'	'
+'	Dim properties As List
+'	properties.initialize
+'	If Designs.ContainsKey(designName) Then
+'		properties = Designs.Get(designName)
+'		'
+'		For Each rec As Map In  properties
+'			Dim skey As String = rec.Getdefault("Key","")
+'			Dim sdisplayname As String = rec.Getdefault("DisplayName","")
+'			Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
+'			Dim sfieldtype As String = rec.getdefault("FieldType","")
+'			'Dim sMinRange As String = rec.GetDefault("minrange", "0")
+'			'Dim sMaxRange As String = rec.GetDefault("maxrange", "0")
+'			Dim sList As String = rec.GetDefault("List", "")
+'			'ignore all readmes
+'			If skey.StartsWith("ReadMe") Then Continue
+'			If skey = "" Then Continue
+'			'
+'			If Overwrites.ContainsKey(skey) = True Then
+'				'we have an overwrite of a type
+'				Dim nType As String = Overwrites.Get(skey)
+'				Select Case nType
+'					Case "DatePicker"
+'						AddPropertyDatePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d", "F j, Y", "en")
+'					Case "DateTimePicker"
+'						AddPropertyDateTimePicker(skey, sdisplayname, sdefaultvalue,False, "Y-m-d H:i", "F j, Y  H:i", True, "en")
+'					Case "TimePicker"
+'						AddPropertyTimePicker(skey, sdisplayname, sdefaultvalue, False, "H:i", "H:i", True, "en")
+'					Case "TextBox"
+'						AddPropertyTextBox(skey, sdisplayname, sdefaultvalue,False)
+'					Case "Dialer"
+'						sdefaultvalue = UI.CInt(sdefaultvalue)
+'						AddPropertyDialer(skey,sdisplayname, sdefaultvalue, False, 0, 1, 100)
+'					Case "TextBoxGroup"
+'						AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue,False)
+'					Case "ColorWheel"
+'					Case "PasswordGroup"
+'						AddPropertyPasswordGroup(skey, sdisplayname, sdefaultvalue,False)
+'					Case "Password"
+'						AddPropertyPassword(skey, sdisplayname, sdefaultvalue,False)
+'					Case "Color", "ColorWheel"
+'						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
+'					Case "Number"
+'						sdefaultvalue = UI.Val(sdefaultvalue)
+'						AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
+'					Case "Telephone"
+'						AddPropertyTelephone(skey, sdisplayname, sdefaultvalue,False)
+'					Case "TextArea"
+'						AddPropertyTextArea(skey, sdisplayname, sdefaultvalue,False,"")
+'						'AddPropertyTextArea(skey, sdisplayname, "","", False, "left")
+'						'SetPropertyValue(skey, sdefaultvalue)
+'						SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
+'						BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")						
+'					Case "Select"
+'						AddPropertySelect(skey, sdisplayname, sdefaultvalue,False,CreateMap())
+'					Case "SelectGroup"
+'						AddPropertySelectGroup(skey, sdisplayname, sdefaultvalue,False,CreateMap())
+'					Case "FileInput"
+'						AddPropertyFileInput(skey, sdisplayname,False, "", False)
+'					Case "FileInputProgress"
+'						AddPropertyFileInputProgress(skey, sdisplayname, "80px" , "./assets/arrow-up-from-bracket-solid.svg", "42px", "success", "#ffffff")
+'					Case "CamCorder"
+'						AddPropertyCamCorder(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
+'					Case "Camera"
+'						AddPropertyCamera(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
+'					Case "Microphone"
+'						AddPropertyMicrophone(skey, sdisplayname, "80px", "42px", "success", "#ffffff")
+'					Case "Avatar"
+'						AddPropertyAvatar(skey, sdisplayname, "12", "rounded", sdefaultvalue)
+'					Case "AvatarPlaceholder"
+'						sdefaultvalue = UI.Val(sdefaultvalue)
+'						AddPropertyAvatarPlaceholder(skey, sdisplayname, sdefaultvalue, "12", "rounded", "success", "white", "8xl")
+'					Case "AvatarGroup"
+'						Dim imags As List
+'						imags.Initialize
+'						AddPropertyAvatarGroup(skey, sdisplayname, "12", "rounded", imags)
+'					Case "Image"
+'						AddPropertyImage(skey, sdisplayname, "100px", "100px", "rounded", sdefaultvalue)
+'					Case "Signature"
+''						AddPropertySignaturePad(skey, sdisplayname, False, "400", "200", "jpeg")
+'					Case "Progress"
+'						sdefaultvalue = UI.cint(sdefaultvalue)
+'						AddPropertyProgress(skey, sdisplayname, sdefaultvalue, "success", "1", "1", "100")
+'					Case "Range"
+'						sdefaultvalue = UI.CInt(sdefaultvalue)
+'						AddPropertyRange(skey,sdisplayname, sdefaultvalue,"success", "1", "1", "100")
+'					Case "CheckBox", "CheckBoxLegend"
+'						sdefaultvalue = UI.CBool(sdefaultvalue)
+'						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
+'					Case "Toggle", "ToggleLegend"
+'						sdefaultvalue = UI.CBool(sdefaultvalue)
+'						AddPropertyToggle(skey, sdisplayname, sdefaultvalue, "success")
+'					Case "RadialProgress"
+'						AddPropertyRadialProgress(skey,sdisplayname, sdefaultvalue, "success", "", "")
+'					Case "Rating"
+'						AddPropertyRating(skey,sdisplayname, sdefaultvalue, "success", "mask-star-2")
+'					Case "RadioGroup"
+'						AddPropertyRadioGroup(skey, sdisplayname, sdefaultvalue, "", "success", CreateMap())
+'				End Select
+'			Else
+'				Select Case sfieldtype
+'					Case "String"
+'						sdefaultvalue = UI.CStr(sdefaultvalue)
+'						Select Case sList
+'						Case ""
+'							'this is not a dropdown
+'							If skey.StartsWith("Raw") Then
+'								AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,"")
+'								SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
+'								BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
+'							Else	
+'								AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
+'							End If
+'						Case Else
+'							'this is a drop down
+'							AddPropertySelect(skey, sdisplayname, sdefaultvalue, False, CreateMap())
+'							Dim lstItems As List = UI.StrParse("|", sList)
+'							SetPropertySelectItemsListSort(skey, lstItems)
+'						End Select
+'					Case "Boolean"
+'						sdefaultvalue = UI.CBool(sdefaultvalue)
+'						AddPropertyCheckBox(skey, sdisplayname, sdefaultvalue, "success")
+'					Case "Int"
+'						sdefaultvalue = UI.CInt(sdefaultvalue)
+'						'sMinRange = UI.CInt(sMinRange)
+'						'sMaxRange = UI.CInt(sMaxRange)
+'						'If sMaxRange = 0 Then sMaxRange = 100
+'						AddPropertyDialer(skey, sdisplayname, sdefaultvalue, False, 0, 1, 1000)
+'					Case "Color", "ColorWheel"
+'						sdefaultvalue = UI.CStr(sdefaultvalue)
+'						AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
+'				End Select
+'			End If
+'		Next
+'	End If
+'End Sub
 
 
 'load a component from a json file
@@ -5348,6 +5742,33 @@ Sub ExtractEvents(props As List) As Map
 	Return nm
 End Sub
 
+'get Key and Default value from properies list
+Sub ExtractPropertyBag(props As List) As Map
+	Dim nm As Map = CreateMap()
+	For Each rec As Map In  props
+		Dim skey As String = rec.Getdefault("Key","")
+		skey = UI.CStr(skey)
+		Dim sdefaultvalue As String = rec.getdefault("DefaultValue","")
+		sdefaultvalue = UI.CStr(sdefaultvalue)
+		Dim sfieldtype As String = rec.getdefault("FieldType","")
+		sfieldtype = UI.CStr(sfieldtype)
+		'ignore all readmes
+		If skey.StartsWith("ReadMe") Then Continue
+		If skey = "" Then Continue
+		'
+		Select Case sfieldtype
+			Case "Boolean"
+				sdefaultvalue = UI.CBool(sdefaultvalue)
+			Case "Int"
+				sdefaultvalue = UI.CInt(sdefaultvalue)
+			Case Else
+				sdefaultvalue = UI.CStr(sdefaultvalue)
+		End Select
+		nm.Put(skey, sdefaultvalue)
+	Next
+	Return nm
+End Sub
+
 'get a clean sub-routine name
 private Sub GetEventName(strDeclaration As String) As String
 	Dim fBracket As Int
@@ -5365,93 +5786,124 @@ private Sub GetEventName(strDeclaration As String) As String
 End Sub
 
 Sub SetPropertyComponentName(value As String)
-	SetPropertyValue("ComponentName", value)
+	SetPropertyValue("componentname", value)
 End Sub
 Sub SetPropertyComponentType(value As String)
-	SetPropertyValue("ComponentType", value)
+	SetPropertyValue("componenttype", value)
 End Sub
 Sub SetPropertyComponentID(value As String)
-	SetPropertyValue("ComponentID", value)
+	SetPropertyValue("componentid", value)
 End Sub
 Sub SetPropertyParentComponent(value As String)
-	SetPropertyValue("ComponentParentID", value)
+	SetPropertyValue("componentparentid", value)
 End Sub
 Sub SetPropertyParentDevice(value As Boolean)
-	SetPropertyValue("ParentDevice", value)
+	SetPropertyValue("parentdevice", value)
 End Sub
 Sub SetPropertyComponentActive(b As Boolean)
-	SetPropertyValue("ComponentActive", b)
+	SetPropertyValue("componentactive", b)
 End Sub
 Sub SetPropertyComponentIndex(b As Boolean)
-	SetPropertyValue("ComponentIndex", b)
+	SetPropertyValue("componentindex", b)
 End Sub
 Sub SetPropertyComponentTemplate(b As Boolean)
-	SetPropertyValue("ComponentTemplate", b)
+	SetPropertyValue("componenttemplate", b)
 End Sub
 Sub SetPropertyCreateB4xLayout(b As Boolean)
-	SetPropertyValue("CreateB4xLayout", b)
+	SetPropertyValue("createb4xlayout", b)
 End Sub
 
 Sub HideComponentProperties
-	SetPropertyVisible("ComponentActive", False)
-	SetPropertyVisible("ComponentIndex", False)
-	SetPropertyVisible("ComponentTemplate", False)
-	SetPropertyVisible("CreateB4xLayout", False)
-	SetPropertyVisible("ComponentType", False)
-	SetPropertyVisible("ParentDevice", False)
-	SetPropertyVisible("ComponentTableName", False)
-	SetPropertyVisible("ComponentFieldName", False)
-	SetPropertyVisible("ComponentFieldType", False)
-	SetPropertyVisible("ComponentNavigateTo", True)
+	SetPropertyVisible("projectname", False)
+	SetPropertyVisible("componentactive", False)
+	SetPropertyVisible("componentindex", False)
+	SetPropertyVisible("componenttemplate", False)
+	SetPropertyVisible("createb4xlayout", False)
+	SetPropertyVisible("componenttype", False)
+	SetPropertyVisible("parentdevice", False)
+	SetPropertyVisible("componenttablename", False)
+	SetPropertyVisible("componentfieldname", False)
+	SetPropertyVisible("componentfieldtype", False)
+	SetPropertyVisible("componentnavigateto", False)
+	SetPropertyVisible("componentpagename", False)
+	SetPropertyVisible("componentprimaryid", False)
+	SetPropertyVisible("componentforeigntable", False)
+	SetPropertyVisible("componentforeignkey", False)
+	SetPropertyVisible("componentforeignvalue", False)
 End Sub
 
 Sub ShowComponentProperties
-	SetPropertyVisible("ComponentActive", True)
-	SetPropertyVisible("ComponentIndex", True)
-	SetPropertyVisible("ComponentTemplate", True)
-	SetPropertyVisible("CreateB4xLayout", True)
-	SetPropertyVisible("ComponentType", True)
-	SetPropertyVisible("ParentDevice", True)
-	SetPropertyVisible("ComponentTableName", True)
-	SetPropertyVisible("ComponentFieldName", True)
-	SetPropertyVisible("ComponentFieldType", True)
-	SetPropertyVisible("ComponentNavigateTo", True)
+	SetPropertyVisible("componentactive", True)
+	SetPropertyVisible("componentindex", True)
+	SetPropertyVisible("componenttemplate", True)
+	SetPropertyVisible("createb4xlayout", True)
+	SetPropertyVisible("componenttype", True)
+	SetPropertyVisible("parentdevice", True)
+	SetPropertyVisible("componenttablename", True)
+	SetPropertyVisible("componentfieldname", True)
+	SetPropertyVisible("componentfieldtype", True)
+	SetPropertyVisible("componentnavigateto", True)
+	SetPropertyVisible("componentpagename", True)
+	SetPropertyVisible("componentprimaryid", True)
+	SetPropertyVisible("componentforeigntable", True)
+	SetPropertyVisible("componentforeignkey", True)
+	SetPropertyVisible("componentforeignvalue", True)
 End Sub
 
-'show the design in the property bag
-Sub ShowCustomView(compID As String, compName As String, compType As String, props As List, isComponent As Boolean)
+Sub ShowDesign(compType As String)
 	'clear the property bag
 	BANano.Await(Clear)
-	If isComponent Then
-		AddPropertyTextBox("ComponentID", "Component ID","",False)
-		SetPropertyVisible("ComponentID", False)
-		SetPropertyValue("ComponentID", compID)
-		AddPropertyTextBox("ComponentName", "Component Name","",False)
-		SetPropertyValue("ComponentName", compName)
-		AddPropertyCheckBox("ComponentActive", "Component Active",False,"success")
-		SetPropertyValue("ComponentActive", True)
-		AddPropertyCheckBox("ComponentIndex", "Component On Index",False,"success")
-		SetPropertyValue("ComponentIndex", False)
-		AddPropertyCheckBox("ComponentTemplate", "Component Template",False,"success")
-		SetPropertyValue("ComponentTemplate", False)
-		AddPropertyCheckBox("CreateB4xLayout", "Create B4x JSON Layout",False,"success")
-		SetPropertyValue("CreateB4xLayout", False)
-		AddPropertyTextBox("ComponentType", "Component Type","",False)
-		SetPropertyEnabled("ComponentType", False)
-		SetPropertyValue("ComponentType", compType)
-		AddPropertySelect("ComponentParentID", "Parent Component", "", False, CreateMap())
-		AddPropertyCheckBox("ParentDevice", "Parent Device",False,"success")
-		AddPropertySelect("ComponentNavigateTo", "Navigate To", "String", False, CreateMap())
-		AddPropertyTextBox("ComponentTableName", "Table Name","",False)
-		AddPropertyTextBox("ComponentFieldName", "Field Name","",False)
-		AddPropertySelect("ComponentFieldType", "Field Type", "String", False, CreateMap("Blob":"Blob","Bool":"Bool", _
-		"Date":"Date","Double":"Double","Int":"Int", "String":"String","File":"File"))
-		AddPropertyCheckBox("ComponentPrimaryID", "Primary Key",False,"success")
-		AddPropertyTextBox("ComponentForeignTable", "Foreign Table","",False)
-		AddPropertyTextBox("ComponentForeignKey", "Foreign Key","",False)
-		AddPropertyTextBox("ComponentForeignValue", "Field Value","",False)
-	End If
+	If Designs.ContainsKey(compType) = False Then Return
+	AddPropertyTextBox("projectname", "ProjectName", "", False)
+	SetPropertyVisible("projectname", False)
+	SetPropertyEnabled("projectname", False)
+	AddPropertyTextBox("componentpagename", "PageName", "", False)
+	SetPropertyVisible("componentpagename", False)
+	SetPropertyEnabled("componentpagename", False)
+	AddPropertyTextBox("componentid", "Component ID","",True)
+	SetPropertyVisible("componentid", False)
+	SetPropertyEnabled("componentid", False)
+	SetPropertyValue("componentid", "")
+	AddPropertyTextBox("componentname", "Component Name","",True)
+	SetPropertyValue("componentname", "")
+	AddPropertyCheckBox("componentactive", "Component Active",False,"success")
+	SetPropertyValue("componentactive", True)
+	AddPropertyCheckBox("componentindex", "Component On Index Page",False,"success")
+	SetPropertyValue("componentindex", False)
+	SetPropertyVisible("componentindex", False)
+	AddPropertyCheckBox("componenttemplate", "Component Is Template",False,"success")
+	SetPropertyValue("componenttemplate", False)
+	SetPropertyVisible("componenttemplate", False)
+	AddPropertyCheckBox("createb4xlayout", "Create B4x JSON Layout",False,"success")
+	SetPropertyValue("createb4xlayout", False)
+	SetPropertyVisible("createb4xlayout", False)
+	AddPropertyTextBox("componenttype", "Component Type","",True)
+	SetPropertyEnabled("componenttype", False)
+	SetPropertyValue("componenttype", compType)
+	AddPropertySelect("componentparentid", "Parent Component", "", False, CreateMap())
+	SetPropertyVisible("componentparentid", False)
+	AddPropertyCheckBox("parentdevice", "Parent Device",False,"success")
+	SetPropertyVisible("parentdevice", False)
+	AddPropertySelect("componentnavigateto", "Navigate To", "String", False, CreateMap())
+	SetPropertyVisible("componentnavigateto", False)
+	AddPropertyTextBox("componenttablename", "Table Name","",False)
+	AddPropertyTextBox("componentfieldname", "Field Name","",False)
+	AddPropertySelect("componentfieldtype", "Field Type", "String", False, CreateMap("Blob":"Blob","Bool":"Bool", _
+"Date":"Date","Double":"Double","Int":"Int", "String":"String","File":"File", "LongText":"LongText"))
+	AddPropertyCheckBox("componentprimaryid", "Primary Key",False,"success")
+	AddPropertyTextBox("componentforeigntable", "Foreign Table","",False)
+	AddPropertyTextBox("componentforeignkey", "Foreign Key","",False)
+	AddPropertyTextBox("componentforeignvalue", "Field Value","",False)
 	'
+	SetPropertyVisible("componenttablename", False)
+	SetPropertyVisible("componentfieldname", False)
+	SetPropertyVisible("componentprimaryid", False)
+	SetPropertyVisible("componentforeigntable", False)
+	SetPropertyVisible("componentforeignkey", False)
+	SetPropertyVisible("componentforeignvalue", False)
+	SetPropertyVisible("componentfieldtype", False)
+	'
+	Dim props As List = Designs.Get(compType)
 	For Each rec As Map In  props
 		Dim skey As String = rec.Getdefault("Key","")
 		Dim sdisplayname As String = rec.Getdefault("DisplayName","")
@@ -5472,7 +5924,7 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 				AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes")
 			Case "Int"
 				sdefaultvalue = UI.CInt(sdefaultvalue)
-				AddPropertyNumber(skey, sdisplayname, sdefaultvalue,False)
+				AddPropertyDialer(skey, sdisplayname, sdefaultvalue,False,0,1,1000)
 			Case "Color"
 				sdefaultvalue = UI.CStr(sdefaultvalue)
 				AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
@@ -5486,8 +5938,13 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 							SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
 							BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 						Else
-							'this is not a dropdown
-							AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
+							Select Case skey
+							Case "ParentID"
+								AddPropertySelect("ParentID", "Parent ID", "", False, CreateMap())
+							Case Else		
+								'this is not a dropdown
+								AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
+							End Select
 						End If
 					Case Else
 						AddPropertySelect(skey, sdisplayname, "", False, CreateMap())
@@ -5498,7 +5955,8 @@ Sub ShowCustomView(compID As String, compName As String, compType As String, pro
 				End Select
 		End Select
 	Next
-	'UpdatePropertyPadding(sPropertyPadding)
+	'update the property padding
+	UpdatePropertyPadding(sPropertyPadding)
 End Sub
 
 'add an action button
@@ -5746,4 +6204,17 @@ End Sub
 'End Sub
 '</code>
 Sub FileChange
+End Sub
+
+'load a property bag from json file 
+Sub PropertyBagFromAsset(fileURL As String)
+	Dim fContents As String = BANano.Await(BANano.GetFileAsText($"${fileURL}?${DateTime.now}"$, Null, "utf-8"))
+	Dim pl As List = BANano.FromJson(fContents)
+	PropertyBagFromList(pl)
+End Sub
+
+'load a property bag from a json string
+Sub PropertyBagFromJSON(fContents As String)
+	Dim pl As List = BANano.FromJson(fContents)
+	PropertyBagFromList(pl)
 End Sub

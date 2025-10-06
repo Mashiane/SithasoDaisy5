@@ -61,8 +61,36 @@ Sub Class_Globals
 	Public Product As Boolean
 	Public ProductCategory As Boolean
 	Public SKU As Boolean
+	Public Industry As Boolean
+	Public ExpenseCategory As Boolean
+	Public Rating As Boolean
+	Public IncomeCategory As Boolean
+	Public ContactCategory As Boolean
+	Public Department As Boolean
+	Public FiveWords As Boolean
+	Public TenWords As Boolean
+	Public FifteenWords As Boolean
+	Public TwentyWords As Boolean
+	Public Province As Boolean
+	Public PaymentStatus As Boolean
+	Public Priority As Boolean
+	Public PaymentProvider As Boolean
 	Private BANano As BANano			'ignore
-	
+	'
+	Public const DT_PAYMENT_PROVIDER As String = "paymentprovider"
+	Public const DT_PRIORITY As String = "priority"
+	Public const DT_PAYMENT_STATUS As String = "paymentstatus"
+	Public const DT_PROVINCE As String = "province"
+	Public const DT_TWENTY_WORDS As String = "fifteenwords"
+	Public const DT_FIFTEEN_WORDS As String = "fifteenwords"
+	Public const DT_TEN_WORDS As String = "tenwords"
+	Public const DT_FIVE_WORDS As String = "fivewords"
+	Public const DT_DEPARTMENT As String = "department"
+	Public const DT_CONTACT_CATEGORY As String = "contactcategory"
+	Public const DT_INCOME_CATEGORY As String = "incomecategory"
+	Public const DT_RATING As String = "rating"
+	Public const DT_EXPENSE_CATEGORY As String = "expensecategory"
+	Public const DT_INDUSTRY As String = "industry"
 	Public const DT_SKU As String = "sku"
 	Public const DT_PRODUCT As String = "product"
 	Public const DT_PRODUCT_CATEGORY As String = "productcategory"
@@ -169,12 +197,35 @@ Sub Class_Globals
     State As String, _
 	ProductCategory As String, _
 	Product As String, _
-	SKU as string)
+	SKU As String, _
+	Industry As String, _
+	ExpenseCategory As String, _
+	Rating As String, _
+	IncomeCategory As String, _
+	ContactCategory As String, _
+	Department As String, _
+	FiveWords As String, _
+	TenWords As String, _
+	FifteenWords As String, _
+	TwentyWords As String, _
+	Province As String, _
+	Priority As String, _
+	PaymentStatus As String, _
+	PaymentProvider As String)
 End Sub
 
 Sub Initialize As SDUI5FakeIT
 	Conditions.Initialize 
 	DT_Types.Initialize
+	DT_Types.Add(DT_PRIORITY)
+	DT_Types.Add(DT_PAYMENT_STATUS)
+	DT_Types.add(DT_PROVINCE)
+	DT_Types.Add(DT_DEPARTMENT)
+	DT_Types.Add(DT_CONTACT_CATEGORY)
+	DT_Types.Add(DT_INCOME_CATEGORY)
+	DT_Types.Add(DT_RATING)
+	DT_Types.Add(DT_EXPENSE_CATEGORY)
+	DT_Types.Add(DT_INDUSTRY)
 	DT_Types.Add(DT_SKU)
 	DT_Types.Add(DT_PRODUCT)
 	DT_Types.Add(DT_NONE)
@@ -228,6 +279,11 @@ Sub Initialize As SDUI5FakeIT
 	DT_Types.Add(DT_ZIPCODE)
 	DT_Types.Add(DT_STATE)
 	DT_Types.Add(DT_PRODUCT_CATEGORY)
+	DT_Types.Add(DT_TWENTY_WORDS)
+	DT_Types.Add(DT_FIFTEEN_WORDS)
+	DT_Types.Add(DT_TEN_WORDS)
+	DT_Types.Add(DT_FIVE_WORDS)
+	DT_Types.Add(DT_PAYMENT_PROVIDER)
 	DT_Types.Sort(True)
 
 	TrueOrFalse = False
@@ -283,6 +339,20 @@ Sub Initialize As SDUI5FakeIT
 	ProductCategory = False
 	Product = False
 	SKU = False
+	Industry = False
+	ExpenseCategory = False
+	Rating = False
+	IncomeCategory = False
+	ContactCategory = False
+	Department = False
+	FiveWords = False
+	TenWords = False
+	FifteenWords = False
+	TwentyWords = False
+	Province = False
+	Priority = False
+	PaymentStatus = False
+	PaymentProvider = False
 	Return Me
 End Sub
 
@@ -290,6 +360,8 @@ End Sub
 Sub All As SDUI5FakeIT
 	State = True
 	SKU = True
+	Province = True
+	Department = True
 	City = True
 	Street2 = True
 	Street3 = True
@@ -341,19 +413,31 @@ Sub All As SDUI5FakeIT
 	Title = True
 	ProductCategory = True
 	Product = True
+	Industry = True
+	ExpenseCategory = True
+	Rating = True
+	IncomeCategory = True
+	ContactCategory = True
+	FiveWords = True
+	TenWords = True
+	FifteenWords = True
+	TwentyWords = True
+	Priority = False
+	PaymentStatus = False
+	PaymentProvider = True
 	Return Me
 End Sub
 
 'get a single record using a structure
 Sub GetRecord(structure As Map) As Map
-	Dim lst As List = GetRecordsWithStructure(structure, 1)
+	Dim lst As List = BANano.Await(GetRecordsWithStructure(structure, 1))
 	Return lst.Get(0)
 End Sub
 
 'get a record based on a list of fields
 Sub GetRecord1(flds As List) As Map
 	Dim nm As Map = ListToMap(flds)
-	Return GetRecord(nm)	
+	Return BANano.Await(GetRecord(nm))
 End Sub
 	
 'convert a list to a map
@@ -378,110 +462,138 @@ Sub GetRecordsWithStructure(structure As Map, numRecords As Int) As List
 			Dim strVal As String = structure.Get(strkey)
 			Dim svalue As Object = Null
 			Select Case strVal
+				Case DT_PAYMENT_PROVIDER
+					svalue = BANano.Await(Rand_Payment_Provider)
+				Case DT_PRIORITY
+					svalue = BANano.Await(Rand_Priority)
+				Case DT_PAYMENT_STATUS
+					svalue = BANano.Await(Rand_Payment_Status)
+				Case DT_PROVINCE
+					svalue = BANano.Await(Rand_Province)
+				Case DT_FIVE_WORDS
+					svalue = BANano.Await(Rand_Word(5))
+				Case DT_TEN_WORDS
+					svalue = BANano.Await(Rand_Word(10))
+				Case DT_FIFTEEN_WORDS
+					svalue = BANano.Await(Rand_Word(15))
+				Case DT_TWENTY_WORDS
+					svalue = BANano.Await(Rand_Word(20))
+				Case DT_DEPARTMENT
+					svalue = BANano.Await(Rand_Department)
+				Case DT_CONTACT_CATEGORY
+					svalue = BANano.Await(Rand_Contact_Category)
+				Case DT_INCOME_CATEGORY
+					svalue = BANano.Await(Rand_Income_Category)
+				Case DT_RATING
+					svalue = Rnd(0, 5)
+				Case DT_EXPENSE_CATEGORY
+					svalue = BANano.Await(Rand_Expense_Category)
+				Case DT_INDUSTRY
+					svalue = BANano.Await(Rand_Industry)
 				Case DT_SKU
-					svalue = Rand_SKU
+					svalue = BANano.Await(Rand_SKU)
 				Case DT_PRODUCT
-					svalue = Rand_Product
+					svalue = BANano.Await(Rand_Product)
 				Case DT_PRODUCT_CATEGORY
-					svalue = Rand_Product_Category
+					svalue = BANano.Await(Rand_Product_Category)
 				Case DT_WORD
-					svalue = Rand_Word(2)
+					svalue = BANano.Await(Rand_Word(2))
 				Case DT_PRIMARYKEY
 					svalue = tRecs
 				Case DT_PERCENTAGE
-					svalue = Rand_Percentage
+					svalue = BANano.Await(Rand_Percentage)
 				Case DT_PERCENT
-					svalue = Rand_Percent
+					svalue = BANano.Await(Rand_Percent)
 				Case DT_PASSWORD
-					svalue = Rand_Password(8,True,True,True,True)
+					svalue = BANano.Await(Rand_Password(8,True,True,True,True))
 				Case DT_NAME
-					svalue = Rand_Human_Name
+					svalue = BANano.Await(Rand_Human_Name)
 				Case DT_FIRST_NAME
-					svalue = Rand_Human_Name
+					svalue = BANano.Await(Rand_Human_Name)
 				Case DT_LAST_NAME
-					svalue = Rand_Human_Name
+					svalue = BANano.Await(Rand_Human_Name)
 				Case DT_FULL_NAME
-					svalue = Rand_Full_Name
+					svalue = BANano.Await(Rand_Full_Name)
 				Case DT_COUNTRY
-					svalue = Rand_Country_Name
+					svalue = BANano.Await(Rand_Country_Name)
 				Case DT_CAPITAL_CITY
-					svalue = Rand_Capital_City
+					svalue = BANano.Await(Rand_Capital_City)
 				Case DT_CITY
-					svalue = Rand_Capital_City
+					svalue = BANano.Await(Rand_Capital_City)
 				Case DT_STREET_2
-					svalue = Rand_Home_Address
+					svalue = BANano.Await(Rand_Home_Address)
 				Case DT_STREET_3
-					svalue = Rand_Home_Address
+					svalue = BANano.Await(Rand_Home_Address)
 				Case DT_MOBILE
-					svalue = Rand_Phone_Number(27,10)
+					svalue = BANano.Await(Rand_Phone_Number(27,10))
 				Case DT_ZIPCODE
-					svalue = Rand_PinCode(5)
+					svalue = BANano.Await(Rand_PinCode(5))
 				Case DT_EMAIL
-					svalue = Rand_Email("icloud.com",True)
+					svalue = BANano.Await(Rand_Email("icloud.com",True))
 				Case DT_GMAIL
-					svalue = Rand_Gmail(True)
+					svalue = BANano.Await(Rand_Gmail(True))
 				Case DT_YAHOO
-					svalue = Rand_Yahoo_Mail(True)
+					svalue = BANano.Await(Rand_Yahoo_Mail(True))
 				Case DT_GENDER
-					svalue = Rand_Gender
+					svalue = BANano.Await(Rand_Gender)
 				Case DT_LOREM_IPSUM
-					svalue = Rand_LoremIpsum(1)
+					svalue = BANano.Await(Rand_LoremIpsum(1))
 				Case DT_PHONE
-					svalue = Rand_Phone_Number(27,10)
+					svalue = BANano.Await(Rand_Phone_Number(27,10))
 				Case DT_YES_NO
-					svalue = Rand_Yes_Or_No
+					svalue = BANano.Await(Rand_Yes_Or_No)
 				Case DT_TRUE_FALSE
-					svalue = Rand_True_Or_False
+					svalue = BANano.Await(Rand_True_Or_False)
 				Case DT_SPORT
-					svalue = Rand_Sport_Name
+					svalue = BANano.Await(Rand_Sport_Name)
 				Case DT_DATE
-					svalue = Rand_Date
+					svalue = BANano.Await(Rand_Date)
 				Case DT_TIME
-					svalue = Rand_Time
+					svalue = BANano.Await(Rand_Time)
 				Case DT_DATE_TIME
-					svalue = Rand_DateTime
+					svalue = BANano.Await(Rand_DateTime)
 				Case DT_AGE
-					svalue = Rand_Age(CreateMap("type":"all"))
+					svalue = BANano.Await(Rand_Age("all"))
 				Case DT_PINCODE
-					svalue = Rand_PinCode(4)
+					svalue = BANano.Await(Rand_PinCode(4))
 				Case DT_NUMBER
-					svalue = Rand_PinCode(4)
+					svalue = BANano.Await(Rand_PinCode(4))
 				Case DT_COMPANY_NAME
-					svalue = Rand_Company_Name
+					svalue = BANano.Await(Rand_Company_Name)
 				Case DT_JOB_TITLE
-					svalue = Rand_Occupation
+					svalue = BANano.Await(Rand_Occupation)
 				Case DT_IP_ADDRESS
-					svalue = Rand_Ip_Address
+					svalue = BANano.Await(Rand_Ip_Address)
 				Case DT_MONEY
-					svalue = Rand_Money(4)
+					svalue = BANano.Await(Rand_Money(4))
 				Case DT_STREET
-					svalue = Rand_Home_Address
+					svalue = BANano.Await(Rand_Home_Address)
 				Case DT_MONTH
-					svalue = Rand_Month
+					svalue = BANano.Await(Rand_Month)
 				Case DT_MINUTES
-					svalue = Rand_Minute
+					svalue = BANano.Await(Rand_Minute)
 				Case DT_SECONDS
-					svalue = Rand_Seconds
+					svalue = BANano.Await(Rand_Seconds)
 				Case DT_HOUR
-					svalue = Rand_Hour
+					svalue = BANano.Await(Rand_Hour)
 				Case DT_HEXCOLOR
-					svalue = Rand_HexColor
+					svalue = BANano.Await(Rand_HexColor)
 				Case DT_PREFIX
-					svalue = Rand_Prefix(CreateMap("gender":"all"))
+					svalue = BANano.Await(Rand_Prefix("all"))
 				Case DT_TITLE
-					svalue = Rand_Prefix(CreateMap("gender":"all"))
+					svalue = BANano.Await(Rand_Prefix("all"))
 				Case DT_PORT
-					svalue = Rand_Port
+					svalue = BANano.Await(Rand_Port)
 				Case DT_HASHTAG
-					svalue = Rand_HashTag
+					svalue = BANano.Await(Rand_HashTag)
 				Case DT_TWITTER
-					svalue = Rand_Twitter
+					svalue = BANano.Await(Rand_Twitter)
 				Case DT_YEAR
-					svalue = Rand_Year
+					svalue = BANano.Await(Rand_Year)
 				Case DT_ZERO_ONE
-					svalue = Rand_Zero_Or_One
+					svalue = BANano.Await(Rand_Zero_Or_One)
 				Case DT_STATE
-					svalue = Rand_US_State
+					svalue = BANano.Await(Rand_US_State)
 			End Select
 			rec.Put(strkey,svalue)
 		Next
@@ -525,10 +637,24 @@ End Sub
 'get a single record
 Sub GetSingle As FakeData
 	Dim rt As FakeData
-    rt.Initialize
+	rt.Initialize
+	If PaymentProvider Then rt.PaymentProvider = Rand_Payment_Provider
+	If Priority Then rt.Priority = Rand_Priority
+	If PaymentStatus Then rt.PaymentStatus = Rand_Payment_Status
+	If Province Then rt.Province = Rand_Province
+	If FiveWords Then rt.FiveWords = Rand_Word(5)
+	If TenWords Then rt.TenWords = Rand_Word(10)
+	If FifteenWords Then rt.FifteenWords = Rand_Word(15)
+	If TwentyWords Then rt.TwentyWords = Rand_Word(20)
+	If Department Then rt.Department = Rand_Department
+	If ContactCategory Then rt.ContactCategory = Rand_Contact_Category
+	If IncomeCategory Then rt.IncomeCategory = Rand_Income_Category
+	If Rating Then rt.Rating = Rnd(0,5)
+	If ExpenseCategory Then rt.ExpenseCategory = Rand_Expense_Category
+	If Industry Then rt.Industry = Rand_Industry
 	If SKU Then rt.SKU = Rand_SKU
 	If Product Then rt.Product = Rand_Product
-    If Title Then rt.Title = Rand_Prefix(CreateMap("gender":"all"))
+    If Title Then rt.Title = Rand_Prefix("all")
     If City Then rt.City = Rand_Capital_City
     If Street2 Then rt.Street2 = Rand_Home_Address
     If Street3 Then rt.Street3 = Rand_Home_Address
@@ -555,7 +681,7 @@ Sub GetSingle As FakeData
     If Date Then rt.Date = Rand_Date
     If Time Then rt.Time = Rand_Time
     If DateAndTime Then rt.DateAndTime = Rand_DateTime
-    If Age Then rt.Age = Rand_Age(CreateMap("type":"all"))
+    If Age Then rt.Age = Rand_Age("all")
     If PinCode Then rt.PinCode = Rand_PinCode(4)
     If Number Then rt.Number = Rand_PinCode(4)
     If CompanyName Then rt.CompanyName = Rand_Company_Name
@@ -568,7 +694,7 @@ Sub GetSingle As FakeData
     If Seconds Then rt.Seconds = Rand_Seconds
     If Hour Then rt.Hour = Rand_Hour
     If HexColor Then rt.HexColor = Rand_HexColor
-    If Prefix Then rt.Prefix = Rand_Prefix(CreateMap("gender":"all"))
+    If Prefix Then rt.Prefix = Rand_Prefix("all")
     If Port Then rt.Port = Rand_Port
     If HashTag Then rt.HashTag = Rand_HashTag
     If Twitter Then rt.Twitter = Rand_Twitter
@@ -601,9 +727,23 @@ Sub GetRecords(numRecords As Int) As List
 	For tRecs = 1 To numRecords
 		Dim rec As Map
 		rec.Initialize
+		If PaymentProvider Then rec.put("paymentprovider", Rand_Payment_Provider)
+		If Priority Then rec.Put("priority", Rand_Priority)
+		If PaymentStatus Then rec.put("paymentstatus", Rand_Payment_Status)
+		If Province Then rec.put("province", Rand_Province)
+		If FiveWords Then rec.Put("fivewords", Rand_Word(5))
+		If TenWords Then rec.Put("tenwords", Rand_Word(10))
+		If FifteenWords Then rec.Put("fifteenwords", Rand_Word(15))
+		If TwentyWords Then rec.Put("twentywords", Rand_Word(20))
+		If Department Then rec.Put("department", Rand_Department)
+		If ContactCategory Then rec.Put("contactcategory", Rand_Contact_Category)
+		If IncomeCategory Then rec.Put("incomecategory", Rand_Income_Category)
+		If Rating Then rec.Put("rating", Rnd(0,5))
+		If ExpenseCategory Then rec.Put("expensecategory", Rand_Expense_Category)
+		If Industry Then rec.Put("industry", Rand_Industry)
 		If SKU Then rec.Put("sku", Rand_SKU)
 		If Product Then rec.Put("product", Rand_Product)
-		If Title Then rec.Put("title", Rand_Prefix(CreateMap("gender":"all")))
+		If Title Then rec.Put("title", Rand_Prefix("all"))
 		If City Then rec.Put("city", Rand_Capital_City)
 		If Street2 Then rec.Put("street2", Rand_Home_Address)
 		If Street3 Then rec.Put("street3", Rand_Home_Address)
@@ -630,7 +770,7 @@ Sub GetRecords(numRecords As Int) As List
 		If Date Then rec.Put("date", Rand_Date)
 		If Time Then rec.Put("time", Rand_Time)
 		If DateAndTime Then rec.Put("datetime", Rand_DateTime)
-		If Age Then rec.Put("age", Rand_Age(CreateMap("type":"all")))
+		If Age Then rec.Put("age", Rand_Age("all"))
 		If PinCode Then rec.Put("pincode", Rand_PinCode(4))
 		If Number Then rec.Put("number", Rand_PinCode(4))
 		If CompanyName Then rec.Put("companyname", Rand_Company_Name)
@@ -643,7 +783,7 @@ Sub GetRecords(numRecords As Int) As List
 		If Seconds Then rec.Put("seconds", Rand_Seconds)
 		If Hour Then rec.Put("hour", Rand_Hour)
 		If HexColor Then rec.Put("hexcolor", Rand_HexColor)
-		If Prefix Then rec.Put("prefix", Rand_Prefix(CreateMap("gender":"all")))
+		If Prefix Then rec.Put("prefix", Rand_Prefix("all"))
 		If Port Then rec.Put("port", Rand_Port)
 		If HashTag Then rec.Put("hashtag", Rand_HashTag)
 		If Twitter Then rec.Put("twitter", Rand_Twitter)
@@ -658,6 +798,49 @@ Sub GetRecords(numRecords As Int) As List
 	Return recs
 End Sub
 
+Sub Rand_Department As String
+	Dim departments As List
+	departments.Initialize
+	departments.AddAll(Array As String( _
+        "Human Resources", "Finance", "Information Technology", "Marketing", "Sales", "Operations", _
+        "Customer Service", "Legal", "Research & Development", "Production/Manufacturing", "Accounting", _
+        "Purchasing/Procurement", "Quality Assurance", "Administration", "Logistics", "Engineering", _
+        "Design", "Communications", "Training", "Health & Safety" _
+    ))
+	Return RandListValue(departments)
+End Sub
+
+Sub Rand_Contact_Category As String
+	Dim categories As List
+	categories.Initialize
+	categories.AddAll(Array As String("Personal", "Work", "Family", "Friends", "Colleagues", _
+	"Clients", "Suppliers", "Vendors", "Partners", "Referrals", _
+	"Emergency", "Social", "Acquaintances", "Service Providers", _
+	"Business", "Contractor", "Consultant", "Volunteer", "Investor", _
+	"Landlord", "Tenant", "Student", "Teacher", "Doctor", _
+	"Patient", "Lawyer", "Agent", "Affiliate", "Distributor", _
+	"Reseller", "Member", "Donor", "Beneficiary", "Stakeholder", _
+	"Media", "Press", "Government", "Nonprofit", "Other", "Customer", "Lead", "Prospect", "Subscriber", _
+	"VIP", "Blacklisted", "Inactive", "Archived", _
+	"Support", "Technical", "Sales", "Marketing", _
+	"Accounting", "HR", "Legal", "Operations"))
+	Return RandListValue(categories)
+End Sub
+
+Sub Rand_Income_Category As String
+    ' Define common income categories
+    Dim allCategories As List
+    allCategories.Initialize
+    allCategories.AddAll(Array As String( _
+        "Salary", "Wages", "Freelance Income", "Business Income", "Rental Income", "Investment Income", _
+        "Dividends", "Interest", "Retirement Income", "Pension", "Social Security", "Government Benefits", _
+        "Unemployment Benefits", "Gifts", "Child Support", "Alimony", "Side Hustle", "Royalties", "Bonuses", _
+        "Commissions", "Consulting Fees", "Inheritance", "Tax Refund", "Sale of Assets", "Grants", "Scholarships", _
+        "Tips", "Capital Gains", "Stocks", "Cryptocurrency Income", "Partnership Income", "Trust Income", _
+        "Prizes", "Lottery Winnings", "Reimbursements", "Contract Work", "Gig Economy", "Annuities", _
+        "Disability Benefits", "Workers' Compensation"))
+	Return RandListValue(allCategories)
+End Sub	
 
 'This will generate random numeric codes
 'Example:
@@ -706,8 +889,8 @@ End Sub
 'Example
 'Options: CreateMap("type":"child")
 'Options are child,teen,adult,senior,all
-Sub Rand_Age(Options As Map) As String
-	Dim stype As String = Options.Get("type")
+Sub Rand_Age(stype As String) As String
+	stype = stype.tolowercase
 	Dim iAge As Int = 0
 	Select Case stype
 		Case "child"
@@ -728,13 +911,12 @@ Sub Rand_Age(Options As Map) As String
 End Sub
 
 'options createmap("gender":"Male")
-Sub Rand_Prefix(options As Map) As String
+Sub Rand_Prefix(sGender As String) As String
 	Dim lst As List
 	lst.Initialize
 	lst.AddAll(Array("Dr."))
-	Dim sgender As String = options.Get("gender")
-	sgender = sgender.tolowercase
-	Select Case sgender
+	sGender = sGender.tolowercase
+	Select Case sGender
 		Case "male"
 			lst.AddAll(Array("Mr."))
 		Case "female"
@@ -742,9 +924,166 @@ Sub Rand_Prefix(options As Map) As String
 		Case Else
 			lst.AddAll(Array("Miss","Mrs.","Mr."))
 	End Select
-	lst = ExplodeList(lst,10)
+	lst = BANano.Await(ExplodeList(lst,10))
 	Return RandListValue(lst)
 End Sub
+
+Sub Rand_Priority() As String
+	Dim lst As List
+	lst.Initialize
+	lst.AddAll(Array("High", "Low", "Medium", "Urgent"))
+	lst = banano.Await(ExplodeList(lst,10))
+	Return RandListValue(lst)
+End Sub
+
+Sub Rand_Payment_Status() As String
+	Dim statuses As List
+	statuses.Initialize
+	statuses.AddAll(Array As String("Paid", "Unpaid", "Pending", "Failed", "Refunded", _
+	"Partially Paid", "Cancelled", "Overdue", "Processing", _
+	"Disputed", "Authorized", "Settled", "Reversed", "Voided", _
+	"Chargeback", "Completed", "Expired", "Declined", "Returned", _
+	"Awaiting Payment", "In Transit", "Escrow", "Draft", _
+	"On Hold", "Under Review", "Billed", "Invoiced"))
+	Return RandListValue(statuses)
+End Sub
+
+Sub Rand_Payment_Provider() As String
+	Dim providers As List
+	providers.Initialize
+	providers.AddAll(Array As String("Visa", "Mastercard", "American Express", "Discover", "PayPal", _
+	"Stripe", "Square", "Apple Pay", "Google Pay", "Samsung Pay", _
+	"Alipay", "WeChat Pay", "Klarna", "Afterpay", "Affirm", _
+	"Shopify Payments", "Adyen", "Braintree", "Worldpay", "Fiserv", _
+	"Fiserv (First Data)", "Global Payments", "Chase Paymentech", "Elavon", _
+	"Payoneer", "TransferWise (Wise)", "Skrill", "Neteller", "Paysafe", _
+	"2Checkout", "Authorize.Net", "BlueSnap", "PayU", "Razorpay", _
+	"Paytm", "PhonePe", "iDEAL", "SOFORT", "Giropay", "SEPA", _
+	"ACH Transfer", "Wire Transfer", "Direct Debit", "EFT", "Interac e-Transfer", _
+	"Venmo", "Zelle", "Cash App", "Dwolla", "GoCardless"))
+	Return RandListValue(providers)
+End Sub
+
+Sub Rand_Industry As String
+	Dim industries As List
+	industries.Initialize
+	industries.AddAll(Array As String( _
+        "Agriculture", _
+        "Automotive", _
+        "Aerospace", _
+        "Banking", _
+        "Biotechnology", _
+        "Chemicals", _
+        "Construction", _
+        "Consumer Goods", _
+        "Defense", _
+        "Education", _
+        "Electronics", _
+        "Energy", _
+        "Entertainment", _
+        "Environmental Services", _
+        "Fashion", _
+        "Financial Services", _
+        "Food & Beverage", _
+        "Forestry", _
+        "Government", _
+        "Healthcare", _
+        "Hospitality", _
+        "Information Technology", _
+        "Insurance", _
+        "Legal Services", _
+        "Logistics", _
+        "Manufacturing", _
+        "Marine", _
+        "Marketing & Advertising", _
+        "Media & Publishing", _
+        "Metals & Mining", _
+        "Nonprofit & NGOs", _
+        "Oil & Gas", _
+        "Pharmaceuticals", _
+        "Professional Services", _
+        "Real Estate", _
+        "Renewable Energy", _
+        "Research & Development", _
+        "Retail", _
+        "Software", _
+        "Sports & Recreation", _
+        "Telecommunications", _
+        "Textiles", _
+        "Tourism", _
+        "Transportation", _
+        "Utilities", _
+        "Waste Management", _
+        "Wholesale", _
+        "Human Resources", _
+        "E-Commerce", _
+        "Cybersecurity", _
+        "Data Science & Analytics", _
+        "Artificial Intelligence", _
+        "Cloud Computing", _
+        "Blockchain & Cryptocurrency", _
+        "Gaming", _
+        "Health & Wellness", _
+        "Event Management", _
+        "Agritech", _
+        "Fintech", _
+        "Edtech", _
+        "Medtech", _
+        "Proptech", _
+        "Space Technology", _
+        "Nanotechnology", _
+        "Robotics", _
+        "3D Printing", _
+        "Virtual Reality (VR)", _
+        "Augmented Reality (AR)", _
+        "CleanTech", _
+        "Smart Cities", _
+        "Supply Chain Management", _
+        "Consulting", _
+        "Freight & Shipping", _
+        "LegalTech", _
+        "FoodTech", _
+        "InsuranceTech (Insurtech)", _
+        "Music Industry", _
+        "Film & Television", _
+        "Art & Design", _
+        "Publishing", _
+        "Advertising Agencies", _
+        "PR & Communications", _
+        "Social Media", _
+        "Cultural & Heritage", _
+        "Nonrenewable Resources", _
+        "Petrochemicals", _
+        "Aviation", _
+        "Railways", _
+        "Defense Contractors", _
+        "Military Tech", _
+        "Humanitarian Services", _
+        "Religious Organizations", _
+        "Research Institutes", _
+        "Think Tanks", _
+        "Venture Capital", _
+        "Private Equity", _
+        "Accounting & Auditing", _
+        "Interior Design", _
+        "Architecture", _
+        "Home Improvement", _
+        "Parks & Recreation", _
+        "Fitness & Gyms", _
+        "Travel Agencies", _
+        "Catering Services", _
+        "Beverage Production", _
+        "Breweries & Distilleries", _
+        "Dairy Industry", _
+        "Meat & Poultry", _
+        "Seafood Industry", _
+        "Crop Production", _
+        "Livestock", _
+        "Fisheries", _
+        "Aquaculture"))
+	Return RandListValue(industries)
+End Sub
+
 
 Sub Rand_Port As String
 	Return Rnd(0,65535)
@@ -2472,12 +2811,12 @@ Public Sub Rand_Gender As String
 	Dim Genders As List
 	Genders.Initialize
 	Genders.AddAll(Array As String("Male","Female"))
-	Genders = ExplodeList(Genders,6)
+	Genders = BANano.Await(ExplodeList(Genders,6))
 	Return RandListValue(Genders)
 End Sub
 
 Public Sub Rand_Item(lstOf As List) As String
-	Dim nl As List = ExplodeList(lstOf,6)
+	Dim nl As List = BANano.Await(ExplodeList(lstOf,6))
 	Return RandListValue(nl)
 End Sub
 
@@ -2488,7 +2827,7 @@ private Sub ExplodeList(lst As List, runs As Int) As List
 	For oCnt = 1 To runs
 		nList.AddAll(lst)
 	Next
-	nList = ShuffleList(nList)
+	nList = BANano.Await(ShuffleList(nList))
 	Return nList
 End Sub
 
@@ -2741,7 +3080,7 @@ Sub Rand_Word(count As Int) As String
 	words.AddAll(Array("dolore", "eu", "fugiat", "nulla", "pariatur"))
 	words.AddAll(Array("Excepteur", "sint", "occaecat", "cupidatat", "non", "proident", "sunt", "in", "culpa"))
 	words.AddAll(Array("qui", "officia", "deserunt", "mollit","anim","id","est","laborum"))
-	words = ExplodeList(words,5)
+	words = banano.Await(ExplodeList(words,5))
 	Dim st As StringBuilder
 	st.Initialize
   	For i = 1 To count
@@ -2764,7 +3103,7 @@ Public Sub Rand_Lorem_Ipsum(ParagraphCount  As Int) As String
 	textList.Add("Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.")
 	textList.Add("Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.")
 	textList.Add("Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")
-	textList = ExplodeList(textList,3)
+	textList = BANano.Await(ExplodeList(textList,3))
 	     
 	Dim st As StringBuilder
 	st.Initialize
@@ -3907,6 +4246,63 @@ Sub Rand_Capital_City As String
 	names.add("Lusaka")
 	names.add("Harare")
 	Return RandListValue(names)
+End Sub
+
+Sub Rand_Expense_Category As String
+	' Define the most common expense categories
+	Dim allCategories As List
+	allCategories.Initialize
+	allCategories.AddAll(Array As String( _
+        "Housing", "Rent", "Mortgage", "Utilities", "Electricity", "Water", "Gas", "Internet", "Phone", _
+        "Groceries", "Food", "Dining Out", "Restaurants", "Takeout", _
+        "Transportation", "Gasoline", "Public Transit", "Car Payment", "Car Insurance", "Car Maintenance", "Parking", "Tolls", _
+        "Insurance", "Health Insurance", "Life Insurance", "Home Insurance", _
+        "Healthcare", "Medical", "Dental", "Pharmacy", "Vision", _
+        "Entertainment", "Streaming Services", "Movies", "Concerts", "Hobbies", "Gym", "Fitness", _
+        "Shopping", "Clothing", "Electronics", "Home Goods", "Personal Care", _
+        "Education", "Tuition", "Books", "Courses", "Student Loans", _
+        "Childcare", "Baby Supplies", "Pet Expenses", "Pet Food", "Veterinary", _
+        "Travel", "Vacation", "Hotels", "Flights", _
+        "Gifts", "Donations", "Charity", "Subscriptions", "Memberships", _
+        "Debt Payments", "Credit Card", "Loans", "Savings", "Investments" _
+    ))
+	Return RandListValue(allCategories)
+End Sub
+
+Sub Rand_Province As String
+	Dim provinces As List
+	provinces.Initialize
+    
+	' Canada (10 provinces)
+	provinces.AddAll(Array As String("Alberta", "British Columbia", "Manitoba", "New Brunswick", _
+	"Newfoundland and Labrador", "Nova Scotia", "Ontario", _
+	"Prince Edward Island", "Quebec", "Saskatchewan"))
+    
+	' South Africa (9 provinces)
+	provinces.AddAll(Array As String("Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal", _
+	"Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape"))
+    
+	' Netherlands (12 provinces)
+	provinces.AddAll(Array As String("Drenthe", "Flevoland", "Friesland", "Gelderland", _
+	"Groningen", "Limburg", "Noord-Brabant", "Noord-Holland", _
+	"Overijssel", "Zuid-Holland", "Utrecht", "Zeeland"))
+    
+	' Philippines (sample of 10/81 provinces)
+	provinces.AddAll(Array As String("Cebu", "Davao del Sur", "Bulacan", "Pangasinan", _
+	"Negros Occidental", "Zamboanga del Sur", "Rizal", _
+	"Laguna", "Cavite", "Batangas"))
+    
+	' Italy (10/20 regions)
+	provinces.AddAll(Array As String( _
+        "Lombardy", "Veneto", "Emilia-Romagna", "Tuscany", _
+	"Lazio", "Campania", "Sicily", "Piedmont", "Liguria", "Trentino-Alto Adige"))
+    
+	' Other Major Regions (equivalent to provinces)
+	provinces.AddAll(Array As String("Gyeonggi, South Korea", "Tokyo, Japan", "Bavaria, Germany", _
+	"Texas, USA", "New South Wales, Australia", "São Paulo, Brazil", _
+	"Gujarat, India", "Jiangsu, China", "Bangkok, Thailand", _
+	"Catalonia, Spain", "Lombardy, Italy", "Quebec, Canada"))
+	Return RandListValue(provinces)
 End Sub
 
 'Generates a random job title

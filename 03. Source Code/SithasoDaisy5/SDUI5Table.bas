@@ -178,7 +178,7 @@ Private Sub Class_Globals
 	icon As String, color As String, width As String, readonly As Boolean, maxvalue As Int, height As String, mask As String, _
 	suffix As String, alignment As String, minwidth As String, maxwidth As String, Classes As List, options As Map, _
 	NothingSelected As Boolean, Rows As Int, dateFormat As String, altFormat As String, range As Boolean, multiple As Boolean, _
-	noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String)
+	noCalendar As Boolean, ComputeValue As String, ComputeColor As String, Locale As String, ComputeClass As String, Prefix As String, PrependIcon As String, AppendIcon As String, MinValue As Int, StepValue As Int, HasRing As Boolean, RingColor As String, OnlineField As String, visible As Boolean, accept As String, capture As String, TextColor As String, colWidth As String, colHeight As String, MaxLength As String, ComputeBackgroundColor As String, OptionIcons As Map, ComputeRing As String, ComputeTextColor As String, BGColor As String,Delimiter As String, SumValues As Boolean, ComputeOptions As String, ReplaceSvg As Boolean, FitSvg As Boolean, Ghost As Boolean, SvgSize As String, AvatarColor As Boolean, TextSize As String)
 	Private bHover As Boolean
 	Private bSelectAll As Boolean
 	Private sSearchSize As String = "md"
@@ -289,11 +289,21 @@ Private Sub Class_Globals
 	Private bListViewMode As Boolean
 	Private sTableSize As String = "md"
 	Private bTrapRowClick As Boolean = False
+	Private ColumnVisibility As Map
 End Sub
 
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 
 'add this element to an existing parent element using current props
@@ -397,7 +407,12 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	Columns.Initialize
 	Rows.Initialize 
 	DPValue.Initialize 
-	Originals.Initialize 
+	Originals.Initialize
+	colSelectAll = NewColumn
+	colSelectAll.name = "selectall"
+	colSelectAll.title = ""
+	colSelectAll.width = "80px"
+	colSelectAll.alignment = "left"
 	
 	BANano.DependsOnAsset("flatpickr.min.css")
 	BANano.DependsOnAsset("flatpickr.css")
@@ -408,6 +423,7 @@ Sub Initialize (CallBack As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("dayjs.min.js")
 	BANano.DependsOnAsset("relativeTime.min.js")
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	ColumnVisibility.Initialize 
 End Sub
 
 Sub DesignerCreateView (Target As BANanoElement, Props As Map)
@@ -633,7 +649,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	
 	mElement = mTarget.Append($"[BANCLEAN]
     <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-        <div id="${mName}_toolbar" class="m-3 -mb-3 flex">
+        <div id="${mName}_toolbar" class="m-3 -mb-3 flex items-center">
         	<h2 id="${mName}_title" class="ml-3 card-title flex items-center gap-2 w-full">
 				<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
 				<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
@@ -2316,13 +2332,16 @@ Sub SetRowSelectChecked(rowPos As Int, value As Boolean)
 	UI.SetCheckedByID($"#${mName}_${rowPos}_selectall"$, value)
 End Sub
 Sub SetToolbarButtonBadge(btn As String, value As String)
-	btn = UI.CleanID(btn)
-	If value = "" Or value = "0" Then
-		UI.Hide($"#${mName}_${btn}_indicator"$)
-	Else
-		UI.Show($"#${mName}_${btn}_indicator"$)
-		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
-	End If
+	Try
+		btn = UI.CleanID(btn)
+		If value = "" Or value = "0" Then
+			UI.Hide($"#${mName}_${btn}_indicator"$)
+		Else
+			UI.Show($"#${mName}_${btn}_indicator"$)
+			UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+		End If
+	Catch
+	End Try		'ignore	
 End Sub
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
 	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
@@ -2557,15 +2576,19 @@ Sub ClearRows			'ignoredeadcode
 	Next
 End Sub
 
+Sub UpdateColumnVisibility
+	ColumnVisibility.Initialize
+	For Each k As String In Columns.Keys
+		Dim tc As TableColumn = Columns.Get(k)
+		ColumnVisibility.Put(k, tc.visible)
+	Next
+End Sub
+
 'add the select all column
 Sub AddColumnSelectAll			'ignoredeadcode
 	bSelectAll = True
 	Dim name As String = "selectall"
-	colSelectAll = NewColumn
-	colSelectAll.name = name
-	colSelectAll.title = ""
-	colSelectAll.width = "80px"
-	colSelectAll.alignment = "left"
+	
 	'
 	Dim hr As String = $"[BANCLEAN]
 	<th id="${mName}_selectall_th" style="${BuildStyle(colSelectAll)}">
@@ -2580,6 +2603,7 @@ Sub AddColumnSelectAll			'ignoredeadcode
 	el.HandleEvents("change", Me, "HandleSelectAll")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", "selectall")
 	SetToolbarSelectAllChecked(False)
+	
 End Sub
 Sub getSelectAllID As String
 	Return $"${mName}_selectalllabel"$
@@ -2659,6 +2683,7 @@ Sub SetColumnAlignMultiple(salign As String, colNames As List)
 		SetColumnAlign(col, salign)
 	Next
 End Sub
+'left (default), center, right
 Sub SetColumnAlign(colName As String, salign As String)
 	colName = UI.CleanID(colName)
 	salign = salign.ToLowerCase
@@ -2690,6 +2715,23 @@ Sub SetColumnAlign(colName As String, salign As String)
 			rowElement.AddClass("text-right")
 	End Select
 End Sub
+
+Sub SetColumnAvatarColor(colName As String, b As Boolean)
+	colName = UI.CleanID(colName)
+	If Columns.ContainsKey(colName) = False Then Return
+	Dim nc As TableColumn = Columns.Get(colName)
+	nc.AvatarColor = b
+	Columns.Put(colName, nc)
+End Sub
+
+Sub SetColumnTextSize(colName As String, sSize As String)
+	colName = UI.CleanID(colName)
+	If Columns.ContainsKey(colName) = False Then Return
+	Dim nc As TableColumn = Columns.Get(colName)
+	nc.TextSize = sSize
+	Columns.Put(colName, nc)
+End Sub
+
 Sub getColumnID(colName As String) As String
 	colName = UI.cleanid(colName)
 	Dim xColName As String = $"${mName}_${colName}_th"$
@@ -2749,6 +2791,7 @@ End Sub
 '</code>
 Sub AddColumn(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -2763,6 +2806,8 @@ Sub AddColumn(name As String, title As String)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	Columns.Put(name, nc)
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 
 'get the first visible column of the table
@@ -2786,6 +2831,7 @@ End Sub
 '</code>
 Sub AddColumnPlaceHolder(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -2801,6 +2847,8 @@ Sub AddColumnPlaceHolder(name As String, title As String)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	Columns.Put(name, nc)
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 private Sub HandleHeaderClick(event As BANanoEvent)     'ignoredeadcode
 	'#Event: HeaderClick (HeaderName As String, Asc As Boolean)
@@ -2828,9 +2876,30 @@ End Sub
 'set column visibility for multiple columns
 Sub SetColumnVisibleMultiple(Status As Boolean, colNames As List)
 	For Each col As String In colNames
-		SetColumnVisible(col, Status)
+		BANano.Await(SetColumnVisible(col, Status))
+		BANano.Await(SetColumnVisibleOnColumnChooser(col, Status))
 	Next
 End Sub
+
+Sub SetColumnsHidden(cols As List)
+	For Each k As String In cols
+		BANano.Await(SetColumnHidden(k))
+	Next
+	
+End Sub
+
+'only use this method when adding columns
+Sub SetColumnHidden(colName As String)
+	If Columns.ContainsKey(colName) = False Then Return
+	Dim nc As TableColumn = Columns.Get(colName)
+	nc.visible = False
+	Columns.Put(colName, nc)
+	ColumnVisibility.Put(colName, False)
+	UI.Hide($"${mName}_${colName}_th"$)
+	UI.Hide($"${mName}_${colName}_tf"$)
+	If bHasFilter Then SetColumnVisibleHeaderRow("filters", colName, False)
+End Sub
+
 'show / hide columns at runtime
 Sub SetColumnVisible(colName As String, Status As Boolean)
 	If Columns.ContainsKey(colName) = False Then Return
@@ -2857,6 +2926,7 @@ Sub SetColumnVisible(colName As String, Status As Boolean)
 			UI.Hide($"${ck}"$)
 		End If
 	Next
+	
 End Sub
 
 Sub setHasFilter(b As Boolean)			'ignoredeadcode
@@ -2904,6 +2974,7 @@ End Sub
 
 Sub AddColumnFileSize(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -2920,6 +2991,8 @@ Sub AddColumnFileSize(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnMoney(colName As String)
 	colName = UI.CleanID(colName)
@@ -2935,6 +3008,7 @@ End Sub
 '</code>
 Sub AddColumnMoney(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -2951,6 +3025,8 @@ Sub AddColumnMoney(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnDate(colName As String)
 	colName = UI.CleanID(colName)
@@ -2965,6 +3041,7 @@ End Sub
 '</code>
 Sub AddColumnDate(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -2980,12 +3057,15 @@ Sub AddColumnDate(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnDateTime("trandate", "Date")
 '</code>
 Sub AddColumnDateTime(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3001,6 +3081,8 @@ Sub AddColumnDateTime(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnDateTime(colName As String)
 	colName = UI.CleanID(colName)
@@ -3024,6 +3106,7 @@ End Sub
 '</code>
 Sub AddColumnThousand(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3040,6 +3123,8 @@ Sub AddColumnThousand(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnAction(colName As String, iconName As String, iconColor As String)
 	colName = UI.CleanID(colName)
@@ -3085,6 +3170,7 @@ End Sub
 '</code>
 Sub AddColumnAction(name As String, title As String, icon As String, color As String, textColor As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3105,6 +3191,7 @@ Sub AddColumnAction(name As String, title As String, icon As String, color As St
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	
 End Sub
 
 'add a action column
@@ -3113,6 +3200,7 @@ End Sub
 '</code>
 Sub AddColumnFileAction(name As String, title As String, icon As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3132,6 +3220,7 @@ Sub AddColumnFileAction(name As String, title As String, icon As String, color A
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	
 End Sub
 
 '<code>
@@ -3139,6 +3228,7 @@ End Sub
 '</code>
 Sub AddColumnDropDown(name As String, title As String, icon As String, color As String, options As Map)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3160,12 +3250,14 @@ Sub AddColumnDropDown(name As String, title As String, icon As String, color As 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	
 End Sub
 '<code>
 'tbl.AddColumnDropDownIcon("menu", "Menu", "fa-solid fa-ellipsis-vertical", "#3f51b5", CreateMap("edit":"Edit","delete":"Delete","clone":"Clone","print":"Print"), CreateMap("edit":"fa-solid fa-pencil","delete":"fa-solid fa-trash","clone":"fa-solid fa-clone","print":"fa-solid fa-print"))
 '</code>
 Sub AddColumnDropDownIcon(name As String, title As String, icon As String, color As String, options As Map, OptionIcons As Map)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3187,6 +3279,7 @@ Sub AddColumnDropDownIcon(name As String, title As String, icon As String, color
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	
 End Sub
 Sub SetColumnMinMaxWidth(colName As String, minwidth As String, maxwidth As String)
 	colName = colName.ToLowerCase
@@ -3416,6 +3509,7 @@ Sub AddColumnClass(colName As String, classes As List)
 		nc.classes = cclasses
 		Columns.Put(colName, nc)
 	End If
+	
 End Sub
 Sub SetColumnLink(colName As String, subtitle As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3432,6 +3526,7 @@ End Sub
 '</code>
 Sub AddColumnLink(name As String, title As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3449,6 +3544,8 @@ Sub AddColumnLink(name As String, title As String, subtitle As String, color As 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnClickLink(colName As String, subtitle As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3465,6 +3562,7 @@ End Sub
 '</code>
 Sub AddColumnClickLink(name As String, title As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3482,6 +3580,8 @@ Sub AddColumnClickLink(name As String, title As String, subtitle As String, colo
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnEmail(colName As String, subtitle As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3508,6 +3608,7 @@ End Sub
 '</code>
 Sub AddColumnEmail(name As String, title As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3525,6 +3626,8 @@ Sub AddColumnEmail(name As String, title As String, subtitle As String, color As
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '
 '<code>
@@ -3532,6 +3635,7 @@ End Sub
 '</code>
 Sub AddColumnWebsite(name As String, title As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3549,6 +3653,8 @@ Sub AddColumnWebsite(name As String, title As String, subtitle As String, color 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnIcon(colName As String, ssize As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3565,6 +3671,7 @@ End Sub
 '</code>
 Sub AddColumnIcon(name As String, title As String, ssize As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3583,6 +3690,8 @@ Sub AddColumnIcon(name As String, title As String, ssize As String, color As Str
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 
 Sub SetColumnButton(colName As String, color As String)
@@ -3648,6 +3757,7 @@ End Sub
 '</code>
 Sub AddColumnButton(name As String, title As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3665,6 +3775,8 @@ Sub AddColumnButton(name As String, title As String, color As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnBadge(colName As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3691,6 +3803,7 @@ End Sub
 '</code>
 Sub AddColumnBadge(name As String, title As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3708,6 +3821,8 @@ Sub AddColumnBadge(name As String, title As String, color As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnRating(colName As String, ssize As Int, color As String)
 	colName = UI.CleanID(colName)
@@ -3724,6 +3839,7 @@ End Sub
 '</code>
 Sub AddColumnRating(name As String, title As String, ssize As Int, color As String, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3742,6 +3858,8 @@ Sub AddColumnRating(name As String, title As String, ssize As Int, color As Stri
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnRadialProgress(colName As String, ssize As String, color As String, suffix As String)
 	colName = UI.CleanID(colName)
@@ -3760,6 +3878,7 @@ End Sub
 '</code>
 Sub AddColumnRadialProgress(name As String, title As String, ssize As String, color As String, suffix As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3778,6 +3897,8 @@ Sub AddColumnRadialProgress(name As String, title As String, ssize As String, co
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnProgress(colName As String, width As Int, maxvalue As Int, color As String)
 	colName = UI.CleanID(colName)
@@ -3796,6 +3917,7 @@ End Sub
 '</code>
 Sub AddColumnProgress(name As String, title As String, width As Int, maxvalue As Int, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3814,6 +3936,8 @@ Sub AddColumnProgress(name As String, title As String, width As Int, maxvalue As
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnRange(colName As String, maxvalue As Int, color As String)
 	colName = UI.CleanID(colName)
@@ -3831,6 +3955,7 @@ End Sub
 '</code>
 Sub AddColumnRange(name As String, title As String, maxvalue As Int, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3848,6 +3973,8 @@ Sub AddColumnRange(name As String, title As String, maxvalue As Int, color As St
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnCheckBox(colName As String, color As String)
 	colName = UI.CleanID(colName)
@@ -3859,6 +3986,27 @@ Sub SetColumnCheckBox(colName As String, color As String)
 		Columns.Put(colName, nc)
 	End If
 End Sub
+
+'set only these columns to be visible
+Sub SetColumnVisibleOnly(theseOnes As List)
+	For Each k As String In Columns.Keys
+		Dim nc As TableColumn = Columns.get(k)
+		Select Case nc.typeof
+		Case "action", "fileaction", "menu", "button"
+			Continue				
+		End Select
+		'
+		If theseOnes.IndexOf(k) >= 0 Then
+			BANano.await(SetColumnVisible(k, True))
+			BANano.Await(SetColumnVisibleOnColumnChooser(k, True))
+		Else
+			BANano.Await(SetColumnVisible(k, False))
+			BANano.Await(SetColumnVisibleOnColumnChooser(k, False))
+		End If		
+	Next
+End Sub
+
+
 Sub SetColumnSelect(colName As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
@@ -3867,6 +4015,7 @@ Sub SetColumnSelect(colName As String)
 		Columns.Put(colName, nc)
 	End If
 End Sub
+'set the key value pairs for a select on a table
 Sub SetColumnOptions(colname As String, options As Map)
 	colname = UI.CleanID(colname)
 	If Columns.ContainsKey(colname) Then
@@ -3896,6 +4045,7 @@ End Sub
 '</code>
 Sub AddColumnCheckBox(name As String, title As String, color As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3914,6 +4064,8 @@ Sub AddColumnCheckBox(name As String, title As String, color As String, readOnly
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'Dim countries As List
@@ -3926,6 +4078,7 @@ End Sub
 '</code>
 Sub AddColumnSelect(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As Map)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3946,6 +4099,8 @@ Sub AddColumnSelect(name As String, title As String, readOnly As Boolean, bAddNo
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnSelectFromList("country", "Country", False, True, Array("South Africa","USA","Nigeria"))
@@ -3953,6 +4108,7 @@ End Sub
 Sub AddColumnSelectFromList(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As List)
 	Dim optionsM As Map = UI.ListToSelectOptions(options)
 	AddColumnSelect(name, title, readOnly, bAddNothingSelected, optionsM)
+	
 End Sub
 Sub SetColumnOptionsFromList(colname As String, options As List)
 	Dim optionsM As Map = UI.ListToSelectOptions(options)
@@ -3965,16 +4121,19 @@ End Sub
 Sub AddColumnSelectFromListSort(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As List)
 	Dim optionsM As Map = UI.ListToSelectOptionsSort(options)
 	AddColumnSelect(name, title, readOnly, bAddNothingSelected, optionsM)
+	
 End Sub
 Sub AddColumnRadioGroupFromList(name As String, title As String, readOnly As Boolean, color As String, options As List)
 	Dim optionsM As Map = UI.ListToSelectOptions(options)
 	AddColumnRadioGroup(name, title, readOnly, color, optionsM)
+	
 End Sub
 '<code>
 'tb4.AddColumnRadioGroup("gender", "Gender", False, app.COLOR_PRIMARY, CreateMap("male":"Male","female":"Female"))
 '</code>
 Sub AddColumnRadioGroup(name As String, title As String, readOnly As Boolean, color As String, options As Map)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -3994,6 +4153,8 @@ Sub AddColumnRadioGroup(name As String, title As String, readOnly As Boolean, co
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnTextColor(colName As String, color As String)
 	Dim tcolor As String = UI.FixColor("text", color)
@@ -4025,6 +4186,7 @@ End Sub
 '</code>
 Sub AddColumnTextBox(name As String, title As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4043,12 +4205,15 @@ Sub AddColumnTextBox(name As String, title As String, readOnly As Boolean)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnTelephone("tel", "Telephone", False)
 '</code>
 Sub AddColumnTelephone(name As String, title As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4067,6 +4232,8 @@ Sub AddColumnTelephone(name As String, title As String, readOnly As Boolean)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnTextBoxGroup(colName As String, Prefix As String, PrependIcon As String, Suffix As String, AppendIcon As String)
 	colName = UI.CleanID(colName)
@@ -4103,10 +4270,15 @@ Sub SetColumnPasswordGroup(colName As String)
 End Sub
 '<code>
 'tb4.AddColumnTextBoxGroup("id", "Price", True, "$", "", "00", "")
-'tb4.SetColumnAlign("id", "r")
+''trap prepend append event
+''Sub tb4_AppendClick (Row As Int, Column As String, item As Map)
+''End Sub
+''Sub tb4_PrependClick (Row As Int, Column As String, item As Map)
+''End Sub
 '</code>
 Sub AddColumnTextBoxGroup(name As String, title As String, readOnly As Boolean, Prefix As String, PrependIcon As String, Suffix As String, AppendIcon As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4129,13 +4301,24 @@ Sub AddColumnTextBoxGroup(name As String, title As String, readOnly As Boolean, 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tb4.AddColumnSelectGroup("country", "County", False, True, CreateMap(), "", "fa-brands fa-linkedin", "", "fa-regular fa-flag")
-'banano.Await(tb4.SetColumnItemsFromList("country", Array("Afghanistan", "Albania", "Australia", "USA", "Brazil", "Chile", "Guinea", "South Africa", "Nigeria")))
+''compute select items at runtime
+'tb4.SetColumnComputeOptions("country", "ComputeForeignFields")
+''update items at runtime
+'banano.Await(tb4.SetColumnOptionsRunTime("country", Createmap("1":"Afghanistan", "2":"Albania", "3":"Australia", "4":"USA"))
+''trap prepend append event
+''Sub tb4_AppendClick (Row As Int, Column As String, item As Map)
+''End Sub
+''Sub tb4_PrependClick (Row As Int, Column As String, item As Map)
+''End Sub
 '</code>
 Sub AddColumnSelectGroup(name As String, title As String, readOnly As Boolean, bAddNothingSelected As Boolean, options As Map, Prefix As String, PrependIcon As String, Suffix As String, AppendIcon As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4160,6 +4343,8 @@ Sub AddColumnSelectGroup(name As String, title As String, readOnly As Boolean, b
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tb4.AddColumnPasswordGroup("name", "Password", False)
@@ -4170,6 +4355,7 @@ End Sub
 '</code>
 Sub AddColumnPasswordGroup(name As String, title As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4189,12 +4375,15 @@ Sub AddColumnPasswordGroup(name As String, title As String, readOnly As Boolean)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tb4.AddColumnDialer("clicklink", "Qty", False, 0, 1, 100)
 '</code>
 Sub AddColumnDialer(name As String, title As String, readOnly As Boolean, minValue As Int, stepValue As Int, maxValue As Int)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4219,6 +4408,8 @@ Sub AddColumnDialer(name As String, title As String, readOnly As Boolean, minVal
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnTextDialer(colName As String, minValue As Int, stepValue As Int, maxValue As Int)
 	colName = UI.CleanID(colName)
@@ -4239,6 +4430,7 @@ End Sub
 '</code>
 Sub AddColumnPassword(name As String, title As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4257,6 +4449,8 @@ Sub AddColumnPassword(name As String, title As String, readOnly As Boolean)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnPassword(colName As String)
 	colName = UI.CleanID(colName)
@@ -4279,6 +4473,7 @@ End Sub
 '</code>
 Sub AddColumnNumber(name As String, title As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4297,6 +4492,8 @@ Sub AddColumnNumber(name As String, title As String, readOnly As Boolean)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnFileInput(colName As String)
 	colName = UI.CleanID(colName)
@@ -4311,6 +4508,7 @@ End Sub
 '</code>
 Sub AddColumnFileInput(name As String, title As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4328,6 +4526,8 @@ Sub AddColumnFileInput(name As String, title As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnFileInputProgressCamCorder("pfile", "File Progress", "lg", "40px", "secondary")
@@ -4339,6 +4539,7 @@ Sub AddColumnFileInputProgressCamCorder(name As String, title As String, xButton
 	nc.accept = "video/*;capture=camcorder"
 	nc.capture = "environment"
 	Columns.Put(name, nc)
+	
 End Sub
 '<code>
 'tbl.AddColumnFileInputProgressCamera("pfile", "File Progress", "lg", "40px", "secondary")
@@ -4350,6 +4551,7 @@ Sub AddColumnFileInputProgressCamera(name As String, title As String, xButtonSiz
 	nc.accept = "image/*;capture=camera"
 	nc.capture = "environment"
 	Columns.Put(name, nc)
+	
 End Sub
 '<code>
 'tbl.AddColumnFileInputProgressMicrophone("pfile", "File Progress", "lg", "40px", "secondary")
@@ -4360,12 +4562,14 @@ Sub AddColumnFileInputProgressMicrophone(name As String, title As String, xButto
 	Dim nc As TableColumn = Columns.Get(name)
 	nc.accept = "audio/*;capture=microphone"
 	Columns.Put(name, nc)
+	
 End Sub
 '<code>
 'tbl.AddColumnFileInputProgress("pfile", "File Progress", "lg", "40px", "fa-solid fa-arrow-up-from-bracket", "secondary")
 '</code>
 Sub AddColumnFileInputProgress(name As String, title As String, xButtonSize As String, xProgressSize As String, xIcon As String, xColor As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4386,6 +4590,8 @@ Sub AddColumnFileInputProgress(name As String, title As String, xButtonSize As S
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnDatePicker(colName As String, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean)
 	colName = UI.CleanID(colName)
@@ -4417,6 +4623,7 @@ End Sub
 '</code>
 Sub AddColumnDatePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4441,6 +4648,8 @@ Sub AddColumnDatePicker(name As String, title As String, readOnly As Boolean, da
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 
 Sub SetColumnTimePicker(colName As String, dateFormat As String, bNoCalendar As Boolean)
@@ -4458,6 +4667,7 @@ End Sub
 '</code>
 Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, altFormat As String, brange As Boolean, bmultiple As Boolean, bNoCalendar As Boolean, locale As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4485,12 +4695,15 @@ Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnTimePicker("tob", "Time of Birth", False, "H:i", True)
 '</code>
 Sub AddColumnTimePicker(name As String, title As String, readOnly As Boolean, dateFormat As String, bNoCalendar As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4511,6 +4724,8 @@ Sub AddColumnTimePicker(name As String, title As String, readOnly As Boolean, da
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnTextArea(colName As String, tRows As String)
 	colName = UI.CleanID(colName)
@@ -4526,6 +4741,7 @@ End Sub
 '</code>
 Sub AddColumnTextArea(name As String, title As String, readOnly As Boolean, tRows As Int)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4545,12 +4761,15 @@ Sub AddColumnTextArea(name As String, title As String, readOnly As Boolean, tRow
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnToggle("attrdesigner", "Designer", app.COLOR_ACCENT, False)
 '</code>
 Sub AddColumnToggle(name As String, title As String, color As String, readOnly As Boolean)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4569,6 +4788,8 @@ Sub AddColumnToggle(name As String, title As String, color As String, readOnly A
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnToggle(colName As String, color As String)
 	colName = UI.CleanID(colName)
@@ -4656,6 +4877,7 @@ End Sub
 '</code>
 Sub AddColumnEdit(color As String)
 	AddColumnAction("edit", "Edit", "./assets/pencil-solid.svg", color, "#ffffff")
+	
 End Sub
 
 'add edit action
@@ -4681,6 +4903,7 @@ Sub AddColumnExpand(color As String)
 	End Select
 	tc.SvgSize = $"${aIconSize}%"$
 	Columns.Put("expand", tc)
+	
 End Sub
 
 '<code>
@@ -4688,24 +4911,28 @@ End Sub
 '</code>
 Sub AddColumnClone(color As String)
 	AddColumnAction("clone", "Clone", "./assets/copy-solid.svg", color, "#ffffff")
+	
 End Sub
 '<code>
 'tb4.AddColumnMenu(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnMenu(color As String)
 	AddColumnAction("menu", "Menu", "./assets/ellipsis-vertical-solid.svg", color, "#ffffff")
+	
 End Sub
 '<code>
 'tb4.AddColumnDownload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnDownload(color As String)
 	AddColumnAction("download", "Download", "./assets/download-solid.svg", color, "#ffffff")
+	
 End Sub
 '<code>
 'tb4.AddColumnUpload(app.COLOR_PRIMARY)
 '</code>
 Sub AddColumnUpload(color As String)
 	AddColumnAction("upload", "Upload", "./assets/upload-solid.svg", color, "#ffffff")
+	
 End Sub
 'add delete action
 '<code>
@@ -4713,6 +4940,7 @@ End Sub
 '</code>
 Sub AddColumnDelete(color As String)
 	AddColumnAction("delete", "Delete", "./assets/trash-can-solid.svg", color, "#ffffff")
+	
 End Sub
 'set a column as a color and also the subtitle field to get the color name from
 Sub SetColumnColor(colName As String, subtitle As String)
@@ -4747,6 +4975,7 @@ End Sub
 '</code>
 Sub AddColumnColor(name As String, title As String, subtitle As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4764,6 +4993,8 @@ Sub AddColumnColor(name As String, title As String, subtitle As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnAvatar(colName As String, ssize As String, mask As String)
 	colName = UI.CleanID(colName)
@@ -4775,6 +5006,7 @@ Sub SetColumnAvatar(colName As String, ssize As String, mask As String)
 		Columns.Put(colName, nc)
 	End If
 End Sub
+'use mask circle for placeholder
 Sub SetColumnAvatarPlaceholder(colName As String, ssize As String, mask As String, color As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) Then
@@ -4927,6 +5159,7 @@ End Sub
 '</code>
 Sub AddColumnAvatar(name As String, title As String, ssize As String, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4944,6 +5177,8 @@ Sub AddColumnAvatar(name As String, title As String, ssize As String, mask As St
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '
 '<code>
@@ -4951,6 +5186,7 @@ End Sub
 '</code>
 Sub AddColumnAvatarPlaceholder(name As String, title As String, ssize As String, mask As String, Color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4969,6 +5205,8 @@ Sub AddColumnAvatarPlaceholder(name As String, title As String, ssize As String,
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 'add an image column
 '<code>
@@ -4976,6 +5214,7 @@ End Sub
 '</code>
 Sub AddColumnImage(name As String, title As String, width As Int, height As Int, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -4994,6 +5233,8 @@ Sub AddColumnImage(name As String, title As String, width As Int, height As Int,
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnAvatarTitle(colName As String, ssize As String, subtitle As String, mask As String)
 	colName = UI.CleanID(colName)
@@ -5034,6 +5275,7 @@ End Sub
 '</code>
 Sub AddColumnAvatarTitle(name As String, title As String, ssize As String, subtitle As String, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	subtitle = subtitle.ToLowerCase
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
@@ -5053,12 +5295,15 @@ Sub AddColumnAvatarTitle(name As String, title As String, ssize As String, subti
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnIconTitle("sm", "Social Media", app.SIZE_LG, "name", "item.color")
 '</code>
 Sub AddColumnIconTitle(name As String, title As String, ssize As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -5078,12 +5323,15 @@ Sub AddColumnIconTitle(name As String, title As String, ssize As String, subtitl
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnTitleIcon("name", "Social Media", app.SIZE_LG, "sm", "item.color")
 '</code>
 Sub AddColumnTitleIcon(name As String, title As String, ssize As String, subtitle As String, color As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -5103,6 +5351,8 @@ Sub AddColumnTitleIcon(name As String, title As String, ssize As String, subtitl
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnBadgeAvatarTitle("avatar", "Resource", "10", "name", "")
@@ -5110,6 +5360,7 @@ End Sub
 Sub AddColumnBadgeAvatarTitle(name As String, title As String, ssize As String, subtitle As String, color As String)
 	name = name.tolowercase
 	subtitle = subtitle.ToLowerCase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -5129,6 +5380,8 @@ Sub AddColumnBadgeAvatarTitle(name As String, title As String, ssize As String, 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnBadgeAvatarTitle(colName As String, ssize As String, subtitle As String, color As String)
 	colName = UI.CleanID(colName)
@@ -5159,6 +5412,7 @@ End Sub
 '</code>
 Sub AddColumnAvatarTitleSubTitle(name As String, title As String, ssize As String, subtitle As String, subtitle1 As String, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -5178,6 +5432,8 @@ Sub AddColumnAvatarTitleSubTitle(name As String, title As String, ssize As Strin
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 Sub SetColumnTitleSubTitle(colName As String, subtitle As String)
 	colName = UI.CleanID(colName)
@@ -5194,6 +5450,7 @@ End Sub
 '</code>
 Sub AddColumnTitleSubTitle(name As String, title As String, subtitle As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -5210,12 +5467,18 @@ Sub AddColumnTitleSubTitle(name As String, title As String, subtitle As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 'calls setitems
 '<code>
 'banano.Await(tb4.SetItemsPaginate(Items))
 '</code>
 Sub SetItemsPaginate(xItems As List)
+	SetDeleteAllEnable(False)
+	setPrevPageEnabled(False)
+	setNextPageEnabled(False)
+	SetToolbarButtonBadge("deleteall", "0")
 	BANano.await(ClearRows)
 	iCurrentPage = 1
 	'lastPage = 1
@@ -5449,6 +5712,7 @@ Sub setLowerCase(b As Boolean)
 End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
+	SetDeleteAllEnable(False)
 	BANano.Await(ClearRows)
 	If bLowerCase Then
 		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
@@ -5491,12 +5755,12 @@ End Sub
 Private Sub BuildRowIcon(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String						'ignore
 	Dim bColor As String = tc.color
 	'is icon from records
-	Dim sicon As String = tc.icon
+	Dim sIcon As String = tc.icon
 	Dim theicon As String = ""
-	If sicon.indexof(".") = -1 Then
+	If sIcon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = UI.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sIcon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
 		scolor = UI.CStr(scolor)
 		theicon = scolor
@@ -5546,12 +5810,12 @@ End Sub
 Private Sub BuildRowIconTitle(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String						'ignore
 	Dim bColor As String = tc.color
 	'is icon from records
-	Dim sicon As String = tc.icon
+	Dim sIcon As String = tc.icon
 	Dim theicon As String = ""
-	If sicon.indexof(".") = -1 Then
+	If sIcon.indexof(".") = -1 Then
 		theicon = tc.icon
 	Else
-		Dim fld2 As String = UI.MvField(sicon, 2, ".")
+		Dim fld2 As String = UI.MvField(sIcon, 2, ".")
 		Dim scolor As String = rowdata.GetDefault(fld2, "")
 		scolor = UI.CStr(scolor)
 		theicon = scolor
@@ -7487,7 +7751,7 @@ Private Sub BuildRowAvatar(Module As Object, fldName As String, fldValu As Strin
 		tcolor = UI.FixColor("text", tcolor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-1"
+		cClass = cClass & " border-1 border-black"
 	End If
 	
 	Dim act As String =  $"[BANCLEAN]
@@ -7505,6 +7769,7 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 	Dim bColor As String = tc.color
 	Dim sRingColor As String = tc.RingColor
 	Dim bHasRing As Boolean = tc.HasRing
+	Dim tsize As String = UI.FixSize("text", tc.textsize)
 	'
 	If tc.ComputeRing <> "" Then
 		Dim subName As String = tc.ComputeRing
@@ -7534,6 +7799,7 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 	subtitle1 = UI.CStr(subtitle1)
 	'********
 	Dim btnColor As String = GetColorFromField("bg", bColor, rowdata)
+	
 	'
 	Dim acolor As String = ""
 	If bHasRing Then
@@ -7566,19 +7832,58 @@ Private Sub BuildRowAvatarPlaceholder(Module As Object, fldName As String, fldVa
 		tcolor = UI.FixColor("text", tcolor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-1"
+		cClass = cClass & " border-1 border-black"
 	End If
+	'limit content to be no more than 2 characters
+	If StartsWithAlphabet(fldValu) Then
+		If fldValu.Length > 2 Then
+			fldValu = UI.Left(fldValu, 1)
+		End If
+	else if StartsWithNumber(fldValu) Then
+		If fldValu.Length > 2 Then
+			fldValu = UI.Left(fldValu, 2)
+		End If
+	End If
+	'
+	If tc.AvatarColor Then
+		Dim ph As String = UI.left(fldValu, 1)
+		bColor = UI.GetAvatarColor(ph)
+		tcolor = UI.GetAvatarTextColor(ph)
+		tcolor = UI.FixColor("text", tcolor)
+		btnColor = UI.fixcolor("bg", bColor)
+	End If
+	
+	Dim btnW As String =UI.fixsize("w", tc.size)
+	
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar ${xonline} placeholder ${tcolor}">
-    <div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} ${cClass} ${UI.FixSize("w",tc.Size)} ${btnColor} ${acolor}">
-    <span id="${mName}_${RowCnt}_${fldName}_span">${fldValu}</span>
-    </div>
-    </div>
+    <td id="${mName}_${RowCnt}_${fldName}" class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    	<div id="${mName}_${RowCnt}_${fldName}_avatar1" class="avatar avatar-placeholder ${xonline}">
+    		<div id="${mName}_${RowCnt}_${fldName}_host" class="${tc.mask} rounded-full ${cClass} ${btnW} ${btnColor} ${tcolor} ${acolor}">
+    			<span id="${mName}_${RowCnt}_${fldName}_span" class="${tsize}">${fldValu}</span>
+    		</div>
+    	</div>
     </td>"$
 	'*****************
 	Return act
 End Sub
+
+Sub StartsWithAlphabet(Text As String) As Boolean
+	If Text.Length = 0 Then Return False
+    
+	Dim firstChar As String = Text.SubString2(0, 1).ToLowerCase
+	Dim asciiValue As Int = Asc(firstChar)
+    
+	' Check if ASCII value falls within a-z range
+	Return asciiValue >= Asc("a") And asciiValue <= Asc("z")
+End Sub
+
+Sub StartsWithNumber(Text As String) As Boolean
+	If Text.Length = 0 Then Return False
+	Dim firstChar As String = Text.SubString2(0, 1)
+	Dim asciiValue As Int = Asc(firstChar)
+	Return asciiValue >= Asc("0") And asciiValue <= Asc("9")
+End Sub
+
 Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String
 	If tc.ComputeValue <> "" Then
 		Dim subName As String = tc.ComputeValue
@@ -7598,7 +7903,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 		If k = "" Then Continue
 		imgCnt = BANano.parseInt(imgCnt) + 1
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_${imgCnt}" class="avatar">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${imgCnt}" class="border-1 border-black ${tc.mask} ${UI.FixSize("w",tc.Size)}">
         <img id="${mName}_${RowCnt}_${fldName}_image_${imgCnt}" src="${k}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
         </div>
         </div>"$
@@ -7610,7 +7915,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	If timages > 5 Then
 		Dim tOthers As Int = BANano.parseInt(timages) - 5
 		Dim sItem As String = $"<div id="${mName}_${RowCnt}_${fldName}_avatar1_6" class="avatar avatar-placeholder">
-        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
+        <div id="${mName}_${RowCnt}_${fldName}_host_${6}" class="border-1 border-black ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
         <span id="${mName}_${RowCnt}_${fldName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -7631,7 +7936,7 @@ Private Sub BuildRowAvatarGroup(Module As Object, fldName As String, fldValu As 
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <div id="${mName}_${RowCnt}_${fldName}_group" class="avatar-group -space-x-3">
+    <div id="${mName}_${RowCnt}_${fldName}_group" class="avatar-group -space-x-3 h-fit">
     ${sbOptions.ToString}
     </div>
     </td>"$
@@ -7909,9 +8214,9 @@ Sub AddRow(rowdata As Map)
 	'has select all
 	If bSelectAll Then
 		Dim sa As String = $"[BANCLEAN]
-		<th id="${mName}_${RowCnt}_th" style="${BuildStyle(colSelectAll)}">
-			<label>
-				<input id="${mName}_${RowCnt}_selectall" type="checkbox" class="checkbox checkbox-success"></input>
+		<th id="${mName}_${RowCnt}_selectall_th" style="${BuildStyle(colSelectAll)}">
+			<label id="${mName}_${RowCnt}_selectalllabel">
+				<input id="${mName}_${RowCnt}_selectall" Type="checkbox" class="checkbox checkbox-success"></input>
 			</label>
 		</th>"$
 		sbRow.Append(sa)
@@ -8577,7 +8882,7 @@ Private Sub BuildRowAvatarTitleSubtitle(Module As Object, fldName As String, fld
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	If bHasRing = False Then
-		cClass = cClass & " border-1"
+		cClass = cClass & " border-1 border-black"
 	End If
 	'
 	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
@@ -8666,7 +8971,7 @@ Private Sub BuildRowAvatarTitle(Module As Object, fldName As String, fldValu As 
 	Dim subcontent As String = rowdata.GetDefault(tc.subtitle, "")
 	subcontent = UI.CStr(subcontent)
 	If bHasRing = False Then
-		cClass = cClass & " border-1"
+		cClass = cClass & " border-1 border-black"
 	End If
 	'
 	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
@@ -9324,6 +9629,8 @@ private Sub NewColumn As TableColumn
 	nc.capture = ""
 	nc.MaxLength = ""
 	nc.Delimiter = ";"
+	nc.AvatarColor = False
+	nc.TextSize = ""
 	Return nc
 End Sub
 
@@ -9401,6 +9708,7 @@ End Sub
 '</code>
 Sub AddColumnAvatarGroup(name As String, title As String, ssize As String, mask As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -9417,6 +9725,8 @@ Sub AddColumnAvatarGroup(name As String, title As String, ssize As String, mask 
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnBadgeGroup("tags", "Tags", "10")
@@ -9424,6 +9734,7 @@ End Sub
 '</code>
 Sub AddColumnBadgeGroup(name As String, title As String, sheight As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -9439,6 +9750,8 @@ Sub AddColumnBadgeGroup(name As String, title As String, sheight As String)
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 '<code>
 'tbl.AddColumnBadgeGroup("tags", "Tags", "10", "success")
@@ -9446,6 +9759,7 @@ End Sub
 '</code>
 Sub AddColumnBadgeGroupColor(name As String, title As String, sheight As String, scolor As String)
 	name = name.tolowercase
+	If Columns.ContainsKey(name) Then Return
 	Dim nc As TableColumn = NewColumn
 	nc.name = name
 	nc.title = title
@@ -9462,6 +9776,8 @@ Sub AddColumnBadgeGroupColor(name As String, title As String, sheight As String,
 	Columns.Put(name, nc)
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowSelect("filters", name)
+	ColumnVisibility.Put(name, True)
+	
 End Sub
 
 Sub GetFileFromEvent (e As BANanoEvent) As Map
@@ -9480,6 +9796,7 @@ Sub GetFilesFromEvent (e As BANanoEvent) As List
 	Return res
 End Sub
 
+'load content from a json file
 Sub LoadJSON(jsonFile As String)
 	'get all records from the file
 	Dim records As List = BANano.Await(BANano.GetFileAsJSON($"${jsonFile}?${DateTime.now}"$, Null))
@@ -9571,6 +9888,12 @@ Sub SetDropDownMapItems(colName As String, options As Map)
 			Next
 	End Select
 End Sub
+
+'set select items during runtime
+Sub SetColumnOptionsRunTime(colName As String, options As Map)
+	SetSelectMapItems(colName, options)
+End Sub
+
 'set select items of all ows
 Sub SetColumnItems(colName As String, options As Map)
 	SetSelectMapItems(colName, options)
@@ -9591,6 +9914,7 @@ Sub SetSelectMapItems(colName As String, options As Map)
 				Dim sKey As String = $"${mName}_${rCnt1}_${colName}_select"$
 				'if the select exists, clear it
 				If BANano.Exists($"#${sKey}"$) Then
+					UI.SetVisibleByID(sKey, False)
 					BANano.GetElement($"#${sKey}"$).Empty
 					Dim sbOptions As StringBuilder
 					sbOptions.Initialize
@@ -9608,6 +9932,7 @@ Sub SetSelectMapItems(colName As String, options As Map)
 					Dim rowData As Map = Rows.Get(rCnt)
 					Dim fldVal As String = 	rowData.Get(colName)
 					BANano.GetElement($"#${sKey}"$).SetValue(fldVal)
+					UI.SetVisibleByID(sKey, True)
 				End If
 			Next
 	End Select
@@ -9632,6 +9957,7 @@ Sub SetSelectMapItemsOfRow(colName As String, rowPos As Int, options As Map)
 			'if the select exists, clear it
 			If BANano.Exists($"#${sKey}"$) Then
 				BANano.GetElement($"#${sKey}"$).Empty
+				UI.SetVisibleByID(sKey, False)
 				Dim sbOptions As StringBuilder
 				sbOptions.Initialize
 				If tc.NothingSelected Then
@@ -9648,6 +9974,7 @@ Sub SetSelectMapItemsOfRow(colName As String, rowPos As Int, options As Map)
 				Dim rowData As Map = Rows.Get(rowPos)
 				Dim fldVal As String = 	rowData.Get(colName)
 				BANano.GetElement($"#${sKey}"$).SetValue(fldVal)
+				UI.SetVisibleByID(sKey, True)
 			End If
 	End Select
 End Sub
@@ -9886,7 +10213,7 @@ End Sub
 Sub SetRowEnsureVisible(rowPos As Int)
 	Dim rowCnt1 As Int = BANano.parseInt(rowPos) + 1
 	Dim rowName As String = $"${mName}_${rowCnt1}"$
-	UI.EnsureVisible(rowName)
+	UI.EnsureVisibleByID(rowName)
 End Sub
 
 'visible
@@ -10006,7 +10333,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 				If k = "" Then Continue
 				imgCnt = BANano.parseInt(imgCnt) + 1
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_${imgCnt}" class="avatar">
-            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 ${tc.mask} ${UI.FixSize("w",tc.Size)}">
+            <div id="${mName}_${rowCnt}_${colName}_host_${imgCnt}" class="border-1 border-black ${tc.mask} ${UI.FixSize("w",tc.Size)}">
             <img id="${mName}_${rowCnt}_${colName}_image_${imgCnt}" src="${k}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
             </div>
             </div>"$
@@ -10018,7 +10345,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 			If imgCnt > 5 Then
 				Dim tOthers As Int = BANano.parseInt(imgCnt) - 5
 				Dim sItem As String = $"<div id="${mName}_${rowCnt}_${colName}_avatar1_6" class="avatar avatar-placeholder">
-        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
+        <div id="${mName}_${rowCnt}_${colName}_host_${6}" class="border-1 border-black ${tc.mask} bg-neutral text-neutral-content ${UI.FixSize("w",tc.Size)}">
         <span id="${mName}_${rowCnt}_${colName}_span_6">+${tOthers}</span>
         </div>
         </div>"$
@@ -10495,7 +10822,7 @@ Private Sub BuildRowImage(Module As Object, fldName As String, fldValu As String
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${bgColor}" style="${BuildStyle(tc)}">
-    <img id="${mName}_${RowCnt}_${fldName}_image" class="bg-cover bg-center bg-no-repeat border-1 ${tc.mask} ${UI.FixSize("w", tc.width)} ${UI.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
+    <img id="${mName}_${RowCnt}_${fldName}_image" class="bg-cover bg-center bg-no-repeat border-1 border-black ${tc.mask} ${UI.FixSize("w", tc.width)} ${UI.FixSize("h", tc.height)} ${cClass}" src="${fldValu}" alt=""></img>
     </td>"$
 	'********
 	Return act
@@ -11145,4 +11472,32 @@ End Sub
 Sub ClearRowExpandData(pos As Int)
 	Dim skey As String = $"${mName}_${pos}_expanddata"$
 	BANano.GetElement($"#${skey}"$).empty	
+End Sub
+
+Sub RefreshColumnVisibility
+	'executed to refresh the initial column visibility
+	For Each k As String In ColumnVisibility.keys
+		Dim v As Boolean = ColumnVisibility.get(k)
+		BANano.Await(SetColumnVisible(k, v))
+		BANano.Await(SetColumnVisibleOnColumnChooser(k, v))
+	Next
+End Sub
+
+Sub HideColumnsExceptFirst
+	Dim sName As String = Columns.GetKeyAt(0)
+	For Each k As String In Columns.keys
+		If k = sName Then
+			BANano.Await(SetColumnVisible(k, True))
+			BANano.Await(SetColumnVisibleOnColumnChooser(k, True))
+		Else
+			BANano.Await(SetColumnVisible(k, False))
+			BANano.Await(SetColumnVisibleOnColumnChooser(k, False))
+		End If
+	Next
+End Sub
+
+Sub FirstColumnVisible
+	Dim sName As String = Columns.GetKeyAt(0)
+	BANano.Await(SetColumnVisible(sName, True))
+	BANano.Await(SetColumnVisibleOnColumnChooser(sName, True))
 End Sub

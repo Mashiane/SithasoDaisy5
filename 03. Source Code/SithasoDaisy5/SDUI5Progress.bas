@@ -106,6 +106,15 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -345,7 +354,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	Case "normal"
 '		If sWidth <> "" Then UI.AddClassDT(sWidth)
 '	End Select
-'	
+	
 	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -426,8 +435,25 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndeterminate(bIndeterminate)
 	If sSize <> "" Then setSize(sSize)
 	setValue(iValue)
+	setWidth(sWidth)
 	'setVisible(bVisible)
 End Sub
+
+
+'set Width
+Sub setWidth(s As String)				'ignoredeadcode
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s = "" Then Return
+	Select Case sProgressType
+	Case "legend", "tooltip", "normal-text"
+		UI.SetWidthByID($"${mName}_control"$, s)
+	Case "normal"
+		UI.SetWidth(mElement, sWidth)
+	End Select
+End Sub
+
 
 'set Text Color
 Sub setTextColor(s As String)			'ignoredeadcode
@@ -584,14 +610,6 @@ End Sub
 
 Sub getSize As String
 	Return sSize
-End Sub
-
-'set Width
-Sub setWidth(s As String)				'ignoredeadcode
-	sWidth = s
-	CustProps.put("Width", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 
 Sub getWidth As String

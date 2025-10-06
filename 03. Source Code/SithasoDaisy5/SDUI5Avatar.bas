@@ -9,12 +9,14 @@ Version=10
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: AvatarType, DisplayName: Avatar Type, FieldType: String, DefaultValue: image, Description: Avatar Type, List: image|placeholder
+#DesignerProperty: Key: AvatarColor, DisplayName: Avatar Color, FieldType: Boolean, DefaultValue: False, Description: Avatar Color
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 #DesignerProperty: Key: ChatImage, DisplayName: Chat Image, FieldType: Boolean, DefaultValue: False, Description: Chat Image
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: S, Description: Placeholder
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: , Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
+#DesignerProperty: Key: HasBadge, DisplayName: Has Badge, FieldType: Boolean, DefaultValue: True, Description: Has Badge
 #DesignerProperty: Key: Badge, DisplayName: Badge, FieldType: String, DefaultValue: , Description: Badge
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: secondary, Description: Badge Color
 #DesignerProperty: Key: BadgePosition, DisplayName: Badge Position, FieldType: String, DefaultValue: top-end, Description: Badge Position, List: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
@@ -106,6 +108,8 @@ Sub Class_Globals
 	Private sSize As String = "12"
 	Private sShadow As String = "none"
 	Private sPopOverTarget As String = ""
+	Private bAvatarColor As Boolean = False
+	Private bHasBadge As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -119,6 +123,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -293,6 +306,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = UI.CStr(sShadow)
 		sPopOverTarget = Props.GetDefault("PopOverTarget", "")
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
+		bAvatarColor = Props.GetDefault("AvatarColor", False)
+		bAvatarColor = UI.CBool(bAvatarColor)
+		bHasBadge = Props.GetDefault("HasBadge", False)
+		bHasBadge = UI.CBool(bHasBadge)
 	End If
 	'
 	If sParentID <> "" Then
@@ -334,7 +351,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 			<span id="${mName}_badge" class="hidden indicator-item rounded-full badge">${sBadge}</span>
-  			<div id="${mName}_host">
+  			<div id="${mName}_host" class="rounded-full">
 				<span id="${mName}_text">${sPlaceholder}</span>
 			</div>
 		</div>"$).Get("#" & mName)
@@ -355,12 +372,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadgeSize(sBadgeSize)
 	setBadgeVisible(bBadgeVisible)
 	setShadow(sShadow)
+	setAvatarColor(bAvatarColor)
 '	setVisible(bVisible)
 	setPopOverTarget(sPopOverTarget)
+	setHasBadge(bHasBadge)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 	If SubExists(mCallBack, $"${mName}_click"$) Then
 		UI.SetCursorPointer(mElement)
 	End If
+End Sub
+
+Sub setHasBadge(b As Boolean)				'ignoredeadcode
+	bHasBadge = b
+	CustProps.put("HasBadge", b)
+	If mElement = Null Then Return
+	If bHasBadge = False Then UI.RemoveElementByID($"${mName}_badge"$)
+End Sub
+
+Sub getHasBadge As Boolean
+	Return bHasBadge
+End Sub
+
+Sub setAvatarColor(b As Boolean)			'ignoredeadcode
+	bAvatarColor = b
+	CustProps.Put("AvatarColor", b)
+	If mElement = Null Then Return
+	If sAvatarType <> "placeholder" Then Return
+	If bAvatarColor = False Then Return
+	Dim ph As String = UI.left(sPlaceholder, 1)
+	Dim bColor As String = UI.GetAvatarColor(ph)
+	Dim tcolor As String = UI.GetAvatarTextColor(ph)
+	tcolor = UI.FixColor("text", tcolor)
+	setBackgroundColor(bColor)
+	setTextColor(tcolor)
+	setRing(bRing)
+End Sub
+
+Sub getAvatarColor As Boolean
+	Return bAvatarColor
 End Sub
 
 'set Pop Over Target
@@ -495,7 +544,7 @@ Sub setSize(s As String)			'ignoredeadcode
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
-		UI.SetHeightByID($"${mName}_host"$, s)
+		If sAvatarType <> "placeholder" Then UI.SetHeightByID($"${mName}_host"$, s)
 		UI.SetWidthByID($"${mName}_host"$, s)
 	End If
 End Sub
@@ -550,11 +599,12 @@ Sub setOnlineStatus(b As Boolean)
 	End If
 End Sub
 'set Placeholder
-Sub setPlaceholder(s As String)
+Sub setPlaceholder(s As String)			'ignoredeadcode
 	sPlaceholder = s
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_text"$, s)
+	setAvatarColor(bAvatarColor)
 End Sub
 'set Ring
 Sub setRing(b As Boolean)				'ignoredeadcode
@@ -565,6 +615,11 @@ Sub setRing(b As Boolean)				'ignoredeadcode
 		UI.AddClassByID($"${mName}_host"$, "ring")
 	Else
 		UI.RemoveClassByID($"${mName}_host"$, "ring")
+		If sAvatarType = "placeholder" Then
+			UI.AddClassByID($"${mName}_host"$, "border-1 border-black")
+		Else
+			UI.RemoveClassByID($"${mName}_host"$, "border-1 border-black")
+		End If
 	End If
 End Sub
 'set Ring Color

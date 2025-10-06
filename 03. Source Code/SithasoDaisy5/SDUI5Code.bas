@@ -110,6 +110,15 @@ End Sub
 Public Sub getID() As String
 	Return mName
 End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
+End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -676,7 +685,7 @@ End Sub
 'set Content
 Sub setContent(s As String)
 	sContent = s
-	CustProps.put("Content", s)
+	CustProps.put("RawContent", s)
 	If mElement = Null Then Return
 	sContent = sContent.Replace(CRLF, ";")
 	sContent = sContent.Replace("<br/>", ";")
@@ -687,6 +696,10 @@ Sub setContent(s As String)
 		AddCode(cLine)
 	Next
 	Refresh
+End Sub
+
+Sub getContent As String
+	Return FormattedCode
 End Sub
 
 'run refresh after
@@ -725,7 +738,7 @@ Sub RefreshRaw
 	BANano.GetElement($"#${mName}_pre"$).AddClass("language-" & sLanguage)
 	BANano.GetElement($"#${mName}_code"$).AddClass("language-" & sLanguage)
 	BANano.GetElement($"#${mName}_code"$).Empty
-	BANano.GetElement($"#${mName}_code"$).Append(nCode)
+	BANano.GetElement($"#${mName}_code"$).SetText(nCode)
 	Dim codeE As BANanoElement = BANano.GetElement($"#${mName}_code"$)
 	Dim Prism As BANanoObject
 	Prism.Initialize("Prism")
@@ -742,7 +755,7 @@ Sub Refresh
 	BANano.GetElement($"#${mName}_pre"$).AddClass("language-" & sLanguage)
 	BANano.GetElement($"#${mName}_code"$).AddClass("language-" & sLanguage)
 	BANano.GetElement($"#${mName}_code"$).Empty
-	BANano.GetElement($"#${mName}_code"$).Append(nCode)
+	BANano.GetElement($"#${mName}_code"$).SetText(nCode)
 	Dim codeE As BANanoElement = BANano.GetElement($"#${mName}_code"$)
 	Dim Prism As BANanoObject
 	Prism.Initialize("Prism")
@@ -772,10 +785,6 @@ Sub setWidth(s As String)
 	If s <> "" Then UI.SetWidth(mElement, sWidth)
 End Sub
 
-'get Content
-Sub getContent As String
-	Return sContent
-End Sub
 'get Height
 Sub getHeight As String
 	Return sHeight

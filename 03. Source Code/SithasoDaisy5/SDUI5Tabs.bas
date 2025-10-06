@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #Event: Change (Item As String)
 
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item {key}_name_content, Description: Child Item {key}_name_content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Placement, DisplayName: Placement, FieldType: String, DefaultValue: top, Description: Placement, List: bottom|top
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
@@ -14,10 +15,11 @@ Version=10
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
+#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
+#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Clear Contents
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: md, Description: Badge Size, List: lg|md|none|sm|xl|xs
-#DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -70,6 +72,7 @@ Sub Class_Globals
 	Private sIconSize As String = "20px"
 	Private sBadgeColor As String = ""
 	Private sBadgeSize As String = "md"
+	Private bClearContents As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,6 +88,15 @@ End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
+End Sub
+'set properties from an outside source
+Sub SetProperties(props As Map)
+	CustProps = BANano.DeepClone(props)
+	sParentID = CustProps.Get("ParentID")
+End Sub
+
+Sub GetProperties As Map
+	Return CustProps
 End Sub
 'add this element to an existing parent element using current props
 Public Sub AddComponent
@@ -245,6 +257,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sBadgeSize = "none" Then sBadgeSize = ""
 		sIconSize = Props.GetDefault("IconSize", "20px")
 		sIconSize = UI.CStr(sIconSize)
+		bClearContents = Props.GetDefault("ClearContents", False)
+		bClearContents = UI.CBool(bClearContents)
 	End If
 	'
 	UI.AddClassDT("tabs whitespace-nowrap")
@@ -269,6 +283,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 	setOptions(sRawOptions)
 	setActive(sActive)
+End Sub
+
+Sub setClearContents(b As Boolean)
+	bClearContents = b
+	CustProps.Put("ClearContents", b)
+End Sub
+
+Sub getClearContents As Boolean
+	Return bClearContents
 End Sub
 
 Sub setIconSize(s As String)
@@ -338,6 +361,9 @@ Sub AddOption(sKey As String, sText As String)
 	ni.IconSize = sIconSize
 	ni.AddComponent
 	items.Put(nKey, nKey)
+	If bClearContents Then
+		ni.ClearContent
+	End If
 End Sub
 
 Sub AddTabItem(sKey As String, sText As String, sIcon As String, sBadge As String) As SDUI5TabsItem
@@ -356,6 +382,9 @@ Sub AddTabItem(sKey As String, sText As String, sIcon As String, sBadge As Strin
 	ni.IconSize = sIconSize
 	ni.AddComponent
 	items.Put(nKey, nKey)
+	If bClearContents Then
+		ni.ClearContent
+	End If
 	Return ni
 End Sub
 
