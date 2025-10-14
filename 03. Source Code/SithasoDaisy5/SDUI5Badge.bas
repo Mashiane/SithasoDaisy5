@@ -34,6 +34,10 @@ Version=10
 #DesignerProperty: Key: RightImageSize, DisplayName: Right Image Size, FieldType: String, DefaultValue: 16px, Description: Right Image Size
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: full, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: HasLeftIcon, DisplayName: Has Left Icon, FieldType: Boolean, DefaultValue: True, Description: Has Left Icon
+#DesignerProperty: Key: HasLeftImage, DisplayName: Has Left Image, FieldType: Boolean, DefaultValue: True, Description: Has Left Image
+#DesignerProperty: Key: HasRightIcon, DisplayName: Has Right Icon, FieldType: Boolean, DefaultValue: True, Description: Has Right Icon
+#DesignerProperty: Key: HasRightImage, DisplayName: Has Right Image, FieldType: Boolean, DefaultValue: True, Description: Has Right Image
 #DesignerProperty: Key: Soft, DisplayName: Soft, FieldType: Boolean, DefaultValue: False, Description: Soft
 #DesignerProperty: Key: IndicatorItem, DisplayName: Indicator Item, FieldType: Boolean, DefaultValue: False, Description: Indicator Item
 #DesignerProperty: Key: IndicatorPosition, DisplayName: Indicator Position, FieldType: String, DefaultValue: top-start, Description: Indicator Position, List: bottom-center|middle-center|bottom-end|bottom-start|middle-end|middle-start|top-center|top-end|top-start
@@ -95,7 +99,12 @@ Sub Class_Globals
 	Private sRightImageSize As String = "16px"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
+	Private bHasLeftIcon As Boolean = True
+	Private bHasLeftImage As Boolean = True
+	Private bHasRightIcon As Boolean = True
+	Private bHasRightImage As Boolean = True
 End Sub
+
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	UI.Initialize(Me)
@@ -316,6 +325,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		bHasLeftIcon = Props.GetDefault("HasLeftIcon", True)
+		bHasLeftIcon = UI.CBool(bHasLeftIcon)
+		bHasLeftImage = Props.GetDefault("HasLeftImage", True)
+		bHasLeftImage = UI.CBool(bHasLeftImage)
+		bHasRightIcon = Props.GetDefault("HasRightIcon", True)
+		bHasRightIcon = UI.cbool(bHasRightIcon)
+		bHasRightImage = Props.GetDefault("HasRightImage", True)
+		bHasRightImage = UI.CBool(bHasRightImage)
 	End If
 	'
 	If sParentID <> "" Then
@@ -392,7 +409,61 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnChildEvent($"${mName}_righimage"$, "click", mCallBack, $"${mName})_rightclick"$)
 	setIndicatorPosition(sIndicatorPosition)
 '	setVisible(bVisible)
+	setHasLeftIcon(bHasLeftIcon)
+	setHasRightIcon(bHasRightIcon)
+	setHasRightImage(bHasRightImage)
+	setHasLeftImage(bHasLeftImage)
 End Sub
+'
+
+Sub setHasLeftImage(b As Boolean)				'ignoredeadcode
+	bHasLeftImage = b
+	CustProps.Put("LeftImage", b)
+	If mElement = Null Then Return
+	If b Then Return
+	UI.RemoveElementByID($"${mName}_leftimage"$)
+End Sub
+
+Sub getHasLeftImage As Boolean
+	Return bHasLeftImage
+End Sub
+
+Sub setHasLeftIcon(b As Boolean)				'ignoredeadcode
+	bHasLeftIcon = b
+	CustProps.Put("LeftIcon", b)
+	If mElement = Null Then Return
+	If b Then Return
+	UI.RemoveElementByID($"${mName}_lefticon"$)
+End Sub
+
+Sub getHasLeftIcon As Boolean
+	Return bHasLeftIcon
+End Sub
+
+Sub setHasRightIcon(b As Boolean)				'ignoredeadcode
+	bHasRightIcon = b
+	CustProps.Put("RightIcon", b)
+	If mElement = Null Then Return
+	If b Then Return
+	UI.RemoveElementByID($"${mName}_righticon"$)
+End Sub
+
+Sub getHasRightIcon As Boolean
+	Return bHasRightIcon
+End Sub
+'
+Sub setHasRightImage(b As Boolean)				'ignoredeadcode
+	bHasRightImage = b
+	CustProps.Put("RightImage", b)
+	If mElement = Null Then Return
+	If b Then Return
+	UI.RemoveElementByID($"${mName}_rightimage"$)
+End Sub
+
+Sub getHasRightImage As Boolean
+	Return bHasRightImage
+End Sub
+
 
 'set Left Image
 Sub setLeftImage(s As String)			'ignoredeadcode

@@ -111,6 +111,7 @@ Sub Class_Globals
 	Private bImageCover As Boolean = False
 	Private bImageCenter As Boolean = False
 	Private bImageNoRepeat As Boolean = False
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -119,7 +120,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize	
+	CustProps.Initialize
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -417,6 +419,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setImageNoRepeat(bImageNoRepeat)
 	End If	
 	setHoverGallery(bHoverGallery)
+	Children.Put($"${mName}_figure"$, "SDUI5Text")
+	Children.Put($"${mName}_body"$, "SDUI5Text")
+	Children.Put($"${mName}_content"$, "SDUI5Text")
+	Children.Put($"${mName}_figure1"$, "SDUI5Text")
+	Children.Put($"${mName}_actions"$, "SDUI5Text")
+	Children.Put($"${mName}_title"$, "SDUI5Text")
+	Children.Put($"${mName}_image"$, "SDUI5Image")
+	Children.Put($"${mName}_image1"$, "SDUI5Image")
 '	setVisible(bVisible)
 End Sub
 

@@ -74,6 +74,7 @@ Sub Class_Globals
 	Private sMaxWidth As String = ""
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
+	Public Children As Map
 
 End Sub
 'initialize the custom view class
@@ -84,7 +85,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	Children.Initialize 	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -131,6 +132,9 @@ Sub setVisible(b As Boolean)
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
 	UI.SetVisible(mElement, b)
+	If bIndicatorButtons Then
+		UI.SetVisiblebyID($"${mName}_indicators"$, b)
+	End If
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -174,14 +178,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -195,7 +199,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -271,19 +275,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	'If sBackgroundColor <> "neutral" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("carousel")
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
 	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)        
-	If sDirection <> "" Then UI.AddClassDT("carousel-" & sDirection)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If sSnapItems <> "" Then UI.AddClassDT("carousel-" & sSnapItems)
-	If sSpaceX <> "" Then UI.AddClassDT("space-x-" & sSpaceX)
-	If sSpaceY <> "" Then UI.AddClassDT("space-y-" & sSpaceY)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -296,8 +295,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]
+		<div id="${mName}" class="relative overflow-hidden ${xclasses}" ${xattrs} style="${xstyles}">
+			<div id="${mName}_carousel" class="carousel w-full h-full"></div>
+			<div id="${mName}_navigation" class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+				<button id="${mName}_prev" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❮</button>
+				<button id="${mName}_next" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❯</button>
+			</div>
+		    <div id="${mName}_indicators" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex justify-center gap-2"></div>
+		</div>"$).Get("#" & mName)
+	setDirection(sDirection)
+	setSnapItems(sSnapItems)
+	setSpaceX(sSpaceX)
+	setSpaceY(getSpaceY)
+	Children.Put($"${mName}_carousel"$, "SDUI5Text")
 '	setVisible(bVisible)
+	If bNavigationButtons = False Then UI.RemoveElementByID($"${mName}_navigation"$)
+	If bIndicatorButtons = False Then UI.RemoveElementByID($"${mName}_indicators"$)
 End Sub
 
 'set Background Color
@@ -309,11 +323,11 @@ Sub setBackgroundColor(s As String)
 End Sub
 'set Direction
 'options: horizontal|none|vertical
-Sub setDirection(s As String)
+Sub setDirection(s As String)				'ignoredeadcode
 	sDirection = s
 	CustProps.put("Direction", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "carousel-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "carousel-" & s)
 End Sub
 'set Height
 Sub setHeight(s As String)
@@ -331,7 +345,6 @@ End Sub
 Sub setNavigationButtons(b As Boolean)
 	bNavigationButtons = b
 	CustProps.put("NavigationButtons", b)
-	If mElement = Null Then Return
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -358,32 +371,34 @@ Sub setShadow(s As String)
 End Sub
 'set Snap Items
 'options: center|end|start
-Sub setSnapItems(s As String)
+Sub setSnapItems(s As String)				'ignoredeadcode
 	sSnapItems = s
 	CustProps.put("SnapItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "carousel-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "carousel-" & s)
 End Sub
 'set Space X
-Sub setSpaceX(s As String)
+Sub setSpaceX(s As String)					'ignoredeadcode
 	sSpaceX = s
 	CustProps.put("SpaceX", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "space-x-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "space-x-" & s)
 End Sub
 'set Space Y
-Sub setSpaceY(s As String)
+Sub setSpaceY(s As String)					'ignoredeadcode
 	sSpaceY = s
 	CustProps.put("SpaceY", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClass(mElement, "space-y-" & s)
+	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "space-y-" & s)
 End Sub
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetWidth(mElement, sWidth)
+	If s <> "" Then 
+		UI.SetWidth(mElement, sWidth)
+	End If
 End Sub
 'get Background Color
 Sub getBackgroundColor As String

@@ -73,6 +73,7 @@ Sub Class_Globals
 	Private sBadgeColor As String = ""
 	Private sBadgeSize As String = "md"
 	Private bClearContents As Boolean = False
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -364,6 +365,7 @@ Sub AddOption(sKey As String, sText As String)
 	If bClearContents Then
 		ni.ClearContent
 	End If
+	Children.Put($"${nKey}_content"$, "SDUI5Text")
 End Sub
 
 Sub AddTabItem(sKey As String, sText As String, sIcon As String, sBadge As String) As SDUI5TabsItem

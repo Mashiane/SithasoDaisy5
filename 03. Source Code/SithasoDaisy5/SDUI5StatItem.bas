@@ -78,6 +78,7 @@ Sub Class_Globals
 	Private sRadialSize As String = "3rem"
 	Private sRadialThickness As String = "5px"
 	Private sRadialValue As String = "60"
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -88,6 +89,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize	
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	Children.Initialize
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -333,13 +335,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setActionsVisible(bActionsVisible)
 	setRadialThickness(sRadialThickness)
 	setRadialSize(sRadialSize)
-	If sFigureType = "radial-progress" Then
-		UI.Hide($"${mName}_icon"$)
-		UI.Hide($"${mName}_avatar"$)
-		UI.Show($"${mName}_radial"$)
-		UI.Hide($"${mName}_image"$)
+	
+	Select Case sFigureType
+	Case "avatar"
+		UI.RemoveElementByID($"${mName}_icon"$)
+		UI.RemoveElementByID($"${mName}_image"$)
+		UI.RemoveElementByID($"${mName}_radial"$)
 		UI.Show($"${mName}_figure"$)
-	End If
+		UI.Show($"${mName}_avatar"$)
+	Case "icon"
+		UI.RemoveElementByID($"${mName}_avatar"$)
+		UI.RemoveElementByID($"${mName}_image"$)
+		UI.RemoveElementByID($"${mName}_radial"$)
+		UI.Show($"${mName}_figure"$)
+		UI.Show($"${mName}_icon"$)
+	Case "image"
+		UI.RemoveElementByID($"${mName}_avatar"$)
+		UI.RemoveElementByID($"${mName}_icon"$)
+		UI.RemoveElementByID($"${mName}_radial"$)
+		UI.Show($"${mName}_figure"$)
+		UI.Show($"${mName}_image"$)
+	Case "radial-progress"
+		UI.RemoveElementByID($"${mName}_icon"$)
+		UI.RemoveElementByID($"${mName}_avatar"$)
+		UI.RemoveElementByID($"${mName}_image"$)
+		UI.Show($"${mName}_radial"$)
+		UI.Show($"${mName}_figure"$)
+	End Select
+	Children.Put($"${mName}_actions"$, "SDUI5Text")
 '	setVisible(bVisible)
 End Sub
 

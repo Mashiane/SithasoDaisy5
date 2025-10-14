@@ -480,7 +480,7 @@ Sub checkNode(nodeId As String, b As Boolean)
 End Sub
 
 Sub removeNode(nodeId As String)
-	tv.RunMethod("removeNode", Array(nodeId))
+	tv.RunMethod("removeNodeRecursive", Array(nodeId))
 End Sub
 
 Sub expandNode(nodeId As String, state As Boolean)
@@ -505,7 +505,7 @@ Sub clearChecked
 End Sub
 
 Sub getChildren(nodeId As String) As List
-	Dim l As Object = tv.RunMethod("getChildren", Array(nodeId)).Result
+	Dim l As Object = tv.RunMethod("getChildrenRecursive", Array(nodeId)).Result
 	Return l
 End Sub
 

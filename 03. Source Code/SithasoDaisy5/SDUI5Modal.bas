@@ -13,7 +13,7 @@ Version=10
 #Event: Abort_Click (e As BANanoEvent)
 #Event: Ignore_Click (e As BANanoEvent)
 
-#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _body|_box|_title|_form|_action, Description: Child Item _body|_box|_title|_form|_action
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _box|_title|_form|_action, Description: Child Item _box|_title|_form|_action
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: IsCard, DisplayName: Is Card, FieldType: Boolean, DefaultValue: False, Description: Is Card
 #DesignerProperty: Key: Size, DisplayName: Card Size, FieldType: String, DefaultValue: lg, Description: Card Size, List: lg|md|none|sm|xl|xs
@@ -155,6 +155,7 @@ Sub Class_Globals
 	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "sm"
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -165,6 +166,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -483,7 +485,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bIsCard Then
 		mElement = mTarget.Append($"[BANCLEAN]
 		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-			<div id="${mName}_body" class="card-body p-4">
+			<div id="${mName}_box" class="card-body p-4">
 				<h3 id="${mName}_title" class="card-title flex items-center gap-2">
 					<svg-renderer id="${mName}_icon" class="hidden" fit="false" data-js="enabled" fill="currentColor" data-src="${sIcon}"></svg-renderer>
 					<span id="${mName}_text" class="whitespace-nowrap">${sTitle}</span>
@@ -511,6 +513,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</div>"$).Get("#" & mName)
 	End If
 	'
+	Children.Put($"${mName}_box"$, "SDUI5Text")
+	Children.Put($"${mName}_title"$, "SDUI5Text")
+	Children.Put($"${mName}_text"$, "SDUI5Text")
+	Children.Put($"${mName}_form"$, "SDUI5Text")
+	Children.Put($"${mName}_action"$, "SDUI5Text")
+	
 	Form.Initialize(mCallBack, $"${mName}_form"$, $"${mName}_form"$)
 	Form.LinkExisting
 	Form.Clear
@@ -808,6 +816,12 @@ private Sub AddYesButton				'ignoredeadcode
 	YesButton.Shape = sButtonsRounded
 	YesButton.AddComponent
 	UI.OnEventByID(yName, "click", mCallBack, $"${yName}_click"$)
+	YesButton.RemoveBadge
+	YesButton.RemoveIndicator
+	YesButton.RemoveLeftIcon
+	YesButton.RemoveRightIcon
+	YesButton.RemoveLeftImage
+	YesButton.RemoveRightImage
 End Sub
 
 private Sub AddNoButton			'ignoredeadcode
@@ -829,6 +843,12 @@ private Sub AddNoButton			'ignoredeadcode
 	NoButton.Shape = sButtonsRounded
 	NoButton.AddComponent
 	UI.OnEventByID(nName, "click", mCallBack, $"${nName}_click"$)
+	NoButton.RemoveBadge
+	NoButton.RemoveIndicator
+	NoButton.RemoveLeftIcon
+	NoButton.RemoveRightIcon
+	NoButton.RemoveLeftImage
+	NoButton.RemoveRightImage
 End Sub
 
 private Sub AddCancelButton				'ignoredeadcode
@@ -849,7 +869,13 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.Shadow = sButtonsShadow
 	CancelButton.Shape = sButtonsRounded
 	CancelButton.AddComponent
-	UI.OnEventByID(cName, "click", mCallBack, $"${cName}_click"$)	
+	UI.OnEventByID(cName, "click", mCallBack, $"${cName}_click"$)
+	CancelButton.RemoveBadge
+	CancelButton.RemoveIndicator
+	CancelButton.RemoveLeftIcon
+	CancelButton.RemoveRightIcon
+	CancelButton.RemoveLeftImage
+	CancelButton.RemoveRightImage
 End Sub
 
 'set Actions Visible

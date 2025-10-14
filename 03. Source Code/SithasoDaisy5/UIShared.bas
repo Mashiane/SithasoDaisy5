@@ -2137,6 +2137,7 @@ End Sub
 
 'convert a MV string to a map
 Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
+	Dim ms As Map = CreateMap()
 	varStyles = CStr(varStyles)
 	varStyles = varStyles.Replace(CRLF, ";").Replace("<br/>", ";")
 	varStyles = varStyles.Replace(":", "=").Replace("|", ";")
@@ -2145,9 +2146,9 @@ Sub GetKeyValues(varStyles As String, deCamel As Boolean) As Map
 	varStyles = varStyles.Replace(QUOTE, "")
 	varStyles = varStyles.replace("?","")
 	varStyles = varStyles.trim
+	If varStyles = "" Then Return ms
 	Dim mxItems As List = StrParse(";", varStyles)
 	mxItems = ListRemoveDuplicates(mxItems, False)
-	Dim ms As Map = CreateMap()
 	For Each mtx As String In mxItems
 		mtx = mtx.Trim
 		If mtx = "" Then Continue

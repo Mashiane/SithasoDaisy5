@@ -76,7 +76,8 @@ Sub Class_Globals
 	Private sXlContentFlexDirection As String = "none"
 	Private sXxlContentFlexDirection As String = "none"
 	Private sRounded As String = "none"
-	Private sShadow As String = "none"        
+	Private sShadow As String = "none"     
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -86,7 +87,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -325,6 +326,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setContentClass(sRawContentClass)
 	setContentStyle(sRawContentStyle)
 '	setVisible(bVisible)
+	Children.Put($"${mName}_content"$, "SDUI5Text")
 End Sub
 
 'set Background Color

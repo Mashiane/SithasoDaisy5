@@ -13,6 +13,7 @@ Version=10.2
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: , Description: Color
 #DesignerProperty: Key: Columns, DisplayName: Columns, FieldType: String, DefaultValue: 3, Description: Columns
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: , Description: Options
+#DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: ActiveBorderColor, DisplayName: Active Border Color, FieldType: String, DefaultValue: , Description: Active Border Color
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: , Description: Active Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
@@ -68,6 +69,7 @@ Sub Class_Globals
 	Private sShadow As String = ""
 	Private sTypeOf As String = ""
 	Private sWidth As String = ""
+	Private sSelected As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -263,6 +265,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTypeOf = UI.CStr(sTypeOf)
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)
+		sSelected = Props.GetDefault("Selected", "")
+		sSelected = UI.CStr(sSelected)
 	End If
 	'
 	UI.AddAttrDT("type-of", sTypeOf)
@@ -292,6 +296,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<checkbox-group id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></checkbox-group>"$).Get("#" & mName)
+	If sRawOptions <> "" Then
+		setOptions(sRawOptions)
+	End If
+	If sSelected <> "" Then
+		setSelected(sSelected)
+	End If
 	UI.OnEvent(mElement, "change", mCallBack, $"${mName}_change"$)
 End Sub
 
@@ -372,7 +382,7 @@ Sub setLegendLabel(s As String)
 End Sub
 
 'set Raw Options
-Sub setOptions(s As String)
+Sub setOptions(s As String)			'ignoredeadcode
 	sRawOptions = s
 	CustProps.put("RawOptions", s)
 	If mElement = Null Then Return
@@ -510,8 +520,19 @@ Sub setChecked(lst As List)
 	mElement.RunMethod("setChecked", lst)
 End Sub
 
-Sub setCheckedMV(s As String)
+Sub setCheckedMV(s As String)				'ignoredeadcode
 	mElement.RunMethod("setCheckedMV", s)
+End Sub
+
+Sub setSelected(s As String)			'ignoredeadcode
+	sSelected = s
+	CustProps.Put("Selected", s)
+	If mElement = Null Then Return
+	setCheckedMV(s)
+End Sub
+
+Sub getSelected As String
+	Return sSelected
 End Sub
 
 Sub getCheckedMV As String

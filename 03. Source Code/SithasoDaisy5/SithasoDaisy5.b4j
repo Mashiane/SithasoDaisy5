@@ -539,12 +539,12 @@ Version=10.3
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 51.27
+	#LibraryVersion: 53.10
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "51.27"
+	Private LibVersion As String = "53.10"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)

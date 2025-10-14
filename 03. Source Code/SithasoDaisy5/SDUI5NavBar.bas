@@ -24,6 +24,7 @@ Version=10
 #DesignerProperty: Key: Top, DisplayName: Top, FieldType: String, DefaultValue: 0, Description: Top
 #DesignerProperty: Key: ZIndex, DisplayName: Z Index, FieldType: String, DefaultValue: 30, Description: Z index
 #DesignerProperty: Key: HasBurger, DisplayName: Has Burger, FieldType: Boolean, DefaultValue: True, Description: Has burger
+#DesignerProperty: Key: DrawerID, DisplayName: Drawer ID, FieldType: String, DefaultValue: , Description: Drawer ID
 #DesignerProperty: Key: HideHamburger, DisplayName: Hide Hamburger, FieldType: Boolean, DefaultValue: False, Description: Hide Hamburger
 #DesignerProperty: Key: HideHamburgerOnLargeScreen, DisplayName: LG - Hide Hamburger, FieldType: Boolean, DefaultValue: False, Description: Hide Hamburger On Large Screen
 #DesignerProperty: Key: HasLogo, DisplayName: Has Logo, FieldType: Boolean, DefaultValue: False, Description: Has Logo
@@ -125,6 +126,7 @@ Sub Class_Globals
 	Private sGradientColor2 As String
 	Public Children As Map
 	Private bHasFile As Boolean = False
+	Private sDrawerID As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -352,6 +354,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 		bHasFile = Props.GetDefault("HasFile", False)
 		bHasFile = UI.CBool(bHasFile)
+		sDrawerID = Props.GetDefault("DrawerID", "")
+		sDrawerID = UI.CleanID(sDrawerID)
 	End If
 	'
 	If bGradientActive Then sBackgroundColor = ""
@@ -440,6 +444,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasSearch Then
 		Children.Put($"${mName}_searchbox"$, "SDUI5Text")
 	End If
+End Sub
+
+Sub setDrawerID(s As String)
+	sDrawerID = s
+	CustProps.put("DrawerID", s)
+End Sub
+
+Sub getDrawerID As String
+	Return sDrawerID
 End Sub
 
 Sub setHasFile(b As Boolean)				'ignoredeadcode
@@ -1087,6 +1100,9 @@ private Sub swapchange(e As BANanoEvent)		'ignoreDeadCode
 	e.PreventDefault
 	If bHasBurger = False Then Return
 	Dim b As Boolean = Hamburger.Active
+	If sDrawerID <> "" Then
+		UI.SetCheckedByID($"${sDrawerID}_toggle"$, b)
+	End If
 	BANano.CallSub(mCallBack, $"${mName}_BurgerClick"$, Array(b))
 End Sub
 

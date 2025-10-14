@@ -19,6 +19,8 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: , Description: Border Color
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
+#DesignerProperty: Key: HasIcon, DisplayName: Has Icon, FieldType: Boolean, DefaultValue: True, Description: Has Icon
+#DesignerProperty: Key: HasBadge, DisplayName: Has Badge, FieldType: Boolean, DefaultValue: True, Description: Has Badge
 #DesignerProperty: Key: Disabled, DisplayName: Disabled, FieldType: Boolean, DefaultValue: False, Description: Disabled
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -63,6 +65,9 @@ Sub Class_Globals
 	Private sIcon As String = ""
 	Private sIconSize As String = "20px"
 	Private sWidth As String = ""
+	Private bHasIcon As Boolean = True
+	Private bHasBadge As Boolean = True
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -258,6 +263,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadge(sBadge)
 '	setVisible(bVisible)
 	UI.OnEventByID($"${mName}_${sParentID}"$, "change", Me, "itemchange")
+	setHasIcon(bHasIcon)
+	setHasBadge(bHasBadge)
+	Children.Put($"${mName}_${sParentID}_content"$, "SDUI5Text")
+End Sub
+
+Sub setHasBadge(b As Boolean)					'ignoredeadcode
+	bHasBadge = b
+	CustProps.Put("HasBadge", b)
+	If mElement = Null Then Return
+	If b = False Then UI.RemoveElementByID($"${mName}_${sParentID}_badge"$)
+End Sub
+
+Sub getHasBadge As Boolean
+	Return bHasBadge
+End Sub
+
+Sub setHasIcon(b As Boolean)					'ignoredeadcode
+	bHasIcon = b
+	CustProps.Put("HasIcon", b)
+	If mElement = Null Then Return
+	If b = False Then UI.RemoveElementByID($"${mName}_${sParentID}_icon"$)
+End Sub
+
+Sub getHasIcon As Boolean
+	Return bHasIcon
 End Sub
 
 Sub setWidth(s As String)

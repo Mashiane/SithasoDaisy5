@@ -76,6 +76,7 @@ Sub Class_Globals
 	Private sRoundedBottomRight As String = ""
 	Private sRoundedTopLeft As String = ""
 	Private sRoundedTopRight As String = ""	
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,6 +86,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -317,6 +319,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setRoundedTopRight(sRoundedTopRight)
 	setShadow(sShadow)
 	UI.OnEventByID($"${mName}_toggle"$, "change", Me, "DrawerToggle")
+	Children.Put($"${mName}_content"$, "SDUI5Text")
+	Children.Put($"${mName}_sidecontent"$, "SDUI5Text")
+	Children.Put($"${mName}_actions"$, "SDUI5Text")
 End Sub
 
 'set Rounded

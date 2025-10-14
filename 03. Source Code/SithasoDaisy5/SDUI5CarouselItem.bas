@@ -8,7 +8,9 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: image, Description: Type Of, List: custom|image
 #DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Image
-#DesignerProperty: Key: ItemPosition, DisplayName: Item Position, FieldType: String, DefaultValue: , Description: Position
+#DesignerProperty: Key: ItemPosition, DisplayName: Item Position, FieldType: String, DefaultValue: , Description: Item Position
+#DesignerProperty: Key: PrevItem, DisplayName: Previous Item, FieldType: String, DefaultValue: , Description: Previous Item
+#DesignerProperty: Key: NextItem, DisplayName: Next Item, FieldType: String, DefaultValue: , Description: Next Item
 #DesignerProperty: Key: Relative, DisplayName: Relative, FieldType: Boolean, DefaultValue: False, Description: Relative
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 80, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 80, Description: Width
@@ -19,7 +21,6 @@ Version=10
 #DesignerProperty: Key: ImageShadow, DisplayName: Image Shadow, FieldType: String, DefaultValue: none, Description: Image Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
 #DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
-#DesignerProperty: Key: RefreshCarousel, DisplayName: Refresh Carousel, FieldType: Boolean, DefaultValue: False, Description: Refresh Carousel
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -55,7 +56,6 @@ Sub Class_Globals
 	Private bIndicatorButtons As Boolean = False
 	Private bNavigationButtons As Boolean = False
 	Private sItemPosition As String = ""
-	Private bRefreshCarousel As Boolean = False
 	Private bRelative As Boolean = False
 	Private sTypeOf As String = "image"
 	Private sWidth As String = "80"
@@ -65,7 +65,9 @@ Sub Class_Globals
 	Private sImageWidth As String = "80"
 	Private sImageRounded As String = "none"
 	Private bImageRoundedBox As Boolean = False
-	Private sImageShadow As String = "none"        
+	Private sImageShadow As String = "none"       
+	Private sPrevItem As String = ""
+	Private sNextItem As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -75,7 +77,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -165,14 +166,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -186,7 +187,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -235,8 +236,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bNavigationButtons = UI.CBool(bNavigationButtons)
 		sItemPosition = Props.GetDefault("ItemPosition", "")
 		sItemPosition = UI.CStr(sItemPosition)
-		bRefreshCarousel = Props.GetDefault("RefreshCarousel", False)
-		bRefreshCarousel = UI.CBool(bRefreshCarousel)
 		bRelative = Props.GetDefault("Relative", False)
 		bRelative = UI.CBool(bRelative)
 		sTypeOf = Props.GetDefault("TypeOf", "image")
@@ -255,8 +254,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sImageShadow = Props.GetDefault("ImageShadow", "none")
 		sImageShadow = UI.CStr(sImageShadow)
 		If sImageShadow = "none" Then sImageShadow = ""
+		sPrevItem = Props.GetDefault("PrevItem", "")
+		sPrevItem = UI.CStr(sPrevItem)
+		sNextItem = Props.GetDefault("NextItem", "")
+		sNextItem = UI.CStr(sNextItem)
 	End If
 	'
+	If bNavigationButtons Then bRelative = True
 	If sTypeOf = "custom" Then sImage = ""
 	UI.AddClassDT("carousel-item")
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
@@ -276,17 +280,128 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<img id="${mName}_image" src="${sImage}" alt="" class="bg-cover bg-center bg-no-repeat"></img>
+		<div id="${mName}_navigation" class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
+      		<a id="${mName}_prev" href="#${sPrevItem}" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❮</a>
+      		<a id="${mName}_next" href="#${sNextItem}" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❯</a>
+    	</div>
 	</div>"$).Get("#" & mName)
-	setImage(sImage)
+	'
+	Select Case sTypeOf
+	Case "custom"
+		UI.RemoveElementByID($"${mName}_image"$)
+	Case "image"
+		setImage(sImage)
+		setImageWidth(sImageWidth)
+		setImageHeight(sImageHeight)
+		setImageRounded(sImageRounded)
+		setImageRoundedBox(bImageRoundedBox)
+		setImageShadow(sImageShadow)
+	End Select
+	
 	setWidth(sWidth)
 	setHeight(sHeight)
-	setImageWidth(sImageWidth)
-	setImageHeight(sImageHeight)
-	setImageRounded(sImageRounded)
-	setImageRoundedBox(bImageRoundedBox)
-	setImageShadow(sImageShadow)
-'	setVisible(bVisible)
+
+	If bNavigationButtons Then
+		Dim xparent As String = UI.MvField(sParentID, 1, "_")
+		Dim parentInd As String = $"${xparent}_indicators"$
+		UI.AppendByID(parentInd, $"<a href="#${mName}" class="dot btn btn-xs btn-circle bg-base-400"></a>"$)
+	End If
+	'
+	If bIndicatorButtons = False Then 
+		UI.RemoveElementByID($"${mName}_navigation"$)
+	End If
+	
+	If sPrevItem = "" Then
+		UI.SetEnabledByID($"${mName}_prev"$, False)
+	Else
+		UI.SetEnabledByID($"${mName}_prev"$, True)
+	End If
+	'
+	
+	If sNextItem = "" Then
+		UI.SetEnabledByID($"${mName}_next"$, False)
+	Else
+		UI.SetEnabledByID($"${mName}_next"$, True)
+	End If
+	
+	
+'	does this have a previous sibling
+'	Dim prevSibling As BANanoElement = GetPreviousSibling
+'	If prevSibling = Null Then
+'		UI.SetEnabledByID($"${mName}_prev"$, False)
+'	Else
+'		UI.SetEnabledByID($"${mName}_prev"$, True)
+'		Log(prevSibling)
+'		Dim obj As BANanoObject = prevSibling.ToObject
+'		Log(obj.GetField("id").Result)
+'		Log(obj)
+'		
+'		Dim snodeName As String = prevSibling.GetField("nodeName").Result
+'		Log(snodeName)
+'		Log("*****")
+'		Dim sid As String = prevSibling.GetField("id").Result
+'		Log(sid)
+'		Log("*****")
+'		Dim xid As String = prevSibling.GetAttr("id")
+'		Log(xid)
+'		
+'		Log(prevSibling.GetAttr("id"))
+'		Log(prevSibling.Name)
+'		Log("*****")
+'		
+'		Dim node As BANanoElement = prevSibling
+'		' Traverse upwards to find the root div with an id
+'		Do While node <> Null
+'			If node.Js("return arguments[0].tagName.toUpperCase();", node) = "DIV" And node.Js("return arguments[0].id;", node) <> "" Then
+'				Dim rootId As String = node.Js("return arguments[0].id;", node)
+'				Log(rootId) ' This will print the id of the root div
+'				Exit
+'			End If
+'			node = node.Js("return arguments[0].parentNode;", node)
+'		Loop
+'		Dim pName As String = prevSibling.ToObject.GetField("id").result
+'		Log(pName)
+'		'set the previous element for this one
+'		setPrevItem(pName)
+'		
+'		UI.SetAttrByID($"${pName}_next"$, "href", $"#${mName}"$)
+'		UI.SetVisibleByID($"${pName}_next"$, True)
+'	End If
 End Sub
+
+private Sub GetPreviousSibling As BANanoElement
+	Dim prev As BANanoElement = mElement.GetField("previousElementSibling")
+	If (prev = Null) Or (prev = BANano.Undefined) Then Return Null
+	Return prev
+End Sub
+
+
+Sub setPrevItem(s As String)
+	sPrevItem = s
+	CustProps.Put("PrevItem", s)
+	If sPrevItem = "" Then Return
+	If mElement = Null Then Return
+	UI.SetAttrByID($"${mName}_prev"$, "href", $"#${s}"$)
+	UI.SetVisibleByID($"${mName}_prev"$, True)
+End Sub
+
+Sub getPrevItem As String
+	Return sPrevItem
+End Sub
+
+Sub setNextItem(s As String)
+	sNextItem = s
+	CustProps.Put("NextItem", s)
+	If sNextItem = "" Then Return
+	If mElement = Null Then Return
+	UI.SetAttrByID($"${mName}_next"$, "href", $"#${s}"$)
+	UI.SetVisibleByID($"${mName}_next"$, True)
+End Sub
+
+Sub getNextItem As String
+	Return sNextItem
+End Sub
+
 
 'set Image Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -392,12 +507,7 @@ Sub setItemPosition(s As String)
     If mElement = Null Then Return
     If s <> "" Then UI.AddDataAttr(mElement, "position", s)
 End Sub
-'set Refresh Carousel
-Sub setRefreshCarousel(b As Boolean)
-  	bRefreshCarousel = b
-    CustProps.put("RefreshCarousel", b)
-    If mElement = Null Then Return
-End Sub
+
 'set Relative
 Sub setRelative(b As Boolean)
         bRelative = b
@@ -443,10 +553,7 @@ End Sub
 Sub getItemPosition As String
         Return sItemPosition
 End Sub
-'get Refresh Carousel
-Sub getRefreshCarousel As Boolean
-        Return bRefreshCarousel
-End Sub
+
 'get Relative
 Sub getRelative As Boolean
         Return bRelative

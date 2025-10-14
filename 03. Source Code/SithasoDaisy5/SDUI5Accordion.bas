@@ -9,8 +9,10 @@ Version=10
 #Event: Change (Item As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
+#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Clear Contents
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -50,6 +52,9 @@ Sub Class_Globals
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Private items As Map
 	Private sActive As String = ""
+	Public Children As Map
+	Private bClearContents As Boolean = False
+	Private sWidth As String = "full"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -59,8 +64,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
 	items.Initialize 
+	Children.Initialize 
 End Sub
 
 'set properties from an outside source
@@ -225,9 +230,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawOptions = UI.CStr(sRawOptions)
 		sActive = Props.GetDefault("Active", "btn1")
 		sActive = UI.CStr(sActive)
+		sWidth = Props.GetDefault("Width", "")
+		sWidth = UI.CStr(sWidth)
+		bClearContents = Props.GetDefault("ClearContents", False)
+		bClearContents = UI.CBool(bClearContents)
 	End If
 	'
 	'If sBackgroundColor <> "base-100" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	UI.AddClassDT("join join-vertical")
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -246,6 +256,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 	setOptions(sRawOptions)
 	setActive(sActive)
+End Sub
+
+Sub setClearContents(b As Boolean)
+	bClearContents = b
+	CustProps.Put("ClearContents", b)
+End Sub
+
+Sub getClearContents As Boolean
+	Return bClearContents
 End Sub
 
 Sub setOptions(s As String)			'ignoredeadcode
@@ -284,6 +303,10 @@ Sub AddOption(sKey As String, sText As String)
 	ni.JoinItem = True
 	ni.AddComponent
 	items.Put(nKey, nKey)
+	If bClearContents Then
+		ni.ClearContent
+	End If
+	Children.Put($"${nKey}_content"$, "SDUI5Text")
 End Sub
 
 'set Active
@@ -342,4 +365,32 @@ End Sub
 'get Shadow
 Sub getShadow As String
 	Return sShadow
+End Sub
+
+'get a tab item
+Sub CollapseItem(skey As String) As SDUI5Collapse
+	skey = UI.CleanID(skey)
+	Dim ni As SDUI5Collapse
+	ni.Initialize(mCallBack, skey, skey)
+	ni.ParentID = mName
+	ni.LinkExisting
+	Return ni
+End Sub
+
+'set button text
+Sub SetCollapseItemText(btnID As String, text As String)
+	btnID = UI.CleanID(btnID)
+	UI.SetAttrByID($"${btnID}_${mName}_titletext"$, "aria-label", text)
+	UI.SetTextByID($"${btnID}_${mName}_titletext"$, text)
+End Sub
+
+'set button icon
+Sub SetCollapseItemIcon(btnID As String, text As String)
+	btnID = UI.CleanID(btnID)
+	UI.SetIconNameByID($"${btnID}_${mName}_titleicon"$, text)
+	If text = "" Then
+		UI.SetVisibleByID($"${btnID}_${mName}_titleicon"$, False)
+	Else
+		UI.SetVisibleByID($"${btnID}_${mName}_titleicon"$, True)
+	End If
 End Sub

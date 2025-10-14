@@ -682,14 +682,13 @@ Sub getTextSize As String
 	Return sTextSize
 End Sub
 
-'set Content
+'set Content, refresh is called internally
 Sub setContent(s As String)
 	sContent = s
 	CustProps.put("RawContent", s)
 	If mElement = Null Then Return
-	sContent = sContent.Replace(CRLF, ";")
-	sContent = sContent.Replace("<br/>", ";")
-	Dim mLines As List = UI.StrParse(";", sContent)
+	sContent = sContent.Replace("<br/>", CRLF)
+	Dim mLines As List = UI.StrParse(CRLF, sContent)
 	mLines = UI.ListTrimItems(mLines)
 	Clear
 	For Each cLine As String In mLines

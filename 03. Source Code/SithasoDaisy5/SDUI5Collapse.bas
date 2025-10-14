@@ -331,6 +331,30 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
 
+Sub LinkExisting
+	mElement.Initialize($"#${mName}"$)
+	mTarget = BANano.GetElement("#" & sParentID)
+	UI.OnEvent(mElement, "change", Me, "itemchange")
+End Sub
+
+Sub ClearContent
+	If mElement = Null Then Return
+	UI.ClearByID($"${mName}_content"$)
+End Sub
+
+
+Sub HideContent(skey As String)
+	skey = UI.CleanID(skey)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${skey}_${sParentID}_content"$, False)
+End Sub
+
+Sub ShowContent(skey As String)
+	skey = UI.CleanID(skey)
+	If mElement = Null Then Return
+	UI.SetVisibleByID($"${skey}_${sParentID}_content"$, True)
+End Sub
+
 Sub setIcon(s As String)				'ignoredeadcode
 	sIcon = s
 	CustProps.Put("Icon", s)

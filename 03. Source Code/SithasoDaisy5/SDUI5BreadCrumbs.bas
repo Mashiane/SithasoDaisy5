@@ -7,6 +7,7 @@ Version=10
 #IgnoreWarnings:12
 #DesignerProperty: Key: ReadMe, DisplayName: ReadMe, FieldType: String, DefaultValue: Child Item _content, Description: Child Item _content
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r, Description: Options
 #DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
 #DesignerProperty: Key: TextSize, DisplayName: Text Size, FieldType: String, DefaultValue: none, Description: Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -41,6 +42,8 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sMaxWidth As String = ""
 	Private sTextSize As String = "none"
+	Private sRawOptions As String = "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r"
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -50,7 +53,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -140,14 +143,14 @@ Sub setAttributes(s As String)
 	sRawAttributes = s
 	CustProps.Put("RawAttributes", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
 End Sub
 '
 Sub setStyles(s As String)
 	sRawStyles = s
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetStyles(mElement, sRawStyles)
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
 End Sub
 '
 Sub setClasses(s As String)
@@ -161,7 +164,7 @@ Sub setPaddingAXYTBLR(s As String)
 	sPaddingAXYTBLR = s
 	CustProps.Put("PaddingAXYTBLR", s)
 	If mElement = Null Then Return
-	if s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
 End Sub
 '
 Sub setMarginAXYTBLR(s As String)
@@ -205,6 +208,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTextSize = Props.GetDefault("TextSize", "none")
 		sTextSize = UI.CStr(sTextSize)
 		If sTextSize = "none" Then sTextSize = ""
+		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
+		sRawOptions = UI.CStr(sRawOptions)
 	End If
 	'
 	UI.AddClassDT("breadcrumbs")
@@ -224,10 +229,37 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 	<ul id="${mName}_content" class="flex-nowrap"></ul>
 	</div>"$).Get("#" & mName)
+	setOptions(sRawOptions)
+	Children.Put($"${mName}_content"$, "SDUI5Text")
 '	setVisible(bVisible)
 End Sub
 
+'set Options from a MV field
+'b4j:b4j; b4i:b4i; b4r:b4r
+Sub setOptions(s As String)			'ignoredeadcode
+	sRawOptions = s
+	CustProps.put("RawOptions", s)
+	If mElement = Null Then Return
+	Dim m As Map = UI.GetKeyValues(s, False)
+	For Each k As String In m.Keys
+		Dim v As String = m.Get(k)
+		AddOption(k, v)
+	Next
+End Sub
+
+Sub AddOption(k As String, v As String)			'ignore
+	If mElement = Null Then Return
+	k = UI.CleanID(k)
+	Dim sItem As String = $"<li id="${mName}_${k}"><a id="${mName}_${k}_a">${v}</a></li>"$
+	UI.AppendByID($"${mName}_content"$, sItem)
+End Sub
+
+Sub getOptions As String
+	Return sRawOptions
+End Sub
+
 Sub Clear			'ignoredeadcode
+	If mElement = Null Then Return
 	UI.ClearByID($"${mName}_content"$)
 End Sub
 

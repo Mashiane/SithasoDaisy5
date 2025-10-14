@@ -75,6 +75,7 @@ Sub Class_Globals
 	Private bHasActions As Boolean = False
 	Private sHeight As String = ""
 	Private sWidth As String = "96"
+	Public Children As Map
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,6 +86,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	Children.Initialize 
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -319,6 +321,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHasActions(bHasActions)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
+	Children.Put($"${mName}_content"$, "SDUI5Text")
+	Children.Put($"${mName}_title"$, "SDUI5Text")
+	Children.Put($"${mName}_text"$, "SDUI5Text")
+	Children.Put($"${mName}_actions"$, "SDUI5Text")
 End Sub
 
 

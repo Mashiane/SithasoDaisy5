@@ -10,6 +10,9 @@ Version=10
 #DesignerProperty: Key: ItemType, DisplayName: Item Type, FieldType: String, DefaultValue: normal, Description: Item Type, List: icon|icon-text|normal|title|collapse-item|avatar-text
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
 #DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
+#DesignerProperty: Key: HasIcon, DisplayName: Has Icon, FieldType: Boolean, DefaultValue: True, Description: Has Icon
+#DesignerProperty: Key: HasAvatar, DisplayName: Has Avatar, FieldType: Boolean, DefaultValue: True, Description: Has Avatar
+#DesignerProperty: Key: HasBadge, DisplayName: Has Badge, FieldType: Boolean, DefaultValue: True, Description: Has Badge
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
 #DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
@@ -117,6 +120,10 @@ Sub Class_Globals
 	Private sItemColor As String = ""
 	Private sItemFocusColor As String = ""
 	Private sItemHoverColor As String = ""
+	'
+	Private bHasIcon As Boolean = True
+	Private bHasAvatar As Boolean = True
+	Private bHasBadge As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -433,6 +440,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sItemFocusColor = UI.CStr(sItemFocusColor)
 		sItemHoverColor = Props.GetDefault("ItemHoverColor", "")
 		sItemHoverColor = UI.CStr(sItemHoverColor)
+		bHasIcon = Props.GetDefault("HasIcon", True)
+		bHasIcon = UI.CBool(bHasIcon)
+		bHasAvatar  = Props.GetDefault("HasAvatar", True)
+		bHasAvatar = UI.CBool(bHasAvatar)
+		bHasBadge = Props.GetDefault("HasBadge", True)
+		bHasBadge = UI.CBool(bHasBadge)
 	End If
 	'
 	If bActive = True Then UI.AddClassDT("menu-active")
@@ -463,8 +476,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAvatar = ""
 		sAvatarShape = ""
 		sAvatarSize = ""
-	Case "icon-text", "collapse-item"
-		
+		bHasIcon = True
+		bHasAvatar = False
+		bHasBadge = False
+	Case "icon-text"
+		bHasIcon = True
+		bHasAvatar = False
+	Case "collapse-item"
 	Case "normal"
 		sIcon = ""
 		sAvatar = ""
@@ -478,7 +496,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sAvatar = ""
 		sAvatarShape = ""
 		sAvatarSize = ""
+		bHasAvatar = False
+		bHasIcon = False
+		bHasBadge = False
 	Case "avatar-text"
+		bHasAvatar = True
+		bHasIcon = False
 	End Select
 	'
 	Select Case sItemType
@@ -565,7 +588,40 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.OnEvent(mElement, "click", Me, "itemclick")
 	If bHasCheckBox Then
 		UI.OnEventByID($"${mName}_check"$, "change", Me, "changed")
-	End If
+	End If	'
+	
+	If bHasCheckBox = False Then UI.RemoveElementByID($"${mName}_check"$)
+	If bHasIcon = False Then UI.RemoveElementByID($"${mName}_icon"$)
+	If bHasAvatar = False Then UI.RemoveElementByID($"${mName}_avatar"$)
+	If bHasBadge = False Then UI.RemoveElementByID($"${mName}_badge"$)
+End Sub
+
+
+Sub setHasIcon(b As Boolean)
+	bHasIcon = b
+	CustProps.Put("HasIcon", b)
+End Sub
+
+Sub getHasIcon As Boolean
+	Return bHasIcon
+End Sub
+
+Sub setHasAvatar(b As Boolean)
+	bHasAvatar = b
+	CustProps.Put("HasAvatar", b)
+End Sub
+
+Sub getHasAvatar As Boolean
+	Return bHasAvatar
+End Sub
+
+Sub setHasBadge(b As Boolean)
+	bHasBadge = b
+	CustProps.Put("HasBadge", b)
+End Sub
+
+Sub getHasBadge As Boolean
+	Return bHasBadge
 End Sub
 
 'set Raw Item Classes
