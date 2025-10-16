@@ -1696,10 +1696,10 @@ Sub SetButtonEnabledByID(sID As String, bEnabled As Boolean)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If bEnabled Then
 		RemoveAttr(mElement, "disabled")
-		RemoveClass(mElement, "btn-disabled")
+		RemoveClass(mElement, "!btn-disabled")
 	Else
 		SetAttr(mElement, "disabled", True)
-		AddClass(mElement, "btn-disabled")
+		AddClass(mElement, "!btn-disabled")
 		End If
 	Catch
 		

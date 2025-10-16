@@ -1014,11 +1014,11 @@ Sub Process_Globals
 	'the name of the application &
 	'this is the folder on your development server.
 	Public AppName As String = "sd5demo"
-	Public AppTitle As String = "SithasoDaisy 53.10"
+	Public AppTitle As String = "SithasoDaisy 53.30"
 	Public AppVersion As String = ""
 	'whe the app should
 	Public Publish As String = "C:\laragon\www"
-	Public Version As String = "53.10"
+	Public Version As String = "53.30"
 	Public ServerIP As String = "http://127.0.0.1"
 	Public APIKey As String = ""
 	Public ServerURL As String = ""

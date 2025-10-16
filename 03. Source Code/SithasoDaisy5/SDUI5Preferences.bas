@@ -5930,6 +5930,34 @@ Sub ShowDesign(compType As String)
 				AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
 			Case Else
 				sdefaultvalue = UI.CStr(sdefaultvalue)
+				Select Case skey
+				Case "GradientColor1", "GradientColor2", "Color", "BackgroundColor", "TextColor", _
+					"ActiveBorderColor", "ActiveColor", "BorderColor", "IconColor", "AvatarColor", _
+					"BadgeColor", "OnlineColor", "RingColor", "RingOffsetColor", "LeftIconColor", _
+					"RightIconColor", "LineColor", "BackdropColor", "IndicatorColor", _
+					"IndicatorTextColor", "UnreadColor", "LegendColor", "LabelColor", "CheckedColor", _
+					"CheckedMarkColor", "UncheckedColor", "TitleBackgroundColor", "TitleBackgroundColor", _
+					"TitleTextColor", "ContentBackgroundColor", "ContentTextColor", "ItemActiveColor", _
+					"ItemColor", "ItemFocusColor", "ItemHoverColor"	, "MonthColor", "DateColor", "DayColor", _
+					"SelectionColor", "SelectedTextColor", "DeActivatedColor", "Text1TextColor", "Text1BackgroundColor", _
+					"Text2TextColor", "Text2BackgroundColor", "OnTextColor", "OffTextColor", "ChipColor", _
+					"ArrowColor", "KeyColor", "NodeBackgroundColor", "NodeBorderColor", "ValueColor", _
+					"ItemActiveTextColor", "YesTextColor", "YesColor", "NoTextColor", "NoColor", _
+					"CancelTextColor", "CancelColor", "TooltipColor", _
+					"ProgressBackgroundColor", "ColorDark", "ColorLight", "ThumbColor", "RangeBackgroundColor", _
+					"RatingBackgroundColor", "ActiveTextColor", "PrependColor", "PrependIconColor", "AppendColor", _
+					"AppendIconColor", "NextTextColor", "NextColor", "PreviousTextColor", "PreviousColor", _
+					"IncomingTextColor", "IncomingBackgroundColor", "OutgoingTextColor", "OutgoingBackgroundColor", _
+					"ShapeColorX", "PointBorderColor", "PointInnerColor", "AreaColor", "TooltipFontColor", _
+					"ResidualColor", "ShapeColor", "CheckBoxActiveColor", "CheckBoxActiveBorderColor", _
+					"StartJoinPrefixColor", "EndJoinSuffixColor", "AlphaChooserTextColor", "ColumnChooserTextColor", _
+					"ColumnChooserColor", "IndeterminateTextColor", "FillColor", "StrokeColor", "StepsColor", _
+					"ValueTextColor", "DescTextColor", "FigureColor", "MainButtonColor", "MainButtonTextColor", _
+					"RawChildColors", "RawChildTextColor", "PenColor", "SaveTextColor", "SaveColor", "ButtonTextColor", "ButtonColor"
+					AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "top-end")		
+					Continue
+				End Select
+				
 				Select Case sList
 					Case ""
 						'does the key start with raw, make multi-line
@@ -5983,17 +6011,50 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.TextVisible = False
 	btn.IndicatorSize = "sm"
 	btn.AddComponent
-	btn.AddClass("mx-1")
 	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
-	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.AddClass("mx-1 flex justify-center items-center aspect-square indicator")
 	btn.RemoveBadge
 	btn.RemoveRightImage
 	btn.RemoveRightIcon
 	btn.RemoveText
 	btn.RemoveLeftImage
+	SetToolbarButtonBadge(btnID, "0")
+	SetToolbarButtonBadgeRound(btnID)
+	SetToolbarButtonBadgeColor(btnID, "primary")
+	SetToolbarButtonBadgeSize(btnID, "6")
 	Return btn
 End Sub
+
+Sub SetToolbarButtonBadge(btn As String, value As String)
+	btn = UI.CleanID(btn)
+	If value = "" Or value = "0" Then
+		UI.Hide($"#${mName}_${btn}_indicator"$)
+	Else
+		UI.Show($"#${mName}_${btn}_indicator"$)
+		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+	End If
+End Sub
+
+Sub SetToolbarButtonBadgeColor(btn As String, value As String)
+	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+End Sub
+
+'make the badge round
+Sub SetToolbarButtonBadgeSize(btn As String, value As String)
+	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+End Sub
+
+Sub SetToolbarButtonBadgeRound(btn As String)
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+End Sub
+
+Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
+	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+End Sub
+
 
 'add an action button
 '<code>
@@ -6080,11 +6141,13 @@ End Sub
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
 	Else
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
 	End If
 End Sub
 

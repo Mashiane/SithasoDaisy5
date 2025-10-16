@@ -316,7 +316,8 @@ class ContextMenu extends HTMLElement {
     this.triggeredElementId = event.target.id || null; // Store the ID of the element that triggered the menu
     this._clearMenu();
     this._populateMenu();
-    this._showMenu(event.pageX, event.pageY);
+    // Use clientX/clientY (viewport coordinates) for positioning to avoid scroll-induced mismatches
+    this._showMenu(event.clientX, event.clientY);
   }
 
   /**
@@ -384,17 +385,46 @@ class ContextMenu extends HTMLElement {
    * @param {number} x - The x-coordinate for the menu.
    * @param {number} y - The y-coordinate for the menu.
    */
-  _showMenu(x, y) {
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
+  _showMenu(clientX, clientY) {
+    // clientX/clientY are viewport coordinates (event.clientX / event.clientY)
+    const scrollX = window.scrollX || window.pageXOffset || document.documentElement.scrollLeft || 0;
+    const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+
+    // Temporarily make the menu renderable so we can measure it without flashing
+    const wasHidden = this.menu.classList.contains("hidden");
+    const prevVisibility = this.menu.style.visibility;
+    this.menu.style.visibility = "hidden"; // keep invisible while measuring
+    if (wasHidden) this.menu.classList.remove("hidden");
+
     const menuRect = this.menu.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
 
-    // Adjust position to prevent overflow
-    const adjustedX = x + menuRect.width > viewportWidth ? viewportWidth - menuRect.width : x;
-    const adjustedY = y + menuRect.height > viewportHeight ? viewportHeight - menuRect.height : y;
+    // Compute adjusted client coords to avoid right/bottom overflow
+    let adjustedClientX = clientX;
+    let adjustedClientY = clientY;
 
-    this.menu.style.left = `${adjustedX}px`;
-    this.menu.style.top = `${adjustedY}px`;
+    if (adjustedClientX + menuRect.width > vw) {
+      adjustedClientX = vw - menuRect.width;
+    }
+
+    if (adjustedClientY + menuRect.height > vh) {
+      adjustedClientY = vh - menuRect.height;
+    }
+
+    // Clamp to viewport (never negative)
+    adjustedClientX = Math.max(0, adjustedClientX);
+    adjustedClientY = Math.max(0, adjustedClientY);
+
+    // Convert to page coordinates for absolute positioning relative to the document
+    const finalLeft = adjustedClientX + scrollX;
+    const finalTop = adjustedClientY + scrollY;
+
+    this.menu.style.left = `${finalLeft}px`;
+    this.menu.style.top = `${finalTop}px`;
+
+    // Restore visibility and ensure the menu is shown
+    this.menu.style.visibility = prevVisibility || "";
     this.menu.classList.remove("hidden");
   }
 
@@ -537,6 +567,42 @@ class ContextMenu extends HTMLElement {
     }
 
     this.nodeMap.set(nodeId, newNode);
+  }
+
+  /**
+   * Removes an item from the menu by its nodeId.
+   * 
+   * @param {string} nodeId - The ID of the node to remove.
+   * @returns {boolean} True if the item was removed, false otherwise.
+   */
+  removeItem(nodeId) {
+    if (!nodeId) return false;
+    
+    const node = this.nodeMap.get(nodeId);
+    if (!node) return false;
+
+    if (node.parentId) {
+      const parent = this.nodeMap.get(node.parentId);
+      if (parent) {
+        parent.children = parent.children.filter(child => child.nodeId !== nodeId);
+      }
+    } else {
+      this.items = this.items.filter(item => item.nodeId !== nodeId);
+    }
+
+    // Recursively remove all children
+    const removeChildren = (node) => {
+      if (node.children) {
+        node.children.forEach(child => {
+          this.nodeMap.delete(child.nodeId);
+          removeChildren(child);
+        });
+      }
+    };
+    
+    removeChildren(node);
+    this.nodeMap.delete(nodeId);
+    return true;
   }
 
   /**

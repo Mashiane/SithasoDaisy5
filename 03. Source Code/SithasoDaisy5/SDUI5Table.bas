@@ -1761,15 +1761,18 @@ Sub AddToolbarActionButtonIcon(btnID As String, xIcon As String, btnColor As Str
 	btn.TextVisible = False
 	btn.IndicatorSize = "sm"
 	btn.AddComponent
-	btn.AddClass("mx-1")
 	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
-	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.AddClass("mx-1 flex justify-center items-center aspect-square indicator")
 	btn.RemoveBadge
 	btn.RemoveRightImage
 	btn.RemoveRightIcon
 	btn.RemoveText
 	btn.RemoveLeftImage
+	SetToolbarButtonBadge(btnID, "0")
+	SetToolbarButtonBadgeRound(btnID)
+	SetToolbarButtonBadgeColor(btnID, "primary")
+	SetToolbarButtonBadgeSize(btnID, "6")
 	Return btn
 End Sub
 
@@ -2012,12 +2015,12 @@ Sub setHasDeleteAll(b As Boolean)				'ignoredeadcode
 	If b = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("deleteall", "./assets/trash-can-solid.svg", "#FF0000", "white")
-	SetToolbarButtonBadge("deleteall", "0")
-	SetToolbarButtonBadgeRound("deleteall")
-	SetToolbarButtonEnable("deleteall", False)
-	SetToolbarButtonBadgeColor("deleteall", "primary")
+'	SetToolbarButtonBadge("deleteall", "0")
+'	SetToolbarButtonBadgeRound("deleteall")
+	SetToolbarButtonVisible("deleteall", False)
+'	SetToolbarButtonBadgeColor("deleteall", "primary")
 	SetToolbarButtonTextColor("deleteall", "#FFFFFF")
-	SetToolbarButtonBadgeSize("deleteall", "6")
+'	SetToolbarButtonBadgeSize("deleteall", "6")
 	If sDeleteAllTooltip <> "" Then SetToolbarButtonToolTip("deleteall", sDeleteAllTooltip, "primary", "left")
 End Sub
 
@@ -2029,6 +2032,10 @@ End Sub
 
 Sub SetDeleteAllEnable(b As Boolean)
 	SetToolbarButtonEnable("deleteall", b)
+End Sub
+
+Sub SetDeleteAllVisible(b As Boolean)
+	SetToolbarButtonVisible("deleteall", b)
 End Sub
 
 '<code>
@@ -2163,49 +2170,67 @@ Sub setRefreshLoading(b As Boolean)
 End Sub
 Sub setRefreshDisabled(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_refresh"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_refresh"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_refresh"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_refresh"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_refresh"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_refresh"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_refresh"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_refresh"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setExportToCsvDisabled(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttocsv"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttocsv"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttocsv"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_exporttocsv"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_exporttocsv"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setExportToPdfDisabled(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttopdf"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttopdf"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttopdf"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_exporttopdf"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_exporttopdf"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setExportToXlsDisabled(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_exporttoxls"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttoxls"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttoxls"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_exporttoxls"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_exporttoxls"$).RemoveAttr("aria-disabled")
 	End If
+End Sub
+
+Sub setPrevPageVisible(b As Boolean)
+	UI.SetVisibleByID($"${mName}_prevpage"$, b)
+End Sub
+
+Sub setNextPageVisible(b As Boolean)
+	UI.SetVisibleByID($"${mName}_nextpage"$, b)
 End Sub
 
 Sub setPrevPageEnabled(b As Boolean)
 	Try
 		If b Then
-			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("aria-disabled")
 		Else	
-			BANano.GetElement($"#${mName}_prevpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).AddClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("disabled", "disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("aria-disabled", "true")
 		End If
 	Catch
 	End Try		'ignore
@@ -2214,11 +2239,13 @@ End Sub
 Sub setNextPageEnabled(b As Boolean)
 	Try
 		If b Then
-			BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("aria-disabled")
 		Else
-			BANano.GetElement($"#${mName}_nextpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).AddClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_nextpage"$).SetAttr("disabled", "disabled")
+			BANano.GetElement($"#${mName}_nextpage"$).SetAttr("aria-disabled", "true")
 		End If
 	Catch
 	End Try	'ignore
@@ -2228,11 +2255,13 @@ End Sub
 Sub setPrevPageDisabled(b As Boolean)
 	Try
 		If b Then
-			BANano.GetElement($"#${mName}_prevpage"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).AddClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("disabled", "disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).SetAttr("aria-disabled", "true")
 		Else
-			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("disabled")
+			BANano.GetElement($"#${mName}_prevpage"$).RemoveAttr("aria-disabled")
 		End If
 	Catch
 	End Try		'ignore
@@ -2240,11 +2269,13 @@ End Sub
 Sub setNextPageDisabled(b As Boolean)
 	Try
 	If b Then
-		BANano.GetElement($"#${mName}_nextpage"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_nextpage"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_nextpage"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_nextpage"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_nextpage"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_nextpage"$).RemoveAttr("aria-disabled")
 	End If
 	Catch
 	End Try	'ignore	
@@ -2253,11 +2284,13 @@ Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	Try
 		If b Then
-			BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
 		Else
-			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
 		End If
 	Catch
 	End Try			'ignore		
@@ -2266,11 +2299,13 @@ Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	Try
 		If b Then
-			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
 		Else
-			BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
 			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+			BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
 		End If
 	Catch
 	End Try					'ignore		
@@ -2316,12 +2351,12 @@ Sub SetToolbarSelectAllChecked(value As Boolean)
 	If selected.Size = 0 Then
 		'nothing has been selected
 		'disable delete all button
-		SetToolbarButtonEnable("deleteall", False)
+		SetToolbarButtonVisible("deleteall", False)
 		'set badge for delete all button to zero
 		SetToolbarButtonBadge("deleteall", "0")
 	Else
 		'enable delete all button
-		SetToolbarButtonEnable("deleteall", True)
+		SetToolbarButtonVisible("deleteall", True)
 		'set badge for delete all button to size
 		SetToolbarButtonBadge("deleteall", selected.size)
 	End If
@@ -2377,11 +2412,13 @@ Sub SetToolbarButtonColor(btn As String, value As String)
 End Sub
 Sub setAddDisabled(b As Boolean)
 	If b Then
-		BANano.GetElement($"#${mName}_add"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_add"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_add"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_add"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_add"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_add"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_add"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_add"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setAddLoading(b As Boolean)
@@ -2424,11 +2461,13 @@ End Sub
 Sub setToolbarUploadDisabled(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_uploadtoolbar"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_uploadtoolbar"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_uploadtoolbar"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_uploadtoolbar"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setDeleteSingleLoading(b As Boolean)
@@ -2444,31 +2483,37 @@ End Sub
 Sub setDeleteAllDisabled(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_deleteall"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_deleteall"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_deleteall"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_deleteall"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_deleteall"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_deleteall"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_deleteall"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_deleteall"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setSaveSingleDisabled(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_savesingle"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_savesingle"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_savesingle"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_savesingle"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_savesingle"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_savesingle"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_savesingle"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_savesingle"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub setDeleteSingleDisabled(b As Boolean)
 	If mElement = Null Then Return
 	If b Then
-		BANano.GetElement($"#${mName}_deletesingle"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_deletesingle"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_deletesingle"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_deletesingle"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_deletesingle"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_deletesingle"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_deletesingle"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_deletesingle"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 
@@ -2634,12 +2679,12 @@ private Sub HandleSelectAll(event As BANanoEvent)		'ignoredeadcode
 		If selected.Size = 0 Then
 			'nothing has been selected
 			'disable delete all button
-			SetToolbarButtonEnable("deleteall", False)
+			SetToolbarButtonVisible("deleteall", False)
 			'set badge for delete all button to zero
 			SetToolbarButtonBadge("deleteall", "0")
 		Else
 			'enable delete all button
-			SetToolbarButtonEnable("deleteall", True)
+			SetToolbarButtonVisible("deleteall", True)
 			'set badge for delete all button to size
 			SetToolbarButtonBadge("deleteall", selected.size)
 		End If
@@ -5475,9 +5520,9 @@ End Sub
 'banano.Await(tb4.SetItemsPaginate(Items))
 '</code>
 Sub SetItemsPaginate(xItems As List)
-	SetDeleteAllEnable(False)
-	setPrevPageEnabled(False)
-	setNextPageEnabled(False)
+	SetDeleteAllVisible(False)
+	setPrevPageVisible(False)
+	setNextPageVisible(False)
 	SetToolbarButtonBadge("deleteall", "0")
 	BANano.await(ClearRows)
 	iCurrentPage = 1
@@ -5487,8 +5532,8 @@ Sub SetItemsPaginate(xItems As List)
 	Dim paginater As Paginate = BANano.Await(UI.ListPaginate(xItems, iItemsPerPage, iCurrentPage))
 	Dim yItems As List = paginater.items
 	iTotalPages = paginater.totalPages
-	setPrevPageEnabled(paginater.hasPreviousPage)
-	setNextPageEnabled(paginater.hasNextPage)
+	setPrevPageVisible(paginater.hasPreviousPage)
+	setNextPageVisible(paginater.hasNextPage)
 	
 	'old code
 '	If iCurrentPage = 1 Then
@@ -5587,8 +5632,8 @@ private Sub ShowPreviousPage(event As BANanoEvent)			'ignoredeadcode
 		If iCurrentPage <= 0 Then iCurrentPage = 1
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xItems As List = paginater.items
-		setPrevPageEnabled(paginater.hasPreviousPage)
-		setNextPageEnabled(paginater.hasNextPage)
+		setPrevPageVisible(paginater.hasPreviousPage)
+		setNextPageVisible(paginater.hasNextPage)
 		
 '		If iCurrentPage = 1 Then
 '			setPrevPageDisabled(True)
@@ -5629,8 +5674,8 @@ private Sub ShowNextPage(event As BANanoEvent)			'ignoredeadcode
 		If iCurrentPage >= iTotalPages Then iCurrentPage = iTotalPages
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
-		setPrevPageEnabled(paginater.hasPreviousPage)
-		setNextPageEnabled(paginater.hasNextPage)
+		setPrevPageVisible(paginater.hasPreviousPage)
+		setNextPageVisible(paginater.hasNextPage)
 		
 		
 '		If iCurrentPage = 1 Then
@@ -5674,8 +5719,8 @@ Sub ShowPage(pgNumber As Int)
 		If iCurrentPage <= 0 Then iCurrentPage = 1
 		Dim paginater As Paginate = BANano.Await(UI.ListPaginate(Originals, iItemsPerPage, iCurrentPage))
 		Dim xitems As List = paginater.items
-		setPrevPageEnabled(paginater.hasPreviousPage)
-		setNextPageEnabled(paginater.hasNextPage)
+		setPrevPageVisible(paginater.hasPreviousPage)
+		setNextPageVisible(paginater.hasNextPage)
 		
 '		If iCurrentPage = 1 Then
 '			setPrevPageDisabled(True)
@@ -5712,7 +5757,7 @@ Sub setLowerCase(b As Boolean)
 End Sub
 'set the items for the table without pagination
 Sub SetItems(xitems As List)			'ignoreDeadCode
-	SetDeleteAllEnable(False)
+	SetDeleteAllVisible(False)
 	BANano.Await(ClearRows)
 	If bLowerCase Then
 		BANano.Await(UI.ListOfMapsKeysToLowerCase(xitems))
@@ -6013,17 +6058,13 @@ Private Sub BuildRowColor(Module As Object, fldName As String, fldValu As String
 	Dim scolor As String = rowdata.GetDefault(fldName, "")
 	scolor = UI.CStr(scolor)
 	'
-	Dim btnColor As String = ""
-	If scolor.StartsWith("#") Then
-		btnColor = $"bg-[${scolor}]"$
-	Else
-		btnColor = UI.FixColor("bg", scolor)
-	End If
+	Dim btnColor As String = UI.FixColor("bg", scolor)
 	'
 	If tc.ComputeColor <> "" Then
 		Dim subName1 As String = tc.ComputeColor
 		btnColor = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
+	
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
 	subtitle = UI.CStr(subtitle)
 	'
@@ -9141,12 +9182,12 @@ private Sub HandleSelection(event As BANanoEvent)     'ignoredeadcode
 	If selected.Size = 0 Then
 		'nothing has been selected
 		'disable delete all button
-		SetToolbarButtonEnable("deleteall", False)
+		SetToolbarButtonVisible("deleteall", False)
 		'set badge for delete all button to zero
 		SetToolbarButtonBadge("deleteall", "0")
 	Else
 		'enable delete all button
-		SetToolbarButtonEnable("deleteall", True)
+		SetToolbarButtonVisible("deleteall", True)
 		'set badge for delete all button to size
 		SetToolbarButtonBadge("deleteall", selected.size)
 	End If
@@ -10088,11 +10129,13 @@ Sub SetRowColumnButtonEnabled(colName As String, rowCnt As Int, b As Boolean)
 	Select Case tc.typeof
 		Case "button"
 			If b Then
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).RemoveClass("btn-disabled")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).RemoveClass("!btn-disabled")
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).RemoveAttr("disabled")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).RemoveAttr("aria-disabled")
 			Else
-				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("btn-disabled")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).AddClass("!btn-disabled")
 				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).SetAttr("disabled", "disabled")
+				BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_button"$).SetAttr("aria-disabled", "true")
 			End If
 	End Select
 End Sub

@@ -33,7 +33,6 @@ Private Sub Class_Globals
 	Public const DB_RELATION As String = "RELATION"
 	Public const DB_JSON As String = "JSON"
 	Public const DB_DATE As String = "DATE"
-	Public const DB_LONGTEXT As String = "STRING"
 	'
 	Public UseAPIKey As Boolean
 	Private mCallBack As Object			'ignore
@@ -2732,6 +2731,19 @@ Sub GET_ID_BY_FIELD_FETCH(fldName As String, fldValue As String) As String
 	Return sid
 End Sub
 
+'backward compatible with lowcode generator
+Sub READ_ID_BY_FETCH(fldName As String, fldValue As String) As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.GET_ID_BY_FIELD_FETCH(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItemFetch(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
+End Sub
+
 
 Sub UPDATE_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
@@ -3221,6 +3233,20 @@ Sub READ_BY_STRING_FIELDS1(fldName As String, fldValue As Object) As Map
 	Next
 	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
 	Return m
+End Sub
+
+'return an id of a record by reading a unique string field
+'backward compatibility with low code generator
+Sub READ_ID_BY(fldName As String, fldValue As String) As String
+	If ShowLog Then
+		Log($"SDUIPocketBase.${sTableName}.READ_ID_BY(${fldName},${fldValue})"$)
+	End If
+	CLEAR_WHERE
+	ADD_FIELD("id")
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim m As Map = BANano.Await(GetFirstListItem(sTableName))
+	Dim sid As String = m.GetDefault("id", "")
+	Return sid
 End Sub
 
 'return an id of a record by reading a unique string field

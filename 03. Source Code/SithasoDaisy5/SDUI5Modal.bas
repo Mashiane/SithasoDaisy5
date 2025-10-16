@@ -335,8 +335,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		bBorder = Props.GetDefault("Border", True)
@@ -445,6 +445,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bTitleVisible = UI.CBool(bTitleVisible)
 	End If
 	'
+	If bGlass Then sBackgroundColor = ""
 	If bFullScreen Then
 		sHeight = "screen"
 		sWidth = "screen"
@@ -470,6 +471,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sXLMoveFrom <> "" Then UI.AddClassDT("xl:modal-" & sXLMoveFrom)
 	End If
 	' 
+	UI.AddClassDT("overflow-y-auto")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -498,7 +500,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 		<input id="${mName}_toggle" type="checkbox" class="modal-toggle" />
 		<div id="${mName}" role="dialog" aria-modal="true" aria-labelledby="${mName}_title" class="${xclasses}" ${xattrs} style="${xstyles}">
-			<div id="${mName}_box" class="modal-box relative">
+			<div id="${mName}_box" class="modal-box">
 				<form id="${mName}_closeform">
 	      			<label id="${mName}_close" for="${mName}_toggle" class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</label>
 	    		</form>
@@ -512,6 +514,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			<label id="${mName}_backdrop" class="modal-backdrop" for="${mName}_toggle">Close</label>
 		</div>"$).Get("#" & mName)
 	End If
+	
 	'
 	Children.Put($"${mName}_box"$, "SDUI5Text")
 	Children.Put($"${mName}_title"$, "SDUI5Text")
@@ -536,6 +539,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setFullScreen(bFullScreen)
 	setTitle(sTitle)
 	setGlass(bGlass)
+	setBackgroundColor(sBackgroundColor)
 	setIcon(sIcon)
 	setIconColor(sIconColor)
 	setIconSize(sIconSize)
@@ -556,8 +560,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(AddNoButton)
 	Case "yes-no-cancel", "abort-retry-ignore"
 		BANano.Await(AddYesButton)
-			BANano.Await(AddNoButton)
-			BANano.Await(AddCancelButton)
+		BANano.Await(AddNoButton)
+		BANano.Await(AddCancelButton)
 	End Select
 End Sub
 
@@ -614,11 +618,11 @@ Sub setDash(b As Boolean)
 End Sub
 
 'set Background Color
-Sub setBackgroundColor(s As String)
+Sub setBackgroundColor(s As String)				'ignoredeadcode
 	sBackgroundColor = s
 	CustProps.put("BackgroundColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetBackgroundColor(mElement, sBackgroundColor)
+	If s <> "" Then UI.SetBackgroundColorByID($"${mName}_box"$, sBackgroundColor)
 End Sub
 'set Border
 Sub setBorder(b As Boolean)
@@ -908,6 +912,7 @@ Sub setGlass(b As Boolean)			'ignoredeadcode
 	bGlass = b
 	CustProps.put("Glass", b)
 	If mElement = Null Then Return
+	
 	If bIsCard Then
 		If b = True Then
 			UI.AddClass(mElement, "glass")

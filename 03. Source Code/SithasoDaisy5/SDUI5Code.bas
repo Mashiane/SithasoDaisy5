@@ -447,21 +447,25 @@ End Sub
 Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
 	Else
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
 	End If
 End Sub
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
 	btn = UI.CleanID(btn)
 	If b Then
-		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
 	Else
-		BANano.GetElement($"#${mName}_${btn}"$).AddClass("btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
 		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
 	End If
 End Sub
 
@@ -598,15 +602,18 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.TextVisible = False
 	btn.IndicatorSize = "sm"
 	btn.AddComponent
-	btn.AddClass("mx-1")
 	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
 	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
-	btn.AddClass("flex justify-center items-center rounded-full aspect-square indicator")
+	btn.AddClass("mx-1 flex justify-center items-center aspect-square indicator")
 	btn.RemoveBadge
 	btn.RemoveRightImage
 	btn.RemoveRightIcon
 	btn.RemoveText
 	btn.RemoveLeftImage
+	SetToolbarButtonBadge(btnID, "0")
+	SetToolbarButtonBadgeRound(btnID)
+	SetToolbarButtonBadgeColor(btnID, "primary")
+	SetToolbarButtonBadgeSize(btnID, "6")
 	Return btn
 End Sub
 

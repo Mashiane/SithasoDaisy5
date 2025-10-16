@@ -372,7 +372,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setBadgeSize(sBadgeSize)
 	setBadgeVisible(bBadgeVisible)
 	setShadow(sShadow)
-	setAvatarColor(bAvatarColor)
+	setPlaceholder(sPlaceholder)
 '	setVisible(bVisible)
 	setPopOverTarget(sPopOverTarget)
 	setHasBadge(bHasBadge)
@@ -399,12 +399,15 @@ Sub setAvatarColor(b As Boolean)			'ignoredeadcode
 	If mElement = Null Then Return
 	If sAvatarType <> "placeholder" Then Return
 	If bAvatarColor = False Then Return
-	Dim ph As String = UI.left(sPlaceholder, 1)
-	Dim bColor As String = UI.GetAvatarColor(ph)
-	Dim tcolor As String = UI.GetAvatarTextColor(ph)
-	tcolor = UI.FixColor("text", tcolor)
-	setBackgroundColor(bColor)
-	setTextColor(tcolor)
+	sPlaceholder = UI.CStr(sPlaceholder)
+	If sPlaceholder <> "" Then
+		Dim ph As String = UI.left(sPlaceholder, 1)
+		Dim bColor As String = UI.GetAvatarColor(ph)
+		Dim tcolor As String = UI.GetAvatarTextColor(ph)
+		tcolor = UI.FixColor("text", tcolor)
+		setBackgroundColor(bColor)
+		setTextColor(tcolor)
+	End If
 	setRing(bRing)
 End Sub
 
@@ -600,6 +603,7 @@ Sub setOnlineStatus(b As Boolean)
 End Sub
 'set Placeholder
 Sub setPlaceholder(s As String)			'ignoredeadcode
+	s = UI.CStr(s)
 	sPlaceholder = s
 	CustProps.put("Placeholder", s)
 	If mElement = Null Then Return

@@ -8,9 +8,9 @@ Version=10
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: OnIcon, DisplayName: On Icon, FieldType: String, DefaultValue: fas fa-times, Description: On Icon
-#DesignerProperty: Key: OnTextColor, DisplayName: On Text Color, FieldType: String, DefaultValue: none, Description: On Text Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: OnTextColor, DisplayName: On Text Color, FieldType: String, DefaultValue: none, Description: On Text Color
 #DesignerProperty: Key: OffIcon, DisplayName: Off Icon, FieldType: String, DefaultValue: fas fa-plus, Description: Off Icon
-#DesignerProperty: Key: OffTextColor, DisplayName: Off Text Color, FieldType: String, DefaultValue: none, Description: Off Text Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: OffTextColor, DisplayName: Off Text Color, FieldType: String, DefaultValue: none, Description: Off Text Color
 #DesignerProperty: Key: ToastPlacement, DisplayName: Toast Placement, FieldType: String, DefaultValue: bottom-end, Description: Toast Placement, List: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
 #DesignerProperty: Key: DropdownPlacement, DisplayName: Dropdown Placement, FieldType: String, DefaultValue: , Description: Dropdown Placement, List: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 2xl, Description: Icon Size
