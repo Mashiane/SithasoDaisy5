@@ -863,6 +863,11 @@ Sub DropTable
 	affectedRows = CInt(affectedRows)
 End Sub
 
+'added for compatibility with PocketBase
+Sub SELECT_RAW(sql As String)
+	BANano.Await(Execute(sql))
+End Sub
+
 Sub Execute(strSQL As String)
 	Reset
     strSQL = strSQL.trim
@@ -1111,6 +1116,18 @@ Sub DELETE_WHERE
 	End If
 	affectedRows = db.ExecuteWait(query, args)
 	affectedRows = CInt(affectedRows)
+End Sub
+
+
+Sub COUNT_ALL As Int
+	BANano.Await(Execute($"select count(*) as records from ${TableName}"$))
+	If RowCount > 0 Then
+		MoveFirst
+		Dim irec As Int = GetInt("records")
+		Return irec
+	Else
+		Return 0
+	End If		
 End Sub
 
 '<code>
