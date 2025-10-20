@@ -268,7 +268,7 @@ class DaisySheetModal extends HTMLElement {
         if (this._modal) {
             const duration = parseInt(this.duration, 10) || 300;
             this._modal.style.transition = `transform ${duration}ms cubic-bezier(0.4,0,0.2,1), height 0.7s cubic-bezier(0.4,0,0.2,1)`;
-            this._modal.style.transform = 'translate(-50%, 100%)';
+            this._modal.style.transform = 'translate(0%, 100%)';
             setTimeout(() => { this.open = false; this._applyDynamicStyles(); }, duration);
         } else { this.open = false; this._applyDynamicStyles(); }
     }
