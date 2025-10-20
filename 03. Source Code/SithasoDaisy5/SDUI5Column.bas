@@ -689,6 +689,18 @@ Sub getWidth As String
 	Return sWidth
 End Sub
 
+Sub GetComputedWidth As String
+	If mElement = Null Then Return ""
+	Dim computed As BANanoObject = BANano.Window.RunMethod("getComputedStyle", mElement.ToObject)
+	Dim res As String = computed.GetField("width").result
+	
+	'Dim computed As BANanoObject
+	'computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
+	'Dim res As String = computed.RunMethod("getPropertyValue", "width").Result
+	res = UI.CStr(res)
+	Return res
+End Sub
+
 'a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?
 Sub setBorderColor(s As String)
 	sRawBorderColor = s

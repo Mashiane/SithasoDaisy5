@@ -28,6 +28,7 @@ Version=10
 #Event: ChangeRow (Row As Int, Value As Object, Column As String, item As Map)
 #Event: SelectRow (Status as boolean, Row As Int, item As Map)
 #Event: MenuItemRow (Row As Int, Action As String, item As Map)
+#Event: Help (e As BANanoEvent)
 #Event: Add (e As BANanoEvent)
 #Event: SaveSingle (e As BANanoEvent)
 #Event: DeleteSingle (e As BANanoEvent)
@@ -115,6 +116,8 @@ Version=10
 #DesignerProperty: Key: ExportToPdfTooltip, DisplayName: Export To Pdf Tooltip, FieldType: String, DefaultValue: , Description: Export To Pdf Tooltip
 #DesignerProperty: Key: ExportToXls, DisplayName: Export To Xls, FieldType: Boolean, DefaultValue: False, Description: Has Export To Xls
 #DesignerProperty: Key: ExportToXlsTooltip, DisplayName: Export To Xls Tooltip, FieldType: String, DefaultValue: , Description: Export To Xls Tooltip
+#DesignerProperty: Key: HasHelp, DisplayName: Has Help, FieldType: Boolean, DefaultValue: False, Description: Has Help
+#DesignerProperty: Key: HelpTooltip, DisplayName: Help Tooltip, FieldType: String, DefaultValue: , Description: Help Tooltip
 #DesignerProperty: Key: HasBack, DisplayName: Has Back, FieldType: Boolean, DefaultValue: True, Description: Has Back
 #DesignerProperty: Key: BackTooltip, DisplayName: Back Tooltip, FieldType: String, DefaultValue: , Description: Back Tooltip
 #DesignerProperty: Key: HasGrid, DisplayName: Has Grid, FieldType: Boolean, DefaultValue: False, Description: Has Grid
@@ -290,6 +293,8 @@ Private Sub Class_Globals
 	Private sTableSize As String = "md"
 	Private bTrapRowClick As Boolean = False
 	Private ColumnVisibility As Map
+	Private bHasHelp As Boolean = False
+	Private sHelpTooltip As String = ""
 End Sub
 
 ' returns the element id
@@ -615,6 +620,10 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTableSize = UI.CStr(sTableSize)
 		bTrapRowClick = Props.GetDefault("TrapRowClick", False)
 		bTrapRowClick = UI.CBool(bTrapRowClick)
+		bHasHelp = Props.getdefault("HasHelp", False)
+		bHasHelp = UI.cbool(bHasHelp)
+		sHelpTooltip = Props.GetDefault("HelpTooltip", "")
+		sHelpTooltip = UI.CStr(sHelpTooltip)
 	End If
 	'
 	If bListViewMode Then
@@ -711,7 +720,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHasGrid(bHasGrid)
 	setHasFilter(bHasFilter)
 	setHasRefresh(bHasRefresh)
-	setHasBack(bHasBack)
+	setHasHelp(bHasHelp)
+	setHasBack(bHasBack)	
 	setTitleVisible(bTitleVisible)
 	If bSelectAll Then AddColumnSelectAll
 	setIsNormal(bIsNormal)
@@ -750,6 +760,7 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRefreshTooltip <> "" Then SetToolbarButtonToolTip("refresh", sRefreshTooltip, sTooltipColor, "left")
 	If sBackTooltip <> "" Then SetToolbarButtonToolTip("back", sBackTooltip, sTooltipColor, "left")
 	If sGridTooltip <> "" Then SetToolbarButtonToolTip("grid", sGridTooltip, sTooltipColor, "left")
+	If sHelpTooltip <> "" Then SetToolbarButtonToolTip("help", sHelpTooltip, sTooltipColor, "left")
 	If (bHasColumnChooser = False) Then
 		UI.Hide($"${mName}_divider2"$)
 	End If
@@ -2092,6 +2103,30 @@ Sub SetBackTooltip1(tooltip As String, color As String, position As String)
 End Sub
 
 
+Sub setHasHelp(b As Boolean)				'ignoredeadcode
+	bHasHelp = b
+	CustProps.Put("HasHelp", b)
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("help", "./assets/circle-question-regular.svg", "info", "#ffffff")
+End Sub
+
+Sub getHasHelp As Boolean
+	Return bHasHelp
+End Sub
+
+'set Back Tooltip
+Sub setHelpTooltip(s As String)
+	sHelpTooltip = s
+	CustProps.put("HelpTooltip", s)
+	If mElement = Null Then Return
+	If sHelpTooltip <> "" Then SetToolbarButtonToolTip("help", sHelpTooltip, sTooltipColor, "left")
+End Sub
+
+Sub getHelpTooltip As String
+	Return sHelpTooltip
+End Sub
+
 '<code>
 'Sub tblName_back (e As BANanoEvent)
 'End Sub
@@ -2112,6 +2147,19 @@ Sub MoveBackButton							'ignoredeadcode
 		Dim bBtn As BANanoElement = BANano.GetElement(backKey)
 		bBtn.Remove
 		setHasBack(True)
+		setBackTooltip(sBackTooltip)
+	End If
+End Sub
+
+'move the help button to the end
+Sub MoveHelpButton							'ignoredeadcode
+	If bHasHelp = False Then Return
+	Dim backKey As String = $"#${mName}_help"$
+	If BANano.Exists(backKey) Then
+		Dim bBtn As BANanoElement = BANano.GetElement(backKey)
+		bBtn.Remove
+		setHasHelp(True)
+		setHelpTooltip(sHelpTooltip)
 	End If
 End Sub
 
@@ -2559,6 +2607,8 @@ Sub setPagination(b As Boolean)				'ignoredeadcode
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("prevpage", "./assets/chevron-left-solid.svg", "primary", "#ffffff")
 	AddToolbarActionButtonIcon("nextpage", "./assets/chevron-right-solid.svg", "primary", "#ffffff")
+	SetToolbarButtonVisible("prevpage", False)
+	SetToolbarButtonVisible("nextpage", False)
 	UI.OnEventByID($"${mName}_prevpage"$, "click", Me, "ShowPreviousPage")
 	UI.OnEventByID($"${mName}_nextpage"$, "click", Me, "ShowNextPage")
 End Sub
@@ -8227,7 +8277,7 @@ Sub AddRow(rowdata As Map)
 	'
 	Dim sbClass As StringBuilder
 	sbClass.Initialize
-	If bHover Then sbClass.Append("hover")
+	If bHover Then sbClass.Append("hover:bg-base-300")
 	Dim sbRow As StringBuilder
 	sbRow.Initialize
 	

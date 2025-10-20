@@ -13,8 +13,8 @@ Version=10.2
 #DesignerProperty: Key: YAxisTitle, DisplayName: Y Axis Title, FieldType: String, DefaultValue: Y Axis, Description: Y axis Title
 #DesignerProperty: Key: ExportMenuFileName, DisplayName: Export Menu File Name, FieldType: String, DefaultValue: , Description: Export Menu File Name
 #DesignerProperty: Key: ExportMenuVisible, DisplayName: Export Menu Visible, FieldType: Boolean, DefaultValue: True, Description: Export Menu Visible
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400, Description: The Height Of The Editor.
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700, Description: The Width Of The Editor.
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400px, Description: The Height Of The Editor.
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700px, Description: The Width Of The Editor.
 #DesignerProperty: Key: Responsive, DisplayName: Responsive, FieldType: Boolean, DefaultValue: False, Description: Responsive
 #DesignerProperty: Key: LegendVisible, DisplayName: Legend Visible, FieldType: Boolean, DefaultValue: True, Description: Legend Visible
 #DesignerProperty: Key: LegendPosition, DisplayName: Legend Position, FieldType: String, DefaultValue: right, Description: Legend Position, List: bottom|left|right|top
@@ -30,6 +30,9 @@ Version=10.2
 #DesignerProperty: Key: SeriesZoomable, DisplayName: Series Zoomable, FieldType: Boolean, DefaultValue: False, Description: Series Zoomable
 #DesignerProperty: Key: XAxisDateFormat, DisplayName: X Axis Date Format, FieldType: String, DefaultValue: , Description: X axis Date Format
 #DesignerProperty: Key: XAxisPointOnColumn, DisplayName: X Axis Point On Column, FieldType: Boolean, DefaultValue: False, Description: X axis Point On Column
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -63,7 +66,7 @@ Sub Class_Globals
 	Private sChartType As String = "bar"
 	Private sExportMenuFileName As String = ""
 	Private bExportMenuVisible As Boolean = True
-	Private sHeight As String = "400"
+	Private sHeight As String = "400px"
 	Private sLegendPosition As String = "right"
 	Private bLegendShowCheckbox As Boolean = True
 	Private bLegendVisible As Boolean = True
@@ -82,7 +85,7 @@ Sub Class_Globals
 	Private bSeriesDiverging As Boolean = False
 	Private sTitleAlign As String = "left"
 	Private sTitleText As String = "Chart"
-	Private sWidth As String = "700"
+	Private sWidth As String = "700px"
 	Private sXAxisDateFormat As String = ""
 	Private bXAxisPointOnColumn As Boolean = False
 	Private sXAxisTitle As String = "X Axis"
@@ -120,6 +123,9 @@ Sub Class_Globals
 	Private iSeriesAngleRangeEnd As Int
 	Private iThemePlotBandsBarWidth As Int
 	Private bSeriesSolidClockHand As Boolean
+	Private sRounded As String = "none"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "sm"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -309,7 +315,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sExportMenuFileName = UI.CStr(sExportMenuFileName)
 		bExportMenuVisible = Props.GetDefault("ExportMenuVisible", True)
 		bExportMenuVisible = UI.CBool(bExportMenuVisible)
-		sHeight = Props.GetDefault("Height", "400")
+		sHeight = Props.GetDefault("Height", "400px")
 		sHeight = UI.CStr(sHeight)
 		sLegendPosition = Props.GetDefault("LegendPosition", "right")
 		sLegendPosition = UI.CStr(sLegendPosition)
@@ -341,7 +347,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTitleAlign = UI.CStr(sTitleAlign)
 		sTitleText = Props.GetDefault("TitleText", "Chart")
 		sTitleText = UI.CStr(sTitleText)
-		sWidth = Props.GetDefault("Width", "700")
+		sWidth = Props.GetDefault("Width", "700px")
 		sWidth = UI.CStr(sWidth)
 		sXAxisDateFormat = Props.GetDefault("XAxisDateFormat", "")
 		sXAxisDateFormat = UI.CStr(sXAxisDateFormat)
@@ -351,10 +357,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sXAxisTitle = UI.CStr(sXAxisTitle)
 		sYAxisTitle = Props.GetDefault("YAxisTitle", "Y Axis")
 		sYAxisTitle = UI.CStr(sYAxisTitle)
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = UI.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "sm")
+		sShadow = UI.CStr(sShadow)
 	End If
 	'
-	UI.AddStyleDT("width", $"${UI.Val(sWidth)}px"$)
-	UI.AddStyleDT("height", $"${UI.Val(sHeight)}px"$)
+	UI.AddHeightDT(sHeight)
+	UI.AddWidthDT(sWidth)
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
+	'
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -366,7 +383,52 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}_chart"></div>	
+	</div>"$).Get("#" & mName)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
 
 'set Chart Type
@@ -398,7 +460,7 @@ Sub setHeight(s As String)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If sHeight = "" Then Return
-	UI.SetHeight(mElement, $"${UI.Val(sHeight)}px"$)
+	UI.SetHeight(mElement, sHeight)
 End Sub
 
 'set Legend Position
@@ -547,7 +609,8 @@ Sub setWidth(s As String)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If sWidth = "" Then Return
-	UI.SetWidth(mElement, $"${UI.Val(sWidth)}px"$)
+	If BANano.IsNumber(sWidth) Then sWidth = sWidth & "px"
+	UI.SetWidth(mElement, sWidth)
 End Sub
 
 'set X axis Date Format
@@ -775,16 +838,18 @@ Sub getResponsive As Boolean
 End Sub
 
 Sub Refresh
-	mElement.Empty
+	Dim mchart As BANanoElement = BANano.GetElement($"#${mName}_chart"$)
+	mchart.Empty
 	data.Initialize
 	series.Initialize
 	If sExportMenuFileName <> "" Then UI.PutRecursive(Options, "exportMenu.filename", sExportMenuFileName)
 	UI.PutRecursive(Options, "exportMenu.visible", bExportMenuVisible)
-	UI.PutRecursive(Options, "chart.height", UI.CInt(sHeight))
-	UI.PutRecursive(Options, "chart.width", UI.CInt(sWidth))
 	If bResponsive Then
 		UI.PutRecursive(Options, "chart.height", "auto")
 		UI.PutRecursive(Options, "chart.width", "auto")
+	Else
+		UI.PutRecursive(Options, "chart.height", UI.CInt(sHeight))
+		UI.PutRecursive(Options, "chart.width", UI.CInt(sWidth))
 	End If
 	If sLegendPosition <> "" Then UI.PutRecursive(Options, "legend.align", sLegendPosition)
 	UI.PutRecursive(Options, "legend.showCheckbox", bLegendShowCheckbox)
@@ -821,7 +886,7 @@ Sub Refresh
 	'
 	data.Put("series", series)
 	Dim obj As Map = CreateMap()
-	obj.Put("el", mElement.ToObject)
+	obj.Put("el", mchart.ToObject)
 	obj.Put("data", data)
 	obj.Put("options", Options)
 	'

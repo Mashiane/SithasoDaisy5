@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ContextMenu Test Harness</title>
+  <style>
+    /* Minimal styles so the ContextMenu looks usable without Tailwind/daisyUI */
+    body { font-family: Arial, Helvetica, sans-serif; margin: 0; }
+    .spacer { height: 1400px; background: linear-gradient(#fafafa, #eee); }
+    #target { width: 90%; margin: 20px auto; padding: 20px; background: #fff; border: 1px solid #ccc; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,.05); }
+    .hint { text-align: center; color: #444; margin-top: 8px; }
+
+    /* Context menu styles (used by ContextMenu.js) */
+    .menu { position: absolute; list-style: none; margin: 0; padding: 8px; background: #fff; border: 1px solid rgba(0,0,0,0.08); box-shadow: 0 6px 20px rgba(0,0,0,0.12); border-radius: 8px; width: 220px; z-index: 9999; }
+    .menu ul { list-style: none; padding-left: 12px; }
+    .menu > li { padding: 6px 8px; cursor: default; }
+    .menu li .xlink, .menu li .xspan { display: inline-flex; align-items: center; gap: 8px; }
+    .menu li:hover { background: #f3f4f6; }
+    .hidden { display: none !important; }
+    details { margin: 0; }
+    summary { list-style: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="spacer">
+    <div id="target">Right-click me near the bottom to test the context menu.</div>
+    <p class="hint">Scroll down then right-click inside the box above. The menu should fully appear without causing page scroll.</p>
+  </div>
+
+  <!-- Include the ContextMenu module -->
+  <script type="module">
+    import './ContextMenu.js';
+
+    // Create the context-menu element and attach it to our target
+    const cm = document.createElement('context-menu');
+    cm.id = 'cm';
+    cm.setAttribute('target', '#target');
+    document.body.appendChild(cm);
+
+    // Small helper to add sample items
+    function populate(cm) {
+      cm.addItem('', 'open', '', 'Open');
+      cm.addItem('', 'edit', '', 'Edit');
+      cm.addItem('', 'share', '', 'Share');
+      cm.addItem('', 'more', '', 'More');
+      cm.addItem('more', 'prefs', '', 'Preferences');
+      cm.addItem('more', 'about', '', 'About');
+
+      // Map events
+      cm.addEventListener('ItemClick', (e) => {
+        const { node, elementId } = e.detail;
+        alert(`Item clicked: ${node.label} (id: ${node.nodeId}), triggered by element: ${elementId}`);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      // Populate after a tiny delay so the element is connected
+      setTimeout(() => populate(cm), 50);
+    });
+  </script>
+</body>
+</html>

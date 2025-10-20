@@ -8,11 +8,13 @@ Version=10
 #Event: Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InforType, DisplayName: Type, FieldType: String, DefaultValue: 1, Description: Infor Type, List: 1|2|3|4|5
+#DesignerProperty: Key: InforType, DisplayName: Type, FieldType: String, DefaultValue: 1, Description: Infor Type, List: 1|2|3|4|5|6
 #DesignerProperty: Key: Effect, DisplayName: Effect, FieldType: String, DefaultValue: none, Description: Effect, List: hover-expand-effect|hover-zoom-effect|none
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: fa-solid fa-user, Description: Icon
-#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: #264348, Description: Icon Color
+#DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: #7cfc00, Description: Icon Color
+#DesignerProperty: Key: IconTextColor, DisplayName: Icon Text Color, FieldType: String, DefaultValue: #FFFFFF, Description: Icon Color
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Employees, Description: Title
+#DesignerProperty: Key: Notes, DisplayName: Notes, FieldType: String, DefaultValue: Last 24 Hours, Description: Notes
 #DesignerProperty: Key: StartFrom, DisplayName: Start From, FieldType: String, DefaultValue: 0, Description: Start From
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: 1000, Description: Value
 #DesignerProperty: Key: Prefix, DisplayName: Prefix, FieldType: String, DefaultValue: , Description: Prefix
@@ -60,7 +62,7 @@ Sub Class_Globals
 	Private sDecimal As String = "."
 	Private sDuration As String = "2"
 	Private sIcon As String = "fa-solid fa-user"
-	Private sIconColor As String = "#264348"
+	Private sIconColor As String = "#7cfc00"
 	Private sInforType As String = "1"
 	Private sPrefix As String = ""
 	Private sSeparator As String = ""
@@ -74,6 +76,7 @@ Sub Class_Globals
 	Public CONST INFORTYPE_3 As String = "3"
 	Public CONST INFORTYPE_4 As String = "4"
 	Public CONST INFORTYPE_5 As String = "5"
+	Public CONST INFORTYPE_6 As String = "6"
 	Private CountUp As BANanoObject		'ignore
 	Private sDecimalPlaces As String = "0"
 	Private sEffect As String = "none"
@@ -82,6 +85,8 @@ Sub Class_Globals
 	Public CONST EFFECT_HOVER_ZOOM_EFFECT As String = "hover-zoom-effect"
 	Public CONST EFFECT_NONE As String = "none"
 	Private bEnabled As Boolean = True
+	Private sNotes As String = "Last 24 Hours"
+	Private sIconTextColor As String = "#FFFFFF"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -265,7 +270,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sDuration = UI.CStr(sDuration)
 		sIcon = Props.GetDefault("Icon", "fa-solid fa-user")
 		sIcon = UI.CStr(sIcon)
-		sIconColor = Props.GetDefault("IconColor", "#264348")
+		sIconColor = Props.GetDefault("IconColor", "#7cfc00")
 		sIconColor = UI.CStr(sIconColor)
 		sInforType = Props.GetDefault("InforType", "1")
 		sInforType = UI.CStr(sInforType)
@@ -290,6 +295,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sEffect = "none" Then sEffect = ""
 		bUseGrouping = Props.GetDefault("UseGrouping", True)
 		bUseGrouping = UI.CBool(bUseGrouping)
+		sNotes = Props.GetDefault("Notes", "Last 24 Hours")
+		sNotes = UI.CStr(sNotes)
+		sIconTextColor = Props.GetDefault("IconTextColor", "#FFFFFF")
+		sIconTextColor = UI.CStr(sIconTextColor)
 	End If
 	'
 	If sParentID <> "" Then
@@ -301,20 +310,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	'
-	UI.AddClassDT("cursor-pointer pl-0 rounded-box")
-	Dim xattrs As String = UI.BuildExAttributes
-	Dim xstyles As String = UI.BuildExStyle
-	Dim xclasses As String = UI.BuildExClass
-	mElement = mTarget.Append($"[BANCLEAN]
-	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_iconbox" class="icon">
-    		<i id="${mName}_icon" class="${sIcon}"></i>
-    	</div>
-    	<div id="${mName}_content" class="content">
-    		<div id="${mName}_title" class="text font-semibold">${sTitle}</div>
-    		<div id="${mName}_value" class="number mt-[5px]">${sValue}</div>
-    	</div>
-    </div>"$).Get("#" & mName)
+	Select Case sInforType
+	Case "1", "2", "3", "4", "5"
+		UI.AddClassDT("cursor-pointer pl-0 rounded-box")
+		Dim xattrs As String = UI.BuildExAttributes
+		Dim xstyles As String = UI.BuildExStyle
+		Dim xclasses As String = UI.BuildExClass
+		mElement = mTarget.Append($"[BANCLEAN]
+		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<div id="${mName}_iconbox" class="icon">
+    			<i id="${mName}_icon" class="${sIcon}"></i>
+    		</div>
+    		<div id="${mName}_content" class="content">
+    			<div id="${mName}_title" class="text font-semibold">${sTitle}</div>
+    			<div id="${mName}_value" class="number mt-[5px]">${sValue}</div>
+    		</div>
+    	</div>"$).Get("#" & mName)
+	Case "6"
+		UI.AddClassDT("cursor-pointer relative rounded-box shadow-md")
+		Dim xattrs As String = UI.BuildExAttributes
+		Dim xstyles As String = UI.BuildExStyle
+		Dim xclasses As String = UI.BuildExClass
+		mElement = mTarget.Append($"[BANCLEAN]
+		<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+      		<div class="absolute left-5 -top-6 z-20">
+        		<div id="${mName}_iconbox" class="w-16 h-16 rounded-md shadow-md flex items-center justify-center">
+          			<i id="${mName}_icon" class="${sIcon} text-2xl"></i>
+        		</div>
+      		</div>
+			<div class="bg-base-100 rounded-lg p-5 shadow-sm pt-6">
+        		<div class="flex justify-end">
+          			<span id="${mName}_title" class="text-sm text-gray-400">${sTitle}</span>
+        		</div>
+		        <div class="flex justify-end mt-2">
+         	 		<span id="${mName}_value" class="text-2xl font-semibold">${sValue}</span>
+        		</div>
+        		<div id="${mName}_divider" class="divider my-3"></div>
+				<div id="${mName}_notes" class="flex items-center text-gray-500 text-sm">${sNotes}</div>
+      		</div>
+    	</div>"$).Get("#" & mName)
+	End Select
+		
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 	'
 	Options.put("decimal", sDecimal)
@@ -333,8 +369,44 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIconColor(sIconColor)
 	setTextColor(sTextColor)
 	setBackgroundColor(sBackgroundColor)
+	setNotes(sNotes)
+	setIconTextColor(sIconTextColor)
 	'setVisible(bVisible)
 	Refresh
+End Sub
+
+'set Icon Text Color
+Sub setIconTextColor(s As String)			'ignoredeadcode
+	sIconTextColor = s
+	CustProps.put("IconTextColor", s)
+	If mElement = Null Then Return
+	If sInforType <> "6" Then Return
+	If sIconTextColor <> "" Then
+		UI.SetStyleByID($"${mName}_iconbox"$, "color", s)
+	End If
+End Sub
+
+Sub getIconTextColor As String
+	Return sIconTextColor
+End Sub
+
+Sub setNotes(s As String)				'ignoredeadcode
+	sNotes = s
+	CustProps.Put("Notes", "")
+	If mElement = Null Then Return
+	If sInforType <> "6" Then Return
+	If sNotes = "" Then
+		UI.SetVisibleByID($"${mName}_divider"$, False)
+		UI.SetVisibleByID($"${mName}_notes"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_notes"$, True)
+		UI.SetVisibleByID($"${mName}_divider"$, True)
+		UI.SetTextByID($"${mName}_notes"$, sNotes)
+	End If
+End Sub
+
+Sub getNotes As String
+	Return sNotes
 End Sub
 
 'executes the countUp ONLY
@@ -418,11 +490,13 @@ Sub setIconColor(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If sIconColor <> "" Then
 		Select Case sInforType
-			Case "1","2","3"
-				UI.SetStyleByID($"${mName}_iconbox"$, "background-color", sIconColor)
-			Case "4", "5"
-				UI.SetStyleByID($"${mName}_icon"$, "color", sIconColor)
-				UI.SetStyleByID($"${mName}_iconbox"$, "top", "10px")
+		Case "1","2","3"
+			UI.SetStyleByID($"${mName}_iconbox"$, "background-color", sIconColor)
+		Case "4", "5"
+			UI.SetStyleByID($"${mName}_icon"$, "color", sIconColor)
+			UI.SetStyleByID($"${mName}_iconbox"$, "top", "10px")
+		Case "6"
+			UI.SetStyleByID($"${mName}_iconbox"$, "background-color", sIconColor)
 		End Select
 	End If
 End Sub

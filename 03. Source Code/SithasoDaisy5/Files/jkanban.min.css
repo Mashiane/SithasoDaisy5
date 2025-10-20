@@ -1,0 +1,147 @@
+.kanban-container {
+  position: relative;
+  box-sizing: border-box;
+  width: auto;
+  overflow: scroll;
+}
+.kanban-container,
+.kanban-container * {
+  box-sizing: border-box;
+}
+.kanban-container:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+.kanban-board {
+  position: relative;
+  float: left;
+  background: #e2e4e6;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  border-radius: .5rem;
+}
+.kanban-board.disabled-board {
+  opacity: 0.3;
+}
+.kanban-board.is-moving.gu-mirror {
+  transform: rotate(3deg);
+}
+.kanban-board.is-moving.gu-mirror .kanban-drag {
+  overflow: hidden;
+  padding-right: 50px;
+}
+.kanban-board header {
+  font-size: 16px;
+  padding: 20px;
+}
+.kanban-board header .kanban-title-board {
+  font-weight: 600;
+  margin: 0;
+  padding: 0;
+  display: inline;
+  color: #344767;
+}
+.kanban-board header .kanban-title-button {
+  float: right;
+}
+.kanban-board .kanban-drag {
+  min-height: 200px;
+  padding: 20px;
+}
+.kanban-board:after {
+  clear: both;
+  display: block;
+  content: "";
+}
+.kanban-item {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  animation: append-animate 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+@keyframes append-animate {
+  from {
+    transform: translateY(-20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.kanban-item img.w-100 {
+    border-radius: .5rem
+}
+
+.kanban-item:hover {
+  cursor: move;
+}
+.kanban-item:last-child {
+  margin: 0;
+}
+.kanban-item.is-moving.gu-mirror {
+  transform: rotate(3deg);
+  height: auto !important;
+}
+.gu-mirror {
+  position: fixed !important;
+  margin: 0 !important;
+  z-index: 9999 !important;
+}
+.gu-hide {
+  display: none !important;
+}
+.gu-unselectable {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+.gu-transit {
+  opacity: 0.2 !important;
+  transform: rotate(0) !important;
+  box-shadow: inset 0 0 2px #fefefed1;
+  -webkit-backdrop-filter: saturate(200%) blur(30px);
+  backdrop-filter: saturate(200%) blur(30px);
+  background-color: hsla(0, 0%, 100%, .8) !important;
+  box-shadow: inset 0 0 1px 1px hsla(0, 0%, 100%, .9), 0 20px 27px 0 rgba(0, 0, 0, .05) !important
+}
+
+.drag_handler {
+  background: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  float: left;
+  top: -3px;
+  margin-right: 4px;
+}
+.drag_handler:hover {
+  cursor: move;
+}
+.drag_handler_icon {
+  position: relative;
+  display: block;
+  background: #000;
+  width: 24px;
+  height: 2px;
+  top: 12px;
+  transition: 0.5s ease-in-out;
+}
+.drag_handler_icon:after,
+.drag_handler_icon:before {
+  background: #000;
+  content: "";
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: 0.5s ease-in-out;
+}
+.drag_handler_icon:before {
+  top: 6px;
+}
+.drag_handler_icon:after {
+  bottom: 6px;
+}

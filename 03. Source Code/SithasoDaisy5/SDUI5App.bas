@@ -781,6 +781,10 @@ Sub StartEruda
 	Eruda.RunMethod("init", Null)
 End Sub
 
+Sub UsesKanBan
+	Banano.Await(UI.LoadAssetsOnDemand("KanBan", Array("jkanban.min.css", "dragula.min.js", "jkanban.min.js")))
+End Sub
+
 'valid
 Sub UsesPocketBase
 	Banano.Await(UI.LoadAssetsOnDemand("PocketBase", Array("pocketbase.umd.js")))
@@ -892,6 +896,14 @@ Sub UsesDatePicker
 	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "flatpickr.css",  "flatpickr.min.js", "fplocale.min.js")))
 End Sub
 '"material_blue.css",
+
+Sub UsesJQuery
+	Banano.Await(UI.LoadAssetsOnDemand("JQuery", Array("jquery-3.7.1.min.js")))
+End Sub
+
+Sub UsesEnjoyHint
+	Banano.Await(UI.LoadAssetsOnDemand("EnjoyHint", Array("kinetic.min.js", "jquery.scrollTo.min.js", "enjoyhint.min.js", "enjoyhint.min.css")))
+End Sub
 
 Sub UsesOfficeRibbon
 	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("sfribbon.min.css", "sfribbon.min.js")))

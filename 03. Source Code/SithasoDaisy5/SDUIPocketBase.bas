@@ -833,6 +833,12 @@ Sub AddHeader(prop As String, value As String)
 End Sub
 
 'this does not process files, use it to execute RAW SQL Commands on your collection
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_RAW(qry As String) As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_RAW"$)
@@ -861,7 +867,12 @@ Sub SELECT_RAW(qry As String) As List
 	End Try	
 End Sub
 
-
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_ALL As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL"$)
@@ -959,6 +970,12 @@ Sub SELECT_ALL As List
 	Return result
 End Sub
 
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_ALL_FETCH As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.${sTableName}.SELECT_ALL_FETCH"$)
@@ -1691,7 +1708,12 @@ private Sub ListOfMapsGetProperty(lst As List, key As String) As List
 	Return nList
 End Sub
 
-
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_COLLECTIONS() As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_COLLECTIONS"$)
@@ -1765,8 +1787,12 @@ Sub SELECT_COLLECTIONS() As List
 	Return result
 End Sub
 
-
-
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_ALL_COLLECTIONS"$)
@@ -2566,6 +2592,12 @@ Sub EstablishFileUrl(fileField As String, urlField As String)
 End Sub
 
 'select existings fields to create a view
+'<code>
+'Do While pbComponents.NextRow
+'Dim rec As Map = pbComponents.Record
+'Dim sid As String = pbComponents.GetString("id")
+'Loop
+'</code>
 Sub SELECT_VIEW(viewName As String)
 	Try
 		sTableName = viewName
@@ -4545,6 +4577,11 @@ Sub ExistsWhereFetch(where As Map) As Boolean
 	End If
 End Sub
 
+Sub COUNT_ALL As Int
+	BANano.Await(SELECT_RAW($"select count(*) as records from ${sTableName}"$))
+	Dim rec As Int = GetRecordsCount
+	Return rec
+End Sub
 
 '<code>
 'pbComponents.CLEAR_WHERE
