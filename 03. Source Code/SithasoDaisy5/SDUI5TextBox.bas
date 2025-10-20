@@ -1309,7 +1309,7 @@ End Sub
 
 'set value
 Sub setValue(text As String)			'ignoredeadcode
-	sValue = text
+	sValue = UI.CStr(text)
 	CustProps.Put("Value", text)
 	If mElement = Null Then Return
 	mElement.SetValue(text)
@@ -1320,6 +1320,7 @@ Sub setValue(text As String)			'ignoredeadcode
 		Catch
 		End Try				'ignore
 	Case "color-wheel"
+		If sValue = "" Then sValue = "#000000"
 		UI.SetIconColorByID($"${mName}_append_icon"$, text)
 		ColorWheel.SetField("hex", text)
 		ColorWheel.RunMethod("redraw", Null)

@@ -163,8 +163,8 @@ class DaisySheetModal extends HTMLElement {
             if (!this._modal.classList.contains(bg)) this._modal.classList.add(bg);
         }
 
-        this._modal.style.left = '50%';
-        this._modal.style.transform = this.open ? 'translate(-50%, 0%)' : 'translate(-50%, 100%)';
+        this._modal.style.left = '0%';
+        this._modal.style.transform = this.open ? 'translate(0%, 0%)' : 'translate(0, 100%)';
         this._modal.style.maxWidth = maxWidth;
         this._modal.style.width = width;
         this._modal.style.height = height;
