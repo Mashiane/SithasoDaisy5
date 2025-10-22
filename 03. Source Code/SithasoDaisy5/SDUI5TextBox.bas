@@ -11,8 +11,12 @@ Version=10
 #Event: Change (Value As String)
 #Event: Input (Value As String)
 
+#Event: SearchClear (e As BANanoEvent)
+#Event: SearchClick (Value As String)
+#Event: SearchKeyUp (Value As String)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating|searchbox
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url|color-wheel
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
@@ -522,6 +526,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mTarget.Initialize($"#${sParentID}"$)
 		End If
 		Select Case sInputType
+		Case "searchbox"
+			sTypeOf = "search"
+			sAppendIcon = "./assets/magnifying-glass-solid.svg"
+			mElement = mTarget.Append($"[BANCLEAN]
+			<div id="${mName}_control" class="rounded-sm join ${xclasses} fieldset" ${xattrs} style="${xstyles}">
+	          	<button id="${mName}_prepend" class="btn join-item hidden tlradius blradius flex justify-center items-center">
+					<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
+				</button>
+      			<input id="${mName}" autocomplete="off" type="search" placeholder="Search…" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
+      			<button id="${mName}_append" class="btn join-item trradius brradius flex justify-center items-center">
+					<svg-renderer id="${mName}_append_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor" data-src="./assets/magnifying-glass-solid.svg"></svg-renderer>
+				</button>
+    		</div>"$)
+			sDataTypeOf = $"${mName}_control"$
+			If sPrependIcon <> "" Then UI.OnEventByID($"${mName}_prepend"$, "click", mCallBack, $"${mName}_prepend"$)
+			mElement.On("keyup", Me, "SearchInternal")
+			mElement.On("search", Me, "SearchClear")
+			BANano.GetElement($"#${mName}_append"$).On("click", Me, "SearchClick")
 		Case "legend"	
 			mElement = mTarget.Append($"[BANCLEAN]
 				<fieldset id="${mName}_control" class="rounded-sm ${xclasses} fieldset" ${xattrs} style="${xstyles}">
@@ -635,7 +657,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setStepValue(sStepValue)
 	setEnabled(bEnabled)
 	Select Case sInputType
-	Case "legend", "buttons", "buttons-floating"
+	Case "legend", "buttons", "buttons-floating", "searchbox"
 		setShowEyes(bShowEyes)
 		setAppendImage(sAppendImage)
 		setAppendIcon(sAppendIcon)
@@ -688,7 +710,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	setValue(sValue)
 End Sub
+
+private Sub SearchClick(e As BANanoEvent)				'ignoredeadcode
+	e.PreventDefault
+	Dim sfind As String = mElement.GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchClick"$, Array(sfind))
+End Sub
 '
+private Sub SearchInternal(e As BANanoEvent)		'ignoredeadcode
+	Dim sfind As String = mElement.GetValue
+	BANano.CallSub(mCallBack, $"${mName}_SearchKeyUp"$, Array(sfind))
+End Sub
+
+private Sub SearchClear(e As BANanoEvent)			'ignoredeadcode
+	e.PreventDefault
+	Dim e1 As BANanoEvent
+	BANano.CallSub(mCallBack, $"${mName}_SearchClear"$, Array(e1))
+End Sub
+
 Sub setToggleColorPicker(b As Boolean)
 	bToggleColorPicker = b
 	CustProps.Put("ToggleColorPicker", b)
@@ -1390,7 +1429,6 @@ Sub setValue(text As String)			'ignoredeadcode
 		Catch
 		End Try				'ignore
 	Case "color-wheel"
-		If sValue = "" Then sValue = "#000000"
 		UI.SetIconColorByID($"${mName}_append_icon"$, text)
 		ColorWheel.SetField("hex", text)
 		ColorWheel.RunMethod("redraw", Null)
