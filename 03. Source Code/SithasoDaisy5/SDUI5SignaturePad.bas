@@ -101,7 +101,43 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Options.Initialize
 	BANano.DependsOnAsset("signature_pad.umd.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Caption", "Signature")
+	CustProps.Put("CaptionColor", "none")
+	CustProps.Put("ButtonCaption", "Clear Signature")
+	CustProps.Put("ButtonColor", "neutral")
+	CustProps.Put("ButtonDisabled", False)
+	CustProps.Put("ButtonTextColor", "none")
+	CustProps.Put("SaveColor", "success")
+	CustProps.Put("SaveTextColor", "none")
+	CustProps.Put("ErrorMessage", "The signature is required")
+	CustProps.Put("Hint", "Please sign within the box area")
+	CustProps.Put("DotSize", "0")
+	CustProps.Put("Height", "200")
+	CustProps.Put("Width", "400")
+	CustProps.Put("ImageType", "jpeg")
+	CustProps.Put("BackgroundColor", "white")
+	CustProps.Put("MaxWidth", "2.5")
+	CustProps.Put("MinDistance", "5")
+	CustProps.Put("MinWidth", "0.5")
+	CustProps.Put("PenColor", "black")
+	CustProps.Put("Throttle", "16")
+	CustProps.Put("VelocityFilterWeight", "0.7")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

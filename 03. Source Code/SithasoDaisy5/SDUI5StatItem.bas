@@ -90,6 +90,40 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize	
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 	Children.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("FigureType", "none")
+	CustProps.Put("AvatarShape", "circle")
+	CustProps.Put("PlaceItemsCenter", False)
+	CustProps.Put("Title", "Total Page Views")
+	CustProps.Put("TitleTextColor", "")
+	CustProps.Put("Value", "89 400")
+	CustProps.Put("ValueTextColor", "")
+	CustProps.Put("Desc", "21% more than last month")
+	CustProps.Put("DescTextColor", "")
+	CustProps.Put("FigureColor", "")
+	CustProps.Put("Icon", "")
+	CustProps.Put("IconHeight", "32px")
+	CustProps.Put("IconWidth", "32px")
+	CustProps.Put("RadialValue", "60")
+	CustProps.Put("RadialSize", "3rem")
+	CustProps.Put("RadialThickness", "5px")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("ActionsVisible", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

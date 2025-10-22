@@ -87,6 +87,31 @@ Sub Initialize (CallBack As Object, cName As String, EventName As String)
 	Options.Initialize
 	boardsm.Initialize
 	CustProps.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("DragBoards", True)
+	CustProps.Put("DragItems", True)
+	CustProps.Put("Gutter", "15px")
+	CustProps.Put("WidthBoard", "250px")
+	CustProps.Put("ResponsivePercentage", True)
+	CustProps.Put("ItemAddOptionsEnabled", False)
+	CustProps.Put("ItemAddOptionsClass", "")
+	CustProps.Put("ItemAddOptionsContent", "")
+	CustProps.Put("ItemAddOptionsFooter", False)
+	CustProps.Put("ItemHandleOptionsEnabled", False)
+	CustProps.Put("ItemHandleOptionsCustomCssIconHandler", "")
+	CustProps.Put("ItemHandleOptionsCustomHandler", "")
+	CustProps.Put("ItemHandleOptionsCustomCssHandler", "")
+	CustProps.Put("ItemHandleOptionsHandleClass", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 Sub DesignerCreateView (Target As BANanoElement, Props As Map)

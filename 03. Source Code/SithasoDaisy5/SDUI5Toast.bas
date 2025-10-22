@@ -31,7 +31,13 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("HorizontalPosition", "end")
+	CustProps.Put("VerticalPosition", "bottom")
 End Sub
 ' returns the element id
 Public Sub getID() As String

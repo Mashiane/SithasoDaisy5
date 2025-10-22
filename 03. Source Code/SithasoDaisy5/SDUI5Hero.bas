@@ -87,7 +87,41 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundImage", "")
+	CustProps.Put("Overlay", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("ContentTextAlign", "")
+	CustProps.Put("ContentFlexDirection", "flex-col")
+	CustProps.Put("SmContentFlexDirection", "none")
+	CustProps.Put("MdContentFlexDirection", "none")
+	CustProps.Put("LgContentFlexDirection", "flex-row")
+	CustProps.Put("XlContentFlexDirection", "none")
+	CustProps.Put("XxlContentFlexDirection", "none")
+	CustProps.Put("MinHeight", "56")
+	CustProps.Put("Height", "")
+	CustProps.Put("MinWidth", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("RawContentAttributes", "")
+	CustProps.Put("RawContentClass", "")
+	CustProps.Put("RawContentStyle", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

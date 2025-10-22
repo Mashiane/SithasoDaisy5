@@ -79,12 +79,42 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
 End Sub
 ' returns the element id
 Public Sub getID() As String
 	Return mName
 End Sub
 
+private Sub SetDefaults
+	CustProps.Initialize
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("TypeOf", "checkbox")                      'String
+	CustProps.Put("LegendLabel", "Checkbox Group")           'String
+	CustProps.Put("Color", "")                               'String (empty)
+	CustProps.Put("Columns", "3")                            'String
+	CustProps.Put("RawOptions", "")                          'String (empty)
+	CustProps.Put("Selected", "")                            'String (empty)
+	CustProps.Put("ActiveBorderColor", "")                   'String (empty)
+	CustProps.Put("ActiveColor", "")                         'String (empty)
+	CustProps.Put("BackgroundColor", "base-200")             'String
+	CustProps.Put("Border", False)                           'Boolean
+	CustProps.Put("BorderColor", "base-300")                 'String
+	CustProps.Put("Height", "")                              'String (empty)
+	CustProps.Put("Width", "")                               'String (empty)
+	CustProps.Put("Rounded", "lg")                           'String
+	CustProps.Put("RoundedBox", False)                       'Boolean
+	CustProps.Put("Shadow", "")                              'String (empty)
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
 
 'set properties from an outside source
 Sub SetProperties(props As Map)

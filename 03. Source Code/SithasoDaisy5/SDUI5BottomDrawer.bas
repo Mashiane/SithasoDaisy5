@@ -54,7 +54,27 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("Open", False)                             'Boolean
+	CustProps.Put("BackgroundColor", "bg-base-200")          'String
+	CustProps.Put("Breakpoints", "0;0.1;0.2;0.3;0.4;0.5;0.7;0.8;1") 'String
+	CustProps.Put("InitialBreakpoint", "0.5")                'String
+	CustProps.Put("Duration", 300)                           'Int
+	CustProps.Put("ShowHandle", True)                        'Boolean
+	CustProps.Put("HandleBg", "bg-base-300")                 'String
+	CustProps.Put("HandleShadow", "md")                      'String
+	CustProps.Put("MaxWidth", "100%")                        'String
+	CustProps.Put("Width", "100%")                           'String
+	CustProps.Put("Showbackdrop", True)                      'Boolean
+	CustProps.Put("BackdropColor", "#00000052")              'String
+	CustProps.Put("Backdropdismiss", True)                   'Boolean
+End Sub
+
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

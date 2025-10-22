@@ -96,6 +96,41 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	Options.Initialize
 	BANano.DependsOnAsset("plyr.css")
 	BANano.DependsOnAsset("plyr.js")
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TypeOf", "video")
+	CustProps.Put("Provider", "youtube")
+	CustProps.Put("Embed", False)
+	CustProps.Put("EmbedId", "")
+	CustProps.Put("Mp4Url", "")
+	CustProps.Put("Mp3Url", "")
+	CustProps.Put("Poster", "")
+	CustProps.Put("Title", "")
+	CustProps.Put("Width", "500px")
+	CustProps.Put("Height", "500px")
+	CustProps.Put("Autoplay", False)
+	CustProps.Put("Controls", True)
+	CustProps.Put("Crossorigin", True)
+	CustProps.Put("IconUrl", "./assets/plyr.svg")
+	CustProps.Put("Playsinline", True)
+	CustProps.Put("Captions", True)
+	CustProps.Put("Keyboard", True)
+	CustProps.Put("Tooltips", True)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 ' returns the element id

@@ -53,8 +53,26 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r") 'String
+	CustProps.Put("MaxWidth", "")                            'String (empty)
+	CustProps.Put("TextSize", "none")                        'String
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

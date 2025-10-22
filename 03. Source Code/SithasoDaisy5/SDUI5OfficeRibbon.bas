@@ -89,7 +89,31 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	menuItems.Initialize
 	BANano.DependsOnAsset("sfribbon.min.css")
 	BANano.DependsOnAsset("sfribbon.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("LicenseKey", "")
+	CustProps.Put("FileMenuText", "File")
+	CustProps.Put("FileMenuVisible", True)
+	CustProps.Put("ShowItemOnClick", False)
+	CustProps.Put("ActiveLayout", "Simplified")
+	CustProps.Put("CssClass", "")
+	CustProps.Put("EnableKeyTips", False)
+	CustProps.Put("EnablePersistence", False)
+	CustProps.Put("EnableRtl", False)
+	CustProps.Put("HideLayoutSwitcher", False)
+	CustProps.Put("IsMinimized", False)
+	CustProps.Put("LauncherIconCss", "")
+	CustProps.Put("LayoutSwitcherKeyTip", "")
+	CustProps.Put("Locale", "")
+	CustProps.Put("SelectedTab", 0)
+	CustProps.Put("Width", "100%")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

@@ -143,7 +143,58 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("TagType", "div")                          'String
+	CustProps.Put("HorizontalAnchor", "left")                'String
+	CustProps.Put("VerticalAnchor", "top")                   'String
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("BoxSizing", "border-box")                 'String
+	CustProps.Put("LineHeight", "")                          'String (empty)
+	CustProps.Put("Left", "")                                'String (empty)
+	CustProps.Put("Right", "")                               'String (empty)
+	CustProps.Put("Top", "")                                 'String (empty)
+	CustProps.Put("Bottom", "")                              'String (empty)
+	CustProps.Put("Width", "100px")                          'String
+	CustProps.Put("Height", "60px")                          'String
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("BorderSet", False)                        'Boolean
+	CustProps.Put("BorderColor", "#000000")                  'Color
+	CustProps.Put("BorderWidth", "0px")                      'String
+	CustProps.Put("BorderRadius", "0px")                     'String
+	CustProps.Put("BorderStyle", "solid")                    'String
+	CustProps.Put("Text", "Text")                            'String
+	CustProps.Put("WrapText", False)                         'Boolean
+	CustProps.Put("TextColor", "#000000")                    'Color
+	CustProps.Put("Alignment", "center")                     'String
+	CustProps.Put("BackgroundColor", "transparent")          'String
+	CustProps.Put("FontAwesomeIcon", "")                     'String (empty)
+	CustProps.Put("MaterialIcon", "")                        'String (empty)
+	CustProps.Put("FontName", "")                            'String (empty)
+	CustProps.Put("FontBold", False)                         'Boolean
+	CustProps.Put("FontSize", "15")                          'String
+	CustProps.Put("FontItalic", False)                       'Boolean
+	CustProps.Put("GradientActive", False)                   'Boolean
+	CustProps.Put("Gradient", "")                            'String (empty)
+	CustProps.Put("GradientColor1", "#f86194")               'Color
+	CustProps.Put("GradientColor2", "#968918")               'Color
+	CustProps.Put("MarginLeft", "")                          'String (empty)
+	CustProps.Put("MarginRight", "")                         'String (empty)
+	CustProps.Put("MarginTop", "")                           'String (empty)
+	CustProps.Put("MarginBottom", "")                        'String (empty)
+	CustProps.Put("PaddingLeft", "")                         'String (empty)
+	CustProps.Put("PaddingRight", "")                        'String (empty)
+	CustProps.Put("PaddingTop", "")                          'String (empty)
+	CustProps.Put("PaddingBottom", "")                       'String (empty)
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

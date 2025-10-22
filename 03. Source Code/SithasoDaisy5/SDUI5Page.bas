@@ -129,8 +129,62 @@ Public Sub Initialize (CallBack As Object, Name As String, EventName As String)
 '	If mName <> "page" Then
 '		BANano.Console.Warn($"Page.Initialize Error (${mName}) - the 'name' property should be 'page', use the 'Page Name' property to give the page a unique name."$)
 '	End If
+	SetDefaults
 End Sub
 '
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "pageview")
+	CustProps.Put("ClearParent", False)
+	CustProps.Put("Active", True)
+	CustProps.Put("Title", "My SDUIPage")
+	CustProps.Put("Icon", "fa-solid fa-swatchbook")
+	CustProps.Put("Color", "#000000")
+	CustProps.Put("RawDescription", "My SDUIPage")
+	CustProps.Put("RawKeywords", "page")
+	CustProps.Put("BackgroundImage", "")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("FullPage", False)
+	CustProps.Put("FullScreen", False)
+	CustProps.Put("ResizePageView", True)
+	CustProps.Put("Container", True)
+	CustProps.Put("CenterChildren", False)
+	CustProps.Put("MxAuto", True)
+	CustProps.Put("Flex", True)
+	CustProps.Put("FlexCol", False)
+	CustProps.Put("Columns", "")
+	CustProps.Put("FlexWrap", True)
+	CustProps.Put("Gap", "")
+	CustProps.Put("Grid", False)
+	CustProps.Put("GridCols", "")
+	CustProps.Put("DeviceGridCols", "xs=?; sm=?; md=?; lg=?; xl=?")
+	CustProps.Put("Glass", False)
+	CustProps.Put("TextColor", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("MinW", "")
+	CustProps.Put("MaxW", "")
+	CustProps.Put("WFull", False)
+	CustProps.Put("Height", "")
+	CustProps.Put("MinH", "")
+	CustProps.Put("MaxH", "")
+	CustProps.Put("HFull", False)
+	CustProps.Put("AsForm", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("GradientActive", False)
+	CustProps.Put("Gradient", "")
+	CustProps.Put("GradientColor1", "#f86194")
+	CustProps.Put("GradientColor2", "#968918")
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

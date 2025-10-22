@@ -101,7 +101,48 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("GridCols", "12")
+	CustProps.Put("GridColsSm", "")
+	CustProps.Put("GridColsMd", "")
+	CustProps.Put("GridColsLg", "")
+	CustProps.Put("GridColsXl", "")
+	CustProps.Put("GridColsXxl", "")
+	CustProps.Put("Gap", "2")
+	CustProps.Put("AlignContent", "none")
+	CustProps.Put("AlignItems", "none")
+	CustProps.Put("AlignSelf", "none")
+	CustProps.Put("JustifyContent", "none")
+	CustProps.Put("JustifyItems", "none")
+	CustProps.Put("JustifySelf", "none")
+	CustProps.Put("PlaceContent", "none")
+	CustProps.Put("PlaceItems", "none")
+	CustProps.Put("PlaceSelf", "none")
+	CustProps.Put("TextAlign", "none")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("CenterChildren", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("RawBorderColor", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderStyle", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderWidth", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderRadius", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -681,4 +722,24 @@ End Sub
 Sub Append(s As String)
 	If mElement = Null Then Return
 	mElement.Append(s)
+End Sub
+
+Sub RemoveClass(s As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, s)
+End Sub
+
+Sub AddClass(s As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, s)
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
+End Sub
+
+Sub AddAttribute(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
 End Sub

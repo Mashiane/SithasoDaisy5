@@ -83,7 +83,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("SwapType", "text")
+	CustProps.Put("TypeOf", "flip")
+	CustProps.Put("OnIcon", "")
+	CustProps.Put("OffIcon", "")
+	CustProps.Put("IndeterminateIcon", "")
+	CustProps.Put("Height", "32px")
+	CustProps.Put("Width", "32px")
+	CustProps.Put("OnText", "ON")
+	CustProps.Put("OnTextColor", "")
+	CustProps.Put("OffText", "OFF")
+	CustProps.Put("OffTextColor", "")
+	CustProps.Put("IndeterminateText", "NA")
+	CustProps.Put("IndeterminateTextColor", "")
+	CustProps.Put("TextSize", "9xl")
+	CustProps.Put("Active", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

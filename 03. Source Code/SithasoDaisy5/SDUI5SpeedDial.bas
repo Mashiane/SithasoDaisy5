@@ -86,6 +86,40 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TypeOf", "icon")
+	CustProps.Put("MainButtonType", "none")
+	CustProps.Put("Color", "")
+	CustProps.Put("TextColor", "#ffffff")
+	CustProps.Put("Size", "lg")
+	CustProps.Put("Icon", "./assets/plus-solid.svg")
+	CustProps.Put("IconSize", "60%")
+	CustProps.Put("Text", "")
+	CustProps.Put("MainButtonIcon", "")
+	CustProps.Put("MainButtonColor", "")
+	CustProps.Put("MainButtonText", "")
+	CustProps.Put("MainButtonTextColor", "#ffffff")
+	CustProps.Put("ChildSize", "md")
+	CustProps.Put("RawChildKeys", "")
+	CustProps.Put("RawChildColors", "")
+	CustProps.Put("RawChildIcons", "")
+	CustProps.Put("RawChildText", "")
+	CustProps.Put("RawChildTextColor", "")
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+	CustProps.Put("Flower", False)
+	CustProps.Put("CenterChildren", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
 End Sub
 ' returns the element id
 Public Sub getID() As String

@@ -77,6 +77,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TypeOf", "image")
+	CustProps.Put("Image", "./assets/mashy.jpg")
+	CustProps.Put("ItemPosition", "")
+	CustProps.Put("PrevItem", "")
+	CustProps.Put("NextItem", "")
+	CustProps.Put("Relative", False)
+	CustProps.Put("Height", "80")
+	CustProps.Put("Width", "80")
+	CustProps.Put("ImageHeight", "80")
+	CustProps.Put("ImageWidth", "80")
+	CustProps.Put("ImageRounded", "none")
+	CustProps.Put("ImageRoundedBox", False)
+	CustProps.Put("ImageShadow", "none")
+	CustProps.Put("IndicatorButtons", False)
+	CustProps.Put("NavigationButtons", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

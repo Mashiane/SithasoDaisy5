@@ -100,7 +100,47 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("ProgressType", "normal")
+	CustProps.Put("Label", "Range")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("ProgressBackgroundColor", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "full")
+	CustProps.Put("Value", 0)
+	CustProps.Put("TextColor", "#ffffff")
+	CustProps.Put("TextSize", "xs")
+	CustProps.Put("TextVisible", False)
+	CustProps.Put("Size", "md")
+	CustProps.Put("Indeterminate", False)
+	CustProps.Put("LeftIcon", "")
+	CustProps.Put("LeftIconColor", "")
+	CustProps.Put("MinValue", 0)
+	CustProps.Put("StepValue", 1)
+	CustProps.Put("MaxValue", 100)
+	CustProps.Put("RightIcon", "")
+	CustProps.Put("RightIconColor", "")
+	CustProps.Put("Ticks", "")
+	CustProps.Put("Hint", "")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

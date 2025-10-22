@@ -91,9 +91,44 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	dates.Initialize 
-	
+	dates.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("InitialSelectedDate", "2025-01-01")
+	CustProps.Put("DaysCount", "31")
+	CustProps.Put("ItemWidth", "80px")
+	CustProps.Put("ItemHeight", "80px")
+	CustProps.Put("MonthColor", "#000000")
+	CustProps.Put("MonthFontSize", "11px")
+	CustProps.Put("MonthFontWeight", "medium")
+	CustProps.Put("DateColor", "#000000")
+	CustProps.Put("DateFontSize", "24px")
+	CustProps.Put("DateFontWeight", "medium")
+	CustProps.Put("DayColor", "#000000")
+	CustProps.Put("DayFontSize", "11px")
+	CustProps.Put("DayFontWeight", "medium")
+	CustProps.Put("SelectionColor", "#30000000")
+	CustProps.Put("SelectedTextColor", "")
+	CustProps.Put("ActiveDates", "")
+	CustProps.Put("InActiveDates", "")
+	CustProps.Put("DeActivatedColor", "#666666")
+	CustProps.Put("Direction", "horizontal")
+	CustProps.Put("Height", "content")
+	CustProps.Put("Width", "full")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

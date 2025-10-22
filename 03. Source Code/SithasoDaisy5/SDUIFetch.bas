@@ -38,6 +38,7 @@ Private Sub Class_Globals
 	Public GetHeadersFromFormData As Boolean = False
 	Private bHasFormData As Boolean = False
 	Public Mode As String 
+	Public ShowLog As Boolean
 End Sub
 
 
@@ -86,6 +87,7 @@ Public Sub Initialize(url As String)
 	GetHeadersFromFormData = False
 	bHasFormData = False
 	Mode = ""
+	ShowLog = False
 End Sub
 
 Sub SchemaClear
@@ -320,6 +322,9 @@ End Sub
 'if there us a base start with /
 Sub SetURL(url As String)
 	vbaseURL = $"${obaseURL}${url}"$
+	If ShowLog Then
+		Log($"SDUI5Fetch: ${vbaseURL}"$)
+	End If
 End Sub
 
 Private Sub fetchit(method As String)
@@ -347,6 +352,9 @@ Private Sub fetchit(method As String)
 	If headers.Size <> 0 Then
 		fetchOptions.Headers = headers
 	End If
+	If ShowLog Then
+		Log($"SDUI5Fetch-Headers: ${BANano.ToJson(headers)}"$)
+	End If
 	'
 	If vdata.Size <> 0 Then
 		Dim jsonData As String = BANano.ToJson(vdata)
@@ -362,6 +370,9 @@ Private Sub fetchit(method As String)
 		Case Else	
 			fetchOptions.Body = Null
 		End Select
+	End If
+	If ShowLog Then
+		Log($"SDUI5Fetch-Data: ${BANano.ToJson(vdata)}"$)
 	End If
 	'set our own body
 	If Body <> "" Then fetchOptions.Body = Body
@@ -391,6 +402,9 @@ Private Sub fetchit(method As String)
 	bf.Then(bfr)
 		Status = bfr.status
 		StatusText = bfr.StatusText
+		If ShowLog Then
+			Log($"SDUI5Fetch-StatusText: ${StatusText}"$)
+		End If
 		OK = bfr.ok
 		Success = bfr.OK
 		If bfr.Status = 200 Then

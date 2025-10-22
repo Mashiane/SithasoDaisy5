@@ -77,7 +77,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("DiffType", "image")
+	CustProps.Put("Height", "80")
+	CustProps.Put("Width", "80")
+	CustProps.Put("Image1", "./assets/13.jpg")
+	CustProps.Put("Image2", "./assets/13.jpg")
+	CustProps.Put("Text1", "SITHASODAISY5")
+	CustProps.Put("TextSize", "9xl")
+	CustProps.Put("Text1TextColor", "primary-content")
+	CustProps.Put("Text1BackgroundColor", "primary")
+	CustProps.Put("Text2", "SITHASODAISY5")
+	CustProps.Put("Text2TextColor", "")
+	CustProps.Put("Text2BackgroundColor", "base-200")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

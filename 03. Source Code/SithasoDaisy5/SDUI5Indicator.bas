@@ -52,7 +52,19 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TypeOf", "badge")
+	CustProps.Put("Text", "Text")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("Position", "top-start")
+	CustProps.Put("Size", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
 End Sub
 ' returns the element id
 Public Sub getID() As String

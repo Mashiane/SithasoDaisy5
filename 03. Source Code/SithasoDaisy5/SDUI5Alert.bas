@@ -86,8 +86,39 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("Title", "Alert Title")                    'String
+	CustProps.Put("Text", "Alert Text")                      'String
+	CustProps.Put("TextColor", "")                           'String (empty)
+	CustProps.Put("Alignment", "none")                       'String
+	CustProps.Put("Color", "none")                           'String
+	CustProps.Put("BackgroundColor", "")                     'String (empty)
+	CustProps.Put("Dash", False)                             'Boolean
+	CustProps.Put("Icon", "")                                'String (empty)
+	CustProps.Put("IconSize", "16px")                        'String
+	CustProps.Put("IconColor", "")                           'String (empty)
+	CustProps.Put("Outline", False)                          'Boolean
+	CustProps.Put("Size", "none")                            'String
+	CustProps.Put("Height", "")                              'String (empty)
+	CustProps.Put("Width", "96")                             'String
+	CustProps.Put("Soft", False)                             'Boolean
+	CustProps.Put("HasActions", False)                       'Boolean
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

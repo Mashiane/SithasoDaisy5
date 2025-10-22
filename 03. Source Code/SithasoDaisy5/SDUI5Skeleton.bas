@@ -54,8 +54,28 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
 End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Height", "12")
+	CustProps.Put("Width", "12")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Shrink", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
+
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

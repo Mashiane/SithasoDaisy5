@@ -136,8 +136,57 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize	
+	CustProps.Initialize
 	Items.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("Size", "none")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Direction", "vertical")
+	CustProps.Put("HasCheckBox", False)
+	CustProps.Put("CheckedColor", "success")
+	CustProps.Put("ItemColor", "")
+	CustProps.Put("ItemActiveColor", "")
+	CustProps.Put("ItemActiveTextColor", "")
+	CustProps.Put("ItemFocusColor", "")
+	CustProps.Put("ItemHoverColor", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "56")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("RoundedItems", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("MaxHeight", "")
+	CustProps.Put("MaxWidth", "")
+	CustProps.Put("MinHeight", "full")
+	CustProps.Put("MinWidth", "")
+	CustProps.Put("SmDirection", "none")
+	CustProps.Put("MdDirection", "none")
+	CustProps.Put("LgDirection", "none")
+	CustProps.Put("XlDirection", "none")
+	CustProps.Put("PopOver", False)
+	CustProps.Put("ClosePopupOnClick", False)
+	CustProps.Put("Card", False)
+	CustProps.Put("Dropdown", False)
+	CustProps.Put("DropdownOpen", False)
+	CustProps.Put("DropDownHover", False)
+	CustProps.Put("DropdownPlacement", "bottom")
+	CustProps.Put("DropdownContent", False)
+	CustProps.Put("RawItemClasses", "")
+	CustProps.Put("RawItemStyles", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 'link to an existing element

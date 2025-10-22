@@ -97,8 +97,47 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("CheckBoxType", "normal")
+	CustProps.Put("Legend", "Options")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("Label", "CheckBox")
+	CustProps.Put("LabelColor", "")
+	CustProps.Put("TermsConditionsCaption", "")
+	CustProps.Put("TermsConditionsUrl", "")
+	CustProps.Put("PrivacyPolicyCaption", "")
+	CustProps.Put("PrivacyPolicyUrl", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("Size", "none")
+	CustProps.Put("Checked", False)
+	CustProps.Put("CheckedColor", "")
+	CustProps.Put("CheckedMarkColor", "")
+	CustProps.Put("UncheckedColor", "")
+	CustProps.Put("Hint", "")
+	CustProps.Put("Indeterminate", False)
+	CustProps.Put("Required", False)
+	CustProps.Put("Validator", False)
+	CustProps.Put("ValidatorHint", "")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

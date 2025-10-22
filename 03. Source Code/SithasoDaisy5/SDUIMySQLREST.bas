@@ -101,7 +101,7 @@ End Sub
 'pb.PrimaryKey = "id"
 'pb.AutoIncrement = "id"
 '</code>
-Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String) As SDUIMySQLREST
+Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String)
 	TableName = sTableName
 	mCallBack = Module
 	whereField.Initialize
@@ -135,7 +135,43 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	NoCache = True
 	ReferrerPolicy = ""
 	Mode = ""
-	Return Me
+End Sub
+
+Public Sub InitializeApiKey(Module As Object, eventName As String, url As String, sTableName As String, xApiKey As String)
+	TableName = sTableName
+	mCallBack = Module
+	whereField.Initialize
+	ops.Initialize
+	orderByL.Initialize
+	flds.Initialize
+	Record.Initialize
+	lastPosition = -1
+	result.Initialize
+	mEvent = eventName
+	PrimaryKey = "id"
+	AutoIncrement = ""
+	Schema.Initialize
+	combineL.Initialize
+	ShowLog = False
+	baseURL = url
+	sApiKey = ""
+	SchemaAddText1(PrimaryKey)
+	sSize = ""
+	joinL.Initialize
+	UseApiKey = True
+	escapeCharStart = "`"
+	escapeCharEnd = "`"
+	MatchSchema = True
+	UseBaseURL = False
+	If url.EndsWith(".php") Then
+		UseBaseURL = True
+	End If
+	NoCORS = False
+	Redirect = ""
+	NoCache = True
+	ReferrerPolicy = ""
+	Mode = ""
+	SetDBApiKey(xApiKey) 
 End Sub
 
 Sub SetMySQLConnection(xHost As String, xUser As String, xPassword As String, xDbName As String, xPort As String)
@@ -145,6 +181,25 @@ Sub SetMySQLConnection(xHost As String, xUser As String, xPassword As String, xD
 	sDbName = xDbName
 	sDriver = "mysql"
 	sPort = xPort
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SetMySQLConnection"$)
+		Log($"Host: ${sHost}"$)
+		Log($"User: ${sUser}"$)
+		Log($"Password: ${sPassword}"$)
+		Log($"DBName: ${sDbName}"$)
+		Log($"Driver: ${sDriver}"$)
+		Log($"Port: ${sPort}"$)
+	End If
+End Sub
+
+private Sub SetDBApiKey(xApiKey As String)
+	sApiKey = xApiKey
+	UseApiKey = True
+	If sApiKey = "" Then UseApiKey = False
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SetDBApiKey"$)
+		Log($"ApiKey: ${sApiKey}"$)
+	End If
 End Sub
 
 Sub SetMySQLConnectionApiKey(xHost As String, xUser As String, xPassword As String, xDbName As String, xPort As String, xApiKey As String)
@@ -156,6 +211,17 @@ Sub SetMySQLConnectionApiKey(xHost As String, xUser As String, xPassword As Stri
 	sPort = xPort
 	sApiKey = xApiKey
 	UseApiKey = True
+	If sApiKey = "" Then UseApiKey = False
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SetMySQLConnectionApiKey"$)
+		Log($"Host: ${sHost}"$)
+		Log($"User: ${sUser}"$)
+		Log($"Password: ${sPassword}"$)
+		Log($"DBName: ${sDbName}"$)
+		Log($"Driver: ${sDriver}"$)
+		Log($"Port: ${sPort}"$)
+		Log($"ApiKey: ${sApiKey}"$)
+	End If
 End Sub
 
 Sub SetSQLiteConnection(sPath As String)
@@ -170,6 +236,16 @@ Sub SetSQLiteConnection(sPath As String)
 	NoCORS = False
 	Redirect = "follow"
 	NoCache = True
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SetSQLiteConnection"$)
+		Log($"Host: ${sHost}"$)
+		Log($"User: ${sUser}"$)
+		Log($"Password: ${sPassword}"$)
+		Log($"DBName: ${sDbName}"$)
+		Log($"Driver: ${sDriver}"$)
+		Log($"Port: ${sPort}"$)
+		Log($"ApiKey: ${sApiKey}"$)
+	End If
 End Sub
 
 Sub SetSQLiteConnectionApiKey(sPath As String, xApiKey As String)
@@ -181,9 +257,20 @@ Sub SetSQLiteConnectionApiKey(sPath As String, xApiKey As String)
 	sPort = "3306"
 	sApiKey = xApiKey
 	UseApiKey = True
+	If sApiKey = "" Then UseApiKey = False
 	NoCORS = False
 	Redirect = "follow"
 	NoCache = True
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SetSQLiteConnectionApiKey"$)
+		Log($"Host: ${sHost}"$)
+		Log($"User: ${sUser}"$)
+		Log($"Password: ${sPassword}"$)
+		Log($"DBName: ${sDbName}"$)
+		Log($"Driver: ${sDriver}"$)
+		Log($"Port: ${sPort}"$)
+		Log($"ApiKey: ${sApiKey}"$)
+	End If
 End Sub
 
 
@@ -486,6 +573,64 @@ End Sub
 
 'get records from a collection
 '<code>
+'BANano.Await(pb.SELECT_RAW(""))
+'Do While pb.NextRow
+'Dim rec As Map = pb.Record
+'Dim sid As String = pb.GetString("id")
+'Loop
+'</code>
+Sub SELECT_RAW(query As String) As List
+	result.Initialize
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.SELECT_RAW"$)
+	End If
+	If UseApiKey Then
+		If sApiKey = "" Then
+			BANano.Throw($"SDUIMySQLREST.SELECT_RAW - The ApiKey has not been specified!"$)
+			Return result
+		End If
+	End If
+	
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.Redirect = Redirect
+	fetch.ReferrerPolicy = ReferrerPolicy
+	fetch.Mode = Mode
+	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	fetch.NoCache = NoCache
+	fetch.SetURL($"/assets/${ApiFile}.php/query"$)
+	If UseBaseURL Then
+		fetch.SetURL($"/query"$)
+	End If
+	fetch.AddData("query", query)
+	BANano.Await(fetch.PostWait)
+	Log(fetch.Response)
+	If fetch.Success Then
+		Dim Response As Map = fetch.response
+		If Response.ContainsKey("records") Then
+			result = Response.Get("records")
+		End If
+	Else
+		Log(fetch.ErrorMessage)
+	End If
+	lastPosition = -1
+	RowCount = result.size
+	Return result
+End Sub
+
+
+
+'get records from a collection
+'<code>
 'BANano.Await(pb.SELECT_ALL)
 'Do While pb.NextRow
 'Dim rec As Map = pb.Record
@@ -529,6 +674,7 @@ Sub SELECT_ALL As List
 	
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
 	fetch.SetContentTypeApplicationJSON
 	fetch.NoCors = NoCORS
 	fetch.Redirect = Redirect
@@ -619,6 +765,7 @@ Sub CREATE As String
 		Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -669,6 +816,7 @@ Sub USER_CREATE(username As String, password As String) As Boolean
 		Record.Put("password", password)
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -713,6 +861,7 @@ Sub USER_CHANGE_PASSWORD(username As String, password As String, newPassword As 
 		Record.Put("newPassword", newPassword)
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -757,6 +906,7 @@ Sub USER_LOGIN(username As String, password As String) As Boolean
 		Record.Put("password", password)
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -797,6 +947,7 @@ Sub USER_LOGOUT As Boolean
 	Try
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -848,6 +999,7 @@ Sub DELETE(id As String) As Boolean
 		'Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -938,6 +1090,7 @@ Sub UPDATE As String
 		Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -1005,6 +1158,7 @@ Sub UPDATE_PER_FIELD As String
 		'
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -1063,6 +1217,7 @@ Sub READ(id As String) As Map
 		'this is a get
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		fetch.NoCors = NoCORS
 		fetch.Redirect = Redirect
@@ -1391,6 +1546,14 @@ Sub CREATE_IF_NOT_EXISTING_BY_FIELD(fldName As String) As String
 	Catch
 		Return ""
 	End Try			' ignore
+End Sub
+
+Sub READ_ID_BY(fldName As String, fldValue As String) As String
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.READ_ID_BY(${fldName},${fldValue})"$)
+	End If
+	Dim sid As String = BANano.Await(READ_ID_BY_STRING(fldName, fldValue))
+	Return sid
 End Sub
 
 Sub GET_ID_BY_FIELD(fldName As String, fldValue As String) As String
@@ -2142,6 +2305,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	'this is a get
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
 	fetch.SetContentTypeApplicationJSON
 	fetch.NoCors = NoCORS
 	fetch.Redirect = Redirect
@@ -2280,4 +2444,22 @@ private Sub StrParse(delim As String, inputString As String) As List
 		'Log(LastException)
 		Return nl
 	End Try
+End Sub
+
+
+Sub COUNT_ALL As Int
+	BANano.Await(SELECT_RAW($"select count(*) as records from ${TableName}"$))
+	Dim rec As Int = GetRecordsCount
+	Return rec
+End Sub
+
+'return the value of the first "records" field
+Sub GetRecordsCount As Int
+	If RowCount > 0 Then
+		MoveFirst
+		Dim irecords As Int = GetInt("records")
+		Return irecords
+	Else
+		Return 0
+	End If
 End Sub

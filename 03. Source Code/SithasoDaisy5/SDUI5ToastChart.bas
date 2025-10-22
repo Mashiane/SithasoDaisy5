@@ -145,6 +145,47 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	categories.Initialize
 	series.Initialize
 	data.Initialize
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("TitleText", "Chart")
+	CustProps.Put("TitleAlign", "left")
+	CustProps.Put("ChartType", "bar")
+	CustProps.Put("XAxisTitle", "X Axis")
+	CustProps.Put("YAxisTitle", "Y Axis")
+	CustProps.Put("ExportMenuFileName", "")
+	CustProps.Put("ExportMenuVisible", True)
+	CustProps.Put("Height", "400px")
+	CustProps.Put("Width", "700px")
+	CustProps.Put("Responsive", False)
+	CustProps.Put("LegendVisible", True)
+	CustProps.Put("LegendPosition", "right")
+	CustProps.Put("LegendShowCheckbox", True)
+	CustProps.Put("SeriesDataLabelsOffsetX", "")
+	CustProps.Put("SeriesDataLabelsOffsetY", "")
+	CustProps.Put("SeriesDataLabelsPieSeriesNameVisible", True)
+	CustProps.Put("SeriesDataLabelsVisible", False)
+	CustProps.Put("SeriesSelectable", False)
+	CustProps.Put("SeriesShowDot", False)
+	CustProps.Put("SeriesSpline", False)
+	CustProps.Put("SeriesStacked", False)
+	CustProps.Put("SeriesZoomable", False)
+	CustProps.Put("XAxisDateFormat", "")
+	CustProps.Put("XAxisPointOnColumn", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "sm")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

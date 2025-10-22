@@ -126,6 +126,46 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	Options.Initialize
 	BANano.DependsOnAsset("daisyuitreeview.umd.js")
 	bBuilt = False
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("ItemColor", "primary")
+	CustProps.Put("ItemActiveColor", "")
+	CustProps.Put("ItemFocusColor", "")
+	CustProps.Put("ItemHoverColor", "")
+	CustProps.Put("Height", "full")
+	CustProps.Put("Width", "200px")
+	CustProps.Put("CollapseIconUrl", "./assets/chevron-right-solid.svg")
+	CustProps.Put("ExpandIconUrl", "./assets/chevron-down-solid.svg")
+	CustProps.Put("DragNDrop", True)
+	CustProps.Put("HasCheckbox", False)
+	CustProps.Put("IconHeight", "16px")
+	CustProps.Put("IconWidth", "16px")
+	CustProps.Put("InlineEdit", False)
+	CustProps.Put("MultipleCheck", False)
+	CustProps.Put("MultipleSelect", False)
+	CustProps.Put("Size", "md")
+	CustProps.Put("CheckBoxSize", "md")
+	CustProps.Put("TextBoxSize", "sm")
+	CustProps.Put("CheckBoxActiveColor", "")
+	CustProps.Put("CheckBoxActiveBorderColor", "")
+	CustProps.Put("Replace", False)
+	CustProps.Put("UseLocalstorage", True)
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("Rounded", "")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

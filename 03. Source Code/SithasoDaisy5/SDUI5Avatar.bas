@@ -118,8 +118,50 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize	
+	CustProps.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("AvatarType", "image")                     'String
+	CustProps.Put("AvatarColor", False)                      'Boolean
+	CustProps.Put("Image", "./assets/600by600.jpg")          'String
+	CustProps.Put("Mask", "circle")                          'String
+	CustProps.Put("ChatImage", False)                        'Boolean
+	CustProps.Put("Placeholder", "S")                        'String
+	CustProps.Put("TextColor", "")                           'String (empty)
+	CustProps.Put("TextSize", "")                            'String (empty)
+	CustProps.Put("HasBadge", True)                          'Boolean
+	CustProps.Put("Badge", "")                               'String (empty)
+	CustProps.Put("BadgeColor", "secondary")                 'String
+	CustProps.Put("BadgePosition", "top-end")                'String
+	CustProps.Put("BadgeSize", "sm")                         'String
+	CustProps.Put("BadgeVisible", False)                     'Boolean
+	CustProps.Put("BackgroundColor", "primary")              'String
+	CustProps.Put("Size", "12")                              'String
+	CustProps.Put("OnlineStatus", False)                     'Boolean
+	CustProps.Put("Online", False)                           'Boolean
+	CustProps.Put("OnlineColor", "")                         'String (empty)
+	CustProps.Put("Ring", False)                             'Boolean
+	CustProps.Put("RingColor", "primary")                    'String
+	CustProps.Put("RingOffset", "2")                         'String
+	CustProps.Put("RingOffsetColor", "base-100")             'String
+	CustProps.Put("Activator", False)                        'Boolean
+	CustProps.Put("PopOverTarget", "")                       'String (empty)
+	CustProps.Put("RoundedField", False)                     'Boolean
+	CustProps.Put("Shadow", "none")                          'String
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

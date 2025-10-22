@@ -91,8 +91,43 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize	
+	CustProps.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("GroupName", "")
+	CustProps.Put("Icon", "")
+	CustProps.Put("IconColor", "")
+	CustProps.Put("IconSize", "32px")
+	CustProps.Put("Title", "Collapse")
+	CustProps.Put("RawContent", "Collapse Content")
+	CustProps.Put("Active", False)
+	CustProps.Put("RightIcon", "arrow")
+	CustProps.Put("JoinItem", False)
+	CustProps.Put("TitleBackgroundColor", "")
+	CustProps.Put("TitleTextColor", "")
+	CustProps.Put("ContentBackgroundColor", "base-100")
+	CustProps.Put("ContentTextColor", "")
+	CustProps.Put("ContentTextSize", "sm")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("OpenClose", "none")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

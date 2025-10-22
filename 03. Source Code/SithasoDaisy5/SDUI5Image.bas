@@ -77,7 +77,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Src", "./assets/mashy.jpg")
+	CustProps.Put("Alt", "Image")
+	CustProps.Put("Height", "12")
+	CustProps.Put("Width", "12")
+	CustProps.Put("Cover", True)
+	CustProps.Put("Center", True)
+	CustProps.Put("NoRepeat", True)
+	CustProps.Put("MinHeight", "")
+	CustProps.Put("MaxHeight", "")
+	CustProps.Put("MinWidth", "")
+	CustProps.Put("MaxWidth", "")
+	CustProps.Put("Mask", "rounded")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("PopOverTarget", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

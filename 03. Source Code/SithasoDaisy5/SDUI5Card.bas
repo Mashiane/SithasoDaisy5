@@ -121,8 +121,59 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
 End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Size", "none")
+	CustProps.Put("HoverGallery", False)
+	CustProps.Put("Image", "./assets/mashy.jpg")
+	CustProps.Put("ImagePosition", "start")
+	CustProps.Put("ImageFull", False)
+	CustProps.Put("ImageHeight", "")
+	CustProps.Put("ImageWidth", "")
+	CustProps.Put("ImageRoundedBox", False)
+	CustProps.Put("ImageShadow", "none")
+	CustProps.Put("ImageVisible", False)
+	CustProps.Put("ImageClasses", "")
+	CustProps.Put("ImageCover", True)
+	CustProps.Put("ImageCenter", True)
+	CustProps.Put("ImageNoRepeat", True)
+	CustProps.Put("Side", False)
+	CustProps.Put("Title", "Card Title")
+	CustProps.Put("TitleVisible", True)
+	CustProps.Put("TitleClasses", "")
+	CustProps.Put("RawContent", "Card Content")
+	CustProps.Put("BodyClasses", "")
+	CustProps.Put("ContentClasses", "")
+	CustProps.Put("Shrink", "none")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("Border", True)
+	CustProps.Put("Dash", False)
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "96")
+	CustProps.Put("SMSide", False)
+	CustProps.Put("MDSide", False)
+	CustProps.Put("LGSide", False)
+	CustProps.Put("XLSide", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "sm")
+	CustProps.Put("ActionsVisible", True)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

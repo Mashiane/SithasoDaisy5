@@ -89,7 +89,40 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("InputType", "normal")
+	CustProps.Put("Label", "Rating")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("Mask", "star")
+	CustProps.Put("Color", "primary")
+	CustProps.Put("RatingBackgroundColor", "")
+	CustProps.Put("Size", "md")
+	CustProps.Put("Count", 5)
+	CustProps.Put("Value", "2")
+	CustProps.Put("FirstHidden", True)
+	CustProps.Put("Gap", "2")
+	CustProps.Put("Half", False)
+	CustProps.Put("Hint", "")
+	CustProps.Put("Required", False)
+	CustProps.Put("ReadOnly", False)
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

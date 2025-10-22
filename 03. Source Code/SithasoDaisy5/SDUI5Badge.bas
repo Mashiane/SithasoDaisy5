@@ -114,7 +114,53 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("UseSpan", False)                          'Boolean
+	CustProps.Put("Text", "Badge")                           'String
+	CustProps.Put("Color", "primary")                        'String
+	CustProps.Put("Size", "none")                            'String
+	CustProps.Put("TextColor", "")                           'String (empty)
+	CustProps.Put("TextSize", "none")                        'String
+	CustProps.Put("BackgroundColor", "")                     'String (empty)
+	CustProps.Put("Dash", False)                             'Boolean
+	CustProps.Put("Ghost", False)                            'Boolean
+	CustProps.Put("Outline", False)                          'Boolean
+	CustProps.Put("Height", "")                              'String (empty)
+	CustProps.Put("Width", "")                               'String (empty)
+	CustProps.Put("LeftIcon", "")                            'String (empty)
+	CustProps.Put("LeftIconColor", "")                       'String (empty)
+	CustProps.Put("LeftIconSize", "16px")                    'String
+	CustProps.Put("LeftImage", "")                           'String (empty)
+	CustProps.Put("LeftImageSize", "16px")                   'String
+	CustProps.Put("RightIcon", "")                           'String (empty)
+	CustProps.Put("RightIconColor", "")                      'String (empty)
+	CustProps.Put("RightIconSize", "16px")                   'String
+	CustProps.Put("RightImage", "")                          'String (empty)
+	CustProps.Put("RightImageSize", "16px")                  'String
+	CustProps.Put("Rounded", "full")                         'String
+	CustProps.Put("Shadow", "none")                          'String
+	CustProps.Put("HasLeftIcon", True)                       'Boolean
+	CustProps.Put("HasLeftImage", True)                      'Boolean
+	CustProps.Put("HasRightIcon", True)                      'Boolean
+	CustProps.Put("HasRightImage", True)                     'Boolean
+	CustProps.Put("Soft", False)                             'Boolean
+	CustProps.Put("IndicatorItem", False)                    'Boolean
+	CustProps.Put("IndicatorPosition", "top-start")          'String
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

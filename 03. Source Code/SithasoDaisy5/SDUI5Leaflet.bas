@@ -154,7 +154,31 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	shapeFiles.Initialize
 	rectangles.Initialize 
 	icons.Initialize 
-	images.Initialize 
+	images.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("LayerType", "openstreetmap")
+	CustProps.Put("MapType", "")
+	CustProps.Put("AutoScale", False)
+	CustProps.Put("Geonames", False)
+	CustProps.Put("Height", "500px")
+	CustProps.Put("Width", "500px")
+	CustProps.Put("Lat", "0")
+	CustProps.Put("Lng", "0")
+	CustProps.Put("MaxZoom", 19)
+	CustProps.Put("Zoom", 5)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 ' returns the element id

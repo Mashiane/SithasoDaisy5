@@ -465,6 +465,7 @@ Sub SELECT_ALL As List
 	lastPosition = -1
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)	
 	fetch.NoCache = True
@@ -537,6 +538,7 @@ Sub CREATE As String
 		Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		fetch.SetURL($"/records/${TableName}"$)
@@ -710,6 +712,7 @@ Sub DELETE(id As String) As Boolean
 		'Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		fetch.SetURL($"/records/${TableName}/${id}"$)
@@ -787,6 +790,7 @@ Sub UPDATE As String
 		Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		'this is a post
@@ -846,6 +850,7 @@ Sub UPDATE_WHERE As String
 		Dim output As Object
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		'this is a post
@@ -898,6 +903,7 @@ Sub READ(id As String) As Map
 		'this is a get
 		Dim fetch As SDUIFetch
 		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
 		fetch.SetContentTypeApplicationJSON
 		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 		fetch.SetURL($"/records/${TableName}/${id}"$)
@@ -1923,6 +1929,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	'this is a get
 	Dim fetch As SDUIFetch
 	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
 	fetch.SetContentTypeApplicationJSON
 	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
 	If scommand = "" Then

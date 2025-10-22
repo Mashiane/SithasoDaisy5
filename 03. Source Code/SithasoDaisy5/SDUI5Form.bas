@@ -122,6 +122,29 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	MdlName = ""
 	IntGrid.Initialize
 	UseModal = False
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Name", "")
+	CustProps.Put("AcceptCharset", "utf-8")
+	CustProps.Put("Action", "")
+	CustProps.Put("Autocomplete", "off")
+	CustProps.Put("Enctype", "application/x-www-form-urlencoded")
+	CustProps.Put("Method", "none")
+	CustProps.Put("Novalidate", False)
+	CustProps.Put("Rel", "none")
+	CustProps.Put("Target", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 '
 'empty the contents of the container
@@ -1374,4 +1397,24 @@ Sub Row(r As Int) As SDUI5Form
 	el.Initialize(mCallBack, sid, sid)
 	el.LinkExisting
 	Return el
+End Sub
+
+Sub RemoveClass(s As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, s)
+End Sub
+
+Sub AddClass(s As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, s)
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
+End Sub
+
+Sub AddAttribute(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
 End Sub

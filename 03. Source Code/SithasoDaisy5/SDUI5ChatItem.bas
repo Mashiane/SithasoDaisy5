@@ -79,7 +79,38 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("FromAvatar", "./assets/mashy.jpg")
+	CustProps.Put("FromName", "From Name")
+	CustProps.Put("Message", "Message")
+	CustProps.Put("DeliveryTime", "10:00 AM")
+	CustProps.Put("TimeAgo", True)
+	CustProps.Put("Unread", "2")
+	CustProps.Put("UnreadColor", "primary")
+	CustProps.Put("UnreadVisible", True)
+	CustProps.Put("HelpAvatar", "./assets/mashy.jpg")
+	CustProps.Put("HelpVisible", False)
+	CustProps.Put("AvatarShape", "circle")
+	CustProps.Put("AvatarSize", "12")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

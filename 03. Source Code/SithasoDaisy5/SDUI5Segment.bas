@@ -70,10 +70,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mEventName = UI.CleanID(EventName)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
-	CustProps.Initialize
-	
-	items.Initialize 
+	CustProps.Initialize	
+	items.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Size", "md")
+	CustProps.Put("Height", "fit")
+	CustProps.Put("Width", "fit")
+	CustProps.Put("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
+	CustProps.Put("IconSize", "20px")
+	CustProps.Put("BadgeColor", "")
+	CustProps.Put("BadgeSize", "md")
+	CustProps.Put("ActiveColor", "#0000ff")
+	CustProps.Put("ActiveTextColor", "#ffffff")
+	CustProps.Put("OptionWidth", "32")
+	CustProps.Put("Active", "btn1")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

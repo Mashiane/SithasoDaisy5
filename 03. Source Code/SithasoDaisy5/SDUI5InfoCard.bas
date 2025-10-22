@@ -104,6 +104,39 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	
 	BANano.DependsOnAsset("infobox.min.css")
 	BANano.DependsOnAsset("countUp.umd.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("InforType", "1")
+	CustProps.Put("Effect", "none")
+	CustProps.Put("Icon", "fa-solid fa-user")
+	CustProps.Put("IconColor", "#7cfc00")
+	CustProps.Put("IconTextColor", "#FFFFFF")
+	CustProps.Put("Title", "Employees")
+	CustProps.Put("Notes", "Last 24 Hours")
+	CustProps.Put("StartFrom", "0")
+	CustProps.Put("Value", "1000")
+	CustProps.Put("Prefix", "")
+	CustProps.Put("Separator", "")
+	CustProps.Put("Suffix", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("AnimateCounter", True)
+	CustProps.Put("Decimal", ".")
+	CustProps.Put("Duration", "2")
+	CustProps.Put("DecimalPlaces", "0")
+	CustProps.Put("UseGrouping", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("Visible", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the BANanoElement
 Public Sub getElement() As BANanoElement

@@ -105,7 +105,39 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("beautify-css.min.js")
 	BANano.DependsOnAsset("beautify-html.min.js")
 	BANano.DependsOnAsset("prettier.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Caption", "Source Code")
+	CustProps.Put("Language", "vb")
+	CustProps.Put("CodeType", "default")
+	CustProps.Put("ButtonSize", "md")
+	CustProps.Put("ButtonsOutlined", False)
+	CustProps.Put("HasDownload", False)
+	CustProps.Put("HasRefresh", False)
+	CustProps.Put("HasBack", False)
+	CustProps.Put("FileName", "code.bas")
+	CustProps.Put("RawContent", "")
+	CustProps.Put("TextSize", "none")
+	CustProps.Put("Height", "800px")
+	CustProps.Put("Width", "full")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "xl")
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

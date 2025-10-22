@@ -132,6 +132,43 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 	BANano.DependsOnAsset("whatsapp.min.css")
 	MessageType = "T"
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("ButtonSize", "md")
+	CustProps.Put("SideVisible", True)
+	CustProps.Put("SideHeaderVisible", True)
+	CustProps.Put("SideBackVisible", False)
+	CustProps.Put("SideAvatarVisible", True)
+	CustProps.Put("SideAvatar", "./assets/avatar.png")
+	CustProps.Put("SideSearchVisible", False)
+	CustProps.Put("RightHeaderVisible", True)
+	CustProps.Put("RightAvatarVisible", True)
+	CustProps.Put("RightAvatar", "./assets/avatar.png")
+	CustProps.Put("RightName", "Anele Mbanga (Mashy)")
+	CustProps.Put("RightStatus", "Online")
+	CustProps.Put("Attachments", True)
+	CustProps.Put("Camera", True)
+	CustProps.Put("Emojis", True)
+	CustProps.Put("Voice", True)
+	CustProps.Put("FontSize", "14px")
+	CustProps.Put("ImageShape", "circle")
+	CustProps.Put("ImageSize", "12")
+	CustProps.Put("IncomingTextColor", "")
+	CustProps.Put("IncomingBackgroundColor", "")
+	CustProps.Put("OutgoingTextColor", "")
+	CustProps.Put("OutgoingBackgroundColor", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 private Sub MessageTypeAudio

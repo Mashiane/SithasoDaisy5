@@ -85,7 +85,37 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	Children.Initialize 	
+	Children.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Direction", "horizontal")
+	CustProps.Put("SnapItems", "start")
+	CustProps.Put("SpaceX", "4")
+	CustProps.Put("SpaceY", "")
+	CustProps.Put("BackgroundColor", "neutral")
+	CustProps.Put("Height", "")
+	CustProps.Put("MinHeight", "")
+	CustProps.Put("MaxHeight", "")
+	CustProps.Put("Width", "full")
+	CustProps.Put("MinWidth", "")
+	CustProps.Put("MaxWidth", "")
+	CustProps.Put("IndicatorButtons", False)
+	CustProps.Put("NavigationButtons", False)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

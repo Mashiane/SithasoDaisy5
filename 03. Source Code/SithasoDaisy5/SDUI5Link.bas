@@ -66,7 +66,32 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Text", "Link")
+	CustProps.Put("Color", "none")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("Hover", False)
+	CustProps.Put("Href", "#")
+	CustProps.Put("Icon", "")
+	CustProps.Put("IconColor", "")
+	CustProps.Put("IconSize", "24px")
+	CustProps.Put("ListItem", False)
+	CustProps.Put("Target", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

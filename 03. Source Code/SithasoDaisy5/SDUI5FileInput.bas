@@ -101,6 +101,46 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
+End Sub
+
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("InputType", "normal")
+	CustProps.Put("Label", "Please select a file")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("Ghost", False)
+	CustProps.Put("HideSelectorButton", False)
+	CustProps.Put("Hint", "")
+	CustProps.Put("Required", False)
+	CustProps.Put("Size", "none")
+	CustProps.Put("Width", "full")
+	CustProps.Put("Validator", False)
+	CustProps.Put("ValidatorHint", "")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Accept", "")
+	CustProps.Put("Capture", "none")
+	CustProps.Put("Multiple", False)
+	CustProps.Put("ButtonSize", "80px")
+	CustProps.Put("Icon", "")
+	CustProps.Put("IconColor", "#ffffff")
+	CustProps.Put("IconSize", "42px")
+	CustProps.Put("ProgressValue", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

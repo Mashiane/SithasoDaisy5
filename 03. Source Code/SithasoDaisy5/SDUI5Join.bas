@@ -50,7 +50,21 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Grid", False)
+	CustProps.Put("GridCols", "")
+	CustProps.Put("Direction", "none")
+	CustProps.Put("DirectionOnSm", "none")
+	CustProps.Put("DirectionOnLg", "none")
+	CustProps.Put("DirectionOnMd", "none")
+	CustProps.Put("DirectionOnXl", "none")
+	CustProps.Put("DirectionOnXxl", "none")
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
 End Sub
 ' returns the element id
 Public Sub getID() As String

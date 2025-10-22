@@ -81,6 +81,33 @@ Public Sub Initialize(CallBack As Object, Name As String, EventName As String)
 	mCallBack = CallBack
 	CustProps.Initialize
 	BANano.DependsOnAsset("jpager-carousel.min.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Height", "400px")
+	CustProps.Put("Width", "600px")
+	CustProps.Put("Orientation", "horizontal")
+	CustProps.Put("ShowButtons", False)
+	CustProps.Put("ShowIndicators", False)
+	CustProps.Put("Carousel", False)
+	CustProps.Put("AllowNext", True)
+	CustProps.Put("AllowBack", True)
+	CustProps.Put("LazyLoading", False)
+	CustProps.Put("Autoplay", False)
+	CustProps.Put("AutoplayInterval", 3000)
+	CustProps.Put("Shadow", "")
+	CustProps.Put("Rounded", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 Public Sub getID() As String

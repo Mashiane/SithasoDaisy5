@@ -109,7 +109,33 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("AutoFocus", False)
+	CustProps.Put("DynamicWidth", False)
+	CustProps.Put("EmojiButtonSize", 36)
+	CustProps.Put("EmojiButtonsRadius", "100%")
+	CustProps.Put("EmojiSize", 24)
+	CustProps.Put("EmojiVersion", "15")
+	CustProps.Put("Icons", "auto")
+	CustProps.Put("Locale", "en")
+	CustProps.Put("MaxFrequentRows", 4)
+	CustProps.Put("NavPosition", "top")
+	CustProps.Put("NoCountryFlags", False)
+	CustProps.Put("NoResultsEmoji", "cry")
+	CustProps.Put("PerLine", 9)
+	CustProps.Put("PreviewEmoji", "point_up")
+	CustProps.Put("PreviewPosition", "bottom")
+	CustProps.Put("SearchPosition", "sticky")
+	CustProps.Put("SetOf", "apple")
+	CustProps.Put("Skin", 1)
+	CustProps.Put("SkinTonePosition", "preview")
+	CustProps.Put("Theme", "auto")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

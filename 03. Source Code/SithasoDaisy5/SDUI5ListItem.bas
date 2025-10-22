@@ -68,6 +68,28 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Text", "Text")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("CursorPointer", True)
+	CustProps.Put("ListRow", True)
+	CustProps.Put("Opacity", 100)
+	CustProps.Put("TextColor", "none")
+	CustProps.Put("TextSize", "none")
+	CustProps.Put("Tracking", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 '
 Sub OnEvent(event As String, MethodName As String)

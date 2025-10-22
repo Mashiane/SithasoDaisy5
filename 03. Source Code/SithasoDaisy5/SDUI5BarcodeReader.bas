@@ -83,7 +83,33 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Options.Initialize
 	BANano.DependsOnAsset("html5-qrcode.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("Camera", "environment")                   'String
+	CustProps.Put("Fps", 5)                                  'Int
+	CustProps.Put("Torch", False)                            'Boolean
+	CustProps.Put("RememberLastUsedCamera", False)           'Boolean
+	CustProps.Put("Height", "500px")                         'String
+	CustProps.Put("Width", "500px")                          'String
+	CustProps.Put("QrboxHeight", 250)                        'Int
+	CustProps.Put("QrboxWidth", 250)                         'Int
+	CustProps.Put("Rounded", "none")                         'String
+	CustProps.Put("RoundedBox", True)                        'Boolean
+	CustProps.Put("Shadow", "none")                          'String
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

@@ -72,8 +72,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Legend", "Legend")
+	CustProps.Put("LegendVisible", True)
+	CustProps.Put("Label", "Label")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("LabelVisible", True)
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("Height", "")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Width", "xs")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=4; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

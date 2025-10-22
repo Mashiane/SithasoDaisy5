@@ -75,7 +75,34 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("RadioType", "normal")
+	CustProps.Put("Legend", "Toggle")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("Label", "Radio")
+	CustProps.Put("LabelColor", "")
+	CustProps.Put("Value", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("Size", "none")
+	CustProps.Put("AriaLabel", "")
+	CustProps.Put("GroupName", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("Checked", False)
+	CustProps.Put("CheckedColor", "")
+	CustProps.Put("Hint", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

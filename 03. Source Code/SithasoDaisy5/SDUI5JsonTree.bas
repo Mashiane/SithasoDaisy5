@@ -74,6 +74,30 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Options.Initialize
 	BANano.DependsOnAsset("jsontr.ee.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("ArrowColor", "#475872")
+	CustProps.Put("FontSize", 12)
+	CustProps.Put("Height", "500px")
+	CustProps.Put("KeyColor", "#b16b2a")
+	CustProps.Put("LineHeight", 18)
+	CustProps.Put("NodeBackgroundColor", "#f6f8fa")
+	CustProps.Put("NodeBorderColor", "#475872")
+	CustProps.Put("Padding", 10)
+	CustProps.Put("ValueColor", "#008000")
+	CustProps.Put("Width", "500px")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

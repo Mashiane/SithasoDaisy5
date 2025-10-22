@@ -45,7 +45,7 @@ Version=10
 #DesignerProperty: Key: RawBorderWidth, DisplayName: Border Widths, FieldType: String, DefaultValue: a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?, Description: Border Widths
 #DesignerProperty: Key: RawBorderRadius, DisplayName: Border Radius, FieldType: String, DefaultValue: a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?, Description: Border Radius
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
-#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=2; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
 #DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
 #DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
@@ -66,7 +66,7 @@ Sub Class_Globals
 	Private sRawStyles As String = ""
 	Private sRawAttributes As String = ""
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
-	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=2; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
@@ -113,8 +113,56 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Size", "12")
+	CustProps.Put("SizeSm", "")
+	CustProps.Put("SizeMd", "")
+	CustProps.Put("SizeLg", "")
+	CustProps.Put("SizeXl", "")
+	CustProps.Put("SizeXxl", "")
+	CustProps.Put("OffsetSm", "")
+	CustProps.Put("OffsetMd", "")
+	CustProps.Put("OffsetLg", "")
+	CustProps.Put("OffsetXl", "")
+	CustProps.Put("OffsetXxl", "")
+	CustProps.Put("Order", "")
+	CustProps.Put("Text", "")
+	CustProps.Put("TextAlign", "none")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("CenterChildren", False)
+	CustProps.Put("AlignContent", "none")
+	CustProps.Put("AlignItems", "none")
+	CustProps.Put("AlignSelf", "none")
+	CustProps.Put("JustifyContent", "none")
+	CustProps.Put("JustifyItems", "none")
+	CustProps.Put("JustifySelf", "none")
+	CustProps.Put("PlaceContent", "none")
+	CustProps.Put("PlaceItems", "none")
+	CustProps.Put("PlaceSelf", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("RawBorderColor", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderStyle", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderWidth", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("RawBorderRadius", "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=2; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -342,6 +390,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bCenterChildren = UI.CBool(bCenterChildren)
 	End If
 	'
+	UI.AddClassDT("p-2")
 	If sAlignContent <> "" Then UI.AddClassDT("content-" & sAlignContent)
 	If sAlignItems <> "" Then UI.AddClassDT("items-" & sAlignItems)
 	If sAlignSelf <> "" Then UI.AddClassDT("self-" & sAlignSelf)
@@ -356,7 +405,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 '	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	UI.AddClassDT("p-2")
 	If sSize <> "" Then UI.AddClassDT("col-span-" & sSize)
 	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sOrder <> "" Then UI.AddClassDT("order-" & sOrder)
@@ -693,16 +741,12 @@ Sub GetComputedWidth As String
 	If mElement = Null Then Return ""
 	Dim computed As BANanoObject = BANano.Window.RunMethod("getComputedStyle", mElement.ToObject)
 	Dim res As String = computed.GetField("width").result
-	
-	'Dim computed As BANanoObject
-	'computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
-	'Dim res As String = computed.RunMethod("getPropertyValue", "width").Result
 	res = UI.CStr(res)
 	Return res
 End Sub
 
 'a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?
-Sub setBorderColor(s As String)
+Sub setBorderColor(s As String)				'ignoredeadcode
 	sRawBorderColor = s
 	CustProps.Put("RawBorderColor", s)
 	If mElement = Null Then Return
@@ -712,7 +756,7 @@ Sub getBorderColor As String
 	Return sRawBorderColor
 End Sub
 'a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?
-Sub setBorderStyle(s As String)
+Sub setBorderStyle(s As String)					'ignoredeadcode
 	sRawBorderStyle = s
 	CustProps.Put("RawBorderStyle", s)
 	If mElement = Null Then Return
@@ -722,7 +766,7 @@ Sub getBorderStyle As String
 	Return sRawBorderStyle
 End Sub
 'a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?
-Sub setBorderWidth(s As String)
+Sub setBorderWidth(s As String)			'ignoredeadcode
 	sRawBorderWidth = s
 	CustProps.Put("RawBorderWidth", s)
 	If mElement = Null Then Return
@@ -732,7 +776,7 @@ Sub getBorderWidth As String
 	Return sRawBorderWidth
 End Sub
 'a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?
-Sub setBorderRadius(s As String)
+Sub setBorderRadius(s As String)			'ignoredeadcode
 	sRawBorderRadius = s
 	CustProps.Put("RawBorderRadius", s)
 	If mElement = Null Then Return
@@ -789,4 +833,24 @@ End Sub
 Sub Append(s As String)
 	If mElement = Null Then Return
 	mElement.Append(s)
+End Sub
+
+Sub RemoveClass(s As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, s)
+End Sub
+
+Sub AddClass(s As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, s)
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
+End Sub
+
+Sub AddAttribute(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
 End Sub

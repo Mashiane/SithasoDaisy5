@@ -75,7 +75,36 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("SVGRenderer.min.js")	
+	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("StartJoinPrefix", False)
+	CustProps.Put("StartJoinPrefixColor", "")
+	CustProps.Put("Start", True)
+	CustProps.Put("StartText", "")
+	CustProps.Put("StartBox", False)
+	CustProps.Put("Middle", True)
+	CustProps.Put("MiddleText", "")
+	CustProps.Put("MiddleIcon", "./assets/checkblack.svg")
+	CustProps.Put("MiddleIconSize", "16px")
+	CustProps.Put("MiddleBox", False)
+	CustProps.Put("End", True)
+	CustProps.Put("EndText", "")
+	CustProps.Put("EndBox", False)
+	CustProps.Put("EndJoinSuffix", False)
+	CustProps.Put("EndJoinSuffixColor", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

@@ -87,7 +87,39 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	
-	items.Initialize 
+	items.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Label", "Radio Group")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
+	CustProps.Put("Value", "")
+	CustProps.Put("Color", "none")
+	CustProps.Put("Size", "none")
+	CustProps.Put("GroupName", "")
+	CustProps.Put("ColumnView", False)
+	CustProps.Put("LabelPosition", "right")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("CheckedColor", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "full")
+	CustProps.Put("Hint", "")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=4; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

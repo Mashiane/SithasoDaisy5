@@ -148,8 +148,42 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	Options.Initialize
 	BANano.DependsOnAsset("treeSpider.bundle.min.js")
 	BANano.DependsOnAsset("treeSpider.css")
-	tree_data.Initialize 
+	tree_data.Initialize
+	SetDefaults
 End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("AnimationRotationInterval", 1)
+	CustProps.Put("AnimationRotationSpeed", 10)
+	CustProps.Put("AutoInitialize", True)
+	CustProps.Put("AutoSetChartHeadBg", False)
+	CustProps.Put("BackgroundPattern", "default")
+	CustProps.Put("ChartHeadType", "default")
+	CustProps.Put("ChartHeadBg", "#ffffff")
+	CustProps.Put("HeadImageShape", "symbolCircle")
+	CustProps.Put("HeadLinkerThumbCircleRadius", 8)
+	CustProps.Put("LinkerThumbShape", "symbolCircle")
+	CustProps.Put("ShowChartHeadBorder", True)
+	CustProps.Put("ShowTools", True)
+	CustProps.Put("TreeType", "default")
+	CustProps.Put("TreeLinkType", "none")
+	CustProps.Put("VerticalSpace", "120px")
+	CustProps.Put("Width", "900px")
+	CustProps.Put("Height", "500px")
+	CustProps.Put("ZoomInDistance", "1.5")
+	CustProps.Put("ZoomOutDistance", "0.5")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

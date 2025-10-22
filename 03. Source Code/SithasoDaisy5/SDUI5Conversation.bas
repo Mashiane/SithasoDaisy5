@@ -82,7 +82,35 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("ChatId", "")
+	CustProps.Put("ConversationType", "T")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("FontSize", "14px")
+	CustProps.Put("Incoming", True)
+	CustProps.Put("SenderImage", "./assets/mashy.jpg")
+	CustProps.Put("ImageShape", "")
+	CustProps.Put("ImageSize", "12")
+	CustProps.Put("SenderName", "")
+	CustProps.Put("SenderTime", "")
+	CustProps.Put("Footer", "")
+	CustProps.Put("Message", "")
+	CustProps.Put("ReAction", "")
+	CustProps.Put("ReplyId", "")
+	CustProps.Put("ReplyMessage", "")
+	CustProps.Put("FileMimeType", "")
+	CustProps.Put("FileName", "")
+	CustProps.Put("FilePreview", "")
+	CustProps.Put("FileSize", "none")
+	CustProps.Put("FileUrl", "")
+	CustProps.Put("Visible", True)
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

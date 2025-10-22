@@ -75,7 +75,30 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	BANano.DependsOnAsset("devices.min.css")
 	BANano.DependsOnAsset("html-to-image.js")
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("DeviceType", "iphone")
+	CustProps.Put("Orientation", "portrait")
+	CustProps.Put("Color", "black")
+	CustProps.Put("Text", "Text")
+	CustProps.Put("Height", "400px")
+	CustProps.Put("MaxHeight", "500px")
+	CustProps.Put("Width", "50%")
+	CustProps.Put("MaxWidth", "500px")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

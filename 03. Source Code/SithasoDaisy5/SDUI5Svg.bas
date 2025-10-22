@@ -56,6 +56,24 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Src", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("Height", "")
+	CustProps.Put("Color", "")
+	CustProps.Put("FillColor", "currentColor")
+	CustProps.Put("StrokeColor", "")
+	CustProps.Put("StrokeWidth", "")
+	CustProps.Put("Cache", "")
+	CustProps.Put("CacheDisabled", True)
+	CustProps.Put("DisableCssScoping", False)
+	CustProps.Put("DisableUniqueId", False)
+	CustProps.Put("JSEnabled", False)
+	CustProps.Put("LazyLoading", False)
 End Sub
 ' returns the element id
 Public Sub getID() As String

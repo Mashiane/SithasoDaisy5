@@ -86,7 +86,39 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize	
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Open", False)
+	CustProps.Put("SmOpen", False)
+	CustProps.Put("MdOpen", False)
+	CustProps.Put("LgOpen", False)
+	CustProps.Put("XlOpen", False)
+	CustProps.Put("Overlay", True)
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("Height", "")
+	CustProps.Put("MinHeight", "screen")
+	CustProps.Put("Width", "80")
+	CustProps.Put("MinWidth", "")
+	CustProps.Put("RightSide", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("RoundedTopLeft", "")
+	CustProps.Put("RoundedTopRight", "")
+	CustProps.Put("RoundedBottomLeft", "")
+	CustProps.Put("RoundedBottomRight", "")
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

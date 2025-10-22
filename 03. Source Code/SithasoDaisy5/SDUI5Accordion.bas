@@ -65,7 +65,29 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	items.Initialize 
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Initialize
+	CustProps.Put("ParentID",          "")                     'String (empty by default)
+	CustProps.Put("Width",            "full")                 'String
+	CustProps.Put("RawOptions",       "btn1=Button 1; btn2=Button 2; btn3=Button 3")   'String
+	CustProps.Put("Active",           "btn1")                 'String
+	CustProps.Put("ClearContents",   False)                  'Boolean
+	CustProps.Put("BackgroundColor", "base-100")             'String
+	CustProps.Put("Rounded",          "none")                 'String
+	CustProps.Put("Shadow",           "none")                 'String
+	CustProps.Put("Visible",          True)                   'Boolean
+	CustProps.Put("Enabled",          True)                   'Boolean
+	CustProps.Put("PositionStyle",    "none")                 'String
+	CustProps.Put("Position",         "t=?; b=?; r=?; l=?")   'String
+	CustProps.Put("MarginAXYTBLR",    "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR",   "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("RawClasses",       "")                     'String (empty)
+	CustProps.Put("RawStyles",        "")                     'String (empty)
+	CustProps.Put("RawAttributes",    "")                     'String (empty)
 End Sub
 
 'set properties from an outside source

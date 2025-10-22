@@ -124,7 +124,44 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")                            'String (empty by default)
+	CustProps.Put("Format", "auto")                          'String
+	CustProps.Put("Value", "123456789012")                   'String
+	CustProps.Put("Text", "JsBarCode")                       'String
+	CustProps.Put("Background", "#ffffff")                   'String
+	CustProps.Put("DisplayValue", True)                      'Boolean
+	CustProps.Put("Flat", False)                             'Boolean
+	CustProps.Put("Font", "monospace")                       'String
+	CustProps.Put("FontBold", False)                         'Boolean
+	CustProps.Put("FontItalic", False)                       'Boolean
+	CustProps.Put("FontSize", 20)                            'Int
+	CustProps.Put("Height", 100)                             'Int
+	CustProps.Put("Width", 2)                                'Int
+	CustProps.Put("LineColor", "#000000")                    'String
+	CustProps.Put("Margin", 10)                              'Int
+	CustProps.Put("MarginBottom", -1)                        'Int
+	CustProps.Put("MarginLeft", -1)                          'Int
+	CustProps.Put("MarginRight", -1)                         'Int
+	CustProps.Put("MarginTop", -1)                           'Int
+	CustProps.Put("TextAlign", "center")                     'String
+	CustProps.Put("TextMargin", 2)                           'Int
+	CustProps.Put("TextPosition", "bottom")                  'String
+	CustProps.Put("Visible", True)                           'Boolean
+	CustProps.Put("Enabled", True)                           'Boolean
+	CustProps.Put("PositionStyle", "none")                   'String
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")          'String
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")   'String
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")  'String
+	CustProps.Put("RawClasses", "")                          'String (empty)
+	CustProps.Put("RawStyles", "")                           'String (empty)
+	CustProps.Put("RawAttributes", "")                       'String (empty)
+End Sub
+
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

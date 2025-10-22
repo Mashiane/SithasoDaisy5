@@ -75,6 +75,31 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	BANano.DependsOnAsset("ContextMenu.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Target", "")
+	CustProps.Put("Size", "md")
+	CustProps.Put("Width", "56")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Horizontal", False)
+	CustProps.Put("IconHeight", "16px")
+	CustProps.Put("IconWidth", "16px")
+	CustProps.Put("ItemActiveColor", "")
+	CustProps.Put("ItemColor", "primary")
+	CustProps.Put("ItemFocusColor", "")
+	CustProps.Put("ItemHoverColor", "")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "lg")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

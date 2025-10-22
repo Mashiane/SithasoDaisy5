@@ -84,6 +84,37 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	items.Initialize
 	BANano.DependsOnAsset("SVGRenderer.min.js")
+	SetDefaults
+End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Label", "Group Select")
+	CustProps.Put("LegendColor", "")
+	CustProps.Put("GroupName", "group1")
+	CustProps.Put("RawOptions", "b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r")
+	CustProps.Put("Selected", "")
+	CustProps.Put("SingleSelect", False)
+	CustProps.Put("ChipColor", "neutral")
+	CustProps.Put("ActiveColor", "#22c55e")
+	CustProps.Put("TextColor", "#ffffff")
+	CustProps.Put("Size", "xs")
+	CustProps.Put("BackgroundColor", "base-200")
+	CustProps.Put("Border", True)
+	CustProps.Put("BorderColor", "base-300")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "full")
+	CustProps.Put("RoundedBox", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=4; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String

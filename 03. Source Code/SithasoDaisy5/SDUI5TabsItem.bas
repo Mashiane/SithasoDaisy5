@@ -77,6 +77,32 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
+	SetDefaults
+End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Width", "")
+	CustProps.Put("Icon", "")
+	CustProps.Put("IconSize", "20px")
+	CustProps.Put("Text", "Text")
+	CustProps.Put("Badge", "")
+	CustProps.Put("BadgeColor", "")
+	CustProps.Put("BadgeSize", "md")
+	CustProps.Put("Active", False)
+	CustProps.Put("BackgroundColor", "")
+	CustProps.Put("BorderColor", "")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("HasIcon", True)
+	CustProps.Put("HasBadge", True)
+	CustProps.Put("Disabled", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
 End Sub
 
 Sub LinkExisting

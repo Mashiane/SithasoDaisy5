@@ -90,7 +90,41 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	Loaded = False
+	SetDefaults
 End Sub
+
+Private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("Title", "Subscription")
+	CustProps.Put("TitleVisible", True)
+	CustProps.Put("Width", "96")
+	CustProps.Put("Height", "")
+	CustProps.Put("RawSteps", "Register;Choose Plan;Purchase;Receive Product")
+	CustProps.Put("ActiveStep", "1")
+	CustProps.Put("StepsColor", "primary")
+	CustProps.Put("StepsTextSize", "sm")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("PreviousText", "Previous")
+	CustProps.Put("PreviousColor", "")
+	CustProps.Put("PreviousTextColor", "")
+	CustProps.Put("NextColor", "")
+	CustProps.Put("NextText", "Next")
+	CustProps.Put("NextTextColor", "")
+	CustProps.Put("ButtonsShadow", "md")
+	CustProps.Put("ButtonsWidth", "22")
+	CustProps.Put("ButtonsRounded", "md")
+	CustProps.Put("Shadow", "sm")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName

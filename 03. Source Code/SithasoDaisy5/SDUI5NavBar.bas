@@ -137,8 +137,61 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize	
 	BANano.DependsOnAsset("SVGRenderer.min.js")
-	Children.Initialize 
+	Children.Initialize
+	SetDefaults
 End Sub
+
+private Sub SetDefaults
+	CustProps.Put("ParentID", "")
+	CustProps.Put("HasBackButton", False)
+	CustProps.Put("BackLabel", "Back")
+	CustProps.Put("BackLabelVisible", False)
+	CustProps.Put("Sticky", True)
+	CustProps.Put("Top", "0")
+	CustProps.Put("ZIndex", "30")
+	CustProps.Put("HasBurger", True)
+	CustProps.Put("DrawerID", "")
+	CustProps.Put("HideHamburger", False)
+	CustProps.Put("HideHamburgerOnLargeScreen", False)
+	CustProps.Put("HasLogo", False)
+	CustProps.Put("HideLogo", False)
+	CustProps.Put("HideLogoOnLargeScreen", False)
+	CustProps.Put("LogoImage", "./assets/mashy.jpg")
+	CustProps.Put("LogoMask", "none")
+	CustProps.Put("LogoWidth", "10")
+	CustProps.Put("LogoHeight", "10")
+	CustProps.Put("Title", "NavBar")
+	CustProps.Put("HideTitle", False)
+	CustProps.Put("HideTitleOnLargeScreen", False)
+	CustProps.Put("TitlePosition", "left")
+	CustProps.Put("TextColor", "")
+	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("HasFile", False)
+	CustProps.Put("HasSearch", False)
+	CustProps.Put("SearchSize", "md")
+	CustProps.Put("SearchWidth", "300px")
+	CustProps.Put("ButtonSize", "md")
+	CustProps.Put("ButtonsOutlined", False)
+	CustProps.Put("Glass", False)
+	CustProps.Put("Height", "16")
+	CustProps.Put("Width", "")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "sm")
+	CustProps.Put("GradientActive", False)
+	CustProps.Put("Gradient", "")
+	CustProps.Put("GradientColor1", "#f86194")
+	CustProps.Put("GradientColor2", "#968918")
+	CustProps.Put("Visible", True)
+	CustProps.Put("Enabled", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
