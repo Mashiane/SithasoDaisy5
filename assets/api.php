@@ -12762,6 +12762,8 @@ namespace Tqdev\PhpCrudApi {
     use Tqdev\PhpCrudApi\RequestFactory;
     use Tqdev\PhpCrudApi\ResponseUtils;
 
+     require 'SecureQueryController.php';
+
     // --- Dynamic DB Configuration via Headers ---
     $headers = getallheaders();
     $host = $headers['X-Host'] ?? '';
@@ -12780,6 +12782,7 @@ namespace Tqdev\PhpCrudApi {
         'database' => $dbname,
         'debug' => true,
         'tables' => 'all',
+        'customControllers' => 'SecureQueryController',
         'controllers' => 'records,columns,tables,openapi,status',
         'middlewares' => 'apiKeyAuth,sanitation',
         'apiKeyAuth.keys' => 'jNOEqK8xvAqWWRf7B4jlw2ppOCeBoHunex4ViA1txPrG7V9DW1dG737HhseS4E5Ca3xVaUtUwbDRIOrkwEZv7SEvUQP6jClRpDESkRUnshgyngNDd2epbJWjF48xAzKp',

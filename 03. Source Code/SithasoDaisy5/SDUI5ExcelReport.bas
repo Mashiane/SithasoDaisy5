@@ -116,7 +116,7 @@ Sub Execute
 	Dim rowTot As Int = mRecords.Size - 1
 	Dim rowCnt As Int = 0
 	'
-	For rowCnt = 0 To rowTot - 1
+	For rowCnt = 0 To rowTot
 		'get the record to print
 		Dim rec As Map = mRecords.Get(rowCnt)
 		'loop through each column we will write on the excel report

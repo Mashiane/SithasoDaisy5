@@ -73,56 +73,58 @@ File161=plyr.css
 File162=plyr.js
 File163=plyr.svg
 File164=pocketbase.umd.js
-File165=prettier.min.js
-File166=prism.min.css
-File167=prism.min.js
-File168=purify.min.js
-File169=qrcode.min.js
+File165=pouchdb.find.js
+File166=pouchdb.min.js
+File167=prettier.min.js
+File168=prism.min.css
+File169=prism.min.js
 File17=beep.mp3
-File170=reinvented-color-wheel.min.css
-File171=reinvented-color-wheel.min.js
-File172=relativeTime.min.js
-File173=reply-solid.svg
-File174=rotate-solid.svg
-File175=save.svg
-File176=search-solid.svg
-File177=sfribbon.min.css
-File178=sfribbon.min.js
-File179=shp.min.js
+File170=purify.min.js
+File171=qrcode.min.js
+File172=reinvented-color-wheel.min.css
+File173=reinvented-color-wheel.min.js
+File174=relativeTime.min.js
+File175=reply-solid.svg
+File176=rotate-solid.svg
+File177=save.svg
+File178=search-solid.svg
+File179=sfribbon.min.css
 File18=blank.svg
-File180=signature_pad.umd.min.js
-File181=SithasoDaisy5 MIT License.md
-File182=sql-browser.min.js
-File183=SVGRenderer.min.js
-File184=sweetalert2.all.min.js
-File185=sweetalert2.min.css
-File186=tailwind.min.js
-File187=toastui-chart.min.css
-File188=toastui-chart.min.js
-File189=trash-can-solid.svg
+File180=sfribbon.min.js
+File181=shp.min.js
+File182=signature_pad.umd.min.js
+File183=SithasoDaisy5 MIT License.md
+File184=sql-browser.min.js
+File185=SVGRenderer.min.js
+File186=sweetalert2.all.min.js
+File187=sweetalert2.min.css
+File188=tailwind.min.js
+File189=toastui-chart.min.css
 File19=camera-solid.svg
-File190=trash-solid.svg
-File191=treeSpider.bundle.min.js
-File192=treeSpider.css
-File193=trendchart.js
-File194=upload.php
-File195=uploadoptions.php
-File196=upload-solid.svg
-File197=user-solid.svg
-File198=video.svg
-File199=video-solid.svg
+File190=toastui-chart.min.js
+File191=trash-can-solid.svg
+File192=trash-solid.svg
+File193=treeSpider.bundle.min.js
+File194=treeSpider.css
+File195=trendchart.js
+File196=upload.php
+File197=uploadoptions.php
+File198=upload-solid.svg
+File199=user-solid.svg
 File2=600by600.jpg
 File20=casino_hand-webfont.eot
-File200=wa-background.png
-File201=webdatarocks.js
-File202=webdatarocks.min.css
-File203=webdatarocks.toolbar.min.js
-File204=whatsapp.min.css
-File205=windows-brands.svg
-File206=xls.svg
-File207=xlsx.full.min.js
-File208=xmark-solid.svg
+File200=video.svg
+File201=video-solid.svg
+File202=wa-background.png
+File203=webdatarocks.js
+File204=webdatarocks.min.css
+File205=webdatarocks.toolbar.min.js
+File206=whatsapp.min.css
+File207=windows-brands.svg
+File208=xls.svg
+File209=xlsx.full.min.js
 File21=casino_hand-webfont.svg
+File210=xmark-solid.svg
 File22=casino_hand-webfont.ttf
 File23=casino_hand-webfont.woff
 File24=casino_hand-webfont.woff2
@@ -281,56 +283,58 @@ FileGroup161=Default Group\CSS
 FileGroup162=Default Group\JAVASCRIPT
 FileGroup163=Default Group\IMAGES
 FileGroup164=Default Group\JAVASCRIPT
-FileGroup165=Default Group\JAVASCRIPT
-FileGroup166=Default Group\CSS
+FileGroup165=Default Group
+FileGroup166=Default Group
 FileGroup167=Default Group\JAVASCRIPT
-FileGroup168=Default Group
+FileGroup168=Default Group\CSS
 FileGroup169=Default Group\JAVASCRIPT
 FileGroup17=Default Group
-FileGroup170=Default Group\CSS
+FileGroup170=Default Group
 FileGroup171=Default Group\JAVASCRIPT
-FileGroup172=Default Group\JAVASCRIPT
-FileGroup173=Default Group\IMAGES
-FileGroup174=Default Group\IMAGES
+FileGroup172=Default Group\CSS
+FileGroup173=Default Group\JAVASCRIPT
+FileGroup174=Default Group\JAVASCRIPT
 FileGroup175=Default Group\IMAGES
 FileGroup176=Default Group\IMAGES
-FileGroup177=Default Group\CSS
-FileGroup178=Default Group\JAVASCRIPT
-FileGroup179=Default Group
+FileGroup177=Default Group\IMAGES
+FileGroup178=Default Group\IMAGES
+FileGroup179=Default Group\CSS
 FileGroup18=Default Group\IMAGES
 FileGroup180=Default Group\JAVASCRIPT
-FileGroup181=Default Group\LICENCES
+FileGroup181=Default Group
 FileGroup182=Default Group\JAVASCRIPT
-FileGroup183=Default Group\JAVASCRIPT
+FileGroup183=Default Group\LICENCES
 FileGroup184=Default Group\JAVASCRIPT
-FileGroup185=Default Group\CSS
+FileGroup185=Default Group\JAVASCRIPT
 FileGroup186=Default Group\JAVASCRIPT
 FileGroup187=Default Group\CSS
 FileGroup188=Default Group\JAVASCRIPT
-FileGroup189=Default Group\IMAGES
+FileGroup189=Default Group\CSS
 FileGroup19=Default Group\IMAGES
-FileGroup190=Default Group\IMAGES
-FileGroup191=Default Group\JAVASCRIPT
-FileGroup192=Default Group\CSS
+FileGroup190=Default Group\JAVASCRIPT
+FileGroup191=Default Group\IMAGES
+FileGroup192=Default Group\IMAGES
 FileGroup193=Default Group\JAVASCRIPT
-FileGroup194=Default Group\PHP
-FileGroup195=Default Group\PHP
-FileGroup196=Default Group\IMAGES
-FileGroup197=Default Group\IMAGES
+FileGroup194=Default Group\CSS
+FileGroup195=Default Group\JAVASCRIPT
+FileGroup196=Default Group\PHP
+FileGroup197=Default Group\PHP
 FileGroup198=Default Group\IMAGES
 FileGroup199=Default Group\IMAGES
 FileGroup2=Default Group\IMAGES
 FileGroup20=Default Group\Fonts
 FileGroup200=Default Group\IMAGES
-FileGroup201=Default Group\JAVASCRIPT
-FileGroup202=Default Group\CSS
+FileGroup201=Default Group\IMAGES
+FileGroup202=Default Group\IMAGES
 FileGroup203=Default Group\JAVASCRIPT
 FileGroup204=Default Group\CSS
-FileGroup205=Default Group\IMAGES
-FileGroup206=Default Group\IMAGES
-FileGroup207=Default Group\JAVASCRIPT
+FileGroup205=Default Group\JAVASCRIPT
+FileGroup206=Default Group\CSS
+FileGroup207=Default Group\IMAGES
 FileGroup208=Default Group\IMAGES
+FileGroup209=Default Group\JAVASCRIPT
 FileGroup21=Default Group\IMAGES
+FileGroup210=Default Group\IMAGES
 FileGroup22=Default Group\Fonts
 FileGroup23=Default Group\Fonts
 FileGroup24=Default Group\Fonts
@@ -464,10 +468,11 @@ Module135=|absolute|C:\b4J\Shared\SDUIMap
 Module136=|absolute|C:\b4j\shared\SDUIMySQLREST
 Module137=|absolute|C:\b4j\shared\SDUIMySQLRESTNative
 Module138=|absolute|C:\b4j\shared\SDUIPocketBase
-Module139=|absolute|C:\b4j\shared\SDUISQLiteBrowser
+Module139=SDUIPouchDB
 Module14=SDUI5BarcodeReader
-Module140=SithasoDaisy5
-Module141=|absolute|C:\b4j\shared\UIShared
+Module140=|absolute|C:\b4j\shared\SDUISQLiteBrowser
+Module141=SithasoDaisy5
+Module142=|absolute|C:\b4j\shared\UIShared
 Module15=SDUI5BasicLabel
 Module16=SDUI5BottomDrawer
 Module17=SDUI5BreadCrumbs
@@ -561,9 +566,9 @@ Module96=SDUI5Row
 Module97=SDUI5Segment
 Module98=SDUI5Select
 Module99=SDUI5SignaturePad
-NumberOfFiles=208
+NumberOfFiles=210
 NumberOfLibraries=3
-NumberOfModules=141
+NumberOfModules=142
 Version=10.3
 @EndOfDesignText@
 #Region Project Attributes 
@@ -571,12 +576,12 @@ Version=10.3
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15, 12	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 53.80
+	#LibraryVersion: 53.90
 #End Region
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "53.80"
+	Private LibVersion As String = "53.90"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)
@@ -759,6 +764,9 @@ Sub AppStart (Form1 As Form, Args() As String)
 	'UsesPako
 '	BANano.Header.AddJavascriptFileForLater("pako.min.js")
 	
+	'UsesCouchDB
+	BANano.Header.AddJavascriptFileForLater("pouchdb.min.js")
+	BANano.Header.AddJavascriptFileForLater("pouchdb.find.js")
 	
 	' start the build
 	BANano.BuildAsB4Xlib(LibVersion) 'version

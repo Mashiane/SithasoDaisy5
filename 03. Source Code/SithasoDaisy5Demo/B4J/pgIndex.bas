@@ -86,21 +86,47 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
+	drawermenu.AddItemParent("", "sd5lowcode", "./assets/aperture.svg", "SD5 LowCode Generator")
+	drawermenu.AddItemChild("sd5lowcode", "sd5lowcodeopen", "./assets/link-solid.svg", "Open Web App")
+	drawermenu.SetItemHref("sd5lowcodeopen", "https://sithaso-daisy5-low-code.vercel.app", "_blank")
+	'
+	drawermenu.AddItemChild("sd5lowcode", "sd5lowcodeblog", "./assets/link-solid.svg", "Share My Creation")
+	drawermenu.SetItemHref("sd5lowcodeblog", "https://www.b4x.com/android/forum/threads/web-sithasodaisy5-low-code-a-source-code-generator-for-your-beautiful-banano-webapps.168619", "_blank")
+	'
+	drawermenu.AddItemParent("sd5lowcode", "sd5lowcodeblogs", "./assets/database-solid.svg", "CRUD Projects")	
+	drawermenu.AddItemChild("sd5lowcodeblogs", "sd5lowcodeaddressbook1", "./assets/link-solid.svg", "BANanoSQL")
+	drawermenu.SetItemHref("sd5lowcodeaddressbook1", "https://www.b4x.com/android/forum/threads/web-bananosql-offline-first-relational-address-book-created-with-sithasodaisy5-low-code-generator.168626", "_blank")	'
+	drawermenu.AddItemChild("sd5lowcodeblogs", "sd5lowcodeaddressbook2", "./assets/link-solid.svg", "MySQL PHP REST API")
+	drawermenu.SetItemHref("sd5lowcodeaddressbook2", "https://www.b4x.com/android/forum/threads/web-sithasodaisy5-low-code-generated-crud-webapp-using-mysql-as-back-end-via-rest-api-php.169111/", "_blank")
+	drawermenu.AddItemChild("sd5lowcodeblogs", "sd5lowcodeaddressbook3", "./assets/link-solid.svg", "PocketBase")
+	drawermenu.SetItemHref("sd5lowcodeaddressbook3", "https://www.b4x.com/android/forum/threads/web-sithasodaisy5-full-stack-lowcode-generated-address-book-crud-webapp-using-pocketbase-back-end.169088/", "_blank")
+	
+	drawermenu.AddItemParent("", "crudprojects", "./assets/database-solid.svg", "Database Projects")
+	drawermenu.AddItemParent("crudprojects", "bananosql", "", "IndexedDB / BANanoSQL (AlaSQL)")
+	drawermenu.AddItemChild("bananosql", "pg-categories", "", "Categories (Modal)")
+	drawermenu.AddItemChild("bananosql", "pg-provinces", "", "Provinces (Right Drawer)")
+	drawermenu.AddItemChild("bananosql", "pg-contacts", "", "Contacts (Bottom Drawer)")
+		
+	'
+	drawermenu.AddItemParent("crudprojects", "php", "", "PHP")
+	drawermenu.AddItemChild("php", "pg-phpsqlite", "", "SQLite REST API")
+	drawermenu.AddItemChild("php", "pg-phpmysql", "", "MySQL REST API")
+	
+'	drawermenu.AddItemParent("", "crudexamples", "./assets/database-solid.svg", "CRUD Projects")
+'	drawermenu.AddItemChild("crudexamples", "pg-categories", "", "Categories (Modal)")
+'	drawermenu.AddItemChild("crudexamples", "pg-provinces", "", "Provinces (Right Drawer)")
+'	drawermenu.AddItemChild("crudexamples", "pg-contacts", "", "Contacts (Bottom Drawer)")
+	
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
 	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
 	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
 	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
 	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
 	'
-	drawermenu.AddItemParent("wnew", "ab", "", "Address Book (BANanoSQL)")
-	drawermenu.AddItemChild("ab", "pg-categories", "", "Categories (Modal)")
-	drawermenu.AddItemChild("ab", "pg-provinces", "", "Provinces (Right Drawer)")
-	drawermenu.AddItemChild("ab", "pg-contacts", "", "Contacts (Bottom Drawer)")
-	
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
-	drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
-	drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
-	drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
+	'drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
+	'drawermenu.AddItemChild("play", "pg-tablebuilder", "", "Table Builder")
+	'drawermenu.AddItemChild("play", "pg-prefbuilder", "", "Preference Dialog Builder")
 	drawermenu.AddItemChild("play", "pg-gridbuilder", "", "TailwindCSS Grid Builder")
 	
 	drawermenu.AddItemChild("", "pg-typography", "./assets/font-solid.svg", "Typography")
@@ -137,11 +163,7 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
 	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
 	'
-	drawermenu.AddItemParent("", "db", "", "Databases")
-	drawermenu.AddItemChild("db", "pg-phpsqlite", "", "PHP SQLite")
-	drawermenu.AddItemChild("db", "pg-phpmysql", "", "PHP MySQL")
 	
-	'
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
 	drawermenu.AddItemChild("navigation", "pg-breadcrumbs", "", "Breadcrumbs")
 	'

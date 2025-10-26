@@ -1278,6 +1278,15 @@ Sub SetItemActive(itemKey As String)
 	Next
 End Sub
 
+'_blank|_parent|_self|_top|none
+Sub SetItemHref(itemKey As String, shref As String, starget As String)
+	itemKey = UI.CleanID(itemKey)
+	If Items.ContainsKey(itemKey) = False Then Return
+	UI.SetAttrByID($"${itemKey}_anchor"$, "href", shref)
+	UI.SetAttrByID($"${itemKey}_anchor"$, "target", starget)
+End Sub
+
+
 'set Dropdown
 Sub setDropdown(b As Boolean)
 	bDropdown = b

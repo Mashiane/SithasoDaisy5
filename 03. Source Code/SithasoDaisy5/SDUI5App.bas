@@ -212,6 +212,7 @@ Private Sub Class_Globals
 	Type FileObject(FileName As String, FileDate As String, FileSize As Long, FileType As String, Status As String, FullPath As String, FileDateOnly As String, FileOK As Boolean, FO As BANanoObject, Extension As String, webkitRelativePath As String)
 	Type Address(suburb As String, name As String, city As String, country As String, countryCode As String, _
 	municipality As String, postcode As String, road As String, state As String, displayName As String, lat As String, lon As String)
+	Type SortHelper(SortKey As String, Value As Object) 
 	'
 	'Private sApiKey As String = ""
 	'Private sDatabaseType As String = "pocketbase"
@@ -2101,6 +2102,11 @@ Sub UsesToastChart
 End Sub
 
 'valid
+Sub UsesPouchDB
+	Banano.Await(UI.LoadAssetsOnDemand("PouchDB", Array("pouchdb.min.js", "pouchdb.find.js")))
+End Sub
+
+'valid
 Sub UsesInfoBox
 	Banano.Await(UI.LoadAssetsOnDemand("InfoBox", Array("infobox.min.css", "countUp.umd.js")))
 End Sub
@@ -3210,8 +3216,330 @@ Sub PageViewToFullScreenHeight(otherElements As List)
 			Dim offsetHeight As Int = el.GetField("offsetHeight")
 			offsetHeight = UI.CInt(offsetHeight)
 			dHeight = Banano.parseInt(offsetHeight)
-		End If	
+		End If
 	Next
 	Dim nHeight As String = $"calc(100vh - ${dHeight}px)"$
 	UI.SetStyleByID("pageview", "height", nHeight)
 End Sub
+
+Sub ListOfMapsSort(lst As List, orderBy As String, ascdesc As Boolean) As List
+	Dim fields As List
+	fields.Initialize
+	For Each fldm As Map In lst
+		Dim sname As String = fldm.Get(orderBy)
+		Dim sh As SortHelper
+		sh.Initialize
+		sh.SortKey = sname
+		sh.Value = fldm
+		fields.Add(sh)
+	Next
+	fields.SortType("sortkey", ascdesc)
+	Dim sorted As List
+	sorted.Initialize
+	For Each sh As SortHelper In fields
+		sorted.Add(sh.Value)
+	Next
+	Return sorted
+End Sub
+
+'============================================================
+' 🧱 What does this do?
+' It takes a bunch of records (like little boxes with info inside),
+' groups them by certain fields (like sorting toys by color),
+' then counts, sums, averages, etc. them (like counting how many red toys).
+'
+' It also can sort the results and even filter which records to count!
+'
+' 🧮 Example:
+'   "sum|amount|total_over_100|amount>100"
+' means: add up all the "amount" values that are bigger than 100,
+' and call the result "total_over_100".
+'
+'============================================================
+Sub GroupByRecords(records As List, groupFields() As String, aggDefs() As String, orderDefs() As String) As List
+	' -----------------------------
+	' STEP 0: Initialize groups container
+	' -----------------------------
+	Dim groups As Map
+	groups.Initialize
+
+	' -----------------------------
+	' STEP 1: GROUP RECORDS
+	' -----------------------------
+	For Each rec As Map In records
+		' Build composite key from group fields
+		Dim keyParts As List
+		keyParts.Initialize
+		For Each gf As String In groupFields
+			Dim gvalue As Object = rec.GetDefault(gf, "")
+			keyParts.Add(gvalue)
+		Next
+		Dim groupKey As String = Banano.Join(keyParts, "|")
+
+		' Initialize group if it does not exist
+		If groups.ContainsKey(groupKey) = False Then
+			Dim gmap As Map
+			gmap.Initialize
+			Dim recList As List
+			recList.Initialize
+			gmap.Put("_records_list", recList)
+			groups.Put(groupKey, gmap)
+		End If
+
+		' Add record to the group
+		Dim gmap As Map = groups.Get(groupKey)
+		Dim recList As List = gmap.Get("_records_list")
+		recList.Add(rec)
+	Next
+
+	' -----------------------------
+	' STEP 2: INITIALIZE AGGREGATION KEYS
+	' -----------------------------
+	For Each gk As String In groups.Keys
+		Dim gmap As Map = groups.Get(gk)
+		For Each def As String In aggDefs
+			Dim parts() As String = Banano.Split("|", def)
+			Dim func As String = parts(0).ToLowerCase
+			Dim field As String = ""
+			If parts.Length > 1 Then field = parts(1)
+			If func = "count" Then field = "*"
+			Dim internalKey As String = func & "_" & field
+
+			Select func
+				Case "count"
+					gmap.Put(internalKey, 0)
+				Case "sum"
+					gmap.Put("sum_" & field, 0)
+				Case "avg"
+					gmap.Put("sumx_" & field, 0)
+					gmap.Put("countx_" & field, 0)
+				Case "min", "max"
+					gmap.Put(internalKey, Null)
+			End Select
+		Next
+	Next
+
+	' -----------------------------
+	' STEP 3: PROCESS AGGREGATIONS
+	' -----------------------------
+	For Each gk As String In groups.Keys
+		Dim gmap As Map = groups.Get(gk)
+		Dim recList As List = gmap.Get("_records_list")
+
+		For Each r As Map In recList
+			For Each def As String In aggDefs
+				Dim parts() As String = Banano.Split("|", def)
+				Dim func As String = parts(0).ToLowerCase
+				Dim field As String = ""
+				Dim alias As String = ""
+				Dim condition As String = ""
+				If parts.Length > 1 Then field = parts(1)
+				If func = "count" Then field = "*"
+				If parts.Length > 2 Then alias = parts(2)
+				If parts.Length > 3 Then condition = parts(3)
+
+				' Skip record if condition fails
+				If condition <> "" Then
+					If EvaluateCondition(r, condition) = False Then Continue
+				End If
+
+				' Determine numeric value if needed
+				Dim numVal As Double = 0
+				If field <> "*" Then
+					Dim rawVal As Object = r.GetDefault(field, 0)
+					numVal = Banano.parseFloat(rawVal)
+				End If
+
+				' Perform aggregation
+				Select func
+					Case "count"
+						Dim cvalue As Int = gmap.GetDefault("count_*", 0)
+						cvalue = Banano.parseInt(cvalue) + 1
+						gmap.Put("count_*", cvalue)
+
+					Case "sum"
+						Dim svalue As Double = gmap.GetDefault("sum_" & field, 0)
+						svalue = Banano.parseFloat(svalue) + numVal
+						gmap.Put("sum_" & field, svalue)
+
+					Case "avg"
+						Dim svalue As Double = gmap.GetDefault("sumx_" & field, 0)
+						svalue = Banano.parseFloat(svalue) + numVal
+						gmap.Put("sumx_" & field, svalue)
+						Dim cvalue As Int = gmap.GetDefault("countx_" & field, 0)
+						cvalue = Banano.parseInt(cvalue) + 1
+						gmap.Put("countx_" & field, cvalue)
+
+					Case "min"
+						Dim currentMin As Object = gmap.Get("min_" & field)
+						If currentMin = Null Or numVal < Banano.parseFloat(currentMin) Then gmap.Put("min_" & field, numVal)
+
+					Case "max"
+						Dim currentMax As Object = gmap.Get("max_" & field)
+						If currentMax = Null Or numVal > Banano.parseFloat(currentMax) Then gmap.Put("max_" & field, numVal)
+				End Select
+			Next
+		Next
+	Next
+
+	' -----------------------------
+	' STEP 4: BUILD FINAL RESULTS
+	' -----------------------------
+	Dim results As List
+	results.Initialize
+
+	For Each gk As String In groups.Keys
+		Dim gmap As Map = groups.Get(gk)
+		Dim out As Map
+		out.Initialize
+
+		' Add group fields
+		Dim keyParts2() As String = Banano.Split("|", gk)
+		For i = 0 To groupFields.Length - 1
+			out.Put(groupFields(i), keyParts2(i))
+		Next
+
+		' Add aggregations
+		For Each def As String In aggDefs
+			Dim parts() As String = Banano.Split("|", def)
+			Dim func As String = parts(0).ToLowerCase
+			Dim field As String = ""
+			Dim alias As String = ""
+			If parts.Length > 1 Then field = parts(1)
+			If func = "count" Then field = "*"
+			If parts.Length > 2 Then alias = parts(2)
+			If alias = "" Then alias = func & "_" & field
+
+			Select func
+				Case "count"
+					Dim cval As Int = gmap.GetDefault("count_*", 0)
+					out.Put(alias, Banano.parseInt(cval))
+				Case "sum"
+					Dim sval As Double = gmap.GetDefault("sum_" & field, 0)
+					out.Put(alias, Banano.parseFloat(sval))
+				Case "avg"
+					Dim sumVal As Double = gmap.GetDefault("sumx_" & field, 0)
+					Dim countVal As Double = gmap.GetDefault("countx_" & field, 0)
+					Dim avgVal As Double = 0
+					If Banano.parseFloat(countVal) > 0 Then avgVal = Banano.parseFloat(sumVal) / Banano.parseFloat(countVal)
+					out.Put(alias, avgVal)
+				Case "min"
+					Dim minVal As Double = gmap.GetDefault("min_" & field, 0)
+					out.Put(alias, Banano.parseFloat(minVal))
+				Case "max"
+					Dim maxVal As Double = gmap.GetDefault("max_" & field, 0)
+					out.Put(alias, Banano.parseFloat(maxVal))
+			End Select
+		Next
+
+		results.Add(out)
+	Next
+
+	' -----------------------------
+	' STEP 5: SORT RESULTS
+	' -----------------------------
+	If orderDefs <> Null And orderDefs.Length > 0 Then
+		For i = orderDefs.Length - 1 To 0 Step -1
+			Dim od As String = orderDefs(i)
+			Dim p() As String = Banano.Split("|", od)
+			Dim fld As String = p(0)
+			Dim dir As String = "asc"
+			If p.Length > 1 Then dir = p(1).ToLowerCase
+			Dim res As List = ListOfMapsSort(results, fld, dir = "asc")
+			results = Banano.DeepClone(res)
+		Next
+	End If
+
+	Return results
+End Sub
+
+
+
+
+
+private Sub EvaluateCondition(rec As Map, condition As String) As Boolean
+	' Default result is True
+	Dim result As Boolean = True
+
+	' Split multiple conditions by comma
+	Dim conds() As String = Banano.Split(",", condition)
+
+	' Evaluate each condition
+	For Each c As String In conds
+		Dim cond As String = c.Trim  ' Remove leading/trailing spaces
+
+		' Skip empty conditions
+		If cond = "" Then Continue
+
+		' Supported operators (order matters: >=, <= first)
+		Dim operators() As String = Array("!=", ">=", "<=", "=", "<", ">")
+		Dim op As String = ""
+		Dim left As String = ""
+		Dim right As String = ""
+
+		' Detect operator
+		For Each o As String In operators
+			If cond.IndexOf(o) >= 0 Then
+				op = o
+				Dim parts() As String = Banano.Split(op, cond)
+				left = parts(0).Trim
+				right = parts(1).Trim
+				Exit
+			End If
+		Next
+
+		' Skip if no operator found
+		If op = "" Then Continue
+
+		' Get field value from record
+		Dim fval As Object = rec.GetDefault(left, Null)
+
+		' Try numeric comparison
+		Dim numF As Double = 0
+		Dim numR As Double = 0
+		Dim isNum As Boolean = True
+		Try
+			numF = Banano.parseFloat(fval)
+			numR = Banano.parseFloat(right)
+		Catch
+			isNum = False
+		End Try
+
+		' Evaluate condition using Select Case
+		Dim condResult As Boolean = True
+		Select Case op
+			Case "="
+				If isNum Then
+					condResult = (numF = numR)
+				Else
+					condResult = ("" & fval = right)
+				End If
+			Case "!="
+				If isNum Then
+					condResult = (numF <> numR)
+				Else
+					condResult = ("" & fval <> right)
+				End If
+			Case "<"
+				condResult = (numF < numR)
+			Case "<="
+				condResult = (numF <= numR)
+			Case ">"
+				condResult = (numF > numR)
+			Case ">="
+				condResult = (numF >= numR)
+		End Select
+
+		' If any condition fails, return False immediately
+		If condResult = False Then
+			result = False
+			Exit
+		End If
+	Next
+
+	Return result
+End Sub
+
+
+
+

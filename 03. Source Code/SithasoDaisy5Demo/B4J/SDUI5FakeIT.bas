@@ -75,8 +75,14 @@ Sub Class_Globals
 	Public PaymentStatus As Boolean
 	Public Priority As Boolean
 	Public PaymentProvider As Boolean
+	Public Vehicle As Boolean
+	Public VehicleMake As Boolean
+	Public VehicleType As Boolean
 	Private BANano As BANano			'ignore
 	'
+	Public const DT_VEHICLE_TYPE As String = "vehicletype"
+	Public const DT_VEHICLE_MAKE As String = "vehiclemake"
+	Public const DT_VEHICLE As String = "vehicle"
 	Public const DT_PAYMENT_PROVIDER As String = "paymentprovider"
 	Public const DT_PRIORITY As String = "priority"
 	Public const DT_PAYMENT_STATUS As String = "paymentstatus"
@@ -211,12 +217,18 @@ Sub Class_Globals
 	Province As String, _
 	Priority As String, _
 	PaymentStatus As String, _
-	PaymentProvider As String)
+	PaymentProvider As String, _
+	Vehicle As String, _
+	VehicleMake As String, _
+	VehicleType As String)
 End Sub
 
 Sub Initialize As SDUI5FakeIT
 	Conditions.Initialize 
 	DT_Types.Initialize
+	DT_Types.Add(DT_VEHICLE_TYPE)
+	DT_Types.Add(DT_VEHICLE_MAKE)
+	DT_Types.Add(DT_VEHICLE)
 	DT_Types.Add(DT_PRIORITY)
 	DT_Types.Add(DT_PAYMENT_STATUS)
 	DT_Types.add(DT_PROVINCE)
@@ -353,12 +365,16 @@ Sub Initialize As SDUI5FakeIT
 	Priority = False
 	PaymentStatus = False
 	PaymentProvider = False
+	Vehicle = False
+	VehicleMake = False
+	VehicleType = True
 	Return Me
 End Sub
 
 'add types of data should be returned
 Sub All As SDUI5FakeIT
 	State = True
+	VehicleMake = True
 	SKU = True
 	Province = True
 	Department = True
@@ -425,6 +441,8 @@ Sub All As SDUI5FakeIT
 	Priority = False
 	PaymentStatus = False
 	PaymentProvider = True
+	Vehicle = True
+	VehicleType = True
 	Return Me
 End Sub
 
@@ -462,6 +480,12 @@ Sub GetRecordsWithStructure(structure As Map, numRecords As Int) As List
 			Dim strVal As String = structure.Get(strkey)
 			Dim svalue As Object = Null
 			Select Case strVal
+				Case DT_VEHICLE_TYPE
+					svalue = BANano.Await(Rand_Vehicle_Type)
+				Case DT_VEHICLE_MAKE
+					svalue = BANano.Await(Rand_Vehicle_Make)
+				Case DT_VEHICLE
+					svalue = BANano.Await(Rand_Vehicle)
 				Case DT_PAYMENT_PROVIDER
 					svalue = BANano.Await(Rand_Payment_Provider)
 				Case DT_PRIORITY
@@ -638,6 +662,9 @@ End Sub
 Sub GetSingle As FakeData
 	Dim rt As FakeData
 	rt.Initialize
+	If VehicleType Then rt.VehicleType = Rand_Vehicle_Type
+	If VehicleMake Then rt.VehicleMake = Rand_Vehicle_Make
+	If Vehicle Then rt.Vehicle = Rand_Vehicle
 	If PaymentProvider Then rt.PaymentProvider = Rand_Payment_Provider
 	If Priority Then rt.Priority = Rand_Priority
 	If PaymentStatus Then rt.PaymentStatus = Rand_Payment_Status
@@ -727,6 +754,9 @@ Sub GetRecords(numRecords As Int) As List
 	For tRecs = 1 To numRecords
 		Dim rec As Map
 		rec.Initialize
+		If VehicleType Then rec.Put("vehicletype", Rand_Vehicle_Type)
+		If VehicleMake Then rec.Put("vehiclemake", Rand_Vehicle_Make)
+		If Vehicle Then rec.Put("vehicle", Rand_Vehicle)
 		If PaymentProvider Then rec.put("paymentprovider", Rand_Payment_Provider)
 		If Priority Then rec.Put("priority", Rand_Priority)
 		If PaymentStatus Then rec.put("paymentstatus", Rand_Payment_Status)
@@ -796,6 +826,80 @@ Sub GetRecords(numRecords As Int) As List
 		recs.Add(rec)
 	Next
 	Return recs
+End Sub
+
+Sub Rand_Vehicle_Type As String
+	Dim types As List
+	types.Initialize
+	types.AddAll(Array As String("Sedan", "SUV", "MPV", "Crossover", "Hatchback", _
+        "Pickup Truck", "Coupe", "Convertible", "Wagon", "Minivan", "Estate", _
+        "Sports Car", "Luxury Sedan", "Compact SUV", "Midsize SUV", _
+        "Full-size SUV", "Compact Car", "Van", "Electric Vehicle"))
+	Return RandListValue(types)
+End Sub
+
+Sub Rand_Vehicle_Make As String
+	Dim makes As List
+	makes.Initialize
+	' Top Global Brands by Market Share (95% coverage)
+	' These brands represent the vast majority of vehicles on the road worldwide
+    
+	' Top 10 Global (≈50% of global market)
+	makes.Add("Toyota")           ' #1 globally, includes Lexus
+	makes.Add("Volkswagen")       ' #2 globally, VW Group
+	makes.Add("Ford")             ' #3-4 globally
+	makes.Add("Honda")            ' #4-5 globally
+	makes.Add("Nissan")           ' #5-6 globally
+	makes.Add("Chevrolet")        ' GM's main brand
+	makes.Add("Hyundai")          ' #7-8 globally
+	makes.Add("Kia")              ' Sister to Hyundai
+	makes.Add("Mercedes-Benz")    ' Top premium brand
+	makes.Add("BMW")              ' Top premium brand
+    
+	' Major Volume Brands (Next 30-35% of market)
+	makes.Add("Audi")             ' VW Group premium
+	makes.Add("Mazda")            ' Strong global presence
+	makes.Add("Subaru")           ' Popular in many markets
+	makes.Add("Renault")          ' Major European/global
+	makes.Add("Peugeot")          ' Stellantis group
+	makes.Add("Fiat")             ' Stellantis group
+	makes.Add("Jeep")             ' Stellantis, global SUV brand
+	makes.Add("Ram")              ' Popular trucks
+	makes.Add("GMC")              ' GM trucks/SUVs
+	makes.Add("Mitsubishi")       ' Global presence
+	makes.Add("Suzuki")           ' Strong in Asia/India
+	makes.Add("Škoda")            ' VW Group, Europe/Asia
+	makes.Add("Seat")             ' VW Group, Europe
+	makes.Add("Citroën")          ' Stellantis group
+	makes.Add("Opel/Vauxhall")    ' Stellantis, Europe
+	makes.Add("Buick")            ' GM, big in China
+	makes.Add("Volvo")            ' Geely owned, global premium
+	makes.Add("Land Rover")       ' Tata owned, global SUVs
+    
+	' Important Regional & Growing Brands (Next 10% of market)
+	makes.Add("Tesla")            ' Leading EV brand
+	makes.Add("BYD")              ' #1 in China EVs
+	makes.Add("Geely")            ' Major Chinese brand
+	makes.Add("Lexus")            ' Toyota's luxury brand
+	makes.Add("Dodge")            ' Stellantis, North America
+	makes.Add("Chrysler")         ' Stellantis, North America
+	makes.Add("Cadillac")         ' GM luxury
+	makes.Add("Porsche")          ' VW Group sports/luxury
+	makes.Add("Mini")             ' BMW Group
+	makes.Add("Jaguar")           ' Tata owned, luxury
+	makes.Add("Infiniti")         ' Nissan luxury
+	makes.Add("Acura")            ' Honda luxury
+	makes.Add("Genesis")          ' Hyundai luxury
+	makes.Add("Lincoln")          ' Ford luxury
+	makes.Add("Dacia")            ' Renault budget brand
+	makes.Add("MG")               ' SAIC owned, growing globally
+	makes.Add("Tata")             ' Major in India
+	makes.Add("Mahindra")         ' Major in India
+	makes.Add("Maruti Suzuki")    ' Dominates India
+	makes.Add("Changan")          ' Major Chinese brand
+	makes.Add("Great Wall/Haval") ' Chinese SUV specialist
+	makes.Add("Wuling")           ' GM-SAIC, huge in China
+	Return RandListValue(makes)
 End Sub
 
 Sub Rand_Department As String
@@ -932,7 +1036,7 @@ Sub Rand_Priority() As String
 	Dim lst As List
 	lst.Initialize
 	lst.AddAll(Array("High", "Low", "Medium", "Urgent"))
-	lst = banano.Await(ExplodeList(lst,10))
+	lst = BANano.Await(ExplodeList(lst,10))
 	Return RandListValue(lst)
 End Sub
 
@@ -3080,7 +3184,7 @@ Sub Rand_Word(count As Int) As String
 	words.AddAll(Array("dolore", "eu", "fugiat", "nulla", "pariatur"))
 	words.AddAll(Array("Excepteur", "sint", "occaecat", "cupidatat", "non", "proident", "sunt", "in", "culpa"))
 	words.AddAll(Array("qui", "officia", "deserunt", "mollit","anim","id","est","laborum"))
-	words = banano.Await(ExplodeList(words,5))
+	words = BANano.Await(ExplodeList(words,5))
 	Dim st As StringBuilder
 	st.Initialize
   	For i = 1 To count
@@ -4262,12 +4366,13 @@ Sub Rand_Expense_Category As String
         "Shopping", "Clothing", "Electronics", "Home Goods", "Personal Care", _
         "Education", "Tuition", "Books", "Courses", "Student Loans", _
         "Childcare", "Baby Supplies", "Pet Expenses", "Pet Food", "Veterinary", _
-        "Travel", "Vacation", "Hotels", "Flights", _
+        "Travel", "Vacation", "Hotels", "Flights", "Repairs", "Charging", "Tires", "Maintenance", "Cleaning", _
         "Gifts", "Donations", "Charity", "Subscriptions", "Memberships", _
         "Debt Payments", "Credit Card", "Loans", "Savings", "Investments" _
     ))
 	Return RandListValue(allCategories)
 End Sub
+
 
 Sub Rand_Province As String
 	Dim provinces As List
@@ -4348,4 +4453,90 @@ private Sub InStr(Text As String, sFind As String) As Int
 	Return Text.tolowercase.IndexOf(sFind.tolowercase)
 End Sub
 
+' Get models for a specific make (from your list)
+private Sub GetModelsForMake(Make As String) As List
+	Dim ModelList As List
+	ModelList.Initialize 
+	'
+	Dim AllModels As Map = GetVehicleModels
+	If AllModels.ContainsKey(Make) Then
+		ModelList = AllModels.Get(Make)
+		Return ModelList
+	Else
+		Return ModelList
+	End If
+End Sub
+
+' Random full vehicle (uses YOUR GetVehicleMakes list)
+Sub Rand_Vehicle As String
+	Dim Make As String = Rand_Vehicle_Make
+	Dim Models As List = GetModelsForMake(Make)
+	Dim Model As String = RandListValue(Models)
+	Return Make & " " & Model
+End Sub
+
+
+' Returns Map of your 50 makes -> popular models (612 total, top by sales/parc)
+private Sub GetVehicleModels As Map
+	Dim Models As Map
+	Models.Initialize
+    
+	' Major Global Brands
+	Models.Put("Toyota", Array As String("Corolla", "RAV4", "Camry", "Hilux", "Yaris", "Prius", "Highlander", "Tacoma", "Land Cruiser", "4Runner", "Sienna", "Tundra", "Supra"))
+	Models.Put("Volkswagen", Array As String("Golf", "Tiguan", "Passat", "Polo", "ID.4", "Jetta", "Taos", "Atlas", "ID.3", "T-Roc", "Arteon"))
+	Models.Put("Ford", Array As String("F-150", "Explorer", "F-250", "Escape", "Mustang", "Bronco", "Maverick", "Ranger", "Edge", "Expedition"))
+	Models.Put("Honda", Array As String("CR-V", "Civic", "Accord", "HR-V", "Pilot", "Odyssey", "Ridgeline", "Passport"))
+	Models.Put("Nissan", Array As String("Rogue", "Sentra", "Altima", "Frontier", "Pathfinder", "Kicks", "Ariya", "Armada"))
+	Models.Put("Chevrolet", Array As String("Silverado", "Equinox", "Tahoe", "Traverse", "Malibu", "Colorado", "Suburban", "Blazer", "Trax"))
+	Models.Put("Hyundai", Array As String("Tucson", "Elantra", "Santa Fe", "Sonata", "Palisade", "Kona", "Ioniq 5", "Creta", "Venue"))
+	Models.Put("Kia", Array As String("Sportage", "Sorento", "Telluride", "Seltos", "Carnival", "Forte", "EV6", "Soul", "K5"))
+	Models.Put("Mercedes-Benz", Array As String("C-Class", "GLE", "E-Class", "GLC", "A-Class", "S-Class", "GLB", "EQE", "GLS"))
+	Models.Put("BMW", Array As String("3 Series", "X3", "X5", "5 Series", "X1", "7 Series", "i4", "iX", "X7"))
+    
+	' Major Volume Brands
+	Models.Put("Audi", Array As String("A4", "Q5", "A6", "Q3", "Q7", "A3", "Q8", "e-tron", "A8"))
+	Models.Put("Mazda", Array As String("CX-5", "MAZDA3", "CX-30", "CX-90", "MX-5", "CX-50", "CX-70"))
+	Models.Put("Subaru", Array As String("Outback", "Forester", "Crosstrek", "Impreza", "Ascent", "WRX"))
+	Models.Put("Renault", Array As String("Clio", "Captur", "Megane", "Arkana", "Austral", "Duster"))
+	Models.Put("Peugeot", Array As String("208", "2008", "308", "3008", "5008", "e-208", "408"))
+	Models.Put("Fiat", Array As String("500", "Panda", "Tipo", "500e", "Pulse", "Strada"))
+	Models.Put("Jeep", Array As String("Grand Cherokee", "Wrangler", "Compass", "Renegade", "Gladiator", "Wagoneer"))
+	Models.Put("Ram", Array As String("1500", "2500", "3500"))
+	Models.Put("GMC", Array As String("Sierra", "Yukon", "Acadia", "Hummer EV", "Canyon"))
+	Models.Put("Mitsubishi", Array As String("Outlander", "ASX", "Eclipse Cross", "Pajero Sport", "L200", "Triton"))
+	Models.Put("Suzuki", Array As String("Swift", "Vitara", "Baleno", "Brezza", "Jimny", "Ertiga", "Grand Vitara"))
+	Models.Put("Škoda", Array As String("Octavia", "Kodiaq", "Kamiq", "Scala", "Superb", "Enyaq", "Karoq"))
+	Models.Put("Seat", Array As String("Leon", "Ateca", "Tarraco", "Formentor", "Ibiza"))
+	Models.Put("Citroën", Array As String("C3", "C4", "C5 Aircross", "Berlingo", "e-C4", "C3 Aircross"))
+	Models.Put("Opel/Vauxhall", Array As String("Corsa", "Astra", "Grandland", "Mokka", "Combo", "Crossland"))
+	Models.Put("Buick", Array As String("Enclave", "Encore", "Envision", "LaCrosse"))
+	Models.Put("Volvo", Array As String("XC60", "XC90", "XC40", "EX30", "EX90", "S60"))
+	Models.Put("Land Rover", Array As String("Defender", "Range Rover", "Discovery", "Range Rover Sport", "Velar"))
+    
+	' Regional & Growing
+	Models.Put("Tesla", Array As String("Model 3", "Model Y", "Model S", "Model X", "Cybertruck"))
+	Models.Put("BYD", Array As String("Qin Plus", "Song Plus", "Yuan Plus", "Seagull", "Seal", "Han", "Tang"))
+	Models.Put("Geely", Array As String("Xingyue L", "Boyue", "Emgrand", "Preface", "Tugella", "Lynk & Co 01"))
+	Models.Put("Lexus", Array As String("RX", "NX", "ES", "GX", "UX", "TX", "LS"))
+	Models.Put("Dodge", Array As String("Charger", "Challenger", "Durango", "Hornet"))
+	Models.Put("Chrysler", Array As String("Pacifica", "Voyager"))
+	Models.Put("Cadillac", Array As String("Escalade", "XT5", "CT5", "Lyriq", "XT4", "Celestiq"))
+	Models.Put("Porsche", Array As String("911", "Cayenne", "Macan", "Panamera", "Taycan"))
+	Models.Put("Mini", Array As String("Cooper", "Countryman", "Convertible", "Clubman"))
+	Models.Put("Jaguar", Array As String("F-Pace", "E-Pace", "XF", "F-Type", "I-Pace"))
+	Models.Put("Infiniti", Array As String("QX60", "QX50", "Q50", "QX80"))
+	Models.Put("Acura", Array As String("MDX", "RDX", "TLX", "Integra"))
+	Models.Put("Genesis", Array As String("GV80", "G80", "GV70", "GV60", "G90"))
+	Models.Put("Lincoln", Array As String("Navigator", "Aviator", "Nautilus", "Corsair"))
+	Models.Put("Dacia", Array As String("Sandero", "Duster", "Jogger", "Spring"))
+	Models.Put("MG", Array As String("ZS", "MG4", "HS", "5", "Cyberster", "ZST"))
+	Models.Put("Tata", Array As String("Nexon", "Punch", "Safari", "Harrier", "Altroz"))
+	Models.Put("Mahindra", Array As String("Scorpio N", "XUV700", "Thar", "Bolero", "XUV300"))
+	Models.Put("Maruti Suzuki", Array As String("Swift", "Brezza", "Baleno", "Ertiga", "Fronx", "Jimny", "Grand Vitara"))
+	Models.Put("Changan", Array As String("CS75", "UNI-T", "CS55", "Eado", "Deepal SL03"))
+	Models.Put("Haval", Array As String("H6", "Jolion", "Dargo", "Big Dog", "Xiaolong"))
+	Models.Put("Wuling", Array As String("Hongguang Mini EV", "Bingo", "Starlight", "Capgemini", "Macro"))
+    
+	Return Models
+End Sub
   
