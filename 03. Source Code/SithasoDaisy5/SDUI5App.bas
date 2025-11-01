@@ -634,6 +634,13 @@ Sub SetTheme(s As String)
 	html.SetData("theme", s)
 End Sub
 
+Sub isBase64FileString(dataURL As String) As Boolean
+	'isBase64FileString
+	Dim bRes As Boolean = Banano.RunJavascriptMethod("isBase64FileString", Array(dataURL))
+	bRes = UI.CBool(bRes)
+	Return bRes
+End Sub
+
 public Sub isBase64Image(imgURL As String) As Boolean
 	Dim bRes As Boolean = Banano.RunJavascriptMethod("isBase64Image", Array(imgURL))
 	bRes = UI.CBool(bRes)

@@ -740,7 +740,7 @@ End Sub
 Sub GetComputedWidth As String
 	If mElement = Null Then Return ""
 	Dim computed As BANanoObject = BANano.Window.RunMethod("getComputedStyle", mElement.ToObject)
-	Dim res As String = computed.GetField("width").result
+	Dim res As String = computed.RunMethod("getPropertyValue", "width").Result
 	res = UI.CStr(res)
 	Return res
 End Sub

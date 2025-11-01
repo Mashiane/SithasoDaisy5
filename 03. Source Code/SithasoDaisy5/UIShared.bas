@@ -1794,12 +1794,24 @@ Sub RemoveStyleByID(sID As String, k As String)
 End Sub
 
 Sub GetStyleByID(sID As String, k As String) As String
+	Return GetComputedStyleByID(sID, k)
+End Sub
+
+Sub GetComputedStyleByID(sID As String, k As String) As String
 	sID = CleanID(sID)
 	k = DeCamelCase(k)
 	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
 	If mElement = Null Then Return ""
-	Dim computed As BANanoObject
-	computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
+	Dim computed As BANanoObject = BANano.Window.RunMethod("getComputedStyle", mElement.ToObject)
+	Dim res As String = computed.RunMethod("getPropertyValue", k).Result
+	res = CStr(res)
+	Return res
+End Sub
+
+Sub GetComputedStyle(mElement As BANanoElement, k As String) As String
+	k = DeCamelCase(k)
+	If mElement = Null Then Return ""
+	Dim computed As BANanoObject = BANano.Window.RunMethod("getComputedStyle", mElement.ToObject)
 	Dim res As String = computed.RunMethod("getPropertyValue", k).Result
 	res = CStr(res)
 	Return res
@@ -5376,20 +5388,6 @@ Public Sub GetStyleProperty(mElement As BANanoElement, key As String) As Object
 	End If
 End Sub
 
-'Sub EnsureVisible(mElement As BANanoElement)
-'	Dim opt As Map = CreateMap("behavior": "smooth")
-'	If mElement <> Null Then mElement.RunMethod("scrollIntoView", opt)
-'End Sub
-
-Sub GetComputedStyle(mElement As BANanoElement, var As String) As Object
-	If mElement <> Null Then
-		Dim computed As BANanoObject
-		computed.Initialize4("getComputedStyle", mElement.ToObject) ' note that computed is read-only!
-		Return computed.RunMethod("getPropertyValue", var)
-	Else
-		Return ""
-	End If
-End Sub
 
 Sub SetPadding(mElement As BANanoElement, LeftM As Int, TopM As Int, RightM As Int, BottomM As Int)
 	Dim m As Map = CreateMap()
@@ -5858,4 +5856,86 @@ Sub OptionsToMap(opt As String) As Map
 		End If
 	Next
 	Return m
+End Sub
+
+
+'Description: Return Right part of a string
+'Tags: right method, string
+Sub Right(Text As String, lLength As Long) As String
+   If lLength > Text.Length Then lLength = Text.Length
+   Return Text.SubString(Text.Length - lLength)
+End Sub
+
+'Description: Return the Mid portion of a string
+'Tags: mid method, string
+Sub Mid(Text As String, Start As Int, lLength As Int) As String
+   Return Text.SubString2(Start - 1, Start + lLength - 1)
+End Sub
+
+'Description: Returns an array from a delimited string
+'Tags: split method, string
+Sub Split(Text As String, Delimiter As String) As String()
+   Return BANano.split(Delimiter, Text)
+End Sub
+
+'Description: Replace a string within a string
+'Tags: Replace function, string
+Sub ReplaceString(Text As String, sFind As String, sReplaceWith As String) As String
+    Return Text.Replace(sFind, sReplaceWith)
+End Sub
+
+' Description: Return a string in lowercase
+'Tags: lower case string, lcase
+Sub LCase(Text As String) As String
+    Return Text.ToLowerCase
+End Sub
+
+'Description: Return a string in uppercase
+'Tags: upper case, ucase
+Sub UCase(Text As String) As String
+    Return Text.ToUpperCase
+End Sub
+
+'Description: Trim a string
+'Tags: trim, string
+Sub TrimString(Text As String) As String
+    Return Text.Trim
+End Sub
+
+
+'Description: Return position of a substring within a string starting from the back
+'Tags: instrrev, string
+Sub InStrRev(Text As String, str As String) As Int
+    Return Text.tolowercase.LastIndexOf(str.tolowercase)
+End Sub
+
+'Description: sum all the values in a list
+'Tags: list,sum
+Sub ListSum(lst As List) As String
+	Dim lTot As Int = lst.Size - 1
+	Dim lCnt As Int
+	Dim lStr As Int
+	Dim lSum As Int = 0
+ 
+	For lCnt = 0 To lTot
+		lStr = lst.Get(lCnt)
+		lSum = BANano.parseFloat(lSum) + BANano.parseFloat(lStr)
+	Next
+	Return lSum
+End Sub
+
+'Description: search for a string in a multi value string and return position
+'Tags: search, multi-value string
+Sub MvSearch(searchvalues As String,strsearch As String,delim As String) As Int
+	If searchvalues.length = 0 Then Return -1
+	Dim spvalues() As String
+	Dim i As Int, itot As Int, ivalue As String
+	spvalues = Regex.Split(delim,searchvalues.tolowercase)
+	strsearch = strsearch.ToLowerCase
+	itot = spvalues.length - 1
+	For i = 0 To itot
+		ivalue = spvalues(i)
+		If ivalue = strsearch Then Return i
+	Next
+	Return -1
 End Sub
