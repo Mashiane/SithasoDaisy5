@@ -433,31 +433,31 @@ Sub SetToolbarButtonBadge(btn As String, value As String)
 		UI.Hide($"#${mName}_${btn}_indicator"$)
 	Else
 		UI.Show($"#${mName}_${btn}_indicator"$)
-		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+		UI.SetTextByID($"${mName}_${btn}_indicator"$, BANano.SF(value))
 	End If
 End Sub
 
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+	UI.SetColorByID($"${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetWidthByID($"${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}"$, value)
 End Sub
 
 'change the visibility of a button
@@ -473,7 +473,7 @@ End Sub
 
 'change a toolbar button color
 Sub SetToolbarButtonColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+	UI.SetColorByID($"${mName}_${btn}"$, "color", "btn", value)
 End Sub
 
 Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
@@ -844,7 +844,7 @@ private Sub BeautifySourceCode(sc As String) As String
 				Dim res As String = BANano.RunJavascriptMethod("html_beautify", Array(sc))
 			Case "php"
 				Return ""
-				'Dim res As String = SDUIShared.BeautifyPHP(sc)
+				'Dim res As String = UI.BeautifyPHP(sc)
 			Case "vb"
 				Dim res As String = UI.BeautifyB4X(sc)
 			Case "json"

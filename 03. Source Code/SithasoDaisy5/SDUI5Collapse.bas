@@ -346,7 +346,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_check" type="radio"></input>
 		<div id="${mName}_title" class="collapse-title">
-			<svg-renderer id="${mName}_titleicon" style="pointer-events:none;" replace="false" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
+			<svg-renderer id="${mName}_titleicon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 			<div id="${mName}_titletext" class="font-semibold">${sTitle}</div>
 		</div>
 		<div id="${mName}_content" class="collapse-content">${sRawContent}</div>

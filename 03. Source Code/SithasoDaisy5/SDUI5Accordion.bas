@@ -416,3 +416,16 @@ Sub SetCollapseItemIcon(btnID As String, text As String)
 		UI.SetVisibleByID($"${btnID}_${mName}_titleicon"$, True)
 	End If
 End Sub
+
+'set Width
+Sub setWidth(s As String)
+	sWidth = s
+	CustProps.put("Width", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetWidth(mElement, sWidth)
+End Sub
+
+'get Width
+Sub getWidth As String
+	Return sWidth
+End Sub

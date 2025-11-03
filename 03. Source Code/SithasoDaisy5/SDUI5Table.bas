@@ -1714,12 +1714,12 @@ Sub setHasSearch(b As Boolean)			'ignoredeadcode
 	CustProps.Put("HasSearch", b)
 	bHasSearch = b
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
-	UI.SetVisibleByID($"#${mName}_search"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	UI.SetVisibleByID($"${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"${mName}_search"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtnicon"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxlabel"$, b)
 End Sub
 
 Sub getHasSearch As Boolean
@@ -1747,15 +1747,15 @@ End Sub
 'set Title Visible
 Sub setToolbarVisible(b As Boolean)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"#${mName}_toolbar"$, b)
-	UI.SetVisibleByID($"#${mName}_title"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
-	UI.SetVisibleByID($"#${mName}_search"$, b)
-	UI.SetVisibleByID($"#${mName}_actions"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	UI.SetVisibleByID($"${mName}_toolbar"$, b)
+	UI.SetVisibleByID($"${mName}_title"$, b)
+	UI.SetVisibleByID($"${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"${mName}_search"$, b)
+	UI.SetVisibleByID($"${mName}_actions"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtnicon"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxlabel"$, b)
 End Sub
 'change the search placeholder
 '<code>
@@ -2046,7 +2046,7 @@ End Sub
 
 
 Sub SetToolbarButtonIconColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetIconColorByID($"#${mName}_${btn}_lefticon"$, value)
+	UI.SetIconColorByID($"${mName}_${btn}_lefticon"$, value)
 End Sub
 
 'set Grid Tooltip
@@ -2510,7 +2510,7 @@ End Sub
 'check a row, 0 based
 Sub SetRowSelectChecked(rowPos As Int, value As Boolean)
 	Dim rowPos As Int = BANano.parseInt(rowPos) + 1
-	UI.SetCheckedByID($"#${mName}_${rowPos}_selectall"$, value)
+	UI.SetCheckedByID($"${mName}_${rowPos}_selectall"$, value)
 End Sub
 Sub SetToolbarButtonBadge(btn As String, value As String)
 	Try
@@ -2519,28 +2519,28 @@ Sub SetToolbarButtonBadge(btn As String, value As String)
 			UI.Hide($"#${mName}_${btn}_indicator"$)
 		Else
 			UI.Show($"#${mName}_${btn}_indicator"$)
-			UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+			UI.SetTextByID($"${mName}_${btn}_indicator"$, BANano.SF(value))
 		End If
 	Catch
 	End Try		'ignore	
 End Sub
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+	UI.SetColorByID($"${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetWidthByID($"${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}"$, value)
 End Sub
 'change the visibility of a button
 Sub SetToolbarButtonVisible(btn As String, value As Boolean)
@@ -2554,7 +2554,7 @@ Sub SetToolbarButtonVisible(btn As String, value As Boolean)
 End Sub
 'change a toolbar button color
 Sub SetToolbarButtonColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+	UI.SetColorByID($"${mName}_${btn}"$, "color", "btn", value)
 End Sub
 Sub setAddDisabled(b As Boolean)
 	If b Then
@@ -2762,7 +2762,7 @@ Sub ClearRows			'ignoredeadcode
 	Rows.Initialize
 	DPValue.Initialize
 	datepickers.Initialize
-	BANano.Await(UI.ClearByID($"#${mName}_body"$))
+	BANano.Await(UI.ClearByID($"${mName}_body"$))
 	'clear footer
 	For Each k As String In Columns.Keys
 		If BANano.Exists($"#${mName}_${k}_tf"$) Then BANano.GetElement($"#${mName}_${k}_tf"$).SetText("")
@@ -10292,18 +10292,18 @@ Sub AddRowColumnClass(colName As String, rowCnt As Int, className As String)
 	colName = UI.CleanID(colName)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
 	If Columns.ContainsKey(colName) = False Then Return
-	UI.AddClassByID($"#${mName}_${rowCnt1}_${colName}"$, className)
+	UI.AddClassByID($"${mName}_${rowCnt1}_${colName}"$, className)
 End Sub
 'add a class to a row at runtime
 Sub AddRowClass(rowCnt As Int, className As String)
 	Dim rowCnt1 As Int = BANano.parseInt(rowCnt) + 1
-	UI.AddClassByID($"#${mName}_${rowCnt1}"$, className)
+	UI.AddClassByID($"${mName}_${rowCnt1}"$, className)
 End Sub
 'add a class to the heading at runtime
 Sub AddHeaderClass(colName As String, className As String)
 	colName = UI.CleanID(colName)
 	If Columns.ContainsKey(colName) = False Then Return
-	UI.AddClassByID($"#${mName}_${colName}_th"$, className)
+	UI.AddClassByID($"${mName}_${colName}_th"$, className)
 End Sub
 
 Sub SetColumnHeaderVerticalLR(cols As List)
@@ -10461,7 +10461,7 @@ Sub SetRowColumn(colName As String, rowCnt As Int, fldVal As Object)
 		Case "radial"
 			fldVal = UI.CInt(fldVal)
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_radial"$).SetText($"${fldVal}%"$)
-			UI.SetStyleByID($"#${mName}_${rowCnt1}_${colName}_radial"$, "--value", fldVal)
+			UI.SetStyleByID($"${mName}_${rowCnt1}_${colName}_radial"$, "--value", fldVal)
 		Case "select", "selectgroup"
 			BANano.GetElement($"#${mName}_${rowCnt1}_${colName}_select"$).SetValue(fldVal)
 		Case "textbox",  "password", "number",  "passwordgroup", "textboxgroup", "dialer","telephone"

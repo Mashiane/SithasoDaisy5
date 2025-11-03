@@ -1019,13 +1019,13 @@ End Sub
 
 Sub ShowSearch(b As Boolean)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_searchbox"$, b)
+	SetVisibleByID($"${mName}_searchbox"$, b)
 End Sub
 
 Sub ShowActions(b As Boolean)
 	If bHasActions = False Then Return
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_actions"$, b)
+	SetVisibleByID($"${mName}_actions"$, b)
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)			'ignoredeadcode
@@ -1140,7 +1140,7 @@ private Sub AddYesButton				'ignoredeadcode
 	YesButton.Shadow = sButtonsShadow
 	YesButton.Shape = sButtonsRounded
 	YesButton.AddComponent
-	UI.OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
+	OnEventByID(yName, "click", mCallBack, $"${mName}_yes_click"$)
 End Sub
 
 private Sub AddNoButton			'ignoredeadcode
@@ -1156,7 +1156,7 @@ private Sub AddNoButton			'ignoredeadcode
 	NoButton.Shadow = sButtonsShadow
 	NoButton.Shape = sButtonsRounded
 	NoButton.AddComponent
-	UI.OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
+	OnEventByID(nName, "click", mCallBack, $"${mName}_no_click"$)
 End Sub
 
 private Sub AddCancelButton				'ignoredeadcode	
@@ -1172,7 +1172,7 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.Shadow = sButtonsShadow
 	CancelButton.Shape = sButtonsRounded
 	CancelButton.AddComponent
-	UI.OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)
+	OnEventByID(cName, "click", mCallBack, $"${mName}_cancel_click"$)
 End Sub
 
 Sub getTopActionsVisible As Boolean
@@ -1356,7 +1356,7 @@ Sub setTopActionsVisible(b As Boolean)				'ignoredeadcode
 	CustProps.Put("TopActionsVisible", b)
 	If bHasActions = False Then Return
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_actions"$, b)
+	SetVisibleByID($"${mName}_actions"$, b)
 End Sub
 
 'set Actions Visible
@@ -1364,8 +1364,8 @@ Sub setActionsVisible(b As Boolean)			'ignoredeadcode
 	bActionsVisible = b
 	CustProps.put("ActionsVisible", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_bottomdivider"$, b)
-	UI.SetVisibleByID($"${mName}_bottomactions"$, b)
+	SetVisibleByID($"${mName}_bottomdivider"$, b)
+	SetVisibleByID($"${mName}_bottomactions"$, b)
 End Sub
 
 'set Shadow
@@ -1409,9 +1409,9 @@ Sub setIsZebra(b As Boolean)			'ignoredeadcode
 	CustProps.put("IsZebra", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddClassByID($"${mName}_table"$, "table-zebra")
+		AddClassByID($"${mName}_table"$, "table-zebra")
 	Else
-		UI.RemoveClassByID($"${mName}_table"$, "table-zebra")
+		RemoveClassByID($"${mName}_table"$, "table-zebra")
 	End If
 End Sub
 'set Property Padding
@@ -1440,13 +1440,13 @@ Sub setSearchVisible(b As Boolean)		'ignoredeadcode
 	If bHasSearch = False Then Return
 	If mElement = Null Then Return
 	'search is visible leave at zero
-	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
-	UI.SetVisibleByID($"#${mName}_search"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
-	If b = False Then UI.RemoveClassByID($"${mName}_divider"$, "m-0")
+	SetVisibleByID($"${mName}_searchbox"$, b)
+	SetVisibleByID($"${mName}_search"$, b)
+	'SetVisibleByID($"${mName}_searchboxgroup"$, b)
+	SetVisibleByID($"${mName}_searchbtn"$, b)
+	SetVisibleByID($"${mName}_searchbtnicon"$, b)
+	'SetVisibleByID($"${mName}_searchboxlabel"$, b)
+	If b = False Then RemoveClassByID($"${mName}_divider"$, "m-0")
 End Sub
 'set Search Width
 Sub setSearchWidth(s As String)		'ignoredeadcode
@@ -1462,9 +1462,9 @@ Sub setTitle(s As String)				'ignoredeadcode
 	CustProps.put("Title", s)
 	If mElement = Null Then Return
 	If s = "" Then
-		UI.SetVisibleByID($"${mName}_toolbartitle"$, False)
+		SetVisibleByID($"${mName}_toolbartitle"$, False)
 	Else
-		UI.SetVisibleByID($"${mName}_toolbartitle"$, True)
+		SetVisibleByID($"${mName}_toolbartitle"$, True)
 		UI.SetTextByID($"${mName}_toolbartitle"$, s)
 	End If
 End Sub
@@ -1580,7 +1580,8 @@ Sub PropertyConfig
 	AddPropertySelect("propforeigndisplayfield2", "Foreign Display 2", "", False, CreateMap())
 	AddPropertyTextBox("propsize", "Size", "", False)
 	AddPropertyTextBox("propthickness", "Thickness", "", False)
-	AddPropertyTextBox("propicon", "Icon", "", False)
+	AddPropertyTextBoxGroup("propicon", "Icon", "", False)
+	SetPropertyAppendIcon("propicon", "./assets/magnifying-glass-solid.svg")
 	AddPropertyTextBox("propiconsize", "Icon Size", "42px", False)
 	AddPropertyTextBox("propmaxlen", "Max Length", "", False)
 	AddPropertyTextBox("proprows", "TextArea Rows", "", False)
@@ -1601,8 +1602,10 @@ Sub PropertyConfig
 	AddPropertyCheckBox("propmultiple", "File Multiple", False, "success")					  'progress/range
 '	AddPropertyTextBox("propprefix", "Prefix", "", False)					  'progress/range
 '	AddPropertyTextBox("propsuffix", "Suffix", "", False)					  'progress/range
-	AddPropertyTextBox("propprepend", "Prepend Icon", "", False)					  'progress/range
-	AddPropertyTextBox("propappend", "Append Icon", "", False)					  'progress/range
+	AddPropertyTextBoxGroup("propprepend", "Prepend Icon", "", False)					  'progress/range
+	SetPropertyAppendIcon("propprepend", "./assets/magnifying-glass-solid.svg")
+	AddPropertyTextBoxGroup("propappend", "Append Icon", "", False)					  'progress/range
+	SetPropertyAppendIcon("propappend", "./assets/magnifying-glass-solid.svg")
 	AddPropertyTextBox("propdateformat", "Date Format", "Y-m-d H:i", False)					  'progress/range
 	AddPropertyTextBox("propdisplayformat", "Date Display Format", "D, d M Y H:i", False)					  'progress/range
 	AddPropertyCheckBox("proptime24", "24 Hour Time", False, "success")
@@ -2687,13 +2690,37 @@ Sub AddPropertyDialer(Key As String, Title As String, DefaultValue As String, Re
 	SetPropertyStepValue(Key, iStepValue)
 	SetPropertyPrependIcon(Key, "./assets/minus-solid.svg")
 	SetPropertyAppendIcon(Key, "./assets/plus-solid.svg")
-	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
-	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
-'	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", Me, "PropertyDecrement")
-'	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "PropertyIncrement")
+	OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
+	OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
+'	OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", Me, "PropertyDecrement")
+'	OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "PropertyIncrement")
 	SetPropertyNoArrows(Key)
 End Sub
 '
+Sub OnEventByID(sID As String, event As String, CallBack As Object, MethodName As String)
+	Try
+		Dim xElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		OnEvent(xElement, event, CallBack, MethodName)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+Sub OnEvent(xElement As BANanoElement, event As String, CallBack As Object, MethodName As String)
+	Try
+		If xElement = Null Then Return
+		event = event.Replace(":","")
+		event = event.Replace(".","")
+		event = event.Replace("-","")
+		If SubExists(CallBack, MethodName) Then
+			xElement.Off(event)
+			xElement.On(event, CallBack, MethodName)
+		End If
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 private Sub PropertyDecrement(event As BANanoEvent)     'ignoredeadcode
 	event.StopPropagation
 	event.PreventDefault
@@ -2784,24 +2811,106 @@ Sub ClearAllGuides
 	For Each k As String In propBagKeys.Keys
 		Dim skey As String = $"${mName}_${k}badge"$
 		If BANano.Exists($"#${skey}"$) Then
-			UI.AddClassByID(skey, "badge-error")
-			UI.RemoveClassByID(skey, "badge-success badgepulse")
+			AddClassByID(skey, "badge-error")
+			RemoveClassByID(skey, "badge-success badgepulse")
 			If Compulsory.ContainsKey(k) Then
-				UI.SetVisibleByID(skey, True)
+				SetVisibleByID(skey, True)
 			Else
-				UI.SetVisibleByID(skey, False)
+				SetVisibleByID(skey, False)
 			End If
 		End If
 	Next
 End Sub
 
+private Sub SetVisibleByID(sID As String, b As Boolean)
+	Try
+		Dim xElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetVisible1(xElement, b)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetVisible1(xElement As BANanoElement, xVisible As Boolean)
+	Try
+		If xElement = Null Then Return
+		If xVisible Then
+			RemoveClass(xElement, "hidden")
+		Else
+			AddClass(xElement, "hidden")
+		End If
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub RemoveClassByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		RemoveClass(xmElement, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'remove a class from the element you can delimiter by ;
+private Sub RemoveClass(xElement As BANanoElement, xtext As String)
+	Try
+		If xElement = Null Then Return
+		xtext = UI.CStr(xtext)
+		xtext = xtext.Replace(" ", ";")
+		xtext = xtext.Replace(CRLF, ";")
+		xtext = xtext.Replace("<br/>", ";")
+		xtext = xtext.Trim
+		If xtext = "" Then Return
+		Dim lst As List = UI.StrParse(";", xtext)
+		For Each c As String In lst
+			c = c.trim
+			If c = "" Then Continue
+			xElement.RemoveClass(c)
+		Next
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub AddClassByID(sID As String, k As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		AddClass(xmElement, k)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'add a class To an element
+private Sub AddClass(xmElement As BANanoElement, s As String)
+	Try
+		If xmElement = Null Then Return
+		s = UI.CStr(s)
+		s = s.Replace(" ", ";")
+		s = s.Replace(CRLF, ";")
+		s = s.Replace("<br/>", ";")
+		s = s.trim
+		If s = "" Then Return
+		Dim lst As List = UI.StrParseTrim(";", s)
+		For Each c As String In lst
+			If c = "" Then Continue
+			xmElement.AddClass(c)
+		Next
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+
 Sub SetGuides(propKeys As List)
 	For Each k As String In propKeys
 		Dim skey As String = $"${mName}_${k}badge"$
 		If BANano.Exists($"#${skey}"$) Then
-			UI.RemoveClassByID(skey, "badge-error")
-			UI.AddClassByID(skey, "badge-success badgepulse")
-			UI.SetVisibleByid(skey, True)
+			RemoveClassByID(skey, "badge-error")
+			AddClassByID(skey, "badge-success badgepulse")
+			SetVisibleByID(skey, True)
 		End If
 	Next
 End Sub
@@ -2874,8 +2983,8 @@ Sub AddPropertyPlusMinus(Key As String, Title As String, DefaultValue As String,
 	SetPropertyMaxValue(Key, MaxValue)
 	SetPropertyMinValue(Key, MinValue)
 	SetPropertyStepValue(Key, StepValue)
-	UI.OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
-	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
+	OnEventByID($"${mName}_${Key}_prepend"$, "click", Me, "PropertyDecrement")
+	OnEventByID($"${mName}_${Key}_append"$, "click", Me, "PropertyIncrement")
 	SetPropertyNoArrows(Key)
 End Sub
 
@@ -2899,12 +3008,12 @@ Sub AddPropertyTextBoxGroup(Key As String, Title As String, DefaultValue As Stri
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hidden"></span>
     					<button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hidden"></span>
     					<button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     				</label>
     			</div>
@@ -2945,13 +3054,13 @@ Sub AddPropertySelectGroup(Key As String, Title As String, DefaultValue As Strin
     <label id="${mName}_${Key}_inputgroup" class="input-group">
     <span id="${mName}_${Key}_prefix" class="hidden"></span>
     <button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"  data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     <select id="${mName}_${Key}" name="${mName}_${Key}" class="select select-${sComponentSize} select-bordered grow tlradius blradius trradius brradius grow">
     </select>
     <span id="${mName}_${Key}_suffix" class="hidden"></span>
     <button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+		<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 	</button>
     </label>
     </div>
@@ -3029,8 +3138,8 @@ Sub AddPropertyPasswordGroup(Key As String, Title As String, DefaultValue As Str
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 '	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
-	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "TogglePassword")
-'	UI.OnEventByID($"#${mName}_${Key}_append_icon"$, "click", Me, "TogglePassword")
+	OnEventByID($"${mName}_${Key}_append"$, "click", Me, "TogglePassword")
+'	OnEventByID($"${mName}_${Key}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
 private Sub TogglePassword(event As BANanoEvent)     'ignoredeadcode
@@ -3049,31 +3158,86 @@ End Sub
 Sub SetPropertyPrependIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).Remove
-	UI.SetIconNameByID($"${mName}_${Key}_prepend_icon"$, picon)	'
-	UI.SetSizeByID($"${mName}_${Key}_prepend"$, "size", "btn", sComponentSize)
-	UI.ResizeIconByIDFromButtonSize($"${mName}_${Key}_prepend_icon"$, scomponentsize)	'
-	UI.Show($"${mName}_${Key}_prepend"$)
-	UI.RemoveClassByID($"#${mName}_${Key}"$, "tlradius blradius")
+	SetIconNameByID($"${mName}_${Key}_prepend_icon"$, picon)	'
+	SetSizeByID($"${mName}_${Key}_prepend"$, "size", "btn", sComponentSize)
+	ResizeIconByIDFromButtonSize($"${mName}_${Key}_prepend_icon"$, sComponentSize)	'
+	SetVisibleByID($"${mName}_${Key}_prepend"$, True)
+	RemoveClassByID($"${mName}_${Key}"$, "tlradius blradius")
 	SetPropertyTopLeftRadius(Key, "0px")
 	SetPropertyBottomLeftRadius(Key, "0px")
-'	UI.OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+'	OnEventByID($"${mName}_${Key}_prepend_icon"$, "click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 End Sub
 '
+
+'resize an icon based on an icon size
+private Sub ResizeIconByIDFromButtonSize(sID As String, btnSize As String)
+	Try
+		Dim aIconSize As String = "65"
+		Select Case btnSize
+			Case "xs"
+				aIconSize = "50"
+			Case "sm"
+				aIconSize = "60"
+			Case "md"
+				aIconSize = "65"
+			Case "lg"
+				aIconSize = "70"
+		End Select
+		'
+		Dim sPerc As String = UI.Val(aIconSize) & "%"
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		Dim m As Map = CreateMap("width": sPerc, "height":sPerc)
+		xmElement.SetStyle(BANano.ToJson(m))
+		xmElement.RemoveAttr("width")
+		xmElement.RemoveAttr("height")
+	Catch
+	End Try				'ignore
+End Sub
+
+private Sub SetSizeByID(sID As String, sizeName As String, prefix As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetSize(xmElement, sizeName, prefix, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetSize(xmElement As BANanoElement, sizeName As String, prefix As String, s As String)
+	Try
+		If xmElement = Null Then Return
+		Dim s1 As String = UI.FixSize(prefix, s)
+		UpdateClass(xmElement, sizeName, s1)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 Sub SetPropertyTopLeftRadius(Key As String, v As String)
-	UI.SetStyleByID($"${mName}_${Key}"$, "border-top-left-radius", v)
+	SetStyleByID($"${mName}_${Key}"$, "border-top-left-radius", v)
 End Sub
 
 Sub SetPropertyTopRightRadius(Key As String, v As String)
-	UI.SetStyleByID($"${mName}_${Key}"$, "border-top-right-radius", v)
+	SetStyleByID($"${mName}_${Key}"$, "border-top-right-radius", v)
 End Sub
 
 Sub SetPropertyBottomLeftRadius(Key As String, v As String)
-	UI.SetStyleByID($"${mName}_${Key}"$, "border-bottom-left-radius", v)
+	SetStyleByID($"${mName}_${Key}"$, "border-bottom-left-radius", v)
 End Sub
 
+private Sub SetStyleByID(sID As String, k As String, v As String)
+	Try
+		k = UI.DeCamelCase(k)
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		If xmElement = Null Then Return
+		xmElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore
+End Sub
 
 Sub SetPropertyBottomRightRadius(Key As String, v As String)
-	UI.SetStyleByID($"${mName}_${Key}"$, "border-bottom-right-radius", v)
+	SetStyleByID($"${mName}_${Key}"$, "border-bottom-right-radius", v)
 End Sub
 
 Sub SetPropertyPrependIconLoading(Key As String, bLoading As Boolean)
@@ -3098,27 +3262,29 @@ End Sub
 
 Sub SetPropertyAppendIconColor(Key As String, iColor As String)
 	If iColor = "" Then Return
-	UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, iColor)
+	SetIconColorByID($"${mName}_${Key}_append_icon"$, iColor)
 End Sub
 
 Sub SetPropertyPrependIconColor(Key As String, iColor As String)
 	If iColor = "" Then Return
-	UI.SetIconColorByID($"${mName}_${Key}_prepend_icon"$, iColor)
+	SetIconColorByID($"${mName}_${Key}_prepend_icon"$, iColor)
 End Sub
 
 
 Sub SetPropertyAppendIcon(Key As String, picon As String)
 	If picon = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_suffix"$).Remove
-	UI.SetIconNameByID($"${mName}_${Key}_append_icon"$, picon)
-	UI.ResizeIconByIDFromButtonSize($"${mName}_${Key}_append_icon"$, sComponentSize)
-	UI.SetSizeByID($"${mName}_${Key}_append"$, "size", "btn", sComponentSize)
-	UI.Show($"${mName}_${Key}_append"$)
-	UI.RemoveClassByID($"#${mName}_${Key}"$, "trradius brradius")
+	SetIconNameByID($"${mName}_${Key}_append_icon"$, picon)
+	ResizeIconByIDFromButtonSize($"${mName}_${Key}_append_icon"$, sComponentSize)
+	SetSizeByID($"${mName}_${Key}_append"$, "size", "btn", sComponentSize)
+	SetVisibleByID($"${mName}_${Key}_append"$, True)
+	RemoveClassByID($"${mName}_${Key}"$, "trradius brradius")
 	SetPropertyTopRightRadius(Key, "0px")
 	SetPropertyBottomRightRadius(Key, "0px")
-'	UI.OnEventByID($"${mName}_${Key}_append_icon"$, "click", mCallBack, $"${mName}_${Key}_AppendClick"$)
+'	OnEventByID($"${mName}_${Key}_append_icon"$, "click", mCallBack, $"${mName}_${Key}_AppendClick"$)
 End Sub
+
+
 Sub SetPropertyPrefix(Key As String,l As String)
 	If l = "" Then Return
 	BANano.GetElement($"#${mName}_${Key}_prefix"$).RemoveClass("hidden")
@@ -3145,6 +3311,7 @@ Sub SetPropertyShowEyes(Key As String, b As Boolean)
 		BANano.GetElement($"#${mName}_${Key}_append"$).AddClass("hidden")
 	End If
 End Sub
+
 Sub SetPropertyToggleEyes(Key As String)
 	Dim cicon As String = BANano.GetElement($"#${mName}_${Key}_append_icon"$).GetData("src")
 	cicon = UI.CStr(cicon)
@@ -3249,12 +3416,12 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
     				<label id="${mName}_${Key}_inputgroup" class="input-group">
     					<span id="${mName}_${Key}_prefix" class="hidden"></span>
     					<button id="${mName}_${Key}_prepend" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     					<input id="${mName}_${Key}" type="text" placeholder="${Title}" name="${mName}_${Key}" class="input input-${sComponentSize}  w-full tlradius blradius trradius brradius"></input>
     					<span id="${mName}_${Key}_suffix" class="hidden"></span>
     					<button id="${mName}_${Key}_append" class="btn hidden btn-${sComponentSize}">
-							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;"   data-js="enabled" fill="currentColor"></svg-renderer>
+							<svg-renderer id="${mName}_${Key}_append_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor"></svg-renderer>
 						</button>
     				</label>
 					<ul id="${mName}_${Key}_popover" class="hidden flex-nowrap card dropdown menu z-1 w-auto h-auto rounded-box bg-base-100 shadow-sm mt-2" popover style="position-anchor:--${mName}_${Key}_anchor">
@@ -3268,16 +3435,16 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	SetPropertyAppendIcon(Key, "./assets/palette-solid.svg")
-	UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, DefaultValue)
+	SetIconColorByID($"${mName}_${Key}_append_icon"$, DefaultValue)
 	If Required Then
 		BANano.GetElement($"#${mName}_${Key}badge"$).RemoveClass("hidden")
 	Else
 		BANano.GetElement($"#${mName}_${Key}badge"$).AddClass("hidden")
 	End If
-	UI.AddAttrByID($"${mName}_${Key}_append"$, "popovertarget", $"${mName}_${Key}_popover"$)
-	UI.AddStyleByID($"${mName}_${Key}_append"$, "anchor-name", $"--${mName}_${Key}_anchor"$)
-	UI.SetPlacementByID($"${mName}_${Key}_popover"$, "dropdown", sWheelPlacement)
-	UI.Show($"${mName}_${Key}_popover"$)
+	AddAttrByID($"${mName}_${Key}_append"$, "popovertarget", $"${mName}_${Key}_popover"$)
+	AddStyleByID($"${mName}_${Key}_append"$, "anchor-name", $"--${mName}_${Key}_anchor"$)
+	SetPlacementByID($"${mName}_${Key}_popover"$, "dropdown", sWheelPlacement)
+	SetVisibleByID($"${mName}_${Key}_popover"$, True)
 	'
 	Dim cwOptions As Map = CreateMap()
 	cwOptions.Put("appendTo", BANano.GetElement($"#${mName}_${Key}_rcw"$).ToObject)
@@ -3295,12 +3462,91 @@ Sub AddPropertyColorWheel(Key As String, Title As String, DefaultValue As String
 	colorPicker.Put(Key, rcw)
 		
 	'the color picker will be opened when a button is clicked
-	UI.OnEventByID($"${mName}_${Key}_append"$, "click", Me, "ToggleColorPicker")
+	OnEventByID($"${mName}_${Key}_append"$, "click", Me, "ToggleColorPicker")
 	'
 	BANano.GetElement($"#${mName}_${Key}"$).SetValue(DefaultValue)
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}_prepend"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
 '	BANano.GetElement($"#${mName}_${Key}_prepend_icon"$).On("click", mCallBack, $"${mName}_${Key}_PrependClick"$)
+End Sub
+
+private Sub SetPlacementByID(sID As String, sprefix As String, splacement As String)
+	Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	SetPlacement(xmElement, sprefix, splacement)
+End Sub
+
+private Sub SetPlacement(xmElement As BANanoElement, sprefix As String, sPlacement As String)
+	If xmElement = Null Then Return
+	Dim hashPos As Int = sPlacement.IndexOf("-")
+	If hashPos = -1 Then
+		AddClass(xmElement, $"${sprefix}-${sPlacement}"$)
+	Else
+		Dim fpart As String = UI.MvField(sPlacement,1,"-")
+		Dim spart As String = UI.MvField(sPlacement,2,"-")
+		AddClass(xmElement, $"${sprefix}-${fpart} ${sprefix}-${spart}"$)
+	End If
+End Sub
+
+private Sub AddStyleByID(sID As String, k As String, v As String)			'ignoredeadcode
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		AddStyle(xmElement, k, v)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'add a styles to the element
+private Sub AddStyle(xmElement As BANanoElement, k As String, v As String)			'ignoredeadcode
+	Try
+		If xmElement = Null Then Return
+		k = UI.DeCamelCase(k)
+		xmElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+
+private Sub AddAttrByID(sID As String, k As String, v As String)			'ignoredeadcode
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetAttr(xmElement, k, v)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetAttr(xmElement As BANanoElement, Attr As String, text As String)
+	Try
+		If xmElement = Null Then Return
+		xmElement.SetAttr(Attr, text)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetIconColorByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		If xmElement = Null Then Return
+		If s = "" Then Return
+		xmElement.SetAttr("fill", "currentColor")
+		SetStyle(xmElement, "color", s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'add a styles to the element
+private Sub SetStyle(xmElement As BANanoElement, k As String, v As String)
+	Try
+		If xmElement = Null Then Return
+		k = UI.DeCamelCase(k)
+		xmElement.GetField("style").RunMethod("setProperty", Array(k, v))
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub ToggleColorPicker(e As BANanoEvent)			'ignoredeadcode
@@ -3316,7 +3562,7 @@ Private Sub ColorChange(color As BANanoObject)			'ignoredeadcode
 	Dim eID As String = UI.MvField(sid, 2, "_")
 	Dim xValue As String = color.getfield("hex").Result
 	BANano.GetElement($"#${mName}_${eID}"$).SetValue(xValue)
-	UI.SetIconColorByID($"${mName}_${eID}_append_icon"$, xValue)
+	SetIconColorByID($"${mName}_${eID}_append_icon"$, xValue)
 	'
 	If SubExists(mCallBack, $"${mName}_Change"$) Then
 		Dim data As Map = BANano.Await(getPropertyBag)
@@ -3698,7 +3944,7 @@ Sub SetPropertyType(Key As String, typeOf As String)
 	BANano.GetElement($"#${mName}_${Key}"$).SetAttr("type", typeOf)
 End Sub
 Sub SetPropertyNoArrows(Key As String)
-	UI.AddClassBYID($"#${mName}_${Key}"$, "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none")
+	AddClassByID($"${mName}_${Key}"$, "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none")
 End Sub
 Sub SetPropertyEnabled(Key As String, xEnabled As Boolean)
 	If xEnabled Then
@@ -3720,7 +3966,21 @@ End Sub
 
 Sub SetPropertyEnsureVisible(Key As String)
 	Dim xKey As String = $"${mName}_${Key}"$
-	UI.EnsureVisibleByID(xKey)
+	EnsureVisibleByID(xKey)
+End Sub
+
+'scroll into view
+private Sub EnsureVisibleByID(sID As String)
+	Try
+		If BANano.Exists($"#${sID}"$) = False Then Return
+		Dim opt As Map = CreateMap()
+		opt.Put("behavior", "smooth")
+		opt.Put("block", "nearest")
+		opt.Put("inline", "nearest")
+		BANano.GetElement($"#${sID}"$).RunMethod("scrollIntoView", opt)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 'check only some properties
@@ -3768,6 +4028,7 @@ Sub PropertyIsMatch(fld1 As String, fld2 As String) As Boolean
 		Return False
 	End If
 End Sub
+
 Sub AddPropertyTextArea(Key As String, Title As String, DefaultValue As String, Required As Boolean, sRows As String)
 	propBagKeys.Put(Key, Title)
 	propBagValues.Put(Key, DefaultValue)
@@ -3835,10 +4096,10 @@ Sub SetPropertyToolTip(Key As String, value As String)
 	Dim tColor As String = UI.FixColor("tooltip", sTooltipColor)
 	Dim tPos As String = $"tooltip-${sTooltipPosition}"$
 	If value = "" Then
-		UI.RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
 		BANano.GetElement($"#${mName}_${Key}_tooltip"$).RemoveAttr("data-tip")
 	Else
-		UI.AddClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		AddClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
 		BANano.GetElement($"#${mName}_${Key}_tooltip"$).SetData("tip", value)
 	End If
 End Sub
@@ -3877,7 +4138,7 @@ Sub SetPropertyValue(Key As String, value As String)
 		Case "FileInput", "FileInputProgress", "CamCorder", "Camera", "Microphone"
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(Null)
 		Case "ColorWheel"
-			UI.SetIconColorByID($"${mName}_${Key}_append_icon"$, value)
+			SetIconColorByID($"${mName}_${Key}_append_icon"$, value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetValue(value)
 			Dim cp As BANanoObject = colorPicker.Get(Key)
 			cp.SetField("hex", value)
@@ -3912,7 +4173,7 @@ Sub SetPropertyValue(Key As String, value As String)
 			value = UI.CStr(value)
 			BANano.GetElement($"#${mName}_${Key}"$).SetText($"${value}%"$)
 			BANano.GetElement($"#${mName}_${Key}"$).SetData("value", value)
-			UI.SetStyleByID($"#${mName}_${Key}"$,"--value", value)
+			SetStyleByID($"${mName}_${Key}"$,"--value", value)
 		Case "Rating"
 			BANano.GetElement($"#${mName}_${Key}_${value}"$).SetChecked(True)
 		Case "CheckBox", "Toggle", "CheckBoxLegend", "ToggleLegend"
@@ -3953,16 +4214,17 @@ Sub SetPropertyValue(Key As String, value As String)
 			For Each k As String In allitems.Keys
 				k = UI.CleanID(k)
 				Dim nk As String = $"${mName}_${Key}_${k}"$
-				BANano.Await(UI.SetCheckedByID(nk, False))
+				BANano.Await(SetCheckedByID(nk, False))
 			Next
 			'check the ones we have specified
 			For Each k As String In lvalues
 				k = UI.CleanID(k)
 				Dim nk As String = $"${mName}_${Key}_${k}"$
-				BANano.Await(UI.SetCheckedByID(nk, True))
+				BANano.Await(SetCheckedByID(nk, True))
 			Next
 	End Select
 End Sub
+
 Sub GetPropertyHintID(Key As String) As String
 	Return $"${mName}_${Key}row"$
 End Sub
@@ -3991,7 +4253,7 @@ Sub GetPropertyValue(Key As String) As String
 			v = BANano.GetElement($"#${mName}_${Key}_span"$).GetText
 			v = UI.CStr(v)
 		Case "RadialProgress"
-			v = UI.GetDataAttrByID($"#${mName}_${Key}"$, "value")
+			v = GetDataAttrByID($"${mName}_${Key}"$, "value")
 			'v = UI.GetStyleByID(Key, "--value")
 			v = UI.CStr(v)
 		Case "Rating"
@@ -4025,7 +4287,7 @@ Sub GetPropertyValue(Key As String) As String
 			sItems.Initialize 
 			For Each k As String In allitems.Keys
 				Dim nk As String = $"${mName}_${Key}_${k}"$
-				Dim b As Boolean = BANano.Await(UI.GetCheckedByID(nk))
+				Dim b As Boolean = BANano.Await(GetCheckedByID(nk))
 				If b Then
 					sItems.Add(k)
 				End If
@@ -4037,6 +4299,33 @@ Sub GetPropertyValue(Key As String) As String
 			If v = "--Nothing Selected--" Then v = ""
 	End Select
 	Return v
+End Sub
+
+private Sub GetDataAttrByID(sID As String, attr As String) As String
+	Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If mElement = Null Then Return ""
+	Dim stext As String = mElement.GetData(attr)
+	stext = UI.CStr(stext)
+	stext = stext.trim
+	Return stext
+End Sub
+
+private Sub GetCheckedByID(sID As String) As Boolean
+	Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If xmElement = Null Then Return False
+	Dim b As Boolean = xmElement.GetChecked
+	b = UI.CBool(b)
+	Return b
+End Sub
+
+private Sub SetCheckedByID(sID As String, b As Boolean)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		If xmElement = Null Then Return
+		xmElement.SetChecked(b)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetPropertyFile(Key As String) As Object
@@ -4263,11 +4552,21 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean, sA
 		</td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	If bMultiple Then UI.SetAttrByID($"${mName}_${Key}"$, "multiple", "multiple")
-	If sAccept <> "" Then UI.SetAttrByID($"${mName}_${Key}"$, "accept", sAccept)
+	If bMultiple Then SetAttrByID($"${mName}_${Key}"$, "multiple", "multiple")
+	If sAccept <> "" Then SetAttrByID($"${mName}_${Key}"$, "accept", sAccept)
 '	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
 End Sub
+
+private Sub SetAttrByID(sID As String, k As String, v As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetAttr(xmElement, k, v)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 'this us used for the camera content without uploading
 '<code>
 ''when button is clicked
@@ -4336,13 +4635,62 @@ Sub AddPropertyFileInputProgress(Key As String, Title As String, xSize As String
 	BANano.GetElement($"#${mName}_${Key}_button"$).RemoveClass("hidden")
 	BANano.GetElement($"#${mName}_${Key}_progress"$).AddClass("hidden")
 	BANano.GetElement($"#${mName}_${Key}_icon"$).RemoveClass("hidden")
-	UI.SetIconColorByID($"#${mName}_${Key}_icon"$, xTextColor)
-	UI.SetIconSizeByID($"#${mName}_${Key}_icon"$, xIconSize)
-	UI.OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
-'	UI.OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
+	SetIconColorByID($"${mName}_${Key}_icon"$, xTextColor)
+	SetIconSizeByID($"${mName}_${Key}_icon"$, xIconSize)
+	OnEventByID($"${mName}_${Key}_button"$, "click", Me, "FileButtonClick")
+'	OnEventByID($"${mName}_${Key}_icon"$, "click", Me, "FileButtonClick")
 	'
 '	BANano.GetElement($"#${mName}_${Key}"$).On("change", Me, "OnPropChangeInternal")
 	BANano.GetElement($"#${mName}_${Key}"$).On("change", mCallBack, $"${mName}_${Key}_FileChange"$)
+End Sub
+
+'set width and height of icon
+private Sub SetIconSizeByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetIconSize(xmElement, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'set width and height of icon
+private Sub SetIconSize(xmElement As BANanoElement, s As String)
+	Try
+		If xmElement = Null Then Return
+		Dim actualSize As String = ""
+		Select Case s
+			Case "xs"
+				actualSize = "14px"   '"24px"
+			Case "sm"
+				actualSize = "18px"  ' "32px"
+			Case "md"
+				actualSize = "24px" ' "40px"
+			Case "lg"
+				actualSize =  "32px" ' "48px"
+			Case "xl"
+				actualSize = "40px" ' "56px"
+			Case Else
+				actualSize = s
+		End Select
+		Dim mstyle As Map = CreateMap()
+		mstyle.Put("width", actualSize)
+		mstyle.Put("height", actualSize)
+		AddStyleMap(xmElement, mstyle)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub AddStyleMap(xmElement As BANanoElement, ms As Map)
+	Try
+		If xmElement = Null Then Return
+		If ms.Size = 0 Then Return
+		Dim svalue As String = BANano.ToJson(ms)
+		xmElement.SetStyle(svalue)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 private Sub FileButtonClick(event As BANanoEvent)     'ignoredeadcode
@@ -4487,44 +4835,92 @@ Sub AddPropertyMicrophone(Key As String, Title As String, xSize As String, xIcon
 	ComponentType.Put(Key, "Microphone")
 End Sub
 private Sub SetPropertyFileInputProgressCamCorder(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/video-solid.svg")
-	UI.SetAttrByID($"${mName}_${key}"$, "accept", "video/*;capture=camcorder")
+	SetIconNameByID($"${mName}_${key}_icon"$, "./assets/video-solid.svg")
+	SetAttrByID($"${mName}_${key}"$, "accept", "video/*;capture=camcorder")
 End Sub
 
 private Sub SetPropertyFileInputProgressCamera(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/camera-solid.svg")
-	UI.SetAttrByID($"${mName}_${key}"$, "accept", "image/*;capture=camera")
-	UI.SetAttrByID($"${mName}_${key}"$, "capture", "environment")
+	SetIconNameByID($"${mName}_${key}_icon"$, "./assets/camera-solid.svg")
+	SetAttrByID($"${mName}_${key}"$, "accept", "image/*;capture=camera")
+	SetAttrByID($"${mName}_${key}"$, "capture", "environment")
 End Sub
 Sub SetPropertyFileInputAccept(key As String, saccept As String)
-	UI.SetAttrByID($"${mName}_${key}"$, "accept", saccept)
+	SetAttrByID($"${mName}_${key}"$, "accept", saccept)
 End Sub
 Sub SetPropertyFileInputProgressMicrophone(key As String)
-	UI.SetIconNameByID($"${mName}_${key}_icon"$, "./assets/microphone-solid.svg")
-	UI.SetAttrByID($"${mName}_${key}"$, "accept", "audio/*;capture=microphone")
+	SetIconNameByID($"${mName}_${key}_icon"$, "./assets/microphone-solid.svg")
+	SetAttrByID($"${mName}_${key}"$, "accept", "audio/*;capture=microphone")
 End Sub
 Sub SetPropertyFileInputMultiple(key As String, b As Boolean)
 	If b Then
-		UI.SetAttrByID($"${mName}_${key}"$, "multiple", "multiple")
+		SetAttrByID($"${mName}_${key}"$, "multiple", "multiple")
 	Else
-		UI.RemoveAttrByID($"${mName}_${key}"$, "multiple")
+		RemoveAttrByID($"${mName}_${key}"$, "multiple")
 	End If
+End Sub
+
+private Sub RemoveAttrByID(sID As String, k As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		RemoveAttr(xmElement, k)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'remove an attribute from the element
+private Sub RemoveAttr(xmElement As BANanoElement, attr As String)
+	Try
+		If xmElement = Null Then Return
+		xmElement.RemoveAttr(attr)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+
+private Sub SetIconNameByID(elName As String, scontent As String)
+	Try
+		Dim el As BANanoElement = BANano.GetElement($"#${elName}"$)
+		If el = Null Then Return
+		el.SetAttr("data-src", scontent)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub SetPropertyFileInputProgressLoading(key As String, Value As Int, Status As Boolean)
 	If Status = False Then
 		'hide the progress
-		UI.Hide($"${mName}_${key}_progress"$)
+		SetVisibleByID($"${mName}_${key}_progress"$, False)
 		'show icon
-		UI.Show($"${mName}_${key}_icon"$)
+		SetVisibleByID($"${mName}_${key}_icon"$, True)
 	Else
 		'hide the icon
-		UI.Hide($"${mName}_${key}_icon"$)
-		UI.Show($"${mName}_${key}_progress"$)
-		UI.SetAttrByID($"${mName}_${key}_progress"$, "aria-valuenow", Value)
-		UI.SetTextByID($"${mName}_${key}_progress"$, $"${Value}%"$)
-		UI.SetStyleByID($"${mName}_${key}_progress"$, "--value", Value)
+		SetVisibleByID($"${mName}_${key}_icon"$, False)
+		SetVisibleByID($"${mName}_${key}_progress"$, True)
+		SetAttrByID($"${mName}_${key}_progress"$, "aria-valuenow", Value)
+		SetTextByID($"${mName}_${key}_progress"$, $"${Value}%"$)
+		SetStyleByID($"${mName}_${key}_progress"$, "--value", Value)
 	End If
+End Sub
+
+private Sub SetTextByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetText(xmElement, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetText(xmElement As BANanoElement, hx As String)
+	Try
+		If xmElement = Null Then Return
+		xmElement.SetText(hx)
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub AddPropertyAvatar(Key As String, Title As String, sSize As String, Shape As String, Url As String)
@@ -4558,15 +4954,15 @@ Sub SetPropertyAvatarRing(Key As String, bHasRing As Boolean, ringColor As Strin
 		Dim rcolor As String = UI.FixColor("ring", ringColor)
 		Dim roffset As String = $"ring-offset-${ringOffset}"$
 		Dim rocolor As String = UI.FixColor("ring-offset", ringOffsetColor)
-		UI.AddClassByID(xKey, "ring")
-		UI.UpdateClassByID(xKey, "ringcolor", rcolor)
-		UI.UpdateClassByID(xKey, "ringoffset", roffset)
-		UI.UpdateClassByID(xKey, "ringoffsetcolor", rocolor)
+		AddClassByID(xKey, "ring")
+		UpdateClassByID(xKey, "ringcolor", rcolor)
+		UpdateClassByID(xKey, "ringoffset", roffset)
+		UpdateClassByID(xKey, "ringoffsetcolor", rocolor)
 	Case False
-		UI.RemoveClassByID(xKey, "ring")
-		UI.RemoveLastClassByID(xKey, "ringcolor")
-		UI.RemoveLastClassByID(xKey, "ringoffset")
-		UI.RemoveLastClassByID(xKey, "ringoffsetcolor")
+		RemoveClassByID(xKey, "ring")
+		RemoveLastClassByID(xKey, "ringcolor")
+		RemoveLastClassByID(xKey, "ringoffset")
+		RemoveLastClassByID(xKey, "ringoffsetcolor")
 	End Select
 End Sub
 
@@ -4641,15 +5037,65 @@ Sub SetPropertyAvatarOnline(Key As String, bOnlineStatus As Boolean, bStatus As 
 	Select Case bOnlineStatus
 	Case True
 		If bStatus Then
-			UI.UpdateClassByID(xKey, "status", "avatar-online")
+			UpdateClassByID(xKey, "status", "avatar-online")
 		Else	
-			UI.UpdateClassByID(xKey, "status", "avatar-offline")
+			UpdateClassByID(xKey, "status", "avatar-offline")
 		End If
 	Case False
-		UI.RemoveLastClassByID(xKey, "status")
-		UI.RemoveClassByID(xKey, "avatar-online avatar-offline")
+		RemoveLastClassByID(xKey, "status")
+		RemoveClassByID(xKey, "avatar-online avatar-offline")
 	End Select
 End Sub
+
+private Sub UpdateClassByID(sID As String, k As String, v As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		UpdateClass(xmElement, k, v)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub RemoveLastClassByID(sID As String, xClass As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		RemoveLastClass(xmElement, xClass)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub RemoveLastClass(xmElement As BANanoElement, xattr As String)
+	Try
+		If xmElement = Null Then Return
+		Dim mLast As String = xmElement.GetData(xattr)
+		mLast = UI.CStr(mLast)
+		mLast = mLast.trim
+		xmElement.RemoveAttr($"data-${xattr}"$)
+		If mLast <> "" Then
+			RemoveClass(xmElement, mLast)
+		End If
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+'this is for dynamic classes
+private Sub UpdateClass(xmElement As BANanoElement, rpClass As String, nv As String)
+	Try
+		If xmElement = Null Then Return
+		RemoveLastClass(xmElement, rpClass)
+		If nv = "" Then Return
+		If nv = "none" Then Return
+		If nv.EndsWith("-") = True Then Return
+		If nv.EndsWith("-none") = True Then Return
+		xmElement.SetData(rpClass, nv)
+		AddClass(xmElement, nv)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 
 Sub SetPropertyAvatarMask(Key As String, Shape As String)
 	Dim smask As String = UI.FixMask(Shape)
@@ -4692,9 +5138,50 @@ Sub AddPropertyImage(Key As String, Title As String, Width As String, Height As 
     </td>
     </tr>"$
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
-	UI.SetWidthByID($"#${mName}_${Key}_src"$, Width)
-	UI.SetHeightByID($"#${mName}_${Key}_src"$, Height)
+	SetWidthByID($"${mName}_${Key}_src"$, Width)
+	SetHeightByID($"${mName}_${Key}_src"$, Height)
 End Sub
+
+private Sub SetHeightByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetHeight(xmElement, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetHeight(xmElement As BANanoElement, s As String)
+	Try
+		If xmElement = Null Then Return
+		Dim sw As String = UI.FixSize("h", s)
+		UpdateClass(xmElement, "height", sw)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+
+private Sub SetWidthByID(sID As String, s As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		SetWidth(xmElement, s)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub SetWidth(xmElement As BANanoElement, s As String)
+	Try
+		If xmElement = Null Then Return
+		Dim sw As String = UI.FixSize("w", s)
+		UpdateClass(xmElement, "width", sw)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+
 Sub SetPropertyImage(Key As String, imgUrl As String)
 	Dim value As String = ""
 	If imgUrl.StartsWith("data:image") Then
@@ -4941,11 +5428,11 @@ Sub SetPropertyReadOnly(Key As String, b As Boolean)
 End Sub
 Sub SetPropertyAddClass(Key As String, className As String)
 	If className = "" Then Return
-	UI.AddClassByID($"#${mName}_${Key}"$, className)
+	AddClassByID($"${mName}_${Key}"$, className)
 End Sub
 Sub SetPropertyRemoveClass(Key As String, className As String)
 	If className = "" Then Return
-	UI.RemoveClassByID($"#${mName}_${Key}"$, className)
+	RemoveClassByID($"${mName}_${Key}"$, className)
 End Sub
 Sub SetPropertyStepValue(Key As String, v As Object)
 	BANano.GetElement($"#${mName}_${Key}"$).SetAttr("step", v)
@@ -5002,13 +5489,13 @@ Sub AddPropertyRadialProgress(Key As String, Title As String, DefaultValue As Bo
 	BANano.GetElement($"#${mName}_body"$).Append(scode)
 	BANano.GetElement($"#${mName}_${Key}"$).SetText($"${DefaultValue}%"$)
 	BANano.GetElement($"#${mName}_${Key}"$).SetData("value", DefaultValue)
-	UI.SetStyleByID($"#${mName}_${Key}"$, "--value", DefaultValue)
-	If sSize <> "" Then UI.SetStyleByID($"#${mName}_${Key}"$, "--size", sSize)
-	If sThickNess <> "" Then UI.SetStyleByID($"#${mName}_${Key}"$, "--thickness", sThickNess)
+	SetStyleByID($"${mName}_${Key}"$, "--value", DefaultValue)
+	If sSize <> "" Then SetStyleByID($"${mName}_${Key}"$, "--size", sSize)
+	If sThickNess <> "" Then SetStyleByID($"${mName}_${Key}"$, "--thickness", sThickNess)
 End Sub
 Sub SetPropertyRadialProgress(Key As String, Value As Object)
 	BANano.GetElement($"#${mName}_${Key}"$).SetText($"${Value}%"$)
-	UI.SetStyleByID($"#${mName}_${Key}"$,"--value", Value)
+	SetStyleByID($"${mName}_${Key}"$,"--value", Value)
 End Sub
 Sub AddPropertyRating(Key As String, Title As String, DefaultValue As String, Color As String, mask As String)
 	propBagKeys.Put(Key, Title)
@@ -5125,7 +5612,7 @@ Sub AddPropertyGroupSelect(Key As String, Title As String, DefaultValue As Strin
 		For Each k As String In litems
 			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
-			BANano.Await(UI.SetCheckedByID(nk, True))
+			BANano.Await(SetCheckedByID(nk, True))
 		Next
 	End If
 End Sub
@@ -5155,7 +5642,7 @@ Sub AddPropertyCheckBoxGroup(Key As String, Title As String, DefaultValue As Str
 		For Each k As String In litems
 			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
-			BANano.Await(UI.SetCheckedByID(nk, True))
+			BANano.Await(SetCheckedByID(nk, True))
 		Next
 	End If
 End Sub
@@ -5185,7 +5672,7 @@ Sub AddPropertyToggleGroup(Key As String, Title As String, DefaultValue As Strin
 		For Each k As String In litems
 			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
-			BANano.Await(UI.SetCheckedByID(nk, True))
+			BANano.Await(SetCheckedByID(nk, True))
 		Next
 	End If
 End Sub
@@ -5212,7 +5699,7 @@ Sub AddPropertyRadioGroup(Key As String, Title As String, DefaultValue As String
 	If DefaultValue <> "" Then
 		DefaultValue = UI.CleanID(DefaultValue)
 		Dim nk As String = $"${mName}_${Key}_${DefaultValue}"$
-		BANano.Await(UI.SetCheckedByID(nk, True))
+		BANano.Await(SetCheckedByID(nk, True))
 	End If
 End Sub
 
@@ -5243,12 +5730,12 @@ Sub SetPropertyRadioGroupItems(Key As String, sColor As String, sActiveColor As 
       					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
     				</label>"$)
 	Next
-	UI.ClearByID($"${mName}_${Key}_content"$)
-	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	ClearByID($"${mName}_${Key}_content"$)
+	AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+		OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
 End Sub
 
@@ -5279,12 +5766,12 @@ Sub SetPropertyToggleGroupItems(Key As String, sColor As String, sActiveColor As
       					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
     				</label>"$)
 	Next
-	UI.ClearByID($"${mName}_${Key}_content"$)
-	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	ClearByID($"${mName}_${Key}_content"$)
+	AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+		OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
 End Sub
 
@@ -5317,12 +5804,12 @@ Sub SetPropertyCheckBoxGroupItems(Key As String, sColor As String, sActiveColor 
       					<span id="${mName}_${Key}_${k}_label" class="whitespace-nowrap">${v}</span>
     				</label>"$)
 	Next
-	UI.ClearByID($"${mName}_${Key}_content"$)
-	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	ClearByID($"${mName}_${Key}_content"$)
+	AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+		OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
 End Sub
 
@@ -5351,10 +5838,10 @@ Sub AddPropertyFilter(Key As String, Title As String, DefaultValue As String, Co
 		For Each k As String In litems
 			k = UI.CleanID(k)
 			Dim nk As String = $"${mName}_${Key}_${k}"$
-			BANano.Await(UI.SetCheckedByID(nk, True))
+			BANano.Await(SetCheckedByID(nk, True))
 		Next
 	End If
-	UI.OnEventByID($"${mName}_${Key}_content"$, "reset", Me, "ResetPropertyForm")
+	OnEventByID($"${mName}_${Key}_content"$, "reset", Me, "ResetPropertyForm")
 End Sub
 
 private Sub ResetPropertyForm(e As BANanoEvent)			'ignoredeadcode
@@ -5394,12 +5881,12 @@ Sub SetPropertyFilterItems(Key As String, sColor As String, sActiveColor As Stri
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		sb.Append($"<input id="${nk}" value="${k}" class="btn rounded-full ${itemSize} ${itemColor} ${checkedColor} ${borderColor}" name="${Key}" type="radio" aria-label="${v}">"$)
 	Next
-	UI.ClearByID($"${mName}_${Key}_content"$)
-	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	ClearByID($"${mName}_${Key}_content"$)
+	AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+		OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
 End Sub
 
@@ -5430,13 +5917,33 @@ Sub SetPropertyGroupSelectItems(Key As String, sColor As String, sActiveColor As
 		Dim nk As String = $"${mName}_${Key}_${k}"$
 		sb.Append($"<input id="${nk}" value="${k}" class="btn ${itemSize} ${itemColor} ${soutline} ${checkedColor} ${borderColor} rounded-full font-normal" name="${Key}" type="${iType}" aria-label="${v}">"$)
 	Next
-	UI.ClearByID($"${mName}_${Key}_content"$)
-	UI.AppendByID($"${mName}_${Key}_content"$, sb.ToString)
+	ClearByID($"${mName}_${Key}_content"$)
+	AppendByID($"${mName}_${Key}_content"$, sb.ToString)
 	For Each k As String In xitems.Keys
 		k = UI.CleanID(k)
 		Dim nk As String = $"${mName}_${Key}_${k}"$
-		UI.OnEventByID(nk, "change", Me, "OnPropChangeInternal")
+		OnEventByID(nk, "change", Me, "OnPropChangeInternal")
 	Next
+End Sub
+
+'append content to the specified element
+private Sub AppendByID(sID As String, sContent As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		xmElement.Append(sContent)
+	Catch
+		
+	End Try				'ignore
+End Sub
+
+private Sub ClearByID(sID As String)
+	Try
+		Dim xmElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		If xmElement = Null Then Return
+		xmElement.empty
+	Catch
+		
+	End Try				'ignore
 End Sub
 
 Sub GetPropertyFileInput (e As BANanoEvent) As Map
@@ -5951,23 +6458,23 @@ Sub ShowDesign(compType As String)
 	AddPropertyCheckBox("parentdevice", "Parent Device",False,"success")
 	SetPropertyVisible("parentdevice", False)
 	AddPropertySelect("componentnavigateto", "Navigate To", "String", False, CreateMap())
-	SetPropertyVisible("componentnavigateto", False)
-	AddPropertyTextBox("componenttablename", "Table Name","",False)
-	AddPropertyTextBox("componentfieldname", "Field Name","",False)
+'	SetPropertyVisible("componentnavigateto", False)
+	AddPropertySelect("componenttablename", "Table Name","",False, CreateMap())
+	AddPropertySelect("componentfieldname", "Field Name","",False, CreateMap())
 	AddPropertySelect("componentfieldtype", "Field Type", "String", False, CreateMap("Blob":"Blob","Bool":"Bool", _
 "Date":"Date","Double":"Double","Int":"Int", "String":"String","File":"File", "LongText":"LongText"))
 	AddPropertyCheckBox("componentprimaryid", "Primary Key",False,"success")
-	AddPropertyTextBox("componentforeigntable", "Foreign Table","",False)
-	AddPropertyTextBox("componentforeignkey", "Foreign Key","",False)
-	AddPropertyTextBox("componentforeignvalue", "Field Value","",False)
+	AddPropertySelect("componentforeigntable", "Foreign Table","",False, CreateMap())
+	AddPropertySelect("componentforeignkey", "Foreign Key","",False, CreateMap())
+	AddPropertySelect("componentforeignvalue", "Field Value","",False, CreateMap())
 	'
-	SetPropertyVisible("componenttablename", False)
-	SetPropertyVisible("componentfieldname", False)
-	SetPropertyVisible("componentprimaryid", False)
-	SetPropertyVisible("componentforeigntable", False)
-	SetPropertyVisible("componentforeignkey", False)
-	SetPropertyVisible("componentforeignvalue", False)
-	SetPropertyVisible("componentfieldtype", False)
+'	SetPropertyVisible("componenttablename", False)
+'	SetPropertyVisible("componentfieldname", False)
+'	SetPropertyVisible("componentprimaryid", False)
+'	SetPropertyVisible("componentforeigntable", False)
+'	SetPropertyVisible("componentforeignkey", False)
+'	SetPropertyVisible("componentforeignvalue", False)
+'	SetPropertyVisible("componentfieldtype", False)
 	'
 	Dim props As List = Designs.Get(compType)
 	For Each rec As Map In  props
@@ -5987,13 +6494,13 @@ Sub ShowDesign(compType As String)
 		Select Case sfieldtype
 			Case "Boolean"
 				sdefaultvalue = UI.CBool(sdefaultvalue)
-				AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes")
+				BANano.Await(AddPropertyCheckBox(skey, sdisplayname,sdefaultvalue, "succes"))
 			Case "Int"
 				sdefaultvalue = UI.CInt(sdefaultvalue)
-				AddPropertyDialer(skey, sdisplayname, sdefaultvalue,False,0,1,1000)
+				BANano.Await(AddPropertyDialer(skey, sdisplayname, sdefaultvalue,False,0,1,1000))
 			Case "Color"
 				sdefaultvalue = UI.CStr(sdefaultvalue)
-				AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "bottom-end")
+				BANano.Await(AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "top-end"))
 			Case Else
 				sdefaultvalue = UI.CStr(sdefaultvalue)
 				Select Case skey
@@ -6020,7 +6527,7 @@ Sub ShowDesign(compType As String)
 					"ColumnChooserColor", "IndeterminateTextColor", "FillColor", "StrokeColor", "StepsColor", _
 					"ValueTextColor", "DescTextColor", "FigureColor", "MainButtonColor", "MainButtonTextColor", _
 					"RawChildColors", "RawChildTextColor", "PenColor", "SaveTextColor", "SaveColor", "ButtonTextColor", "ButtonColor"
-					AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "top-end")		
+					BANano.Await(AddPropertyColorWheel(skey, sdisplayname, sdefaultvalue, False, 16, 200, 20, "top-end"))	
 					Continue
 				End Select
 				
@@ -6028,29 +6535,33 @@ Sub ShowDesign(compType As String)
 					Case ""
 						'does the key start with raw, make multi-line
 						If skey.tolowercase.StartsWith("raw") Then
-							AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,"")
-							SetPropertyPrependIcon(skey, "./assets/paste-solid.svg")
+							BANano.Await(AddPropertyTextArea(skey, sdisplayname, sdefaultvalue, False,""))
+							BANano.Await(SetPropertyPrependIcon(skey, "./assets/paste-solid.svg"))
 							BANano.GetElement($"#${mName}_${skey}"$).AddClass("blradius")
 						Else
 							Select Case skey
 							Case "ParentID"
-								AddPropertySelect("ParentID", "Parent ID", "", False, CreateMap())
+								BANano.Await(AddPropertySelect("ParentID", "Parent ID", "", False, CreateMap()))
+							Case "Icon", "LeftIcon", "RightIcon", "FontAwesomeIcon", "ButtonIcon", "OnIcon", "OffIcon", _
+								"PrependIcon", "AppendIcon", "MiddleIcon", "CheckedIcon", "CollapseIconUrl", "ExpandIconUrl"
+								BANano.Await(AddPropertyTextBoxGroup(skey, sdisplayname, sdefaultvalue, False))
+								BANano.Await(SetPropertyAppendIcon(skey, "./assets/magnifying-glass-solid.svg"))
 							Case Else		
 								'this is not a dropdown
-								AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False)
+								BANano.Await(AddPropertyTextBox(skey, sdisplayname, sdefaultvalue, False))
 							End Select
 						End If
 					Case Else
-						AddPropertySelect(skey, sdisplayname, "", False, CreateMap())
+						BANano.Await(AddPropertySelect(skey, sdisplayname, "", False, CreateMap()))
 						Dim lstItems As List = UI.StrParse("|", sList)
 						lstItems.Sort(True)
-						SetPropertySelectItemsList(skey, lstItems)
-						SetPropertyValue(skey, sdefaultvalue)
+						BANano.Await(SetPropertySelectItemsList(skey, lstItems))
+						BANano.Await(SetPropertyValue(skey, sdefaultvalue))
 				End Select
 		End Select
 	Next
 	'update the property padding
-	UpdatePropertyPadding(sPropertyPadding)
+	BANano.Await(UpdatePropertyPadding(sPropertyPadding))
 End Sub
 
 'add an action button
@@ -6078,7 +6589,7 @@ Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As Str
 	btn.IndicatorSize = "sm"
 	btn.AddComponent
 	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
-	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
+	OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_Click"$)
 	btn.AddClass("mx-1 flex justify-center items-center aspect-square indicator")
 	btn.RemoveBadge
 	btn.RemoveRightImage
@@ -6098,27 +6609,27 @@ Sub SetToolbarButtonBadge(btn As String, value As String)
 		UI.Hide($"#${mName}_${btn}_indicator"$)
 	Else
 		UI.Show($"#${mName}_${btn}_indicator"$)
-		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+		UI.SetTextByID($"${mName}_${btn}_indicator"$, BANano.SF(value))
 	End If
 End Sub
 
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+	UI.SetColorByID($"${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetWidthByID($"${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+	AddClassByID($"${mName}_${btn}_indicator"$, "rounded-full")
+	AddClassByID($"${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 
 
@@ -6141,7 +6652,7 @@ Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As St
 	btn.TextColor = textColor
 	btn.AddComponent
 	btn.AddClass("mx-1")
-	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_click"$)
+	OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}_click"$)
 	Return btn
 End Sub
 
@@ -6150,7 +6661,7 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	If tooltip = "" Then Return
 	Dim col As String = UI.FixColor("tooltip", color)
 	Dim pos As String = UI.FixSize("tooltip", position)
-	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
@@ -6188,20 +6699,20 @@ End Sub
 
 'change a toolbar button color
 Sub SetToolbarButtonColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+	UI.SetColorByID($"${mName}_${btn}"$, "color", "btn", value)
 End Sub
 
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}"$, value)
 End Sub
 
 Sub SetToolbarButtonIconColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetIconColorByID($"#${mName}_${btn}_lefticon"$, value)
+	SetIconColorByID($"${mName}_${btn}_lefticon"$, value)
 End Sub
 
 'change the visibility of a button
 Sub SetToolbarButtonVisible(btn As String, value As Boolean)
-	UI.SetVisibleByID($"#${mName}_${btn}"$, value)
+	SetVisibleByID($"${mName}_${btn}"$, value)
 End Sub
 
 Sub SetToolbarButtonEnable(btn As String, b As Boolean)
@@ -6238,23 +6749,23 @@ End Sub
 '<code>
 'Sub propbag_propertyname_change(e As BANanoEvent)
 ''has the file been specified
-'Dim fileObj As Map = = SDUIShared.GetFileFromEvent(e)
+'Dim fileObj As Map = = UI.GetFileFromEvent(e)
 'If banano.IsNull(fileObj) Or banano.IsUndefined(fileObj) Then Return
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = SDUIShared.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''**** UPLOAD
-''fileDet = SDUIShared.UploadFileWait(fileObj)
-''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+''fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 ''Dim fn As String = fileDet.FileName
 ''get the status of the upload
@@ -6266,10 +6777,10 @@ End Sub
 ''the the full upload path of the file
 ''Dim fp As String = fileDet.FullPath
 ''**** UPLOAD
-''Dim fJSON As Map = BANano.Await(SDUIShared.readAsJsonWait(fileObj))
-''Dim fBuffer As Object = BANano.Await(SDUIShared.readAsArrayBufferWait(fileObj))
-''Dim fText As String = BANano.Await(SDUIShared.readAsTextWait(fileObj))
-''Dim fText As String = BANano.Await(SDUIShared.readAsDataURLWait(fileObj))
+''Dim fJSON As Map = BANano.Await(UI.readAsJsonWait(fileObj))
+''Dim fBuffer As Object = BANano.Await(UI.readAsArrayBufferWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsTextWait(fileObj))
+''Dim fText As String = BANano.Await(UI.readAsDataURLWait(fileObj))
 ''update state of some element like an image
 ''for vfield use SetValue
 ''vimage.src = fText
@@ -6292,17 +6803,17 @@ End Sub
 'for each fileObj As Map in fileList
 ''get file details
 'Dim fileDet As FileObject
-'fileDet = SDUIShared.GetFileDetails(fileObj)
+'fileDet = UI.GetFileDetails(fileObj)
 ''you can check the size here
 'Dim fs As Long = fileDet.FileSize
-'Dim maxSize As Int = SDUIShared.ToKiloBytes(500)
+'Dim maxSize As Int = UI.ToKiloBytes(500)
 'If fs > maxSize Then
 '	app.ShowToastError("File is limited to 500KB!")
 '	Return
 'End If
 ''start uploading the file
-'fileDet = SDUIShared.UploadFileWait(fileObj)
-''fileDet = SDUIShared.UploadFileOptionsWait(fileObj, "../assets", "n")
+'fileDet = UI.UploadFileWait(fileObj)
+''fileDet = UI.UploadFileOptionsWait(fileObj, "../assets", "n")
 ''get the file name
 'Dim fn As String = fileDet.FileName
 ''get the status of the upload

@@ -276,7 +276,7 @@ End Sub
 
 'initialize with filename
 '<code>
-'xcel.Initialize(Me, "excel", SDUIShared.DateTimeNowBackUp & " " & tbl.ExcelTitle & ".xlsx")
+'xcel.Initialize(Me, "excel", UI.DateTimeNowBackUp & " " & tbl.ExcelTitle & ".xlsx")
 '</code>
 Sub Initialize(Module As Object, Event As String, fileName As String)
 	If BANano.AssetsIsDefined("Excel") = False Then
@@ -403,7 +403,7 @@ End Sub
 'after a file is selected, read from array buffer to excel
 '<code>
 ''get file content
-'Dim ebs As String = BANano.Await(SDUIShared.readAsArrayBufferWait(fileObj))
+'Dim ebs As String = BANano.Await(UI.readAsArrayBufferWait(fileObj))
 'Dim records As List = BANano.Await(excel.ReadFromArrayBuffer(ebs, 1))
 'Log(records)
 '</code>
@@ -469,7 +469,7 @@ Sub GetSingleCode(lst As List) As String
 		'
 		sbLine1.Append($"item.put("${nk}", s${nk})"$).Append(CRLF)
 		'
-		sbTrim.Append($"s${nk} = SDUIShared.CStr(s${nk})"$).Append(CRLF)
+		sbTrim.Append($"s${nk} = UI.CStr(s${nk})"$).Append(CRLF)
 		sbTrim.Append($"s${nk} = s${nk}.Trim"$).Append(CRLF)
 	Next
 	sbLine.Append(sbTrim.ToString)
@@ -481,7 +481,7 @@ End Sub
 'read the 1st worksheet
 '<code>
 ''get file content
-'Dim ebs As String = BANano.Await(SDUIShared.readAsBinaryStringWait(fileObj))
+'Dim ebs As String = BANano.Await(UI.readAsBinaryStringWait(fileObj))
 'Dim records As List = BANano.Await(excel.ReadFile(ebs))
 'Log(records)
 'Log(excel.GetSingleCode(records))
@@ -514,7 +514,7 @@ End Sub
 'read the worksheet based on pos
 '<code>
 ''get file content
-'Dim ebs As String = BANano.Await(SDUIShared.readAsBinaryStringWait(fileObj))
+'Dim ebs As String = BANano.Await(UI.readAsBinaryStringWait(fileObj))
 'Dim records As List = BANano.Await(excel.ReadFileWorkSheet(ebs, 1))
 'Log(records)
 '</code>
@@ -882,7 +882,7 @@ End Sub
 ''export table to excel
 '<code>
 'Dim xcel As SDUIExcel
-'xcel.Initialize(Me, "excel", SDUIShared.DateTimeNowBackUp & " " & tbl.ExcelTitle & ".xlsx")
+'xcel.Initialize(Me, "excel", UI.DateTimeNowBackUp & " " & tbl.ExcelTitle & ".xlsx")
 'xcel.ExportTable(tbl.ExcelTitle, True, tbl.GetFieldNames, tbl.GetTitleNames, tbl.Originals)
 ''
 'Private Sub excel_ExcelDownload

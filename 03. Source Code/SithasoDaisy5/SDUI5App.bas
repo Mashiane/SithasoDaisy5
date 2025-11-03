@@ -2114,6 +2114,17 @@ Sub UsesPouchDB
 End Sub
 
 'valid
+Sub UsesSwiper
+	Banano.Await(UI.LoadAssetsOnDemand("Swiper", Array("swiper-bundle.min.css", "swiper-bundle.min.js")))
+End Sub	
+
+'valid
+Sub UsesFontAwesomePicker
+	Banano.Await(UI.LoadAssetsOnDemand("IconPicker", Array("font-awesome-picker.min.js", "jszip.min.js")))
+End Sub
+
+
+'valid
 Sub UsesInfoBox
 	Banano.Await(UI.LoadAssetsOnDemand("InfoBox", Array("infobox.min.css", "countUp.umd.js")))
 End Sub

@@ -399,8 +399,8 @@ Sub setIconSize(s As String)			'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	UI.SetHeightByID($"#${mName}_icon"$, s)
-	UI.SetWidthByID($"#${mName}_icon"$, s)
+	UI.SetHeightByID($"${mName}_icon"$, s)
+	UI.SetWidthByID($"${mName}_icon"$, s)
 End Sub
 'get Icon Size
 Sub getIconSize As String

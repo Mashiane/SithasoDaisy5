@@ -414,7 +414,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">
     			<button id="${mName}_button" class="btn btn-circle">
-    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" replace="false" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
+    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
     				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>

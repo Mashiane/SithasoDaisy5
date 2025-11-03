@@ -333,11 +333,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<div id="${mName}_button" tabindex="0" role="button" class="btn btn-circle">
 			<span id="${mName}_buttontext" class="hidden"></span>
-			<svg-renderer id="${mName}_buttonicon" style="pointer-events:none;" fit="false" replace="false" fill="currentColor" data-js="enabled"></svg-renderer>
+			<svg-renderer id="${mName}_buttonicon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled"></svg-renderer>
 		</div>
 		<button id="${mName}_main" class="btn btn-circle hidden">
 			<span id="${mName}_maintext" class="hidden"></span>
-			<svg-renderer id="${mName}_mainicon" style="pointer-events:none;" fit="false" replace="false" fill="currentColor" data-js="enabled"></svg-renderer>
+			<svg-renderer id="${mName}_mainicon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled"></svg-renderer>
 		</button>
 	</div>"$).Get("#" & mName)
 	setText(sText)
@@ -573,7 +573,7 @@ Sub setChildKeys(s As String)				'ignoredeadcode
 		For Each btn As String In children
 			btn = UI.CleanID(btn)
 			sbButtons.Append($"[BANCLEAN]<button id="${mName}_${btn}" class="btn ${btnSize} btn-circle">
-				<svg-renderer id="${mName}_${btn}_icon" style="pointer-events:none;" fit="false" replace="true" fill="currentColor" data-js="enabled"></svg-renderer>
+				<svg-renderer id="${mName}_${btn}_icon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled"></svg-renderer>
 			</button>"$)
 		Next
 	End If

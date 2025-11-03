@@ -616,12 +616,12 @@ Sub setHasSearch(b As Boolean)			'ignoredeadcode
 		UI.RemoveElementByID($"${mName}_searchbox"$)
 		Return
 	End If
-	UI.SetVisibleByID($"#${mName}_searchbox"$, b)
-	UI.SetVisibleByID($"#${mName}_search"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxgroup"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtn"$, b)
-	UI.SetVisibleByID($"#${mName}_searchbtnicon"$, b)
-	'UI.SetVisibleByID($"#${mName}_searchboxlabel"$, b)
+	UI.SetVisibleByID($"${mName}_searchbox"$, b)
+	UI.SetVisibleByID($"${mName}_search"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxgroup"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtn"$, b)
+	UI.SetVisibleByID($"${mName}_searchbtnicon"$, b)
+	'UI.SetVisibleByID($"${mName}_searchboxlabel"$, b)
 End Sub
 
 Sub getHasSearch As Boolean
@@ -738,26 +738,26 @@ Sub SetToolbarButtonBadge(btn As String, value As String)
 		UI.Hide($"#${mName}_${btn}_indicator"$)
 	Else
 		UI.Show($"#${mName}_${btn}_indicator"$)
-		UI.SetTextByID($"#${mName}_${btn}_indicator"$, BANano.SF(value))
+		UI.SetTextByID($"${mName}_${btn}_indicator"$, BANano.SF(value))
 	End If
 End Sub
 Sub SetToolbarButtonBadgeColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}_indicator"$, "color", "badge", value)
+	UI.SetColorByID($"${mName}_${btn}_indicator"$, "color", "badge", value)
 End Sub
 'make the badge round
 Sub SetToolbarButtonBadgeSize(btn As String, value As String)
-	UI.SetWidthByID($"#${mName}_${btn}_indicator"$, value)
-	UI.SetHeightByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetWidthByID($"${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonBadgeRound(btn As String)
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "rounded-full")
-	UI.AddClassByID($"#${mName}_${btn}_indicator"$, "aspect-square")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "aspect-square")
 End Sub
 Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
-	UI.SetTextColorByID($"#${mName}_${btn}_indicator"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}_indicator"$, value)
 End Sub
 Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
-	UI.SetTextColorByID($"#${mName}_${btn}"$, value)
+	UI.SetTextColorByID($"${mName}_${btn}"$, value)
 End Sub
 'change the visibility of a button
 Sub SetToolbarButtonVisible(btn As String, value As Boolean)
@@ -771,7 +771,7 @@ Sub SetToolbarButtonVisible(btn As String, value As Boolean)
 End Sub
 'change a toolbar button color
 Sub SetToolbarButtonColor(btn As String, value As String)
-	UI.SetColorByID($"#${mName}_${btn}"$, "color", "btn", value)
+	UI.SetColorByID($"${mName}_${btn}"$, "color", "btn", value)
 End Sub
 
 
