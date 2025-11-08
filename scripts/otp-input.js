@@ -40,8 +40,8 @@ class OtpInput extends HTMLElement {
             style.textContent = `
                 otp-input { display: flex; gap: 0.5rem; }
                 .otp-input-box {
-                    width: 3rem;
-                    height: 3rem;
+                    width: 3.5rem;
+                    height: 3.5rem;
                     text-align: center;
                     font-size: 1.5rem;
                     border-radius: 0.5rem;
@@ -49,6 +49,7 @@ class OtpInput extends HTMLElement {
                     outline: none;
                     transition: border-color 0.2s;
                 }
+
                 .otp-input-box:focus {
                     border-color: #2563eb;
                     box-shadow: 0 0 0 2px #2563eb33;

@@ -987,6 +987,14 @@ Sub RemoveCircle(markerID As String)
 	circles.Remove(markerID)
 End Sub
 
+Sub RemoveRectangle(markerID As String)
+	markerID = UI.CleanID(markerID)
+	If rectangles.ContainsKey(markerID) = False Then Return
+	Dim MarkerObject As BANanoObject = rectangles.Get(markerID)
+	MapObject.RunMethod("removeLayer", MarkerObject)
+	rectangles.Remove(markerID)
+End Sub
+
 Sub RemovePolygon(markerID As String)
 	markerID = UI.CleanID(markerID)
 	If polygons.ContainsKey(markerID) = False Then Return
