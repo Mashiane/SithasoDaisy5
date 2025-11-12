@@ -79,7 +79,13 @@ Sub Class_Globals
 	Public VehicleMake As Boolean
 	Public VehicleType As Boolean
 	Private BANano As BANano			'ignore
+	Public ProjectName As Boolean
+	Public ProjectStatus As Boolean
+	Public TaskName As Boolean
 	'
+	Public const DT_TASK_NAME As String = "taskname"
+	Public const DT_PROJECT_STATUS As String = "projectstatus"
+	Public const DT_PROJECT_NAME As String = "projectname"
 	Public const DT_VEHICLE_TYPE As String = "vehicletype"
 	Public const DT_VEHICLE_MAKE As String = "vehiclemake"
 	Public const DT_VEHICLE As String = "vehicle"
@@ -220,12 +226,18 @@ Sub Class_Globals
 	PaymentProvider As String, _
 	Vehicle As String, _
 	VehicleMake As String, _
-	VehicleType as string)
+	VehicleType As String, _
+	ProjectName As String, _
+	ProjectStatus As String, _
+	TaskName As String)
 End Sub
 
 Sub Initialize As SDUI5FakeIT
 	Conditions.Initialize 
 	DT_Types.Initialize
+	DT_Types.Add(DT_TASK_NAME)
+	DT_Types.Add(DT_PROJECT_STATUS)
+	DT_Types.add(DT_PROJECT_NAME)
 	DT_Types.Add(DT_VEHICLE_TYPE)
 	DT_Types.Add(DT_VEHICLE_MAKE)
 	DT_Types.Add(DT_VEHICLE)
@@ -367,13 +379,18 @@ Sub Initialize As SDUI5FakeIT
 	PaymentProvider = False
 	Vehicle = False
 	VehicleMake = False
-	VehicleType = True
+	VehicleType = False
+	ProjectName = False
+	ProjectStatus = False
+	TaskName = False
 	Return Me
 End Sub
 
 'add types of data should be returned
 Sub All As SDUI5FakeIT
 	State = True
+	TaskName = True
+	ProjectStatus = True
 	VehicleMake = True
 	SKU = True
 	Province = True
@@ -443,6 +460,7 @@ Sub All As SDUI5FakeIT
 	PaymentProvider = True
 	Vehicle = True
 	VehicleType = True
+	ProjectName = True
 	Return Me
 End Sub
 
@@ -480,8 +498,14 @@ Sub GetRecordsWithStructure(structure As Map, numRecords As Int) As List
 			Dim strVal As String = structure.Get(strkey)
 			Dim svalue As Object = Null
 			Select Case strVal
+				Case DT_TASK_NAME
+					svalue = Rand_Task_Name
+				Case DT_PROJECT_STATUS
+					svalue = BANano.Await(Rand_Project_Status)
+				Case DT_PROJECT_NAME
+					svalue = BANano.Await(Rand_Project_Name)
 				Case DT_VEHICLE_TYPE
-					svalue = BANano.Await(rand_vehicle_type)
+					svalue = BANano.Await(Rand_Vehicle_Type)
 				Case DT_VEHICLE_MAKE
 					svalue = BANano.Await(Rand_Vehicle_Make)
 				Case DT_VEHICLE
@@ -662,6 +686,9 @@ End Sub
 Sub GetSingle As FakeData
 	Dim rt As FakeData
 	rt.Initialize
+	If TaskName Then rt.TaskName = Rand_Task_Name
+	If ProjectStatus Then rt.ProjectStatus = Rand_Project_Status
+	If ProjectName Then rt.ProjectName = Rand_Project_Name
 	If VehicleType Then rt.VehicleType = Rand_Vehicle_Type
 	If VehicleMake Then rt.VehicleMake = Rand_Vehicle_Make
 	If Vehicle Then rt.Vehicle = Rand_Vehicle
@@ -754,6 +781,9 @@ Sub GetRecords(numRecords As Int) As List
 	For tRecs = 1 To numRecords
 		Dim rec As Map
 		rec.Initialize
+		If TaskName Then rec.Put("taskname", Rand_Task_Name)
+		If ProjectStatus Then rec.Put("projectstatus", Rand_Project_Status)
+		If ProjectName Then rec.Put("projectname", Rand_Project_Name)
 		If VehicleType Then rec.Put("vehicletype", Rand_Vehicle_Type)
 		If VehicleMake Then rec.Put("vehiclemake", Rand_Vehicle_Make)
 		If Vehicle Then rec.Put("vehicle", Rand_Vehicle)
@@ -826,6 +856,122 @@ Sub GetRecords(numRecords As Int) As List
 		recs.Add(rec)
 	Next
 	Return recs
+End Sub
+
+Sub Rand_Task_Name As String
+	Dim lst As List
+	lst.Initialize
+    lst.AddAll(Array As String("Plan", "Define", "Outline", "Estimate", "Schedule", "Organize", "Prioritize", _
+        "Assign", "Research", "Brainstorm", "Prepare", "Propose", "Initiate", "Project Planning", _
+        "Task Estimation", "Resource Allocation", "Requirement Gathering", "Risk Assessment", _
+        "Goal Setting", "Strategy Meeting", "Budget Planning", "Timeline Review", "Project Roadmap", _
+        "Set Objectives", "Define Scope", "Identify Risks", "Forecast Results", "Develop Strategy", _
+        "Plan Event", "Organize Workshop", "Team Planning", "Set Milestones", "Action Planning", _
+		"Discuss", "Review", "Comment", "Report", "Share", "Notify", "Announce", "Coordinate", _
+        "Collaborate", "Consult", "Inform", "Request", "Respond", "Approve", "Confirm", "Remind", _
+        "Invite", "Meet", "Team Meeting", "Client Meeting", "Design Review", "Status Update", _
+        "Progress Discussion", "Performance Feedback", "Stakeholder Meeting", "Daily Standup", _
+        "Brainstorm Session", "Follow Up", "Request Approval", "Send Notification", "Team Coordination", _
+        "Project Discussion", "Lead Discussion", "Moderate Discussion", "Facilitate Meeting", _
+        "Collaborate With Team", "Communicate Results", "Share Insights", "Provide Feedback", _
+        "Present Ideas", "Discuss Options", "Negotiate Terms", "Consult Stakeholders", "Organize Discussion", _
+		"Document", "Record", "Summarize", "Track", "Log", "Analyze", "Audit", "Verify", "Validate", _
+        "Inspect", "Evaluate", "Document Requirements", "Write Report", "Prepare Summary", "Track Progress", _
+        "Log Issues", "Analyze Data", "Evaluate Risks", "Inspect Deliverables", "Audit Records", "Verify Details", _
+        "Prepare Documentation", "Summarize Findings", "Gather Feedback", "Compile Report", "Review Records", _
+        "Assess Performance", "Monitor Results", "Evaluate Outcomes", "Create Checklist", "Document Changes", _
+        "Deliver", "Launch", "Release", "Publish", "Promote", "Announce", "Client Handover", "Final Review", _
+        "Sign Off", "Demo Presentation", "Showcase", "Presentation", "Present Findings", "Submit Work", _
+        "Share Results", "Conduct Meeting", "Provide Feedback", "Evaluate Outcome", "Demonstrate Product", _
+        "Review Proposal", "Present Report", "Hand Over Project", "Conduct Review", "Prepare Presentation", _
+        "Show Work", "Present Summary", "Provide Assessment", "Finalize Document", "Deliver Presentation", _
+        "Organize Files", "Clean Workspace", "Arrange Meeting", "Follow Instructions", "Provide Assistance", _
+        "Support Team", "Manage Resources", "Train Staff", "Guide Colleagues", "Mentor Interns", _
+        "Conduct Interview", "Onboard Employee", "Facilitate Workshop", "Coordinate Event", "Assist Client", _
+        "Respond Inquiry", "Handle Request", "Resolve Issue", "Clarify Details", "Document Process", _
+        "Track Inventory", "Prepare Materials", "Update Records", "Compile Data", "Summarize Notes", _
+        "Verify Information", "Inspect Equipment", "Test Materials", "Check Quality", "Measure Results", _
+        "Evaluate Data", "Provide Guidance", "Collaborate Effectively", "Plan Schedule", "Set Agenda", _
+        "Lead Team", "Assign Responsibilities", "Coordinate Efforts", "Discuss Plan", "Analyze Situation", _
+        "Brainstorm Solutions", "Review Performance", "Conduct Analysis", "Summarize Report", "Document Findings", _
+        "Present Proposal", "Share Updates", "Monitor Progress", "Provide Recommendations", "Conduct Evaluation" _
+    ))
+	Return RandListValue(lst)
+End Sub
+
+Sub Rand_Project_Status As String
+	Dim lst As List
+	lst.Initialize
+
+	lst.AddAll(Array As String( _
+        "Planned", _
+		"Not Started", _
+        "Proposed", _
+        "Requested", _
+        "Approved", _
+        "Pending", _
+        "On Hold", _
+        "In Progress", _
+        "Under Review", _
+        "Testing", _
+        "Awaiting Feedback", _
+        "Reopened", _
+        "Blocked", _
+        "Cancelled", _
+        "Deferred", _
+        "Completed", _
+        "Closed", _
+        "Archived", _
+        "Deployed", _
+        "Maintenance", _
+        "Retired" _
+    ))
+	Return RandListValue(lst)
+End Sub
+
+
+Sub Rand_Project_Name As String
+	Dim lst As List
+	lst.Initialize
+
+	' --- NATO alphabet phonetic names ---
+	Dim nato() As String = Array As String( _
+        "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", _
+        "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", _
+        "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", _
+        "Victor", "Whiskey", "X-ray", "Yankee", "Zulu" _
+    )
+
+	' --- NATO numeric names (0–9) ---
+	Dim nums() As String = Array As String( _
+        "Zero", "One", "Two", "Tree", "Four", "Fife", "Six", "Seven", "Eight", "Niner" _
+    )
+
+	' --- Step 1: Add all individual alphabet projects ---
+	For Each n As String In nato
+		lst.Add("Project " & n)
+	Next
+
+	' --- Step 2: Add all individual numeric projects ---
+	For Each num As String In nums
+		lst.Add("Project " & num)
+	Next
+
+	' --- Step 3: Add all combinations (Letter + Number) ---
+	For Each n As String In nato
+		For Each num As String In nums
+			lst.Add($"Project ${n} ${num}"$)
+		Next
+	Next
+
+	' --- Step 4: Add your B4X identity projects ---
+	lst.AddAll(Array As String( _
+        "Project Bravo Four", _
+        "Project Bravo X-ray", _
+        "Project Four X-ray", _
+        "Project Bravo Four X-ray" _
+    ))
+	Return RandListValue(lst)
 End Sub
 
 Sub Rand_Vehicle_Type As String

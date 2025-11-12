@@ -12,7 +12,7 @@ Version=10.2
 #DesignerProperty: Key: LegendLabel, DisplayName: Legend Label, FieldType: String, DefaultValue: Checkbox Group, Description: Legend Label
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: , Description: Color
 #DesignerProperty: Key: Columns, DisplayName: Columns, FieldType: String, DefaultValue: 3, Description: Columns
-#DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: , Description: Options
+#DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
 #DesignerProperty: Key: Selected, DisplayName: Selected, FieldType: String, DefaultValue: , Description: Selected
 #DesignerProperty: Key: ActiveBorderColor, DisplayName: Active Border Color, FieldType: String, DefaultValue: , Description: Active Border Color
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: , Description: Active Color
@@ -283,7 +283,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = UI.CStr(sHeight)
 		sLegendLabel = Props.GetDefault("LegendLabel", "Checkbox Group")
 		sLegendLabel = UI.CStr(sLegendLabel)
-		sRawOptions = Props.GetDefault("RawOptions", "")
+		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 		sRawOptions = UI.CStr(sRawOptions)
 		sRounded = Props.GetDefault("Rounded", "lg")
 		sRounded = UI.CStr(sRounded)

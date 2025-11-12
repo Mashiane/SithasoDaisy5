@@ -12,7 +12,7 @@ Version=10
 #DesignerProperty: Key: FloatingLabel, DisplayName: Floating Label, FieldType: Boolean, DefaultValue: False, Description: Floating Label
 #DesignerProperty: Key: LabelWidth, DisplayName: Label Width, FieldType: String, DefaultValue: , Description: Label Width
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: , Description: Placeholder
-#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r, Description: Options
+#DesignerProperty: Key: RawOptions, DisplayName: Options, FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: MinLength, DisplayName: Min Length, FieldType: String, DefaultValue: , Description: Min Length
@@ -276,7 +276,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sInputType = UI.CStr(sInputType)
 		sPlaceholder = Props.GetDefault("Placeholder", "")
 		sPlaceholder = UI.CStr(sPlaceholder)
-		sRawOptions = Props.GetDefault("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
+		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 		sRawOptions = UI.CStr(sRawOptions)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)

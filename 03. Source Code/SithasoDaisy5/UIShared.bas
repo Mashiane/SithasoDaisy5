@@ -21,6 +21,12 @@ Sub Class_Globals
 	Private bImportant As Boolean
 End Sub
 
+Sub CreateList As List
+	Dim nl As List
+	nl.Initialize
+	Return nl
+End Sub
+
 Sub GetDeviceSizes(varOffsets As String) As Map
 	Dim mm As Map = CreateMap("xs":"", "sm":"", "md":"", "lg":"", "xl":"", "2xl":"")
 	varOffsets = CStr(varOffsets)

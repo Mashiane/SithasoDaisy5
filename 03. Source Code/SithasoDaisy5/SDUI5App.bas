@@ -2123,6 +2123,10 @@ Sub UsesFontAwesomePicker
 	Banano.Await(UI.LoadAssetsOnDemand("IconPicker", Array("font-awesome-picker.min.js", "jszip.min.js")))
 End Sub
 
+'valid
+Sub UsesMultiSelect
+	Banano.Await(UI.LoadAssetsOnDemand("MultiSelect", Array("daisy-multiselect.min.js")))
+End Sub
 
 'valid
 Sub UsesInfoBox
