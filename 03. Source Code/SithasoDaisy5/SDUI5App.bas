@@ -2080,7 +2080,7 @@ End Sub
 
 'valid
 Sub UsesFullCalendar
-	Banano.Await(UI.LoadAssetsOnDemand("FullCalendar", Array("fc.min.css",  "fc.min.js", "fclocales.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("FullCalendar", Array("fc.min.css",  "fullcalendar.css", "fc.min.js", "fclocales.min.js")))
 End Sub
 
 'valid

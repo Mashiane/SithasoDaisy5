@@ -139,7 +139,7 @@ End Sub
 
 Private Sub SDUI5OfficeRibbon1_cut (ID As String)
 	Log("SDUI5OfficeRibbon1_cut")
-	app.ShowToastInfo("SDUI5OfficeRibbon1_cut")
+	app.ShowToastSuccess("SDUI5OfficeRibbon1_cut")
 End Sub
 
 Private Sub SDUI5OfficeRibbon1_copy (ID As String)
@@ -149,13 +149,13 @@ End Sub
 
 Private Sub SDUI5OfficeRibbon1_formpainter (ID As String)
 	Log("SDUI5OfficeRibbon1_formpainter")
-	app.ShowToastInfo("SDUI5OfficeRibbon1_formpainter")
+	app.ShowToastWarning("SDUI5OfficeRibbon1_formpainter")
 End Sub
 
 private Sub SDUI5OfficeRibbon1_colorpicker(args As Map)
 	Dim hexColor As String = SDUI5OfficeRibbon1.GetColor(args)
 	Log("SDUI5OfficeRibbon1_colorpicker")
-	app.ShowToastInfo($"SDUI5OfficeRibbon1_formpainter: ${hexColor}"$)
+	app.ShowToastError($"SDUI5OfficeRibbon1_formpainter: ${hexColor}"$)
 End Sub
 
 private Sub SDUI5OfficeRibbon1_paste(args As Map)

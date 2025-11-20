@@ -5127,6 +5127,64 @@ Sub TimeAdd1(currentDate As String, currentTime As String, minutes2Add As String
 	Return sTime
 End Sub
 
+'return the start of month based on a date
+'return in yyyy-mm-dd
+Sub StartOfMonth(mDate As String) As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	Dim ConvertDate As Long = DateTime.DateParse(mDate)
+	Dim yyyy As String = DateTime.GetYear(ConvertDate)
+	Dim mm As String = DateTime.GetMonth(ConvertDate)
+	mm = PadRight(mm, 2, "0")
+	Dim ndate As String = $"${yyyy}-${mm}-01"$
+	Return ndate
+End Sub
+
+'return the start date of this active month
+Sub StartOfThisMonth As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	Dim lNow As Long = DateTime.now
+	Dim yyyy As String = DateTime.GetYear(lNow)
+	Dim mm As String = DateTime.GetMonth(lNow)
+	mm = PadRight(mm, 2, "0")
+	Dim ndate As String = $"${yyyy}-${mm}-01"$
+	Return ndate
+End Sub
+
+'return the end of this active month
+Sub EndOfThisMonth As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	'get the current time
+	Dim lNow As Long = DateTime.now
+	'add a month to the current time
+	lNow = DateTime.Add(lNow, 0, 1, 0)
+	Dim yyyy As String = DateTime.GetYear(lNow)
+	Dim mm As String = DateTime.GetMonth(lNow)
+	mm = PadRight(mm, 2, "0")
+	'define the beginning of next month
+	Dim ndate As String = $"${yyyy}-${mm}-01"$
+	Dim lStart As Long = DateTime.DateParse(ndate)
+	'deduct 1 day
+	lStart = DateTime.Add(lStart, 0, 0, -1)
+	Return DateTime.Date(lStart)
+End Sub
+
+'return end of month based on a date
+Sub EndOfMonth(mDate As String) As String
+	DateTime.DateFormat = "yyyy-MM-dd"
+	Dim lNow As Long = DateTime.DateParse(mDate)
+	'add a month to the current time
+	lNow = DateTime.Add(lNow, 0, 1, 0)
+	Dim yyyy As String = DateTime.GetYear(lNow)
+	Dim mm As String = DateTime.GetMonth(lNow)
+	mm = PadRight(mm, 2, "0")
+	'define the beginning of next month
+	Dim ndate As String = $"${yyyy}-${mm}-01"$
+	Dim lStart As Long = DateTime.DateParse(ndate)
+	'deduct 1 day
+	lStart = DateTime.Add(lStart, 0, 0, -1)
+	Return DateTime.Date(lStart)
+End Sub
+
 
 'add months to date
 Sub MonthAdd(mDate As String, HowManyMonths As Int) As String

@@ -18,7 +18,7 @@ Version=10.2
 #Event: DateRangeChange (startDate As String, endDate As String, lastView As string)
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: InitialDate, DisplayName: Initial Date, FieldType: String, DefaultValue: now, Description: Initial Date
-#DesignerProperty: Key: InitialView, DisplayName: Initial View, FieldType: String, DefaultValue: dayGridMonth, Description: Initial View, List: dayGridMonth|dayGridWeek|listMonth|listWeek|timeGridDay|timeGridWeek
+#DesignerProperty: Key: InitialView, DisplayName: Initial View, FieldType: String, DefaultValue: dayGridMonth, Description: Initial View, List: dayGridMonth|dayGridWeek|listMonth|listWeek|timeGridDay|timeGridWeek|multiMonthYear
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: auto, Description: Height
 #DesignerProperty: Key: MonthText, DisplayName: Month Text, FieldType: String, DefaultValue: month, Description: Month Text
 #DesignerProperty: Key: DayText, DisplayName: Day Text, FieldType: String, DefaultValue: day, Description: Day Text
@@ -34,7 +34,7 @@ Version=10.2
 #DesignerProperty: Key: ExpandRows, DisplayName: Expand Rows, FieldType: Boolean, DefaultValue: False, Description: Expand Rows
 #DesignerProperty: Key: HeaderToolbarCenter, DisplayName: Header Toolbar Center, FieldType: String, DefaultValue: title, Description: Header Toolbar Center
 #DesignerProperty: Key: HeaderToolbarLeft, DisplayName: Header Toolbar Left, FieldType: String, DefaultValue: prevYear;prev;next;nextYear today, Description: Header Toolbar Left
-#DesignerProperty: Key: HeaderToolbarRight, DisplayName: Header Toolbar Right, FieldType: String, DefaultValue: dayGridMonth;timeGridWeek;timeGridDay;listMonth, Description: Header Toolbar Right
+#DesignerProperty: Key: HeaderToolbarRight, DisplayName: Header Toolbar Right, FieldType: String, DefaultValue: dayGridMonth;timeGridWeek;timeGridDay;listMonth;multiMonthYear, Description: Header Toolbar Right
 #DesignerProperty: Key: HeaderToolbarVisible, DisplayName: Header Toolbar Visible, FieldType: Boolean, DefaultValue: True, Description: Header Toolbar Visible
 #DesignerProperty: Key: ListText, DisplayName: List Text, FieldType: String, DefaultValue: list, Description: List Text
 #DesignerProperty: Key: Locale, DisplayName: Locale, FieldType: String, DefaultValue: en, Description: Locale
@@ -92,7 +92,7 @@ Sub Class_Globals
 	Private bExpandRows As Boolean = False
 	Private sHeaderToolbarCenter As String = "title"
 	Private sHeaderToolbarLeft As String = "prevYear;prev;next;nextYear today"
-	Private sHeaderToolbarRight As String = "dayGridMonth;timeGridWeek;timeGridDay;listMonth"
+	Private sHeaderToolbarRight As String = "dayGridMonth;timeGridWeek;timeGridDay;listMonth;multiMonthYear"
 	Private bHeaderToolbarVisible As Boolean = True
 	Private sHeight As String = "auto"
 	Private sInitialDate As String = "now"
@@ -121,6 +121,7 @@ Sub Class_Globals
 	Public CONST INITIALVIEW_LISTWEEK As String = "listWeek"
 	Public CONST INITIALVIEW_TIMEGRIDDAY As String = "timeGridDay"
 	Public CONST INITIALVIEW_TIMEGRIDWEEK As String = "timeGridWeek"
+	Public const INITIALVIEW_MULTIMONTHYEAR As String = "multiMonthYear"
 	Private fc As BANanoObject
 	Private events As List
 End Sub
@@ -139,6 +140,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	Options.Initialize
 	events.Initialize
 	BANano.DependsOnAsset("fc.min.css")
+	BANano.DependsOnAsset("fullcalendar.css")
 	BANano.DependsOnAsset("fc.min.js")
 	BANano.DependsOnAsset("fclocales.min.js")
 	SetDefaults
@@ -163,7 +165,7 @@ private Sub SetDefaults
 	CustProps.Put("ExpandRows", False)
 	CustProps.Put("HeaderToolbarCenter", "title")
 	CustProps.Put("HeaderToolbarLeft", "prevYear;prev;next;nextYear today")
-	CustProps.Put("HeaderToolbarRight", "dayGridMonth;timeGridWeek;timeGridDay;listMonth")
+	CustProps.Put("HeaderToolbarRight", "dayGridMonth;timeGridWeek;timeGridDay;listMonth;multiMonthYear")
 	CustProps.Put("HeaderToolbarVisible", True)
 	CustProps.Put("ListText", "list")
 	CustProps.Put("Locale", "en")
@@ -363,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeaderToolbarCenter = UI.CStr(sHeaderToolbarCenter)
 		sHeaderToolbarLeft = Props.GetDefault("HeaderToolbarLeft", "prevYear;prev;next;nextYear today")
 		sHeaderToolbarLeft = UI.CStr(sHeaderToolbarLeft)
-		sHeaderToolbarRight = Props.GetDefault("HeaderToolbarRight", "dayGridMonth;timeGridWeek;timeGridDay;listMonth")
+		sHeaderToolbarRight = Props.GetDefault("HeaderToolbarRight", "dayGridMonth;timeGridWeek;timeGridDay;listMonth;multiMonthYear")
 		sHeaderToolbarRight = UI.CStr(sHeaderToolbarRight)
 		bHeaderToolbarVisible = Props.GetDefault("HeaderToolbarVisible", True)
 		bHeaderToolbarVisible = UI.CBool(bHeaderToolbarVisible)
@@ -462,12 +464,14 @@ Private Sub EventClick(e As Map)
 End Sub
 
 Sub Refresh				'ignoredeadcode
+	If sInitialDate = "now" Then sInitialDate = UI.DateNow
 	sHeaderToolbarLeft = sHeaderToolbarLeft.Replace(";", ",")
 	sHeaderToolbarRight = sHeaderToolbarRight.Replace(";", ",")
 	
 	UI.PutRecursive(Options, "headerToolbar.right", sHeaderToolbarRight)
 	UI.PutRecursive(Options, "headerToolbar.left", sHeaderToolbarLeft)
 	UI.PutRecursive(Options, "headerToolbar.center", sHeaderToolbarCenter)
+	Options.Put("initialView", sInitialView)
 	Options.put("scrollTime", sScrollTime)
 	Options.put("scrollTimeReset", bScrollTimeReset)
 	Options.put("slotDuration", sSlotDuration)
@@ -479,6 +483,18 @@ Sub Refresh				'ignoredeadcode
 	Options.Put("editable", bEditable)
 	Options.Put("droppable", bDroppable)
 	Options.Put("selectable", bSelectable)
+	Options.put("nowIndicator", bNowIndicator)
+	Options.Put("dayMaxEvents", bDayMaxEvents)
+	Options.Put("navLinks", bNavLinks)
+	Options.put("aspectRatio", sAspectRatio)
+	Options.put("businessHours", bBusinessHours)
+	Options.put("buttonIcons", bButtonIcons)	
+	Options.put("initialDate", sInitialDate)
+	Options.put("locale", sLocale)
+	Options.put("nextClickOn", bNextClickOn)
+	Options.put("prevClickOn", bPrevClickOn)
+	Options.put("selectMirror", bSelectMirror)
+	Options.put("weekNumbers", bWeekNumbers)
 	
 	Dim e As BANanoEvent
 	If bPrevClickOn Then
@@ -560,6 +576,10 @@ Sub Refresh				'ignoredeadcode
 		Options.Put("eventClick", cb2)
 	End If
 	Options.Put("events", events)
+	UI.PutRecursive(Options, "eventTimeFormat.hour", "2-digit")
+	UI.PutRecursive(Options, "eventTimeFormat.minute", "2-digit")
+	UI.PutRecursive(Options, "eventTimeFormat.hour12", False)
+	'
 	Dim el As BANanoObject = mElement.ToObject
 	fc.Initialize2("FullCalendar.Calendar", Array(el, Options))
 	fc.RunMethod("render", Null)
@@ -569,31 +589,31 @@ End Sub
 Sub setAspectRatio(s As String)
 	sAspectRatio = s
 	CustProps.put("AspectRatio", s)
-	Options.put("aspectRatio", s)
+	Options.put("aspectRatio", sAspectRatio)
 End Sub
 'set Business Hours
 Sub setBusinessHours(b As Boolean)
 	bBusinessHours = b
 	CustProps.put("BusinessHours", b)
-	Options.put("businessHours", b)
+	Options.put("businessHours", bBusinessHours)
 End Sub
 'set Show The Prev/next Text
 Sub setButtonIcons(b As Boolean)
 	bButtonIcons = b
 	CustProps.put("ButtonIcons", b)
-	Options.put("buttonIcons", b)
+	Options.put("buttonIcons", bButtonIcons)
 End Sub
 'set Content Height
 Sub setContentHeight(s As String)
 	sContentHeight = s
 	CustProps.put("ContentHeight", s)
-	Options.put("contentHeight", s)
+	Options.put("contentHeight", sContentHeight)
 End Sub
 'set Day Max Events
 Sub setDayMaxEvents(b As Boolean)
 	bDayMaxEvents = b
 	CustProps.put("DayMaxEvents", b)
-	Options.put("dayMaxEvents", b)
+	Options.put("dayMaxEvents", bDayMaxEvents)
 End Sub
 'set Day Text
 Sub setDayText(s As String)
@@ -613,13 +633,13 @@ End Sub
 Sub setDroppable(b As Boolean)
 	bDroppable = b
 	CustProps.put("Droppable", b)
-	Options.put("droppable", b)
+	Options.put("droppable", bDroppable)
 End Sub
 'set Editable
 Sub setEditable(b As Boolean)
 	bEditable = b
 	CustProps.put("Editable", b)
-	Options.put("editable", b)
+	Options.put("editable", bEditable)
 End Sub
 'set Expand Rows
 Sub setExpandRows(b As Boolean)
@@ -651,14 +671,14 @@ End Sub
 Sub setHeight(s As String)
 	sHeight = s
 	CustProps.put("Height", s)
-	Options.put("height", s)
+	Options.put("height", sHeight)
 End Sub
 'set Initial Date
 Sub setInitialDate(s As String)
+	If s = "now" Then s = UI.DateNow
 	sInitialDate = s
 	CustProps.put("InitialDate", s)
-	If s = "now" Then s = UI.DateNow
-	Options.put("initialDate", s)
+	Options.put("initialDate", sInitialDate)
 End Sub
 
 'set Now
@@ -670,11 +690,11 @@ Sub setNow(s As String)
 End Sub
 
 'set Initial View
-'options: dayGridMonth|dayGridWeek|listMonth|listWeek|timeGridDay|timeGridWeek
+'options: dayGridMonth|dayGridWeek|listMonth|listWeek|timeGridDay|timeGridWeek|multiMonthYear
 Sub setInitialView(s As String)
 	sInitialView = s
 	CustProps.put("InitialView", s)
-	Options.put("initialView", s)
+	Options.put("initialView", sInitialView)
 End Sub
 'set List Text
 Sub setListText(s As String)
@@ -686,7 +706,7 @@ End Sub
 Sub setLocale(s As String)
 	sLocale = s
 	CustProps.put("Locale", s)
-	Options.put("locale", s)
+	Options.put("locale", sLocale)
 End Sub
 'set Month Text
 Sub setMonthText(s As String)
@@ -698,67 +718,67 @@ End Sub
 Sub setNavLinks(b As Boolean)
 	bNavLinks = b
 	CustProps.put("NavLinks", b)
-	Options.put("navLinks", b)
+	Options.put("navLinks", bNavLinks)
 End Sub
 'set Next Click On
 Sub setNextClickOn(b As Boolean)
 	bNextClickOn = b
 	CustProps.put("NextClickOn", b)
-	Options.put("nextClickOn", b)
+	Options.put("nextClickOn", bNextClickOn)
 End Sub
 'set Now Indicator
 Sub setNowIndicator(b As Boolean)
 	bNowIndicator = b
 	CustProps.put("NowIndicator", b)
-	Options.put("nowIndicator", b)
+	Options.put("nowIndicator", bNowIndicator)
 End Sub
 'set Prev Click On
 Sub setPrevClickOn(b As Boolean)
 	bPrevClickOn = b
 	CustProps.put("PrevClickOn", b)
-	Options.put("prevClickOn", b)
+	Options.put("prevClickOn", bPrevClickOn)
 End Sub
 'set Determines How Far Forward The Scroll Pane Is Initially Scrolled
 Sub setScrollTime(s As String)
 	sScrollTime = s
 	CustProps.put("ScrollTime", s)
-	Options.put("scrollTime", s)
+	Options.put("scrollTime", sScrollTime)
 End Sub
 'set Whether The View Should Scroll To Scrolltime Every Time The Date Range Changes.
 Sub setScrollTimeReset(b As Boolean)
 	bScrollTimeReset = b
 	CustProps.put("ScrollTimeReset", b)
-	Options.put("scrollTimeReset", b)
+	Options.put("scrollTimeReset", bScrollTimeReset)
 End Sub
 'set Select Mirror
 Sub setSelectMirror(b As Boolean)
 	bSelectMirror = b
 	CustProps.put("SelectMirror", b)
-	Options.put("selectMirror", b)
+	Options.put("selectMirror", bSelectMirror)
 End Sub
 'set Selectable
 Sub setSelectable(b As Boolean)
 	bSelectable = b
 	CustProps.put("Selectable", b)
-	Options.put("selectable", b)
+	Options.put("selectable", bSelectable)
 End Sub
 'set The Frequency For Displaying Time Slots.
 Sub setSlotDuration(s As String)
 	sSlotDuration = s
 	CustProps.put("SlotDuration", s)
-	Options.put("slotDuration", s)
+	Options.put("slotDuration", sSlotDuration)
 End Sub
 'set The Last Time Slot That Will Be Displayed For Each Day
 Sub setSlotMaxTime(s As String)
 	sSlotMaxTime = s
 	CustProps.put("SlotMaxTime", s)
-	Options.put("slotMaxTime", s)
+	Options.put("slotMaxTime", sSlotMaxTime)
 End Sub
 'set The First Time Slot That Will Be Displayed For Each Day
 Sub setSlotMinTime(s As String)
 	sSlotMinTime = s
 	CustProps.put("SlotMinTime", s)
-	Options.put("slotMinTime", s)
+	Options.put("slotMinTime", sSlotMinTime)
 End Sub
 'set Today Text
 Sub setToDayText(s As String)
@@ -770,7 +790,7 @@ End Sub
 Sub setWeekNumbers(b As Boolean)
 	bWeekNumbers = b
 	CustProps.put("WeekNumbers", b)
-	Options.put("weekNumbers", b)
+	Options.put("weekNumbers", bWeekNumbers)
 End Sub
 'set Week Text
 Sub setWeekText(s As String)

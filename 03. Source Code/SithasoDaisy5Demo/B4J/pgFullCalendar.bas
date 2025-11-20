@@ -18,12 +18,15 @@ Sub Show(MainApp As SDUI5App)
 	BANano.LoadLayout(app.PageView, "fullcalendarview")
 	pgIndex.UpdateTitle("SDUI5FullCalendar")
 	'
-	fc.AddEvent("1", "", "All Day Event",  app.ui.YearNow & "-" & app.ui.MonthNow & "-01", "", False, "", "", "", False, True)
-	fc.AddEvent("2", "", "Long Event", app.ui.YearNow & "-" & app.ui.MonthNow & "-07", app.ui.YearNow & "-" & app.ui.MonthNow & "-10", False, "", "", "", False, True)
-	fc.AddEvent("3", "", "Repeating Event", app.ui.YearNow & "-" & app.ui.MonthNow & "-09T16:00:00-05:00", "", False, "", "", "", False,True)
-	fc.AddEvent("4", "", "Conference", app.ui.YearNow & "-" & app.ui.MonthNow & "-11", app.ui.YearNow & "-" & app.ui.MonthNow & "-13", False, "", "", "", False, True)
-	fc.AddEvent("5", "", "Meeting", app.ui.YearNow & "-" & app.ui.MonthNow & "-12T10:30:00-05:00", app.ui.YearNow & "-" & app.ui.MonthNow & "12T12:30:00-05:00", False, "","", "", False, True)
-	fc.AddEvent("6", "", "Lunch", app.ui.YearNow & "-" & app.ui.MonthNow & "-13T12:00:00-05:00", "", True, "", "", "", False, True)
+	'get the start of this month
+	Dim sStartMonth As String = app.UI.StartOfThisMonth
+			
+	fc.AddEvent("1", "", "All Day Event",  sStartMonth, "", False, "", "", "", False, True)
+	fc.AddEvent("2", "", "Long Event", app.ui.DateAdd(sStartMonth, 7), app.ui.DateAdd(sStartMonth, 10), False, "", "", "", False, True)
+	fc.AddEvent("3", "", "Repeating Event", app.ui.DateAdd(sStartMonth, 9) & "T16:00:00-05:00", "", False, "", "", "", False,True)
+	fc.AddEvent("4", "", "Conference", app.ui.DateAdd(sStartMonth, 11), app.ui.DateAdd(sStartMonth, 13), False, "", "", "", False, True)
+	fc.AddEvent("5", "", "Meeting", app.ui.DateAdd(sStartMonth, 12) & "12T10:30:00-05:00", app.ui.DateAdd(sStartMonth, 12)  & "T12:30:00-05:00", False, "","", "", False, True)
+	fc.AddEvent("6", "", "Lunch", app.ui.DateAdd(sStartMonth, 13) & "13T12:00:00-05:00", "", True, "", "", "", False, True)
 	fc.Refresh
 End Sub
 

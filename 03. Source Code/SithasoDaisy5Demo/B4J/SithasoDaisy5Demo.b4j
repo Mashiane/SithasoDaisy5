@@ -364,21 +364,22 @@ File423=user-solid.svg
 File424=validationview.bjl
 File425=videoplayerview.bjl
 File426=wallet.svg
-File427=whatsappview.bjl
-File428=wifi.svg
-File429=windowview.bjl
+File427=webpushr.js
+File428=whatsappview.bjl
+File429=wifi.svg
 File43=b4jlink.jpg
-File430=wizard1.bjl
-File431=wizard2.bjl
-File432=wizard3.bjl
-File433=wizard4.bjl
-File434=wizardview.bjl
-File435=xmark-solid.svg
-File436=yadit.jpg
-File437=yuna.jpg
-File438=yyoff.svg
-File439=yyon.svg
+File430=windowview.bjl
+File431=wizard1.bjl
+File432=wizard2.bjl
+File433=wizard3.bjl
+File434=wizard4.bjl
+File435=wizardview.bjl
+File436=xmark-solid.svg
+File437=yadit.jpg
+File438=yuna.jpg
+File439=yyoff.svg
 File44=b4jlink2.jpg
+File440=yyon.svg
 File45=badge.jpg
 File46=badgeview.bjl
 File47=bakery-breakfast-dessert-svgrepo-com.svg
@@ -803,21 +804,22 @@ FileGroup423=Default Group\Images
 FileGroup424=Default Group\Views
 FileGroup425=Default Group\Views
 FileGroup426=Default Group\Images
-FileGroup427=Default Group\Views
-FileGroup428=Default Group\Images
-FileGroup429=Default Group\Views
+FileGroup427=Default Group
+FileGroup428=Default Group\Views
+FileGroup429=Default Group\Images
 FileGroup43=Default Group\Images
 FileGroup430=Default Group\Views
 FileGroup431=Default Group\Views
 FileGroup432=Default Group\Views
 FileGroup433=Default Group\Views
 FileGroup434=Default Group\Views
-FileGroup435=Default Group
-FileGroup436=Default Group\Images
+FileGroup435=Default Group\Views
+FileGroup436=Default Group
 FileGroup437=Default Group\Images
 FileGroup438=Default Group\Images
 FileGroup439=Default Group\Images
 FileGroup44=Default Group\Images
+FileGroup440=Default Group\Images
 FileGroup45=Default Group\Images
 FileGroup46=Default Group\Views
 FileGroup47=Default Group\Images
@@ -1004,7 +1006,7 @@ Module96=pgSVG
 Module97=pgSwap
 Module98=pgTable
 Module99=pgTable2
-NumberOfFiles=439
+NumberOfFiles=440
 NumberOfLibraries=5
 NumberOfModules=120
 Version=10.3
@@ -1024,11 +1026,11 @@ Sub Process_Globals
 	'the name of the application &
 	'this is the folder on your development server.
 	Public AppName As String = "sd5demo"
-	Public AppTitle As String = "SithasoDaisy Demo 54.70"
+	Public AppTitle As String = "SithasoDaisy Demo 55.50"
 	Public AppVersion As String = ""
 	'whe the app should
 	Public Publish As String = "C:\laragon\www"
-	Public Version As String = "54.70"
+	Public Version As String = "55.50"
 	Public ServerIP As String = "http://127.0.0.1"
 	Public APIKey As String = ""
 	Public ServerURL As String = ""
@@ -1132,6 +1134,7 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.AddJavascriptFile("movies.js")
 	BANano.Header.AddJavascriptFile("places.js")
 	BANano.Header.AddJavascriptFile("services.js")
+	BANano.Header.AddJavascriptFile("webpushr.js")
 	
 		
 '	'set php settings

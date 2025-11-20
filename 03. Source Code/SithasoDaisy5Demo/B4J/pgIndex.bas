@@ -25,6 +25,7 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.UsesColorWheel)
 	BANano.Await(App.UsesDatePicker)
 	BANano.Await(App.UsesJSONQuery)
+	BANano.Await(App.UsesFontAwesome)
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppTitle
