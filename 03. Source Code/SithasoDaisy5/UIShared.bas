@@ -5018,14 +5018,18 @@ Sub LoadAssetsOnDemand(Key As String, Items As List)
 	For iCnt = 0 To iTot
 		Dim fn As String = Items.Get(iCnt)
 		If fn.EndsWith(".js") Then
-			If fn.StartsWith("./scripts/") = False Then
-				Items.Set(iCnt, $"./scripts/${fn}"$)
-			End If
+			If fn.StartsWith("http") = False Then
+				If fn.StartsWith("./scripts/") = False Then
+					Items.Set(iCnt, $"./scripts/${fn}"$)
+				End If
+			End If	
 		End If
 		If fn.EndsWith(".css") Then
-			If fn.StartsWith("./styles/") = False Then
-				Items.Set(iCnt, $"./styles/${fn}"$)
-			End If
+			If fn.StartsWith("http") = False Then
+				If fn.StartsWith("./styles/") = False Then
+					Items.Set(iCnt, $"./styles/${fn}"$)
+				End If
+			End If	
 		End If
 	Next
 	Dim pathsNotFound() As String

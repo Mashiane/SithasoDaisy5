@@ -11,14 +11,12 @@ Version=10
 #DesignerProperty: Key: SpaceX, DisplayName: Space X, FieldType: String, DefaultValue: 4, Description: Space X
 #DesignerProperty: Key: SpaceY, DisplayName: Space Y, FieldType: String, DefaultValue: , Description: Space Y
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: neutral, Description: Background Color
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 500px, Description: Height
 #DesignerProperty: Key: MinHeight, DisplayName: Min Height, FieldType: String, DefaultValue: , Description: Min Height
 #DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: , Description: Max Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 900px, Description: Width
 #DesignerProperty: Key: MinWidth, DisplayName: Min Width, FieldType: String, DefaultValue: , Description: Min Width
 #DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: , Description: Max Width
-#DesignerProperty: Key: IndicatorButtons, DisplayName: Indicator Buttons, FieldType: Boolean, DefaultValue: False, Description: Indicator Buttons
-#DesignerProperty: Key: NavigationButtons, DisplayName: Navigation Buttons, FieldType: Boolean, DefaultValue: False, Description: Navigation Buttons
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: True, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -54,16 +52,14 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sBackgroundColor As String = "neutral"
 	Private sDirection As String = "horizontal"
-	Private sHeight As String = ""
-	Private bIndicatorButtons As Boolean = False
-	Private bNavigationButtons As Boolean = False
+	Private sHeight As String = "500px"
 	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = True
 	Private sShadow As String = "none"
 	Private sSnapItems As String = "start"
 	Private sSpaceX As String = "4"
 	Private sSpaceY As String = ""
-	Private sWidth As String = "full"
+	Private sWidth As String = "900px"
 	Public CONST DIRECTION_HORIZONTAL As String = "horizontal"
 	Public CONST DIRECTION_NONE As String = "none"
 	Public CONST DIRECTION_VERTICAL As String = "vertical"
@@ -74,8 +70,6 @@ Sub Class_Globals
 	Private sMaxWidth As String = ""
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
-	Public Children As Map
-
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -85,7 +79,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	Children.Initialize
 	SetDefaults
 End Sub
 
@@ -96,14 +89,12 @@ private Sub SetDefaults
 	CustProps.Put("SpaceX", "4")
 	CustProps.Put("SpaceY", "")
 	CustProps.Put("BackgroundColor", "neutral")
-	CustProps.Put("Height", "")
+	CustProps.Put("Height", "500px")
 	CustProps.Put("MinHeight", "")
 	CustProps.Put("MaxHeight", "")
-	CustProps.Put("Width", "full")
+	CustProps.Put("Width", "900px")
 	CustProps.Put("MinWidth", "")
 	CustProps.Put("MaxWidth", "")
-	CustProps.Put("IndicatorButtons", False)
-	CustProps.Put("NavigationButtons", False)
 	CustProps.Put("Rounded", "none")
 	CustProps.Put("RoundedBox", True)
 	CustProps.Put("Shadow", "none")
@@ -162,9 +153,6 @@ Sub setVisible(b As Boolean)
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
 	UI.SetVisible(mElement, b)
-	If bIndicatorButtons Then
-		UI.SetVisiblebyID($"${mName}_indicators"$, b)
-	End If
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -272,12 +260,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '		sBackgroundColor = UI.CStr(sBackgroundColor)
 		sDirection = Props.GetDefault("Direction", "horizontal")
 		sDirection = UI.CStr(sDirection)
-		sHeight = Props.GetDefault("Height", "")
+		sHeight = Props.GetDefault("Height", "500px")
 		sHeight = UI.CStr(sHeight)
-		bIndicatorButtons = Props.GetDefault("IndicatorButtons", False)
-		bIndicatorButtons = UI.CBool(bIndicatorButtons)
-		bNavigationButtons = Props.GetDefault("NavigationButtons", False)
-		bNavigationButtons = UI.CBool(bNavigationButtons)
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
@@ -292,7 +276,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSpaceX = UI.CStr(sSpaceX)
 		sSpaceY = Props.GetDefault("SpaceY", "")
 		sSpaceY = UI.CStr(sSpaceY)
-		sWidth = Props.GetDefault("Width", "full")
+		sWidth = Props.GetDefault("Width", "900px")
 		sWidth = UI.CStr(sWidth)
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
 		sMaxHeight = UI.CStr(sMaxHeight)
@@ -305,11 +289,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	'
 	'If sBackgroundColor <> "neutral" Then UI.AddBackgroundColorDT(sBackgroundColor)
+	UI.AddClassDT("carousel")
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
 	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)        
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -325,23 +310,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]
-		<div id="${mName}" class="relative overflow-hidden ${xclasses}" ${xattrs} style="${xstyles}">
-			<div id="${mName}_carousel" class="carousel w-full h-full"></div>
-			<div id="${mName}_navigation" class="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between">
-				<button id="${mName}_prev" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❮</button>
-				<button id="${mName}_next" class="btn btn-circle bg-base-100/70 hover:bg-base-100">❯</button>
-			</div>
-		    <div id="${mName}_indicators" class="absolute bottom-3 left-1/2 -translate-x-1/2 flex justify-center gap-2"></div>
-		</div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 	setDirection(sDirection)
 	setSnapItems(sSnapItems)
 	setSpaceX(sSpaceX)
 	setSpaceY(getSpaceY)
-	Children.Put($"${mName}_carousel"$, "SDUI5Text")
 '	setVisible(bVisible)
-	If bNavigationButtons = False Then UI.RemoveElementByID($"${mName}_navigation"$)
-	If bIndicatorButtons = False Then UI.RemoveElementByID($"${mName}_indicators"$)
 End Sub
 
 'set Background Color
@@ -357,7 +331,7 @@ Sub setDirection(s As String)				'ignoredeadcode
 	sDirection = s
 	CustProps.put("Direction", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "carousel-" & s)
+	If s <> "" Then UI.AddCLass(mElement, "carousel-" & s)
 End Sub
 'set Height
 Sub setHeight(s As String)
@@ -365,16 +339,6 @@ Sub setHeight(s As String)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
-End Sub
-'set Indicator Buttons
-Sub setIndicatorButtons(b As Boolean)
-	bIndicatorButtons = b
-	CustProps.put("IndicatorButtons", b)
-End Sub
-'set Navigation Buttons
-Sub setNavigationButtons(b As Boolean)
-	bNavigationButtons = b
-	CustProps.put("NavigationButtons", b)
 End Sub
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -405,21 +369,21 @@ Sub setSnapItems(s As String)				'ignoredeadcode
 	sSnapItems = s
 	CustProps.put("SnapItems", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "carousel-" & s)
+	If s <> "" Then UI.AddClass(mElement, "carousel-" & s)
 End Sub
 'set Space X
 Sub setSpaceX(s As String)					'ignoredeadcode
 	sSpaceX = s
 	CustProps.put("SpaceX", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "space-x-" & s)
+	If s <> "" Then UI.AddClass(mElement, "space-x-" & s)
 End Sub
 'set Space Y
 Sub setSpaceY(s As String)					'ignoredeadcode
 	sSpaceY = s
 	CustProps.put("SpaceY", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.AddClassByID($"${mName}_carousel"$, "space-y-" & s)
+	If s <> "" Then UI.AddClass(mElement, "space-y-" & s)
 End Sub
 'set Width
 Sub setWidth(s As String)
@@ -441,14 +405,6 @@ End Sub
 'get Height
 Sub getHeight As String
 	Return sHeight
-End Sub
-'get Indicator Buttons
-Sub getIndicatorButtons As Boolean
-	Return bIndicatorButtons
-End Sub
-'get Navigation Buttons
-Sub getNavigationButtons As Boolean
-	Return bNavigationButtons
 End Sub
 'get Rounded
 Sub getRounded As String
@@ -523,3 +479,48 @@ End Sub
 Sub getMinWidth As String
 	Return sMinWidth
 End Sub
+
+#if javascript
+	function ensureId(el, fallback) {
+      if (!el.id) {
+        el.id = fallback;
+      }
+      return el.id;
+    }
+
+    function updateCarouselAnchors(carouselSelector) {
+      const carousels = document.querySelectorAll(carouselSelector);
+      carousels.forEach((carousel, carouselIndex) => {
+        const slides = Array.from(carousel.children).filter(c => c.classList && c.classList.contains('carousel-item'));
+        if (!slides.length) return;
+
+        const slideIds = slides.map((slide, i) => ensureId(slide, `carousel-${carouselIndex}-slide-${i + 1}`));
+
+        slides.forEach((slide, i) => {
+          const prevId = slideIds[(i - 1 + slideIds.length) % slideIds.length];
+          const nextId = slideIds[(i + 1) % slideIds.length];
+
+          // Finds anchor elements inside the slide (any anchors, anchored or not)
+          // We will set href to the prev/next slide id regardless of current href value
+          const anchors = Array.from(slide.querySelectorAll('a'));
+
+          if (anchors.length === 2) {
+            anchors[0].setAttribute('href', `#${prevId}`);
+            anchors[1].setAttribute('href', `#${nextId}`);
+          } else if (anchors.length === 1) {
+            const a = anchors[0];
+            // Try to detect whether it's a Prev or Next button based on class/id/text
+            const idLc = (a.id || '').toLowerCase();
+            const text = (a.textContent || '').trim();
+            const isPrev = idLc.includes('prev') || text.includes('❮') || a.classList.contains('carousel-prev') || a.classList.contains('prev');
+            if (isPrev) a.setAttribute('href', `#${prevId}`);
+            else a.setAttribute('href', `#${nextId}`);
+          } else if (anchors.length > 2) {
+            // If there are more than 2 anchors, try to map first -> prev, last -> next
+            anchors[0].setAttribute('href', `#${prevId}`);
+            anchors[anchors.length - 1].setAttribute('href', `#${nextId}`);
+          }
+        });
+      });
+    }
+#End If

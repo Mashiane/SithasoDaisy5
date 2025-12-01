@@ -789,6 +789,10 @@ Sub StartEruda
 	Eruda.RunMethod("init", Null)
 End Sub
 
+Sub UsesApex
+	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.css", "SithasoApex.js")))
+End Sub
+
 Sub UsesKanBan
 	Banano.Await(UI.LoadAssetsOnDemand("KanBan", Array("jkanban.min.css", "dragula.min.js", "jkanban.min.js")))
 End Sub
@@ -903,6 +907,11 @@ End Sub
 Sub UsesDatePicker
 	Banano.Await(UI.LoadAssetsOnDemand("DatePicker", Array("flatpickr.min.css", "flatpickr.css",  "flatpickr.min.js", "fplocale.min.js")))
 End Sub
+
+Sub UsesSlider
+	Banano.Await(UI.LoadAssetsOnDemand("Slider", Array("SithasoSlider.min.js")))
+End Sub
+
 '"material_blue.css",
 
 Sub UsesJQuery
