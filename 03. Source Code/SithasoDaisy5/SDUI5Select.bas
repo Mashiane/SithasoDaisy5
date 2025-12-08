@@ -16,6 +16,7 @@ Version=10
 #DesignerProperty: Key: Placeholder, DisplayName: Placeholder, FieldType: String, DefaultValue: Select an element, Description: Placeholder
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r, Description: Options (JSON)
 #DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
+#DesignerProperty: Key: AllowBlank, DisplayName: AllowBlank, FieldType: Boolean, DefaultValue: True, Description: Allow Blank Item
 #DesignerProperty: Key: ValuesAsIs, DisplayName: Values As Is, FieldType: Boolean, DefaultValue: False, Description: Values As Is
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: md, Description: Size, List: lg|md|none|sm|xl|xs
@@ -102,6 +103,7 @@ Sub Class_Globals
 	Private sPrependIconColor As String = "none"
 	Private bValuesAsIs As Boolean = False
 	Private sLegendColor As String = ""
+	Private bAllowBlank As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -157,6 +159,7 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("AllowBlank", True)
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -271,6 +274,15 @@ Sub setStyles(s As String)
 	CustProps.Put("RawStyles", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
+End Sub
+
+Sub setAllowBlank(b As Boolean)
+	bAllowBlank = b
+	CustProps.Put("AllowBlank", b)
+End Sub
+
+Sub getAllowBlank As Boolean
+	Return bAllowBlank
 End Sub
 '
 Sub setClasses(s As String)
@@ -393,6 +405,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sPrependIconColor = "none" Then sPrependIconColor = ""
 		bValuesAsIs = Props.GetDefault("ValuesAsIs", False)
 		bValuesAsIs = UI.CBool(bValuesAsIs)
+		bAllowBlank = Props.GetDefault("AllowBlank", True)
+		bAllowBlank = UI.CBool(bAllowBlank)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -736,8 +750,10 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	Clear
 	If m.Size = 0 Then Return
 	Dim sb As StringBuilder
-	sb.Initialize 
-	sb.Append($"<option value="" selected>--Nothing Selected--</option>""$)
+	sb.Initialize
+	If bAllowBlank Then 
+		sb.Append($"<option value="" selected>--Nothing Selected--</option>""$)
+	End If
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		If bValuesAsIs = False Then k = UI.CleanID(k)
@@ -1147,5 +1163,165 @@ Sub SetThemes
 	BANano.Await(Clear)
 	For Each k As String In aThemes
 		AddOption(k, k)
+	Next
+End Sub
+
+Sub SetValueByText(stext As String)
+	Dim v As String = findValueByText(stext)
+	If v <> "" Then
+		setValue(v)
+	End If
+End Sub
+
+Sub findValueByText(text As String) As String
+	If text = Null Or text.Length = 0 Then Return ""
+
+	' Get the options collection
+	Dim xOptions As Object = mElement.GetField("options").Result
+
+	' Convert HTMLCollection to array
+	Dim a As BANanoObject
+	a.Initialize("Array")
+	Dim aOptions As List = a.RunMethod("from", xOptions)
+
+	' Loop through options
+	Dim i As Int
+	For i = 0 To aOptions.Size - 1
+		Dim optionx As BANanoObject = aOptions.Get(i)
+
+		' Get visible text and value
+		Dim t As String = optionx.GetField("text").Result
+		Dim v As String = optionx.GetField("value").Result
+
+		If t <> Null And t.EqualsIgnoreCase(text) Then
+			Return v
+		End If
+	Next
+
+	' Not found
+	Return ""
+End Sub
+
+Sub getText As String
+	' Get options collection
+	Dim xOptions As Object = mElement.GetField("options").Result
+	' Convert HTMLCollection to array
+	Dim a As BANanoObject
+	a.Initialize("Array")
+	Dim aOptions As List = a.RunMethod("from", xOptions)
+	Dim curValue As String = mElement.GetField("value").Result
+	If curValue = Null Or curValue.Length = 0 Then Return ""
+	Dim i As Int
+	For i = 0 To aOptions.Size - 1
+		Dim optionx As BANanoObject = aOptions.Get(i)
+		Dim v As String = optionx.GetField("value").Result
+		If v <> Null And v.EqualsIgnoreCase(curValue) Then
+			Return optionx.GetField("text").Result
+		End If
+	Next
+	' Not found
+	Return ""
+End Sub
+
+
+
+
+Sub MoveNext
+	Try
+		Dim tSize As Int = BANano.parseInt(getItemCount) - 1
+		Dim cIndex As Int = getSelectedIndex
+		cIndex = UI.CInt(cIndex)
+		cIndex = BANano.parseInt(cIndex) + 1
+		If cIndex > tSize Then cIndex = tSize
+		setSelectedIndex(cIndex)
+	Catch		'ignore
+	End Try		'ignore
+End Sub
+
+Sub MovePrevious
+	Try
+		Dim cIndex As Int = getSelectedIndex
+		cIndex = UI.CInt(cIndex)
+		cIndex = BANano.parseInt(cIndex) - 1
+		If cIndex < 0 Then cIndex = 0
+		setSelectedIndex(cIndex)
+	Catch		'ignore
+	End Try		'ignore
+End Sub
+
+Sub getSelectedIndex As Int
+	Dim res As Int = mElement.GetField("selectedIndex").result
+	Return res
+End Sub
+
+Sub setSelectedIndex(i As Int)
+	mElement.SetField("selectedIndex", i)
+End Sub
+
+Sub removeSelected
+	Dim idx As String = getSelectedIndex
+	mElement.RunMethod("remove", idx)
+End Sub
+
+Sub removeByIndex(idx As Int)
+	mElement.RunMethod("remove", idx)
+End Sub
+
+Sub getItemCount As Int
+	'get the options of the select
+	Dim xOptions As Object = mElement.GetField("options")
+	'convert the HTMLCollection to array
+	Dim a As BANanoObject
+	a.Initialize("Array")
+	Dim aOptions As List = a.RunMethod("from", xOptions)
+	Return aOptions.size
+End Sub
+
+Sub findIndexByValue(value As String) As Int
+	If value = Null Or value.Length = 0 Then Return -1
+
+	' Get the options collection
+	Dim xOptions As Object = mElement.GetField("options").Result
+
+	' Convert HTMLCollection to array
+	Dim a As BANanoObject
+	a.Initialize("Array")
+	Dim aOptions As List = a.RunMethod("from", xOptions)
+
+	' Loop through options
+	Dim i As Int
+	For i = 0 To aOptions.Size - 1
+		Dim optionx As BANanoObject = aOptions.Get(i)
+		Dim k As String = optionx.GetField("value").Result
+
+		If k <> Null And k.EqualsIgnoreCase(value) Then
+			Return i
+		End If
+	Next
+
+	' Not found
+	Return -1
+End Sub
+
+
+Sub removeByValue(value As String)
+	'get the options of the select
+	Dim xOptions As Object = mElement.GetField("options")
+	'convert the HTMLCollection to array
+	Dim a As BANanoObject
+	a.Initialize("Array")
+	Dim aOptions As List = a.RunMethod("from", xOptions)
+	'find the size of the array
+	Dim aTot As Int = aOptions.Size - 1
+	Dim aCnt As Int = 0
+	For aCnt = 0 To aTot
+		'get each option
+		Dim optionx As BANanoObject = aOptions.Get(aCnt)
+		'get the value
+		Dim k As String = optionx.GetField("value").Result
+		'if the value matches remove the item
+		If k.EqualsIgnoreCase(value) Then
+			mElement.RunMethod("remove", aCnt)
+		End If
 	Next
 End Sub

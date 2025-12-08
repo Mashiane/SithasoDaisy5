@@ -804,7 +804,7 @@ End Sub
 
 'valid
 Sub UsesDevices
-	Banano.Await(UI.LoadAssetsOnDemand("Devices", Array("devices.min.css","html-to-image.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Device", Array("device.min.css","html-to-image.js")))
 End Sub
 
 'valid
@@ -3571,6 +3571,45 @@ private Sub EvaluateCondition(rec As Map, condition As String) As Boolean
 	Return result
 End Sub
 
+Sub GetQueryString As Map
+	Dim params As Map = Banano.GetURLParams(Banano.Location.GetHref)
+	Return params
+End Sub
 
+Sub URLQueryStringFromMap(params As Map) As String
+	Dim sb As StringBuilder
+	sb.Initialize
+	For Each k As String In params.Keys
+		Dim v As String = params.Get(k)
+		k = Banano.EncodeURIComponent(k)
+		v = Banano.EncodeURIComponent(v)
+		sb.Append($"${k}=${v}&"$)
+	Next
+	Dim sout As String = sb.ToString
+	sout = UI.RemDelim(sout, "&")
+	sb.Initialize
+	Return sout
+End Sub
 
+Sub NavigateToRootWithParams(params As Map)
+	Dim shref As String = Banano.Location.GetHref
+	Dim url As String = UI.MvField(shref,1,"?")
+	If params.Size <> 0 Then
+		Dim sparams As String = URLQueryStringFromMap(params)
+		Dim obaseURL As String = $"${url}?${sparams}"$
+		Dim bo As BANanoObject = Banano.Window.RunMethod("open", Array(obaseURL, "_blank"))
+		bo.RunMethod("focus", Null)
+	End If
+End Sub
 
+Sub NavigateTo(url As String, params As Map)
+	If Banano.IsNull(params) Then
+		Banano.Location.Assign(url)
+		Return
+	End If
+	If params.Size <> 0 Then
+		Dim sparams As String = URLQueryStringFromMap(params)
+		Dim obaseURL As String = $"${url}?${sparams}"$
+		Banano.Location.Assign(obaseURL)
+	End If
+End Sub

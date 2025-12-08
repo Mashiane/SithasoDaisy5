@@ -20,6 +20,7 @@ Private Sub Class_Globals
 	Public const DB_FILE As String = "FILE"
 	Public const DB_BLOB As String = "BLOB"
 	Public const DB_FLOAT As String = "FLOAT"
+	Public const DB_TEXT As String = "STRING"
 	'
 	Private mCallBack As Object			'ignore
 	Private whereField As Map
@@ -76,8 +77,8 @@ Private Sub Class_Globals
 	Public ErrorMessage As String = ""
 	Public UseApiKey As Boolean = True
 	Public ApiFile As String = "api"
-	Private escapeCharStart As String
-	Private escapeCharEnd As String
+	Private escapeCharStart As String = "`"
+	Private escapeCharEnd As String = "`"
 	Public MatchSchema As Boolean
 	Private sHost As String
 	Private sUser As String
@@ -571,6 +572,141 @@ Sub SchemaAddNumber1(b As String) As SDUIMySQLREST
 	Return Me
 End Sub
 
+Sub ShowTableNames(Dbase As String) As List
+	Dim qry As String = $"select table_name from information_schema.tables where table_schema = '${Dbase}' order by table_name"$
+	Dim lst As List = BANano.Await(SELECT_RAW(qry))
+	Return lst	
+End Sub
+
+Sub ShowIndexes(Dbase As String) As List
+	Dim query As String = $"SELECT INDEX_NAME AS `idxname`, IF (NON_UNIQUE = 0 AND INDEX_NAME = 'PRIMARY', 1, 0) AS `idxprimary`, IF (NON_UNIQUE = 0 AND INDEX_NAME <> 'PRIMARY', 1, 0) AS `idxunique`, GROUP_CONCAT(COLUMN_NAME ORDER BY SEQ_IN_INDEX) AS `idxcolumns` FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = '${Dbase}' AND TABLE_NAME = '${TableName}' GROUP BY INDEX_NAME, NON_UNIQUE"$
+	Dim lst As List = BANano.Await(SELECT_RAW(query))
+	Return lst
+End Sub
+
+Sub ShowForeignKeys(Dbase As String) As List
+	Dim query As String = $"SELECT i.CONSTRAINT_NAME as `fkname`, k.COLUMN_NAME AS `column`, k.REFERENCED_TABLE_NAME AS `reftable`, k.REFERENCED_COLUMN_NAME AS `refcolumn`, c.UPDATE_RULE AS `onupdate`, c.DELETE_RULE AS `ondelete` FROM information_schema.TABLE_CONSTRAINTS AS i JOIN information_schema.KEY_COLUMN_USAGE AS k ON i.CONSTRAINT_NAME = k.CONSTRAINT_NAME JOIN information_schema.REFERENTIAL_CONSTRAINTS AS c ON c.CONSTRAINT_NAME = i.CONSTRAINT_NAME WHERE i.TABLE_SCHEMA = '${Dbase}' AND i.TABLE_NAME = '${TableName}' AND i.CONSTRAINT_TYPE = 'FOREIGN KEY' GROUP BY i.CONSTRAINT_NAME, k.COLUMN_NAME, k.REFERENCED_TABLE_NAME, k.REFERENCED_COLUMN_NAME, c.UPDATE_RULE, c.DELETE_RULE"$
+	Dim lst As List = BANano.Await(SELECT_RAW(query))
+	Return lst
+End Sub
+
+'select distinct where
+'<code>
+''select distinct where
+'Dim sw As Map = CreateMap()
+'sw.put("id", 10)
+'dbConnect.SelectDistinctWhere(array("name"), sw, array("="), array("name"))
+'dbConnect.JSON = BANano.CallInlinePHPWait(dbConnect.MethodName, dbConnect.Build)
+'dbConnect.FromJSON
+'Select Case dbConnect.OK
+'Case False
+'Dim strError As String = dbConnect.Error
+'Log(strError)
+'End Select
+'Dim res As List = dbConnect.Result
+'For Each rec As Map in Res
+'Next
+'</code>
+Sub SelectDistinctWhere(tblfields As List, tblWhere As Map, operators As List, orderBy As List) As List
+	If Schema.Size = 0 Then
+		Log($"SDUIMySQLREST.SelectDistinctWhere: '${TableName}' schema is not set!"$)
+	End If
+	If BANano.IsNull(operators) Then operators = EQOperators(tblWhere)
+	If tblfields.Size = 0 Then tblfields.Add("*")
+	Dim dtypes As List = GetMapTypes(tblWhere)
+	'are we selecting all fields or just some
+	Dim fld1 As String = tblfields.Get(0)
+	Dim selFIelds As String = ""
+	Select Case fld1
+	Case "*"
+		selFIelds = "*"
+	Case Else
+		selFIelds = JoinFields(",", tblfields)
+	End Select
+	Dim sb As StringBuilder
+	sb.Initialize
+	sb.Append($"SELECT DISTINCT ${selFIelds} FROM ${EscapeField(TableName)} WHERE "$)
+	Dim i As Int
+	Dim iWhere As Int = tblWhere.Size - 1
+	For i = 0 To iWhere
+		If i > 0 Then
+			sb.Append(" AND ")
+		End If
+		Dim col As String = tblWhere.GetKeyAt(i)
+		Dim sval As String = tblWhere.GetValueAt(i)
+		Dim dt As String = dtypes.Get(i)
+		col = MvField(col, 1, ".")
+		Dim oper As String = operators.Get(i)
+		sb.Append(EscapeField(col))
+		Select Case dt
+		Case "s"	
+			sb.Append($" ${oper} '${sval}'"$)
+		Case "i", "b", "d"
+			sb.Append($" ${oper} ${sval}"$)
+		End Select
+	Next
+	If orderBy.IsInitialized And orderBy.Size > 0 Then
+		'order by
+		Dim stro As String = JoinFields(",", orderBy)
+		If stro.Length > 0 Then
+			sb.Append(" ORDER BY ").Append(stro)
+		End If
+	End If
+	Dim lst As List = BANano.Await(SELECT_RAW(sb.ToString))
+	Return lst
+End Sub
+
+'join list to multi value string
+private Sub JoinFields(delimiter As String, lst As List) As String
+	Dim i As Int
+	Dim sb As StringBuilder
+	Dim fld As String
+	sb.Initialize
+	fld = lst.Get(0)
+	fld = EscapeField(fld)
+	sb.Append(fld)
+	For i = 1 To lst.size - 1
+		Dim fld As String = lst.Get(i)
+		fld = EscapeField(fld)
+		sb.Append(delimiter).Append(fld)
+	Next
+	Return sb.ToString
+End Sub
+
+private Sub EQOperators(sm As Map) As List  'ignore
+	Dim nl As List
+	nl.initialize
+	For Each k As String In sm.Keys
+		nl.Add("=")
+	Next
+	Return nl
+End Sub
+
+'get the list of types
+private Sub GetMapTypes(sourceMap As Map) As List
+	Dim listOfTypes As List
+	listOfTypes.Initialize
+	Dim iCnt As Int
+	Dim iTot As Int
+	iTot = sourceMap.Size - 1
+	For iCnt = 0 To iTot
+		Dim col As String = sourceMap.GetKeyAt(iCnt)
+		Dim colType As String = Schema.GetDefault(col,"STRING")
+		Select Case colType
+			Case "INTEGER", "INT", "BOOL","BOOLEAN"
+				listOfTypes.add("i")
+			Case "BLOB"
+				listOfTypes.add("b")
+			Case "REAL","FLOAT","DOUBLE"
+				listOfTypes.add("d")
+			Case Else
+				listOfTypes.add("s")
+		End Select
+	Next
+	Return listOfTypes
+End Sub
+
+
 'get records from a collection
 '<code>
 'BANano.Await(pb.SELECT_RAW(""))
@@ -589,6 +725,9 @@ Sub SELECT_RAW(query As String) As List
 			BANano.Throw($"SDUIMySQLREST.SELECT_RAW - The ApiKey has not been specified!"$)
 			Return result
 		End If
+	End If
+	If ShowLog Then
+		Log(query)
 	End If
 	
 	Dim fetch As SDUIFetch
@@ -613,7 +752,6 @@ Sub SELECT_RAW(query As String) As List
 	End If
 	fetch.AddData("query", query)
 	BANano.Await(fetch.PostWait)
-	Log(fetch.Response)
 	If fetch.Success Then
 		Dim Response As Map = fetch.response
 		If Response.ContainsKey("records") Then
@@ -2462,4 +2600,79 @@ Sub GetRecordsCount As Int
 	Else
 		Return 0
 	End If
+End Sub
+
+private Sub GetMapType(k As String) As String
+	If Schema.ContainsKey(k) Then
+		Dim colType As String = Schema.GetDefault(k, "STRING")
+		Select Case colType
+			Case "INTEGER", "INT", "BOOL","BOOLEAN"
+				Return "i"
+			Case "BLOB"
+				Return "b"
+			Case "REAL","FLOAT","DOUBLE"
+				Return "d"
+			Case Else
+				Return "s"
+		End Select
+	Else
+		Return "s"
+	End If
+End Sub
+
+'get map values
+private Sub GetMapValues(sourceMap As Map) As List
+	Dim listOfValues As List
+	listOfValues.Initialize
+	Dim iCnt As Int
+	Dim iTot As Int
+	iTot = sourceMap.Size - 1
+	For iCnt = 0 To iTot
+		'get the value
+		Dim key As String = sourceMap.getkeyat(iCnt)
+		Dim value As String = sourceMap.GetValueAt(iCnt)
+		value = CStr(value)
+		value = value.trim
+		'get the type
+		Dim vtype As String = GetMapType(key)
+		Select Case vtype
+			Case "i"
+				'integer
+				If value = "" Then value = "0"
+				value = BANano.parseInt(value)
+			Case "d"
+				'double
+				If value = "" Then value = "0"
+				value = BANano.parsefloat(value)
+			Case "s", "b"
+				'string
+		End Select
+		listOfValues.Add(value)
+	Next
+	Return listOfValues
+End Sub
+
+Sub SelectDistinct(tblfields As List, orderBy As List) As List
+	'are we selecting all fields or just some
+	If tblfields.Size = 0 Then tblfields.Add("*")
+	Dim fld1 As String = tblfields.Get(0)
+	Dim selFIelds As String = ""
+	Select Case fld1
+	Case "*"
+		selFIelds = "*"
+	Case Else
+		selFIelds = JoinFields(",", tblfields)
+	End Select
+	Dim sb As StringBuilder
+	sb.Initialize
+	sb.Append($"SELECT DISTINCT ${selFIelds} FROM ${EscapeField(TableName)}"$)
+	If orderBy.IsInitialized And orderBy.Size > 0 Then
+		'order by
+		Dim stro As String = JoinFields(",", orderBy)
+		If stro.Length > 0 Then
+			sb.Append(" ORDER BY ").Append(stro)
+		End If
+	End If
+	Dim lst As List = BANano.Await(SELECT_RAW(sb.ToString))
+	Return lst
 End Sub

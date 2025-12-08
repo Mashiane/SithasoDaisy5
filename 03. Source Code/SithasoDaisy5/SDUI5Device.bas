@@ -2,18 +2,14 @@
 Group=Default Group
 ModulesStructureVersion=1
 Type=Class
-Version=10.2
+Version=10.3
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: DeviceType, DisplayName: Device Type, FieldType: String, DefaultValue: iphone, Description: Device Type, List: android-phone|android-tablet|imac|ipad|iphone|iphonex
-#DesignerProperty: Key: Orientation, DisplayName: Orientation, FieldType: String, DefaultValue: portrait, Description: Orientation, List: landscape|portrait
-#DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: black, Description: Color, List: white|black
+#DesignerProperty: Key: DeviceType, DisplayName: Device Type, FieldType: String, DefaultValue: iphone-8, Description: Device Type, List: apple-watch-s8|apple-watch-ultra|galaxy-s8|google-pixel|google-pixel-2-xl|google-pixel-6-pro|homepod|imac|imac-pro|ipad-pro|ipad-pro-2017|iphone-14|iphone-14-pro|iphone-8|iphone-x|macbook|macbook-pro|macbook-pro-2018|pro-display-xdr|surface-book|surface-pro-2017|surface-studio|the-iphone
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400px, Description: Height
-#DesignerProperty: Key: MaxHeight, DisplayName: Max Height, FieldType: String, DefaultValue: 500px, Description: Max Height
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 50%, Description: Width
-#DesignerProperty: Key: MaxWidth, DisplayName: Max Width, FieldType: String, DefaultValue: 500px, Description: Max Width
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -45,25 +41,36 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Private sText As String = ""
 	Public Tag As Object
-	Private sColor As String = "none"
-	Private sDeviceType As String = "iphone"
-	Private sHeight As String = "400px"
-	Private sMaxHeight As String = ""
-	Private sMaxWidth As String = "500px"
-	Private sOrientation As String = "portrait"
-	Private sWidth As String = "50%"
-	Public CONST DEVICETYPE_ANDROID_PHONE As String = "android-phone"
-	Public CONST DEVICETYPE_ANDROID_TABLET As String = "android-tablet"
+	Private sDeviceType As String = "iphone-8"
+	Private sHeight As String = ""
+	Private sWidth As String = ""
+	Public CONST DEVICETYPE_APPLE_WATCH_S8 As String = "apple-watch-s8"
+	Public CONST DEVICETYPE_APPLE_WATCH_ULTRA As String = "apple-watch-ultra"
+	Public CONST DEVICETYPE_GALAXY_S8 As String = "galaxy-s8"
+	Public CONST DEVICETYPE_GOOGLE_PIXEL As String = "google-pixel"
+	Public CONST DEVICETYPE_GOOGLE_PIXEL_2_XL As String = "google-pixel-2-xl"
+	Public CONST DEVICETYPE_GOOGLE_PIXEL_6_PRO As String = "google-pixel-6-pro"
+	Public CONST DEVICETYPE_HOMEPOD As String = "homepod"
 	Public CONST DEVICETYPE_IMAC As String = "imac"
-	Public CONST DEVICETYPE_IPAD As String = "ipad"
-	Public CONST DEVICETYPE_IPHONE As String = "iphone"
-	Public CONST DEVICETYPE_IPHONEX As String = "iphonex"
-	Public CONST ORIENTATION_LANDSCAPE As String = "landscape"
-	Public CONST ORIENTATION_PORTRAIT As String = "portrait"
+	Public CONST DEVICETYPE_IMAC_PRO As String = "imac-pro"
+	Public CONST DEVICETYPE_IPAD_PRO As String = "ipad-pro"
+	Public CONST DEVICETYPE_IPAD_PRO_2017 As String = "ipad-pro-2017"
+	Public CONST DEVICETYPE_IPHONE_14 As String = "iphone-14"
+	Public CONST DEVICETYPE_IPHONE_14_PRO As String = "iphone-14-pro"
+	Public CONST DEVICETYPE_IPHONE_8 As String = "iphone-8"
+	Public CONST DEVICETYPE_IPHONE_X As String = "iphone-x"
+	Public CONST DEVICETYPE_MACBOOK As String = "macbook"
+	Public CONST DEVICETYPE_MACBOOK_PRO As String = "macbook-pro"
+	Public CONST DEVICETYPE_MACBOOK_PRO_2018 As String = "macbook-pro-2018"
+	Public CONST DEVICETYPE_PRO_DISPLAY_XDR As String = "pro-display-xdr"
+	Public CONST DEVICETYPE_SURFACE_BOOK As String = "surface-book"
+	Public CONST DEVICETYPE_SURFACE_PRO_2017 As String = "surface-pro-2017"
+	Public CONST DEVICETYPE_SURFACE_STUDIO As String = "surface-studio"
+	Public CONST DEVICETYPE_THE_IPHONE As String = "the-iphone"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-	If BANano.AssetsIsDefined("Devices") = False Then 
+	If BANano.AssetsIsDefined("Device") = False Then
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDevices)' should be added for '${Name}'"$)
 		Return
 	End If
@@ -73,21 +80,17 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("devices.min.css")
+	BANano.DependsOnAsset("device.min.css")
 	BANano.DependsOnAsset("html-to-image.js")
 	SetDefaults
 End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
-	CustProps.Put("DeviceType", "iphone")
-	CustProps.Put("Orientation", "portrait")
-	CustProps.Put("Color", "black")
+	CustProps.Put("DeviceType", "iphone-8")
 	CustProps.Put("Text", "Text")
-	CustProps.Put("Height", "400px")
-	CustProps.Put("MaxHeight", "500px")
-	CustProps.Put("Width", "50%")
-	CustProps.Put("MaxWidth", "500px")
+	CustProps.Put("Height", "")
+	CustProps.Put("Width", "")
 	CustProps.Put("Visible", True)
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
@@ -248,6 +251,16 @@ Sub setText(s As String)					'ignore
 	If mElement = Null Then Return
 	UI.SetHTMLByID($"${mName}_content"$, s)
 End Sub
+
+Sub Clear
+	If mElement = Null Then Return
+	UI.ClearByID($"${mName}_content"$)
+End Sub
+
+Sub getContentID As String
+	Return $"${mName}_content"$
+End Sub
+
 'get text
 Sub getText As String
 	If mElement = Null Then Return ""
@@ -260,31 +273,21 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If Props <> Null Then
 		CustProps = Props
 		UI.SetProps(Props)
-		'UI.ExcludeBackgroundColor = True
-		'UI.ExcludeTextColor = True
-		'UI.ExcludeVisible = True
-		'UI.ExcludeEnabled = True
-		sColor = Props.GetDefault("Color", "black")
-		sColor = UI.CStr(sColor)
-		sDeviceType = Props.GetDefault("DeviceType", "iphone")
+		UI.ExcludeBackgroundColor = True
+		UI.ExcludeTextColor = True
+		UI.ExcludeVisible = True
+		UI.ExcludeEnabled = True
+		sDeviceType = Props.GetDefault("DeviceType", "iphone-8")
 		sDeviceType = UI.CStr(sDeviceType)
-		sHeight = Props.GetDefault("Height", "400px")
+		sHeight = Props.GetDefault("Height", "")
 		sHeight = UI.CStr(sHeight)
-		sMaxHeight = Props.GetDefault("MaxHeight", "")
-		sMaxHeight = UI.CStr(sMaxHeight)
-		sMaxWidth = Props.GetDefault("MaxWidth", "500px")
-		sMaxWidth = UI.CStr(sMaxWidth)
-		sOrientation = Props.GetDefault("Orientation", "portrait")
-		sOrientation = UI.CStr(sOrientation)
-		sWidth = Props.GetDefault("Width", "50%")
+		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)
 	End If
 	
-	UI.AddWidthDT(sWidth)
-	UI.AddMaxWidthDT(sMaxWidth)
-	UI.AddHeightDT(sHeight)
-	UI.AddMaxHeightDT(sMaxHeight)
-	UI.AddClassDT("deviceContainer")
+	UI.AddClassDT("device")
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -297,115 +300,43 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-	    <div id="${mName}_device">
-	        <div id="${mName}_caseborder" class="caseBorder"></div>
-	        <div id="${mName}_case" class="case"></div>
-	        <div id="${mName}_reflection" class="reflection"></div>
-	        <div id="${mName}_screen" class="screen"></div>
-			<div id="${mName}_stand" class="stand"></div>
-			<div id="${mName}_base" class="base"></div>
-			<div id="${mName}_camera" class="camera"></div>
-	        <div id="${mName}_speaker" class="speaker"></div>
-	        <div id="${mName}_homebuttonborder" class="homeButtonBorder"></div>
-	        <div id="${mName}_homebutton" class="homeButton"></div>
-	        <div id="${mName}_content" class="content"></div>
-	    </div>
-	</div>"$).Get("#" & mName)
+    <div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+    	<div class="device-frame">
+			<div id="${mName}_content" class="device-screen"></div>
+		</div>
+      	<div class="device-stripe"></div>
+      	<div class="device-header"></div>
+      	<div class="device-sensors"></div>
+      	<div class="device-btns"></div>
+      	<div class="device-power"></div>
+      	<div class="device-home"></div>
+    </div>"$).Get("#" & mName)
 	setDeviceType(sDeviceType)
-	setColor(sColor)
-	setOrientation(sOrientation)
 	setText(sText)
-	UI.SetBackgroundColorStyleByID($"${mName}_content"$, "white")
 End Sub
 
-'set Color
-Sub setColor(s As String)					'ignoredeadcode
-	sColor = s
-	CustProps.put("Color", s)
-	If mElement = Null Then Return
-	UI.AddClassByID($"${mName}_device"$, sColor)
-End Sub
 'set Device Type
-'options: android-phone|android-tablet|imac|ipad|iphone|iphonex
+'options: apple-watch-s8|apple-watch-ultra|galaxy-s8|google-pixel|google-pixel-2-xl|google-pixel-6-pro|homepod|imac|imac-pro|ipad-pro|ipad-pro-2017|iphone-14|iphone-14-pro|iphone-8|iphone-x|macbook|macbook-pro|macbook-pro-2018|pro-display-xdr|surface-book|surface-pro-2017|surface-studio|the-iphone
 Sub setDeviceType(s As String)						'ignoredeadcode
 	sDeviceType = s
 	CustProps.put("DeviceType", s)
 	If mElement = Null Then Return
-	Dim allparts As List
-	allparts.Initialize 
-	allparts.AddAll(Array("caseborder", "case", "reflection", "screen", "stand", "base", "camera", "speaker", "homebuttonborder", "homebutton", "content"))
-	For Each k As String In allparts
-		UI.SetVisibleByID($"${mName}_${k}"$, False)
+	Dim newclass As String = $"device-${sDeviceType}"$
+	Dim devices As List
+	devices.Initialize
+	devices.AddAll(Array As String("apple-watch-s8", "apple-watch-ultra", "galaxy-s8", "google-pixel", "google-pixel-2-xl", "google-pixel-6-pro", "homepod", "imac", "imac-pro", "ipad-pro", "ipad-pro-2017", "iphone-14", "iphone-14-pro", "iphone-8", "iphone-x", "macbook", "macbook-pro", "macbook-pro-2018", "pro-display-xdr", "surface-book", "surface-pro-2017", "surface-studio", "the-iphone"))
+	Dim remClasses As List
+	remClasses.Initialize
+	For Each k As String In devices
+		remClasses.Add($"device-${k}"$)
 	Next
-	Dim parts As List
-	parts.Initialize 
-	Select Case s
-	Case "android-phone"
-		UI.AddClassByID($"${mName}_device"$, "androidPhone")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "camera", "speaker", "homebuttonborder", "homebutton", "content"))
-		Select Case sOrientation
-		Case "portrait"
-			UI.SetWidth(mElement, "414px")
-			UI.SetHeight(mElement, "736px")
-		Case "landscape"
-			UI.SetHeight(mElement, "414px")
-			UI.SetWidth(mElement, "736px")
-		End Select
-	Case "android-tablet"
-		UI.AddClassByID($"${mName}_device"$, "androidTablet")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "camera", "homebuttonborder", "homebutton", "content"))
-		Select Case sOrientation
-		Case "portrait"
-			UI.SetWidth(mElement, "576px")
-			UI.SetHeight(mElement, "768px")
-		Case "landscape"
-			UI.SetHeight(mElement, "576px")
-			UI.SetWidth(mElement, "768px")
-		End Select
-	Case "imac"
-		UI.AddClassByID($"${mName}_device"$, "imac")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen",  "stand", "base", "content"))
-		UI.SetWidth(mElement, "960px")
-		UI.SetHeight(mElement, "600px")
-	Case "ipad"
-		UI.AddClassByID($"${mName}_device"$, "ipad")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "camera", "homebuttonborder", "homebutton", "content"))
-		Select Case sOrientation
-		Case "portrait"
-			UI.SetWidth(mElement, "576px")
-			UI.SetHeight(mElement, "768px")
-		Case "landscape"
-			UI.SetHeight(mElement, "576px")
-			UI.SetWidth(mElement, "768px")
-		End Select
-	Case "iphone"
-		UI.AddClassByID($"${mName}_device"$, "iphone")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "camera", "speaker", "homebuttonborder", "homebutton", "content"))
-		Select Case sOrientation
-		Case "portrait"
-			UI.SetWidth(mElement, "414px")
-			UI.SetHeight(mElement, "736px")
-		Case "landscape"
-			UI.SetHeight(mElement, "414px")
-			UI.SetWidth(mElement, "736px")
-		End Select
-	Case "iphonex"
-		UI.AddClassByID($"${mName}_device"$, "iphonex")
-		parts.AddAll(Array("caseborder", "case", "reflection", "screen", "speaker", "homebuttonborder", "homebutton", "content"))
-		Select Case sOrientation
-		Case "portrait"
-			UI.SetWidth(mElement, "375px")
-			UI.SetHeight(mElement, "812px")
-		Case "landscape"
-			UI.SetHeight(mElement, "375px")
-			UI.SetWidth(mElement, "812px")
-		End Select
-	End Select
-	For Each k As String In parts
-		UI.SetVisibleByID($"${mName}_${k}"$, True)
-	Next
+	Dim sremclasses As String = UI.Join(";", remClasses)
+	'remove classes specific to the phone
+	UI.RemoveClass(mElement, sremclasses)
+	'add the current class to show device we want
+	UI.AddClass(mElement, newclass)
 End Sub
+
 'set Height
 Sub setHeight(s As String)
 	sHeight = s
@@ -413,38 +344,13 @@ Sub setHeight(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetHeight(mElement, sHeight)
 End Sub
-'set Max Height
-Sub setMaxHeight(s As String)
-	sMaxHeight = s
-	CustProps.put("MaxHeight", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMaxHeight(mElement, sMaxHeight)
-End Sub
-'set Max Width
-Sub setMaxWidth(s As String)
-	sMaxWidth = s
-	CustProps.put("MaxWidth", s)
-	If mElement = Null Then Return
-	If s <> "" Then UI.SetMaxWidth(mElement, sMaxWidth)
-End Sub
-'set Orientation
-'options: landscape|portrait
-Sub setOrientation(s As String)					'ignoredeadcode
-	sOrientation = s
-	CustProps.put("Orientation", s)
-	If mElement = Null Then Return
-	UI.AddClassByID($"${mName}_device"$, s)
-End Sub
+
 'set Width
 Sub setWidth(s As String)
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetWidth(mElement, sWidth)
-End Sub
-'get Color
-Sub getColor As String
-	Return sColor
 End Sub
 'get Device Type
 Sub getDeviceType As String
@@ -454,18 +360,7 @@ End Sub
 Sub getHeight As String
 	Return sHeight
 End Sub
-'get Max Height
-Sub getMaxHeight As String
-	Return sMaxHeight
-End Sub
-'get Max Width
-Sub getMaxWidth As String
-	Return sMaxWidth
-End Sub
-'get Orientation
-Sub getOrientation As String
-	Return sOrientation
-End Sub
+
 'get Width
 Sub getWidth As String
 	Return sWidth
