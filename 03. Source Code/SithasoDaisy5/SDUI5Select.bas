@@ -751,25 +751,37 @@ Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
 	If m.Size = 0 Then Return
 	Dim sb As StringBuilder
 	sb.Initialize
-	If bAllowBlank Then 
-		sb.Append($"<option value="" selected>--Nothing Selected--</option>""$)
+	If bAllowBlank Then
+		sb.Append($"<option value="" selected>--Nothing Selected--</option>"$)
 	End If
 	For Each k As String In m.Keys
 		Dim v As String = m.Get(k)
 		If bValuesAsIs = False Then k = UI.CleanID(k)
 		sb.Append($"<option value="${k}">${v}</option>"$)
 	Next
-	mElement.Append(sb.ToString)	
+	mElement.Append(sb.ToString)
 End Sub
+
+''load the items from a map
+'Sub SetOptionsFromMap(m As Map)		'ignoredeadcode
+'	If mElement = Null Then Return
+'	Clear
+'	If m.Size = 0 Then Return
+'	If bAllowBlank Then
+'		AddOptionSelected("", "--Nothing Selected--")
+'	End If
+'	For Each k As String In m.Keys
+'		Dim v As String = m.Get(k)
+'		AddOption(k, v)
+'	Next
+'End Sub
 
 'load the items from a list
 Sub SetOptionsFromList(m As List)
 	If mElement = Null Then Return
-	Clear
 	Dim nm As Map = CreateMap()
 	For Each k As String In m
-		Dim sk As String = UI.CleanID(k)
-		nm.Put(sk, k)
+		nm.Put(k, k)
 	Next
 	SetOptionsFromMap(nm)
 End Sub
@@ -800,6 +812,14 @@ Sub AddOption(iKey As String, iValue As String)
 	Dim cKey As String = iKey
 	If bValuesAsIs = False Then cKey = UI.CleanID(iKey)
 	Dim scode As String = $"<option value="${cKey}">${iValue}</option>"$
+	mElement.Append(scode)
+End Sub
+
+Sub AddOptionSelected(iKey As String, iValue As String)
+	If mElement = Null Then Return
+	Dim cKey As String = iKey
+	If bValuesAsIs = False Then cKey = UI.CleanID(iKey)
+	Dim scode As String = $"<option value="${cKey}" selected>${iValue}</option>"$
 	mElement.Append(scode)
 End Sub
 
@@ -1109,25 +1129,15 @@ Sub ResetValidation
 End Sub
 
 Sub SetLanguages
-	BANano.Await(Clear)
-	Dim Languages As Map = modSD5.Languages
-	For Each k As String In Languages.Keys
-		Dim v As String = Languages.Get(k)
-		AddOption(v, k)
-	Next
+	SetOptionsFromMap(modSD5.Languages)
 End Sub
 
 Sub SetCountries
-	BANano.Await(Clear)
-	Dim Countries As Map = modSD5.Countries
-	For Each k As String In Countries.Keys
-		Dim v As String = Countries.Get(k)
-		AddOption(k, v)
-	Next
+	SetOptionsFromMap(modSD5.Countries)
 End Sub
 
 Sub SetYears(yearsIntoPast As Int, yearsIntoFuture As Int)
-	BANano.Await(Clear)
+	Clear
 	Dim thisYear As Int = UI.YearNow
 	Dim pStart As Int = BANano.parseInt(thisYear) - UI.CInt(yearsIntoPast)
 	Dim fEnd As Int = BANano.parseInt(thisYear) + UI.CInt(yearsIntoFuture)
@@ -1136,34 +1146,70 @@ Sub SetYears(yearsIntoPast As Int, yearsIntoFuture As Int)
 		AddOption(cntYear, cntYear)
 	Next
 End Sub
+
 Sub SetMonths
-	BANano.Await(Clear)
+	Clear
 	Dim Months As SDUIMap = modSD5.Months
-	Dim mItems As List = Months.Keys
-	For Each k As String In mItems
+	Dim l As List = Months.keys
+	For Each k As String In l
 		Dim v As String = Months.Get(k)
-		AddOption(k, v)
-	Next
-End Sub
-Sub SetDays
-	BANano.Await(Clear)
-	Dim Days As SDUIMap = modSD5.Days
-	Dim mItems As List = Days.Keys
-	For Each k As String In mItems
-		Dim v As String = Days.Get(k)
-		AddOption(k, v)
+		AddOption(k,v)
 	Next
 End Sub
 
-Sub SetThemes
-	Dim aThemes As List
-	aThemes.Initialize
-	aThemes.AddAll(Array("light", "dark", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "forest", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter"))
-	aThemes.Sort(True)
-	BANano.Await(Clear)
-	For Each k As String In aThemes
-		AddOption(k, k)
+Sub SetDays
+	Clear
+	Dim Days As SDUIMap = modSD5.Days
+	Dim l As List = Days.keys
+	For Each k As String In l
+		Dim v As String = Days.Get(k)
+		AddOption(k,v)
 	Next
+End Sub
+
+'<code>
+'BANano.Await(SetThemes)
+'</code>
+Sub SetThemes
+	Dim m As Map
+	m.Initialize
+	m.Put("abyss", "Abyss")
+	m.Put("acid", "Acid")
+	m.Put("aqua", "Aqua")
+	m.Put("autumn", "Autumn")
+	m.Put("black", "Black")
+	m.Put("bumblebee", "Bumblebee")
+	m.Put("business", "Business")
+	m.Put("caramellatte", "Caramellatte")
+	m.Put("coffee", "Coffee")
+	m.Put("corporate", "Corporate")
+	m.Put("cmyk", "CMYK")
+	m.Put("cupcake", "Cupcake")
+	m.Put("cyberpunk", "Cyberpunk")
+	m.Put("dark", "Dark")
+	m.Put("default", "Default")
+	m.Put("dim", "Dim")
+	m.Put("dracula", "Dracula")
+	m.Put("emerald", "Emerald")
+	m.Put("fantasy", "Fantasy")
+	m.Put("forest", "Forest")
+	m.Put("garden", "Garden")
+	m.Put("halloween", "Halloween")
+	m.Put("lemonade", "Lemonade")
+	m.Put("light", "Light")
+	m.Put("lofi", "Lofi")
+	m.Put("luxury", "Luxury")
+	m.Put("night", "Night")
+	m.Put("nord", "Nord")
+	m.Put("pastel", "Pastel")
+	m.Put("retro", "Retro")
+	m.Put("silk", "Silk")
+	m.Put("sunset", "Sunset")
+	m.Put("synthwave", "Synthwave")
+	m.Put("valentine", "Valentine")
+	m.Put("winter", "Winter")
+	m.Put("wireframe", "Wireframe")
+	SetOptionsFromMap(m)
 End Sub
 
 Sub SetValueByText(stext As String)

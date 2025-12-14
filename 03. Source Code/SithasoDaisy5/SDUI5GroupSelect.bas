@@ -17,6 +17,7 @@ Version=10
 #DesignerProperty: Key: ChipColor, DisplayName: Chip Color, FieldType: String, DefaultValue: neutral, Description: Chip Color
 #DesignerProperty: Key: ActiveColor, DisplayName: Active Color, FieldType: String, DefaultValue: #22c55e, Description: Active Color
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: #ffffff, Description: Text Color
+#DesignerProperty: Key: ThemeController, DisplayName: Theme Controller, FieldType: Boolean, DefaultValue: False, Description: Theme Controller
 #DesignerProperty: Key: Size, DisplayName: Chip Size, FieldType: String, DefaultValue: xs, Description: Button Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
@@ -73,6 +74,7 @@ Sub Class_Globals
 	Private sChipColor As String = "neutral"
 	Private sTextColor As String = "#ffffff"
 	Private sLegendColor As String = ""
+	Private bThemeController As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -115,6 +117,7 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.put("ThemeController", False)
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -299,6 +302,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTextColor = UI.CStr(sTextColor)
 		sLegendColor = Props.GetDefault("LegendColor", "")
 		sLegendColor = UI.CStr(sLegendColor)
+		bThemeController = Props.GetDefault("ThemeController", False)
+		bThemeController = UI.CBool(bThemeController)
 	End If
 	'
 	UI.AddClassDT("fieldset")
@@ -328,6 +333,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setOptions(sRawOptions)
 	setSelected(sSelected)
 	setLegendColor(sLegendColor)
+End Sub
+
+Sub setThemeController(b As Boolean)			'ignoredeadcode
+	bThemeController = b
+	CustProps.Put("ThemeController", bThemeController)
+End Sub
+
+Sub getThemeController As Boolean
+	Return bThemeController
 End Sub
 
 Sub setLegendColor(s As String)			'ignoredeadcode
@@ -449,6 +463,8 @@ Sub SetOptionsFromMap(mItems As Map)			'ignoredeadcode
 	Dim soutline As String = ""
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
+	Dim sTheme As String = ""
+	If bThemeController Then sTheme = "theme-controller"
 	If sActiveColor <> "" Then
 		Dim abg As String = UI.FixColor("bg", sActiveColor)
 		checkedColor = $"checked:${abg}"$
@@ -463,7 +479,7 @@ Sub SetOptionsFromMap(mItems As Map)			'ignoredeadcode
 		sb.Append($"[BANCLEAN]
 		<div id="${mName}_${k}_host" class="inline-flex ${iconColor} items-center cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
 			<svg-renderer id="${mName}_${k}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
-			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${sTheme} ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 		items.Put(nk, nk)
 	Next
@@ -507,6 +523,8 @@ Sub AddOption(k As String, v As String)
 	Dim iconColor As String = UI.FixColor("text", sTextColor)
 	Dim checkedColor As String = ""
 	Dim borderColor As String = ""
+	Dim sTheme As String = ""
+	If bThemeController Then sTheme = "theme-controller"
 	If sActiveColor <> "" Then
 		Dim abg As String = UI.FixColor("bg", sActiveColor)
 		checkedColor = $"checked:${abg}"$
@@ -519,7 +537,7 @@ Sub AddOption(k As String, v As String)
 	UI.AppendByID($"${mName}_content"$, $"[BANCLEAN]
 		<div id="${mName}_${K}_host" class="inline-flex items-center ${iconColor} cursor-pointer btn ${itemSize} ${itemColor} ${soutline} rounded-full font-normal">
 			<svg-renderer id="${mName}_${k}_icon" width="${iconsize}" data-js="enabled" fill="currentColor" style="${BuildIconColor(sTextColor)}" height="${iconsize}" data-src="./assets/check-solid.svg" class="mr-2 hidden"></svg-renderer>
-			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
+			<input id="${mName}_${k}" value="${k}" class="btn checked:outline-none! ${sTheme} ${itemSize} shadow-none ${itemColor} ${checkedColor} ${borderColor} rounded-full h-fit" name="${sGroupName}" type="${iType}" aria-label="${v}">
 		</div>"$)
 	
 	items.Put(nk, nk)
@@ -726,4 +744,88 @@ End Sub
 Sub setValue(s As String)
 	sSelected = s
 	setSelected(s)
+End Sub
+
+Sub SetLanguages
+	BANano.Await(SetOptionsFromMap(modSD5.Languages))
+End Sub
+
+Sub SetCountries
+	BANano.Await(SetOptionsFromMap(modSD5.Countries))
+End Sub
+
+Sub SetYears(yearsIntoPast As Int, yearsIntoFuture As Int)
+	Clear
+	Dim thisYear As Int = UI.YearNow
+	Dim pStart As Int = BANano.parseInt(thisYear) - UI.CInt(yearsIntoPast)
+	Dim fEnd As Int = BANano.parseInt(thisYear) + UI.CInt(yearsIntoFuture)
+	Dim cntYear As Int = 0
+	For cntYear = pStart To fEnd
+		AddOption(cntYear, cntYear)
+	Next
+End Sub
+
+Sub SetMonths
+	Clear
+	Dim Months As SDUIMap = modSD5.Months
+	Dim l As List = Months.keys
+	For Each k As String In l
+		Dim v As String = Months.Get(k)
+		AddOption(k,v)
+	Next
+End Sub
+
+Sub SetDays
+	Clear
+	Dim Days As SDUIMap = modSD5.Days
+	Dim l As List = Days.keys
+	For Each k As String In l
+		Dim v As String = Days.Get(k)
+		AddOption(k,v)
+	Next
+End Sub
+
+'<code>
+'BANano.Await(SetThemes)
+'</code>
+Sub SetThemes
+	Dim m As Map
+	m.Initialize
+	m.Put("abyss", "Abyss")
+	m.Put("acid", "Acid")
+	m.Put("aqua", "Aqua")
+	m.Put("autumn", "Autumn")
+	m.Put("black", "Black")
+	m.Put("bumblebee", "Bumblebee")
+	m.Put("business", "Business")
+	m.Put("caramellatte", "Caramellatte")
+	m.Put("coffee", "Coffee")
+	m.Put("corporate", "Corporate")
+	m.Put("cmyk", "CMYK")
+	m.Put("cupcake", "Cupcake")
+	m.Put("cyberpunk", "Cyberpunk")
+	m.Put("dark", "Dark")
+	m.Put("default", "Default")
+	m.Put("dim", "Dim")
+	m.Put("dracula", "Dracula")
+	m.Put("emerald", "Emerald")
+	m.Put("fantasy", "Fantasy")
+	m.Put("forest", "Forest")
+	m.Put("garden", "Garden")
+	m.Put("halloween", "Halloween")
+	m.Put("lemonade", "Lemonade")
+	m.Put("light", "Light")
+	m.Put("lofi", "Lofi")
+	m.Put("luxury", "Luxury")
+	m.Put("night", "Night")
+	m.Put("nord", "Nord")
+	m.Put("pastel", "Pastel")
+	m.Put("retro", "Retro")
+	m.Put("silk", "Silk")
+	m.Put("sunset", "Sunset")
+	m.Put("synthwave", "Synthwave")
+	m.Put("valentine", "Valentine")
+	m.Put("winter", "Winter")
+	m.Put("wireframe", "Wireframe")
+	BANano.Await(SetOptionsFromMap(m))
 End Sub

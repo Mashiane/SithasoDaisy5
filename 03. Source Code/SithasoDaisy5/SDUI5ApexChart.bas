@@ -47,12 +47,15 @@ Version=10.3
 #DesignerProperty: Key: XAxisOutputFormat, DisplayName: X-Axis Output Format, FieldType: String, DefaultValue: normal, Description: X-axis output format, List: normal|money|thousand|date|datetime|time
 #DesignerProperty: Key: YAxisTitle, DisplayName: Y-Axis Title, FieldType: String, DefaultValue: , Description: Y-axis title
 #DesignerProperty: Key: YAxisOutputFormat, DisplayName: Y-Axis Output Format, FieldType: String, DefaultValue: normal, Description: Y-axis output format, List: normal|money|thousand|date|datetime|time
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: lg, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
+#DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: lg, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
-#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=4; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
 #DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
 #DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
@@ -73,7 +76,7 @@ Sub Class_Globals
 	Private sRawStyles As String = ""
 	Private sRawAttributes As String = ""
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
-	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=2; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
@@ -92,7 +95,7 @@ Sub Class_Globals
 	Private sYAxisTitle As String = ""
 	Private sCurve As String = "smooth"
 	Private iLineWidth As Int = 2
-	Private sCategories As String = "[]"
+	Private sCategories As String = ""
 	Private bDonutShowTotal As Boolean = True
 	Private sHollowSize As String = "50%"
 	Private bDashedRadial As Boolean = False
@@ -123,6 +126,9 @@ Sub Class_Globals
 	Private sColors As String = ""
 	Private bLegendVisible As Boolean = True
 	Public Tag As Object
+	Private sRounded As String = "lg"
+	Private bRoundedBox As Boolean = False
+	Private sShadow As String = "lg"
 End Sub
 
 'initialize the custom view class
@@ -137,7 +143,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("SithasoApex.js")
+	BANano.DependsOnAsset("SithasoApexChart.js")
 	SetDefaults
 End Sub
 '
@@ -188,10 +194,13 @@ Private Sub SetDefaults
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
 	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=2; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("Rounded", "lg")
+	CustProps.Put("RoundedBox", False)
+	CustProps.Put("Shadow", "lg")
 End Sub
 
 Sub OnEvent(event As String, MethodName As String)
@@ -247,6 +256,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		CustProps = Props
 		UI.SetProps(Props)
 		UI.ExcludeTextColor = True
+		UI.ExcludeBackgroundColor = True
 		sParentID = Props.GetDefault("ParentID", "")
 		sParentID = UI.CStr(sParentID)
 		sTypeOf = Props.GetDefault("TypeOf", "bar")
@@ -340,7 +350,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPosition = UI.CStr(sPosition)
 		sMarginAXYTBLR = Props.GetDefault("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 		sMarginAXYTBLR = UI.CStr(sMarginAXYTBLR)
-		sPaddingAXYTBLR = Props.GetDefault("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+		sPaddingAXYTBLR = Props.GetDefault("PaddingAXYTBLR", "a=2; x=?; y=?; t=?; b=?; l=?; r=?")
 		sPaddingAXYTBLR = UI.CStr(sPaddingAXYTBLR)
 		sRawClasses = Props.GetDefault("RawClasses", "")
 		sRawClasses = UI.CStr(sRawClasses)
@@ -348,48 +358,59 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawStyles = UI.CStr(sRawStyles)
 		sRawAttributes = Props.GetDefault("RawAttributes", "")
 		sRawAttributes = UI.CStr(sRawAttributes)
+		sRounded = Props.GetDefault("Rounded", "lg")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		bRoundedBox = Props.GetDefault("RoundedBox", False)
+		bRoundedBox = UI.CBool(bRoundedBox)
+		sShadow = Props.GetDefault("Shadow", "lg")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
 	End If
 	
 	UI.AddAttrDT("type", sTypeOf)
-	If sHeight <> "350px" Then UI.AddAttrDT("height", sHeight)
-	If sWidth <> "100%" Then UI.AddAttrDT("width", sWidth)
-	If sTheme <> "" Then UI.AddAttrDT("theme", sTheme)
-	If bShowLegend <> True Then UI.AddAttrDT("show-legend", bShowLegend)
-	If sLegendPosition <> "bottom" Then UI.AddAttrDT("legend-position", sLegendPosition)
-	If bShowToolbar <> True Then UI.AddAttrDT("show-toolbar", bShowToolbar)
-	If sTitle <> "" Then UI.AddAttrDT("title", sTitle)
-	If bShowDataLabels <> False Then UI.AddAttrDT("show-data-labels", bShowDataLabels)
-	If sDataLabelOrientation <> "" Then UI.AddAttrDT("data-label-orientation", sDataLabelOrientation)
-	If sDataLabelPosition <> "" Then UI.AddAttrDT("data-label-position", sDataLabelPosition)
-	If sXAxisTitle <> "" Then UI.AddAttrDT("x-axis-title", sXAxisTitle)
-	If sYAxisTitle <> "" Then UI.AddAttrDT("y-axis-title", sYAxisTitle)
-	If sCurve <> "smooth" Then UI.AddAttrDT("curve", sCurve)
-	If iLineWidth <> 2 Then UI.AddAttrDT("line-width", iLineWidth)
-	If bDonutShowTotal <> True Then UI.AddAttrDT("donut-show-total", bDonutShowTotal)
-	If sHollowSize <> "50%" Then UI.AddAttrDT("hollow-size", sHollowSize)
-	If bDashedRadial <> False Then UI.AddAttrDT("dashed-radial", bDashedRadial)
-	If sTrackWidth <> "97%" Then UI.AddAttrDT("track-width", sTrackWidth)
-	If iXAxisOffsetY <> 2 Then UI.AddAttrDT("x-axis-offsety", iXAxisOffsetY)
-	If iXAxisLabelRotate <> 0 Then UI.AddAttrDT("x-axis-label-rotate", iXAxisLabelRotate)
-	If iXAxisLabelRotateOffsetY <> 25 Then UI.AddAttrDT("x-axis-label-rotate-offsety", iXAxisLabelRotateOffsetY)
-	If bGradient <> True Then UI.AddAttrDT("gradient", bGradient)
-	If bRealtime <> False Then UI.AddAttrDT("realtime", bRealtime)
-	If iMarkerSize <> 6 Then UI.AddAttrDT("marker-size", iMarkerSize)
-	If bStacked <> False Then UI.AddAttrDT("stacked", bStacked)
-	If iBorderRadius <> 4 Then UI.AddAttrDT("border-radius", iBorderRadius)
-	If sXAxisOutputFormat <> "" Then UI.AddAttrDT("x-axis-output-format", sXAxisOutputFormat)
-	If sYAxisOutputFormat <> "" Then UI.AddAttrDT("y-axis-output-format", sYAxisOutputFormat)
-	If sColumnWidth <> "" Then UI.AddAttrDT("column-width", sColumnWidth)
-	If iStartAngle <> 0 Then UI.AddAttrDT("start-angle", iStartAngle)
-	If iEndAngle <> 360 Then UI.AddAttrDT("end-angle", iEndAngle)
-	If bBarLabels <> False Then UI.AddAttrDT("bar-labels", bBarLabels)
-	If bSparkline <> False Then UI.AddAttrDT("sparkline", bSparkline)
-	If bGridShow <> True Then UI.AddAttrDT("grid-show", bGridShow)
-	If bTooltipEnabled <> True Then UI.AddAttrDT("tooltip-enabled", bTooltipEnabled)
-	If sSubtitle <> "" Then UI.AddAttrDT("subtitle", sSubtitle)
-	If sSubtitleFontSize <> "12px" Then UI.AddAttrDT("subtitle-font-size", sSubtitleFontSize)
-	If sTitleFontSize <> "14px" Then UI.AddAttrDT("title-font-size", sTitleFontSize)
-	If bLegendVisible <> True Then UI.AddAttrDT("show-legend", bLegendVisible)
+	UI.AddAttrDT("height", sHeight)
+	UI.AddAttrDT("width", sWidth)
+	UI.AddAttrDT("theme", sTheme)
+	UI.AddAttrDT("show-legend", bShowLegend)
+	UI.AddAttrDT("legend-position", sLegendPosition)
+	UI.AddAttrDT("show-toolbar", bShowToolbar)
+	UI.AddAttrDT("title", sTitle)
+	UI.AddAttrDT("show-data-labels", bShowDataLabels)
+	UI.AddAttrDT("data-label-orientation", sDataLabelOrientation)
+	UI.AddAttrDT("data-label-position", sDataLabelPosition)
+	UI.AddAttrDT("x-axis-title", sXAxisTitle)
+	UI.AddAttrDT("y-axis-title", sYAxisTitle)
+	UI.AddAttrDT("curve", sCurve)
+	UI.AddAttrDT("line-width", iLineWidth)
+	UI.AddAttrDT("donut-show-total", bDonutShowTotal)
+	UI.AddAttrDT("hollow-size", sHollowSize)
+	UI.AddAttrDT("dashed-radial", bDashedRadial)
+	UI.AddAttrDT("track-width", sTrackWidth)
+	UI.AddAttrDT("x-axis-offsety", iXAxisOffsetY)
+	UI.AddAttrDT("x-axis-label-rotate", iXAxisLabelRotate)
+	UI.AddAttrDT("x-axis-label-rotate-offsety", iXAxisLabelRotateOffsetY)
+	UI.AddAttrDT("gradient", bGradient)
+	UI.AddAttrDT("realtime", bRealtime)
+	UI.AddAttrDT("marker-size", iMarkerSize)
+	UI.AddAttrDT("stacked", bStacked)
+	UI.AddAttrDT("border-radius", iBorderRadius)
+	UI.AddAttrDT("x-axis-output-format", sXAxisOutputFormat)
+	UI.AddAttrDT("y-axis-output-format", sYAxisOutputFormat)
+	UI.AddAttrDT("column-width", sColumnWidth)
+	UI.AddAttrDT("start-angle", iStartAngle)
+	UI.AddAttrDT("end-angle", iEndAngle)
+	UI.AddAttrDT("bar-labels", bBarLabels)
+	UI.AddAttrDT("sparkline", bSparkline)
+	UI.AddAttrDT("grid-show", bGridShow)
+	UI.AddAttrDT("tooltip-enabled", bTooltipEnabled)
+	UI.AddAttrDT("subtitle", sSubtitle)
+	UI.AddAttrDT("subtitle-font-size", sSubtitleFontSize)
+	UI.AddAttrDT("title-font-size", sTitleFontSize)
+	UI.AddAttrDT("show-legend", bLegendVisible)
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -489,6 +510,49 @@ End Sub
 Sub AddClass(className As String)
 	If mElement = Null Then Return
 	UI.AddClass(mElement, className)
+End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+'get Rounded Box
+Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+'set Rounded Box
+Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
 End Sub
 
 Sub getAttributes As String
@@ -1024,7 +1088,7 @@ End Sub
 '</code>
 Sub AddCategories(cats As List)
 	If mElement = Null Then Return
-	mElement.RunMethod("addCategories", cats)
+	mElement.RunMethod("addCategories", Array(cats))
 End Sub
 
 '<code>
@@ -1055,11 +1119,11 @@ End Sub
 'update the series
 Public Sub UpdateSeries(mSeries As Map)
 	If mElement = Null Then Return
-	mElement.RunMethod("updateSeries", mSeries)
+	mElement.RunMethod("updateSeries", Array(mSeries))
 End Sub
 
 'update options at runtime
 Public Sub UpdateOptions(mOptions As Map)
 	If mElement = Null Then Return
-	mElement.runmethod("updateOptions", mOptions)
+	mElement.runmethod("updateOptions", Array(mOptions))
 End Sub

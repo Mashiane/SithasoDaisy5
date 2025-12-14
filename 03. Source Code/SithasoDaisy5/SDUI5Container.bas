@@ -373,7 +373,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
 		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor1 = UI.CStr(sGradientColor1)
+		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
 		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		sGradientColor2 = UI.CStr(sGradientColor2)
+		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If
 	'
 	If bPageView Then UI.AddClassDT("max-w-[100vw] px-6 pb-16 xl:pe-2 relative")

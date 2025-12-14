@@ -268,7 +268,7 @@ Sub Class_Globals
 	MedicationName As String, _
 	MedicalDocumentType As String, _
 	EventStatus As String, _
-	InsuranceCompany as string)
+	InsuranceCompany As String)
 End Sub
 
 Sub Initialize As SDUI5FakeIT
@@ -790,7 +790,7 @@ End Sub
 Sub GetSingle As FakeData
 	Dim rt As FakeData
 	rt.Initialize
-	If InsuranceCompany Then rt.InsuranceCompany = rand_insurance_company
+	If InsuranceCompany Then rt.InsuranceCompany = Rand_Insurance_Company
 	If EventStatus Then rt.EventStatus = Rand_Event_Status
 	If MedicalDocumentType Then rt.MedicalDocumentType = Rand_Medical_Document_Type
 	If MedicationName Then rt.MedicationName = Rand_Medication_Name

@@ -545,7 +545,44 @@ Private Sub Class_Globals
 	Public CONST COLOR_MEDIUMSLATEBLUE As String = "#7B68EE"
 	Public CONST COLOR_MAROON As String = "#800000"
 	Public CONST COLOR_PALEGOLDENROD As String = "#EEE8AA"
-	
+	'
+	' DaisyUI Themes
+	Public Const THEME_LIGHT As String = "light"
+	Public Const THEME_DARK As String = "dark"
+	Public Const THEME_CUPCAKE As String = "cupcake"
+	Public Const THEME_BUMBLEBEE As String = "bumblebee"
+	Public Const THEME_EMERALD As String = "emerald"
+	Public Const THEME_CORPORATE As String = "corporate"
+	Public Const THEME_SYNTHWAVE As String = "synthwave"
+	Public Const THEME_RETRO As String = "retro"
+	Public Const THEME_CYBERPUNK As String = "cyberpunk"
+	Public Const THEME_VALENTINE As String = "valentine"
+	Public Const THEME_HALLOWEEN As String = "halloween"
+	Public Const THEME_GARDEN As String = "garden"
+	Public Const THEME_FOREST As String = "forest"
+	Public Const THEME_AQUA As String = "aqua"
+	Public Const THEME_LOFI As String = "lofi"
+	Public Const THEME_PASTEL As String = "pastel"
+	Public Const THEME_FANTASY As String = "fantasy"
+	Public Const THEME_WIREFRAME As String = "wireframe"
+	Public Const THEME_BLACK As String = "black"
+	Public Const THEME_LUXURY As String = "luxury"
+	Public Const THEME_DRACULA As String = "dracula"
+	Public Const THEME_CMYK As String = "cmyk"
+	Public Const THEME_AUTUMN As String = "autumn"
+	Public Const THEME_BUSINESS As String = "business"
+	Public Const THEME_ACID As String = "acid"
+	Public Const THEME_LEMONADE As String = "lemonade"
+	Public Const THEME_NIGHT As String = "night"
+	Public Const THEME_COFFEE As String = "coffee"
+	Public Const THEME_WINTER As String = "winter"
+	Public Const THEME_DIM As String = "dim"
+	Public Const THEME_NORD As String = "nord"
+	Public Const THEME_SUNSET As String = "sunset"
+	Public Const THEME_CARAMELLATTE As String = "caramellatte"
+	Public Const THEME_ABYSS As String = "abyss"
+	Public Const THEME_SILK As String = "silk"
+
 	
 End Sub
 
@@ -578,8 +615,8 @@ Public Sub Initialize (mCallback As Object)
 	mback = mCallback
 	AddLoader
 	Banano.Await(modSD5.InitColors)
-	Banano.Await(modSD5.InitLanguages)
-	Banano.Await(modSD5.InitCountries)
+'	Banano.Await(modSD5.InitLanguages)
+'	Banano.Await(modSD5.InitCountries)
 	Themes.Initialize
 	templates.Initialize
 	templateViews.Initialize
@@ -587,8 +624,6 @@ Public Sub Initialize (mCallback As Object)
 	AllViews.Initialize
 	Designs.Initialize
 	DynamicEvents.Initialize
-'	UI.InitLanguages
-'	UI.InitCountries
 	UserProfile.Initialize
 	Banano.Await(modSD5.InitMonths)
 	Banano.Await(modSD5.InitDays)
@@ -608,6 +643,16 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Position = ToastPosition
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
 End Sub
+
+Sub SetRTL(b As Boolean)
+	Select Case b
+		Case True
+			Banano.GetElement("html").SetAttr("dir","rtl")
+		Case False
+			Banano.GetElement("html").SetAttr("dir", "ltr")
+	End Select
+End Sub
+
 
 Sub CreateList As List
 	Dim nl As List
@@ -790,8 +835,13 @@ Sub StartEruda
 End Sub
 
 Sub UsesApex
-	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts/dist/apexcharts.min.css", "SithasoApex.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.css", "SithasoApexChart.js")))
 End Sub
+
+Sub UsesGenderChart
+	Banano.Await(UI.LoadAssetsOnDemand("GenderChart", Array("SithasoGenderChart.min.js")))
+End Sub
+
 
 Sub UsesKanBan
 	Banano.Await(UI.LoadAssetsOnDemand("KanBan", Array("jkanban.min.css", "dragula.min.js", "jkanban.min.js")))
@@ -3612,4 +3662,167 @@ Sub NavigateTo(url As String, params As Map)
 		Dim obaseURL As String = $"${url}?${sparams}"$
 		Banano.Location.Assign(obaseURL)
 	End If
+End Sub
+
+'download a pdf from a path
+'<code>
+'app.DownloadPDF("http:/", "pdfName", "newpdfname.pdf")
+'</code>
+Sub DownloadPDF(pdfPath As String, pdfName As String, DownloadPdfName As String)
+	Dim pdfFile As BANanoObject = Banano.await(FetchAsFile(pdfPath, pdfName))
+	DownloadBlob(pdfFile, DownloadPdfName)
+End Sub
+
+Sub DownloadFileByURLNewName(url As String, pdfName As String, DownloadPdfName As String)
+	Dim pdfFile As BANanoObject = Banano.await(FetchAsFileFromURL(url, pdfName))
+	DownloadBlob(pdfFile, DownloadPdfName)
+End Sub
+
+Sub DownloadBlob(blob As Object, fileName As String)
+	Banano.RunJavascriptMethod("saveAs",Array(blob,fileName))
+End Sub
+
+Sub DownloadFileByURL(urlLink As String)
+	Banano.RunJavascriptMethod("downloadFile", Array(urlLink))
+End Sub
+
+'get html of an element
+Sub GetHTML(id As String) As String
+	id = UI.CleanID(id)
+	Dim scode As String = Banano.GetElement($"#${id}"$).GetHTML
+	Return scode
+End Sub
+
+Sub Download(content As String, FileName As String)
+	content = content.Replace("~","$")
+	DownloadText2File(content, FileName)
+End Sub
+
+'save text to a file
+Sub DownloadText2File(content As String, fileName As String)
+	Dim fc As List
+	fc.Initialize
+	fc.Add(content)
+	Dim blob As BANanoObject
+	blob.Initialize2("Blob",Array(fc, CreateMap("type": "text/plain;charset=utf-8")))
+	Banano.RunJavascriptMethod("saveAs",Array(blob,fileName))
+End Sub
+
+Sub DownloadAsZip(content As String, FileName As String, ZipFileName As String)
+	content = content.Replace("~","$")
+	'
+	Dim Zip As BANanoObject
+	Zip.Initialize2("PizZip", Null)
+	Zip.RunMethod("file", Array(FileName, content))
+	'
+	Dim zipContent As Object = Zip.RunMethod("generate", CreateMap("type":"blob"))
+	'
+	Banano.RunJavascriptMethod("saveAs",Array(zipContent,ZipFileName))
+End Sub
+
+Sub GetFileFromAsset(path As String, name As String) As BANanoObject
+	Dim ret As BANanoObject = Banano.Await(FetchAsFile(path, name))
+	Return ret
+End Sub
+
+'fetch a file from assets as file object
+'<code>
+' Dim fo As BANanoObject = BANano.Await(FetchAsFile("./assets","large.png"))
+'</code>
+Sub FetchAsFile(path As String, name As String) As BANanoObject
+	Dim fetch As BANanoFetch
+	Dim fetchResponse As BANanoFetchResponse
+	Dim blob As BANanoObject
+  
+	Dim prom As BANanoPromise
+  
+	' we are going to use a Promise Wrapper as we want to use Await() for it.
+	prom.NewStart
+	fetch.Initialize(path & "/" & name, Null)
+	fetch.Then(fetchResponse)
+	' resolve the blob
+	Return fetchResponse.Blob
+	fetch.Then(blob) 'ignore
+	' Use ReturnThen/ReturnElse for the final result in case of a Promise.NewStart/NewEnd wrapper
+	Banano.ReturnThen(blob)
+	fetch.End
+	prom.NewEnd
+  
+	' wait from the Promise
+	Dim result As BANanoObject = Banano.Await(prom)
+  
+	' make a new File object
+	Dim f As BANanoObject
+	f.Initialize2("File",Array(Array(result), name, CreateMap("type": result.getfield("type"))))
+      
+	Return f
+End Sub
+
+Sub FetchAsFileFromURL(url As String, name As String) As BANanoObject
+	Dim fetch As BANanoFetch
+	Dim fetchResponse As BANanoFetchResponse
+	Dim blob As BANanoObject
+  
+	Dim prom As BANanoPromise
+  
+	' we are going to use a Promise Wrapper as we want to use Await() for it.
+	prom.NewStart
+	fetch.Initialize(url, Null)
+	fetch.Then(fetchResponse)
+	' resolve the blob
+	Return fetchResponse.Blob
+	fetch.Then(blob) 'ignore
+	' Use ReturnThen/ReturnElse for the final result in case of a Promise.NewStart/NewEnd wrapper
+	Banano.ReturnThen(blob)
+	fetch.End
+	prom.NewEnd
+  
+	' wait from the Promise
+	Dim result As BANanoObject = Banano.Await(prom)
+  
+	' make a new File object
+	Dim f As BANanoObject
+	f.Initialize2("File",Array(Array(result), name, CreateMap("type": result.getfield("type"))))
+      
+	Return f
+End Sub
+
+'take normal text contend and convert to a file object
+Sub Text2FileObject(contents As String, fn As String) As BANanoObject
+	Dim fc As List
+	fc.Initialize
+	fc.Add(contents)
+	Dim blob As BANanoObject
+	blob.Initialize2("Blob",Array(fc, CreateMap("type": "text/plain;charset=utf-8")))
+	' make a new File object
+	Dim f As BANanoObject
+	f.Initialize2("File",Array(Array(blob), fn, CreateMap("type": blob.getfield("type"))))
+	Return f
+End Sub
+
+Sub JoinIfNotBlank(Delim As String, lst As List) As String
+	Dim x As List
+	x.Initialize
+	For Each k As String In lst
+		k = k.Trim
+		If k <> "" Then x.Add(k)
+	Next
+	Dim sout As String = UI.Join(Delim, x)
+	sout = sout.Trim
+	Return sout
+End Sub
+
+' Gets the current location of the user
+public Sub GetMyLocation As BANanoGeoPosition
+	Return Banano.Await(Banano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
+End Sub
+
+Sub HideFullPhoneNumber(PhoneNumber As String) As String
+	Dim PasswordChars As String = ""
+	For i = 0 To PhoneNumber.Length -1
+		If i >= 3 And i <= PhoneNumber.Length -4 Then
+			PasswordChars = PasswordChars & "*"
+		End If
+	Next
+	Return PhoneNumber.SubString2(0,3) & PasswordChars & PhoneNumber.SubString2(PhoneNumber.Length -4,PhoneNumber.Length)
 End Sub

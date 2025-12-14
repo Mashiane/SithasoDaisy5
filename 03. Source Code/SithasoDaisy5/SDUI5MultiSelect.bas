@@ -1305,15 +1305,11 @@ Sub ResetValidation
 End Sub
 
 Sub SetLanguages
-	BANano.Await(Clear)
-	Dim Languages As Map = modSD5.Languages
-	SetOptionsFromMap(Languages)
+	BANano.Await(SetOptionsFromMap(modSD5.Languages))
 End Sub
 
 Sub SetCountries
-	BANano.Await(Clear)
-	Dim Countries As Map = modSD5.Countries
-	SetOptionsFromMap(Countries)
+	BANano.Await(SetOptionsFromMap(modSD5.Countries))
 End Sub
 
 Sub SetYears(yearsIntoPast As Int, yearsIntoFuture As Int)
@@ -1330,15 +1326,21 @@ End Sub
 Sub SetMonths
 	BANano.Await(Clear)
 	Dim Months As SDUIMap = modSD5.Months
-	Dim mItems As List = Months.Keys
-	SetOptionsFromList(mItems)
+	Dim l As List = Months.keys
+	For Each k As String In l
+		Dim v As String = Months.Get(k)
+		AddOption(k,v)
+	Next
 End Sub
 
 Sub SetDays
 	BANano.Await(Clear)
 	Dim Days As SDUIMap = modSD5.Days
-	Dim mItems As List = Days.Keys
-	SetOptionsFromList(mItems)
+	Dim l As List = Days.keys
+	For Each k As String In l
+		Dim v As String = Days.Get(k)
+		AddOption(k,v)
+	Next
 End Sub
 
 'set Checked Color

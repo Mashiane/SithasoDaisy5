@@ -14,6 +14,7 @@ Version=10
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Turn On, Description: Label
 #DesignerProperty: Key: LabelColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Legend Color
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
+#DesignerProperty: Key: Value, DisplayName: Value, FieldType: String, DefaultValue: , Description: Value
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 '#DesignerProperty: Key: CheckedIcon, DisplayName: Checked Icon, FieldType: String, DefaultValue: , Description: Checked Icon
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
@@ -23,6 +24,7 @@ Version=10
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Indeterminate, DisplayName: Indeterminate, FieldType: Boolean, DefaultValue: False, Description: Indeterminate
 #DesignerProperty: Key: Required, DisplayName: Required, FieldType: Boolean, DefaultValue: False, Description: Required
+#DesignerProperty: Key: ThemeController, DisplayName: Theme Controller, FieldType: Boolean, DefaultValue: False, Description: Theme Controller
 #DesignerProperty: Key: Validator, DisplayName: Validator, FieldType: Boolean, DefaultValue: False, Description: Validator
 #DesignerProperty: Key: ValidatorHint, DisplayName: Validator Hint, FieldType: String, DefaultValue: , Description: Validator Hint
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
@@ -82,6 +84,8 @@ Sub Class_Globals
 	Private sShadow As String = "none"
 	Private sLegendColor As String = ""
 	Private sLabelColor As String
+	Private bThemeController As Boolean = False
+	Private sValue As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -124,6 +128,8 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("ThemeController", False)
+	CustProps.Put("Value", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -337,6 +343,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sLabelColor = Props.GetDefault("LabelColor", "")
 		sLabelColor = UI.CStr(sLabelColor)
+		bThemeController = Props.GetDefault("ThemeController", False)
+		bThemeController = UI.CBool(bThemeController)
+		sValue = Props.GetDefault("Value", "")
+		sValue = UI.CStr(sValue)
 	End If
 	
 	If sParentID <> "" Then
@@ -397,12 +407,41 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setSize(sSize)
 	setChecked(bChecked)
 	setIndeterminate(bIndeterminate)
+	setThemeController(bThemeController)
+	setValue(sValue)
 '	setCheckedIcon(sCheckedIcon)
 '	setUncheckedIcon(sUncheckedIcon)
 	setCheckedColor(sCheckedColor)
 '	setUncheckedColor(sUncheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+Sub setValue(s As String)			'ignoredeadcode
+	sValue = s
+	CustProps.Put("Value", sValue)
+	If mElement = Null Then Return
+	mElement.SetValue(sValue)
+End Sub
+
+Sub getValue As String
+	If mElement = Null Then Return ""
+	Return mElement.getvalue
+End Sub
+
+Sub setThemeController(b As Boolean)			'ignoredeadcode
+	bThemeController = b
+	CustProps.Put("ThemeController", bThemeController)
+	If mElement = Null Then Return
+	If bThemeController Then
+		UI.AddClass(mElement, "theme-controller")
+	Else
+		UI.RemoveClass(mElement, "theme-controller")
+	End If
+End Sub
+
+Sub getThemeController As Boolean
+	Return bThemeController
 End Sub
 
 Sub setLabelColor(s As String)			'ignoredeadcode

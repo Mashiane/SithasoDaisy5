@@ -9,6 +9,8 @@ Sub Process_Globals
 	Private BANano As BANano		'ignore
 	Private app As SDUI5App			'ignore
 	Private SDUI5Select1 As SDUI5Select
+	Private btnClearSelectAsIs As SDUI5Button
+	Private btnLoadSelectAsIs As SDUI5Button
 End Sub
 
 
@@ -30,4 +32,21 @@ End Sub
 Private Sub SDUI5Select1_Append (e As BANanoEvent)
 	e.PreventDefault
 	app.ShowToastSuccess("Append...")
+End Sub
+
+Private Sub btnLoadSelectAsIs_Click (e As BANanoEvent)
+	Dim fake As SDUI5FakeIT
+	fake.Initialize
+	Dim recs As Map
+	recs.Initialize 
+	Dim rCnt As Int
+	For rCnt = 1 To 10
+		Dim sname As String = fake.Rand_Capital_City
+		recs.Put(sname, sname)
+	Next
+	SDUI5Select1.SetOptionsFromMap(recs)
+End Sub
+
+Private Sub btnClearSelectAsIs_Click (e As BANanoEvent)
+	SDUI5Select1.Clear
 End Sub

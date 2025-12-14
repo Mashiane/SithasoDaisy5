@@ -17,6 +17,7 @@ Sub Process_Globals
 	Private draweruser As SDUI5DrawerUser	'ignore
 	Private bottomdrawer As SDUI5BottomDrawer	'ignore
 	Private rightdrawer As SDUI5Drawer			'ignore
+	Private cboTheme As SDUI5Select
 End Sub
 
 Sub Initialize					'ignoreDeadCode
@@ -26,10 +27,12 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.UsesDatePicker)
 	BANano.Await(App.UsesJSONQuery)
 	BANano.Await(App.UsesFontAwesome)
+	BANano.Await(App.UsesGenderChart)
+	BANano.Await(App.UsesApex)
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppTitle
-	
+	cboTheme.SetThemes
 	BANano.Await(pgTypography.Show(App))
 	BANano.Await(AddDatabaseSchemas)
 	
@@ -87,6 +90,18 @@ End Sub
 
 'define the menu items fo dawe
 Sub CreateDrawerMenu
+	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-bankcard", "", "Hover 3D Card")
+	drawermenu.AddItemChild("wnew", "pg-themeselect", "", "Theme Controller")
+	drawermenu.AddItemChild("wnew", "pg-genderchart", "", "Gender Chart")
+	drawermenu.AddItemChild("wnew", "pg-apexcharts", "", "Apex Charts")
+	
+	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
+	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
+	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
+	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
+	
+	
 	drawermenu.AddItemParent("", "sd5lowcode", "./assets/aperture.svg", "SD5 LowCode Generator")
 	drawermenu.AddItemChild("sd5lowcode", "sd5lowcodeopen", "./assets/link-solid.svg", "Open Web App")
 	drawermenu.SetItemHref("sd5lowcodeopen", "https://sithaso-daisy5-low-code.vercel.app", "_blank")
@@ -118,11 +133,6 @@ Sub CreateDrawerMenu
 '	drawermenu.AddItemChild("crudexamples", "pg-provinces", "", "Provinces (Right Drawer)")
 '	drawermenu.AddItemChild("crudexamples", "pg-contacts", "", "Contacts (Bottom Drawer)")
 	
-	drawermenu.AddItemParent("", "wnew", "", "What's New")
-	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
-	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
-	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
-	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
 	'
 	drawermenu.AddItemParent("", "play", "./assets/otter-solid.svg", "PlayGround")
 	'drawermenu.AddItemChild("play", "pg-exceltoapp", "", "Excel to WebApp")
@@ -306,6 +316,14 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "apexcharts"
+				pgApexCharts.Show(App)
+			Case "genderchart"
+				pgGenderChart.Show(App)
+			Case "themeselect"
+				BANano.Await(pgThemeSelect.Show(App))		
+			Case "bankcard"
+				pgBankCard.Show(App)
 			Case "categories"
 				pgCategories.Show(App)
 			Case "provinces"

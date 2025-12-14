@@ -21,6 +21,7 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Checked, DisplayName: Checked, FieldType: Boolean, DefaultValue: False, Description: Checked
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: , Description: Checked Color
+#DesignerProperty: Key: ThemeController, DisplayName: Theme Controller, FieldType: Boolean, DefaultValue: False, Description: Theme Controller
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
@@ -66,6 +67,7 @@ Sub Class_Globals
 	Private sRadioType As String = "normal"
 	Private sLegendColor As String = ""
 	Private sLabelColor As String
+	Private bThemeController As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -103,6 +105,7 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("ThemeController", False)
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -294,6 +297,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRadioType = UI.CStr(sRadioType)
 		sLabelColor = Props.GetDefault("LabelColor", "")
 		sLabelColor = UI.CStr(sLabelColor)
+		bThemeController = Props.GetDefault("ThemeController", False)
+		bThemeController = UI.CBool(bThemeController)
 	End If
 
 	Dim xattrs As String = UI.BuildExAttributes
@@ -348,10 +353,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setAriaLabel(sAriaLabel)
 	setBackgroundColor(sBackgroundColor)
 	setGroupName(sGroupName)
+	setThemeController(bThemeController)
 	setValue(sValue)
 	setCheckedColor(sCheckedColor)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "changed")
+End Sub
+
+Sub setThemeController(b As Boolean)			'ignoredeadcode
+	bThemeController = b
+	CustProps.Put("ThemeController", bThemeController)
+	If mElement = Null Then Return
+	If bThemeController Then
+		UI.AddClass(mElement, "theme-controller")
+	Else
+		UI.RemoveClass(mElement, "theme-controller")
+	End If
+End Sub
+
+Sub getThemeController As Boolean
+	Return bThemeController
 End Sub
 
 Sub setLabelColor(s As String)			'ignoredeadcode

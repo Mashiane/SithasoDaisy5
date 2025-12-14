@@ -5267,6 +5267,13 @@ Sub GetActualGradient(source As String) As String			'ignoredeadcode
 	End Select
 End Sub
 
+Sub SetLinearGradientByID(sID As String, orientation As String, firstColor As String, secondColor As String)  'ignoredeadcode
+	sID = CleanID(sID)
+	Dim melement As BANanoElement = BANano.GetElement($"#${sID}"$)
+	If melement = Null Then Return
+	SetLinearGradient(melement, orientation, firstColor, secondColor)
+End Sub
+
 Sub SetLinearGradient(mElement As BANanoElement, orientation As String, firstColor As String, secondColor As String)  'ignoredeadcode
 	If mElement = Null Then Return
 	AddStyle(mElement, "background-image", $"-webkit-linear-gradient(${orientation},${firstColor},${secondColor})"$)
@@ -6006,4 +6013,14 @@ Sub MvSearch(searchvalues As String,strsearch As String,delim As String) As Int
 		If ivalue = strsearch Then Return i
 	Next
 	Return -1
+End Sub
+
+Sub rgbaToHexAuto(rgba As String) As String
+	Dim sout As String = BANano.RunJavascriptMethod("rgbaToHexAuto", Array(rgba))
+	Return sout
+End Sub
+
+Sub hexToRgba(shex As String) As String
+	Dim sout As String = BANano.RunJavascriptMethod("hexToRgba", Array(shex))
+	Return sout
 End Sub
