@@ -381,7 +381,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<fieldset id="${mName}_control" class="fieldset rounded-sm ${xclasses}" ${xattrs} style="${xstyles}">
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div id="${mName}_join" class="join">
-	          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"/>
+	          			<input id="${mName}" type="file" class="file-input file-input-bordered join-item tlradius trradius blradius brradius w-full"/>
 	          			<div id="${mName}_required" class="indicator join-item hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
@@ -397,7 +397,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "buttons"
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
-          			<input id="${mName}" type="file" class="file-input join-item tlradius trradius blradius brradius w-full"></input>
+          			<input id="${mName}" type="file" class="file-input file-input-bordered join-item tlradius trradius blradius brradius w-full"></input>
           			<div id="${mName}_required" class="indicator join-item hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
@@ -406,10 +406,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="mb-2 ${xclasses}" ${xattrs} style="${xstyles}">
 				<label id="${mName}_legend" class="mb-1 fieldset-label">${sLabel}</label>
-				<input id="${mName}" class="file-input w-full" type="file"></input>
+				<input id="${mName}" class="file-input file-input-bordered w-full" type="file"></input>
 			</div>"$).Get("#" & mName)
 	Case "normal"
-		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input file-input-bordered" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 	Case "microphone", "progress", "camera", "camcorder"
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">

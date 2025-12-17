@@ -130,7 +130,7 @@ Sub Class_Globals
 	Public CONST VERTICALANCHOR_BOTTOM As String = "bottom"
 	Public CONST VERTICALANCHOR_TOP As String = "top"
 	Public CONST VERTICALANCHOR_TOP_BOTTOM As String = "top-bottom"
-	Private bGradientActive As String
+	Private bGradientActive As Boolean = False
 	Private sGradient As String
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String

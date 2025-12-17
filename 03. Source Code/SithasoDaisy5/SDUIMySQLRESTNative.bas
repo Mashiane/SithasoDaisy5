@@ -19,7 +19,7 @@ Private Sub Class_Globals
 	Public const DB_DATE As String = "DATE"
 	Public const DB_FILE As String = "FILE"
 	Public const DB_BLOB As String = "BLOB"
-	Public const DB_FLOAT As String = "FLOAT"
+	Public const DB_STRING As String = "STRING"
 	'
 	Public MatchSchema As Boolean
 	Private mCallBack As Object			'ignore
@@ -79,6 +79,8 @@ Private Sub Class_Globals
 	Public ApiFile As String = "api"
 	Private escapeCharStart As String
 	Private escapeCharEnd As String
+	Private idxNames As Map
+	Private uniqueIdxNames As Map
 End Sub
 
 '<code>
@@ -114,13 +116,18 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	escapeCharStart = "`"
 	escapeCharEnd = "`"
 	MatchSchema = True
+	idxNames.Initialize
+	uniqueIdxNames.Initialize
 End Sub
 
 Public Sub EscapeField(f As String) As String
 	Return $"${escapeCharStart}${f}${escapeCharEnd}"$
 End Sub
 
-Public Sub CreateTable As String
+Public Sub CREATE_TABLE As String
+	If ShowLog Then
+		Log($"SDUIMySQLRESTNative.${TableName}.CREATE_TABLE"$)
+	End If
 	Dim sb As StringBuilder
 	sb.Initialize
 	sb.Append("(")
@@ -128,13 +135,53 @@ Public Sub CreateTable As String
 		Dim field, ftype As String
 		field = Schema.GetKeyAt(i)
 		ftype = Schema.GetValueAt(i)
-		If ftype = DB_TEXT Then ftype = "VARCHAR(255)"
+		'
+		Select Case ftype
+			Case DB_BOOL
+				ftype = "TINYINT(1)"
+			Case DB_INT, DB_INTEGER
+				ftype = "INT"
+			Case DB_NUMBER
+				ftype = "DECIMAL(18,6)"
+			Case DB_REAL, DB_FLOAT, DB_DOUBLE
+				ftype = "DOUBLE"
+			Case DB_TEXT, DB_STRING
+				ftype = "VARCHAR(255)"
+			Case DB_LONGTEXT
+				ftype = "LONGTEXT"
+			Case DB_DATE
+				ftype = "DATETIME"
+			Case DB_FILE, DB_BLOB
+				ftype = "LONGBLOB"
+			Case Else
+				ftype = "VARCHAR(255)"
+		End Select
+		'
 		If i > 0 Then sb.Append(", ")
 		sb.Append(EscapeField(field)).Append(" ").Append(ftype)
-		If field = PrimaryKey Then sb.Append(" PRIMARY KEY")
+		'
+		If field = PrimaryKey Then
+			sb.Append(" PRIMARY KEY")
+			If field = AutoIncrement Then
+				sb.Append(" AUTO_INCREMENT")
+			End If
+		End If
 	Next
-	If AutoIncrement <> "" Then
-		sb.Append($", ${AutoIncrement} INTEGER(11) NOT NULL AUTO_INCREMENT"$)
+	'--- Indexes ---
+	' Unique indexes
+	If uniqueIdxNames.Size > 0 Then
+		For Each key As String In uniqueIdxNames.Keys
+			sb.Append(", UNIQUE KEY ").Append(EscapeField(key))
+			sb.Append(" (").Append(EscapeField(key)).Append(")")
+		Next
+	End If
+
+	' Normal indexes
+	If idxNames.Size > 0 Then
+		For Each key As String In idxNames.Keys
+			sb.Append(", KEY ").Append(EscapeField(key))
+			sb.Append(" (").Append(EscapeField(key)).Append(")")
+		Next
 	End If
 	sb.Append(")")
 	Dim query As String = "CREATE TABLE IF NOT EXISTS " & EscapeField(TableName) & " " & sb.ToString
@@ -181,6 +228,27 @@ Sub SchemaClear As SDUIMySQLRESTNative
 	End If
 	Schema.clear
 	Return Me
+End Sub
+
+
+Sub SchemaAddIndex(idxName As String, bUnique As Boolean)
+	If bUnique Then
+		uniqueIdxNames.Put(idxName, idxName)
+	Else
+		idxNames.Put(idxName, idxName)
+	End If
+End Sub
+
+Sub SchemaAddIndexes(idxNames1 As List)
+	For Each k As String In idxNames1
+		SchemaAddIndex(k, False)
+	Next
+End Sub
+
+Sub SchemaAddUniqueIndexes(idxNames1 As List)
+	For Each k As String In idxNames1
+		SchemaAddIndex(k, True)
+	Next
 End Sub
 
 'schema add boolean

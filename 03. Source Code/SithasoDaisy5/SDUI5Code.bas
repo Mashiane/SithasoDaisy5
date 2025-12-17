@@ -542,7 +542,6 @@ Sub setHasDownload(b As Boolean)				'ignoredeadcode
 	If bHasDownload = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("download", "./assets/download-solid.svg", "#FFFF99", "#000000")
-	BANano.GetElement($"#${mName}_download"$).On("click", mCallBack, $"${mName}_Download"$)
 End Sub
 
 'move the back button to the end

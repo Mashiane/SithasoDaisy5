@@ -105,7 +105,7 @@ Sub Class_Globals
 	Private sMinWidth As String = ""
 	Private sBackgroundImage As String = ""
 	Private bPageView As Boolean = False
-	Private bGradientActive As String
+	Private bGradientActive As Boolean = False
 	Private sGradient As String
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String

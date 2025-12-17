@@ -2157,6 +2157,7 @@ Sub setHasToolbarDownload(b As Boolean)				'ignoredeadcode
 	If bHasToolbarDownload = False Then Return
 	If mElement = Null Then Return	
 	AddToolbarActionButtonIcon("downloadtoolbar", "./assets/download-solid.svg", "#FFFF99", "#000000")
+	BANano.GetElement($"#${mName}_downloadtoolbar"$).Off("click")
 	BANano.GetElement($"#${mName}_downloadtoolbar"$).On("click", mCallBack, $"${mName}_Download"$)
 	If sDownloadToolbarTooltip <> "" Then 
 		SetToolbarButtonToolTip("downloadtoolbar", sDownloadToolbarTooltip, "primary", "left")
@@ -7286,7 +7287,7 @@ Private Sub BuildRowFile(Module As Object, fldName As String, fldValu As String,
 	End If
 	Dim act As String = $"[BANCLEAN]
     <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
-    <input id="${mName}_${RowCnt}_${fldName}_input" type="file" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="file-input ${btnColor} ${cClass} file- w-full file-input-${sComponentSize}">
+    <input id="${mName}_${RowCnt}_${fldName}_input" type="file" name="${mName}_${RowCnt}_${fldName}" ${creadonly} class="file-input file-input-bordered ${btnColor} ${cClass} file- w-full file-input-${sComponentSize}">
     </input>
     </td>"$
 	'********

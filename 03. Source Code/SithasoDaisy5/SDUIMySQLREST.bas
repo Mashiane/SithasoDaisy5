@@ -19,8 +19,7 @@ Private Sub Class_Globals
 	Public const DB_DATE As String = "DATE"
 	Public const DB_FILE As String = "FILE"
 	Public const DB_BLOB As String = "BLOB"
-	Public const DB_FLOAT As String = "FLOAT"
-	Public const DB_TEXT As String = "STRING"
+	Public const DB_STRING As String = "STRING"
 	'
 	Private mCallBack As Object			'ignore
 	Private whereField As Map
@@ -92,6 +91,9 @@ Private Sub Class_Globals
 	Public NoCache As Boolean
 	Public ReferrerPolicy As String
 	Public Mode As String
+	Public LowerCaseFields As Boolean = True
+	Private idxNames As Map
+	Private uniqueIdxNames As Map
 End Sub
 
 '<code>
@@ -136,6 +138,9 @@ Public Sub Initialize(Module As Object, eventName As String, url As String, sTab
 	NoCache = True
 	ReferrerPolicy = ""
 	Mode = ""
+	LowerCaseFields = True
+	idxNames.Initialize
+	uniqueIdxNames.Initialize
 End Sub
 
 Public Sub InitializeApiKey(Module As Object, eventName As String, url As String, sTableName As String, xApiKey As String)
@@ -172,6 +177,9 @@ Public Sub InitializeApiKey(Module As Object, eventName As String, url As String
 	NoCache = True
 	ReferrerPolicy = ""
 	Mode = ""
+	LowerCaseFields = True
+	idxNames.Initialize
+	uniqueIdxNames.Initialize
 	SetDBApiKey(xApiKey) 
 End Sub
 
@@ -274,9 +282,36 @@ Sub SetSQLiteConnectionApiKey(sPath As String, xApiKey As String)
 	End If
 End Sub
 
+Sub SchemaAddIndex(idxName As String, bUnique As Boolean)
+	If bUnique Then
+		uniqueIdxNames.Put(idxName, idxName)
+	Else
+		idxNames.Put(idxName, idxName)
+	End If
+End Sub
+
+Sub SchemaAddIndexes(idxNames1 As List)
+	For Each k As String In idxNames1
+		SchemaAddIndex(k, False)
+	Next
+End Sub
+
+Sub SchemaAddUniqueIndexes(idxNames1 As List)
+	For Each k As String In idxNames1
+		SchemaAddIndex(k, True)
+	Next
+End Sub
 
 Public Sub EscapeField(f As String) As String
 	Return $"${escapeCharStart}${f}${escapeCharEnd}"$
+End Sub
+
+Public Sub CREATE_TABLE
+	If ShowLog Then
+		Log($"SDUIMySQLREST.${TableName}.CREATE_TABLE"$)
+	End If
+	Dim query As String = CreateTable
+	BANano.Await(SELECT_RAW(query))
 End Sub
 
 Public Sub CreateTable As String
@@ -287,13 +322,53 @@ Public Sub CreateTable As String
 		Dim field, ftype As String
 		field = Schema.GetKeyAt(i)
 		ftype = Schema.GetValueAt(i)
-		If ftype = DB_TEXT Then ftype = "VARCHAR(255)"
+		'
+		Select Case ftype
+		Case DB_BOOL
+			ftype = "TINYINT(1)"
+		Case DB_INT, DB_INTEGER
+			ftype = "INT"
+		Case DB_NUMBER
+			ftype = "DECIMAL(18,6)"
+		Case DB_REAL, DB_FLOAT, DB_DOUBLE
+			ftype = "DOUBLE"
+		Case DB_TEXT, DB_STRING
+			ftype = "VARCHAR(255)"
+		Case DB_LONGTEXT 
+			ftype = "LONGTEXT"
+		Case DB_DATE
+			ftype = "DATETIME"
+		Case DB_FILE, DB_BLOB
+			ftype = "LONGBLOB"
+		Case Else
+			ftype = "VARCHAR(255)"
+		End Select
+		'		
 		If i > 0 Then sb.Append(", ")
 		sb.Append(EscapeField(field)).Append(" ").Append(ftype)
-		If field = PrimaryKey Then sb.Append(" PRIMARY KEY")
+		'
+		If field = PrimaryKey Then
+			sb.Append(" PRIMARY KEY")
+			If field = AutoIncrement Then
+				sb.Append(" AUTO_INCREMENT")
+			End If
+		End If
 	Next
-	If AutoIncrement <> "" Then
-		sb.Append($", ${AutoIncrement} INTEGER(11) NOT NULL AUTO_INCREMENT"$)
+	'--- Indexes ---
+	' Unique indexes
+	If uniqueIdxNames.Size > 0 Then
+		For Each key As String In uniqueIdxNames.Keys
+			sb.Append(", UNIQUE KEY ").Append(EscapeField(key))
+			sb.Append(" (").Append(EscapeField(key)).Append(")")
+		Next
+	End If
+
+	' Normal indexes
+	If idxNames.Size > 0 Then
+		For Each key As String In idxNames.Keys
+			sb.Append(", KEY ").Append(EscapeField(key))
+			sb.Append(" (").Append(EscapeField(key)).Append(")")
+		Next
 	End If
 	sb.Append(")")
 	Dim query As String = "CREATE TABLE IF NOT EXISTS " & EscapeField(TableName) & " " & sb.ToString
@@ -572,10 +647,54 @@ Sub SchemaAddNumber1(b As String) As SDUIMySQLREST
 	Return Me
 End Sub
 
+Sub ShowDatabases As List
+	Dim lst As List = BANano.Await(SELECT_RAW("SHOW DATABASES"))
+	Dim nl As List
+	nl.Initialize 
+	For Each rec As Map In lst
+		Dim sDatabase As String = rec.Get("Database")
+		nl.Add(sDatabase)
+	Next
+	Return nl
+End Sub
+
+Sub DATABASE_EXISTS As Boolean
+	Dim tbls As List = BANano.Await(ShowDatabases)
+	Dim iPos As Int = tbls.IndexOf(sDbName)
+	If iPos = -1 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+Sub DELETE_TABLE(stableName As String) As Boolean
+	Dim qry As String = $"DROP TABLE `${stableName}`"$
+	BANano.Await(SELECT_RAW(qry))
+	Dim bRes As Boolean = BANano.Await(TABLE_EXISTS(stableName))
+	Return Not(bRes)
+End Sub
+
+Sub TABLE_EXISTS(tblName As String) As Boolean
+	Dim tbls As List = BANano.Await(ShowTableNames(sDbName))
+	Dim iPos As Int = tbls.IndexOf(tblName)
+	If iPos = -1 Then
+		Return False
+	Else
+		Return True
+	End If
+End Sub
+
+
 Sub ShowTableNames(Dbase As String) As List
-	Dim qry As String = $"select table_name from information_schema.tables where table_schema = '${Dbase}' order by table_name"$
-	Dim lst As List = BANano.Await(SELECT_RAW(qry))
-	Return lst	
+	Dim lst As List = BANano.Await(SELECT_RAW($"SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema = '${Dbase}'"$))
+	Dim nl As List
+	nl.Initialize
+	For Each rec As Map In lst
+		Dim sDatabase As String = rec.Get("TABLE_NAME")
+		nl.Add(sDatabase)
+	Next
+	Return nl
 End Sub
 
 Sub ShowIndexes(Dbase As String) As List
@@ -706,6 +825,80 @@ private Sub GetMapTypes(sourceMap As Map) As List
 	Return listOfTypes
 End Sub
 
+Sub GetDataModels As Map
+	If ShowLog Then
+		Log($"SDUIMySQLREST.GetDataModels"$)
+	End If
+	Dim tblNames As List = BANano.Await(ShowTableNames(sDbName))
+	Dim models As Map = CreateMap()
+	For Each tbl As String In tblNames
+		Dim qry As String = $"DESCRIBE `${tbl}`"$
+		Dim colDef As List = BANano.Await(SELECT_RAW(qry))
+		'
+		Dim tblm As Map = CreateMap()
+		tblm.Put("name", tbl)
+		tblm.Put("pk", "")
+		tblm.Put("auto", "")
+		'
+		Dim xflds As List
+		xflds.Initialize 
+		'
+		For Each fld As Map In colDef
+			Dim sField As String = fld.Get("Field")
+			Dim sType As String = fld.Get("Type")
+			sType = MvField(sType, 1, "(")
+			sType = sType.ToLowerCase
+			Select Case sType
+			Case "tinyint", "smallint", "mediumint", "int", "integer", "bigint"
+				sType = "Int"
+			Case "bool", "boolean"
+				sType = "Bool"
+			Case "decimal", "numeric", "float", "double", "real"
+				sType = "Double"
+			Case "date", "datetime", "timestamp", "time", "year"
+				sType = "String"
+			Case "char", "varchar", "text", "tinytext"
+				sType = "String"
+			Case "mediumtext", "longtext", "enum", "set", "json"
+				sType = "LongText"
+			Case "binary", "varbinary", "blob", "tinyblob", "mediumblob", "longblob"
+				sType = "Blob"
+			Case Else
+				sType = "String"
+			End Select
+			Dim sNull As String = fld.Get("Null")
+			Dim sDefault As String = fld.Get("Default")
+			sDefault = CStr(sDefault)
+			Dim bNull As Boolean = CBool(sNull)
+			Dim sKey As String = fld.Get("Key")
+			Dim sExtra As String = fld.Get("Extra")
+			sExtra = CStr(sExtra)
+			sExtra = sExtra.tolowercase
+			Dim bprimary As Boolean = False
+			Dim bunique As Boolean = False
+			Dim bauto As Boolean = False
+			If sKey = "PRI" Then bprimary = True
+			If sKey = "UNI" Then bunique = True
+			Dim iauto As Int = InStr(sExtra, "auto_increment")
+			If iauto >= 0 Then bauto = True
+			'
+			Dim fldm As Map = CreateMap()
+			fldm.Put("name", sField)
+			fldm.Put("pk", bprimary)
+			fldm.Put("type", sType)
+			fldm.Put("default", sDefault)
+			fldm.Put("isnull", bNull)
+			fldm.Put("unique", bunique)
+			xflds.Add(fldm)
+			'
+			If bprimary Then tblm.put("pk", sField)
+			If bauto Then tblm.put("auto", sField)
+		Next
+		tblm.Put("fields", xflds)
+		models.Put(tbl, tblm)
+	Next
+	Return models
+End Sub
 
 'get records from a collection
 '<code>
@@ -1883,6 +2076,8 @@ Sub Reset As SDUIMySQLREST
 	result.Initialize
 	Tag = Null
 	Schema.Initialize
+	idxNames.Initialize
+	uniqueIdxNames.Initialize
 	DisplayField = ""
 	Singular = ""
 	Plural = ""
@@ -1893,6 +2088,7 @@ Sub Reset As SDUIMySQLREST
 	SchemaAddText1("id")
 	joinL.Initialize
 	sSize = "" 
+	LowerCaseFields = True
 	Return Me
 End Sub
 
@@ -2224,7 +2420,7 @@ End Sub
 
 'get an integer from the current record
 Sub GetInt(fld As String) As Int
-	fld = fld.tolowercase
+	If LowerCaseFields Then fld = fld.tolowercase
 	If BANano.IsUndefined(Record) Then Return 0
 	If Record.ContainsKey(fld) Then
 		Dim obj As Int = Record.GetDefault(fld, 0)
@@ -2242,7 +2438,7 @@ End Sub
 
 'get a string from the current record
 Sub GetString(fld As String) As String
-	fld = fld.tolowercase
+	If LowerCaseFields Then fld = fld.tolowercase
 	If BANano.IsUndefined(Record) Then Return ""
 	If Record.ContainsKey(fld) Then
 		Dim obj As String = Record.GetDefault(fld, "")
@@ -2262,7 +2458,7 @@ End Sub
 
 'get a boolean from the current record
 Sub GetBoolean(fld As String) As Boolean 
-	fld = fld.tolowercase
+	If LowerCaseFields Then fld = fld.tolowercase
 	If BANano.IsUndefined(Record) Then Return False
 	If Record.ContainsKey(fld) Then
 		Dim obj As Boolean = Record.GetDefault(fld, False)
@@ -2275,7 +2471,7 @@ End Sub
 
 'get a double from the current record
 Sub GetDouble(fld As String) As Double
-	fld = fld.tolowercase
+	If LowerCaseFields Then fld = fld.tolowercase
 	If Record.ContainsKey(fld) Then
 		Dim obj As Double = Record.GetDefault(fld, 0)
 		obj = CDbl(obj)

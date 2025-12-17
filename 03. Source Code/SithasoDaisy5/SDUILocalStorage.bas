@@ -28,7 +28,7 @@ Sub Class_Globals
 	Public const DB_DATE As String = "DATE"
 	Public const DB_FILE As String = "FILE"
 	Public const DB_BLOB As String = "BLOB"
-	Public const DB_FLOAT As String = "FLOAT"
+	Public const DB_STRING As String = "STRING"
 	Public Schema As Map
 	Public PrimaryKey As String = "id"
 	Public DisplayField As String

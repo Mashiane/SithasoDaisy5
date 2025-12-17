@@ -765,6 +765,7 @@ Sub setHasDownload(b As Boolean)				'ignoredeadcode
 	If bHasDownload = False Then Return
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("download", "./assets/download-solid.svg", "#FFFF99", "#000000")
+	BANano.GetElement($"#${mName}_download"$).off("click")
 	BANano.GetElement($"#${mName}_download"$).On("click", mCallBack, $"${mName}_Download"$)
 End Sub
 
@@ -4547,7 +4548,7 @@ Sub AddPropertyFileInput(Key As String, Title As String, Required As Boolean, sA
     	<td id="${mName}_${Key}_td" class="${sPropertyPadding}">
 			<div class="indicator w-full">
 				<span id="${mName}_${Key}badge" class="indicator-item badge size-2 p-0 badge-error"></span>
-    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-${sComponentSize} file- w-full"></input>
+    			<input id="${mName}_${Key}" name="${mName}_${Key}" type="file" class="file-input file-input-bordered file-input-${sComponentSize} file- w-full"></input>
 			<div>
 		</td>
     </tr>"$

@@ -113,7 +113,7 @@ Private Sub Class_Globals
 	Private sPositionStyle As String = "none"
 	Public Root As SDUI5Container
 	Private bCenterChildren As Boolean
-	Private bGradientActive As String
+	Private bGradientActive As Boolean = False
 	Private sGradient As String
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String

@@ -20,7 +20,7 @@ Private Sub Class_Globals
 	Public const DB_DATE As String = "DATE"
 	Public const DB_FILE As String = "FILE"
 	Public const DB_BLOB As String = "BLOB"
-	Public const DB_FLOAT As String = "FLOAT"
+	Public const DB_STRING As String = "STRING"
 	'
 	Private whereField As Map
 	Private ops As List

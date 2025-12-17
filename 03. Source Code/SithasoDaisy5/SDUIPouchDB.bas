@@ -48,6 +48,7 @@ Sub Class_Globals
 	Public const DB_DOUBLE As String = "DOUBLE"
 	Public const DB_LONGTEXT As String = "TEXT"
 	Public const DB_FILE As String = "FILE"
+	'
 	Public Schema As Map
 	Private cw As Map = CreateMap()
 	Private ops As List

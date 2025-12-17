@@ -120,7 +120,7 @@ Sub Class_Globals
 	Private bHasSearch As Boolean = False	
 	Private sButtonSize As String = "md"
 	Private bButtonsOutlined As Boolean
-	Private bGradientActive As String
+	Private bGradientActive As Boolean = False
 	Private sGradient As String
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String
@@ -417,7 +417,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	If bGradientActive Then sBackgroundColor = ""
 	If bGlass Then sBackgroundColor = ""
-	If bGradientActive Then sBackgroundColor = ""
 	If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("navbar justify-center")
 	If bGlass = True Then UI.AddClassDT("glass")
