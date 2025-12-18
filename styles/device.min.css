@@ -1,5 +1,5 @@
 /*! Devices.css v0.2.0 | MIT License | github.com/picturepan2/devices.css */
-/*.device,
+.device,
 .device *,
 .device ::after,
 .device ::before,
@@ -7,7 +7,7 @@
 .device::before {
   box-sizing: border-box;
   display: block;
-}*/
+}
 .device {
   position: relative;
   transform: scale(1);
@@ -17,11 +17,11 @@
   z-index: 1;
 }
 .device .device-screen {
+  background-color: white;
   background-position: center center;
   background-size: cover;
   object-fit: cover;
   position: relative;
-  overflow-x: hidden;
 }
 .device-iphone-14-pro {
   height: 868px;
@@ -1895,6 +1895,7 @@
   border-radius: 2px;
   height: 324px;
   width: 576px;
+  background-color:white;
 }
 .device-imac-pro .device-power::after,
 .device-imac-pro .device-power::before {
@@ -2076,6 +2077,7 @@
   border-radius: 11px;
   height: 724px;
   width: 506px;
+  background-color:white;
 }
 .device-ipad-pro .device-btns::after,
 .device-ipad-pro .device-btns::before {

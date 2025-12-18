@@ -95,11 +95,10 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("wnew", "pg-themeselect", "", "Theme Controller")
 	drawermenu.AddItemChild("wnew", "pg-genderchart", "", "Gender Chart")
 	drawermenu.AddItemChild("wnew", "pg-apexcharts", "", "Apex Charts")
-	
-	drawermenu.AddItemChild("wnew", "pg-hovergallery", "", "Hover Gallery")
-	drawermenu.AddItemChild("wnew", "pg-login", "", "Ghost Login")
-	drawermenu.AddItemChild("wnew", "pg-fab", "", "FAB")
-	drawermenu.AddItemChild("wnew", "pg-tableexpand", "", "Table Expand")
+	drawermenu.AddItemChild("wnew", "pg-devices", "", "Devices")
+	'
+	drawermenu.AddItemParent("", "pages", "", "Pages")
+	drawermenu.AddItemChild("pages", "pg-login", "", "Ghost Login")
 	
 	
 	drawermenu.AddItemParent("", "sd5lowcode", "./assets/aperture.svg", "SD5 LowCode Generator")
@@ -147,6 +146,7 @@ Sub CreateDrawerMenu
 	
 	drawermenu.AddItemParent("components", "actions", "", "Actions")
 	drawermenu.AddItemChild("actions", "pg-buttons", "", "Buttons")
+	drawermenu.AddItemChild("actions", "pg-fab", "", "FAB")
 	drawermenu.AddItemChild("actions", "pg-speeddial", "", "Speed Dial")
 	drawermenu.AddItemChild("actions", "pg-dropdown", "", "Dropdown")
 	drawermenu.AddItemChild("actions", "pg-modal", "", "Modal")
@@ -168,11 +168,15 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("display", "pg-stat", "", "Stat")
 	drawermenu.AddItemChild("display", "pg-status", "", "Status")
 	drawermenu.AddItemChild("display", "pg-timeline", "", "Timeline")
+	drawermenu.AddItemChild("display", "pg-hovergallery", "", "Hover Gallery")
+	
 	'
 	drawermenu.AddItemParent("", "tables", "./assets/table-solid.svg", "Tables")
 	drawermenu.AddItemChild("tables", "pg-table", "", "Table 1")
 	drawermenu.AddItemChild("tables", "pg-table2", "", "Table 2")
 	drawermenu.AddItemChild("tables", "pg-table3", "", "Table 3")
+	drawermenu.AddItemChild("tables", "pg-tableexpand", "", "Table Expand")
+	
 	'
 	
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
@@ -261,7 +265,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("plugins", "media", "", "Media")
 	drawermenu.AddItemChild("media", "pg-lottieplayer", "", "Lottie Player")
 	drawermenu.AddItemChild("media", "pg-videoplayer", "", "Video Player")
-	drawermenu.AddItemChild("media", "pg-devices", "", "Devices")
 	'
 	drawermenu.AddItemParent("plugins", "files", "", "Files")
 	drawermenu.AddItemChild("files", "pg-pdfviewer", "", "PDF Viewer")

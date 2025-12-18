@@ -206,7 +206,7 @@ Sub BuildChart9
 	chart9.XAxisTitle = "Month"
 	chart9.YAxisTitle = "Amount"
 	chart9.XAxisDateFormat = ""
-	chart9.Responsive = True
+	'chart9.Responsive = True
 	chart9.SeriesDataLabelsVisible = True
 	chart9.Refresh
 End Sub
@@ -225,7 +225,7 @@ Sub BuildChart10
 	chart10.XAxisTitle = "Month"
 	chart10.YAxisTitle = "Amount"
 	chart10.LegendPosition = "bottom"
-	chart10.Responsive = True
+	'chart10.Responsive = True
 	chart10.SeriesDataLabelsVisible = True
 	chart10.XAxisPointOnColumn = True
 	chart10.XAxisDateFormat = "YY-MM-DD"

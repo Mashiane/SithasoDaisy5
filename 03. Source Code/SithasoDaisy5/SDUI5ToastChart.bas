@@ -13,9 +13,8 @@ Version=10.2
 #DesignerProperty: Key: YAxisTitle, DisplayName: Y Axis Title, FieldType: String, DefaultValue: Y Axis, Description: Y axis Title
 #DesignerProperty: Key: ExportMenuFileName, DisplayName: Export Menu File Name, FieldType: String, DefaultValue: , Description: Export Menu File Name
 #DesignerProperty: Key: ExportMenuVisible, DisplayName: Export Menu Visible, FieldType: Boolean, DefaultValue: True, Description: Export Menu Visible
-#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400px, Description: The Height Of The Editor.
-#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 700px, Description: The Width Of The Editor.
-#DesignerProperty: Key: Responsive, DisplayName: Responsive, FieldType: Boolean, DefaultValue: False, Description: Responsive
+#DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 400px, Description: Height.
+#DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 100%, Description: Width.
 #DesignerProperty: Key: LegendVisible, DisplayName: Legend Visible, FieldType: Boolean, DefaultValue: True, Description: Legend Visible
 #DesignerProperty: Key: LegendPosition, DisplayName: Legend Position, FieldType: String, DefaultValue: right, Description: Legend Position, List: bottom|left|right|top
 #DesignerProperty: Key: LegendShowCheckbox, DisplayName: Legend Show Checkbox, FieldType: Boolean, DefaultValue: True, Description: Legend Show Checkbox
@@ -85,7 +84,7 @@ Sub Class_Globals
 	Private bSeriesDiverging As Boolean = False
 	Private sTitleAlign As String = "left"
 	Private sTitleText As String = "Chart"
-	Private sWidth As String = "700px"
+	Private sWidth As String = "100%"
 	Private sXAxisDateFormat As String = ""
 	Private bXAxisPointOnColumn As Boolean = False
 	Private sXAxisTitle As String = "X Axis"
@@ -112,7 +111,6 @@ Sub Class_Globals
 	Private seriesM As Map
 	Private chart As BANanoObject    'ignore
 	Private sYAxisTitleAlign As String = ""
-	Private bResponsive As Boolean = False
 	Private bSeriesShift As Boolean = False
 	Private sCircularAxisTitleText As String
 	Private iCircularAxisScaleMin As Int
@@ -139,7 +137,6 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("qrcode.min.js")
 	Options.Initialize
 	seriesM.Initialize
 	categories.Initialize
@@ -158,8 +155,7 @@ Private Sub SetDefaults
 	CustProps.Put("ExportMenuFileName", "")
 	CustProps.Put("ExportMenuVisible", True)
 	CustProps.Put("Height", "400px")
-	CustProps.Put("Width", "700px")
-	CustProps.Put("Responsive", False)
+	CustProps.Put("Width", "100%")
 	CustProps.Put("LegendVisible", True)
 	CustProps.Put("LegendPosition", "right")
 	CustProps.Put("LegendShowCheckbox", True)
@@ -364,8 +360,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bLegendShowCheckbox = UI.CBool(bLegendShowCheckbox)
 		bLegendVisible = Props.GetDefault("LegendVisible", True)
 		bLegendVisible = UI.CBool(bLegendVisible)
-		bResponsive = Props.GetDefault("Responsive", False)
-		bResponsive = UI.CBool(bResponsive)
 		sSeriesDataLabelsOffsetX = Props.GetDefault("SeriesDataLabelsOffsetX", "")
 		sSeriesDataLabelsOffsetX = UI.CStr(sSeriesDataLabelsOffsetX)
 		sSeriesDataLabelsOffsetY = Props.GetDefault("SeriesDataLabelsOffsetY", "")
@@ -388,7 +382,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTitleAlign = UI.CStr(sTitleAlign)
 		sTitleText = Props.GetDefault("TitleText", "Chart")
 		sTitleText = UI.CStr(sTitleText)
-		sWidth = Props.GetDefault("Width", "700px")
+		sWidth = Props.GetDefault("Width", "100%")
 		sWidth = UI.CStr(sWidth)
 		sXAxisDateFormat = Props.GetDefault("XAxisDateFormat", "")
 		sXAxisDateFormat = UI.CStr(sXAxisDateFormat)
@@ -407,8 +401,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = UI.CStr(sShadow)
 	End If
 	'
-	UI.AddHeightDT(sHeight)
-	UI.AddWidthDT(sWidth)
+	UI.AddStyleDT("width", sWidth)
+	UI.AddStyleDT("height", sHeight)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -425,9 +419,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
-	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_chart"></div>	
-	</div>"$).Get("#" & mName)
+	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 End Sub
 
 'get Shadow
@@ -501,7 +493,7 @@ Sub setHeight(s As String)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If sHeight = "" Then Return
-	UI.SetHeight(mElement, sHeight)
+	UI.SetStyle(mElement, "height", sHeight)
 End Sub
 
 'set Legend Position
@@ -650,7 +642,7 @@ Sub setWidth(s As String)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If sWidth = "" Then Return
-	If BANano.IsNumber(sWidth) Then sWidth = sWidth & "px"
+'	If BANano.IsNumber(sWidth) Then sWidth = sWidth & "px"
 	UI.SetWidth(mElement, sWidth)
 End Sub
 
@@ -869,29 +861,13 @@ Sub AddSeriesValue(SeriesName As String, value As Object)
 	seriesM.Put(SeriesName, ser)
 End Sub
 
-Sub setResponsive(b As Boolean)
-	bResponsive = b
-	CustProps.Put("Responsive", bResponsive)
-End Sub
-
-Sub getResponsive As Boolean
-	Return bResponsive
-End Sub
-
 Sub Refresh
-	Dim mchart As BANanoElement = BANano.GetElement($"#${mName}_chart"$)
-	mchart.Empty
 	data.Initialize
 	series.Initialize
 	If sExportMenuFileName <> "" Then UI.PutRecursive(Options, "exportMenu.filename", sExportMenuFileName)
 	UI.PutRecursive(Options, "exportMenu.visible", bExportMenuVisible)
-	If bResponsive Then
-		UI.PutRecursive(Options, "chart.height", "auto")
-		UI.PutRecursive(Options, "chart.width", "auto")
-	Else
-		UI.PutRecursive(Options, "chart.height", UI.CInt(sHeight))
-		UI.PutRecursive(Options, "chart.width", UI.CInt(sWidth))
-	End If
+	UI.PutRecursive(Options, "chart.height", "auto")
+	UI.PutRecursive(Options, "chart.width", "auto")
 	If sLegendPosition <> "" Then UI.PutRecursive(Options, "legend.align", sLegendPosition)
 	UI.PutRecursive(Options, "legend.showCheckbox", bLegendShowCheckbox)
 	UI.PutRecursive(Options, "legend.visible", bLegendVisible)
@@ -927,7 +903,8 @@ Sub Refresh
 	'
 	data.Put("series", series)
 	Dim obj As Map = CreateMap()
-	obj.Put("el", mchart.ToObject)
+	'obj.Put("el", mchart.ToObject)
+	obj.Put("el", mElement.ToObject)
 	obj.Put("data", data)
 	obj.Put("options", Options)
 	'
