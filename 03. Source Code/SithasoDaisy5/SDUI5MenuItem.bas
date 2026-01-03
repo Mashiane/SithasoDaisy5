@@ -124,6 +124,8 @@ Sub Class_Globals
 	Private bHasIcon As Boolean = True
 	Private bHasAvatar As Boolean = True
 	Private bHasBadge As Boolean = True
+	Private bCloseDropdownOnClick As Boolean = False
+	Private sDropDownId As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -186,6 +188,24 @@ private Sub SetDefaults
 	CustProps.Put("RawAttributes", "")
 End Sub
 
+'set Close Dropdown On Click
+Sub setCloseDropdownOnClick(b As Boolean)
+	bCloseDropdownOnClick = b
+	CustProps.put("CloseDropdownOnClick", b)
+End Sub
+'set Drop Down Id
+Sub setDropDownId(s As String)
+	sDropDownId = UI.CleanID(s)
+	CustProps.put("DropDownId", s)
+End Sub
+'get Close Dropdown On Click
+Sub getCloseDropdownOnClick As Boolean
+	Return bCloseDropdownOnClick
+End Sub
+'get Drop Down Id
+Sub getDropDownId As String
+	Return sDropDownId
+End Sub
 
 Sub LinkExisting
 	mElement.Initialize($"#${mName}"$)
@@ -823,6 +843,11 @@ private Sub itemclick(e As BANanoEvent)		'ignoredeadcode
 	Dim itemName As String = UI.MvField(e.ID, 1, "_")
 	If bClosePopupOnClick Then
 		BANano.GetElement($"#${sMenuName}"$).RunMethod("hidePopover", Null)
+	End If
+	'close the dropdown on click
+	If (bCloseDropdownOnClick = True) And (sDropDownId <> "") Then
+		Dim dd As BANanoElement = BANano.GetElement($"#${sDropDownId}"$)
+		dd.Trigger("click", Null)
 	End If
 	BANano.CallSub(mCallBack, $"${sMenuName}_itemclick"$, Array(itemName))
 End Sub

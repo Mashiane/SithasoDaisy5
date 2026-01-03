@@ -24,7 +24,7 @@ Version=10
 #DesignerProperty: Key: TooltipOpen, DisplayName: Tooltip Open, FieldType: Boolean, DefaultValue: False, Description: Tooltip Open
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|right|top|none
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
-#DesignerProperty: Key: Shape, DisplayName: Shape/Rounded, FieldType: String, DefaultValue: none, Description: Shape/Rounded, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+#DesignerProperty: Key: Shape, DisplayName: Shape/Rounded, FieldType: String, DefaultValue: none, Description: Shape/Rounded, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0|rounded-full
 #DesignerProperty: Key: Block, DisplayName: Block, FieldType: Boolean, DefaultValue: False, Description: Block
 #DesignerProperty: Key: Wide, DisplayName: Wide, FieldType: Boolean, DefaultValue: False, Description: Wide
 #DesignerProperty: Key: Dash, DisplayName: Dash, FieldType: Boolean, DefaultValue: False, Description: Dash
@@ -39,6 +39,7 @@ Version=10
 #DesignerProperty: Key: LeftIcon, DisplayName: Left Icon, FieldType: String, DefaultValue: , Description: Left Icon
 #DesignerProperty: Key: LeftIconColor, DisplayName: Left Icon Color, FieldType: String, DefaultValue: , Description: Left Icon Color
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size Percentage, FieldType: String, DefaultValue: 50, Description: Icon Size Percentage
+#DesignerProperty: Key: ResizeIconSize, DisplayName: Resize Icon Size, FieldType: Boolean, DefaultValue: True, Description: Resize Icon Size By Button Size
 #DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: , Description: Right Icon
 #DesignerProperty: Key: RightIconColor, DisplayName: Right Icon Color, FieldType: String, DefaultValue: , Description: Right Icon Color
 #DesignerProperty: Key: Image, DisplayName: Left Image, FieldType: String, DefaultValue: , Description: Left Image
@@ -62,6 +63,14 @@ Version=10
 #DesignerProperty: Key: IndicatorTextColor, DisplayName: Indicator Text Color, FieldType: String, DefaultValue: none, Description: Indicator Text Color
 #DesignerProperty: Key: IndicatorPosition, DisplayName: Indicator Position, FieldType: String, DefaultValue: top-end, Description: Indicator Position, List: bottom-center|bottom-end|bottom-start|middle-center|middle-end|middle-start|top-center|top-end|top-start
 #DesignerProperty: Key: IndicatorSize, DisplayName: Indicator Size, FieldType: String, DefaultValue: 6, Description: Indicator Size
+#DesignerProperty: Key: NoBadge, DisplayName: No Badge, FieldType: Boolean, DefaultValue: False, Description: No Badge
+#DesignerProperty: Key: NoIndicator, DisplayName: No Indicator, FieldType: Boolean, DefaultValue: False, Description: No Indicator
+#DesignerProperty: Key: NoLeftIcon, DisplayName: No Left Icon, FieldType: Boolean, DefaultValue: False, Description: No Left Icon
+#DesignerProperty: Key: NoLeftImage, DisplayName: No Left Image, FieldType: Boolean, DefaultValue: False, Description: No Left Image
+#DesignerProperty: Key: NoLoading, DisplayName: No Loading, FieldType: Boolean, DefaultValue: False, Description: No Loading
+#DesignerProperty: Key: NoRightIcon, DisplayName: No Right Icon, FieldType: Boolean, DefaultValue: False, Description: No Right Icon
+#DesignerProperty: Key: NoRightImage, DisplayName: No Right Image, FieldType: Boolean, DefaultValue: False, Description: No Right Image
+#DesignerProperty: Key: NoText, DisplayName: No Text, FieldType: Boolean, DefaultValue: False, Description: No Text
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -165,6 +174,15 @@ Sub Class_Globals
 	Public CONST INDICATORPOSITION_TOP_END As String = "top-end"
 	Public CONST INDICATORPOSITION_TOP_START As String = "top-start"
 	Private bButtonIcon As Boolean
+	Private bNoBadge As Boolean = False
+	Private bNoIndicator As Boolean = False
+	Private bNoLeftIcon As Boolean = False
+	Private bNoLeftImage As Boolean = False
+	Private bNoLoading As Boolean = False
+	Private bNoRightIcon As Boolean = False
+	Private bNoRightImage As Boolean = False
+	Private bNoText As Boolean = False
+	Private bResizeIconSize As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -243,6 +261,15 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("NoBadge", False)
+	CustProps.Put("NoIndicator", False)
+	CustProps.Put("NoLeftIcon", False)
+	CustProps.Put("NoLeftImage", False)
+	CustProps.Put("NoLoading", False)
+	CustProps.Put("NoRightIcon", False)
+	CustProps.Put("NoRightImage", False)
+	CustProps.Put("NoText", False)
+	CustProps.Put("ResizeIconSize", True)
 End Sub
 
 Sub OnEvent(event As String, MethodName As String)
@@ -366,6 +393,11 @@ End Sub
 Sub AddClass(className As String)
 	If mElement = Null Then Return
 	UI.AddClass(mElement, className)
+End Sub
+
+Sub AddAttr(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
 End Sub
 
 Sub getAttributes As String
@@ -553,18 +585,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bIndicatorVisible = UI.CBool(bIndicatorVisible)
 		bButtonIcon = Props.GetDefault("ButtonIcon", False)
 		bButtonIcon = UI.CBool(bButtonIcon)
+		bNoBadge = Props.GetDefault("NoBadge", False)
+		bNoBadge = UI.CBool(bNoBadge)
+		bNoIndicator = Props.GetDefault("NoIndicator", False)
+		bNoIndicator = UI.CBool(bNoIndicator)
+		bNoLeftIcon = Props.GetDefault("NoLeftIcon", False)
+		bNoLeftIcon = UI.CBool(bNoLeftIcon)
+		bNoLeftImage = Props.GetDefault("NoLeftImage", False)
+		bNoLeftImage = UI.CBool(bNoLeftImage)
+		bNoLoading = Props.GetDefault("NoLoading", False)
+		bNoLoading = UI.CBool(bNoLoading)
+		bNoRightIcon = Props.GetDefault("NoRightIcon", False)
+		bNoRightIcon = UI.CBool(bNoRightIcon)
+		bNoRightImage = Props.GetDefault("NoRightImage", False)
+		bNoRightImage = UI.CBool(bNoRightImage)
+		bNoText = Props.GetDefault("NoText", False)
+		bNoText = UI.CBool(bNoText)
+		bResizeIconSize = Props.GetDefault("ResizeIconSize", True)
+		bResizeIconSize = UI.CBool(bResizeIconSize)
 	End If
 	If bButtonIcon Then sShape = "circle"
-	Select Case sSize
-	Case "xs"
-		sIconSize = "50"
-	Case "sm"
-		sIconSize = "60"
-	Case "md"
-		sIconSize = "65"
-	Case "lg"
-		sIconSize = "70"
-	End Select
+	If bResizeIconSize Then
+		Select Case sSize
+		Case "xs"
+			sIconSize = "50"
+		Case "sm"
+			sIconSize = "60"
+		Case "md"
+			sIconSize = "65"
+		Case "lg"
+			sIconSize = "70"
+		End Select
+	End If
 	'
 	If sParentID <> "" Then
 		'does the parent exist
@@ -619,7 +671,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sHeight <> "" Then UI.AddHeightDT(sHeight)
 		If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	End If
-	UI.AddClassDT("inline-flex items-center")
+	UI.AddClassDT("inline-flex !items-center !justify-center text-center")
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -629,7 +681,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<span id="${mName}_loading" class="loading-spinner hidden"></span>
 		<svg-renderer id="${mName}_lefticon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_leftimage" src="${sImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
-		<span id="${mName}_text"></span>
+		<span id="${mName}_text" class="whitespace-nowrap"></span>
 		<svg-renderer id="${mName}_righticon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
 		<img id="${mName}_rightimage" src="${sRightImage}" alt="" class="hidden bg-cover bg-center bg-no-repeat"></img>
 		<div id="${mName}_badge" class="badge rounded-full hidden flex items-center justify-center p-0"></div>
@@ -669,7 +721,106 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIndicatorTextColor(sIndicatorTextColor)
 	setIndicatorValue(sIndicatorValue)
 	setButtonIcon(bButtonIcon)
+	setNoBadge(bNoBadge)
+	setNoIndicator(bNoIndicator)
+	setNoLeftIcon(bNoLeftIcon)
+	setNoLeftImage(bNoLeftImage)
+	setNoLoading(bNoLoading)
+	setNoRightIcon(bNoRightIcon)
+	setNoRightImage(bNoRightImage)
+	setNoText(bNoText)
 End Sub
+
+'set No Badge
+Sub setNoBadge(b As Boolean)			'ignoredeadcode
+	bNoBadge = b
+	CustProps.put("NoBadge", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_badge"$)
+End Sub
+
+'set No Indicator
+Sub setNoIndicator(b As Boolean)				'ignoredeadcode
+	bNoIndicator = b
+	CustProps.put("NoIndicator", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_indicator"$)
+End Sub
+'set No Left Icon
+Sub setNoLeftIcon(b As Boolean)				'ignoredeadcode
+	bNoLeftIcon = b
+	CustProps.put("NoLeftIcon", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_lefticon"$)
+End Sub
+'set No Left Image
+Sub setNoLeftImage(b As Boolean)				'ignoredeadcode
+	bNoLeftImage = b
+	CustProps.put("NoLeftImage", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_leftimage"$)
+End Sub
+'set No Loading
+Sub setNoLoading(b As Boolean)						'ignoredeadcode
+	bNoLoading = b
+	CustProps.put("NoLoading", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_loading"$)
+End Sub
+'set No Right Icon
+Sub setNoRightIcon(b As Boolean)						'ignoredeadcode
+	bNoRightIcon = b
+	CustProps.put("NoRightIcon", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_righticon"$)
+End Sub
+'set No Right Image
+Sub setNoRightImage(b As Boolean)					'ignoredeadcode
+	bNoRightImage = b
+	CustProps.put("NoRightImage", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_rightimage"$)
+End Sub
+'set No Text
+Sub setNoText(b As Boolean)						'ignoredeadcode
+	bNoText = b
+	CustProps.put("NoText", b)
+	If mElement = Null Then Return
+	If b = True Then UI.RemoveElementByID($"${mName}_text"$)
+End Sub
+'get No Badge
+Sub getNoBadge As Boolean
+	Return bNoBadge
+End Sub
+'get No Indicator
+Sub getNoIndicator As Boolean
+	Return bNoIndicator
+End Sub
+'get No Left Icon
+Sub getNoLeftIcon As Boolean
+	Return bNoLeftIcon
+End Sub
+'get No Left Image
+Sub getNoLeftImage As Boolean
+	Return bNoLeftImage
+End Sub
+'get No Loading
+Sub getNoLoading As Boolean
+	Return bNoLoading
+End Sub
+'get No Right Icon
+Sub getNoRightIcon As Boolean
+	Return bNoRightIcon
+End Sub
+'get No Right Image
+Sub getNoRightImage As Boolean
+	Return bNoRightImage
+End Sub
+'get No Text
+Sub getNoText As Boolean
+	Return bNoText
+End Sub
+
 
 Sub setButtonIcon(b As Boolean)				'ignore
 	bButtonIcon = b
@@ -851,8 +1002,13 @@ Sub setIconSize(s As String)				'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If s = "" Then Return
-	If sLeftIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_lefticon"$, s)
-	If sRightIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_righticon"$, s)
+	If bResizeIconSize Then
+		If sLeftIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_lefticon"$, s)
+		If sRightIcon <> "" And s <> "" Then UI.ResizeIconByID($"${mName}_righticon"$, s)
+	Else
+		If sLeftIcon <> "" And s <> "" Then UI.SizeIconByID($"${mName}_lefticon"$, s)
+		If sRightIcon <> "" And s <> "" Then UI.SizeIconByID($"${mName}_righticon"$, s)
+	End If	
 End Sub
 'set Left Icon
 Sub setLeftIcon(s As String)				'ignoredeadcode

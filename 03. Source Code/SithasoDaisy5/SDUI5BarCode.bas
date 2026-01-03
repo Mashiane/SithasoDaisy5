@@ -117,6 +117,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesBarCode)' should be added for '${Name}'"$)
 		Return
 	End If
+	BANano.DependsOnAsset("JsBarcode.all.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)

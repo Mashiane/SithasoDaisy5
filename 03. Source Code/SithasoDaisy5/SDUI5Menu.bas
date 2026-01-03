@@ -14,6 +14,11 @@ Version=10
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-200, Description: Background Color
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: vertical, Description: Direction, List: horizontal|vertical
 #DesignerProperty: Key: HasCheckBox, DisplayName: Has Check Box, FieldType: Boolean, DefaultValue: False, Description: Has Check Box
+#DesignerProperty: Key: HasIcon, DisplayName: Has Icon, FieldType: Boolean, DefaultValue: True, Description: Has Icon
+#DesignerProperty: Key: HasAvatar, DisplayName: Has Avatar, FieldType: Boolean, DefaultValue: True, Description: Has Avatar
+#DesignerProperty: Key: HasBadge, DisplayName: Has Badge, FieldType: Boolean, DefaultValue: True, Description: Has Badge
+#DesignerProperty: Key: NoWrap, DisplayName: NoWrap, FieldType: Boolean, DefaultValue: True, Description: No Wrap
+#DesignerProperty: Key: OverflowYAuto, DisplayName: Overflow-Y-Auto, FieldType: Boolean, DefaultValue: True, Description: Overflow-Y-Auto
 #DesignerProperty: Key: CheckedColor, DisplayName: Checked Color, FieldType: String, DefaultValue: success, Description: Checked Color
 #DesignerProperty: Key: ItemColor, DisplayName: Item Color, FieldType: String, DefaultValue: , Description: Item Color
 #DesignerProperty: Key: ItemActiveColor, DisplayName: Item Active Color, FieldType: String, DefaultValue: , Description: Item Active Color
@@ -37,11 +42,13 @@ Version=10
 #DesignerProperty: Key: PopOver, DisplayName: Pop Over, FieldType: Boolean, DefaultValue: False, Description: Pop Over
 #DesignerProperty: Key: ClosePopupOnClick, DisplayName: Close Popup On Click, FieldType: Boolean, DefaultValue: False, Description: Close PopUnp On Click
 #DesignerProperty: Key: Card, DisplayName: Card, FieldType: Boolean, DefaultValue: False, Description: Card
-#DesignerProperty: Key: Dropdown, DisplayName: Dropdown, FieldType: Boolean, DefaultValue: False, Description: Dropdown
-#DesignerProperty: Key: DropdownOpen, DisplayName: Dropdown Open, FieldType: Boolean, DefaultValue: False, Description: Dropdown Open
-#DesignerProperty: Key: DropDownHover, DisplayName: Dropdown Hover, FieldType: Boolean, DefaultValue: False, Description: Hover
+#DesignerProperty: Key: Dropdown, DisplayName: Is Dropdown, FieldType: Boolean, DefaultValue: False, Description: Is A Dropdown
+#DesignerProperty: Key: DropdownOpen, DisplayName: Is Dropdown Open, FieldType: Boolean, DefaultValue: False, Description: Dropdown Open
+#DesignerProperty: Key: DropDownHover, DisplayName: Show Dropdown Hover, FieldType: Boolean, DefaultValue: False, Description: Show Dropdown on Hover
 #DesignerProperty: Key: DropdownPlacement, DisplayName: Dropdown Placement, FieldType: String, DefaultValue: bottom, Description: Dropdown Placement, , List: bottom|bottom-center|bottom-end|center|end|left|left-center|left-end|right|right-center|right-end|start|top|top-center|top-end|none
 #DesignerProperty: Key: DropdownContent, DisplayName: Dropdown Content, FieldType: Boolean, DefaultValue: False, Description: Dropdown Content
+#DesignerProperty: Key: DropDownId, DisplayName: Drop Down ID, FieldType: String, DefaultValue: , Description: Drop Down Id
+#DesignerProperty: Key: CloseDropdownOnClick, DisplayName: Close Dropdown On Click, FieldType: Boolean, DefaultValue: False, Description: Close Dropdown On Click
 #DesignerProperty: Key: RawItemClasses, DisplayName: Item Classes, FieldType: String, DefaultValue: , Description: Item Classes
 #DesignerProperty: Key: RawItemStyles, DisplayName: Item Styles, FieldType: String, DefaultValue: , Description: Item Styles
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -128,6 +135,14 @@ Sub Class_Globals
 	Private sItemFocusColor As String = ""
 	Private sItemHoverColor As String = ""
 	Private sItemActiveTextColor As String
+	Private bNoWrap As Boolean = True
+	Private bOverflowYAuto As Boolean = True
+	Private Parents As Map
+	Private bCloseDropdownOnClick As Boolean = False
+	Private sDropDownId As String = ""
+	Private bHasIcon As Boolean = True
+	Private bHasAvatar As Boolean = True
+	Private bHasBadge As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -139,11 +154,15 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	CustProps.Initialize
 	Items.Initialize
 	SetDefaults
+	Parents.Initialize
 End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
 	CustProps.Put("TextColor", "")
+	CustProps.Put("HasIcon", True)
+	CustProps.Put("HasAvatar", True)
+	CustProps.Put("HasBadge", True)
 	CustProps.Put("Size", "none")
 	CustProps.Put("BackgroundColor", "base-200")
 	CustProps.Put("Direction", "vertical")
@@ -187,6 +206,21 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("NoWrap", True)
+	CustProps.Put("OverflowYAuto", True)
+	CustProps.Put("CloseDropdownOnClick", False)
+	CustProps.Put("DropDownId", "")
+End Sub
+
+Sub setNoWrap(b As Boolean)
+	bNoWrap = b
+	CustProps.put("NoWrap", bNoWrap)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "flex-nowrap")
+	Else
+		UI.RemoveClass(mElement, "flex-nowrap")
+	End If
 End Sub
 
 'link to an existing element
@@ -420,9 +454,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sItemHoverColor = UI.CStr(sItemHoverColor)
 		sItemActiveTextColor = Props.GetDefault("ItemActiveTextColor", "")
 		sItemActiveTextColor = UI.CStr(sItemActiveTextColor)
+		bNoWrap = Props.GetDefault("NoWrap", True)
+		bNoWrap = UI.CBool(bNoWrap)
+		bOverflowYAuto = Props.GetDefault("OverflowYAuto", True)
+		bOverflowYAuto = UI.cbool(bOverflowYAuto)
+		bCloseDropdownOnClick = Props.GetDefault("CloseDropdownOnClick", False)
+		bCloseDropdownOnClick = UI.CBool(bCloseDropdownOnClick)
+		sDropDownId = Props.GetDefault("DropDownId", "")
+		sDropDownId = UI.CStr(sDropDownId)
+		sDropDownId = UI.CleanID(sDropDownId)
+		bHasIcon = Props.GetDefault("HasIcon", True)
+		bHasIcon = UI.CBool(bHasIcon)
+		bHasAvatar  = Props.GetDefault("HasAvatar", True)
+		bHasAvatar = UI.CBool(bHasAvatar)
+		bHasBadge = Props.GetDefault("HasBadge", True)
+		bHasBadge = UI.CBool(bHasBadge)
 	End If
 	'
-	UI.AddClassDT("menu flex-nowrap overflow-y-auto")
+	UI.AddClassDT("menu")
+	If bNoWrap Then UI.AddClassDT("flex-nowrap")
+	If bOverflowYAuto Then UI.AddClassDT("overflow-y-auto")
 	If bDropdown = True Then 
 		UI.AddClassDT("dropdown")
 		If bDropdownOpen = True Then UI.AddClassDT("dropdown-open")
@@ -485,6 +536,70 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sItemActiveTextColor <> "" Then objStyle.Put("color", $"${sItemActiveTextColor} !important"$)
 		UI.InsertCSSRule(selName, objStyle)
 	End If
+End Sub
+
+Sub setHasIcon(b As Boolean)
+	bHasIcon = b
+	CustProps.Put("HasIcon", b)
+End Sub
+
+Sub getHasIcon As Boolean
+	Return bHasIcon
+End Sub
+
+Sub setHasAvatar(b As Boolean)
+	bHasAvatar = b
+	CustProps.Put("HasAvatar", b)
+End Sub
+
+Sub getHasAvatar As Boolean
+	Return bHasAvatar
+End Sub
+
+Sub setHasBadge(b As Boolean)
+	bHasBadge = b
+	CustProps.Put("HasBadge", b)
+End Sub
+
+Sub getHasBadge As Boolean
+	Return bHasBadge
+End Sub
+
+'set Close Dropdown On Click
+Sub setCloseDropdownOnClick(b As Boolean)
+	bCloseDropdownOnClick = b
+	CustProps.put("CloseDropdownOnClick", b)
+End Sub
+
+'set Drop Down Id
+Sub setDropDownId(s As String)
+	sDropDownId = s
+	CustProps.put("DropDownId", s)
+End Sub
+
+'get Close Dropdown On Click
+Sub getCloseDropdownOnClick As Boolean
+	Return bCloseDropdownOnClick
+End Sub
+
+'get Drop Down Id
+Sub getDropDownId As String
+	Return sDropDownId
+End Sub
+
+Sub setOverflowYAuto(b As Boolean)
+	bOverflowYAuto = b
+	CustProps.Put("overflow-y-auto", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "overflow-y-auto")
+	Else
+		UI.RemoveClass(mElement, "overflow-y-auto")
+	End If
+End Sub
+
+Sub getOverflowYAuto As Boolean
+	Return bOverflowYAuto
 End Sub
 
 Sub setItemActiveTextColor(s As String)
@@ -914,6 +1029,9 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -921,6 +1039,8 @@ Sub AddMenuItemTitle(itemKey As String, itemText As String) As SDUI5MenuItem
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -938,9 +1058,13 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.ItemType = "normal"
 	item.Text = itemText
 	item.Parent = itemParent
+	If itemParent Then Parents.Put(itemKey, itemKey)
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -948,6 +1072,8 @@ Sub AddMenuItem(itemKey As String, itemText As String, itemParent As Boolean) As
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -968,6 +1094,9 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -975,6 +1104,8 @@ Sub AddMenuItemIcon(itemKey As String, itemIcon As String, iconSize As String) A
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -996,6 +1127,9 @@ Sub AddMenuItemIconColor(itemKey As String, itemIcon As String, iconSize As Stri
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -1003,6 +1137,8 @@ Sub AddMenuItemIconColor(itemKey As String, itemIcon As String, iconSize As Stri
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1021,10 +1157,14 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.ParentID = mName
 	item.Text = itemText
 	item.Parent = itemParent
+	If itemParent Then Parents.Put(itemKey, itemKey)
 	item.ItemType = "icon-text"
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -1032,6 +1172,8 @@ Sub AddMenuItemIconText(itemKey As String, itemIcon As String, itemText As Strin
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1053,8 +1195,12 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 		item.AvatarShape = itemAvatarShape
 		item.avatarSize = itemAvatarSize
 		item.Parent = itemParent
+		If itemParent Then Parents.Put(itemKey, itemKey)
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.HasIcon = bHasIcon
+		item.HasAvatar = bHasAvatar
+		item.HasBadge = bHasBadge
 		item.ClosePopupOnClick = bClosePopupOnClick
 		item.ItemClasses = sRawItemClasses
 		item.ItemStyles = sRawItemStyles
@@ -1068,6 +1214,8 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 		item.itemactivecolor = sItemActiveColor
 		item.itemfocuscolor = sItemFocusColor
 		item.ItemHoverColor = sItemHoverColor
+		item.CloseDropdownOnClick = bCloseDropdownOnClick
+		item.DropDownId = sDropDownId
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1083,6 +1231,9 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.Text = itemText
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -1090,6 +1241,8 @@ Sub AddMenuItemAvatarText(parentID As String, itemKey As String, itemAvatar As S
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	If itemParent Then
 		item.ItemType = "collapse-item"
 	Else
@@ -1117,6 +1270,9 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -1124,6 +1280,8 @@ Sub AddMenuItemChild(itemKey As String, itemIcon As String, itemText As String) 
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1145,9 +1303,13 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 		item.Text = itemText
 		item.ItemType = "collapse-item"
 		item.Parent = True
+		Parents.Put(itemKey, itemKey)
 		item.MenuName = mName
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.HasIcon = bHasIcon
+		item.HasAvatar = bHasAvatar
+		item.HasBadge = bHasBadge
 		item.ClosePopupOnClick = bClosePopupOnClick
 		item.ItemClasses = sRawItemClasses
 		item.ItemStyles = sRawItemStyles
@@ -1155,6 +1317,8 @@ Sub AddItemParent(parentID As String, itemKey As String, itemIcon As String, ite
 		item.itemactivecolor = sItemActiveColor
 		item.itemfocuscolor = sItemFocusColor
 		item.ItemHoverColor = sItemHoverColor
+		item.CloseDropdownOnClick = bCloseDropdownOnClick
+		item.DropDownId = sDropDownId
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1185,6 +1349,9 @@ Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, item
 		item.MenuName = mName
 		item.CheckedColor = sCheckedColor
 		item.HasCheckBox = bHasCheckBox
+		item.HasIcon = bHasIcon
+		item.HasAvatar = bHasAvatar
+		item.HasBadge = bHasBadge
 		item.ClosePopupOnClick = bClosePopupOnClick
 		item.ItemClasses = sRawItemClasses
 		item.ItemStyles = sRawItemStyles
@@ -1192,6 +1359,8 @@ Sub AddItemChild(parentID As String, itemKey As String, itemIcon As String, item
 		item.itemactivecolor = sItemActiveColor
 		item.itemfocuscolor = sItemFocusColor
 		item.ItemHoverColor = sItemHoverColor
+		item.CloseDropdownOnClick = bCloseDropdownOnClick
+		item.DropDownId = sDropDownId
 		item.AddComponent
 		If bHasCheckBox Then
 			UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
@@ -1214,9 +1383,13 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.Text = itemText
 	item.ItemType = "collapse-item"
 	item.Parent = True
+	Parents.Put(itemKey, itemKey)
 	item.MenuName = mName
 	item.CheckedColor = sCheckedColor
 	item.HasCheckBox = bHasCheckBox
+	item.HasIcon = bHasIcon
+	item.HasAvatar = bHasAvatar
+	item.HasBadge = bHasBadge
 	item.ClosePopupOnClick = bClosePopupOnClick
 	item.ItemClasses = sRawItemClasses
 	item.ItemStyles = sRawItemStyles
@@ -1224,11 +1397,20 @@ Sub AddMenuItemParent(itemKey As String, itemIcon As String, itemText As String)
 	item.itemactivecolor = sItemActiveColor
 	item.itemfocuscolor = sItemFocusColor
 	item.ItemHoverColor = sItemHoverColor
+	item.CloseDropdownOnClick = bCloseDropdownOnClick
+	item.DropDownId = sDropDownId
 	item.AddComponent
 	If bHasCheckBox Then
 		UI.OnEventByID($"${itemKey}_check"$, "change", Me, "changed")
 	End If
 	Return item
+End Sub
+
+'close all parents
+Sub CloseParents
+	For Each k As String In Parents.Keys
+		UI.RemoveAttrByID($"${k}_details"$, "open")
+	Next
 End Sub
 
 Sub SetItemOpen(item As String, b As Boolean)
@@ -1258,7 +1440,7 @@ Sub SetItemVisible(item As String, b As Boolean)
 	UI.SetVisibleByID(item, b)
 End Sub
 
-'clear menu & child items
+'clear menu and child items
 Sub Clear			'ignoredeadcode
 	Items.Initialize
 	If mElement = Null Then Return

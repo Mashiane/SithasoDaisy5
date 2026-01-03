@@ -4872,7 +4872,6 @@ Sub AddColumnDateTimePicker(name As String, title As String, readOnly As Boolean
 	nc.dateFormat = dateFormat
 	nc.altFormat = altFormat
 	nc.Locale = locale
-	nc.altFormat = altFormat
 	nc.range = brange
 	nc.multiple = bmultiple
 	nc.noCalendar = bNoCalendar

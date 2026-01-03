@@ -825,6 +825,7 @@ private Sub GetMapTypes(sourceMap As Map) As List
 	Return listOfTypes
 End Sub
 
+'get all data models from mysql
 Sub GetDataModels As Map
 	If ShowLog Then
 		Log($"SDUIMySQLREST.GetDataModels"$)

@@ -143,7 +143,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("SithasoApexChart.js")
+	BANano.DependsOnAsset("SithasoApexChart.min.js")
 	SetDefaults
 End Sub
 '

@@ -8,7 +8,7 @@ Version=10
 #Event: Change (value As Boolean)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: SwapType, DisplayName: Swap Type, FieldType: String, DefaultValue: text, Description: Swap Type, List: icon|text
+#DesignerProperty: Key: SwapType, DisplayName: Swap Type, FieldType: String, DefaultValue: text, Description: Swap Type, List: icon|text|svg
 #DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: flip, Description: Type Of, List: flip|rotate
 #DesignerProperty: Key: OnIcon, DisplayName: On Icon, FieldType: String, DefaultValue: , Description: On Icon
 #DesignerProperty: Key: OffIcon, DisplayName: Off Icon, FieldType: String, DefaultValue: , Description: Off Icon
@@ -317,6 +317,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		</div>
 		<div id="${mName}_on" class="swap-on"><img id="${mName}_onicon" src="${sOnIcon}" alt="" class="bg-cover bg-center bg-no-repeat"></img></div>
   		<div id="${mName}_off" class="swap-off"><img id="${mName}_officon" src="${sOffIcon}" alt="" class="bg-cover bg-center bg-no-repeat"></img></div>"$)
+		setWidth(sWidth)
+		setHeight(sHeight)
+	Case "svg"
+		mElement.Append($"[BANCLEAN]
+		<div id="${mName}_indeterminate" class="swap-indeterminate">
+			<svg-renderer id="${mName}_indeterminateicon" fill="currentColor" data-src="${sIndeterminateIcon}" data-js="enabled"></svg-renderer>
+		</div>
+		<div id="${mName}_on" class="swap-on"><svg-renderer id="${mName}_onicon" fill="currentColor" data-src="${sOnIcon}" data-js="enabled"></svg-renderer></div>
+		<div id="${mName}_off" class="swap-off"><svg-renderer id="${mName}_officon" fill="currentColor" data-src="${sOffIcon}" data-js="enabled"></svg-renderer></div>"$)
 		setWidth(sWidth)
 		setHeight(sHeight)
 	End Select

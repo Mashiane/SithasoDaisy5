@@ -582,11 +582,12 @@ Private Sub Class_Globals
 	Public Const THEME_CARAMELLATTE As String = "caramellatte"
 	Public Const THEME_ABYSS As String = "abyss"
 	Public Const THEME_SILK As String = "silk"
-
-	
 End Sub
 
 #if css
+*{
+    scroll-behavior: smooth;
+}
 .badgepulse {
   animation: pulse-fade 1.5s ease-in-out infinite;
 }
@@ -643,6 +644,11 @@ Public Sub Initialize (mCallback As Object)
 	AppToast.Position = ToastPosition
 	AppToast.TypeOf = AppToast.TYPEOF_INFO
 End Sub
+
+Sub RemoveDefaultSettings
+	UI.RemoveClass(mElement, "relative flex flex-col min-h-screen h-screen w-screen m-0 p-0")
+End Sub
+
 
 Sub SetRTL(b As Boolean)
 	Select Case b
@@ -835,13 +841,20 @@ Sub StartEruda
 End Sub
 
 Sub UsesApex
-	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.css", "SithasoApexChart.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.css", "SithasoApexChart.min.js")))
 End Sub
 
 Sub UsesGenderChart
 	Banano.Await(UI.LoadAssetsOnDemand("GenderChart", Array("SithasoGenderChart.min.js")))
 End Sub
 
+Sub UsesQuill
+	Banano.Await(UI.LoadAssetsOnDemand("Quill", Array("quill.snow.css", "highlight.min.css", "quill-custom.min.css", "highlight.min.js", "quill.min.js", "purify.min.js", "quill-custom.min.js")))
+End Sub
+
+Sub UsesGifPlayer
+	Banano.Await(UI.LoadAssetsOnDemand("GifPlayer", Array("gifsee.min.css", "gifsee.min.js")))
+End Sub
 
 Sub UsesKanBan
 	Banano.Await(UI.LoadAssetsOnDemand("KanBan", Array("jkanban.min.css", "dragula.min.js", "jkanban.min.js")))
@@ -941,6 +954,11 @@ End Sub
 'valid
 Sub UsesCode
 	Banano.Await(UI.LoadAssetsOnDemand("Code", Array("prism.min.css", "prism.min.js", "beautify.min.js", "beautify-css.min.js", "beautify-html.min.js", "prettier.min.js")))
+End Sub
+
+'valid
+Sub UsesB4JConverter
+	Banano.Await(UI.LoadAssetsOnDemand("B4jConverter", Array("pako.min.js", "bjl-converter.js", "bjl-renamer.js")))
 End Sub
 
 'valid
@@ -1051,6 +1069,7 @@ Sub AddLoader
 		loader.SetStyle(Banano.ToJson(mStyle))
 	End If
 End Sub
+
 
 ''<code>
 ''Dim DateTimeOptions As RollDateOptions = app.InitRollDateTime
@@ -2022,6 +2041,58 @@ Sub AddDataModelFromPocketBase(tblName As String, flds As Map)
 	If lfiles.Size > 0 Then AddDataModelFiles(tblName, lfiles)
 End Sub
 
+Sub AddDataModelFromMySQL(tblm As Map)
+	Dim sname As String = tblm.Get("name")
+	Dim spk As String = tblm.Get("pk")
+	Dim sai As String = tblm.Get("auto")
+	Dim flds As List = tblm.Get("fields")
+	Dim bauto As Boolean = False
+	If sai = spk Then bauto = True
+	'
+	Dim lstrings As List
+	lstrings.Initialize
+	Dim lintegers As List
+	lintegers.Initialize
+	Dim lbools As List
+	lbools.Initialize
+	Dim lfiles As List
+	lfiles.Initialize
+	Dim longtext As List
+	longtext.Initialize
+	Dim doubles As List
+	doubles.Initialize
+	'
+	For Each fld As Map In flds
+		Dim fname As String = fld.Get("name")
+		Dim stype As String = fld.Get("type")
+		Select Case stype
+		Case "Int"
+			lintegers.Add(fname)
+		Case "Bool"
+			lbools.Add(fname)
+		Case "Double"
+			doubles.Add(fname)
+		Case "String"
+			lstrings.Add(fname)
+		Case "LongText"
+			longtext.Add(fname)
+		Case "Blob"
+			lfiles.Add(fname)
+		Case Else
+			lstrings.Add(fname)
+		End Select
+	Next
+	'
+	AddDataModel(sname, spk, bauto)
+	If lstrings.Size > 0 Then AddDataModelStrings(sname, lstrings)
+	If lintegers.Size > 0 Then AddDataModelIntegers(sname, lintegers)
+	If lbools.Size > 0 Then AddDataModelBooleans(sname, lbools)
+	If lfiles.Size > 0 Then AddDataModelBlobs(sname, lfiles)
+	If doubles.Size > 0 Then AddDataModelDoubles(sname, doubles)
+	If longtext.Size > 0 Then AddDataModelLongTexts(sname, longtext)
+End Sub
+
+
 Sub AddDataModelFrom(targetTable As String, sourceTable As String)
 	If DataModels.ContainsKey(sourceTable) = False Then
 		Banano.Throw($"AddDataModelFrom.${sourceTable} data-model does NOT exist!"$)
@@ -2108,7 +2179,7 @@ End Sub
 
 'valid
 Sub UsesJSONEditor
-	Banano.Await(UI.LoadAssetsOnDemand("JSONEditor", Array("jsoneditor.min.js")))
+	Banano.Await(UI.LoadAssetsOnDemand("JSONEditor", Array("jsoneditor.min.css", "jsoneditor.min.js")))
 End Sub
 
 Sub UsesJSONTree
@@ -3825,4 +3896,49 @@ Sub HideFullPhoneNumber(PhoneNumber As String) As String
 		End If
 	Next
 	Return PhoneNumber.SubString2(0,3) & PasswordChars & PhoneNumber.SubString2(PhoneNumber.Length -4,PhoneNumber.Length)
+End Sub
+
+'add mx-auto to the body
+Sub SetMxAuto(b As Boolean)
+	If b Then
+		UI.AddClass(mElement, "mx-auto")
+	Else
+		UI.RemoveClass(mElement, "mx-auto")
+	End If
+End Sub
+
+Sub SetMaxWidth(smw As String)
+	UI.SetMaxWidth(mElement, smw)
+End Sub
+
+Sub RemoveClass(s As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, s)
+End Sub
+
+Sub AddClass(s As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, s)
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
+End Sub
+
+Sub AddAttribute(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
+End Sub
+
+'get an element from loadlayoutarray stuff
+Sub GetElementFromArray(eID As String) As BANanoElement
+	Dim fpart As String = UI.MvField(eID, 1, "_")
+	Dim fsecond As String = UI.MvField(eID, 2, "_")
+	Dim el As BANanoElement = Banano.GetElement($"#${fpart}_${fsecond}"$)
+	Return el
+End Sub
+
+Sub EnsureVisibleByID(sID As String)
+	UI.EnsureVisibleByID(sID)
 End Sub

@@ -12,6 +12,9 @@ Version=10
 #DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: Lazy, DisplayName: Lazy, FieldType: Boolean, DefaultValue: False, Description: Lazy
+#DesignerProperty: Key: Gif, DisplayName: Gif, FieldType: Boolean, DefaultValue: False, Description: Gif
+#DesignerProperty: Key: GifPoster, DisplayName: Gif Poster, FieldType: String, DefaultValue: , Description: Gif Poster
 #DesignerProperty: Key: Cover, DisplayName: Cover, FieldType: Boolean, DefaultValue: True, Description: Cover
 #DesignerProperty: Key: Center, DisplayName: Center, FieldType: Boolean, DefaultValue: True, Description: Center
 #DesignerProperty: Key: NoRepeat, DisplayName: NoRepeat, FieldType: Boolean, DefaultValue: True, Description: No Repeat
@@ -68,9 +71,14 @@ Sub Class_Globals
 	Private bCover As Boolean = False
 	Private bCenter As Boolean = False
 	Private bNoRepeat As Boolean = False
+	Private bLazy As Boolean = False
+	Private bGif As Boolean = False
+	Private sGifPoster As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	BANano.DependsOnAsset("gifsee.min.js")
+	BANano.DependsOnAsset("gifsee.min.css")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -106,6 +114,9 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("Lazy", False)
+	CustProps.Put("Gif", False)
+	CustProps.Put("GifPoster", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -285,8 +296,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bCenter = UI.CBool(bCenter)
 		bNoRepeat = Props.GetDefault("NoRepeat", True)
 		bNoRepeat = UI.CBool(bNoRepeat)
+		bLazy = Props.GetDefault("Lazy", False)
+		bLazy = UI.CBool(bLazy)
+		bGif = Props.GetDefault("Gif", False)
+		bGif = UI.CBool(bGif)
+		sGifPoster = Props.GetDefault("GifPoster", "")
+		sGifPoster = UI.CStr(sGifPoster)
 	End If
 	'
+	If bLazy Then UI.AddAttrDT("loading", "lazy")
 	If bCover Then UI.AddClassDT("bg-cover")
 	If bCenter Then UI.AddClassDT("bg-center")
 	If bNoRepeat Then UI.AddClassDT("bg-no-repeat")
@@ -300,6 +318,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If sMask <> "" Then UI.AddMaskDT(sMask)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sSrc <> "" Then UI.AddAttrDT("src", sSrc)
+	If bGif Then 
+		UI.AddAttrDT("data-gifsee", sSrc) 
+	End If
+	If sGifPoster <> "" Then
+		UI.AddAttrDT("src", sGifPoster)
+	End If
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -319,6 +343,47 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If SubExists(mCallBack, $"${mName}_click"$) Then
 		UI.SetCursorPointer(mElement)
 	End If
+	If bGif Then
+		Dim bo As BANanoObject
+		bo.Initialize2("gifsee", mElement.ToObject)
+	End If
+End Sub
+
+Sub setGifPoster(s As String)
+	sGifPoster = s
+	CustProps.Put("GifPoster", sGifPoster)
+	If mElement = Null Then Return
+	UI.SetImage(mElement, sGifPoster)
+End Sub
+
+Sub getGifPoster As String
+	Return sGifPoster
+End Sub
+
+Sub setGif(b As Boolean)
+	bGif = b
+	CustProps.Put("Gif", bGif)
+	If mElement = Null Then Return
+	UI.SetAttr(mElement, "data-gifsee", sSrc)
+End Sub
+
+Sub getGif As Boolean
+	Return bGif
+End Sub
+
+Sub setLazy(b As Boolean)
+	CustProps.Put("Lazy", b)
+	bLazy = b
+	If mElement = Null Then Return
+	If b Then
+		UI.AddAttr(mElement, "loading", "lazy")
+	Else
+		UI.RemoveAttr(mElement, "loading")	
+	End If
+End Sub
+
+Sub getLazy As Boolean
+	Return bLazy
 End Sub
 
 Sub setCover(b As Boolean)
@@ -505,4 +570,19 @@ End Sub
 'get Min Width
 Sub getMinWidth As String
 	Return sMinWidth
+End Sub
+
+Sub AddClass(className As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, className)
+End Sub
+
+Sub RemoveClass(className As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, className)
+End Sub
+
+Sub AddAttr(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
 End Sub

@@ -5,11 +5,15 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|section|nav
+#DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: a|abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|section|nav|input|label|br|hr|footer
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: , Description: Icon Size
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text, Description: Text
+#DesignerProperty: Key: RawHTML, DisplayName: HTML, FieldType: String, DefaultValue: , Description: HTML
+#DesignerProperty: Key: NoText, DisplayName: NoText, FieldType: Boolean, DefaultValue: False, Description: No Text
 #DesignerProperty: Key: LoremIpsum, DisplayName: Lorem Ipsum, FieldType: Boolean, DefaultValue: False, Description: Is Lorem Ipsum
 #DesignerProperty: Key: Opacity, DisplayName: Opacity, FieldType: Int, DefaultValue: 100, MinRange: 0, MaxRange: 100, Description: Opacity
 #DesignerProperty: Key: ListCol, DisplayName: List Col, FieldType: String, DefaultValue: none, Description: List Col, List: grow|none|wrap
@@ -179,6 +183,8 @@ Sub Class_Globals
 	Public CONST TAG_DIV As String = "div"
 	Public CONST TAG_SECTION As String = "section"
 	Public CONST TAG_NAV As String = "nav"
+	Private bNoText As Boolean = False
+	Private sRawHTML As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -237,6 +243,8 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.put("NoText", False)
+	CustProps.put("RawHTML", "")
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -356,6 +364,19 @@ Sub setMarginAXYTBLR(s As String)
 	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
 End Sub
 '
+Sub setNoText(b As Boolean)				'ignoredeadcode
+	bNoText = b
+	CustProps.Put("NoText", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.RemoveElementByID($"${mName}_text"$)
+	End If
+End Sub
+
+Sub getNoText As Boolean
+	Return bNoText
+End Sub
+
 Sub getAttributes As String
 	Return sRawAttributes
 End Sub
@@ -387,11 +408,35 @@ Sub setText(text As String)			'ignoredeadcode
 		UI.SetVisibleByID($"${mName}_text"$, True)
 	End If
 End Sub
+
+Sub OnEvent(event As String, MethodName As String)
+	UI.OnEvent(mElement, event, mCallBack, MethodName)
+End Sub
+
+
 'get text
 Sub getText As String
 	sText = UI.GetTextByID($"${mName}_text"$)
 	Return sText
 End Sub
+
+Sub setHTML(s As String)					'ignoredeadcode
+	sRawHTML = s
+	CustProps.Put("RawHTML", sRawHTML)
+	If mElement = Null Then Return
+	UI.SetHTMLByID($"${mName}_text"$, s)
+	If s = "" Then
+		UI.SetVisibleByID($"${mName}_text"$, False)
+	Else
+		UI.SetVisibleByID($"${mName}_text"$, True)
+	End If
+End Sub
+
+Sub getHTML As String
+	sRawHTML = UI.GetHTMLByID($"${mName}_text"$)
+	Return sRawHTML
+End Sub
+
 'code to design the view
 Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mTarget = Target
@@ -486,6 +531,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		sBackgroundImage = Props.GetDefault("BackgroundImage", "")
 		sBackgroundImage = UI.CStr(sBackgroundImage)
+		bNoText = Props.GetDefault("NoText", False)
+		bNoText = UI.CBool(bNoText)
+		sRawHTML = Props.GetDefault("RawHTML", "")
+		sRawHTML = UI.CStr(sRawHTML)
 	End If
 	'
 	If bApplyDefaults Then
@@ -542,24 +591,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]
-	<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-		<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
-		<span id="${mName}_text"></span>
-	</${sTextTag}>"$).Get("#" & mName)
-	setFontWeight(sFontWeight)
-	setDecoration(sDecoration)
-	setItalic(bItalic)
-	setTextSize(sTextSize)
-	setText(sText)
-	setIcon(sIcon)
-	setIconSize(sIconSize)
-	setTransform(sTransform)
-	setWordBreak(sWordBreak)
-	setTextColor(sTextColor)
-	setOverflow(sOverflow)
-	If iOpacity <> 100 Then setOpacity(iOpacity)
-	setFontVariant(sFontVariant)
+	Select Case sTextTag
+	Case "br"
+		mElement = mTarget.Append($"[BANCLEAN]<br id="${mName}"/>"$).Get("#" & mName)
+	Case Else
+		mElement = mTarget.Append($"[BANCLEAN]
+		<${sTextTag} id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
+			<span id="${mName}_text"></span>
+		</${sTextTag}>"$).Get("#" & mName)
+		setFontWeight(sFontWeight)
+		setDecoration(sDecoration)
+		setItalic(bItalic)
+		setTextSize(sTextSize)
+		setText(sText)
+		If sRawHTML <> "" Then setHTML(sRawHTML)
+		setIcon(sIcon)
+		setIconSize(sIconSize)
+		setTransform(sTransform)
+		setWordBreak(sWordBreak)
+		setTextColor(sTextColor)
+		setOverflow(sOverflow)
+		If iOpacity <> 100 Then setOpacity(iOpacity)
+		setFontVariant(sFontVariant)
+		setNoText(bNoText)
+	End Select
 '	setVisible(bVisible)
 End Sub
 
@@ -925,6 +981,7 @@ Sub setIcon(s As String)			'ignoredeadcode
 	If sIcon = "" Then
 		UI.SetVisibleByID($"${mName}_icon"$, False)
 		UI.RemoveClass(mElement, "inline-flex items-center")
+		UI.RemoveElementByID($"${mName}_icon"$)
 	Else
 		UI.SetVisibleByID($"${mName}_icon"$, True)
 		UI.AddClass(mElement, "inline-flex items-center")
@@ -950,4 +1007,29 @@ End Sub
 'get Icon Size
 Sub getIconSize As String
 	Return sIconSize
+End Sub
+
+Sub AddClass(className As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, className)
+End Sub
+
+Sub RemoveClass(className As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, className)
+End Sub
+
+Sub AddAttr(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
+End Sub
+
+Sub SetStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.SetStyle(mElement, k, v)
+End Sub
+
+Sub Empty
+	If mElement = Null Then Return
+	mElement.empty
 End Sub

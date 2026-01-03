@@ -12762,16 +12762,16 @@ namespace Tqdev\PhpCrudApi {
     use Tqdev\PhpCrudApi\RequestFactory;
     use Tqdev\PhpCrudApi\ResponseUtils;
 
-     require 'SecureQueryController.php';
-
     // --- Dynamic DB Configuration via Headers ---
     $headers = getallheaders();
-    $host = $headers['X-Host'] ?? '';
-    $user = $headers['X-User'] ?? '';
+    $host = $headers['X-Host'] ?? 'localhost';
+    $user = $headers['X-User'] ?? 'root';
     $password = $headers['X-Password'] ?? '';
     $dbname = $headers['X-DBName'] ?? '';
     $driver = $headers['X-Driver'] ?? 'mysql';
-    $port = $headers['X-Port'] ?? '';
+    $port = $headers['X-Port'] ?? '3306';
+
+     require 'SecureQueryController.php';
 
     $config = new Config([
         'driver' => $driver,
@@ -12782,9 +12782,9 @@ namespace Tqdev\PhpCrudApi {
         'database' => $dbname,
         'debug' => true,
         'tables' => 'all',
-        'customControllers' => 'SecureQueryController',
         'controllers' => 'records,columns,tables,openapi,status',
         'middlewares' => 'apiKeyAuth,sanitation',
+        'customControllers' => 'SecureQueryController',
         'apiKeyAuth.keys' => 'jNOEqK8xvAqWWRf7B4jlw2ppOCeBoHunex4ViA1txPrG7V9DW1dG737HhseS4E5Ca3xVaUtUwbDRIOrkwEZv7SEvUQP6jClRpDESkRUnshgyngNDd2epbJWjF48xAzKp',
         'apiKeyAuth.header' => 'X-API-Key',
     ]);

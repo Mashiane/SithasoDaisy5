@@ -131,6 +131,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	sLastMsgID = ""
 	BANano.DependsOnAsset("SVGRenderer.min.js")
 	BANano.DependsOnAsset("whatsapp.min.css")
+	BANano.DependsOnAsset("emojimart.js")
 	MessageType = "T"
 	SetDefaults
 End Sub

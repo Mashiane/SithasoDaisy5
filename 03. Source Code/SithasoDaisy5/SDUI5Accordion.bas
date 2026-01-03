@@ -69,6 +69,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	SetDefaults
 End Sub
 
+
 private Sub SetDefaults
 	CustProps.Initialize
 	CustProps.Put("ParentID",          "")                     'String (empty by default)

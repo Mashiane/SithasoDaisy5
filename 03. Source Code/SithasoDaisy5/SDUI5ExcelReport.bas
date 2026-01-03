@@ -23,6 +23,7 @@ Public Sub Initialize()
 	mFields.Initialize 
 	mRecords.Initialize
 	mColumns.Initialize 
+	BANano.DependsOnAsset("exceljs.min.js")
 End Sub
 
 'add columns to print and its location

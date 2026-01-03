@@ -6,11 +6,30 @@ Version=10.2
 @EndOfDesignText@
 #IgnoreWarnings:12
 #Event: OnError (err As Object)
+#Event: OnChange (err As Object)
+#Event: Save (e As BANanoEvent)
+#Event: Download (e As BANanoEvent)
+#Event: Refresh (e As BANanoEvent)
+#Event: Back (e As BANanoEvent)
+#Event: CustomButton (e As BANanoEvent)
+#Event: FileChange (e As BANanoEvent
+
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: , Description: The title of the JSON editor
 #DesignerProperty: Key: Mode, DisplayName: Mode, FieldType: String, DefaultValue: view, Description: Mode, List: code|form|preview|text|tree|view
+#DesignerProperty: Key: Path, DisplayName: Path, FieldType: String, DefaultValue: , Description: Path
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 500px, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 500px, Description: Width
+#DesignerProperty: Key: ButtonSize, DisplayName: Button Size, FieldType: String, DefaultValue: md, Description: Button Size, List: lg|md|sm|xs|none
+#DesignerProperty: Key: ButtonsOutlined, DisplayName: Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
+#DesignerProperty: Key: HasUpload, DisplayName: Has Upload, FieldType: Boolean, DefaultValue: True, Description: Has Upload
+#DesignerProperty: Key: HasSave, DisplayName: Has Save, FieldType: Boolean, DefaultValue: True, Description: Has Save
+#DesignerProperty: Key: HasDownload, DisplayName: Has Download, FieldType: Boolean, DefaultValue: True, Description: Has Download
+#DesignerProperty: Key: HasRefresh, DisplayName: Has Refresh, FieldType: Boolean, DefaultValue: False, Description: Has Refresh
+#DesignerProperty: Key: HasBack, DisplayName: Has Back, FieldType: Boolean, DefaultValue: True, Description: Has Back
+#DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: lg, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
+#DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: lg, Description: Shape/Rounded, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -48,7 +67,19 @@ Sub Class_Globals
 	Private jEditor As BANanoObject
 	Private sJson As Object
 	Private sJsonString As String
+	Private sTitle As String = ""
+	Private sShadow As String = "lg"
+	Private sRounded As String = "lg"
+	Private bHasBack As Boolean = True
+	Private bHasDownload As Boolean = True
+	Private bHasRefresh As Boolean = False
+	Private sButtonSize As String = "md"
+	Private bButtonsOutlined As Boolean
+	Private sPath As String = ""
+	Private bHasUpload As Boolean = True
+	Private bHasSave As Boolean = True
 End Sub
+
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	If BANano.AssetsIsDefined("JSONEditor") = False Then
@@ -62,12 +93,18 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	Options.Initialize
+	BANano.DependsOnAsset("jsoneditor.min.css")
 	BANano.DependsOnAsset("jsoneditor.min.js")
+	BANano.DependsOnAsset("SVGRenderer.min.js")
+	BANano.DependsOnAsset("pako.min.js")
+	BANano.DependsOnAsset("bjl-converter.js")
+	BANano.DependsOnAsset("bjl-renamer.js")
 	SetDefaults
 End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("Title", "")
 	CustProps.Put("Mode", "view")
 	CustProps.Put("Height", "500px")
 	CustProps.Put("Width", "500px")
@@ -80,6 +117,16 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("ButtonSize", "md")
+	CustProps.Put("ButtonsOutlined", False)
+	CustProps.Put("HasDownload", True)
+	CustProps.Put("HasRefresh", False)
+	CustProps.Put("HasBack", True)
+	CustProps.Put("Shadow", "none")
+	CustProps.Put("Rounded", "none")
+	CustProps.Put("Path", "")
+	CustProps.Put("HasUpload", True)
+	CustProps.Put("HasSave", True)
 End Sub
 ' returns the element id
 Public Sub getID() As String
@@ -94,6 +141,35 @@ End Sub
 Sub GetProperties As Map
 	Return CustProps
 End Sub
+
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
+'get Rounded
+Sub getRounded As String
+	Return sRounded
+End Sub
+
+'set Shadow
+'options: shadow|sm|md|lg|xl|2xl|inner|none
+Sub setShadow(s As String)
+	sShadow = s
+	CustProps.put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, sShadow)
+End Sub
+
+'set Rounded
+'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
+Sub setRounded(s As String)
+	sRounded = s
+	CustProps.put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, sRounded)
+End Sub
+
 'add this element to an existing parent element using current props
 Public Sub AddComponent
 	If sParentID = "" Then Return
@@ -240,10 +316,38 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMode = UI.CStr(sMode)
 		sWidth = Props.GetDefault("Width", "500px")
 		sWidth = UI.CStr(sWidth)
+		sTitle = Props.GetDefault("Title", "")
+		sTitle = UI.CStr(sTitle)
+		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = UI.CStr(sShadow)
+		If sShadow = "none" Then sShadow = ""
+		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = UI.CStr(sRounded)
+		If sRounded = "none" Then sRounded = ""
+		bHasBack = Props.GetDefault("HasBack", False)
+		bHasBack = UI.CBool(bHasBack)
+		bHasDownload = Props.GetDefault("HasDownload", False)
+		bHasDownload = UI.CBool(bHasDownload)
+		bHasRefresh = Props.GetDefault("HasRefresh", False)
+		bHasRefresh = UI.CBool(bHasRefresh)
+		sButtonSize = Props.GetDefault("ButtonSize", "md")
+		sButtonSize = UI.CStr(sButtonSize)
+		bButtonsOutlined = Props.GetDefault("ButtonsOutlined", False)
+		bButtonsOutlined = UI.CBool(bButtonsOutlined)
+		sPath = Props.GetDefault("Path", "")
+		sPath = UI.CStr(sPath)
+		bHasUpload = Props.GetDefault("HasUpload", False)
+		bHasUpload = UI.CBool(bHasUpload)
+		bHasSave = Props.GetDefault("HasSave", True)
+		bHasSave = UI.CBool(bHasSave)
 	End If
 	'
-	If sHeight <> "" Then UI.AddStyleDT("height", sHeight)
-	If sWidth <> "" Then UI.AddStyleDT("width", sWidth)
+	' Apply additional styling
+	If sHeight <> "" Then UI.AddHeightDT(sHeight)
+	If sWidth <> "" Then UI.AddWidthDT(sWidth)
+	If sShadow <> "" Then UI.AddShadowDT(sShadow)
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
+	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -255,28 +359,75 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]
+	<div id="${mName}" class="card bg-base-100 flex flex-col ${xclasses}" ${xattrs} style="${xstyles}">
+		<div id="${mName}_card_actions" class="card-actions justify-between">
+			<h2 id="${mName}_card_title" class="p-4 card-title">${sTitle}</h2>
+    		<div id="${mName}_buttons" class="flex items-center mt-3 mr-3 justify-end gap-2"></div>
+    	</div>
+    	<div id="${mName}_card_content" class="card-content p-4 flex-1 overflow-hidden">
+			<div id="${mName}_content" class="w-full h-full"></div>
+    	</div>
+		<input id="${mName}_file" type="file" class="hidden"></input>
+    </div>"$).Get($"#${mName}"$)
+	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
+	setHasUpload(bHasUpload)
+	setHasSave(bHasSave)
+	setHasDownload(bHasDownload)
+	setHasRefresh(bHasRefresh)
+	setHasBack(bHasBack)
+	Refresh
+End Sub
+
+Sub setPath(s As String)
+	sPath = s
+	CustProps.Put("Path", sPath)
+	If mElement = Null Then Return
+	If sPath <> "" Then
+		sJson = BANano.Await(BANano.GetFileAsJSON($"${sPath}?${DateTime.Now}"$, Null))
+		setJson(sJson)
+	End If
+End Sub
+
+Sub getPath As String
+	Return sPath
+End Sub
+
+' Property getters and setters
+Sub setTitle(s As String)
+	sTitle = s
+	CustProps.Put("Title", sTitle)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_card_title"$, sTitle)
+End Sub
+
+Sub getTitle As String
+	Return sTitle
 End Sub
 
 Sub Refresh
 	Dim err As Object
 	Dim cbError As BANanoObject = BANano.CallSub(mCallBack, mName & "_onerror", Array(err))
+	Dim cbonChange As BANanoObject = BANano.CallSub(mCallBack, mName & "_onchange", Array(err))
+	'
+	If sPath <> "" Then
+		sJson = BANano.Await(BANano.GetFileAsJSON($"${sPath}?${DateTime.Now}"$, Null))
+	End If
 	'
 	Dim jsonObj As Object = sJson
 	If sJson Is String Then
 		jsonObj = BANano.FromJson(sJson)
 	End If
+	Dim mContent As BANanoElement = BANano.GetElement($"#${mName}_content"$)
+	Dim mObject As BANanoObject = mContent.ToObject
 	
 	Options.Initialize 
 	Options.put("mode", sMode)
 	Options.Put("modes", Array("code", "form", "preview", "text", "tree", "view"))
 	Options.put("onError", cbError)
-	Options.Put("target", mElement.ToObject)
-	UI.PutRecursive(Options, "props.content.json", jsonObj)
-	UI.PutRecursive(Options, "props.content.text", BANano.undefined)
-	'
-	jEditor = BANano.ImportWait("jsoneditor.min.js")
-	jEditor.RunMethod("createJSONEditor", Array(Options))
+	Options.Put("onChange", cbonChange)
+	jEditor.Initialize2("JSONEditor", Array(mObject, Options))
+	jEditor.RunMethod("set", jsonObj)
 End Sub
 
 
@@ -293,6 +444,12 @@ End Sub
 'set Json
 Sub setJson(s As Object)
 	sJson = s
+	If mElement = Null Then Return
+	Dim jsonObj As Object = sJson
+	If sJson Is String Then
+		jsonObj = BANano.FromJson(sJson)
+	End If
+	jEditor.RunMethod("set", jsonObj)
 End Sub
 
 'get Json
@@ -361,4 +518,288 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+Sub SetToolbarButtonBadge(btn As String, value As String)
+	btn = UI.CleanID(btn)
+	If value = "" Or value = "0" Then
+		UI.Hide($"#${mName}_${btn}_indicator"$)
+	Else
+		UI.Show($"#${mName}_${btn}_indicator"$)
+		UI.SetTextByID($"${mName}_${btn}_indicator"$, BANano.SF(value))
+	End If
+End Sub
+
+Sub SetToolbarButtonBadgeColor(btn As String, value As String)
+	UI.SetColorByID($"${mName}_${btn}_indicator"$, "color", "badge", value)
+End Sub
+
+'make the badge round
+Sub SetToolbarButtonBadgeSize(btn As String, value As String)
+	UI.SetWidthByID($"${mName}_${btn}_indicator"$, value)
+	UI.SetHeightByID($"${mName}_${btn}_indicator"$, value)
+End Sub
+
+Sub SetToolbarButtonBadgeRound(btn As String)
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "rounded-full")
+	UI.AddClassByID($"${mName}_${btn}_indicator"$, "aspect-square")
+End Sub
+
+Sub SetToolbarButtonBadgeTextColor(btn As String, value As String)
+	UI.SetTextColorByID($"${mName}_${btn}_indicator"$, value)
+End Sub
+
+Sub SetToolbarButtonTextColor(btn As String, value As String)		'ignoredeadcode
+	UI.SetTextColorByID($"${mName}_${btn}"$, value)
+End Sub
+
+'change the visibility of a button
+Sub SetToolbarButtonVisible(btn As String, value As Boolean)
+	If value Then
+		UI.Show($"#${mName}_${btn}"$)
+		UI.Show($"#${mName}_${btn}_indicator"$)
+	Else
+		UI.Hide($"#${mName}_${btn}"$)
+		UI.Hide($"#${mName}_${btn}_indicator"$)
+	End If
+End Sub
+
+'change a toolbar button color
+Sub SetToolbarButtonColor(btn As String, value As String)
+	UI.SetColorByID($"${mName}_${btn}"$, "color", "btn", value)
+End Sub
+
+Sub SetToolbarButtonDisabled(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
+	End If
+End Sub
+Sub SetToolbarButtonEnable(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("!btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveAttr("aria-disabled")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("!btn-disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("disabled", "disabled")
+		BANano.GetElement($"#${mName}_${btn}"$).SetAttr("aria-disabled", "true")
+	End If
+End Sub
+
+Sub SetToolbarButtonLoading(btn As String, b As Boolean)
+	btn = UI.CleanID(btn)
+	If b Then
+		BANano.GetElement($"#${mName}_${btn}_icon"$).AddClass("hidden")
+		BANano.GetElement($"#${mName}_${btn}"$).AddClass("loading")
+	Else
+		BANano.GetElement($"#${mName}_${btn}"$).RemoveClass("loading")
+		BANano.GetElement($"#${mName}_${btn}_icon"$).RemoveClass("hidden")
+	End If
+End Sub
+
+Sub setHasRefresh(b As Boolean)			'ignoredeadcode
+	CustProps.put("HasRefresh", b)
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#2196f3", "#ffffff")
+End Sub
+
+Sub getHasRefresh As Boolean
+	Return bHasRefresh
+End Sub
+
+
+Sub setHasBack(b As Boolean)				'ignoredeadcode
+	bHasBack = b
+	CustProps.put("HasBack", b)
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("back", "./assets/arrow-right-from-bracket-solid.svg", "#3f51b5", "#ffffff")
+End Sub
+
+Sub getHasBack As Boolean
+	Return bHasBack
+End Sub
+
+Sub setHasDownload(b As Boolean)				'ignoredeadcode
+	bHasDownload = b
+	CustProps.Put("HasDownload", b)
+	If bHasDownload = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("download", "./assets/download-solid.svg", "#FFFF99", "#000000")
+End Sub
+
+Sub FileNullify
+	BANano.GetElement($"#${mName}_file"$).SetValue(Null)
+End Sub
+
+'<code>
+'Sub tblName_savesingle (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasSave(b As Boolean)				'ignoredeadcode
+	CustProps.put("HasSave", b)
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("save", "./assets/floppy-disk-solid.svg", "#7289da", "#ffffff")
+End Sub
+
+Sub getHasSave As Boolean
+	Return bHasSave
+End Sub
+
+'<code>
+'Sub tbl_FileChange (e As BANanoEvent)
+'End Sub
+'</code>
+Sub setHasUpload(b As Boolean)				'ignoredeadcode
+	CustProps.put("HasUpload", b)
+	If b = False Then Return
+	If mElement = Null Then Return
+	AddToolbarActionButtonIcon("upload", "./assets/upload-solid.svg", "#2196f3", "#ffffff")
+	BANano.GetElement($"#${mName}_upload"$).off("click")
+	BANano.GetElement($"#${mName}_upload"$).On("click", Me, "UploadToolbarHandler")
+End Sub
+
+private Sub UploadToolbarHandler(e As BANanoEvent)
+	e.PreventDefault
+	e.StopPropagation
+	'click the file input to fire change event
+	BANano.GetElement($"#${mName}_file"$).SetValue(Null)
+	BANano.GetElement($"#${mName}_file"$).RunMethod("click", Null)
+End Sub
+
+Sub getHasUpload As Boolean
+	Return bHasUpload
+End Sub
+
+'move the back button to the end
+Sub MoveBackButton							'ignoredeadcode
+	If bHasBack = False Then Return
+	Dim backKey As String = $"#${mName}_back"$
+	If BANano.Exists(backKey) Then
+		Dim bBtn As BANanoElement = BANano.GetElement(backKey)
+		bBtn.Remove
+		setHasBack(True)
+	End If
+End Sub
+
+Sub getHasDownload As Boolean
+	Return bHasDownload
+End Sub
+
+Sub getToolBarButtonID(btnID As String) As String
+	btnID = UI.CleanID(btnID)
+	Return $"${mName}_${btnID}"$
+End Sub
+
+Sub AddToolbarButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button
+	Dim btn As SDUI5Button = AddToolbarActionButton(btnID, btnCaption, btnColor)
+	Return btn
+End Sub
+'add an action button
+'<code>
+'Sub tblname_btnid (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButton(btnID As String, btnCaption As String, btnColor As String) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_buttons"$) = False Then Return Null
+	UI.Show($"${mName}_buttons"$)
+	btnID = UI.CleanID(btnID)
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_buttons"$
+	btn.Text = btnCaption
+	btn.BackgroundColor = btnColor
+	btn.Outline = bButtonsOutlined
+	btn.Size = sButtonSize
+	btn.AddComponent
+	btn.AddClass("mx-1")
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	Return btn
+End Sub
+
+Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String, position As String)			'ignoredeadcode
+	btnID = UI.CleanID(btnID)
+	Dim col As String = UI.FixColor("tooltip", color)
+	Dim pos As String = UI.FixSize("tooltip", position)
+	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
+End Sub
+
+Sub AddToolbarButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, iconColor)
+	Return btn
+End Sub
+
+
+
+Sub SetToolbarButtonTextColorWhite(id As String)
+	SetToolbarButtonTextColor(id, "#ffffff")
+End Sub
+
+'add an action button
+'<code>
+'Sub tblname_btnid (e As BANanoEvent)
+'End Sub
+'</code>
+Sub AddToolbarActionButtonIcon(btnID As String, sIcon As String, btnColor As String, iconColor As String) As SDUI5Button			'ignoredeadcode
+	If BANano.Exists($"#${mName}_buttons"$) = False Then Return Null
+	UI.Show($"${mName}_buttons"$)
+	btnID = UI.CleanID(btnID)
+	'
+	Dim btn As SDUI5Button
+	btn.Initialize(mCallBack, $"${mName}_${btnID}"$, $"${mName}_${btnID}"$)
+	btn.ParentID = $"${mName}_buttons"$
+	btn.Text = ""
+	btn.BackgroundColor = btnColor
+	btn.Shape = "circle"
+	btn.Outline = bButtonsOutlined
+	btn.LeftIcon = sIcon
+	btn.Size = sButtonSize
+	btn.IconSize = sButtonSize
+	btn.LeftIconColor = iconColor
+	btn.TextVisible = False
+	btn.IndicatorSize = "sm"
+	btn.AddComponent
+	UI.ResizeIconByIDFromButtonSize($"${mName}_${btnID}_lefticon"$, sButtonSize)
+	btn.UI.OnEventByID($"${mName}_${btnID}"$, "click", mCallBack, $"${mName}_${btnID}"$)
+	btn.AddClass("mx-1 flex justify-center items-center aspect-square indicator")
+	btn.RemoveBadge
+	btn.RemoveRightImage
+	btn.RemoveRightIcon
+	btn.RemoveText
+	btn.RemoveLeftImage
+	SetToolbarButtonBadge(btnID, "0")
+	SetToolbarButtonBadgeRound(btnID)
+	SetToolbarButtonBadgeColor(btnID, "primary")
+	SetToolbarButtonBadgeSize(btnID, "6")
+	Return btn
+End Sub
+
+'add a file upload button with table event
+'<code>
+'Sub tblName_{btnid}_filechange (e As BANAnoEvent)
+'tblName.FileChangeEvent
+'End Sub
+'</code>
+Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, bMultiple As Boolean) As SDUI5Button		'ignoredeadcode
+	If BANano.Exists($"#${mName}_buttons"$) = False Then Return Null
+	UI.Show($"${mName}_buttons"$)
+	btnID = UI.CleanID(btnID)
+	Dim btn As SDUI5Button = AddToolbarActionButtonIcon(btnID, sIcon, btnColor, "")
+	BANano.GetElement($"#${mName}_buttons"$).Append($"<input id="${mName}_${btnID}_file" type="file" class="hidden"/>"$)
+	BANano.GetElement($"#${mName}_${btnID}"$).off("click")
+	BANano.GetElement($"#${mName}_${btnID}"$).On("click", Me, "FileUploadHandler")
+	BANano.GetElement($"#${mName}_${btnID}_file"$).On("change", mCallBack, $"${mName}_${btnID}_filechange"$)
+	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
+	Return btn
 End Sub

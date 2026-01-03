@@ -38,6 +38,7 @@ Version=10
 #DesignerProperty: Key: HideTitle, DisplayName: Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title
 #DesignerProperty: Key: HideTitleOnLargeScreen, DisplayName: LG - Hide Title, FieldType: Boolean, DefaultValue: False, Description: Hide Title On Large Screen
 #DesignerProperty: Key: TitlePosition, DisplayName: Title Position, FieldType: String, DefaultValue: left, Description: Title Position, List: center|left|right
+#DesignerProperty: Key: HideCenterOnSmallScreen, DisplayName: SM - Hide Center, FieldType: Boolean, DefaultValue: False, Description: Hide Center On Small Screen
 #DesignerProperty: Key: TextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: HasFile, DisplayName: Has File, FieldType: Boolean, DefaultValue: False, Description: Has File
@@ -127,6 +128,7 @@ Sub Class_Globals
 	Public Children As Map
 	Private bHasFile As Boolean = False
 	Private sDrawerID As String = ""
+	Private bHideCenterOnSmallScreen As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -190,6 +192,7 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("HideCenterOnSmallScreen", False)
 End Sub
 
 ' returns the element id
@@ -413,6 +416,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHasFile = UI.CBool(bHasFile)
 		sDrawerID = Props.GetDefault("DrawerID", "")
 		sDrawerID = UI.CleanID(sDrawerID)
+		bHideCenterOnSmallScreen = Props.GetDefault("HideCenterOnSmallScreen", False)
+		bHideCenterOnSmallScreen = UI.CBool(bHideCenterOnSmallScreen)
 	End If
 	'
 	If bGradientActive Then sBackgroundColor = ""
@@ -485,6 +490,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 '	setVisible(bVisible)
 	setHasBackButton(bHasBackButton)
 	setHasFile(bHasFile)
+	setHideCenterOnSmallScreen(bHideCenterOnSmallScreen)
 	If bGradientActive Then
 		Dim agradient As String = UI.GetActualGradient(sGradient)
 		UI.SetLinearGradient(mElement, agradient, sGradientColor1, sGradientColor2)
@@ -500,6 +506,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bHasSearch Then
 		Children.Put($"${mName}_searchbox"$, "SDUI5Text")
 	End If
+End Sub
+
+Sub setHideCenterOnSmallScreen(b As Boolean)				'ignoredeadcode
+	bHideCenterOnSmallScreen = b
+	CustProps.put("HideCenterOnSmallScreen", bHideCenterOnSmallScreen)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClassByID($"${mName}_center"$, "!hidden lg:!flex")
+		UI.RemoveClassByID($"${mName}_center"$, "flex items-center")
+	Else
+		UI.RemoveClassByID($"${mName}_center"$, "!hidden lg:!flex")
+		UI.AddClassByID($"${mName}_center"$, "flex items-center")
+	End If
+End Sub
+
+Sub getHideCenterOnSmallScreen As Boolean
+	Return bHideCenterOnSmallScreen
 End Sub
 
 Sub setDrawerID(s As String)

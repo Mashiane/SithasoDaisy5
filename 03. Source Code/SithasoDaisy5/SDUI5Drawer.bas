@@ -331,8 +331,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
 		<input id="${mName}_toggle" type="checkbox" class="drawer-toggle"></input>
-		<div id="${mName}_content" class="drawer-content"></div>
-		<div id="${mName}_side" class="drawer-side z-50" style="scroll-behavior: smooth; scroll-padding-top: 5rem;">
+		<div id="${mName}_content" class="drawer-content flex flex-col"></div>
+		<div id="${mName}_side" class="drawer-side z-50 md:border-r md:border-gray-300" style="scroll-behavior: smooth; scroll-padding-top: 5rem;">
 			<label id="${mName}_overlay" for="${mName}_toggle" aria-label="close sidebar" class="drawer-overlay"></label>
 			<aside id="${mName}_sidecontent" class="sticky top-0 h-full flex flex-col overflow-y-auto"></aside>
 			<div id="${mName}_actions" class="mt-auto flex hidden"></div>

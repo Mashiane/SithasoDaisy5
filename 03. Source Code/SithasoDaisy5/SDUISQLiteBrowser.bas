@@ -62,6 +62,7 @@ Public Sub Initialize(Module As Object, EventName As String, fileName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesSQLiteBrowser)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("sql-browser.min.js")
 	assetFile = fileName
 	mCallBack = Module
 	mEvent = EventName

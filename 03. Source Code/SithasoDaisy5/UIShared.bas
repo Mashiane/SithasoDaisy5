@@ -2567,6 +2567,19 @@ Sub ResizeIconByID(sID As String, sPercentage As String)
 	End Try				'ignore
 End Sub
 
+Sub SizeIconByID(sID As String, sPercentage As String)
+	Try
+		sID = CleanID(sID)
+		Dim mElement As BANanoElement = BANano.GetElement($"#${sID}"$)
+		Dim m As Map = CreateMap("width": sPercentage, "height":sPercentage)
+		mElement.SetStyle(BANano.ToJson(m))
+		mElement.RemoveAttr("width")
+		mElement.RemoveAttr("height")
+	Catch
+		
+	End Try				'ignore
+End Sub
+
 Sub Increment(ival As Int) As Int
 	ival = CInt(ival) + 1
 	Return ival
@@ -3745,7 +3758,7 @@ End Sub
 
 Sub FixRounded(s As String) As String		
 	Select Case s
-		Case "rounded"
+		Case "rounded", "rounded-full"
 			Return s
 		Case "0"
 			Return "rounded-none"

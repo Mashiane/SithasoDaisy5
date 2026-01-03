@@ -139,6 +139,11 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesLeaflet)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("Leaflet.Coordinates-0.1.5.min.js")
+	BANano.DependsOnAsset("leaflet.js")
+	BANano.DependsOnAsset("leaflet.rotatedMarker.js")
+	BANano.DependsOnAsset("Leaflet.Coordinates-0.1.5.css")
+	BANano.DependsOnAsset("leaflet.css")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)

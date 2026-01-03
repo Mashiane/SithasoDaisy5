@@ -5,15 +5,19 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Link, Description: Text
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: Hover, DisplayName: Hover, FieldType: Boolean, DefaultValue: False, Description: Hover
+#DesignerProperty: Key: NormalLink, DisplayName: Normal Link, FieldType: Boolean, DefaultValue: False, Description: Normal Link
 #DesignerProperty: Key: Href, DisplayName: Href, FieldType: String, DefaultValue: #, Description: Href
 #DesignerProperty: Key: Icon, DisplayName: Icon, FieldType: String, DefaultValue: , Description: Icon
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 24px, Description: Icon Size
+#DesignerProperty: Key: IconPosition, DisplayName: Icon Position, FieldType: String, DefaultValue: left, Description: Icon Position, List: left|right
 #DesignerProperty: Key: ListItem, DisplayName: List Item, FieldType: Boolean, DefaultValue: False, Description: List Item
 #DesignerProperty: Key: Target, DisplayName: Target, FieldType: String, DefaultValue: none, Description: Target, List: _blank|_parent|_self|_top|none
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
@@ -56,6 +60,8 @@ Sub Class_Globals
 	Private sTarget As String = "none"
 	Private sTextColor As String = ""
 	Private bListItem As Boolean = False
+	Private sIconPosition As String = "left"
+	Private bNormalLink As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -90,6 +96,8 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("IconPosition", "left")
+	CustProps.Put("NormalLink", False)
 End Sub
 
 ' returns the element id
@@ -289,9 +297,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTarget = UI.CStr(sTarget)
 		bListItem = Props.GetDefault("ListItem", False)
 		bListItem = UI.CBool(bListItem)
+		sIconPosition = Props.GetDefault("IconPosition", "left")
+		sIconPosition = UI.CStr(sIconPosition)
+		bNormalLink = Props.GetDefault("NormalLink", False)
+		bNormalLink = UI.CBool(bNormalLink)
 	End If
 	'
-	UI.AddClassDT("link")
+	If bNormalLink = False Then UI.AddClassDT("link")
 	If sColor <> "" Then UI.AddColorDT("link", sColor)
 	If bHover = True Then UI.AddClassDT("link-hover")
 	If sHref <> "" Then UI.AddAttrDT("href", sHref)
@@ -321,9 +333,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 			mElement = mTarget.Append($"[BANCLEAN]
 			<li id="${mName}_li">
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-					<div id="${mName}_host" class="inline-flex items-center">
-						<svg-renderer id="${mName}_icon"  fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden mr-2"></svg-renderer>
+					<div id="${mName}_host" class="inline-flex items-center gap-2">
+						<svg-renderer id="${mName}_icon"  fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden"></svg-renderer>
 						<span id="${mName}_text"></span>
+						<svg-renderer id="${mName}_righticon"  fill="currentColor" data-js="enabled" data-src="${sIcon}" class="hidden"></svg-renderer>
 					</div>	
 				</a>
 			</li>"$).Get("#" & mName)
@@ -340,9 +353,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Else	
 			mElement = mTarget.Append($"[BANCLEAN]
 				<a id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
-					<div id="${mName}_host" class="inline-flex items-center">
-						<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden mr-2 hidden"></svg-renderer>
+					<div id="${mName}_host" class="inline-flex items-center gap-2">
+						<svg-renderer id="${mName}_icon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 						<span id="${mName}_text"></span>
+						<svg-renderer id="${mName}_righticon" data-js="enabled" fill="currentColor" data-src="${sIcon}" class="hidden"></svg-renderer>
 					</div>	
 				</a>"$).Get("#" & mName)
 			setIcon(sIcon)
@@ -352,6 +366,24 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	setText(sText)
 '	setVisible(bVisible)
+End Sub
+
+Sub setNormalLink(b As Boolean)
+	bNormalLink = b
+	CustProps.Put("NormalLink", b)
+End Sub
+
+Sub getNormalLink As Boolean
+	Return bNormalLink
+End Sub
+
+Sub setIconPosition(s As String)
+	sIconPosition = s
+	CustProps.Put("IconPosition", s)
+End Sub
+
+Sub getIconPosition As String
+	Return sIconPosition
 End Sub
 
 'set Color
@@ -385,20 +417,40 @@ Sub setIcon(s As String)			'ignoredeadcode
 	sIcon = s
 	CustProps.put("Icon", s)
 	If mElement = Null Then Return
-	If s = "" Then
+	Select Case sIconPosition
+	Case "left"	
+		'remove the right icon
+		UI.RemoveElementByID($"${mName}_righticon"$)
+		If s = "" Then
+			UI.RemoveElementByID($"${mName}_icon"$)
+		Else	
+			UI.SetIconNameByID($"${mName}_icon"$, s)
+			UI.SetVisibleByID($"${mName}_icon"$, True)
+		End If
+	Case "right"
+		'remove the left icon
 		UI.RemoveElementByID($"${mName}_icon"$)
-	Else	
-		UI.SetIconNameByID($"${mName}_icon"$, s)
-		UI.SetVisibleByID($"${mName}_icon"$, True)
-	End If
+		If s = "" Then
+			UI.RemoveElementByID($"${mName}_righticon"$)
+		Else
+			UI.SetIconNameByID($"${mName}_righticon"$, s)
+			UI.SetVisibleByID($"${mName}_righticon"$, True)
+		End If
+	End Select		
 End Sub
+
 'set Icon Color
 Sub setIconColor(s As String)			'ignoredeadcode
 	sIconColor = s
 	CustProps.put("IconColor", s)
 	If mElement = Null Then Return
 	If sIcon = "" Then Return
-	If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
+	Select Case sIconPosition
+	Case "left"	
+		If s <> "" Then UI.SetIconColorByID($"${mName}_icon"$, s)
+	Case "right"
+		If s <> "" Then UI.SetIconColorByID($"${mName}_righticon"$, s)
+	End Select	
 End Sub
 'set Icon Size
 Sub setIconSize(s As String)				'ignoredeadcode
@@ -406,9 +458,12 @@ Sub setIconSize(s As String)				'ignoredeadcode
 	CustProps.put("IconSize", s)
 	If mElement = Null Then Return
 	If sIcon = "" Then Return
-	If s <> "" Then 
-		UI.SetIconSizeByID($"${mName}_icon"$, s)
-	End If
+	Select Case sIconPosition
+	Case "left"
+		If s <> "" Then UI.SetIconSizeByID($"${mName}_icon"$, s)
+	Case "right"
+		If s <> "" Then UI.SetIconSizeByID($"${mName}_righticon"$, s)
+	End Select
 End Sub
 'set Target
 'options: _blank|_self|_parent|_top|none
@@ -450,3 +505,29 @@ End Sub
 public Sub getParentID() As String
 	Return sParentID
 End Sub
+
+'use to add an event to the element
+Sub OnEvent(event As String, methodName As String)
+	UI.OnEvent(mElement, event, mCallBack, methodName)
+End Sub
+
+Sub AddClass(className As String)
+	If mElement = Null Then Return
+	UI.AddClass(mElement, className)
+End Sub
+
+Sub AddAttr(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddAttr(mElement, k, v)
+End Sub
+
+Sub RemoveClass(s As String)
+	If mElement = Null Then Return
+	UI.RemoveClass(mElement, s)
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
+End Sub
+

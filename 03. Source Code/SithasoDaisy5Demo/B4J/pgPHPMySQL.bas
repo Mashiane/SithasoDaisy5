@@ -20,7 +20,7 @@ Sub Show(MainApp As SDUI5App)
 	'
 	Main.DBHost = "localhost"
 	Main.DBUser = "root"
-	Main.DBPassword = ""
+	Main.DBPassword = "root123!"
 	Main.DBDriver = "mysql"
 	Main.DBPort = "3306"
 	Main.DBName = "crud"

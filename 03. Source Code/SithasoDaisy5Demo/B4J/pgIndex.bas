@@ -29,6 +29,8 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.UsesFontAwesome)
 	BANano.Await(App.UsesGenderChart)
 	BANano.Await(App.UsesApex)
+	BANano.Await(App.UsesQuill)
+	BANano.Await(App.UsesGifPlayer)
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppTitle
@@ -96,6 +98,8 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("wnew", "pg-genderchart", "", "Gender Chart")
 	drawermenu.AddItemChild("wnew", "pg-apexcharts", "", "Apex Charts")
 	drawermenu.AddItemChild("wnew", "pg-devices", "", "Devices")
+	drawermenu.AddItemChild("wnew", "pg-quill", "", "Quill Editor")
+	drawermenu.AddItemChild("wnew", "pg-gifplayer", "", "GIF Player")
 	'
 	drawermenu.AddItemParent("", "pages", "", "Pages")
 	drawermenu.AddItemChild("pages", "pg-login", "", "Ghost Login")
@@ -319,6 +323,10 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "gifplayer"
+				pgGifPlayer.Show(App)
+			Case "quill"
+				pgQuillEditor.Show(App)
 			Case "apexcharts"
 				pgApexCharts.Show(App)
 			Case "genderchart"

@@ -74,6 +74,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesQRCode)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("qrcode.min.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)

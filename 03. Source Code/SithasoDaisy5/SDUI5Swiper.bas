@@ -19,6 +19,7 @@ Version=10
 '#Event: SlideChange (e As BANanoEvent)
 '#Event: SliderMove (e As BANanoEvent)
 '#Event: Tap (e As BANanoEvent)
+#DesignerProperty: Key: ReadMe, DisplayName: ReadMe Children, FieldType: String, DefaultValue: _slides|_pagination|_prev|_next|_scrollbar, Description: _slides|_pagination|_prev|_next|_scrollbar
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Parallax, DisplayName: Parallax, FieldType: Boolean, DefaultValue: False, Description: Parallax
 #DesignerProperty: Key: PaginationType, DisplayName: Pagination Type, FieldType: String, DefaultValue: bullets, Description: Pagination Type, List: bullets|fraction|progressbar
@@ -26,8 +27,14 @@ Version=10
 #DesignerProperty: Key: SpaceBetween, DisplayName: Space Between, FieldType: String, DefaultValue: 0, Description: Space Between
 #DesignerProperty: Key: CenteredSlides, DisplayName: Centered Slides, FieldType: Boolean, DefaultValue: False, Description: Centered Slides
 #DesignerProperty: Key: Direction, DisplayName: Direction, FieldType: String, DefaultValue: horizontal, Description: Direction, List: horizontal|vertical
-#DesignerProperty: Key: Effect, DisplayName: Effect, FieldType: String, DefaultValue: slide, Description: Effect, List: coverflow|creative|cube|fade|flip|slide|cards
+#DesignerProperty: Key: Effect, DisplayName: Effect, FieldType: String, DefaultValue: slide, Description: Effect, List: slide|fade|cube|coverflow|flip|creative|cards
+#DesignerProperty: Key: CssMode, DisplayName: CssMode, FieldType: Boolean, DefaultValue: False, Description: CssMode
+#DesignerProperty: Key: KeyboardEnabled, DisplayName: Keyboard Enabled, FieldType: Boolean, DefaultValue: True, Description: Keyboard Enabled
+#DesignerProperty: Key: MouseWheel, DisplayName: Mouse Wheel, FieldType: Boolean, DefaultValue: False, Description: Mouse Wheel
 #DesignerProperty: Key: HasNavigation, DisplayName: Has Navigation, FieldType: Boolean, DefaultValue: False, Description: Has Navigation
+#DesignerProperty: Key: OwnNavigation, DisplayName: Own Navigation, FieldType: Boolean, DefaultValue: False, Description: Own Navigation
+#DesignerProperty: Key: NextNavigation, DisplayName: Next Navigation, FieldType: String, DefaultValue: , Description: Next Navigation
+#DesignerProperty: Key: PrevNavigation, DisplayName: Prev Navigation, FieldType: String, DefaultValue: , Description: Prev Navigation
 #DesignerProperty: Key: HasPagination, DisplayName: Has Pagination, FieldType: Boolean, DefaultValue: True, Description: Has Pagination
 #DesignerProperty: Key: HasScrollbar, DisplayName: Has Scrollbar, FieldType: Boolean, DefaultValue: False, Description: Has Scrollbar
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 300px, Description: Height
@@ -154,6 +161,12 @@ Sub Class_Globals
 	Private sRawSlideStyle As String = "display=flex;position=relative;flex-direction=column;flex-shrink=0;align-items=center;justify-content=center;width=100%;height=100%;font-size=18px;text-align=center;box-sizing=border-box"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
+	Private bCssMode As Boolean = False
+	Private bKeyboardEnabled As Boolean = False
+	Private bMouseWheel As Boolean = False
+	Private sNextNavigation As String = ""
+	Private bOwnNavigation As Boolean = False
+	Private sPrevNavigation As String = ""
 End Sub
 '#if css
 '.swiper {
@@ -184,11 +197,22 @@ End Sub
 'object-fit: cover;
 '}
 '#End If
+'
+'#if css
+'.swiper-button-disabled {
+'    opacity: 0.5;
+'    pointer-events: none;
+'    cursor: not-allowed;
+'}
+'#End If
+
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	If BANano.AssetsIsDefined("Swiper") = False Then
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesSwiper)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("swiper-bundle.min.js")
+	BANano.DependsOnAsset("swiper-bundle.min.css")
 	UI.Initialize(Me)
     mEventName = UI.CleanID(EventName)
     mName = UI.CleanID(Name)
@@ -213,6 +237,7 @@ Private Sub SetDefaults
 	CustProps.Put("HasPagination", True)
 	CustProps.Put("HasScrollbar", False)
 	CustProps.Put("Height", "300px")
+	CustProps.Put("CssMode", False)
 	CustProps.Put("Width", "100%")
 	CustProps.Put("Speed", "300")
 	CustProps.Put("Init", True)
@@ -255,6 +280,29 @@ Private Sub SetDefaults
 	CustProps.Put("RawAttributes", "")
 	CustProps.Put("Rounded", "none")                 
 	CustProps.Put("Shadow", "none")
+	CustProps.Put("KeyboardEnabled", False)
+	CustProps.Put("MouseWheel", False)
+	CustProps.Put("NextNavigation", "")
+	CustProps.Put("OwnNavigation", False)
+	CustProps.Put("PrevNavigation", "")
+End Sub
+
+Sub setMouseWheel(b As Boolean)
+	bMouseWheel = b
+	CustProps.Put("MouseWheel", bMouseWheel)
+End Sub
+
+Sub getMouseWheel As Boolean
+	Return bMouseWheel
+End Sub
+
+Sub setCssMode(b As Boolean)
+	bCssMode = b
+	CustProps.Put("CssMode", bCssMode)
+End Sub
+
+Sub getCssMode As Boolean
+	Return bCssMode
 End Sub
 
 Sub setAttributes(s As String)
@@ -525,117 +573,19 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		bCssMode = Props.GetDefault("CssMode", False)
+		bCssMode = UI.cbool(bCssMode)
+		bKeyboardEnabled = Props.GetDefault("KeyboardEnabled", False)
+		bKeyboardEnabled = UI.CBool(bKeyboardEnabled)
+		bMouseWheel = Props.GetDefault("MouseWheel", False)
+		bMouseWheel = UI.CBool(bMouseWheel)
+		sNextNavigation = Props.GetDefault("NextNavigation", "")
+		sNextNavigation = UI.CStr(sNextNavigation)
+		bOwnNavigation = Props.GetDefault("OwnNavigation", False)
+		bOwnNavigation = UI.CBool(bOwnNavigation)
+		sPrevNavigation = Props.GetDefault("PrevNavigation", "")
+		sPrevNavigation = UI.CStr(sPrevNavigation)
     End If
-    '
-    Options.Initialize
-    'default
-    Options.Put("autoHeight", False)
-    Options.Put("setWrapperSize", False)
-    Options.Put("slidesOffsetBefore", 0)
-    Options.Put("slidesOffsetAfter", 0)
-    Options.put("touchEventsTarget", "container")
-    Options.put("slidesPerGroup", 1)
-    Options.put("slidesPerColumn", 1)
-    Options.put("slidesPerColumnFill", "column")
-    UI.PutRecursive(Options,"freeMode.enabled", False)
-    UI.PutRecursive(Options,"freeMode.momentum", True)
-    UI.PutRecursive(Options,"freeMode.momentumRatio", 1)
-    UI.PutRecursive(Options,"freeMode.momentumBounce", True)
-    UI.PutRecursive(Options,"freeMode.momentumBounceRatio", 1)
-    UI.PutRecursive(Options,"freeMode.momentumVelocityRatio", 1)
-    UI.PutRecursive(Options,"freeMode.sticky", False)
-    UI.PutRecursive(Options,"freeMode.minimumVelocity", 0.02)
-    Options.Put("touchRatio", 1)
-    Options.Put("touchAngle", 45)
-    Options.Put("simulateTouch", True)
-    Options.Put("touchStartPreventDefault", False)
-    Options.Put("shortSwipes", True)
-    Options.Put("longSwipes", True)
-    Options.Put("longSwipesRatio", 0.5)
-    Options.Put("longSwipesMs", 300)
-    Options.Put("followFinger", True)
-    Options.Put("threshold", 0)
-    Options.Put("touchMoveStopPropagation", True)
-    Options.Put("touchReleaseOnEdges", False)
-    Options.Put("iOSEdgeSwipeDetection", False)
-    Options.Put("iOSEdgeSwipeThreshold", 20)
-    Options.Put("resistance", True)
-    Options.Put("resistanceRatio", 0.85)
-    Options.Put("watchSlidesProgress", False)
-    Options.Put("watchSlidesVisibility", False)
-    Options.Put("preventClicks", True)
-    Options.Put("preventClicksPropagation", True)
-    Options.Put("slideToClickedSlide", False)
-    Options.Put("loopAdditionalSlides", 0)
-    Options.Put("noSwiping", True)
-    Options.Put("runCallbacksOnInit", True)
-    '***
-    Options.put("init", bInit)
-    Options.put("speed", BANano.parseInt(sSpeed))
-    Options.put("direction", sDirection)
-    Options.put("loop", bLoops)
-    Options.put("initialSlide", BANano.parseInt(sInitialSlide))
-    Options.put("effect", sEffect)
-    Options.put("parallax", bParallax)
-    Options.put("updateOnWindowResize", bUpdateOnWindowResize)
-    If sSlidesPerView = "auto" Then
-        Options.put("slidesPerView", sSlidesPerView)
-    Else
-        sSlidesPerView = UI.CDbl(sSlidesPerView)
-        Options.put("slidesPerView", BANano.parsefloat(sSlidesPerView))
-    End If
-    Options.put("spaceBetween", BANano.parseInt(sSpaceBetween))
-    Options.put("centeredSlides", bCenteredSlides)
-    '
-    Select Case sEffect
-    Case "coverflow"
-        UI.PutRecursive(Options, "coverflowEffect.depth", iCoverFlowDepth)
-        UI.PutRecursive(Options, "coverflowEffect.modifier", iCoverFlowModifier)
-        UI.PutRecursive(Options, "coverflowEffect.rotate", iCoverFlowRotate)
-        UI.PutRecursive(Options, "coverflowEffect.scale", iCoverFlowScale)
-        UI.PutRecursive(Options, "coverflowEffect.slideShadows", bCoverFlowSlideShadows)
-        UI.PutRecursive(Options, "coverflowEffect.stretch", iCoverFlowStretch)
-    Case "creative"
-    Case "cube"
-        UI.PutRecursive(Options, "cubeEffect.shadow", bCubeEffectShadow)
-        UI.PutRecursive(Options, "cubeEffect.shadowOffset", iCubeEffectShadowOffset)
-        UI.PutRecursive(Options, "cubeEffect.shadowScale", dCubeEffectShadowScale)
-        UI.PutRecursive(Options, "cubeEffect.slideShadows", bCubeEffectSlideShadows)
-    Case "fade"
-    Case "flip"
-        UI.PutRecursive(Options, "flipEffect.slideShadows", True)
-        UI.PutRecursive(Options, "flipEffect.limitRotation", True)
-    Case "cards"
-        UI.PutRecursive(Options, "cardsEffect.perSlideOffset", iCardEffectPerSlideOffset)
-        UI.PutRecursive(Options, "cardsEffect.perSlideRotate", iCardEffectPerSlideRotate)
-        UI.PutRecursive(Options, "cardsEffect.rotate", bCardEffectRotate)
-        UI.PutRecursive(Options, "cardsEffect.slideShadows", bCardEffectSlideShadows)
-    End Select
-    '
-    UI.PutRecursive(Options, "zoom.maxRatio", 3)
-    UI.PutRecursive(Options, "zoom.minRatio", 1)
-    UI.PutRecursive(Options, "zoom.toggle", False)
-    '
-    UI.PutRecursive(Options, "a11y.prevSlideMessage", "Previous slide")
-    UI.PutRecursive(Options, "a11y.nextSlideMessage", "Next slide")
-    UI.PutRecursive(Options, "a11y.firstSlideMessage", "This is the first slide")
-    UI.PutRecursive(Options, "a11y.lastSlideMessage", "This is the last slide")
-    '
-    If bAutoPlay Then
-        Options.Put("autoplay", CreateMap())
-        UI.PutRecursive(Options, "autoplay.delay", iAutoPlayDelay)
-        UI.PutRecursive(Options, "autoplay.disableOnInteraction", bAutoPlayDisableOnInteraction)
-        UI.PutRecursive(Options, "autoplay.pauseOnMouseEnter", bAutoPlayPauseOnMouseEnter)
-        UI.PutRecursive(Options, "autoplay.reverseDirection", bAutoPlayReverseDirection)
-        UI.PutRecursive(Options, "autoplay.stopOnLastSlide", bAutoPlayStopOnLastSlide)
-        UI.PutRecursive(Options, "autoplay.waitForTransition", bAutoPlayWaitForTransition)
-    End If
-    '
-    If bGrid Then
-        Options.Put("grid", CreateMap())
-        UI.PutRecursive(Options, "grid.fill", sGridFill)
-        UI.PutRecursive(Options, "grid.rows", iGridRows)
-	End If
 	'
 	'If sBackgroundColor <> "base-100" Then UI.AddBackgroundColorDT(sBackgroundColor)
 	UI.AddClassDT("swiper")
@@ -663,7 +613,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<div id="${mName}_next" class="swiper-button-next hidden"></div>
 		<div id="${mName}_scrollbar" class="swiper-scrollbar hidden"></div>
     </div>"$).Get("#" & mName)
-    
+    '
 	Children.Initialize 
 	Children.Put($"${mName}_slides"$, "SDUI5Text")
 	Children.Put($"${mName}_pagination"$, "SDUI5Text")
@@ -673,31 +623,26 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	If bHasPagination Then
 		UI.SetVisibleByID($"${mName}_pagination"$, True)
-		UI.PutRecursive(Options, "pagination.el", $"#${mName}_pagination"$)
-        UI.PutRecursive(Options, "pagination.type", sPaginationType)
-        UI.PutRecursive(Options, "pagination.dynamicBullets", bDynamicBullets)
-        UI.PutRecursive(Options, "pagination.clickable", True)
-        UI.PutRecursive(Options, "pagination.hideOnClick", True)
 	Else
 		UI.RemoveElementByID($"${mName}_pagination"$)
 	End If
     '
     If bHasNavigation Then
-		UI.SetVisibleByID($"${mName}_prev"$, True)
-		UI.SetVisibleByID($"${mName}_next"$, True)
-		UI.PutRecursive(Options, "navigation.nextEl", $"#${mName}_next"$)
-        UI.PutRecursive(Options, "navigation.prevEl", $"#${mName}_prev"$)
-        UI.PutRecursive(Options, "navigation.clickable", True)
+		If bOwnNavigation Then
+			'remove existing navigation
+			UI.RemoveElementByID($"${mName}_prev"$)
+			UI.RemoveElementByID($"${mName}_next"$)
+		Else	
+			UI.SetVisibleByID($"${mName}_prev"$, True)
+			UI.SetVisibleByID($"${mName}_next"$, True)
+		End If
 	Else
 		UI.RemoveElementByID($"${mName}_prev"$)
 		UI.RemoveElementByID($"${mName}_next"$)
     End If
     '
-    bHasScrollbar = UI.CBool(bHasScrollbar)
     If bHasScrollbar Then
 		UI.SetVisibleByID($"${mName}_scrollbar"$, True)
-		UI.PutRecursive(Options, "scrollbar.el", $"#${mName}_scrollbar"$)
-        UI.PutRecursive(Options, "scrollbar.hide", True)
 	Else
 		UI.RemoveElementByID($"${mName}_scrollbar"$)
 	End If
@@ -732,92 +677,116 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     'On("resize", Array("e"))
     'On("slideChange", Array("e"))
     'On("sliderMove", Array("e"))
-    'On("tap", Array("e"))
-    Refresh
+	'On("tap", Array("e"))
+	If sTotalSlides <> "" Then Refresh
 End Sub
+
+'set Next Navigation
+Sub setNextNavigation(s As String)
+	sNextNavigation = s
+	CustProps.put("NextNavigation", s)
+End Sub
+'set Own Navigation
+Sub setOwnNavigation(b As Boolean)
+	bOwnNavigation = b
+	CustProps.put("OwnNavigation", b)
+End Sub
+'set Prev Navigation
+Sub setPrevNavigation(s As String)
+	sPrevNavigation = s
+	CustProps.put("PrevNavigation", s)
+End Sub
+'get Next Navigation
+Sub getNextNavigation As String
+	Return sNextNavigation
+End Sub
+'get Own Navigation
+Sub getOwnNavigation As Boolean
+	Return bOwnNavigation
+End Sub
+'get Prev Navigation
+Sub getPrevNavigation As String
+	Return sPrevNavigation
+End Sub
+
+Sub setKeyboardEnabled(b As Boolean)
+	bKeyboardEnabled = b
+	CustProps.put("KeyboardEnabled", bKeyboardEnabled)
+End Sub
+
+Sub getKeyboardEnabled As Boolean
+	Return bKeyboardEnabled
+End Sub
+
 'set Card Effect Per Slide Offset
 Sub setCardsEffectPerSlideOffset(i As Int)
     iCardEffectPerSlideOffset = i
     CustProps.put("CardEffectPerSlideOffset", i)
-    Options.put("cardsEffect.perSlideOffset", i)
 End Sub
 'set Card Effect Per Slide Rotate
 Sub setCardsEffectPerSlideRotate(i As Int)
     iCardEffectPerSlideRotate = i
     CustProps.put("CardEffectPerSlideRotate", i)
-    Options.put("cardsEffect.perSlideRotate", i)
 End Sub
 'set Card Effect Rotate
 Sub setCardsEffectRotate(b As Boolean)
     bCardEffectRotate = b
     CustProps.put("CardEffectRotate", b)
-    Options.put("cardsEffect.rotate", b)
 End Sub
 'set Card Effect Slide Shadows
 Sub setCardsEffectSlideShadows(b As Boolean)
     bCardEffectSlideShadows = b
     CustProps.put("CardEffectSlideShadows", b)
-    Options.put("cardsEffect.slideShadows", b)
 End Sub
 'set Cover Flow Depth
 Sub setCoverFlowEffectDepth(i As Int)
     iCoverFlowDepth = i
     CustProps.put("CoverFlowDepth", i)
-    Options.put("coverflowEffect.depth", i)
 End Sub
 'set Cover Flow Modifier
 Sub setCoverFlowEffectModifier(i As Int)
     iCoverFlowModifier = i
     CustProps.put("CoverFlowModifier", i)
-    Options.put("coverflowEffect.modifier", i)
 End Sub
 'set Cover Flow Rotate
 Sub setCoverFlowEffectRotate(i As Int)
     iCoverFlowRotate = i
     CustProps.put("CoverFlowRotate", i)
-    Options.put("coverflowEffect.rotate", i)
 End Sub
 'set Cover Flow Scale
 Sub setCoverFlowEffectScale(i As Int)
     iCoverFlowScale = i
     CustProps.put("CoverFlowScale", i)
-    Options.put("coverflowEffect.scale", i)
 End Sub
 'set Cover Flow Slide Shadows
 Sub setCoverFlowEffectSlideShadows(b As Boolean)
     bCoverFlowSlideShadows = b
     CustProps.put("CoverFlowSlideShadows", b)
-    Options.put("coverflowEffect.slideShadows", b)
 End Sub
 'set Cover Flow Stretch
 Sub setCoverFlowEffectStretch(i As Int)
     iCoverFlowStretch = i
     CustProps.put("CoverFlowStretch", i)
-    Options.put("coverflowEffect.stretch", i)
 End Sub
 'set Cube Effect Shadow
 Sub setCubeEffectShadow(b As Boolean)
     bCubeEffectShadow = b
     CustProps.put("CubeEffectShadow", b)
-    Options.put("cubeEffect.shadow", b)
 End Sub
 'set Cube Effect Shadow Offset
 Sub setCubeEffectShadowOffset(i As Int)
     iCubeEffectShadowOffset = i
     CustProps.put("CubeEffectShadowOffset", i)
-    Options.put("cubeEffect.shadowOffset", i)
 End Sub
 'set Cube Effect Shadow Scale
 Sub setCubeEffectShadowScale(d As Double)
     dCubeEffectShadowScale = d
     CustProps.put("CubeEffectShadowScale", d)
-    Options.put("cubeEffect.shadowScale", d)
 End Sub
 'set Cube Effect Slide Shadows
 Sub setCubeEffectSlideShadows(b As Boolean)
     bCubeEffectSlideShadows = b
     CustProps.put("CubeEffectSlideShadows", b)
-    Options.put("cubeEffect.slideShadows", b)
 End Sub
 'set Raw Slide Image Style
 Sub setSlideImageStyle(s As String)
@@ -1011,21 +980,18 @@ End Sub
 Sub setCenteredSlides(b As Boolean)
     bCenteredSlides = b
     CustProps.put("CenteredSlides", b)
-    Options.put("centeredSlides", b)
 End Sub
 'set Direction
 'options: horizontal|vertical
 Sub setDirection(s As String)
     sDirection = s
     CustProps.put("Direction", s)
-    Options.put("direction", s)
 End Sub
 'set Effect
 'options: slide|fade|cube|coverflow|flip|creative
 Sub setEffect(s As String)
     sEffect = s
     CustProps.put("Effect", s)
-    Options.put("effect", s)
 End Sub
 'set Has Navigation
 Sub setHasNavigation(b As Boolean)
@@ -1073,51 +1039,193 @@ End Sub
 Sub setInit(b As Boolean)
     bInit = b
     CustProps.put("Init", b)
-    Options.put("init", b)
 End Sub
 'set Initial Slide
 Sub setInitialSlide(s As String)
     sInitialSlide = s
     CustProps.put("InitialSlide", s)
-    Options.put("initialSlide", BANano.parseInt(s))
 End Sub
 'set Loop
 Sub setLoops(b As Boolean)
     bLoops = b
     CustProps.put("Loops", b)
-    Options.put("loop", b)
 End Sub
 'set Slides Per View
 Sub setSlidesPerView(s As String)
     sSlidesPerView = s
-    If sSlidesPerView = "auto" Then
-        Options.put("slidesPerView", sSlidesPerView)
-    Else
-        sSlidesPerView = UI.CDbl(sSlidesPerView)
-        Options.put("slidesPerView", BANano.parsefloat(sSlidesPerView))
-    End If
     CustProps.put("SlidesPerView", s)
 End Sub
 'set Space Between
 Sub setSpaceBetween(s As String)
     sSpaceBetween = s
     CustProps.put("SpaceBetween", s)
-    Options.put("spaceBetween", BANano.parseint(s))
 End Sub
 'set Speed
 Sub setSpeed(s As String)
     sSpeed = s
     CustProps.put("Speed", s)
-    Options.put("speed", BANano.parseint(s))
 End Sub
 'set Update On Window Resize
 Sub setUpdateOnWindowResize(b As Boolean)
     bUpdateOnWindowResize = b
     CustProps.put("UpdateOnWindowResize", b)
-    Options.put("updateOnWindowResize", b)
 End Sub
 
+Sub AddBreakPoint(bp As Int, slidesPerView As Double, spaceBetween As Int)
+	Dim bpm As Map = CreateMap()
+	If Options.ContainsKey("breakpoints") = False Then
+		Options.Put("breakpoints", bpm)
+	End If
+	bpm = Options.get("breakpoints")
+	'
+	Dim bp1 As Map = CreateMap()
+	bp1.Put("slidesPerView", slidesPerView)
+	bp1.Put("spaceBetween", spaceBetween)
+	bpm.Put(bp, bp1)
+	Options.Put("breakpoints", bpm)
+End Sub
+
+
+'do refresh after adding all items to the swiper
 Sub Refresh
+	Options.Put("autoHeight", False)
+	Options.Put("setWrapperSize", False)
+	Options.Put("slidesOffsetBefore", 0)
+	Options.Put("slidesOffsetAfter", 0)
+	Options.put("touchEventsTarget", "container")
+	Options.put("slidesPerGroup", 1)
+	Options.put("slidesPerColumn", 1)
+	Options.put("enabled", True)
+	Options.put("slidesPerColumnFill", "column")
+	UI.PutRecursive(Options,"freeMode.enabled", False)
+	UI.PutRecursive(Options,"freeMode.momentum", True)
+	UI.PutRecursive(Options,"freeMode.momentumRatio", 1)
+	UI.PutRecursive(Options,"freeMode.momentumBounce", True)
+	UI.PutRecursive(Options,"freeMode.momentumBounceRatio", 1)
+	UI.PutRecursive(Options,"freeMode.momentumVelocityRatio", 1)
+	UI.PutRecursive(Options,"freeMode.sticky", False)
+	UI.PutRecursive(Options,"freeMode.minimumVelocity", 0.02)
+	
+	Options.Put("touchRatio", 1)
+	Options.Put("touchAngle", 45)
+	Options.Put("simulateTouch", True)
+	Options.Put("touchStartPreventDefault", False)
+	Options.Put("shortSwipes", True)
+	Options.Put("longSwipes", True)
+	Options.Put("longSwipesRatio", 0.5)
+	Options.Put("longSwipesMs", 300)
+	Options.Put("followFinger", True)
+	Options.Put("threshold", 0)
+	Options.Put("touchMoveStopPropagation", True)
+	Options.Put("touchReleaseOnEdges", False)
+	Options.Put("iOSEdgeSwipeDetection", False)
+	Options.Put("iOSEdgeSwipeThreshold", 20)
+	Options.Put("resistance", True)
+	Options.Put("resistanceRatio", 0.85)
+	Options.Put("watchSlidesProgress", False)
+	Options.Put("watchSlidesVisibility", False)
+	Options.Put("preventClicks", True)
+	Options.Put("preventClicksPropagation", True)
+	Options.Put("slideToClickedSlide", False)
+	Options.Put("loopAdditionalSlides", 0)
+	Options.Put("noSwiping", True)
+	Options.Put("runCallbacksOnInit", True)
+	'***
+	Options.put("init", bInit)
+	Options.put("speed", BANano.parseInt(sSpeed))
+	Options.put("direction", sDirection)
+	Options.put("loop", bLoops)
+	Options.put("initialSlide", BANano.parseInt(sInitialSlide))
+	Options.put("effect", sEffect)
+	Options.put("parallax", bParallax)
+	Options.put("updateOnWindowResize", bUpdateOnWindowResize)
+	If sSlidesPerView = "auto" Then
+		Options.put("slidesPerView", sSlidesPerView)
+	Else
+		sSlidesPerView = UI.CDbl(sSlidesPerView)
+		Options.put("slidesPerView", BANano.parsefloat(sSlidesPerView))
+	End If
+	Options.put("spaceBetween", BANano.parseInt(sSpaceBetween))
+	Options.put("centeredSlides", bCenteredSlides)
+	Options.Put("cssMode", bCssMode)
+	'
+	Select Case sEffect
+		Case "coverflow"
+			UI.PutRecursive(Options, "coverflowEffect.depth", iCoverFlowDepth)
+			UI.PutRecursive(Options, "coverflowEffect.modifier", iCoverFlowModifier)
+			UI.PutRecursive(Options, "coverflowEffect.rotate", iCoverFlowRotate)
+			UI.PutRecursive(Options, "coverflowEffect.scale", iCoverFlowScale)
+			UI.PutRecursive(Options, "coverflowEffect.slideShadows", bCoverFlowSlideShadows)
+			UI.PutRecursive(Options, "coverflowEffect.stretch", iCoverFlowStretch)
+		Case "creative"
+		Case "cube"
+			UI.PutRecursive(Options, "cubeEffect.shadow", bCubeEffectShadow)
+			UI.PutRecursive(Options, "cubeEffect.shadowOffset", iCubeEffectShadowOffset)
+			UI.PutRecursive(Options, "cubeEffect.shadowScale", dCubeEffectShadowScale)
+			UI.PutRecursive(Options, "cubeEffect.slideShadows", bCubeEffectSlideShadows)
+		Case "fade"
+		Case "flip"
+			UI.PutRecursive(Options, "flipEffect.slideShadows", True)
+			UI.PutRecursive(Options, "flipEffect.limitRotation", True)
+		Case "cards"
+			UI.PutRecursive(Options, "cardsEffect.perSlideOffset", iCardEffectPerSlideOffset)
+			UI.PutRecursive(Options, "cardsEffect.perSlideRotate", iCardEffectPerSlideRotate)
+			UI.PutRecursive(Options, "cardsEffect.rotate", bCardEffectRotate)
+			UI.PutRecursive(Options, "cardsEffect.slideShadows", bCardEffectSlideShadows)
+	End Select
+	'
+	UI.PutRecursive(Options, "zoom.maxRatio", 3)
+	UI.PutRecursive(Options, "zoom.minRatio", 1)
+	UI.PutRecursive(Options, "zoom.toggle", False)
+	'
+	UI.PutRecursive(Options, "a11y.prevSlideMessage", "Previous slide")
+	UI.PutRecursive(Options, "a11y.nextSlideMessage", "Next slide")
+	UI.PutRecursive(Options, "a11y.firstSlideMessage", "This is the first slide")
+	UI.PutRecursive(Options, "a11y.lastSlideMessage", "This is the last slide")
+	'
+	If bAutoPlay Then
+		Options.Put("autoplay", CreateMap())
+		UI.PutRecursive(Options, "autoplay.delay", iAutoPlayDelay)
+		UI.PutRecursive(Options, "autoplay.disableOnInteraction", bAutoPlayDisableOnInteraction)
+		UI.PutRecursive(Options, "autoplay.pauseOnMouseEnter", bAutoPlayPauseOnMouseEnter)
+		UI.PutRecursive(Options, "autoplay.reverseDirection", bAutoPlayReverseDirection)
+		UI.PutRecursive(Options, "autoplay.stopOnLastSlide", bAutoPlayStopOnLastSlide)
+		UI.PutRecursive(Options, "autoplay.waitForTransition", bAutoPlayWaitForTransition)
+	End If
+	'
+	If bGrid Then
+		Options.Put("grid", CreateMap())
+		UI.PutRecursive(Options, "grid.fill", sGridFill)
+		UI.PutRecursive(Options, "grid.rows", iGridRows)
+	End If
+	UI.PutRecursive(Options, "keyboard", bKeyboardEnabled)
+	UI.PutRecursive(Options, "mousewheel", bMouseWheel)
+	'
+	If bHasPagination Then
+		UI.PutRecursive(Options, "pagination.el", $"#${mName}_pagination"$)
+		UI.PutRecursive(Options, "pagination.type", sPaginationType)
+		UI.PutRecursive(Options, "pagination.dynamicBullets", bDynamicBullets)
+		UI.PutRecursive(Options, "pagination.clickable", True)
+		UI.PutRecursive(Options, "pagination.hideOnClick", True)
+	End If
+	'
+	If bHasNavigation Then
+		If bOwnNavigation Then
+			UI.PutRecursive(Options, "navigation.nextEl", sNextNavigation)
+			UI.PutRecursive(Options, "navigation.prevEl", sPrevNavigation)
+			UI.PutRecursive(Options, "navigation.clickable", True)
+		Else
+			UI.PutRecursive(Options, "navigation.nextEl", $"#${mName}_next"$)
+			UI.PutRecursive(Options, "navigation.prevEl", $"#${mName}_prev"$)
+			UI.PutRecursive(Options, "navigation.clickable", True)
+		End If
+	End If
+	'
+	If bHasScrollbar Then
+		UI.PutRecursive(Options, "scrollbar.el", $"#${mName}_scrollbar"$)
+		UI.PutRecursive(Options, "scrollbar.hide", True)
+	End If
+	
 	'save settings to localstorage
 	Dim swiperJSON As String = BANano.ToJson(Options)
 	BANano.SetLocalStorage2(mName, swiperJSON)
@@ -1126,11 +1234,13 @@ Sub Refresh
     el.Initialize($"#${mName}"$)
     swiper.Initialize2("Swiper", Array(el.ToObject, Options))
 End Sub
-Sub slideNext(ms As Int)
-    swiper.RunMethod("slideNext", Array(ms))
+
+Sub slideNext
+    swiper.RunMethod("slideNext", Null)
 End Sub
-Sub slidePrev(ms As Int)
-    swiper.RunMethod("slidePrev", Array(ms))
+
+Sub slidePrev
+    swiper.RunMethod("slidePrev", Null)
 End Sub
 
 'get the name of a slide to use BANano.LoadLayout
@@ -1143,7 +1253,6 @@ End Sub
 Sub setParallax(b As Boolean)
     bParallax = UI.CBool(b)
     CustProps.put("Parallax", b)
-    Options.put("Parallax", b)
 End Sub
 '
 'set Pagination Type
@@ -1151,21 +1260,18 @@ End Sub
 Sub setPaginationType(s As String)
     sPaginationType = UI.CStr(s)
     CustProps.put("PaginationType", s)
-    Options.put("PaginationType", s)
 End Sub
 '
 'set Total Slides
 Sub setTotalSlides(s As String)
     sTotalSlides = UI.CStr(s)
     CustProps.put("TotalSlides", s)
-    Options.put("TotalSlides", s)
 End Sub
 '
 'set DynamicBullets
 Sub setDynamicBullets(b As Boolean)
     bDynamicBullets = UI.CBool(b)
     CustProps.put("DynamicBullets", b)
-    Options.put("DynamicBullets", b)
 End Sub
 '
 'get ParentID
@@ -1273,70 +1379,60 @@ End Sub
 Sub setCardEffectPerSlideOffset(i As Int)
     iCardEffectPerSlideOffset = UI.Cint(i)
     CustProps.put("CardEffectPerSlideOffset", i)
-    Options.put("CardEffectPerSlideOffset", i)
 End Sub
 '
 'set Card Effect Per Slide Rotate
 Sub setCardEffectPerSlideRotate(i As Int)
     iCardEffectPerSlideRotate = UI.Cint(i)
     CustProps.put("CardEffectPerSlideRotate", i)
-    Options.put("CardEffectPerSlideRotate", i)
 End Sub
 '
 'set Card Effect Rotate
 Sub setCardEffectRotate(b As Boolean)
     bCardEffectRotate = UI.CBool(b)
     CustProps.put("CardEffectRotate", b)
-    Options.put("CardEffectRotate", b)
 End Sub
 '
 'set Card Effect Slide Shadows
 Sub setCardEffectSlideShadows(b As Boolean)
     bCardEffectSlideShadows = UI.CBool(b)
     CustProps.put("CardEffectSlideShadows", b)
-    Options.put("CardEffectSlideShadows", b)
 End Sub
 '
 'set Cover Flow Depth
 Sub setCoverFlowDepth(i As Int)
     iCoverFlowDepth = UI.Cint(i)
     CustProps.put("CoverFlowDepth", i)
-    Options.put("CoverFlowDepth", i)
 End Sub
 '
 'set Cover Flow Modifier
 Sub setCoverFlowModifier(i As Int)
     iCoverFlowModifier = UI.Cint(i)
     CustProps.put("CoverFlowModifier", i)
-    Options.put("CoverFlowModifier", i)
 End Sub
 '
 'set Cover Flow Rotate
 Sub setCoverFlowRotate(i As Int)
     iCoverFlowRotate = UI.Cint(i)
     CustProps.put("CoverFlowRotate", i)
-    Options.put("CoverFlowRotate", i)
 End Sub
 '
 'set Cover Flow Scale
 Sub setCoverFlowScale(i As Int)
     iCoverFlowScale = UI.Cint(i)
     CustProps.put("CoverFlowScale", i)
-    Options.put("CoverFlowScale", i)
 End Sub
 '
 'set Cover Flow Slide Shadows
 Sub setCoverFlowSlideShadows(b As Boolean)
     bCoverFlowSlideShadows = UI.CBool(b)
     CustProps.put("CoverFlowSlideShadows", b)
-    Options.put("CoverFlowSlideShadows", b)
 End Sub
 '
 'set Cover Flow Stretch
 Sub setCoverFlowStretch(i As Int)
     iCoverFlowStretch = UI.Cint(i)
     CustProps.put("CoverFlowStretch", i)
-    Options.put("CoverFlowStretch", i)
 End Sub
 
 'get Loops

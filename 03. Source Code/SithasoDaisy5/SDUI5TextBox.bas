@@ -28,6 +28,7 @@ Version=10
 #DesignerProperty: Key: ShowEyes, DisplayName: Show Eyes, FieldType: Boolean, DefaultValue: False, Description: Show Eyes
 #DesignerProperty: Key: Ghost, DisplayName: Ghost, FieldType: Boolean, DefaultValue: False, Description: Ghost
 #DesignerProperty: Key: Grow, DisplayName: Grow, FieldType: Boolean, DefaultValue: False, Description: Grow
+#DesignerProperty: Key: NoFocusBorder, DisplayName: No Focus Border, FieldType: Boolean, DefaultValue: False, Description: No Focus Border
 #DesignerProperty: Key: Hint, DisplayName: Hint, FieldType: String, DefaultValue: , Description: Hint
 #DesignerProperty: Key: MinLength, DisplayName: Min Length, FieldType: String, DefaultValue: , Description: Min Length
 #DesignerProperty: Key: MaxLength, DisplayName: Max Length, FieldType: String, DefaultValue: , Description: Max Length
@@ -39,7 +40,7 @@ Version=10
 #DesignerProperty: Key: ReadOnly, DisplayName: Read Only, FieldType: Boolean, DefaultValue: False, Description: Read Only
 #DesignerProperty: Key: DPMode, DisplayName: DP Mode, FieldType: String, DefaultValue: single, Description: Date Picker Mode, List: multiple|range|single|time
 #DesignerProperty: Key: DPDateFormat, DisplayName: DP Date Format, FieldType: String, DefaultValue: Y-m-d, Description: Date Picker Date Format
-#DesignerProperty: Key: DPAltFormat, DisplayName: DP Alt Format, FieldType: String, DefaultValue: F j, Y, Description: Date Picker Alt Format
+#DesignerProperty: Key: DPAltFormat, DisplayName: DP Alt Format, FieldType: String, DefaultValue: D, d M Y, Description: Date Picker Alt Format
 #DesignerProperty: Key: DPAllowInput, DisplayName: DP Allow Input, FieldType: Boolean, DefaultValue: False, Description: Date Picker Allow Input
 #DesignerProperty: Key: DPAltInput, DisplayName: DP Alt Input, FieldType: Boolean, DefaultValue: True, Description: Date Picker Alt Input
 #DesignerProperty: Key: DPAltInputClass, DisplayName: DP Alt Input Class, FieldType: String, DefaultValue: , Description: Date Picker Alt Input Class
@@ -135,7 +136,7 @@ Sub Class_Globals
 	Private sAppendImage As String = ""
 	Private sPrependImage As String = ""
 	Private bDPAllowInput As Boolean = False
-	Private sDPAltFormat As String = "F j, Y"
+	Private sDPAltFormat As String = "D, d M Y"
 	Private bDPAltInput As Boolean = True
 	Private sDPAltInputClass As String = ""
 	Private bDPCloseOnSelect As Boolean = False
@@ -161,6 +162,7 @@ Sub Class_Globals
 	Private bToggleColorPicker As Boolean = False
 	Private bDPTwentyFour As Boolean = True
 	Private sLegendColor As String = ""
+	Private bNoFocusBorder As Boolean = False
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -209,7 +211,7 @@ Private Sub SetDefaults
 	CustProps.Put("ReadOnly", False)
 	CustProps.Put("DPMode", "single")
 	CustProps.Put("DPDateFormat", "Y-m-d")
-	CustProps.Put("DPAltFormat", "F j, Y")
+	CustProps.Put("DPAltFormat", "D, d M Y")
 	CustProps.Put("DPAllowInput", False)
 	CustProps.Put("DPAltInput", True)
 	CustProps.Put("DPAltInputClass", "")
@@ -250,6 +252,7 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("NoFocusBorder", False)
 End Sub
 
 ' returns the element id
@@ -458,7 +461,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPrependImage = UI.CStr(sPrependImage)
 		bDPAllowInput = Props.GetDefault("DPAllowInput", False)
 		bDPAllowInput = UI.CBool(bDPAllowInput)
-		sDPAltFormat = Props.GetDefault("DPAltFormat", "F j, Y")
+		sDPAltFormat = Props.GetDefault("DPAltFormat", "D, d M Y")
 		sDPAltFormat = UI.CStr(sDPAltFormat)
 		bDPAltInput = Props.GetDefault("DPAltInput", True)
 		bDPAltInput = UI.CBool(bDPAltInput)
@@ -504,6 +507,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bDPTwentyFour = UI.CBool(bDPTwentyFour)
 		sLegendColor = Props.GetDefault("LegendColor", "")
 		sLegendColor = UI.CStr(sLegendColor)
+		bNoFocusBorder = Props.GetDefault("NoFocusBorder", False)
+		bNoFocusBorder = UI.CBool(bNoFocusBorder)
 		End If
         'we have a color wheel
 		If sTypeOf = "color-wheel" Then 
@@ -656,6 +661,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		BANano.Await(setSize(sSize))
 	setStepValue(sStepValue)
 	setEnabled(bEnabled)
+	setNoFocusBorder(bNoFocusBorder)
 	Select Case sInputType
 	Case "legend", "buttons", "buttons-floating", "searchbox"
 		setShowEyes(bShowEyes)
@@ -709,6 +715,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 	'
 	setValue(sValue)
+End Sub
+
+'set No Focus Border
+Sub setNoFocusBorder(b As Boolean)		'ignoredeadcode
+	bNoFocusBorder = b
+	CustProps.put("NoFocusBorder", b)
+	If mElement = Null Then Return
+	If b = True Then
+		UI.AddClass(mElement, "focus:!outline-none focus:!ring-0 focus:!border-transparent")
+	Else
+		UI.RemoveClass(mElement, "focus:!outline-none focus:!ring-0 focus:!border-transparent")
+	End If
+End Sub
+
+'get No Focus Border
+Sub getNoFocusBorder As Boolean
+	Return bNoFocusBorder
 End Sub
 
 private Sub SearchClick(e As BANanoEvent)				'ignoredeadcode

@@ -6,9 +6,17 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component, enter swiperID
-#DesignerProperty: Key: Image, DisplayName: Image, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image
 #DesignerProperty: Key: SwiperId, DisplayName: Swiper Id, FieldType: String, DefaultValue: , Description: Swiper Id
 #DesignerProperty: Key: RefreshSwiper, DisplayName: Refresh Swiper, FieldType: Boolean, DefaultValue: False, Description: Refresh Swiper after this
+#DesignerProperty: Key: Image, DisplayName: Image Src, FieldType: String, DefaultValue: ./assets/600by600.jpg, Description: Image Src
+#DesignerProperty: Key: ImageAlt, DisplayName: Image Alt, FieldType: String, DefaultValue: , Description: Image Alt
+#DesignerProperty: Key: ImageCenter, DisplayName: Image Center, FieldType: Boolean, DefaultValue: False, Description: Image Center
+#DesignerProperty: Key: ImageCover, DisplayName: Image Cover, FieldType: Boolean, DefaultValue: True, Description: Image Cover
+#DesignerProperty: Key: ImageLazyLoad, DisplayName: Image Lazy Load, FieldType: Boolean, DefaultValue: False, Description: Image Lazy Load
+#DesignerProperty: Key: ImageNoRepeat, DisplayName: Image No Repeat, FieldType: Boolean, DefaultValue: False, Description: Image No Repeat
+#DesignerProperty: Key: RawImageAttributes, DisplayName: Image Attributes, FieldType: String, DefaultValue: , Description: Image Attributes
+#DesignerProperty: Key: RawImageClasses, DisplayName: Image Classes, FieldType: String, DefaultValue: , Description: Image Classes
+#DesignerProperty: Key: RawImageStyles, DisplayName: Image Styles, FieldType: String, DefaultValue: , Description: Image Styles
 #DesignerProperty: Key: TextAlign, DisplayName: Text Align, FieldType: String, DefaultValue: none, Description: Text Align, List: center|end|justify|left|none|right|start
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
@@ -45,6 +53,14 @@ Sub Class_Globals
 	Public CONST TEXTALIGN_RIGHT As String = "right"
 	Public CONST TEXTALIGN_START As String = "start"
 	Private sImage As String = ""
+	Private sImageAlt As String = ""
+	Private bImageCenter As Boolean = False
+	Private bImageCover As Boolean = True
+	Private bImageLazyLoad As Boolean = False
+	Private bImageNoRepeat As Boolean = False
+	Private sImageAttributes As String = ""
+	Private sImageClasses As String = ""
+	Private sImageStyles As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -68,6 +84,14 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("ImageAlt", "")
+	CustProps.Put("ImageCenter", False)
+	CustProps.Put("ImageCover", True)
+	CustProps.Put("ImageLazyLoad", False)
+	CustProps.Put("ImageNoRepeat", False)
+	CustProps.Put("RawImageAttributes", "")
+	CustProps.Put("RawImageClasses", "")
+	CustProps.Put("RawImageStyles", "")
 End Sub
 
 
@@ -233,6 +257,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         sSwiperId = UI.cleanid(sSwiperId)
 		sImage = Props.GetDefault("Image", "./assets/600by600.jpg")
 		sImage = UI.CStr(sImage)
+		sImageAlt = Props.GetDefault("ImageAlt", "")
+		sImageAlt = UI.CStr(sImageAlt)
+		bImageCenter = Props.GetDefault("ImageCenter", False)
+		bImageCenter = UI.CBool(bImageCenter)
+		bImageCover = Props.GetDefault("ImageCover", True)
+		bImageCover = UI.CBool(bImageCover)
+		bImageLazyLoad = Props.GetDefault("ImageLazyLoad", False)
+		bImageLazyLoad = UI.CBool(bImageLazyLoad)
+		bImageNoRepeat = Props.GetDefault("ImageNoRepeat", False)
+		bImageNoRepeat = UI.CBool(bImageNoRepeat)
+		sImageAttributes = Props.GetDefault("RawImageAttributes", "")
+		sImageAttributes = UI.CStr(sImageAttributes)
+		sImageClasses = Props.GetDefault("RawImageClasses", "")
+		sImageClasses = UI.CStr(sImageClasses)
+		sImageStyles = Props.GetDefault("RawImageStyles", "")
+		sImageStyles = UI.CStr(sImageStyles)
  	End If
 	'
 	UI.AddClassDT("swiper-slide")
@@ -250,25 +290,150 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	
-    If bRefreshSwiper = False Then
-        'do not add this slide
-		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-		setTextAlign(sTextAlign)
-		If sImage <> "" Then
-			mElement.Append($"<img id="${mName}_image" alt="${sImage}" src="${sImage}"></img>"$)
-		End If
-    Else
-        'refresh the swiper
-        If sSwiperId = "" Then Return
-        Dim swiperJSON As String = BANano.GetLocalStorage2(sSwiperId)
-        Dim options As Map = BANano.FromJson(swiperJSON)
-        '
-        Dim swiper As BANanoObject
-        Dim el As BANanoElement
-		el.Initialize($"#${sSwiperId}"$)
-        swiper.Initialize2("Swiper", Array(el.ToObject, options))
+	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	setTextAlign(sTextAlign)
+	If sImage <> "" Then
+		mElement.Append($"<img id="${mName}_image" alt="${sImageAlt}" src="${sImage}"></img>"$)
+		setImageAlt(sImageAlt)
+		setImageCenter(bImageCenter)
+		setImageCover(bImageCover)
+		setImageLazyLoad(bImageLazyLoad)
+		setImageNoRepeat(bImageNoRepeat)
+		setImageAttributes(sImageAttributes)
+		setImageStyles(sImageStyles)
+		setImageClasses(sImageClasses)
+	End If
+	
+	If sSwiperId = "" Then Return	
+	If bRefreshSwiper = False Then Return
+    'refresh the swiper: this is for design time
+    Dim swiperJSON As String = BANano.GetLocalStorage2(sSwiperId)
+    Dim options As Map = BANano.FromJson(swiperJSON)
+    '
+    Dim swiper As BANanoObject
+    Dim el As BANanoElement
+	el.Initialize($"#${sSwiperId}"$)
+	swiper.Initialize2("Swiper", Array(el.ToObject, options))
+End Sub
+
+'get Image Alt
+Sub getImageAlt As String
+	Return sImageAlt
+End Sub
+
+'get Image Center
+Sub getImageCenter As Boolean
+	Return bImageCenter
+End Sub
+
+'get Image Cover
+Sub getImageCover As Boolean
+	Return bImageCover
+End Sub
+'get Image Lazy Load
+Sub getImageLazyLoad As Boolean
+	Return bImageLazyLoad
+End Sub
+'get Image No Repeat
+Sub getImageNoRepeat As Boolean
+	Return bImageNoRepeat
+End Sub
+'get Raw Image Attributes
+Sub getImageAttributes As String
+	Return sImageAttributes
+End Sub
+'get Raw Image Classes
+Sub getImageClasses As String
+	Return sImageClasses
+End Sub
+'get Raw Image Styles
+Sub getImageStyles As String
+	Return sImageStyles
+End Sub
+
+'set Raw Image Classes
+Sub setImageClasses(s As String)				'ignoredeadcode
+	sImageClasses = s
+	CustProps.put("RawImageClasses", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddClassByID($"${mName}_image"$, s)
+End Sub
+
+'set Raw Image Styles
+Sub setImageStyles(s As String)				'ignoredeadcode
+	sImageStyles = s
+	CustProps.put("RawImageStyles", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetStylesByID($"${mName}_image"$, s)
+End Sub
+
+
+'set Raw Image Attributes
+Sub setImageAttributes(s As String)				'ignoredeadcode
+	sImageAttributes = s
+	CustProps.put("RawImageAttributes", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetAttributesByID($"${mName}_image"$, s)
+End Sub
+
+'set Image No Repeat
+Sub setImageNoRepeat(b As Boolean)					'ignoredeadcode
+	bImageNoRepeat = b
+	CustProps.put("ImageNoRepeat", b)
+	If mElement = Null Then Return
+	If bImageNoRepeat Then
+		UI.AddClassByID($"${mName}_image"$, "bg-no-repeat")
+	Else
+		UI.RemoveClassBYID($"${mName}_image"$, "bg-no-repeat")
 	End If
 End Sub
+
+'set Image Lazy Load
+Sub setImageLazyLoad(b As Boolean)				'ignoredeadcode
+	bImageLazyLoad = b
+	CustProps.put("ImageLazyLoad", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddAttrByID($"${mName}_image"$, "loading", "lazy")
+	Else
+		UI.RemoveAttrByID($"${mName}_image"$, "loading")
+	End If
+End Sub
+
+'set Image Alt
+Sub setImageAlt(s As String)				'ignoredeadcode
+	sImageAlt = s
+	CustProps.put("ImageAlt", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetAttrByid($"${mName}_image"$, "alt", s)
+End Sub
+
+'set Image Center
+Sub setImageCenter(b As Boolean)			'ignoredeadcode
+	bImageCenter = b
+	CustProps.put("ImageCenter", b)
+	If mElement = Null Then Return
+	If bImageCenter Then
+		UI.AddClassByID($"${mName}_image"$, "bg-center")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "bg-center")
+	End If
+End Sub
+
+
+
+'set Image Cover
+Sub setImageCover(b As Boolean)				'ignoredeadcode
+	bImageCover = b
+	CustProps.put("ImageCover", b)
+	If mElement = Null Then Return
+	If bImageCover Then
+		UI.AddClassById($"${mName}_image"$, "bg-cover")
+	Else
+		UI.RemoveClassByID($"${mName}_image"$, "bg-cover")
+	End If
+End Sub
+
 
 Sub setImage(s As String)
 	sImage = s

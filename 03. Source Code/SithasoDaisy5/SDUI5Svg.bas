@@ -8,6 +8,8 @@ Version=10.1
 #Event: Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: Replace, DisplayName: Replace, FieldType: Boolean, DefaultValue: True, Description: Replace
+#DesignerProperty: Key: Fit, DisplayName: Fit, FieldType: Boolean, DefaultValue: True, Description: Fit
 #DesignerProperty: Key: Src, DisplayName: Src, FieldType: String, DefaultValue: , Description: Src
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height
@@ -21,6 +23,14 @@ Version=10.1
 #DesignerProperty: Key: DisableUniqueId, DisplayName: Disable Unique Id, FieldType: Boolean, DefaultValue: False, Description: Disable Unique Id
 #DesignerProperty: Key: JSEnabled, DisplayName: JS Enabled, FieldType: Boolean, DefaultValue: False, Description: JS Enabled
 #DesignerProperty: Key: LazyLoading, DisplayName: Lazy Loading, FieldType: Boolean, DefaultValue: False, Description: Lazy Loading
+#DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
+#DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
+#DesignerProperty: Key: MarginAXYTBLR, DisplayName: Margins, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Margins A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
+#DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
+#DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
+#DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
 'global variables in this module
 Sub Class_Globals
 	Public UI As UIShared 'ignore
@@ -46,6 +56,16 @@ Sub Class_Globals
 	Private sStrokeColor As String = ""
 	Private sStrokeWidth As String = ""
 	Private sWidth As String = ""
+	Private bVisible As Boolean = True	'ignore
+	Private sPosition As String = "t=?; b=?; r=?; l=?"
+	Private sPositionStyle As String = "none"
+	Private sRawClasses As String = ""
+	Private sRawStyles As String = ""
+	Private sRawAttributes As String = ""
+	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private bReplace As Boolean = True
+	Private bFit As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -74,7 +94,108 @@ private Sub SetDefaults
 	CustProps.Put("DisableUniqueId", False)
 	CustProps.Put("JSEnabled", False)
 	CustProps.Put("LazyLoading", False)
+	CustProps.Put("Visible", True)
+	CustProps.Put("PositionStyle", "none")
+	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("RawClasses", "")
+	CustProps.Put("RawStyles", "")
+	CustProps.Put("RawAttributes", "")
+	CustProps.Put("Replace", True)
+	CustProps.Put("Fit", True)
 End Sub
+
+'set Position Style
+'options: static|relative|fixed|absolute|sticky|none
+Sub setPositionStyle(s As String)
+	sPositionStyle = s
+	CustProps.put("PositionStyle", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetStyle(mElement, "position", s)
+End Sub
+
+Sub getAttributes As String
+	Return sRawAttributes
+End Sub
+'
+Sub getStyles As String
+	Return sRawStyles
+End Sub
+'
+Sub getClasses As String
+	Return sRawClasses
+End Sub
+'
+Sub getPaddingAXYTBLR As String
+	Return sPaddingAXYTBLR
+End Sub
+'
+Sub getMarginAXYTBLR As String
+	Return sMarginAXYTBLR
+End Sub
+
+Sub getPositionStyle As String
+	Return sPositionStyle
+End Sub
+'set raw positions
+Sub setPosition(s As String)
+	sPosition = s
+	CustProps.Put("Position", sPosition)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetPosition(mElement, sPosition)
+End Sub
+Sub getPosition As String
+	Return sPosition
+End Sub
+Sub setAttributes(s As String)
+	sRawAttributes = s
+	CustProps.Put("RawAttributes", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetAttributes(mElement, sRawAttributes)
+End Sub
+'
+Sub setStyles(s As String)
+	sRawStyles = s
+	CustProps.Put("RawStyles", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetStyles(mElement, sRawStyles)
+End Sub
+'
+Sub setClasses(s As String)
+	sRawClasses = s
+	CustProps.put("RawClasses", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetClasses(mElement, sRawClasses)
+End Sub
+'
+Sub setPaddingAXYTBLR(s As String)
+	sPaddingAXYTBLR = s
+	CustProps.Put("PaddingAXYTBLR", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetPaddingAXYTBLR(mElement, sPaddingAXYTBLR)
+End Sub
+'
+Sub setMarginAXYTBLR(s As String)
+	sMarginAXYTBLR = s
+	CustProps.Put("MarginAXYTBLR", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetMarginAXYTBLR(mElement, sMarginAXYTBLR)
+End Sub
+
+'set Visible
+Sub setVisible(b As Boolean)
+	bVisible = b
+	CustProps.Put("Visible", b)
+	If mElement = Null Then Return
+	UI.SetVisible(mElement, b)
+End Sub
+'get Visible
+Sub getVisible As Boolean
+	bVisible = UI.GetVisible(mElement)
+	Return bVisible
+End Sub
+
 ' returns the element id
 Public Sub getID() As String
 	Return mName
@@ -151,8 +272,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sStrokeWidth = UI.CStr(sStrokeWidth)
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)
+		bReplace = Props.GetDefault("Replace", True)
+		bReplace = UI.CBool(bReplace)
+		bFit = Props.GetDefault("Fit", True)
+		bFit = UI.CBool(bFit)
 	End If
 	'
+	UI.AddAttrDT("fit", bFit)
+	UI.AddAttrDT("replace", bReplace)
 	If sCache <> "" Then UI.AddAttrDT("data-cache", sCache)
 	If bCacheDisabled = True Then UI.AddAttrDT("data-cache", "disabled")
 	If sFillColor <> "" Then UI.AddAttrDT("fill", sFillColor)
@@ -166,6 +293,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	
 	If sHeight <> "" Then UI.AddAttrDT("height", sHeight)
+	UI.AddAttrDT("data-js", "disabled")
 	If bJSEnabled = True Then UI.AddAttrDT("data-js", "enabled")
 	If bLazyLoading = True Then UI.AddAttrDT("data-loading", "lazy")
 	If sSrc <> "" Then UI.AddAttrDT("data-src", sSrc)
@@ -185,6 +313,28 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<svg-renderer id="${mName}" ${xattrs} style="${xstyles}"></svg-renderer>"$).Get("#" & mName)
 '	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
+End Sub
+
+Sub setFit(b As Boolean)
+	bFit = b
+	CustProps.Put("Fit", bFit)
+	If mElement = Null Then Return
+	UI.SetAttr(mElement, "fit", bFit)
+End Sub
+
+Sub getFit As Boolean
+	Return bFit
+End Sub
+
+Sub setReplace(b As Boolean)
+	bReplace = b
+	CustProps.Put("Replace", bReplace)
+	If mElement = Null Then Return 
+	UI.SetAttr(mElement, "replace", bReplace)
+End Sub
+
+Sub getReplace As Boolean
+	Return bReplace
 End Sub
 
 'set Cache

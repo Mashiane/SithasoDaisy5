@@ -81,6 +81,8 @@ Sub Initialize (CallBack As Object, cName As String, EventName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesKanBan)' should be added for '${cName}'"$)
 		Return
 	End If
+	BANano.DependsOnAsset("jkanban.min.js")
+	BANano.DependsOnAsset("jkanban.min.css")
 	UI.Initialize(Me)
 	mName = UI.CleanID(cName)
 	mback = CallBack
