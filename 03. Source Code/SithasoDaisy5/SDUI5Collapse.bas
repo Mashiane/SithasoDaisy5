@@ -12,17 +12,20 @@ Version=10
 #DesignerProperty: Key: IconColor, DisplayName: Icon Color, FieldType: String, DefaultValue: , Description: Icon Color
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 32px, Description: Icon Size
 #DesignerProperty: Key: Title, DisplayName: Title, FieldType: String, DefaultValue: Collapse, Description: Title
-#DesignerProperty: Key: RawContent, DisplayName: HTML Content, FieldType: String, DefaultValue: Collapse Content, Description: HTML Content
-#DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
-#DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: arrow, Description: Right Icon, List: arrow|plus
-#DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: TitleBackgroundColor, DisplayName: Title Background Color, FieldType: String, DefaultValue: , Description: Title Background Color
 #DesignerProperty: Key: TitleTextColor, DisplayName: Title Text Color, FieldType: String, DefaultValue: , Description: Title Text Color
+#DesignerProperty: Key: TitleClass, DisplayName: Title Class, FieldType: String, DefaultValue: font-semibold, Description: Title Class
+#DesignerProperty: Key: RawContent, DisplayName: HTML Content, FieldType: String, DefaultValue: Collapse Content, Description: HTML Content
 #DesignerProperty: Key: ContentBackgroundColor, DisplayName: Content Background Color, FieldType: String, DefaultValue: base-100, Description: Content Background Color
 #DesignerProperty: Key: ContentTextColor, DisplayName: Content Text Color, FieldType: String, DefaultValue: , Description: Content Text Color
 #DesignerProperty: Key: ContentTextSize, DisplayName: Content Text Size, FieldType: String, DefaultValue: sm, Description: Content Text Size, List: 2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl|base|lg|md|none|sm|xl|xs
+#DesignerProperty: Key: ContentClass, DisplayName: Content Class, FieldType: String, DefaultValue: , Description: Content Class
+#DesignerProperty: Key: Active, DisplayName: Active, FieldType: Boolean, DefaultValue: False, Description: Active
+#DesignerProperty: Key: RightIcon, DisplayName: Right Icon, FieldType: String, DefaultValue: arrow, Description: Right Icon, List: arrow|plus
+#DesignerProperty: Key: JoinItem, DisplayName: Join Item, FieldType: Boolean, DefaultValue: False, Description: Join Item
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: String, DefaultValue: , Description: Text Color
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
+#DesignerProperty: Key: Border, DisplayName: Border, FieldType: Boolean, DefaultValue: True, Description: Border
 #DesignerProperty: Key: BorderColor, DisplayName: Border Color, FieldType: String, DefaultValue: base-300, Description: Border Color
 #DesignerProperty: Key: OpenClose, DisplayName: Open Close, FieldType: String, DefaultValue: none, Description: Open Close, List: close|none|open
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
@@ -83,6 +86,8 @@ Sub Class_Globals
 	Private sIcon As String = ""
 	Private sIconColor As String = ""
 	Private sIconSize As String = "32px"
+	Private sContentClass As String = ""
+	Private sTitleClass As String = "font-semibold"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -113,6 +118,7 @@ private Sub SetDefaults
 	CustProps.Put("ContentTextSize", "sm")
 	CustProps.Put("TextColor", "")
 	CustProps.Put("BackgroundColor", "base-100")
+	CustProps.Put("Border", True)
 	CustProps.Put("BorderColor", "base-300")
 	CustProps.Put("OpenClose", "none")
 	CustProps.Put("Rounded", "none")
@@ -126,6 +132,8 @@ private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("ContentClass", "")
+	CustProps.Put("TitleClass", "font-semibold")
 End Sub
 
 ' returns the element id
@@ -321,6 +329,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIcon = UI.CStr(sIcon)
 		sIconColor = UI.CStr(sIconColor)
 		sIconSize = UI.CStr(sIconSize)    
+		sContentClass = Props.GetDefault("ContentClass", "")
+		sContentClass = UI.cstr(sContentClass)
+		bBorder = Props.GetDefault("Border", True)
+		bBorder = UI.CBool(bBorder)
+		sTitleClass = Props.GetDefault("TitleClass", "font-semibold")
+		sTitleClass = UI.CStr(sTitleClass)
 	End If
 	'
 	UI.AddClassDT("collapse")
@@ -347,9 +361,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		<input id="${mName}_check" type="radio"></input>
 		<div id="${mName}_title" class="collapse-title">
 			<svg-renderer id="${mName}_titleicon" style="pointer-events:none;" fit="false" fill="currentColor" data-js="enabled" class="hidden"></svg-renderer>
-			<div id="${mName}_titletext" class="font-semibold">${sTitle}</div>
+			<div id="${mName}_titletext">${sTitle}</div>
 		</div>
-		<div id="${mName}_content" class="collapse-content">${sRawContent}</div>
+		<div id="${mName}_content" class="collapse-content"></div>
 	</div>"$).Get("#" & mName)
 	setContentBackgroundColor(sContentBackgroundColor)
 	setContentTextColor(sContentTextColor)
@@ -362,9 +376,34 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setIcon(sIcon)
 	setIconColor(sIconColor)
 	setIconSize(sIconSize)
+	setContentClass(sContentClass)
+	setContent(sRawContent)
+	setTitleClass(sTitleClass)
 '	setVisible(bVisible)
 	UI.OnEvent(mElement, "change", Me, "itemchange")
 End Sub
+
+Sub setTitleClass(s As String)				'ignoredeadcode
+	sTitleClass = s
+	CustProps.Put("TitleClass", s)
+	If mElement = Null Then Return
+	UI.AddClassByID($"${mName}_title"$, sTitleClass)
+End Sub
+
+Sub getTitleClass As String
+	Return sTitleClass
+End Sub
+
+Sub setContentClass(s As String)			'ignoredeadcode
+	sContentClass = s
+	CustProps.Put("ContentClass", s)
+	If mElement = Null Then Return
+	UI.AddClassByID($"${mName}_content"$, sContentClass)
+End Sub
+
+Sub getContentClass As String
+	Return sContentClass
+End Sub	
 
 Sub LinkExisting
 	mElement.Initialize($"#${mName}"$)
@@ -519,11 +558,11 @@ Sub setOpenClose(s As String)
 	If s <> "" Then UI.AddClass(mElement, "collapse-" & s)
 End Sub
 'set Raw Content
-Sub setContent(s As String)
+Sub setContent(s As String)			'ignoredeadcode
 	sRawContent = s
 	CustProps.put("RawContent", s)
 	If mElement = Null Then Return
-	UI.SetTextByID($"${mName}_content"$, s)
+	UI.AppendByID($"${mName}_content"$, s)
 End Sub
 'set Right Icon
 'options: arrow|plus

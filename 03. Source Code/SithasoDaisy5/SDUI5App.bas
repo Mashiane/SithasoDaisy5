@@ -3942,3 +3942,56 @@ End Sub
 Sub EnsureVisibleByID(sID As String)
 	UI.EnsureVisibleByID(sID)
 End Sub
+
+Public Sub GetCommonValues(list1 As List, list2 As List) As List
+	Dim result As List
+	result.Initialize
+
+	If list1.IsInitialized = False Or list2.IsInitialized = False Then Return result
+	If list1.Size = 0 Or list2.Size = 0 Then Return result
+
+	' Use a Map for fast lookups
+	Dim lookup As Map
+	lookup.Initialize
+
+	For Each item As Object In list2
+		lookup.Put(item, True)
+	Next
+
+	' Track added values to avoid duplicates
+	Dim added As Map
+	added.Initialize
+
+	For Each item As Object In list1
+		If lookup.ContainsKey(item) And added.ContainsKey(item) = False Then
+			result.Add(item)
+			added.Put(item, True)
+		End If
+	Next
+
+	Return result
+End Sub
+
+Public Sub ListHasAnyCommonValues(list1 As List, list2 As List) As Boolean
+	Dim x As List = GetCommonValues(list1, list2)
+	Return (x.Size > 0)
+End Sub
+
+'scroll to the top of the page
+Sub ScrollToTop
+	Dim so As Map = CreateMap("top": 0, "behavior": "smooth")
+	Banano.Window.RunMethod("scrollTo", so)
+End Sub
+
+'get checked input values by name of an input
+Sub GetCheckedValueByName(sName As String) As List
+	Dim l As List = CreateList
+	Dim Items() As BANanoElement = Banano.GetElements($"input[name=${sName}]:checked"$)
+	For Each elBANano As BANanoElement In Items
+		Dim bChecked As Boolean = elBANano.GetChecked
+		Dim vChecked As String = elBANano.getvalue
+		If bChecked = False Then Continue
+		If l.IndexOf(vChecked) = -1 Then l.Add(vChecked)
+	Next
+	Return l
+End Sub

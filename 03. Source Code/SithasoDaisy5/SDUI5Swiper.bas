@@ -5,6 +5,8 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: ImageClick (e As BANanoEvent)
+
 'https://github.com/ionic-team/ionic-framework/blob/main/core/src/components/slides/IonicSlides.ts
 '#Event: ActiveIndexChange (e As BANanoEvent)
 '#Event: ChangeDirection (e As BANanoEvent)

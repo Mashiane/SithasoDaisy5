@@ -6,6 +6,11 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #Event: Click (e As BANanoEvent)
+#Event: MouseMove (e As BANanoEvent)
+#Event: MouseOver (e As BANanoEvent)
+#Event: MouseOut (e As BANanoEvent)
+#Event: MouseUp (e As BANanoEvent)
+#Event: MouseDown (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: TextTag, DisplayName: Tag, FieldType: String, DefaultValue: p, Description: Tag, List: a|abbr|blockquote|del|em|h1|h2|h3|h4|h5|h6|ins|mark|p|s|small|span|strong|u|aside|figcaption|figure|ol|ul|li|div|section|nav|input|label|br|hr|footer
@@ -617,6 +622,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setNoText(bNoText)
 	End Select
 '	setVisible(bVisible)
+	UI.OnEvent(mElement, "mousemove", mCallBack, $"${mName}_mousemove"$)
+	UI.OnEvent(mElement, "mouseover", mCallBack, $"${mName}_mouseover"$)
+	UI.OnEvent(mElement, "mouseout", mCallBack, $"${mName}_mouseout"$)
+	UI.OnEvent(mElement, "mouseup", mCallBack, $"${mName}_mouseup"$)
+	UI.OnEvent(mElement, "mousedown", mCallBack, $"${mName}_mousedown"$)
 End Sub
 
 'clear everything from this element
@@ -1032,4 +1042,31 @@ End Sub
 Sub Empty
 	If mElement = Null Then Return
 	mElement.empty
+End Sub
+
+Sub setValue(v As Object)
+	If mElement = Null Then Return
+	mElement.SetValue(v)
+End Sub
+
+Sub getValue As Object
+	If mElement = Null Then Return Null
+	Dim x As Object = mElement.getvalue
+	Return x
+End Sub
+
+Sub setChecked(b As Boolean)
+	If mElement = Null Then Return
+	mElement.SetChecked(b)
+End Sub
+
+Sub getChecked As Boolean
+	If mElement = Null Then Return False
+	Dim x As Boolean = mElement.GetChecked 
+	Return x
+End Sub
+
+Sub AddStyle(k As String, v As String)
+	If mElement = Null Then Return
+	UI.AddStyle(mElement, k, v)
 End Sub

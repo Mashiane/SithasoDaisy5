@@ -5,6 +5,9 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
+#Event: Click (e As BANanoEvent)
+#Event: ImageClick (e As BANanoEvent)
+
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component, enter swiperID
 #DesignerProperty: Key: SwiperId, DisplayName: Swiper Id, FieldType: String, DefaultValue: , Description: Swiper Id
 #DesignerProperty: Key: RefreshSwiper, DisplayName: Refresh Swiper, FieldType: Boolean, DefaultValue: False, Description: Refresh Swiper after this
@@ -302,6 +305,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		setImageAttributes(sImageAttributes)
 		setImageStyles(sImageStyles)
 		setImageClasses(sImageClasses)
+		UI.OnEventByID($"${mName}_image"$, "click", mCallBack, $"${sSwiperId}_imageclick"$)
 	End If
 	
 	If sSwiperId = "" Then Return	
@@ -314,6 +318,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     Dim el As BANanoElement
 	el.Initialize($"#${sSwiperId}"$)
 	swiper.Initialize2("Swiper", Array(el.ToObject, options))
+End Sub
+
+'get the image id
+Sub getImageID As String 
+	Dim s As String = $"${mName}_image"$
+	Return s
 End Sub
 
 'get Image Alt
@@ -349,6 +359,11 @@ End Sub
 'get Raw Image Styles
 Sub getImageStyles As String
 	Return sImageStyles
+End Sub
+
+Sub RemoveImageClasses(s As String)
+	If mElement = Null Then Return
+	If s <> "" Then UI.RemoveClassByID($"${mName}_image"$, s)
 End Sub
 
 'set Raw Image Classes
