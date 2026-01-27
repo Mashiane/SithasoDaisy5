@@ -611,6 +611,13 @@ Sub GetFile As Map
 	End If
 End Sub
 
+Sub GetFileDataURL As String
+	Dim fileObj As Map = BANano.Await(GetFile)
+	If BANano.IsNull(fileObj) Then Return ""
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("fileToDataURL", Array(fileObj)))
+	Return fo
+End Sub
+
 'ensure we can select the same file again
 Sub Nullify
 	If bHasFile = False Then Return
@@ -1009,7 +1016,6 @@ End Sub
 Sub getZIndex As String
 	Return sZIndex
 End Sub
-
 
 'set Has Hamburger
 Sub setHasBurger(b As Boolean)			'ignoredeadcode

@@ -16,7 +16,7 @@ Version=10
 #Event: SearchKeyUp (Value As String)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating|searchbox
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|buttons-floating|searchbox|hidden
 #DesignerProperty: Key: TypeOf, DisplayName: Type, FieldType: String, DefaultValue: text, Description: Type Of, List: dialer|date-picker|date-time-picker|time-picker|email|number|password|search|tel|text|time|url|color-wheel
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
@@ -644,6 +644,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		Case "normal"
 			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="text" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 			sDataTypeOf = ""
+		Case "hidden"
+			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="hidden" class="${xclasses} input ${mName}" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+			sDataTypeOf = ""
+			sTypeOf = "hidden"
 		End Select
 		setTypeOf(sTypeOf)
 		setColor(sColor)
@@ -1201,6 +1205,16 @@ private Sub TogglePassword(e As BANanoEvent)			'ignoredeadcode
 '	UI.OnEventByID($"${mName}_append_icon"$, "click", Me, "TogglePassword")
 End Sub
 
+Sub DefaultPassword
+	If mElement = Null Then Return
+	Dim cicon As String = UI.GetAttr(mElement, "type")
+	Select Case cicon
+	Case "text"
+		mElement.SetAttr("type", "password")
+		UI.SetIconNameByID($"${mName}_append_icon"$, "./assets/eye-solid.svg")
+	End Select
+End Sub
+
 'get Show Eyes
 Sub getShowEyes As Boolean
 	Return bShowEyes
@@ -1288,7 +1302,7 @@ Sub setWidth(s As String)			'ignoredeadcode
 		UI.SetWidthByID($"${mName}_control"$, s)
 	Case "buttons", "label-input", "buttons-floating"
 		UI.SetWidthByID($"${mName}_control"$, s)
-	Case "normal"
+	Case "normal", "hidden"
 		If s <> "" Then UI.SetWidth(mElement, sWidth)
 	End Select
 End Sub
@@ -1469,7 +1483,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisibleByID($"${mName}_control"$, b)
+	Select Case sInputType
+	Case "normal", "hidden"
+		UI.SetVisible(mElement, b)
+	Case Else	
+		UI.SetVisibleByID($"${mName}_control"$, b)
+	End Select	
 End Sub
 'get Visible
 Sub getVisible As Boolean

@@ -12,6 +12,7 @@ Version=10
 #Event: Notification_Click (link As String)
 #Event: TemplateItem_Click (e As BANanoEvent)
 #Event: DarkTheme (e As BANanoEvent)
+#Event: WindowResize (e As BANanoEvent)
 
 Private Sub Class_Globals
 	Public UI As UIShared
@@ -3723,6 +3724,29 @@ Sub NavigateToRootWithParams(params As Map)
 	End If
 End Sub
 
+'navigate to the same page
+Sub NavigateToRootWithParamsSelf(params As Map)
+	Dim shref As String = Banano.Location.GetHref
+	Dim url As String = UI.MvField(shref,1,"?")
+	If params.Size <> 0 Then
+		Dim sparams As String = URLQueryStringFromMap(params)
+		Dim obaseURL As String = $"${url}?${sparams}"$
+		Dim bo As BANanoObject = Banano.Window.RunMethod("open", Array(obaseURL, "_self"))
+		bo.RunMethod("focus", Null)
+	End If
+End Sub
+
+'navigate to the same page
+Sub NavigateToRootWithParamsSelfChange(params As Map)
+	Dim shref As String = Banano.Location.GetHref
+	Dim url As String = UI.MvField(shref,1,"?")
+	If params.Size <> 0 Then
+		Dim sparams As String = URLQueryStringFromMap(params)
+		Dim obaseURL As String = $"${url}?${sparams}"$
+		Banano.Location.Assign(obaseURL)
+	End If
+End Sub
+
 Sub NavigateTo(url As String, params As Map)
 	If Banano.IsNull(params) Then
 		Banano.Location.Assign(url)
@@ -3884,8 +3908,9 @@ Sub JoinIfNotBlank(Delim As String, lst As List) As String
 End Sub
 
 ' Gets the current location of the user
-public Sub GetMyLocation As BANanoGeoPosition
-	Return Banano.Await(Banano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
+public Sub GetMyGeoPosition As BANanoGeoPosition
+	Dim pos As BANanoGeoPosition = Banano.Await(Banano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
+	Return pos
 End Sub
 
 Sub HideFullPhoneNumber(PhoneNumber As String) As String
@@ -3994,4 +4019,72 @@ Sub GetCheckedValueByName(sName As String) As List
 		If l.IndexOf(vChecked) = -1 Then l.Add(vChecked)
 	Next
 	Return l
+End Sub
+
+'update title and description of the page
+Sub SetSEO(stitle As String, sdescription As String)
+	Banano.RunJavascriptMethod("setSEO", Array(stitle, sdescription))
+End Sub
+
+''percentage of x from y
+'Sub Math_Percentage(x As String, y As String) As Int
+'	Dim xperc As Int = math.RunMethod("evaluate", $"round((${x}/${y})*100)"$).result
+'	Return xperc
+'End Sub
+'
+'Sub Math_Expression(svalues As String) As Object
+'	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
+'	Return xperc
+'End Sub
+'
+'Sub Math_ExpressionList(values As List) As Object
+'	Dim svalues As String = SDUIShared.Join("", values)
+'	Dim xperc As Object = math.RunMethod("evaluate", Array(svalues)).result
+'	Return xperc
+'End Sub
+'
+''sum x and y
+'Sub Math_Sum(x As Int, y As Int) As Int
+'	Dim values As List
+'	values.Initialize
+'	values.Add(x)
+'	values.Add(y)
+'	Dim svalues As String = SDUIShared.Join(",", values)
+'	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
+'	Return xperc
+'End Sub
+'
+'Sub Math_SumList(values As List) As Int
+'	Dim svalues As String = SDUIShared.Join(",", values)
+'	Dim xperc As Int = math.RunMethod("evaluate", $"sum(${svalues})"$).result
+'	Return xperc
+'End Sub
+'
+''subtract y from x
+'Sub Math_Subtract(x As Int, y As Int) As Int
+'	Dim xperc As Int = math.RunMethod("evaluate", $"subtract(${x},${y})"$).result
+'	Return xperc
+'End Sub
+'
+''divide x by y
+'Sub Math_Divide(x As Int, y As Int) As Int
+'	Dim xperc As Int = math.RunMethod("evaluate", $"divide(${x},${y})"$).result
+'	Return xperc
+'End Sub
+
+Sub OnWindowResize(Module As Object, MethodName As String)
+	Dim e As BANanoEvent
+	Dim cbResize As BANanoObject = Banano.CallBack(Module, MethodName, Array(e))
+	Banano.Window.AddEventListener("resize", cbResize, True)
+End Sub
+
+Sub GetTableColumnID(tblName As String, colName As String) As String
+	colName = UI.cleanid(colName)
+	tblName = UI.cleanid(tblName)
+	Dim xColName As String = $"${tblName}_${colName}_th"$
+	If Banano.Exists($"#${xColName}"$) Then
+		Return xColName
+	Else
+		Return ""
+	End If
 End Sub

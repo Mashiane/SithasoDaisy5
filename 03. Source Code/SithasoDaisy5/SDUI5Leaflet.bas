@@ -58,9 +58,9 @@ Version=10.2
 #Event: MarkerTooltipClose (e As Map)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: normal, Description: Type Of, List: legend|normal
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: LayerType, DisplayName: Layer Type, FieldType: String, DefaultValue: openstreetmap, Description: Layer Type, List: openstreetmap|google-roadmap|google-satellite|google-hybrid|google-terrain|other
-#DesignerProperty: Key: MapType, DisplayName: Map Type, FieldType: String, DefaultValue: , Description: Map Type, List: dark|light|wheatpaste|streets-basic|comic|outdoors|satellite|streets-satellite|streets|run-bike-hike|pencil|pirates|emerald|high-contrast
-#DesignerProperty: Key: AutoScale, DisplayName: Auto Scale, FieldType: Boolean, DefaultValue: False, Description: Auto Scale
 #DesignerProperty: Key: Geonames, DisplayName: Geonames, FieldType: Boolean, DefaultValue: False, Description: Geonames
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 500px, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 500px, Description: Width
@@ -68,6 +68,16 @@ Version=10.2
 #DesignerProperty: Key: Lng, DisplayName: Lng, FieldType: String, DefaultValue: 0, Description: Lng
 #DesignerProperty: Key: MaxZoom, DisplayName: Max Zoom, FieldType: Int, DefaultValue: 19, Description: Max Zoom
 #DesignerProperty: Key: Zoom, DisplayName: Zoom, FieldType: Int, DefaultValue: 5, Description: Zoom
+#DesignerProperty: Key: CenterFieldSet, DisplayName: Center in FieldSet, FieldType: Boolean, DefaultValue: True, Description: Centered in FieldSet
+#DesignerProperty: Key: CurrentCaption, DisplayName: Current Caption, FieldType: String, DefaultValue: Current Location, Description: Current Caption
+#DesignerProperty: Key: CurrentColor, DisplayName: Current Color, FieldType: String, DefaultValue: primary, Description: Current Color
+#DesignerProperty: Key: CurrentTextColor, DisplayName: Current Text Color, FieldType: String, DefaultValue: white, Description: Current Text Color
+#DesignerProperty: Key: StartTrackingCaption, DisplayName: Start Tracking Caption, FieldType: String, DefaultValue: Start Tracking, Description: Start Tracking Caption
+#DesignerProperty: Key: StartTrackingColor, DisplayName: Start Tracking Color, FieldType: String, DefaultValue: success, Description: Start Tracking Color
+#DesignerProperty: Key: StartTrackingTextColor, DisplayName: Start Tracking Text Color, FieldType: String, DefaultValue: white, Description: Start Tracking Text Color
+#DesignerProperty: Key: StopTrackingCaption, DisplayName: Stop Tracking Caption, FieldType: String, DefaultValue: Stop Tracking, Description: Stop Tracking Caption
+#DesignerProperty: Key: StopTrackingColor, DisplayName: Stop Tracking Color, FieldType: String, DefaultValue: error, Description: Stop Tracking Color
+#DesignerProperty: Key: StopTrackingTextColor, DisplayName: Stop Tracking Text Color, FieldType: String, DefaultValue: white, Description: Stop Tracking Text Color
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -99,10 +109,8 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private bAutoScale As Boolean = False
 	Private bGeonames As Boolean = False
 	Private sHeight As String = "500px"
-	Private sMapType As String = ""
 	Private iMaxZoom As Int = 19
 	Private sWidth As String = "500px"
 	Private iZoom As Int = 5
@@ -122,6 +130,20 @@ Sub Class_Globals
 	Private sTileLayer As String = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
 	Private sAttribution As String = $"&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>"$
 	Private sLayerType As String = "openstreetmap"
+	Private sLabel As String = ""
+	Private sTypeOf As String = "normal"
+	Public CONST TYPEOF_LEGEND As String = "legend"
+	Public CONST TYPEOF_NORMAL As String = "normal"
+	Private bCenterFieldSet As Boolean = True
+	Private sCurrentCaption As String = "Current Location"
+	Private sCurrentColor As String = "primary"
+	Private sCurrentTextColor As String = "white"
+	Private sStartTrackingCaption As String = "Start Tracking"
+	Private sStartTrackingColor As String = "success"
+	Private sStartTrackingTextColor As String = "white"
+	Private sStopTrackingCaption As String = "Stop Tracking"
+	Private sStopTrackingColor As String = "error"
+	Private sStopTrackingTextColor As String = "white"
 	'
 '	Private Const TileLayerType_OpenStreetMap As Int = 1
 '	Private Const TileLayerType_GoogleMapRoadmap As Int = 2
@@ -165,9 +187,19 @@ End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("CurrentCaption", "Current Location")
+	CustProps.Put("CurrentColor", "primary")
+	CustProps.Put("CurrentTextColor", "white")
+	CustProps.Put("StartTrackingCaption", "Start Tracking")
+	CustProps.Put("StartTrackingColor", "success")
+	CustProps.Put("StartTrackingTextColor", "white")
+	CustProps.Put("StopTrackingCaption", "Stop Tracking")
+	CustProps.Put("StopTrackingColor", "error")
+	CustProps.Put("StopTrackingTextColor", "white")
+	CustProps.Put("CenterFieldSet", True)
+	CustProps.Put("Label", "")
+	CustProps.Put("TypeOf", "normal")
 	CustProps.Put("LayerType", "openstreetmap")
-	CustProps.Put("MapType", "")
-	CustProps.Put("AutoScale", False)
 	CustProps.Put("Geonames", False)
 	CustProps.Put("Height", "500px")
 	CustProps.Put("Width", "500px")
@@ -230,7 +262,12 @@ Sub setVisible(b As Boolean)
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sTypeOf
+	Case "normal"	
+		UI.SetVisible(mElement, b)
+	Case "legend"
+		UI.SetVisiblebyid($"${mName}_control"$, b)
+	End Select		
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -339,14 +376,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		bAutoScale = Props.GetDefault("AutoScale", False)
-		bAutoScale = UI.CBool(bAutoScale)
 		bGeonames = Props.GetDefault("Geonames", False)
 		bGeonames = UI.CBool(bGeonames)
 		sHeight = Props.GetDefault("Height", "500px")
 		sHeight = UI.CStr(sHeight)
-		sMapType = Props.GetDefault("MapType", "")
-		sMapType = UI.CStr(sMapType)
 		iMaxZoom = Props.GetDefault("MaxZoom", 19)
 		iMaxZoom = UI.CInt(iMaxZoom)
 		sWidth = Props.GetDefault("Width", "500px")
@@ -359,6 +392,30 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		dLng = UI.CDbl(dLng)
 		sLayerType = Props.GetDefault("LayerType", "openstreetmap")
 		sLayerType = UI.CStr(sLayerType)
+		sLabel = Props.GetDefault("Label", "")
+		sLabel = UI.CStr(sLabel)
+		sTypeOf = Props.GetDefault("TypeOf", "normal")
+		sTypeOf = UI.CStr(sTypeOf)
+		bCenterFieldSet = Props.GetDefault("CenterFieldSet", True)
+		bCenterFieldSet = UI.CBool(bCenterFieldSet)
+		sCurrentCaption = Props.GetDefault("CurrentCaption", "Current Location")
+		sCurrentCaption = UI.CStr(sCurrentCaption)
+		sCurrentColor = Props.GetDefault("CurrentColor", "primary")
+		sCurrentColor = UI.CStr(sCurrentColor)
+		sCurrentTextColor = Props.GetDefault("CurrentTextColor", "white")
+		sCurrentTextColor = UI.CStr(sCurrentTextColor)
+		sStartTrackingCaption = Props.GetDefault("StartTrackingCaption", "Start Tracking")
+		sStartTrackingCaption = UI.CStr(sStartTrackingCaption)
+		sStartTrackingColor = Props.GetDefault("StartTrackingColor", "success")
+		sStartTrackingColor = UI.CStr(sStartTrackingColor)
+		sStartTrackingTextColor = Props.GetDefault("StartTrackingTextColor", "white")
+		sStartTrackingTextColor = UI.CStr(sStartTrackingTextColor)
+		sStopTrackingCaption = Props.GetDefault("StopTrackingCaption", "Stop Tracking")
+		sStopTrackingCaption = UI.CStr(sStopTrackingCaption)
+		sStopTrackingColor = Props.GetDefault("StopTrackingColor", "error")
+		sStopTrackingColor = UI.CStr(sStopTrackingColor)
+		sStopTrackingTextColor = Props.GetDefault("StopTrackingTextColor", "white")
+		sStopTrackingTextColor = UI.CStr(sStopTrackingTextColor)
 	End If
 	'
 	If sHeight <> "" Then UI.AddStyleDT("height", sHeight)
@@ -375,7 +432,212 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	Select Case sTypeOf
+	Case "normal"	
+		mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
+	Case "legend"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<div id="${mName}" class="bg-base-100 m-2 w-[100%] h-[100%]" style="margin:0;padding:0"></div>
+				<div class="grid grid-cols-1 md:grid-cols-3 mt-2 gap-2">
+					<button id="${mName}_current" class="btn">${sCurrentCaption}</button>
+        			<button id="${mName}_start" class="btn">${sStartTrackingCaption}</button>
+					<button id="${mName}_stop" class="btn">${sStopTrackingCaption}</button>
+        		</div>
+			</fieldset>"$).Get("#" & mName)
+			setCenterFieldSet(bCenterFieldSet)
+			setCurrentColor(sCurrentColor)
+			setCurrentTextColor(sCurrentTextColor)
+			setStopTrackingColor(sStopTrackingColor)
+			setStopTrackingTextColor(sStopTrackingTextColor)
+			setStartTrackingColor(sStartTrackingColor)
+			setStartTrackingTextColor(sStartTrackingTextColor)
+			setCurrentCaption(sCurrentCaption)
+			setStartTrackingCaption(sStartTrackingCaption)
+			setStopTrackingCaption(sStopTrackingCaption)
+			UI.OnEventByID($"${mName}_current"$, "click", Me, "GetCurrentPosition")
+			UI.OnEventByID($"${mName}_start"$, "click", Me, "StartTracking")
+			UI.OnEventByID($"${mName}_stop"$, "click", Me, "StopTracking")
+	End Select
+	Refresh
+End Sub
+
+Sub setCurrentCaption(s As String)				'ignoredeadcode
+	sCurrentCaption = s
+	CustProps.Put("CurrentCaption", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_current"$, s)
+	Select Case s
+	Case ""
+		UI.SetVisibleByID($"${mName}_current"$, False)
+	Case Else
+		UI.SetVisibleByID($"${mName}_current"$, True)
+	End Select
+End Sub
+
+Sub getCurrentCaption As String
+	Return sCurrentCaption
+End Sub
+
+Sub setStartTrackingCaption(s As String)				'ignoredeadcode
+	sStartTrackingCaption = s
+	CustProps.Put("StartTrackingCaption", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_start"$, s)
+	Select Case s
+	Case ""
+		UI.SetVisibleByID($"${mName}_start"$, False)
+	Case Else
+		UI.SetVisibleByID($"${mName}_start"$, True)
+	End Select
+End Sub
+
+Sub getStartTrackingCaption As String
+	Return sStartTrackingCaption
+End Sub
+
+Sub setStopTrackingCaption(s As String)				'ignoredeadcode
+	sStopTrackingCaption = s
+	CustProps.Put("StopTrackingCaption", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_stop"$, s)
+	Select Case s
+	Case ""
+		UI.SetVisibleByID($"${mName}_stop"$, False)
+	Case Else
+		UI.SetVisibleByID($"${mName}_stop"$, True)
+	End Select
+End Sub
+
+Sub getStopTrackingCaption As String
+	Return sStopTrackingCaption
+End Sub
+
+
+private Sub GetCurrentPosition(e As BANanoEvent)
+	e.PreventDefault
+	Try
+		Dim pos As BANanoGeoPosition = BANano.Await(BANano.GetGeoPosition(CreateMap("enableHighAccuracy": True, "timeout": 5000, "maximumAge": 0)))
+		AddMarker($"${mName}iamhere"$, pos.Latitude, pos.Longitude)
+		PanTo(pos.Latitude, pos.Longitude)
+		InvalidateSize
+	Catch
+	End Try			'ignore
+End Sub
+
+
+'set Current Color
+Sub setCurrentColor(s As String)						'ignoredeadcode
+	sCurrentColor = s
+	CustProps.put("CurrentColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetColorByID($"${mName}_current"$, "color", "btn", s)
+End Sub
+'set Current Text Color
+Sub setCurrentTextColor(s As String)						'ignoredeadcode
+	sCurrentTextColor = s
+	CustProps.put("CurrentTextColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorbyid($"${mName}_current"$, s)
+End Sub
+'set Start Tracking Color
+Sub setStartTrackingColor(s As String)					'ignoredeadcode
+	sStartTrackingColor = s
+	CustProps.put("StartTrackingColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetColorByID($"${mName}_start"$, "color", "btn", s)
+End Sub
+'set Start Tracking Text Color
+Sub setStartTrackingTextColor(s As String)					'ignoredeadcode
+	sStartTrackingTextColor = s
+	CustProps.put("StartTrackingTextColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorbyid($"${mName}_start"$, s)
+End Sub
+'set Stop Tracking Color
+Sub setStopTrackingColor(s As String)						'ignoredeadcode
+	sStopTrackingColor = s
+	CustProps.put("StopTrackingColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetColorByID($"${mName}_stop"$, "color", "btn", s)
+End Sub
+'set Stop Tracking Text Color
+Sub setStopTrackingTextColor(s As String)					'ignoredeadcode
+	sStopTrackingTextColor = s
+	CustProps.put("StopTrackingTextColor", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetTextColorbyid($"${mName}_stop"$, s)
+End Sub
+'get Current Color
+Sub getCurrentColor As String
+	Return sCurrentColor
+End Sub
+'get Current Text Color
+Sub getCurrentTextColor As String
+	Return sCurrentTextColor
+End Sub
+'get Start Tracking Color
+Sub getStartTrackingColor As String
+	Return sStartTrackingColor
+End Sub
+'get Start Tracking Text Color
+Sub getStartTrackingTextColor As String
+	Return sStartTrackingTextColor
+End Sub
+'get Stop Tracking Color
+Sub getStopTrackingColor As String
+	Return sStopTrackingColor
+End Sub
+'get Stop Tracking Text Color
+Sub getStopTrackingTextColor As String
+	Return sStopTrackingTextColor
+End Sub
+
+Sub setCenterFieldSet(b As Boolean)			'ignoredeadcode
+	bCenterFieldSet = b
+	CustProps.Put("CenterFieldSet", b)
+	If mElement = Null Then Return
+	If sTypeOf = "normal" Then Return
+	UI.AddClassByID($"${mName}_control"$, "flex flex-col text-center align-center justify-center")
+End Sub
+
+Sub getCenterFieldSet As Boolean
+	Return bCenterFieldSet
+End Sub
+
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.Put("LabeL", s)
+	If mElement = Null Then Return
+	If sTypeOf <> "legend" Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabel As String
+	Return sLabel
+End Sub
+
+'set Type Of
+'options: legend|normal
+Sub setTypeOf(s As String)
+	sTypeOf = s
+	CustProps.put("TypeOf", s)
+End Sub
+
+'get Type Of
+Sub getTypeOf As String
+	Return sTypeOf
+End Sub
+
+Sub InvalidateSize
+	If mElement = Null Then Return
+	MapObject.RunMethod("invalidateSize", Null)
+End Sub
+
+Sub Refresh
+	If mElement = Null Then Return
+	mElement.Empty
 	'initialize the leaflet object
 	L.Initialize("L")
 	Dim extraData As Map = CreateMap()
@@ -470,7 +732,7 @@ Sub SetCircleStyle(markerID As String, m As Map)
 	MarkerObject.RunMethod("setStyle", BANano.FromJson(JsonString))
 End Sub
 
-'Pans the map to a given center (Lat/Lng).
+'Smoothly move (pan) the map’s center to a new geographic coordinate without changing the current zoom level.
 Sub PanTo(Lat As Double, Lng As Double)
 	MapObject.RunMethod("panTo", L.RunMethod("latLng", Array(Lat, Lng)))
 End Sub
@@ -482,6 +744,7 @@ Sub setLayerType(s As String)				'ignoredeadcode
 	Select Case sLayerType
 	Case "openstreetmap"
 		sTileLayer = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+		sAttribution = $"&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>"$
 	Case "google-roadmap"
 		sTileLayer = "http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
 	Case "google-satellite"
@@ -598,12 +861,6 @@ Sub RemovePopUp(markerID As String)
 	End If
 End Sub
 
-'set Auto Scale
-Sub setAutoScale(b As Boolean)
-	bAutoScale = b
-	CustProps.put("AutoScale", b)
-End Sub
-
 'set Geonames
 Sub setGeonames(b As Boolean)
 	bGeonames = b
@@ -616,43 +873,6 @@ Sub setHeight(s As String)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.AddStyle(mElement, "height", s)
-End Sub
-
-'set Map Type
-Sub setMapType(s As String)
-	sMapType = s
-	xMapType = s
-	CustProps.put("MapType", s)
-	Select Case sMapType
-	Case "dark"
-		xMapType ="mapbox.dark"
-	Case "light"
-		xMapType = "mapbox.light"
-	Case "wheatpaste"
-		xMapType= "mapbox.wheatpaste"
-	Case "streets-basic"
-		xMapType = "mapbox.streets-basic"
-	Case "comic"
-		xMapType = "mapbox.comic"
-	Case "outdoors"
-		xMapType = "mapbox.outdoors"
-	Case "satellite"
-		xMapType = "mapbox.satellite"
-	Case "streets-satellite"
-		xMapType = "mapbox.streets-satellite"
-	Case "streets"
-		xMapType = "mapbox.streets"
-	Case "run-bike-hike"
-		xMapType = "mapbox.run-bike-hike"
-	Case "pencil"
-		xMapType = "mapbox.pencil"
-	Case "pirates"
-		xMapType = "mapbox.pirates"
-	Case "emerald"
-		xMapType = "mapbox.emerald"
-	Case "high-contrast"
-		xMapType = "mapbox.high-contrast"
-	End Select
 End Sub
 
 'set Max Zoom
@@ -677,11 +897,6 @@ Sub setZoom(i As Int)
 	MapObject.RunMethod("setZoom", iZoom)
 End Sub
 
-'get Auto Scale
-Sub getAutoScale As Boolean
-	Return bAutoScale
-End Sub
-
 'get Geonames
 Sub getGeonames As Boolean
 	Return bGeonames
@@ -689,10 +904,6 @@ End Sub
 'get Height
 Sub getHeight As String
 	Return sHeight
-End Sub
-'get Map Type
-Sub getMapType As String
-	Return sMapType
 End Sub
 'get Max Zoom
 Sub getMaxZoom As Int
@@ -1231,233 +1442,6 @@ Public Sub SetPolygonPopup(markerID As String, Popup As String)  As SDUI5Leaflet
 	End If
 	Return Me
 End Sub
-
-''add a polyline
-'Sub AddPolyLine(polyLineID As String, polyLineTitle As String, polyLinefitBounds As Boolean,polyLineColor As String, polyLineWeight As String, polyLineOpacity As String, polyLineFillColor As String, polyLineFillOpacity As String)
-'	polyLineID = polyLineID.tolowercase
-'	Dim pe As LL_PolyLine
-'	pe.Initialize
-'	pe.id = polyLineID
-'	pe.Title = polyLineTitle
-'	pe.Color = polyLineColor
-'	pe.Weight = polyLineWeight
-'	pe.Opacity = polyLineOpacity
-'	pe.FillColor = polyLineFillColor
-'	pe.FillOpacity = polyLineFillOpacity
-'	pe.fitBounds = polyLinefitBounds
-'	pe.points.Initialize
-'	polylines.Put(polyLineID,pe)
-'End Sub
-
-''add a simple polyline marker
-'Sub AddPolyLineMarker(polyLineID As String, markerLat As String, markerLng As String)
-'	polyLineID = polyLineID.tolowercase
-'	If polylines.ContainsKey(polyLineID) Then
-'		Dim mark As Map = CreateMap("lat": markerLat, "lng": markerLng)
-'		Dim pe As LL_PolyLine = polylines.Get(polyLineID)
-'		pe.points.Add(mark)
-'		polylines.Put(polyLineID,pe)
-'	End If
-'End Sub
-
-'build the polygons
-'private Sub BuildPolygons() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = polygons.Size - 1
-'	For rsCnt = 0 To rsTot
-'		Dim pe As LL_PolyLine = polygons.GetValueAt(rsCnt)
-'		Dim polid As String = polygons.GetKeyAt(rsCnt)
-'		Dim marks As List = pe.points
-''		Dim pLine As String = $"var p${polid} = L.polygon([${BuildPolygonMarkers(marks)}],{opacity:${pe.Opacity},color:'${pe.Color}',fillColor:'${pe.FillColor}',fillOpacity:${pe.FillOpacity},weight:${pe.Weight}}).addTo(map${ID});"$
-''		sb.Append(pLine).Append(CRLF)
-''		If pe.Title.Length > 0 Then
-''			pLine = $"p${polid}.bindPopup("${pe.Title}");"$
-''			sb.Append(pLine).Append(CRLF)
-''		End If
-''		'ensure the popup is opened where necessary
-''		If OpenPopUpMap.ContainsKey(polid) Then
-''			Dim ml As String = $"p${polid}.openPopup();"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-''		If pe.fitBounds = True Then
-''			sb.Append($"map${ID}.fitBounds(p${polid}.getBounds());"$).Append(CRLF)
-''		End If
-'	Next
-'	Return sb.tostring
-'End Sub
-
-'build the polylines
-'private Sub BuildPolyLines() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = polylines.Size - 1
-'	For rsCnt = 0 To rsTot
-'		Dim pe As LL_PolyLine = polylines.GetValueAt(rsCnt)
-'		Dim polid As String = polylines.GetKeyAt(rsCnt)
-'		Dim marks As List = pe.points
-''		Dim pLine As String = $"var pl${polid} = L.polyline([${BuildPolygonMarkers(marks)}],{opacity:${pe.Opacity},color:'${pe.Color}',fillColor:'${pe.FillColor}',fillOpacity:${pe.FillOpacity},weight:${pe.Weight}}).addTo(map${ID});"$
-''		sb.Append(pLine).Append(CRLF)
-''		If pe.Title.Length > 0 Then
-''			pLine = $"pl${polid}.bindPopup("${pe.Title}");"$
-''			sb.Append(pLine).Append(CRLF)
-''		End If
-''		'ensure the popup is opened where necessary
-''		If OpenPopUpMap.ContainsKey(polid) Then
-''			Dim ml As String = $"pl${polid}.openPopup();"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-''		If pe.fitBounds = True Then
-''			sb.Append($"map${ID}.fitBounds(pl${polid}.getBounds());"$).Append(CRLF)
-''		End If
-'	Next
-'	Return sb.tostring
-'End Sub
-
-
-'build the polygon marker points
-'private Sub BuildPolygonMarkers(marks As List) As String
-'	Dim themMarks As List
-'	themMarks.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = marks.Size - 1
-'	For rsCnt = 0 To rsTot
-'		Dim mark As Map = marks.Get(rsCnt)
-'		Dim lat As String = mark.Get("lat")
-'		Dim lng As String = mark.Get("lng")
-'		Dim pm As String = $"[${lat},${lng}]"$
-'		themMarks.Add(pm)
-'	Next
-''	Return Join(",",themMarks)
-'End Sub
-
-
-'build the markers for the map
-'private Sub BuildMarkers() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = markers.Size - 1
-'	For rsCnt = 0 To rsTot
-'		Dim mt As LL_Marker = markers.GetValueAt(rsCnt)
-''		'Dim drag As String = Page.iif(mt.MarkerDraggable=True,"true","false")
-''		If mt.MarkerHasIcon = False Then
-''			If UseMakiMarkers = True Then
-''				Dim ml As String = $"var i${mt.markerid} = L.MakiMarkers.icon({icon: null, color: null});"$
-''				sb.Append(ml).Append(CRLF)
-''				Dim ml As String = $"var m${mt.MarkerId} = L.marker([${mt.MarkerLatitude}, ${mt.MarkerLongitude}], {icon: i${mt.MarkerId}}).addTo(map${ID});"$
-''				sb.Append(ml).Append(CRLF)
-''			Else
-''				Dim ml As String = $"var m${mt.MarkerId} = L.marker([${mt.MarkerLatitude}, ${mt.MarkerLongitude}]).addTo(map${ID});"$
-''				sb.Append(ml).Append(CRLF)
-''			End If
-''		Else
-''			If mt.MarkerIcon = "" Then mt.MarkerIcon = "null"
-''			If mt.markercolor = "" Then mt.MarkerColor = "null"
-''			If mt.MarkerIconSize = "" Then mt.MarkerIconSize = "null"
-''			Dim ml As String = $"var i${mt.markerid} = L.MakiMarkers.icon({icon: "${mt.markericon}",color: "${mt.markercolor}", size: "${mt.MarkerIconSize}"});"$
-''			ml = ml.Replace(QUOTE & "null" & QUOTE, "null")
-''			sb.Append(ml).Append(CRLF)
-''			Dim ml As String = $"var m${mt.MarkerId} = L.marker([${mt.MarkerLatitude}, ${mt.MarkerLongitude}], {icon: i${mt.MarkerId}}).addTo(map${ID});"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-''		If mt.MarkerTitle.Length > 0 Then
-''			ml = $"m${mt.MarkerId}.bindPopup("${mt.MarkerTitle}");"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-''		'ensure the popup is opened where necessary
-''		If OpenPopUpMap.ContainsKey(mt.MarkerId) Then
-''			Dim ml As String = $"m${mt.markerid}.openPopup();"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-'	Next
-'	Return sb.tostring
-'End Sub
-
-'build the popups for the map
-'private Sub BuildPopUps() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = popups.Size - 1
-'	For rsCnt = 0 To rsTot
-''		Dim mt As UOEMBMarkerType = popups.GetValueAt(rsCnt)
-''		Dim ml As String = $"var pop${mt.MarkerId} = L.popup().setLatLng([${mt.MarkerLatitude}, ${mt.MarkerLongitude}]).setContent("${mt.MarkerTitle}").openOn(map${ID});"$
-''		sb.Append(ml).Append(CRLF)
-''	Next
-'	Return sb.tostring
-'End Sub
-
-'build the circles
-'private Sub BuildCircles() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	Dim rsCnt As Int
-'	Dim rsTot As Int = circles.Size - 1
-'	For rsCnt = 0 To rsTot
-''		Dim mc As UOEMBCircle = circles.GetValueAt(rsCnt)
-''		Dim mmc As String = $"var c${mc.CircleId} = L.circle([${mc.CircleLatitude}, ${mc.CircleLongitude}],{color:'${mc.CircleColor}',fillColor:'${mc.CircleFillColor}',fillOpacity:${mc.CircleFillOpacity},radius:${mc.CircleRadius},weight:${mc.CircleWeight}}).addTo(map${ID});"$
-''		sb.Append(mmc).Append(CRLF)
-''		If mc.circletitle.Length > 0 Then
-''			mmc = $"c${mc.circleid}.bindPopup("${mc.circletitle}");"$
-''			sb.Append(mmc).Append(CRLF)
-''		End If
-''		'ensure the popup is opened where necessary
-''		If OpenPopUpMap.ContainsKey(mc.CircleId) Then
-''			Dim ml As String = $"c${mc.CircleId}.openPopup();"$
-''			sb.Append(ml).Append(CRLF)
-''		End If
-'	Next
-'	Return sb.tostring
-'End Sub
-
-'build the code to geolocate user location
-'private Sub BuildGeoLocate() As String
-'	Dim script As String = $"function onLocationFound${ID}(e) {
-'		var radius = e.accuracy / 2;
-'        var location = e.latlng
-'        L.marker(location).addTo(map${ID})
-'        L.circle(location, radius).addTo(map${ID});
-'		$('#${txtBox}').val(e.latlng);  
-'	}
-'	function onLocationError${ID}(e) {
-'	}
-'	map${ID}.on('locationfound', onLocationFound${ID});
-'	map${ID}.on('locationerror', onLocationError${ID});
-'	map${ID}.locate({setView: true, maxZoom: ${MaxZoom}});"$
-'	Return script
-'End Sub
-
-'build the shapefiles
-'private Sub BuildShapeFiles() As String
-'	Dim sb As StringBuilder
-'	sb.Initialize
-'	For Each shpKey As String In shapeFiles.Keys
-'		Dim shpFile As String = shapeFiles.Get(shpKey)
-'		Dim script As String = $"var shpfile${shpKey} = new L.Shapefile('${shpFile}');
-'		shpfile${shpKey}.addTo(map${ID});"$
-'		
-'		
-'		Dim script As String = $"var geo${shpKey} = L.geoJson({features:[]},{onEachFeature:function popUp(f,l){
-'    		var out = [];
-'    		if (f.properties){
-'        		for(var key in f.properties){
-'            	out.push(key+": "+f.properties[key]);
-'        }
-'        l.bindPopup(out.join("<br />"));
-'    }
-'}}).addTo(map${ID});
-'      var base${shpKey} = '${shpFile}';
-'		shp(base${shpKey}).then(function(data){
-'		geo${shpKey}.addData(data);
-'		});"$
-'		sb.Append(script).Append(CRLF)
-'	Next
-'	Return sb.tostring
-'End Sub
-
 
 'Binds an Event to the map.
 private Sub BindEvent(Event As String, EventHandler As Object, Callback As String)

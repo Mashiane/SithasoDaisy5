@@ -848,6 +848,12 @@ Sub GetFile As Map
 	End If
 End Sub
 
+Sub GetFileDataURL As String
+	Dim fileObj As Map = BANano.Await(GetFile)
+	If BANano.IsNull(fileObj) Then Return ""
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("fileToDataURL", Array(fileObj)))
+	Return fo
+End Sub
 
 '<code>
 'Sub tblName_refresh (e As BANanoEvent)

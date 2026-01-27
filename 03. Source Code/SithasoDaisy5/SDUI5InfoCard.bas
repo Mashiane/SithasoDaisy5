@@ -385,16 +385,6 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End Select
 		
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
-	'
-	Options.put("decimal", sDecimal)
-	Options.put("duration", UI.CInt(sDuration))
-	Options.put("prefix", sPrefix)
-	Options.put("separator", sSeparator)
-	Options.put("suffix", sSuffix)
-	Options.Put("startVal", UI.CInt(sStartFrom))
-	Options.Put("useEasing", True)
-	Options.put("decimalPlaces", UI.CInt(sDecimalPlaces))
-	Options.put("useGrouping", bUseGrouping)
 	
 	setInforType(sInforType)
 	setEffect(sEffect)
@@ -444,6 +434,17 @@ End Sub
 
 'executes the countUp ONLY
 Sub Refresh						'ignoredeadcode
+	Options.Initialize 
+	Options.put("decimal", sDecimal)
+	Options.put("duration", UI.CInt(sDuration))
+	Options.put("prefix", sPrefix)
+	Options.put("separator", sSeparator)
+	Options.put("suffix", sSuffix)
+	Options.Put("startVal", UI.CInt(sStartFrom))
+	Options.Put("useEasing", True)
+	Options.put("decimalPlaces", UI.CInt(sDecimalPlaces))
+	Options.put("useGrouping", bUseGrouping)
+	
 	If bAnimateCounter = False Then Return
 	Dim eKey As String = $"${mName}_value"$
 	sValue = UI.CInt(sValue)
@@ -455,7 +456,7 @@ End Sub
 Sub setDecimalPlaces(s As String)
 	sDecimalPlaces = s
 	CustProps.put("DecimalPlaces", s)
-	Options.put("decimalPlaces", UI.CInt(s))
+	'Options.put("decimalPlaces", UI.CInt(s))
 End Sub
 
 'set Effect
@@ -470,7 +471,7 @@ End Sub
 Sub setUseGrouping(b As Boolean)
 	bUseGrouping = b
 	CustProps.put("UseGrouping", b)
-	Options.put("useGrouping", b)
+	'Options.put("useGrouping", b)
 End Sub
 'get Decimal Places
 Sub getDecimalPlaces As String
@@ -501,13 +502,13 @@ End Sub
 Sub setDecimal(s As String)
 	sDecimal = s
 	CustProps.put("Decimal", s)
-	Options.put("decimal", s)
+	'Options.put("decimal", s)
 End Sub
 'set Duration
 Sub setDuration(s As String)
 	sDuration = s
 	CustProps.put("Duration", s)
-	Options.put("duration", UI.CInt(s))
+	'Options.put("duration", UI.CInt(s))
 End Sub
 'set Icon
 Sub setIcon(s As String)				'ignoredeadcode
@@ -557,25 +558,25 @@ End Sub
 Sub setPrefix(s As String)
 	sPrefix = s
 	CustProps.put("Prefix", s)
-	Options.put("prefix", s)
+	'Options.put("prefix", s)
 End Sub
 'set Separator
 Sub setSeparator(s As String)
 	sSeparator = s
 	CustProps.put("Separator", s)
-	Options.put("separator", s)
+	'Options.put("separator", s)
 End Sub
 'set Start From
 Sub setStartFrom(s As String)
 	sStartFrom = s
 	CustProps.put("StartFrom", s)
-	Options.put("startVal", UI.CInt(s))
+	'Options.put("startVal", UI.CInt(s))
 End Sub
 'set Suffix
 Sub setSuffix(s As String)
 	sSuffix = s
 	CustProps.put("Suffix", s)
-	Options.put("suffix", s)
+	'Options.put("suffix", s)
 End Sub
 'set Text Color
 Sub setTextColor(s As String)			'ignoredeadcode

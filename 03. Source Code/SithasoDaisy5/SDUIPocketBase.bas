@@ -4959,6 +4959,47 @@ Sub CREATE_USER(profile As Map) As Map
 	End Try			' ignore
 End Sub
 
+Sub CREATE_USER_FORM As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${UsersCollectionName}.CREATE_USER_FORM"$)
+	End If
+	UserProfile.Initialize
+	UserProfile.size = 0
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
+
+		'create the record
+		Dim opt As Map = CreateMap()
+		opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.${UsersCollectionName}.CREATE_USER(${BANano.ToJson(opt)})"$)
+		End If
+		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("create", Array(formData, opt)))
+		If res.ContainsKey("id") Then
+			UserProfile.id = res.GetDefault("id", "")
+			UserProfile.email = res.GetDefault("email","")
+			UserProfile.avatar = res.GetDefault("avatar","")
+			UserProfile.name = res.GetDefault("name","")
+			UserProfile.verified = res.GetDefault("verified",False)
+			UserProfile.username = res.GetDefault("username","")
+			UserProfile.idnumber = res.GetDefault("idnumber", "")
+			UserProfile.size = 7
+			Return res
+		Else
+			Return Null
+		End If
+	Catch
+		Log($"CREATE_USER_FORM: ${LastException.message}"$)
+		Return Null
+	End Try			' ignore
+End Sub
+
 '<code>
 'dim uprofile As Map = BANano.Await(pb.CHANGE_USER_PASSWORD(pid, "newPassword", "confirmPassword"))
 '</code>
@@ -5470,6 +5511,38 @@ Sub UPDATE_USER(id As String, profile As Map) As Map
 		Return res
 	Catch
 		Log($"UPDATE_USER: ${LastException.message}"$)
+		Return Null
+	End Try			' ignore
+End Sub
+'
+'<code>
+'dim pid As string = pb.UserProfile.id
+'dim uuser As Map = CreateMap()
+'uuser.put("name", "")
+'dim uprofile As Map = BANano.Await(pb.UPDATE_USER(pid, uuser))
+'</code>
+Sub UPDATE_USER_FORM(id As String) As Map
+	If ShowLog Then
+		Log($"SDUIPocketBase.${UsersCollectionName}.UPDATE_USER_FORM(${id})"$)
+	End If
+	Try
+		Dim qflds As String = Join(",", flds)
+		Dim qexpand As String = Join(",", expand)
+
+		Dim opt As Map = CreateMap()
+		opt.Put("cache", "no-store")
+		If headers.Size <> 0 Then
+			opt.Put("headers", headers)
+		End If
+		If qflds <> "" Then opt.Put("fields", qflds)
+		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"SDUIPocketBase.UPDATE_USER(${BANano.ToJson(opt)})"$)
+		End If
+		Dim res As Map = BANano.Await(client.RunMethod("collection", UsersCollectionName).RunMethod("update", Array(id, formData,opt)))
+		Return res
+	Catch
+		Log($"UPDATE_USER_FORM: ${LastException.message}"$)
 		Return Null
 	End Try			' ignore
 End Sub

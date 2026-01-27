@@ -561,7 +561,7 @@ public Sub BuildExClass() As String
 	Return xStyle
 End Sub
 
-private Sub BuildStyles(o As Map) As String
+Sub BuildStyles(o As Map) As String
 	Dim colStyle As StringBuilder
 	colStyle.Initialize
 	'

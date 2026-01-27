@@ -9,11 +9,14 @@ Version=10.2
 '
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: normal, Description: Type Of, List: legend|normal
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: SithasoDaisy5, Description: Text
 #DesignerProperty: Key: ColorDark, DisplayName: Color Dark, FieldType: String, DefaultValue: #000000, Description: Color Dark
 #DesignerProperty: Key: ColorLight, DisplayName: Color Light, FieldType: String, DefaultValue: #ffffff, Description: Color Light
 #DesignerProperty: Key: CorrectLevel, DisplayName: Correct Level, FieldType: String, DefaultValue: H, Description: Correct Level, List: H|L|M|Q
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: 200, Description: Size, List: 100|200|300|400|500|600|700
+#DesignerProperty: Key: CenterFieldSet, DisplayName: Center in FieldSet, FieldType: Boolean, DefaultValue: True, Description: Centered in FieldSet
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 #DesignerProperty: Key: RoundedBox, DisplayName: Rounded Box, FieldType: Boolean, DefaultValue: False, Description: Rounded Box
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -67,6 +70,11 @@ Sub Class_Globals
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = "none"
 	Private QRCode As BANanoObject
+	Private sLabel As String = ""
+	Private sTypeOf As String = "normal"
+	Public CONST TYPEOF_LEGEND As String = "legend"
+	Public CONST TYPEOF_NORMAL As String = "normal"
+	Private bCenterFieldSet As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -81,13 +89,14 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mName = UI.CleanID(Name)
 	mCallBack = Callback
 	CustProps.Initialize
-	BANano.DependsOnAsset("toastui-chart.min.css")
-	BANano.DependsOnAsset("toastui-chart.min.js")
 	SetDefaults
 End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("CenterFieldSet", True)
+	CustProps.Put("Label", "")
+	CustProps.Put("TypeOf", "normal")
 	CustProps.Put("Text", "SithasoDaisy5")
 	CustProps.Put("ColorDark", "#000000")
 	CustProps.Put("ColorLight", "#ffffff")
@@ -146,11 +155,16 @@ Public Sub getHere() As String
 	Return $"#${mName}"$
 End Sub
 'set Visible
-Sub setVisible(b As Boolean)
+Sub setVisible(b As Boolean)			'ignoredeadcode
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sTypeOf
+	Case "normal"
+		UI.SetVisible(mElement, b)
+	Case Else
+		UI.SetVisibleByID($"${mName}_control"$, b)			
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -265,7 +279,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		'UI.ExcludeVisible = True
+		UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sColorDark = Props.GetDefault("ColorDark", "#000000")
 		sColorDark = UI.CStr(sColorDark)
@@ -283,10 +297,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sLabel = Props.GetDefault("Label", "")
+		sLabel = UI.CStr(sLabel)
+		sTypeOf = Props.GetDefault("TypeOf", "normal")
+		sTypeOf = UI.CStr(sTypeOf)
+		bCenterFieldSet = Props.GetDefault("CenterFieldSet", True)
+		bCenterFieldSet = UI.CBool(bCenterFieldSet)
 	End If
 	'
-	UI.AddWidthDT($"${sSize}px"$)
-	UI.AddHeightDT($"${sSize}px"$)
 	If sRounded <> "" Then UI.AddAttrDT("rounded", sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -302,8 +320,58 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"<div id="${mName}" style="${xstyles}" ${xattrs} class="${xclasses} m-auto flex flex-col text-center align-center justify-center bg-base-100"></div>"$).Get("#" & mName)
+	Select Case sTypeOf
+	Case "normal"
+		mElement = mTarget.Append($"<div id="${mName}" style="${xstyles}" ${xattrs} class="${xclasses} m-auto flex flex-col text-center align-center justify-center bg-base-100"></div>"$).Get("#" & mName)
+	Case "legend"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<div id="${mName}" class="bg-base-100 m-2"></div>
+			</fieldset>"$).Get("#" & mName)
+	End Select
+	setSize(sSize)
+	setCenterFieldSet(bCenterFieldSet)
+	setVisible(bVisible)
 	Refresh
+End Sub
+
+Sub setCenterFieldSet(b As Boolean)			'ignoredeadcode
+	bCenterFieldSet = b
+	CustProps.Put("CenterFieldSet", b)
+	If mElement = Null Then Return
+	If sTypeOf = "normal" Then Return
+	UI.AddClassByID($"${mName}_control"$, "flex text-center align-center justify-center")
+End Sub
+
+Sub getCenterFieldSet As Boolean
+	Return bCenterFieldSet
+End Sub
+
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.Put("LabeL", s)
+	If mElement = Null Then Return
+	If sTypeOf <> "legend" Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabel As String
+	Return sLabel
+End Sub
+
+
+
+'set Type Of
+'options: legend|normal
+Sub setTypeOf(s As String)
+	sTypeOf = s
+	CustProps.put("TypeOf", s)
+End Sub
+
+'get Type Of
+Sub getTypeOf As String
+	Return sTypeOf
 End Sub
 
 'make QR code
@@ -425,9 +493,12 @@ Sub setCorrectLevel(s As String)
 End Sub
 'set Size
 'options: 100|200|300|400|500|600|700
-Sub setSize(s As String)
+Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
+	If mElement = Null Then Return
+	UI.AddWidthDT($"${sSize}px"$)
+	UI.AddHeightDT($"${sSize}px"$)
 End Sub
 'get Color Dark
 Sub getColorDark As String

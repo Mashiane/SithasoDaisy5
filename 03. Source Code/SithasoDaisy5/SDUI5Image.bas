@@ -8,10 +8,13 @@ Version=10
 #Event: Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: TypeOf, DisplayName: Type Of, FieldType: String, DefaultValue: normal, Description: Type Of, List: legend|normal
+#DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: Src, DisplayName: Src, FieldType: String, DefaultValue: ./assets/mashy.jpg, Description: Src
 #DesignerProperty: Key: Alt, DisplayName: Alt, FieldType: String, DefaultValue: Image, Description: Alt
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 12, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 12, Description: Width
+#DesignerProperty: Key: CenterFieldSet, DisplayName: Center in FieldSet, FieldType: Boolean, DefaultValue: True, Description: Centered in FieldSet
 #DesignerProperty: Key: Lazy, DisplayName: Lazy, FieldType: Boolean, DefaultValue: False, Description: Lazy
 #DesignerProperty: Key: Gif, DisplayName: Gif, FieldType: Boolean, DefaultValue: False, Description: Gif
 #DesignerProperty: Key: GifPoster, DisplayName: Gif Poster, FieldType: String, DefaultValue: , Description: Gif Poster
@@ -74,6 +77,11 @@ Sub Class_Globals
 	Private bLazy As Boolean = False
 	Private bGif As Boolean = False
 	Private sGifPoster As String = ""
+	Private sLabel As String = ""
+	Private sTypeOf As String = "normal"
+	Public CONST TYPEOF_LEGEND As String = "legend"
+	Public CONST TYPEOF_NORMAL As String = "normal"
+	Private bCenterFieldSet As Boolean = True
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -90,6 +98,9 @@ End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("Label", "")
+	CustProps.Put("CenterFieldSet", True)
+	CustProps.Put("TypeOf", "normal")
 	CustProps.Put("Src", "./assets/mashy.jpg")
 	CustProps.Put("Alt", "Image")
 	CustProps.Put("Height", "12")
@@ -157,11 +168,16 @@ Public Sub getHere() As String
 	Return $"#${mName}"$
 End Sub
 'set Visible
-Sub setVisible(b As Boolean)
+Sub setVisible(b As Boolean)				'ignoredeadcode
 	bVisible = b
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
-	UI.SetVisible(mElement, b)
+	Select Case sTypeOf
+	Case "normal"
+		UI.SetVisible(mElement, b)
+	Case "legend"
+		UI.SetVisibleByID($"${mName}_control"$, b)
+	End Select
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -263,7 +279,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		'UI.ExcludeVisible = True
+		UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
 		sAlt = Props.GetDefault("Alt", "Image")
 		sAlt = UI.CStr(sAlt)
@@ -302,29 +318,35 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGif = UI.CBool(bGif)
 		sGifPoster = Props.GetDefault("GifPoster", "")
 		sGifPoster = UI.CStr(sGifPoster)
+		sLabel = Props.GetDefault("Label", "")
+		sLabel = UI.CStr(sLabel)
+		sTypeOf = Props.GetDefault("TypeOf", "normal")
+		sTypeOf = UI.CStr(sTypeOf)
+		bCenterFieldSet = Props.GetDefault("CenterFieldSet", True)
+		bCenterFieldSet = UI.CBool(bCenterFieldSet)
 	End If
 	'
-	If bLazy Then UI.AddAttrDT("loading", "lazy")
-	If bCover Then UI.AddClassDT("bg-cover")
-	If bCenter Then UI.AddClassDT("bg-center")
-	If bNoRepeat Then UI.AddClassDT("bg-no-repeat")
-	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
-	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
-	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
-	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
-	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
-	If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
-	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sMask <> "" Then UI.AddMaskDT(sMask)
-	If sShadow <> "" Then UI.AddShadowDT(sShadow)
-	If sSrc <> "" Then UI.AddAttrDT("src", sSrc)
-	If bGif Then 
-		UI.AddAttrDT("data-gifsee", sSrc) 
-	End If
-	If sGifPoster <> "" Then
-		UI.AddAttrDT("src", sGifPoster)
-	End If
-	If sWidth <> "" Then UI.AddWidthDT( sWidth)
+	'If bLazy Then UI.AddAttrDT("loading", "lazy")
+	'If bCover Then UI.AddClassDT("bg-cover")
+	'If bCenter Then UI.AddClassDT("bg-center")
+	'If bNoRepeat Then UI.AddClassDT("bg-no-repeat")
+	'If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
+	'If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
+	'If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
+	'If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
+	'If bRoundedBox = True Then UI.AddClassDT("rounded-box")
+	'If sAlt <> "" Then UI.AddAttrDT("alt", sAlt)
+	'If sHeight <> "" Then UI.AddHeightDT( sHeight)
+	'If sMask <> "" Then UI.AddMaskDT(sMask)
+	'If sShadow <> "" Then UI.AddShadowDT(sShadow)
+	'If sSrc <> "" Then UI.AddAttrDT("src", sSrc)
+	'If bGif Then 
+	'	UI.AddAttrDT("data-gifsee", sSrc) 
+	'End If
+	'If sGifPoster <> "" Then
+	'	UI.AddAttrDT("src", sGifPoster)
+	'End If
+	'If sWidth <> "" Then UI.AddWidthDT(sWidth)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -336,8 +358,35 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<img id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></img>"$).Get("#" & mName)
-'	setVisible(bVisible)
+	Select Case sTypeOf
+	Case "normal"
+		mElement = mTarget.Append($"[BANCLEAN]<img id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></img>"$).Get("#" & mName)
+	Case "legend"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="${xclasses} fieldset rounded-sm" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<img id="${mName}" class="m-2"></img>
+			</fieldset>"$).Get("#" & mName)
+	End Select
+	setMask(sMask)
+	setWidth(sWidth)
+	setHeight(sHeight)
+	setLazy(bLazy)
+	setCover(bCover)
+	setCenter(bCenter)
+	setNoRepeat(bNoRepeat)
+	setMaxHeight(sMaxHeight)
+	setMaxWidth(sMaxWidth)
+	setMinHeight(sMinHeight)
+	setMinWidth(sMinWidth)
+	setAlt(sAlt)
+	setShadow(sShadow)
+	setSrc(sSrc)
+	setRoundedBox(bRoundedBox)	
+	setVisible(bVisible)
+	setGif(bGif)
+	setGifPoster(sGifPoster)
+	setCenterFieldSet(bCenterFieldSet)
 	setPopOverTarget(sPopOverTarget)
 	UI.OnEvent(mElement, "click", mCallBack, $"${mName}_click"$)
 	If SubExists(mCallBack, $"${mName}_click"$) Then
@@ -349,29 +398,67 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 End Sub
 
-Sub setGifPoster(s As String)
+Sub setCenterFieldSet(b As Boolean)				'ignoredeadcode
+	bCenterFieldSet = b
+	CustProps.Put("CenterFieldSet", b)
+	If mElement = Null Then Return
+	If sTypeOf = "normal" Then Return
+	UI.AddClassByID($"${mName}_control"$, "flex text-center align-center justify-center")
+End Sub
+
+Sub getCenterFieldSet As Boolean
+	Return bCenterFieldSet
+End Sub
+
+Sub setLabel(s As String)
+	sLabel = s
+	CustProps.Put("LabeL", s)
+	If mElement = Null Then Return
+	If sTypeOf <> "legend" Then Return
+	UI.SetTextByID($"${mName}_legend"$, s)
+End Sub
+
+Sub getLabel As String
+	Return sLabel
+End Sub
+
+'set Type Of
+'options: legend|normal
+Sub setTypeOf(s As String)
+	sTypeOf = s
+	CustProps.put("TypeOf", s)
+End Sub
+
+'get Type Of
+Sub getTypeOf As String
+	Return sTypeOf
+End Sub
+
+
+Sub setGifPoster(s As String)				'ignoredeadcode
 	sGifPoster = s
 	CustProps.Put("GifPoster", sGifPoster)
 	If mElement = Null Then Return
-	UI.SetImage(mElement, sGifPoster)
+	If bGif = False Then Return
+	If s <> "" Then UI.SetImage(mElement, sGifPoster)
 End Sub
 
 Sub getGifPoster As String
 	Return sGifPoster
 End Sub
 
-Sub setGif(b As Boolean)
+Sub setGif(b As Boolean)						'ignoredeadcode
 	bGif = b
 	CustProps.Put("Gif", bGif)
 	If mElement = Null Then Return
-	UI.SetAttr(mElement, "data-gifsee", sSrc)
+	If b Then UI.SetAttr(mElement, "data-gifsee", sSrc)
 End Sub
 
 Sub getGif As Boolean
 	Return bGif
 End Sub
 
-Sub setLazy(b As Boolean)
+Sub setLazy(b As Boolean)				'ignoredeadcode
 	CustProps.Put("Lazy", b)
 	bLazy = b
 	If mElement = Null Then Return
@@ -386,7 +473,7 @@ Sub getLazy As Boolean
 	Return bLazy
 End Sub
 
-Sub setCover(b As Boolean)
+Sub setCover(b As Boolean)					'ignoredeadcode
 	bCover = b
 	CustProps.Put("Cover", bCover)
 	If bCover Then 
@@ -400,7 +487,7 @@ Sub getCover As Boolean
 	Return bCover
 End Sub
 '
-Sub setCenter(b As Boolean)
+Sub setCenter(b As Boolean)				'ignoredeadcode
 	bCenter = b
 	CustProps.Put("Center", bCover)
 	If bCenter Then 
@@ -414,7 +501,7 @@ Sub getCenter As Boolean
 	Return bCenter
 End Sub
 
-Sub setNoRepeat(b As Boolean)
+Sub setNoRepeat(b As Boolean)					'ignoredeadcode
 	bNoRepeat = b
 	CustProps.Put("NoRepeat", bNoRepeat)
 	If bNoRepeat Then
@@ -446,7 +533,7 @@ End Sub
 
 
 'set Rounded Box
-Sub setRoundedBox(b As Boolean)
+Sub setRoundedBox(b As Boolean)					'ignoredeadcode
 	bRoundedBox = b
 	CustProps.put("RoundedBox", b)
 	If mElement = Null Then Return
@@ -458,14 +545,14 @@ Sub getRoundedBox As Boolean
 End Sub
 
 'set Alt
-Sub setAlt(s As String)
+Sub setAlt(s As String)							'ignoredeadcode
 	sAlt = s
 	CustProps.put("Alt", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttr(mElement, "alt", s)
 End Sub
 'set Height
-Sub setHeight(s As String)
+Sub setHeight(s As String)					'ignoredeadcode
 	sHeight = s
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
@@ -473,7 +560,7 @@ Sub setHeight(s As String)
 End Sub
 'set Mask
 'options: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|rounded|rounded-2xl|rounded-3xl|rounded-lg|rounded-md|rounded-sm|rounded-xl|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4
-Sub setMask(s As String)
+Sub setMask(s As String)						'ignoredeadcode
 	sMask = s
 	CustProps.put("Mask", s)
 	If mElement = Null Then Return
@@ -481,21 +568,21 @@ Sub setMask(s As String)
 End Sub
 'set Shadow
 'options: shadow|sm|md|lg|xl|2xl|inner|none
-Sub setShadow(s As String)
+Sub setShadow(s As String)					'ignoredeadcode
 	sShadow = s
 	CustProps.put("Shadow", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
 'set Src
-Sub setSrc(s As String)
+Sub setSrc(s As String)						'ignoredeadcode
 	sSrc = s
 	CustProps.put("Src", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetAttr(mElement, "src", s)
 End Sub
 'set Width
-Sub setWidth(s As String)
+Sub setWidth(s As String)					'ignoredeadcode
 	sWidth = s
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
@@ -528,28 +615,28 @@ End Sub
 
 
 'set Max Height
-Sub setMaxHeight(s As String)
+Sub setMaxHeight(s As String)				'ignoredeadcode
 	sMaxHeight = s
 	CustProps.put("MaxHeight", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMaxHeight(mElement, s)
 End Sub
 'set Max Width
-Sub setMaxWidth(s As String)
+Sub setMaxWidth(s As String)				'ignoredeadcode
 	sMaxWidth = s
 	CustProps.put("MaxWidth", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMaxWidth(mElement, s)
 End Sub
 'set Min Height
-Sub setMinHeight(s As String)
+Sub setMinHeight(s As String)				'ignoredeadcode
 	sMinHeight = s
 	CustProps.put("MinHeight", s)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetMinHeight(mElement, s)
 End Sub
 'set Min Width
-Sub setMinWidth(s As String)
+Sub setMinWidth(s As String)				'ignoredeadcode
 	sMinWidth = s
 	CustProps.put("MinWidth", s)
 	If mElement = Null Then Return

@@ -743,6 +743,42 @@ Sub getBackGroundImage As String
 	Return	sBackgroundImage
 End Sub
 
+'before build grid
+Sub SetRowStyles(r As Int, styleNames As Map)
+	Root.SetRowStyles(r, styleNames)
+End Sub
+
+'before build grid
+Sub SetRowClasses(r As Int, classNames As List)
+	Root.SetRowClasses(r, classNames)
+End Sub
+
+'before build grid
+Sub SetRCClasses(r As Int, c As Int, classNames As List)
+	Root.SetRCClasses(r, c, classNames)
+End Sub
+
+'before build grid
+Sub SetRCStyles(r As Int, c As Int, styleNames As Map)
+	Root.SetRCStyles(r, c, styleNames)
+End Sub
+
+'update sizes before build grid
+Sub SetRCSizes(r As Int, c As Int, gxs As Int, gsm As Int, gmd As Int, glg As Int, gxl As Int)
+	Root.SetRCSizes(r, c, gxs, gsm, gmd, glg, gxl)
+End Sub
+
+'update margins before build grid
+Sub SetRCMargin(r As Int, c As Int, gma As String, gmt As String, gmb As String, gml As String, gmr As String, gmx As String, gmy As String)
+	Root.SetRCMargin(r, c, gma, gmt, gmb, gml, gmr, gmx, gmy)
+End Sub
+
+'update margins before build grid
+Sub SetRCPadding(r As Int, c As Int, gpa As String, gpt As String, gpb As String, gpl As String, gpr As String, gpx As String, gpy As String)
+	'get the row
+	Root.SetRCMargin(r, c, gpa, gpt, gpb, gpl, gpr, gpx, gpy)
+End Sub
+
 Sub BuildGrid
 	Root.BuildGrid
 End Sub

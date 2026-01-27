@@ -11,10 +11,11 @@ Version=10.2
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
 #DesignerProperty: Key: Caption, DisplayName: Caption, FieldType: String, DefaultValue: Signature, Description: Caption
 #DesignerProperty: Key: CaptionColor, DisplayName: Caption Color, FieldType: String, DefaultValue: none, Description: Caption Color
-#DesignerProperty: Key: ButtonCaption, DisplayName: Button Caption, FieldType: String, DefaultValue: Clear Signature, Description: Button Caption
-#DesignerProperty: Key: ButtonColor, DisplayName: Button Color, FieldType: String, DefaultValue: neutral, Description: Button Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
-#DesignerProperty: Key: ButtonDisabled, DisplayName: Button Disabled, FieldType: Boolean, DefaultValue: False, Description: Button Disabled
-#DesignerProperty: Key: ButtonTextColor, DisplayName: Button Text Color, FieldType: String, DefaultValue: none, Description: Button Text Color
+#DesignerProperty: Key: ButtonCaption, DisplayName: Clear Caption, FieldType: String, DefaultValue: Clear, Description: Clear Caption
+#DesignerProperty: Key: ButtonColor, DisplayName: Clear Color, FieldType: String, DefaultValue: neutral, Description: Clear Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
+#DesignerProperty: Key: ButtonDisabled, DisplayName: Clear Disabled, FieldType: Boolean, DefaultValue: False, Description: Clear Disabled
+#DesignerProperty: Key: ButtonTextColor, DisplayName: Clear Text Color, FieldType: String, DefaultValue: none, Description: Clear Text Color
+#DesignerProperty: Key: SaveCaption, DisplayName: Save Caption, FieldType: String, DefaultValue: Save, Description: Save Caption
 #DesignerProperty: Key: SaveColor, DisplayName: Save Color, FieldType: String, DefaultValue: success, Description: Save Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: SaveTextColor, DisplayName: Save Text Color, FieldType: String, DefaultValue: none, Description: Save Text Color
 #DesignerProperty: Key: ErrorMessage, DisplayName: Error Message, FieldType: String, DefaultValue: The signature is required, Description: Error Message
@@ -31,6 +32,7 @@ Version=10.2
 #DesignerProperty: Key: Throttle, DisplayName: Throttle, FieldType: String, DefaultValue: 16, Description: Throttle
 #DesignerProperty: Key: VelocityFilterWeight, DisplayName: Velocity Filter Weight, FieldType: String, DefaultValue: 0.7, Description: Velocity Filter Weight
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
+#DesignerProperty: Key: CenterFieldSet, DisplayName: Center in FieldSet, FieldType: Boolean, DefaultValue: False, Description: Centered in FieldSet
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
 #DesignerProperty: Key: Position, DisplayName: Position Locations, FieldType: String, DefaultValue: t=?; b=?; r=?; l=?, Description: Position Locations
@@ -61,7 +63,7 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private Options As Map
-	Private sButtonCaption As String = "Clear Signature"
+	Private sButtonCaption As String = "Clear"
 	Private sButtonColor As String = "neutral"
 	Private bButtonDisabled As Boolean = False
 	Private sButtonTextColor As String = "none"
@@ -86,6 +88,8 @@ Sub Class_Globals
 	Private SignaturePad As BANanoObject
 	Private sSaveColor As String = "success"
 	Private sSaveTextColor As String = "none"
+	Private bCenterFieldSet As Boolean = True
+	Private sSaveCaption As String = "Save"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -106,9 +110,11 @@ End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("SaveCaption", "Save")
+	CustProps.Put("CenterFieldSet", False)
 	CustProps.Put("Caption", "Signature")
 	CustProps.Put("CaptionColor", "none")
-	CustProps.Put("ButtonCaption", "Clear Signature")
+	CustProps.Put("ButtonCaption", "Clear")
 	CustProps.Put("ButtonColor", "neutral")
 	CustProps.Put("ButtonDisabled", False)
 	CustProps.Put("ButtonTextColor", "none")
@@ -298,8 +304,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sButtonCaption = Props.GetDefault("ButtonCaption", "Clear Signature")
+		sButtonCaption = Props.GetDefault("ButtonCaption", "Clear")
 		sButtonCaption = UI.CStr(sButtonCaption)
+		sSaveCaption = Props.GetDefault("SaveCaption", "Save")
+		sSaveCaption = UI.CStr(sSaveCaption)
 		sButtonColor = Props.GetDefault("ButtonColor", "neutral")
 		sButtonColor = UI.CStr(sButtonColor)
 		bButtonDisabled = Props.GetDefault("ButtonDisabled", False)
@@ -340,6 +348,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSaveColor = UI.CStr(sSaveColor)
 		sSaveTextColor = Props.GetDefault("SaveTextColor", "none")
 		sSaveTextColor = UI.CStr(sSaveTextColor)
+		bCenterFieldSet = Props.GetDefault("CenterFieldSet", True)
+		bCenterFieldSet = UI.CBool(bCenterFieldSet)
 	End If
 	'
 	Dim xattrs As String = UI.BuildExAttributes
@@ -367,8 +377,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<span id="${mName}_hint" class="label-text-alt">${sHint}</span>
         	</label>
 			<div class="grid grid-cols-2 mt-2 gap-2">
-				<button id="${mName}_clear" class="btn">Clear</button>
-        		<button id="${mName}_save" class="btn">Save</button>
+				<button id="${mName}_clear" class="btn">${sButtonCaption}</button>
+        		<button id="${mName}_save" class="btn">${sSaveCaption}</button>
         	</div>
 		</div>"$
 	mElement = mTarget.Append(sCode).Get($"#${mName}"$)
@@ -378,18 +388,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setCaptionColor(sCaptionColor)
 	setSaveColor(sSaveColor)
 	setSaveTextColor(sSaveTextColor)
-	'
-	Options.Initialize 
-	Options.put("backgroundColor", sBackgroundColor)
-	Options.put("dotSize", dDotSize)
-	Options.put("maxWidth", dMaxWidth)
-	Options.put("minDistance", iMinDistance)
-	Options.put("minWidth", dMinWidth)
-	Options.put("penColor", sPenColor)
-	Options.put("throttle", iThrottle)
-	Options.put("velocityFilterWeight", dVelocityFilterWeight)
+	setCenterFieldSet(bCenterFieldSet)
+	setButtonCaption(sButtonCaption)
+	setSaveCaption(sSaveCaption)
 	setHeight(sHeight)
-	setWidth(sWidth)
+	setWidth(sWidth)	
 	UI.AddStyleBYID($"${mName}_wrapper"$, "position", "relative")
 	UI.AddStyleBYID($"${mName}_wrapper"$, "-moz-user-select", "none")
 	UI.AddStyleBYID($"${mName}_wrapper"$, "-webkit-user-select", "none")
@@ -398,9 +401,72 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.AddStyle(mElement, "position", "absolute")
 	UI.AddStyle(mElement, "left", "0")
 	UI.AddStyle(mElement, "top", "0")
+	UI.AddStyle(mElement, "touch-action", "none")
 	UI.OnEventByID($"${mName}_clear"$, "click", Me, "ClearSignature")
 	UI.OnEventByID($"${mName}_save"$, "click", Me, "SaveSignature")
 	Refresh
+End Sub
+
+Sub setSaveCaption(s As String)					'ignoredeadcode
+	sSaveCaption = s
+	CustProps.Put("SaveCaption", sSaveCaption)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_save"$, s)
+	Select Case s
+	Case ""
+		UI.SetVisibleByID($"${mName}_save"$, False)
+	Case Else
+			UI.SetVisibleByID($"${mName}_save"$, True)
+	End Select
+End Sub
+
+Sub getSaveCaption As String
+	Return sSaveCaption
+End Sub
+
+Sub setButtonCaption(s As String)				'ignoredeadcode
+	sButtonCaption = s
+	CustProps.Put("ButtonCaption", s)
+	If mElement = Null Then Return
+	UI.SetTextByID($"${mName}_clear"$, sButtonCaption)
+	Select Case s
+	Case ""
+		UI.SetVisibleByID($"${mName}_clear"$, False)
+	Case Else
+		UI.SetVisibleByID($"${mName}_clear"$, True)
+	End Select
+End Sub
+
+Sub getButtonCaption As String
+	Return sButtonCaption
+End Sub
+
+'generate the signature usually on mounted
+Sub Refresh				'ignoredeadcode
+	Options.Initialize
+	Options.put("backgroundColor", sBackgroundColor)
+	Options.put("dotSize", dDotSize)
+	Options.put("maxWidth", dMaxWidth)
+	Options.put("minDistance", iMinDistance)
+	Options.put("minWidth", dMinWidth)
+	Options.put("penColor", sPenColor)
+	Options.put("throttle", iThrottle)
+	Options.put("velocityFilterWeight", dVelocityFilterWeight)
+	Dim canvas As BANanoObject = BANano.GetElement($"#${mName}"$).ToObject
+	SignaturePad.Initialize2("SignaturePad", Array(canvas, Options))
+	Clear
+	'BANano.RunJavascriptMethod("resizeCanvas", Array(canvas,SignaturePad))
+End Sub
+
+Sub setCenterFieldSet(b As Boolean)			'ignoredeadcode
+	bCenterFieldSet = b
+	CustProps.Put("CenterFieldSet", b)
+	If mElement = Null Then Return
+	UI.AddClassByID($"${mName}_formcontrol"$, "flex flex-col text-center align-center justify-center")
+End Sub
+
+Sub getCenterFieldSet As Boolean
+	Return bCenterFieldSet
 End Sub
 
 'set Save Color
@@ -443,13 +509,7 @@ private Sub ClearSignature(e As BANanoEvent)			'ignoredeadcode
 	Clear
 End Sub
 
-'generate the signature usually on mounted
-Sub Refresh				'ignoredeadcode
-	Dim canvas As BANanoObject = BANano.GetElement($"#${mName}"$).ToObject
-	SignaturePad.Initialize2("SignaturePad", Array(canvas, Options))
-	Clear
-	'BANano.RunJavascriptMethod("resizeCanvas", Array(canvas,SignaturePad))
-End Sub
+
 
 'Clears the canvas
 Sub Clear
@@ -532,7 +592,7 @@ End Sub
 Sub setDotSize(s As Double)
 	dDotSize = s
 	CustProps.put("DotSize", s)
-	Options.Put("dotSize", s)
+	'Options.Put("dotSize", s)
 End Sub
 'set Error Message
 Sub setErrorMessage(s As String)
@@ -544,12 +604,13 @@ Sub setErrorMessage(s As String)
 End Sub
 'set Height
 Sub setHeight(s As String)				'ignoredeadcode
-	sHeight = s
+	sHeight = UI.Val(s)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.SetAttr(mElement, "height", sHeight)
 		UI.SetStyle(mElement, "height", $"${sHeight}px"$)
+		'UI.AddStyle(mElement, "height", "100%")
 		UI.SetStyleByID($"${mName}_wrapper"$, "height", $"${sHeight}px"$)
 	End If
 End Sub
@@ -585,26 +646,26 @@ End Sub
 Sub setMaxWidth(s As Double)
 	dMaxWidth = s
 	CustProps.put("MaxWidth", s)
-	Options.Put("maxWidth", s)
+	'Options.Put("maxWidth", s)
 End Sub
 'set Min Distance
 Sub setMinDistance(s As Int)
 	iMinDistance = s
 	CustProps.put("MinDistance", s)
-	Options.put("minDistance", s)
+	'Options.put("minDistance", s)
 End Sub
 'set Min Width
 Sub setMinWidth(s As Double)
 	dMinWidth = s
 	CustProps.put("MinWidth", s)
-	Options.Put("minWidth", s)
+	'Options.Put("minWidth", s)
 End Sub
 'set Pen Color
 'options: primary|secondary|accent|neutral|info|success|warning|error|none
 Sub setPenColor(s As String)
 	sPenColor = s
 	CustProps.put("PenColor", s)
-	Options.Put("penColor", s)
+	'Options.Put("penColor", s)
 End Sub
 'set Required
 
@@ -612,22 +673,23 @@ End Sub
 Sub setThrottle(s As Int)
 	iThrottle = s
 	CustProps.put("Throttle", s)
-	Options.put("throttle", s)
+	'Options.put("throttle", s)
 End Sub
 'set Velocity Filter Weight
 Sub setVelocityFilterWeight(s As Double)
 	dVelocityFilterWeight = s
 	CustProps.put("VelocityFilterWeight", s)
-	Options.put("velocityFilterWeight", s)
+	'Options.put("velocityFilterWeight", s)
 End Sub
 'set Width
 Sub setWidth(s As String)			'ignoredeadcode
-	sWidth = s
+	sWidth = UI.Val(s)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If s <> "" Then 
 		UI.SetAttr(mElement, "width", sWidth)
 		UI.SetStyle(mElement, "width", $"${sWidth}px"$)
+		'UI.AddStyle(mElement, "width", "100%")
 		UI.SetStyleByID($"${mName}_wrapper"$, "width", $"${sWidth}px"$)
 		UI.SetStyleByID($"${mName}_formcontrol"$, "width", $"${sWidth}px"$)
 	End If

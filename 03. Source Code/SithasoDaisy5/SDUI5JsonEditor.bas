@@ -379,6 +379,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Refresh
 End Sub
 
+Sub HideActions
+	UI.SetVisibleByID($"${mName}_card_actions"$, False)
+End Sub
+
+Sub ShowActions
+	UI.SetVisibleByID($"${mName}_card_actions"$, True)
+End Sub
+
+Sub setValue(s As String)
+	If mElement = Null Then Return
+	setJsonString(s)
+End Sub
+
+Sub getValue As String
+	Return sJson
+End Sub
+
 Sub setPath(s As String)
 	sPath = s
 	CustProps.Put("Path", sPath)
@@ -432,8 +449,10 @@ End Sub
 
 
 Sub setJsonString(s As String)
-	sJsonString = s
-	Dim x As Map = BANano.FromJson(s)
+	sJsonString = UI.CStr(s)
+	sJsonString = sJsonString.trim
+	If sJsonString = "" Then sJsonString = "{}"
+	Dim x As Map = BANano.FromJson(sJsonString)
 	setJson(x)
 End Sub
 
@@ -443,13 +462,17 @@ End Sub
 
 'set Json
 Sub setJson(s As Object)
-	sJson = s
-	If mElement = Null Then Return
-	Dim jsonObj As Object = sJson
-	If sJson Is String Then
-		jsonObj = BANano.FromJson(sJson)
-	End If
-	jEditor.RunMethod("set", jsonObj)
+	Try
+		sJson = s
+		If mElement = Null Then Return
+		Dim jsonObj As Object = sJson
+		If sJson Is String Then
+			jsonObj = BANano.FromJson(sJson)
+		End If
+		jEditor.RunMethod("set", jsonObj)
+	Catch
+		Log(LastException)
+	End Try			
 End Sub
 
 'get Json

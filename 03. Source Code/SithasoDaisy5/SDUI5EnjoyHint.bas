@@ -8,6 +8,7 @@ Version=10.3
 #IgnoreWarnings:12
 #Event: EnjoyStarted (e As BANanoEvent)
 #Event: EnjoyEnded (e As BANanoEvent)
+#Event: EnjoySkip (e As BANanoEvent)
 
 Sub Class_Globals
 	Private BANano As BANano 'ignore
@@ -42,6 +43,30 @@ private Sub CleanID(s As String) As String
 	s = s.Trim
 	Return s
 End Sub
+
+Sub JoinDescription(items As List) As String
+	Dim s As String = Join("<br/>", items)
+	Return s
+End Sub
+
+'join list to mv string
+private Sub Join(delimiter As String, lst As List) As String
+	If lst.Size = 0 Then Return ""
+	Dim i As Int
+	Dim sbx As StringBuilder
+	Dim fld As String
+	sbx.Initialize
+	fld = lst.Get(0)
+	sbx.Append(fld)
+	For i = 1 To lst.size - 1
+		Dim fld As String = lst.Get(i)
+		sbx.Append(delimiter).Append(fld)
+	Next
+	Dim sout As String = sbx.ToString
+	sbx.Initialize
+	Return sout
+End Sub
+
 
 private Sub StrParse(delim As String, inputString As String) As List
 	Dim nl As List
@@ -273,6 +298,19 @@ Sub HideNextAsIs(eID As String)
 	End If
 End Sub
 
+'set a method to fire before the step starts
+Sub SetOnBeforeStart(eID As String, Module As Object, MethodName As String)
+	eID = CleanID(eID)
+	If eID = "" Then Return
+	Dim rec As Map = CreateMap()
+	If stepsm.ContainsKey(eID) Then
+		rec = stepsm.Get(eID)
+		Dim cb As BANanoObject = BANano.CallBack(Module, MethodName, Null)
+		rec.Put("onBeforeStart", cb)
+		stepsm.Put(eID,rec)
+	End If
+End Sub
+
 'set the next item text for the element
 Sub SetNextButton(eID As String, Text As String)
 	eID = CleanID(eID)
@@ -366,6 +404,10 @@ Sub Run(Module As Object)
 	If SubExists(Module, "EnjoyStarted") Then
 		Dim cb1 As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoyEnded"$, Null)
 		opt.Put("onEnd", cb1)
+	End If
+	If SubExists(Module, "EnjoySkip") Then
+		Dim cb2 As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoySkip"$, Null)
+		opt.Put("onSkip ", cb2)
 	End If
 	easySteps_instance.Initialize2("EnjoyHint", opt)
 	easySteps_instance.RunMethod("set",Array(enjoyhint_script_steps))

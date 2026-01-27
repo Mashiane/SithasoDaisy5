@@ -1307,8 +1307,9 @@ Version=10.3
 
 'https://play.tailwindcss.com/ufjKjmoy2Z
 'https://syntha.ai/converters/tailwindcss-to-css
-#Macro: After Save, Sync Layouts, ide://run?File=%ADDITIONAL%\JsonLayouts.jar&Args=%PROJECT%&Args=%PROJECT_NAME%
+#Macro: After Save, Sync Layouts, ide://run?File=%ADDITIONAL%\..\b4j\JsonLayouts.jar&Args=%PROJECT%&Args=%PROJECT_NAME%
 #Macro: Title, JsonLayouts folder, ide://run?File=%WINDIR%\explorer.exe&Args=%PROJECT%\JsonLayouts
+#Macro: Title, Code bundle, ide://run?File=%ADDITIONAL%\..\b4j\CodeBundle.jar&Args=%PROJECT_NAME%
 
 #IgnoreWarnings:12, 15
 Sub Process_Globals

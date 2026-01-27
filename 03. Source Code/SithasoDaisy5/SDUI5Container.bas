@@ -86,11 +86,11 @@ Sub Class_Globals
 	Private sTextAlign As String = "none"
 	Type GridRow(Rows As Int, columns As List, _
     gma As String, gmx As String, gmy As String, gmt As String, gmb As String, gmr As String, gml As String, _
-    gpa As String, gpx As String, gpy As String, gpt As String, gpb As String, gpr As String, gpl As String)
+    gpa As String, gpx As String, gpy As String, gpt As String, gpb As String, gpr As String, gpl As String, classes As List, styles As Map)
 	Type GridColumn(columns As Int, gxs As String, gsm As String, gmd As String, glg As String, gxl As String, _
     ofxs As String, ofsm As String, ofmd As String, oflg As String, ofxl As String, _
     gma As String, gmx As String, gmy As String, gmt As String, gmb As String, gmr As String, gml As String, _
-    gpa As String, gpx As String, gpy As String, gpt As String, gpb As String, gpr As String, gpl As String)
+    gpa As String, gpx As String, gpy As String, gpt As String, gpb As String, gpr As String, gpl As String, classes As List, styles As Map)
 	'this will hold all our rows
 	Public GridRowsM As Map
 	Public LastRow As Int
@@ -676,6 +676,103 @@ Sub getTextAlign As String
 	Return sTextAlign
 End Sub
 
+'before build grid
+Sub SetRowStyles(r As Int, styleNames As Map)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim styles As Map = crow.styles
+	For Each k As String In styleNames.Keys
+		Dim v As String = styleNames.Get(k)
+		styles.Put(k, v)
+	Next
+End Sub
+
+'before build grid
+Sub SetRowClasses(r As Int, classNames As List)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim classes As List = crow.classes
+	classes.AddAll(classNames)
+End Sub
+
+'before build grid
+Sub SetRCClasses(r As Int, c As Int, classNames As List)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim colKey As Int = c - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim cols As List = crow.columns
+	Dim ccol As GridColumn = cols.Get(colKey)
+	Dim classes As List = ccol.classes
+	classes.AddAll(classNames)
+End Sub
+
+'before build grid
+Sub SetRCStyles(r As Int, c As Int, styleNames As Map)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim colKey As Int = c - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim cols As List = crow.columns
+	Dim ccol As GridColumn = cols.Get(colKey)
+	Dim styles As Map = ccol.styles
+	For Each k As String In styleNames.Keys
+		Dim v As String = styleNames.Get(k)
+		styles.Put(k, v)
+	Next
+End Sub
+
+'update sizes before build grid
+Sub SetRCSizes(r As Int, c As Int, gxs As Int, gsm As Int, gmd As Int, glg As Int, gxl As Int)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim colKey As Int = c - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim cols As List = crow.columns
+	Dim ccol As GridColumn = cols.Get(colKey)
+	ccol.gxs = gxs
+	ccol.glg = glg
+	ccol.gmd = gmd
+	ccol.gsm = gsm
+	ccol.gxl = gxl
+End Sub
+
+'update margins before build grid
+Sub SetRCMargin(r As Int, c As Int, gma As String, gmt As String, gmb As String, gml As String, gmr As String, gmx As String, gmy As String)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim colKey As Int = c - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim cols As List = crow.columns
+	Dim ccol As GridColumn = cols.Get(colKey)
+	ccol.gmt = gmt
+	ccol.gmb = gmb
+	ccol.gmr = gmr
+	ccol.gml = gml
+	ccol.gma = gma
+	ccol.gmx = gmx
+	ccol.gmy = gmy
+End Sub
+
+'update margins before build grid
+Sub SetRCPadding(r As Int, c As Int, gpa As String, gpt As String, gpb As String, gpl As String, gpr As String, gpx As String, gpy As String)
+	'get the row
+	Dim rowKey As Int = r - 1
+	Dim colKey As Int = c - 1
+	Dim crow As GridRow = GridRowsM.GetValueAt(rowKey)
+	Dim cols As List = crow.columns
+	Dim ccol As GridColumn = cols.Get(colKey)
+	ccol.gpt = gpt
+	ccol.gpb = gpb
+	ccol.gpr = gpr
+	ccol.gpl = gpl
+	ccol.gpa = gpa
+	ccol.gpx = gpx
+	ccol.gpy = gpy
+End Sub
+
 'build the grid
 Sub BuildGrid
 	TheMatrix.Initialize
@@ -707,7 +804,7 @@ Private Sub BuildRow(xRow As GridRow) As String
 	For rowCnt = 1 To rowTot
 		LastRow = LastRow + 1
 		Dim rowKey As String = $"${mName}r${LastRow}"$
-		sb.Append($"<div id="${rowKey}" class="grid grid-cols-12 ${BuildRowClass(xRow)}">"$)
+		sb.Append($"<div id="${rowKey}" class="grid grid-cols-12 ${BuildRowClass(xRow)}" style="${BuildRowStyle(xRow)}">"$)
 		'get the columns to add
 		Dim cols As List = xRow.Columns
 		'how many columns to add here
@@ -728,18 +825,15 @@ Private Sub BuildRow(xRow As GridRow) As String
 				TheMatrix.Put(mKey, mKey)
 				'if showid
 				Dim strShow As String = ""
-				Dim sbStyle As StringBuilder
-				sbStyle.Initialize
 				If ShowGridDesign Then
 					strShow = cellKey
 					strShow = strShow.replace(mName, "")
 					strShow = strShow.ToUpperCase
-					sbStyle.append($"style="border-width:2px;border-style:dotted;border-color:grey;""$)
 				End If
 				'define the column structure
 				Dim sbCol As StringBuilder
 				sbCol.Initialize
-				sbCol.Append($"<div id="${cellKey}" ${sbStyle.tostring}"$)
+				sbCol.Append($"<div id="${cellKey}" style="${BuildColumnStyle(Column)}" "$)
 				sbCol.Append($"class="p-2 "$)
 				sbCol.Append(BuildColumnClass(Column))
 				sbCol.Append(" ")
@@ -749,7 +843,6 @@ Private Sub BuildRow(xRow As GridRow) As String
 				sbCol.Append($"">${strShow}</div>"$)
 				sb.Append(sbCol.tostring)
 				sbCol.Initialize
-				sbStyle.Initialize
 			Next
 		Next
 		sb.Append("</div>")
@@ -759,6 +852,22 @@ Private Sub BuildRow(xRow As GridRow) As String
 	Return sout
 End Sub
 
+private Sub BuildRowStyle(col As GridRow) As String
+	Dim styles As Map = col.styles
+	Dim sout As String = UI.BuildStyles(styles)
+	Return sout
+End Sub
+
+private Sub BuildColumnStyle(col As GridColumn) As String
+	Dim styles As Map = col.styles
+	If ShowGridDesign Then
+		styles.Put("border-width", "2px")
+		styles.Put("border-style", "dotted")
+		styles.Put("border-color", "blue")
+	End If
+	Dim sout As String = UI.BuildStyles(styles)
+	Return sout
+End Sub
 
 private Sub BuildColumnClass(col As GridColumn) As String
 	Dim sb As StringBuilder
@@ -767,6 +876,12 @@ private Sub BuildColumnClass(col As GridColumn) As String
 	sb.Append(BuildMarginPadding("m", col.gma, col.gmx, col.gmy, col.gmt, col.gmb, col.gml, col.gmr))
 	'add the padding
 	sb.Append(BuildMarginPadding("p", col.gpa, col.gpx, col.gpy, col.gpt, col.gpb, col.gpl, col.gpr))
+	sb.Append(" ")
+	'
+	Dim classes As List = col.classes
+	Dim clsNames As String = UI.Join(" ", classes)
+	sb.Append(clsNames)
+	'
 	Dim sout As String = sb.ToString
 	sout = sout.trim
 	sb.Initialize
@@ -779,6 +894,11 @@ Private Sub BuildRowClass(xrow As GridRow) As String
 	sb.Append(BuildMarginPadding("m", xrow.gma, xrow.gmx, xrow.gmy, xrow.gmt, xrow.gmb, xrow.gml, xrow.gmr))
 	'add the padding
 	sb.Append(BuildMarginPadding("p", xrow.gpa, xrow.gpx, xrow.gpy, xrow.gpt, xrow.gpb, xrow.gpl, xrow.gpr))
+	sb.Append(" ")
+	'
+	Dim classes As List = xrow.classes
+	Dim clsNames As String = UI.Join(" ", classes)
+	sb.Append(clsNames)
 	Dim sout As String = sb.ToString.Trim
 	sb.Initialize
 	Return sout
@@ -987,6 +1107,8 @@ Sub AddRows(iRows As Int) As SDUI5Container
 	nRow.Initialize
 	nRow.Rows = iRows
 	nRow.Columns.Initialize
+	nRow.classes.Initialize 
+	nRow.styles.Initialize 
 	nRow.gmt = ""
 	nRow.gmb = ""
 	nRow.gmr = ""

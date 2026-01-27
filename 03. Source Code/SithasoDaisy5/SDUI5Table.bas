@@ -1062,6 +1062,13 @@ Sub GetFile As Map
 	End If
 End Sub
 
+Sub GetFileDataURL As String
+	Dim fileObj As Map = BANano.Await(GetFile)
+	If BANano.IsNull(fileObj) Then Return ""
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("fileToDataURL", Array(fileObj)))
+	Return fo
+End Sub
+
 'ensure we can select the same file again
 Sub Nullify
 	Dim xFile As BANanoElement = BANano.GetElement($"#${mName}_file"$)
@@ -3386,6 +3393,29 @@ Sub AddColumnAction(name As String, title As String, icon As String, color As St
 	UI.OnEventByID($"${mName}_${name}_th"$, "click", Me, "HandleHeaderClick")
 	If bHasFilter Then AddHeaderRowPlaceHolder("filters", name)
 	
+End Sub
+
+'add a action column
+'<code>
+'tbl.UpdateColumnAction("btnstart", "Start/Stop", "fa-solid fa-play", app.COLOR_FUCHSIA)
+'</code>
+Sub UpdateColumnAction(name As String, title As String, icon As String, color As String, textColor As String)
+	name = name.tolowercase
+	If Columns.ContainsKey(name) = False Then Return
+	Dim nc As TableColumn = Columns.Get(name)
+	nc.name = name
+	nc.title = title
+	nc.typeof = "action"
+	nc.icon = icon
+	nc.color = color
+	nc.width = "5rem"
+	nc.alignment = "center"
+	nc.TextColor = textColor
+	Columns.Put(name, nc)
+	'
+	UI.SetTextByID($"${mName}_${name}_th"$, title)
+	Dim nStyle As String = BuildStyle(nc)
+	UI.SetStylesByID($"${mName}_${name}_th"$, nStyle)
 End Sub
 
 'add a action column

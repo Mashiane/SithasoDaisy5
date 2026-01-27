@@ -29,7 +29,7 @@ End Sub
 'doc.SetField("methods", methods)
 'BANano.Await(doc.BuildWait)
 '</code>	
-Public Sub Initialize(mcb As Object, event As String, tmpFile As String, target As String)
+Public Sub Initialize(mcb As Object, event As String, tmpFile As String, fileName As String)
 	If BANano.AssetsIsDefined("DocXTemplate") = False Then
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesDocxTemplate)' should be added!"$)
 		Return
@@ -38,7 +38,7 @@ Public Sub Initialize(mcb As Object, event As String, tmpFile As String, target 
 	mcallback = mcb
 	eventName = event
 	tags.Initialize
-	ffn = target
+	ffn = fileName
 	BANano.DependsOnAsset("docxtemplater.min.js")
 	BANano.DependsOnAsset("pizzip.min.js")
 	BANano.DependsOnAsset("pizzip-utils.min.js")

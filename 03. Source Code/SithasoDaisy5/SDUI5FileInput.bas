@@ -8,7 +8,7 @@ Version=10
 #Event: Change (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|microphone|progress|camera|camcorder
+#DesignerProperty: Key: InputType, DisplayName: Input Type, FieldType: String, DefaultValue: normal, Description: Input Type, List: normal|legend|buttons|label-input|microphone|progress|camera|camcorder|legend-microphone|legend-progress|legend-camera|legend-camcorder
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: Please select a file, Description: Label
 #DesignerProperty: Key: LegendColor, DisplayName: Label Color, FieldType: String, DefaultValue: , Description: Label Color
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color
@@ -409,7 +409,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 				<input id="${mName}" class="file-input file-input-bordered w-full" type="file"></input>
 			</div>"$).Get("#" & mName)
 	Case "normal"
-			mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input file-input-bordered" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
+		mElement = mTarget.Append($"[BANCLEAN]<input id="${mName}" type="file" class="${xclasses} file-input file-input-bordered" ${xattrs} style="${xstyles}"></input>"$).Get("#" & mName)
 	Case "microphone", "progress", "camera", "camcorder"
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}_control" class="${xclasses} flex justify-center items-center w-full" ${xattrs} style="${xstyles}">
@@ -419,21 +419,31 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     			</button>
     			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>
     		</div>"$).Get("#" & mName)
+	Case "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
+		mElement = mTarget.Append($"[BANCLEAN]
+			<fieldset id="${mName}_control" class="fieldset ${xclasses} flex text-center justify-center items-center w-full" ${xattrs} style="${xstyles}">
+				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
+				<button id="${mName}_button" class="btn btn-circle m-2">
+    				<svg-renderer id="${mName}_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sIcon}"></svg-renderer>
+    				<div id="${mName}_progress" role="progressbar" class="radial-progress hidden" style="--size:${sButtonSize};"></div>
+    			</button>
+    			<input id="${mName}" name="${mName}" type="file" class="file-input hidden"/>
+			</fieldset>"$).Get("#" & mName)
 	End Select
 	'
 	Select Case sInputType
-	Case "microphone", "progress", "camera", "camcorder"
+	Case "microphone", "progress", "camera", "camcorder", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 		Select Case sInputType
-		Case "microphone"
+		Case "microphone", "legend-microphone"
 			If sIcon = "" Then sIcon = "./assets/microphone-solid.svg"
 			If sAccept = "" Then sAccept = "audio/*;capture=microphone"
-		Case "progress"
+		Case "progress", "legend-progress"
 			If sIcon = "" Then sIcon = "./assets/upload-solid.svg"
-		Case "camera"
+		Case "camera", "legend-camera"
 			If sAccept = "" Then sAccept = "image/*;capture=camera"
 			If sIcon = "" Then sIcon = "./assets/camera-solid.svg"
 			If sCapture = "" Then sCapture = "environment" 
-		Case "camcorder"
+		Case "camcorder", "legend-camcorder"
 			If sIcon = "" Then sIcon = "./assets/video-solid.svg"
 			If sAccept = "" Then sAccept = "video/*;capture=camcorder"
 		End Select
@@ -728,7 +738,7 @@ Sub setColor(s As String)     'ignoredeadcode
 	If mElement = Null Then Return
 	If s = "" Then Return
 	Select Case sInputType
-	Case "microphone", "progress", "camera", "camcorder"
+	Case "microphone", "progress", "camera", "camcorder", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 		UI.SetBackgroundColorByID($"${mName}_button"$, s)
 	Case Else
 		UI.SetColor(mElement, "color", "file-input", sColor)
@@ -777,7 +787,7 @@ Sub setLabel(s As String)
 	CustProps.put("Label", s)
 	If mElement = Null Then Return
 	Select Case sInputType
-	Case "legend", "label-input"
+	Case "legend", "label-input", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 		UI.SetTextByID($"${mName}_legend"$, s)
 	End Select
 End Sub
@@ -968,6 +978,13 @@ Sub GetFile As Map
 	End If
 End Sub
 
+Sub GetFileDataURL As String
+	Dim fileObj As Map = BANano.Await(GetFile)
+	If BANano.IsNull(fileObj) Then Return ""
+	Dim fo As Object = BANano.Await(BANano.RunJavascriptMethod("fileToDataURL", Array(fileObj)))
+	Return fo
+End Sub
+
 Sub setValue(v As Object)
 	If mElement = Null Then Return
 	mElement.SetValue(v)
@@ -993,31 +1010,35 @@ End Sub
 Sub IsBlank As Boolean
 	Dim v As Object = GetFile
 	If BANano.IsNull(v) Then
-		If sInputType = "legend" Then
+		Select Case sInputType
+		Case "legend", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 			setBorderColor("error")
-		Else
+		Case Else
 			setColor("error")
-		End If
+		End Select
 		HintError($"The ${sLabel.tolowercase} is required."$)
 		Focus
 		Return True
 	End If
-	If sInputType = "legend" Then
+	'
+	Select Case sInputType
+	Case "legend", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 		setBorderColor("success")
-	Else
+	Case Else
 		setColor("success")
-	End If
+	End Select
 	setHint(sHint)
 	Return False
 End Sub
 
 Sub ResetValidation
 	Try
-		If sInputType = "legend" Then
+		Select Case sInputType
+		Case "legend", "legend-microphone", "legend-progress", "legend-camera", "legend-camcorder"
 			setBorderColor("success")
-		Else
+		Case Else
 			setColor("success")
-		End If
+		End Select
 	Catch
 		
 	End Try		'ignore

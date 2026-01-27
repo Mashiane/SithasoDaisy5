@@ -131,6 +131,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesToastChart)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("toastui-chart.min.css")
+	BANano.DependsOnAsset("toastui-chart.min.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)

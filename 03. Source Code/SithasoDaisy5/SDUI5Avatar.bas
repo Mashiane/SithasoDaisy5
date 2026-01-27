@@ -600,6 +600,15 @@ Sub setImage(s As String)
 	If mElement = Null Then Return
 	If s <> "" Then UI.SetImageByID($"${mName}_image"$, s)
 End Sub
+
+'set Image
+Sub setSrc(s As String)
+	sImage = s
+	CustProps.put("Image", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetImageByID($"${mName}_image"$, s)
+End Sub
+
 'set Mask
 'options: squircle|heart|hexagon|hexagon-2|decagon|pentagon|diamond|square|circle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|none|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 Sub setMask(s As String)			'ignoredeadcode
@@ -718,6 +727,12 @@ End Sub
 Sub getImage As String
 	Return sImage
 End Sub
+
+'get Image
+Sub getSrc As String
+	Return sImage
+End Sub
+
 'get Mask
 Sub getMask As String
 	Return sMask

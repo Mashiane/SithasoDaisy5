@@ -6,7 +6,6 @@
 .device::after,
 .device::before {
   box-sizing: border-box;
-  display: block;
 }
 .device {
   position: relative;
@@ -22,6 +21,7 @@
   background-size: cover;
   object-fit: cover;
   position: relative;
+  overflow-y: auto;
 }
 .device-iphone-14-pro {
   height: 868px;
