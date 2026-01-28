@@ -4088,3 +4088,26 @@ Sub GetTableColumnID(tblName As String, colName As String) As String
 		Return ""
 	End If
 End Sub
+
+'used in a banano server app
+Sub ReadConfiguration(fn As String) As Map
+	Dim bfo As BANanoFetchOptions
+	bfo.Initialize
+	bfo.Cache = "no-store"
+	bfo.Method = "GET"
+	'get the env.json content
+	Dim env As String = Banano.Await(Banano.GetFileAsText(fn & "?" & DateTime.Now, bfo, "utf8"))
+	Dim lines As List = UI.StrParse(CRLF, env)
+	Dim config As Map = CreateMap()
+	For Each line As String In lines
+		line = line.Trim
+		If line = "" Then Continue
+		If line.StartsWith(";") Then Continue
+		If line.StartsWith("#") Then Continue
+		If line.IndexOf("=") = -1 Then Continue
+		Dim skey As String = UI.MvField(line, 1, "=")
+		Dim svalue As String = UI.MvRest("=",line,2)
+		config.Put(skey, svalue)
+	Next
+	Return config
+End Sub

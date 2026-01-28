@@ -203,17 +203,19 @@ Sub AddFormData(fldName As String, fldValue As Object)
 End Sub
 
 Sub AddData(k As String, v As String)
-	Dim dt As String = schema.Get(k)
-	Select Case dt
-	Case DB_BOOL
-		v = CBool(v)
-	Case DB_INT
-		v = CInt(v)
-	Case DB_STRING
-		v = CStr(v)
-	Case DB_DOUBLE
-		v = CDbl(v)
-	End Select
+	If schema.ContainsKey(k) Then
+		Dim dt As String = schema.Get(k)
+		Select Case dt
+		Case DB_BOOL
+			v = CBool(v)
+		Case DB_INT
+			v = CInt(v)
+		Case DB_STRING
+			v = CStr(v)
+		Case DB_DOUBLE
+			v = CDbl(v)
+		End Select
+	End If	
 	PutRecursive(vdata, k, v)
 End Sub
 

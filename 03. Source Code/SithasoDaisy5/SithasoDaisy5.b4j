@@ -540,9 +540,10 @@ Module148=|absolute|C:\b4j\shared\SDUIMySQLRESTNative
 Module149=|absolute|C:\b4j\shared\SDUIPocketBase
 Module15=SDUI5BarCode
 Module150=|absolute|C:\b4j\shared\SDUIPouchDB
-Module151=|absolute|C:\b4j\shared\SDUISQLiteBrowser
-Module152=SithasoDaisy5
-Module153=|absolute|C:\b4j\shared\UIShared
+Module151=SDUIRestApi
+Module152=|absolute|C:\b4j\shared\SDUISQLiteBrowser
+Module153=SithasoDaisy5
+Module154=|absolute|C:\b4j\shared\UIShared
 Module16=SDUI5BarcodeReader
 Module17=SDUI5BasicLabel
 Module18=SDUI5BottomDrawer
@@ -637,7 +638,7 @@ Module98=SDUI5Radio
 Module99=SDUI5RadioGroup
 NumberOfFiles=239
 NumberOfLibraries=3
-NumberOfModules=153
+NumberOfModules=154
 Version=10.3
 @EndOfDesignText@
 #Region Project Attributes 
@@ -649,9 +650,9 @@ Version=10.3
 #End Region
 
 
-#Macro: After Save, Sync Layouts, ide://run?File=%ADDITIONAL%\..\b4j\JsonLayouts.jar&Args=%PROJECT%&Args=%PROJECT_NAME%
+#Macro: After Save, Sync Layouts, ide://run?File=%ADDITIONAL%\JsonLayouts.jar&Args=%PROJECT%&Args=%PROJECT_NAME%
 #Macro: Title, JsonLayouts folder, ide://run?File=%WINDIR%\explorer.exe&Args=%PROJECT%\JsonLayouts
-#Macro: Title, Code bundle, ide://run?File=%ADDITIONAL%\..\b4j\CodeBundle.jar&Args=%PROJECT_NAME%
+#Macro: Title, Code bundle, ide://run?File=%ADDITIONAL%\CodeBundle.jar&Args=%PROJECT_NAME%
 
 
 Sub Process_Globals
