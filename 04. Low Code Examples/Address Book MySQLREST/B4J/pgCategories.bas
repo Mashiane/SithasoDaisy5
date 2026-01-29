@@ -92,9 +92,10 @@ Private Sub MountCategories(bAfterChange As Boolean)
 	App.PagePause
 	'select Categories from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -169,9 +170,10 @@ Private Sub tblCategories_ExportToXls (e As BANanoEvent)
 	App.PagePause
 	'select Categories from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -254,9 +256,10 @@ Private Sub tblCategories_EditRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record from the database
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -281,8 +284,9 @@ Private Sub tblCategories_DeleteRow (Row As Int, item As Map)
 	App.pagepause
 	'execute a delete using the id of the Category
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'execute the delete from the database table
 	BANano.Await(db.DELETE(toDeleteID))
@@ -299,9 +303,10 @@ Private Sub tblCategories_CloneRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -343,8 +348,9 @@ Private Sub mdlCategories_Yes_Click (e As BANanoEvent)
     
 	'open the database and save the record
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'pass the map record
 	'Prepare database to save

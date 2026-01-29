@@ -200,9 +200,10 @@ Private Sub BuildPage
 	
 	'update count of contacts
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	db.ShowLog = True
 	db.SetSchemaFromDataModel(app.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	Dim tContacts As Int = BANano.Await(db.COUNT_ALL)
 	infocontacts.Value = tContacts
 	infocontacts.refresh

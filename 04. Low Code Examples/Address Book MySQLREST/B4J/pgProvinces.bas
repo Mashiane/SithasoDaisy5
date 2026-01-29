@@ -91,9 +91,10 @@ Private Sub MountProvinces(bAfterChange As Boolean)
 	App.PagePause
 	'select Provinces from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -168,9 +169,10 @@ Private Sub tblProvinces_ExportToXls (e As BANanoEvent)
 	App.PagePause
 	'select Provinces from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -248,9 +250,10 @@ Private Sub tblProvinces_EditRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record from the database
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -275,8 +278,9 @@ Private Sub tblProvinces_DeleteRow (Row As Int, item As Map)
 	App.pagepause
 	'execute a delete using the id of the Province
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'execute the delete from the database table
 	BANano.Await(db.DELETE(toDeleteID))
@@ -293,9 +297,10 @@ Private Sub tblProvinces_CloneRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -334,8 +339,9 @@ Private Sub mdlProvinces_Yes_Click (e As BANanoEvent)
     
 	'open the database and save the record
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'pass the map record
 	'Prepare database to save

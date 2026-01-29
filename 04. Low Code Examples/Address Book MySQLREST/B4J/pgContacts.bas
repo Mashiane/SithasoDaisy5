@@ -137,10 +137,11 @@ Private Sub MountContacts(bAfterChange As Boolean)
 	BANano.Await(LoadProvinces)
 	'select Contacts from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
-	'db.ShowLogs = True
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
+	db.ShowLog = True
 	'clear any where clauses
 	db.CLEAR_WHERE
 	'order by fullname
@@ -229,9 +230,10 @@ Private Sub tblContacts_ExportToXls (e As BANanoEvent)
 	BANano.Await(LoadProvinces)
 	'select Contacts from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -404,9 +406,10 @@ Private Sub tblContacts_EditRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record from the database
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -431,8 +434,9 @@ Private Sub tblContacts_DeleteRow (Row As Int, item As Map)
 	App.pagepause
 	'execute a delete using the id of the Contact
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'execute the delete from the database table
 	BANano.Await(db.DELETE(toDeleteID))
@@ -454,9 +458,10 @@ Private Sub tblContacts_CloneRow (Row As Int, item As Map)
 	Dim sID As String = item.Get("id")
 	'execute a read from the database
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	'assign schema
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'read the record
 	Dim rec As Map = BANano.Await(db.READ(sID))
@@ -477,9 +482,10 @@ Private Sub LoadCategories				'ignore
 	'this will store the key value pairs for the values
 	CategoriesObject.Initialize
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	db.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -509,9 +515,10 @@ Private Sub LoadProvinces				'ignore
 	'this will store the key value pairs for the values
 	ProvincesObject.Initialize
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	db.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'link this api class to the data models
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'clear any where clauses
 	db.CLEAR_WHERE
@@ -600,8 +607,9 @@ Private Sub mdlContacts_Yes_Click (e As BANanoEvent)
     
 	'open the database and save the record
 	Dim db As SDUIMySQLREST
-	db.InitializeApiKey(Me, "contacts", Main.ServerURL, "contacts", Main.ApiKey)
+	db.Initialize(Me, "contacts", Main.ServerURL, "contacts")
 	db.SetSchemaFromDataModel(App.DataModels)
+	db.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'db.ShowLogs = True
 	'pass the map record
 	'Prepare database to save
@@ -1035,10 +1043,11 @@ Private Sub cboCategory_append (e As BANanoEvent)
 	App.PagePause
 	'define the database connection
 	Dim tblX As SDUIMySQLREST
-	tblX.InitializeApiKey(Me, "categories", Main.ServerURL, "categories", Main.ApiKey)
+	tblX.Initialize(Me, "categories", Main.ServerURL, "categories")
 	'tblX.ShowLogs = True
 	'set the schema from the data model
 	tblX.SetSchemaFromDataModel(App.DataModels)
+	tblX.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'ensure that there are no duplicates
 	Dim aid As String = BANano.Await(tblX.READ_ID_BY("name", sname))
 	If aid <> "" Then
@@ -1078,10 +1087,11 @@ Private Sub cboProvince_append (e As BANanoEvent)
 	App.PagePause
 	'define the database connection
 	Dim tblX As SDUIMySQLREST
-	tblX.InitializeApiKey(Me, "provinces", Main.ServerURL, "provinces", Main.ApiKey)
+	tblX.Initialize(Me, "provinces", Main.ServerURL, "provinces")
 	'tblX.ShowLogs = True
 	'set the schema from the data model
 	tblX.SetSchemaFromDataModel(App.DataModels)
+	tblX.SetMySQLConnectionApiKey(Main.DBHost, Main.DBUser, Main.DBPassWord, Main.DBName, Main.DBPort, Main.ApiKey)
 	'ensure that there are no duplicates
 	Dim aid As String = BANano.Await(tblX.READ_ID_BY("name", sname))
 	If aid <> "" Then

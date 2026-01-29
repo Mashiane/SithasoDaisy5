@@ -12763,13 +12763,27 @@ namespace Tqdev\PhpCrudApi {
     use Tqdev\PhpCrudApi\ResponseUtils;
 
     // --- Dynamic DB Configuration via Headers ---
-    $headers = getallheaders();
-    $host = $headers['X-Host'] ?? 'localhost';
-    $user = $headers['X-User'] ?? 'root';
-    $password = $headers['X-Password'] ?? '';
-    $dbname = $headers['X-DBName'] ?? '';
-    $driver = $headers['X-Driver'] ?? 'mysql';
-    $port = $headers['X-Port'] ?? '3306';
+    if (!function_exists('getallheaders')) {
+        function getallheaders() {
+            $headers = [];
+            foreach ($_SERVER as $name => $value) {
+                if (substr($name, 0, 5) == 'HTTP_') {
+                    $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+                }
+            }
+            return $headers;
+        }
+    }
+
+    $rawHeaders = getallheaders();
+    $headers = array_change_key_case($rawHeaders, CASE_LOWER);
+
+    $host = $headers['x-host'] ?? 'localhost';
+    $user = $headers['x-user'] ?? 'root';
+    $password = $headers['x-password'] ?? '';
+    $dbname = $headers['x-dbname'] ?? '';
+    $driver = $headers['x-driver'] ?? 'mysql';
+    $port = $headers['x-port'] ?? '3306';
 
      require 'SecureQueryController.php';
 

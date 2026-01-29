@@ -79,7 +79,38 @@ Sub Class_Globals
 	Public VehicleMake As Boolean
 	Public VehicleType As Boolean
 	Private BANano As BANano			'ignore
+	Public ProjectName As Boolean
+	Public ProjectStatus As Boolean
+	Public TaskName As Boolean
+	Public MedicalEventType As Boolean
+	Public MedicalDocument As Boolean
+	Public MedicalBillingType As Boolean
+	Public MedicalBillStatus As Boolean
+	Public MedicationStatus As Boolean
+	Public TimeFrequency As Boolean
+	Public MedicalCondition As Boolean
+	Public MedicalBillItem As Boolean
+	Public HospitalName As Boolean
+	Public MedicationName As Boolean
+	Public MedicalDocumentType As Boolean
+	Public EventStatus As Boolean
+	Public InsuranceCompany As Boolean
 	'
+	Public const DT_INSURANCE_COMPANY As String = "insurancecompany"
+	Public const DT_EVENT_STATUS As String = "eventstatus"
+	Public const DT_MEDICAL_DOCUMENT_TYPE As String = "medicaldocumenttype"
+	Public const DT_MEDICATION_NAME As String = "medicationname"
+	Public const DT_HOSPITAL_NAME As String = "hospitalname"
+	Public const DT_MEDICAL_BILL_ITEM As String = "medicalbillitem"
+	Public const DT_MEDICAL_CONDITION As String = "medicalcondition"
+	Public const DT_MEDICATION_STATUS As String = "medicationstatus"
+	Public const DT_MEDICAL_BILL_STATUS As String = "medicalbillstatus"
+	Public const DT_MEDICAL_BILLING_TYPE As String = "medicalbillingtype"
+	Public const DT_MEDICAL_DOCUMENT As String = "medicaldocument"
+	Public const DT_MEDICAL_EVENT_TYPE As String = "medicaleventtype"
+	Public const DT_TASK_NAME As String = "taskname"
+	Public const DT_PROJECT_STATUS As String = "projectstatus"
+	Public const DT_PROJECT_NAME As String = "projectname"
 	Public const DT_VEHICLE_TYPE As String = "vehicletype"
 	Public const DT_VEHICLE_MAKE As String = "vehiclemake"
 	Public const DT_VEHICLE As String = "vehicle"
@@ -150,6 +181,7 @@ Sub Class_Globals
 	Public const DT_STREET_3 As String = "street3"
 	Public const DT_MOBILE As String = "mobile"
 	Public const DT_ZIPCODE As String = "zipcode"
+	Public const DT_TIME_FREQUENCY As String = "timefrequency"
 	Private Conditions As Map
 	
 	Type FakeData(PrimaryKey As String, _
@@ -220,12 +252,44 @@ Sub Class_Globals
 	PaymentProvider As String, _
 	Vehicle As String, _
 	VehicleMake As String, _
-	VehicleType as string)
+	VehicleType As String, _
+	ProjectName As String, _
+	ProjectStatus As String, _
+	TaskName As String, _
+	MedicalEventType As String, _
+	MedicalDocument As String, _
+	MedicalBillingType As String, _
+	MedicalBillStatus As String, _
+	MedicationStatus As String, _
+	TimeFrequency As String, _
+	MedicalCondition As String, _
+	MedicalBillItem As String, _
+	HospitalName As String, _
+	MedicationName As String, _
+	MedicalDocumentType As String, _
+	EventStatus As String, _
+	InsuranceCompany As String)
 End Sub
 
 Sub Initialize As SDUI5FakeIT
 	Conditions.Initialize 
 	DT_Types.Initialize
+	DT_Types.add(DT_INSURANCE_COMPANY)
+	DT_Types.Add(DT_EVENT_STATUS)
+	DT_Types.add(DT_MEDICAL_DOCUMENT_TYPE)
+	DT_Types.Add(DT_MEDICATION_NAME)
+	DT_Types.Add(DT_HOSPITAL_NAME)
+	DT_Types.Add(DT_MEDICAL_BILL_ITEM)
+	DT_Types.Add(DT_MEDICAL_CONDITION)
+	DT_Types.Add(DT_TIME_FREQUENCY)
+	DT_Types.Add(DT_MEDICATION_STATUS)
+	DT_Types.Add(DT_MEDICAL_BILL_STATUS)
+	DT_Types.Add(DT_MEDICAL_BILLING_TYPE)
+	DT_Types.Add(DT_MEDICAL_DOCUMENT)
+	DT_Types.Add(DT_MEDICAL_EVENT_TYPE)
+	DT_Types.Add(DT_TASK_NAME)
+	DT_Types.Add(DT_PROJECT_STATUS)
+	DT_Types.add(DT_PROJECT_NAME)
 	DT_Types.Add(DT_VEHICLE_TYPE)
 	DT_Types.Add(DT_VEHICLE_MAKE)
 	DT_Types.Add(DT_VEHICLE)
@@ -367,13 +431,37 @@ Sub Initialize As SDUI5FakeIT
 	PaymentProvider = False
 	Vehicle = False
 	VehicleMake = False
-	VehicleType = True
+	VehicleType = False
+	ProjectName = False
+	ProjectStatus = False
+	TaskName = False
+	MedicalEventType = False
+	MedicalDocument = False
+	MedicalBillingType = False
+	MedicalBillStatus = False
+	MedicationStatus = False
+	TimeFrequency = False
+	MedicalCondition = False
+	MedicalBillItem = False
+	HospitalName = False
+	MedicationName = False
+	MedicalDocumentType = False
+	EventStatus = False
+	InsuranceCompany = False
 	Return Me
 End Sub
 
 'add types of data should be returned
 Sub All As SDUI5FakeIT
+	InsuranceCompany = True
+	MedicalDocumentType = True
+	MedicalBillItem = True
+	TimeFrequency = True
+	MedicalDocument = True
+	MedicalEventType = True
 	State = True
+	TaskName = True
+	ProjectStatus = True
 	VehicleMake = True
 	SKU = True
 	Province = True
@@ -443,6 +531,14 @@ Sub All As SDUI5FakeIT
 	PaymentProvider = True
 	Vehicle = True
 	VehicleType = True
+	ProjectName = True
+	MedicalBillingType = True
+	MedicalBillStatus = True
+	MedicationStatus = True
+	MedicalCondition = True
+	HospitalName = True
+	MedicationName = True
+	EventStatus = True
 	Return Me
 End Sub
 
@@ -480,8 +576,40 @@ Sub GetRecordsWithStructure(structure As Map, numRecords As Int) As List
 			Dim strVal As String = structure.Get(strkey)
 			Dim svalue As Object = Null
 			Select Case strVal
+				Case DT_INSURANCE_COMPANY
+					svalue = Rand_Insurance_Company
+				Case DT_EVENT_STATUS
+					svalue = Rand_Event_Status
+				Case DT_MEDICAL_DOCUMENT_TYPE
+					svalue = Rand_Medical_Document_Type
+				Case DT_MEDICATION_NAME
+					svalue = Rand_Medication_Name
+				Case DT_HOSPITAL_NAME
+					svalue = Rand_Hospital_Name
+				Case DT_MEDICAL_BILL_ITEM
+					svalue = Rand_Medical_Bill_Item
+				Case DT_MEDICAL_CONDITION
+					svalue = Rand_Medical_Condition
+				Case DT_TIME_FREQUENCY
+					svalue = Rand_Time_Frequency
+				Case DT_MEDICATION_STATUS
+					svalue = Rand_Medication_Status
+				Case DT_MEDICAL_BILL_STATUS
+					svalue = Rand_Medical_Bill_Status
+				Case DT_MEDICAL_BILLING_TYPE
+					svalue = Rand_Medical_BillingType
+				Case DT_MEDICAL_DOCUMENT
+					svalue = Rand_Medical_Document
+				Case DT_MEDICAL_EVENT_TYPE
+					svalue = Rand_Medical_Event_Type
+				Case DT_TASK_NAME
+					svalue = Rand_Task_Name
+				Case DT_PROJECT_STATUS
+					svalue = BANano.Await(Rand_Project_Status)
+				Case DT_PROJECT_NAME
+					svalue = BANano.Await(Rand_Project_Name)
 				Case DT_VEHICLE_TYPE
-					svalue = BANano.Await(rand_vehicle_type)
+					svalue = BANano.Await(Rand_Vehicle_Type)
 				Case DT_VEHICLE_MAKE
 					svalue = BANano.Await(Rand_Vehicle_Make)
 				Case DT_VEHICLE
@@ -662,6 +790,22 @@ End Sub
 Sub GetSingle As FakeData
 	Dim rt As FakeData
 	rt.Initialize
+	If InsuranceCompany Then rt.InsuranceCompany = Rand_Insurance_Company
+	If EventStatus Then rt.EventStatus = Rand_Event_Status
+	If MedicalDocumentType Then rt.MedicalDocumentType = Rand_Medical_Document_Type
+	If MedicationName Then rt.MedicationName = Rand_Medication_Name
+	If HospitalName Then rt.HospitalName = Rand_Hospital_Name
+	If MedicalBillItem Then rt.MedicalBillItem = Rand_Medical_Bill_Item
+	If MedicalCondition Then rt.MedicalCondition = Rand_Medical_Condition
+	If TimeFrequency Then rt.TimeFrequency = Rand_Time_Frequency
+	If MedicationStatus Then rt.MedicationStatus = Rand_Medication_Status
+	If MedicalBillStatus Then rt.MedicalBillStatus = Rand_Medical_Bill_Status
+	If MedicalBillingType Then rt.MedicalBillingType = Rand_Medical_BillingType
+	If MedicalDocument Then rt.MedicalDocument = Rand_Medical_Document
+	If MedicalEventType Then rt.MedicalEventType = Rand_Medical_Event_Type
+	If TaskName Then rt.TaskName = Rand_Task_Name
+	If ProjectStatus Then rt.ProjectStatus = Rand_Project_Status
+	If ProjectName Then rt.ProjectName = Rand_Project_Name
 	If VehicleType Then rt.VehicleType = Rand_Vehicle_Type
 	If VehicleMake Then rt.VehicleMake = Rand_Vehicle_Make
 	If Vehicle Then rt.Vehicle = Rand_Vehicle
@@ -754,6 +898,22 @@ Sub GetRecords(numRecords As Int) As List
 	For tRecs = 1 To numRecords
 		Dim rec As Map
 		rec.Initialize
+		If InsuranceCompany Then rec.put("insurancecompany", Rand_Insurance_Company)
+		If EventStatus Then rec.Put("eventstatus", Rand_Event_Status)
+		If MedicalDocumentType Then rec.Put("medicaldocumenttype", Rand_Medical_Document_Type)
+		If MedicationName Then rec.Put("medicationname", Rand_Medication_Name)
+		If HospitalName Then rec.Put("hospitalname", Rand_Hospital_Name)
+		If MedicalBillItem Then rec.Put("medicalbillitem", Rand_Medical_Bill_Item)
+		If MedicalCondition Then rec.Put("medicalcondition", Rand_Medical_Condition)
+		If TimeFrequency Then rec.Put("timefrequency", Rand_Time_Frequency)
+		If MedicationStatus Then rec.Put("medicationstatus", Rand_Medication_Status)
+		If MedicalBillStatus Then rec.put("medicalbillstatus", Rand_Medical_Bill_Status)
+		If MedicalBillingType Then rec.Put("medicalbillingtype", Rand_Medical_BillingType)
+		If MedicalDocument Then rec.put("medicaldocument", Rand_Medical_Document)
+		If MedicalEventType Then rec.Put("medicaleventtype", Rand_Medical_Event_Type)
+		If TaskName Then rec.Put("taskname", Rand_Task_Name)
+		If ProjectStatus Then rec.Put("projectstatus", Rand_Project_Status)
+		If ProjectName Then rec.Put("projectname", Rand_Project_Name)
 		If VehicleType Then rec.Put("vehicletype", Rand_Vehicle_Type)
 		If VehicleMake Then rec.Put("vehiclemake", Rand_Vehicle_Make)
 		If Vehicle Then rec.Put("vehicle", Rand_Vehicle)
@@ -826,6 +986,826 @@ Sub GetRecords(numRecords As Int) As List
 		recs.Add(rec)
 	Next
 	Return recs
+End Sub
+
+Sub Rand_Hospital_Name As String
+	Dim hospitalNames As List
+	hospitalNames.Initialize
+
+	' --- South African Hospitals & Clinics ---
+	hospitalNames.AddAll(Array As String( _
+      "Chris Hani Baragwanath Academic Hospital", _
+      "Tygerberg Hospital", _
+      "Groote Schuur Hospital", _
+      "Nelson Mandela Academic Hospital", _
+      "Cecilia Makiwane Hospital", _
+      "Dora Nginza Hospital", _
+      "Steve Biko Academic Hospital", _
+      "Inkosi Albert Luthuli Central Hospital", _
+      "Netcare Milpark Hospital", _
+      "Mediclinic Panorama", _
+      "Hillcrest Private Hospital", _
+      "Ethekwini Hospital & Heart Centre", _
+      "Life Bay View Hospital", _
+      "Busamed Gateway Private Hospital", _
+      "Netcare Christiaan Barnard Memorial Hospital", _
+      "Netcare Sandton Hospital", _
+      "Life Entabeni Hospital", _
+      "Mediclinic Cape Gate", _
+      "Zuid‑Afrikaans Hospital", _
+      "Red Cross War Memorial Children’s Hospital", _
+      "Cormed Clinic (Vanderbijlpark)" _
+    ))
+
+	' --- International Hospitals & Clinics ---
+	hospitalNames.AddAll(Array As String( _
+      "Mayo Clinic (USA)", _
+      "Cleveland Clinic (USA)", _
+      "Johns Hopkins Hospital (USA)", _
+      "Massachusetts General Hospital (USA)", _
+      "Stanford University Medical Center (USA)", _
+      "Cedars‑Sinai Medical Center (USA)", _
+      "Charité – Universitätsmedizin Berlin (Germany)", _
+      "Karolinska University Hospital (Sweden)", _
+      "Sheba Medical Center (Israel)", _
+      "Singapore General Hospital (Singapore)", _
+      "MD Anderson Cancer Center (USA)", _
+      "Houston Methodist Hospital (USA)", _
+      "Toronto General Hospital (Canada)", _
+      "Ronald Reagan UCLA Medical Center (USA)", _
+      "Hôpital Universitaire Pitié-Salpêtrière (France)", _
+      "Universitätsspital Zürich (Switzerland)", _
+      "Sheikh Khalifa Medical City (UAE)", _
+      "Apollo Hospitals (India)", _
+      "Fortis Healthcare (India)", _
+      "Bumrungrad International Hospital (Thailand)" _
+    ))
+
+	Return RandListValue(hospitalNames)
+End Sub
+
+Public Sub Rand_Event_Status As String
+	Dim lst As List
+	lst.Initialize
+
+	lst.AddAll(Array As String( _
+        "Draft", _
+        "Planned", _
+        "Scheduled", _
+        "Tentative", _
+        "Pending Approval", _
+        "Awaiting Confirmation", _
+        "Confirmed", _
+        "Checked-In", _
+        "In Queue", _
+        "Waiting", _
+        "Ready to Start", _
+        "In Progress", _
+        "Active", _
+        "Paused", _
+        "Delayed", _
+        "Completed", _
+        "Finished", _
+        "Ended Early", _
+        "Overdue", _
+        "Cancelled", _
+        "Postponed", _
+        "Rescheduled", _
+        "No-Show", _
+        "Failed", _
+        "Declined", _
+        "Follow-Up Required", _
+        "Follow-Up Scheduled", _
+        "Closed", _
+        "Archived" _
+    ))
+
+	Return RandListValue(lst)
+End Sub
+
+Sub Rand_Insurance_Company As String
+	Dim insuranceCompanies As List
+	insuranceCompanies.Initialize
+    
+	insuranceCompanies.AddAll(Array As String( _
+        "HealthFirst Insurance", "WellCare Health", "United Health Group", "BlueCross BlueShield", "Cigna Health", _
+        "Aetna Life Insurance", "Kaiser Permanente", "Humana Insurance", "Guardian Health", "MetLife Health", _
+        "Nova Health Insurance", "EverCare Insurance", "Optima Health", "PrimeHealth Insurance", "SecureLife Health", _
+        "AllWell Insurance", "TotalCare Health", "Viva Health Insurance", "MedSecure Insurance", "CarePoint Health", _
+        "SafeHealth Insurance", "EliteCare Health", "LifeGuard Insurance", "HealthBridge Insurance", "MedPlus Insurance", _
+        "WellPoint Health", "Unity Health Insurance", "BrightCare Insurance", "CureWell Health", "SureHealth Insurance", _
+        "HealthEdge Insurance", "FamilyFirst Health", "ApexHealth Insurance", "Pioneer Health Insurance", "TrustCare Health", _
+        "Summit Health Insurance", "HealthSphere Insurance", "NewPath Health", "EverWell Insurance", "LifeCare Insurance", _
+        "CareGuard Health", "HealthAlliance Insurance", "BlueSky Health", "MediTrust Insurance", "TotalWell Health", _
+        "OptimalCare Insurance", "CareFirst Health", "HealthLine Insurance", "MedSure Insurance", "WellBeing Insurance", _
+        "NextGen Health Insurance", "PrimeCare Insurance", "SecureHealth Insurance", "LifePath Health", "GuardianPlus Insurance", _
+        "HealthVision Insurance", "CaringHands Health", "BrightLife Insurance", "MediWell Insurance", "TrustHealth Insurance", _
+        "ActiveCare Health", "WellMed Insurance", "CoreHealth Insurance", "UnityCare Insurance", "HealthPioneer Insurance", _
+        "EverCare Plus", "MediCore Insurance", "SafeGuard Health", "HealthPoint Insurance", "VivaCare Insurance", _
+        "TotalHealth Insurance", "MedLife Insurance", "CareNet Health", "HealthPro Insurance", "BlueLine Health", _
+        "LifeShield Insurance", "WellTrust Insurance", "PrimeHealth Plus", "MediBridge Insurance", "HealthWay Insurance", _
+        "EverTrust Health", "CareLink Insurance", "HealthFirst Plus", "SecureCare Health", "OptiMed Insurance", _
+        "BrightGuard Insurance", "MediHealth Insurance", "UnityWell Insurance", "SafePath Health", "HealthPlus Insurance", _
+        "NovaCare Insurance", "TrustWell Health", "LifeWell Insurance", "PrimeCare Plus", "MedVision Insurance", _
+        "HealthPartners Insurance", "CareAdvantage Health", "TotalCare Plus", "WellShield Insurance", "OptiCare Health", _
+        "BlueHealth Insurance", "HealthSecure Plus", "MediSure Insurance", "EverGuard Health", "LifePrime Insurance", _
+        "CareFirst Plus", "HealthNet Insurance", "SafeCare Insurance", "UnityHealth Plus", "WellPath Insurance" _
+    ))
+    
+	Return RandListValue(insuranceCompanies)
+End Sub
+
+
+Sub Rand_Medical_Document_Type As String
+	Dim MedicalDocumentTypes As List
+	MedicalDocumentTypes.Initialize
+	MedicalDocumentTypes.AddAll(Array As String( _
+    "Doctor Note", _
+    "Clinical Note", _
+    "Progress Note", _
+    "Discharge Summary", _
+    "Operative Report", _
+    "Surgical Report", _
+    "Anesthesia Report", _
+    "Consultation Report", _
+    "Radiology Report", _
+    "X-Ray Report", _
+    "MRI Report", _
+    "CT Scan Report", _
+    "Ultrasound Report", _
+    "Pathology Report", _
+    "Lab Test Result", _
+    "Blood Test Result", _
+    "Genetic Test Result", _
+    "Vital Signs Record", _
+    "Immunization Record", _
+    "Vaccination Certificate", _
+    "Prescription", _
+    "Medication Order", _
+    "Pharmacy Dispense Record", _
+    "Allergy List", _
+    "Medical History Form", _
+    "Family History Document", _
+    "Referral Letter", _
+    "Admission Record", _
+    "Pre-Op Assessment", _
+    "Post-Op Assessment", _
+    "Nursing Note", _
+    "Triage Note", _
+    "Emergency Visit Report", _
+    "ER Discharge Note", _
+    "Hospital Billing Statement", _
+    "Insurance Claim Form", _
+    "Authorization Form", _
+    "Consent Form (General)", _
+    "Consent Form (Surgery)", _
+    "Consent Form (Medication)", _
+    "Health Risk Assessment", _
+    "Mental Health Evaluation", _
+    "Psychiatric Report", _
+    "Therapy Session Note", _
+    "Dental Record", _
+    "Optometry Report", _
+    "Audiology Report", _
+    "Rehabilitation Plan", _
+    "Physiotherapy Note", _
+    "Occupational Therapy Report", _
+    "Nutrition Assessment", _
+    "Diet Plan", _
+    "Home Care Record", _
+    "Caregiver Report", _
+    "Device/Implant Document", _
+    "Lab Requisition Form", _
+    "Imaging Requisition Form", _
+    "Medical Certificate", _
+    "Fitness-for-Work Medical", _
+    "Death Certificate", _
+    "Birth Record", _
+    "Prenatal Record", _
+    "Postnatal Record", _
+    "Emergency Contact Document" _
+))
+	Return RandListValue(MedicalDocumentTypes)
+End Sub
+
+
+
+Sub Rand_Medication_Name As String
+	Dim meds As List
+	meds.Initialize
+    
+	meds.AddAll(Array As String( _
+      "Paracetamol", "Ibuprofen", "Aspirin", "Naproxen", "Diclofenac", "Celecoxib", "Tramadol", "Morphine", "Hydrocodone", "Codeine", _
+      "Amoxicillin", "Azithromycin", "Ciprofloxacin", "Doxycycline", "Cephalexin", "Clindamycin", "Metronidazole", "Levofloxacin", "Penicillin V", "Vancomycin", _
+      "Acyclovir", "Oseltamivir", "Zanamivir", "Valacyclovir", "Remdesivir", "Sofosbuvir", "Ribavirin", "Tenofovir", "Lamivudine", _
+      "Amlodipine", "Lisinopril", "Losartan", "Metoprolol", "Carvedilol", "Atorvastatin", "Simvastatin", "Furosemide", "Hydrochlorothiazide", "Clopidogrel", _
+      "Insulin (Regular)", "Insulin Glargine", "Metformin", "Glipizide", "Glyburide", "Pioglitazone", "Sitagliptin", "Canagliflozin", "Levothyroxine", "Methimazole", _
+      "Salbutamol (Albuterol)", "Fluticasone", "Montelukast", "Budesonide", "Prednisone", "Cetirizine", "Loratadine", "Fexofenadine", "Ipratropium", "Tiotropium", _
+      "Omeprazole", "Esomeprazole", "Ranitidine", "Lansoprazole", "Pantoprazole", "Ondansetron", "Metoclopramide", "Loperamide", "Dicyclomine", _
+      "Fluoxetine", "Sertraline", "Citalopram", "Escitalopram", "Paroxetine", "Diazepam", "Lorazepam", "Alprazolam", "Haloperidol", "Risperidone", _
+      "Vitamin D", "Vitamin C", "Vitamin B12", "Folic Acid", "Ferrous Sulfate", "Calcium Carbonate", "Magnesium", "Zinc", "Omega‑3", "Multivitamin", _
+      "Warfarin", "Heparin", "Digoxin", "Allopurinol", "Hydroxychloroquine", "Methotrexate", "Prednisolone", "Cyclosporine", "Tacrolimus", _
+      "Gabapentin", "Pregabalin", "Lamotrigine", "Carbamazepine", "Levetiracetam", "Valproic Acid", "Lithium Carbonate", "Topiramate", "Phenytoin", "Clonazepam", _
+      "Amiodarone", "Diltiazem", "Verapamil", "Sildenafil", "Tadalafil", "Alendronate", "Risedronate", "Allopurinol", "Propranolol", "Metoprolol Succinate", _
+      "Olanzapine", "Quetiapine", "Aripiprazole", "Ranitidine", "Famotidine", "Hydroxyzine", "Buspirone", "Eszopiclone", "Zolpidem", "Melatonin", _
+      "Ethinyl Estradiol / Levonorgestrel", "Norgestimate / Ethinyl Estradiol", "Levothroid (Levothyroxine)", "Propranolol", "Isosorbide Mononitrate", "Nitroglycerin", _
+      "Clopidogrel", "Prasugrel", "Ticagrelor", "Rivaroxaban", "Apixaban", "Dabigatran", "Atazanavir", "Ritonavir", "Efavirenz", "Darunavir", _
+      "Lamivudine / Zidovudine", "Tenofovir Disoproxil", "Emtricitabine", "Nevirapine", "Abacavir", "Entecavir", "Sofosbuvir / Ledipasvir", "Tamoxifen", "Anastrozole", _
+      "Letrozole", "Exemestane", "Trastuzumab", "Bevacizumab", "Infliximab", "Adalimumab", "Etanercept", "Secukinumab", "Ustekinumab", "Rituximab" _
+    ))
+
+	Return RandListValue(meds)
+End Sub
+
+
+
+Sub Rand_Task_Name As String
+	Dim lst As List
+	lst.Initialize
+    lst.AddAll(Array As String("Plan", "Define", "Outline", "Estimate", "Schedule", "Organize", "Prioritize", _
+        "Assign", "Research", "Brainstorm", "Prepare", "Propose", "Initiate", "Project Planning", _
+        "Task Estimation", "Resource Allocation", "Requirement Gathering", "Risk Assessment", _
+        "Goal Setting", "Strategy Meeting", "Budget Planning", "Timeline Review", "Project Roadmap", _
+        "Set Objectives", "Define Scope", "Identify Risks", "Forecast Results", "Develop Strategy", _
+        "Plan Event", "Organize Workshop", "Team Planning", "Set Milestones", "Action Planning", _
+		"Discuss", "Review", "Comment", "Report", "Share", "Notify", "Announce", "Coordinate", _
+        "Collaborate", "Consult", "Inform", "Request", "Respond", "Approve", "Confirm", "Remind", _
+        "Invite", "Meet", "Team Meeting", "Client Meeting", "Design Review", "Status Update", _
+        "Progress Discussion", "Performance Feedback", "Stakeholder Meeting", "Daily Standup", _
+        "Brainstorm Session", "Follow Up", "Request Approval", "Send Notification", "Team Coordination", _
+        "Project Discussion", "Lead Discussion", "Moderate Discussion", "Facilitate Meeting", _
+        "Collaborate With Team", "Communicate Results", "Share Insights", "Provide Feedback", _
+        "Present Ideas", "Discuss Options", "Negotiate Terms", "Consult Stakeholders", "Organize Discussion", _
+		"Document", "Record", "Summarize", "Track", "Log", "Analyze", "Audit", "Verify", "Validate", _
+        "Inspect", "Evaluate", "Document Requirements", "Write Report", "Prepare Summary", "Track Progress", _
+        "Log Issues", "Analyze Data", "Evaluate Risks", "Inspect Deliverables", "Audit Records", "Verify Details", _
+        "Prepare Documentation", "Summarize Findings", "Gather Feedback", "Compile Report", "Review Records", _
+        "Assess Performance", "Monitor Results", "Evaluate Outcomes", "Create Checklist", "Document Changes", _
+        "Deliver", "Launch", "Release", "Publish", "Promote", "Announce", "Client Handover", "Final Review", _
+        "Sign Off", "Demo Presentation", "Showcase", "Presentation", "Present Findings", "Submit Work", _
+        "Share Results", "Conduct Meeting", "Provide Feedback", "Evaluate Outcome", "Demonstrate Product", _
+        "Review Proposal", "Present Report", "Hand Over Project", "Conduct Review", "Prepare Presentation", _
+        "Show Work", "Present Summary", "Provide Assessment", "Finalize Document", "Deliver Presentation", _
+        "Organize Files", "Clean Workspace", "Arrange Meeting", "Follow Instructions", "Provide Assistance", _
+        "Support Team", "Manage Resources", "Train Staff", "Guide Colleagues", "Mentor Interns", _
+        "Conduct Interview", "Onboard Employee", "Facilitate Workshop", "Coordinate Event", "Assist Client", _
+        "Respond Inquiry", "Handle Request", "Resolve Issue", "Clarify Details", "Document Process", _
+        "Track Inventory", "Prepare Materials", "Update Records", "Compile Data", "Summarize Notes", _
+        "Verify Information", "Inspect Equipment", "Test Materials", "Check Quality", "Measure Results", _
+        "Evaluate Data", "Provide Guidance", "Collaborate Effectively", "Plan Schedule", "Set Agenda", _
+        "Lead Team", "Assign Responsibilities", "Coordinate Efforts", "Discuss Plan", "Analyze Situation", _
+        "Brainstorm Solutions", "Review Performance", "Conduct Analysis", "Summarize Report", "Document Findings", _
+        "Present Proposal", "Share Updates", "Monitor Progress", "Provide Recommendations", "Conduct Evaluation" _
+    ))
+	Return RandListValue(lst)
+End Sub
+
+Sub Rand_Medical_Bill_Item As String
+	Dim procedures As List
+	procedures.Initialize
+    
+	procedures.AddAll(Array As String( _
+        "Appendectomy", "Angioplasty", "Biopsy", "Blood Transfusion", "Cardiac Catheterization", _
+        "Cataract Surgery", "Cesarean Section (C-Section)", "Colonoscopy", "Coronary Artery Bypass Surgery", "CT Scan", _
+        "Dialysis", "Endoscopy", "Electrocardiogram (ECG)", "Electroencephalogram (EEG)", "Gastroscopy", _
+        "Hernia Repair", "Hip Replacement", "Hysterectomy", "Knee Replacement", "Laparoscopy", _
+        "Lumpectomy", "Mastectomy", "MRI Scan", "Pacemaker Implantation", "Physical Therapy", _
+        "Prostatectomy", "Radiation Therapy", "Spinal Fusion", "Tonsillectomy", "Ultrasound", _
+        "Vaccination", "Vasectomy", "Varicose Vein Surgery", "Wound Closure", "Wound Debridement", _
+        "Endovascular Repair", "Thyroidectomy", "Appendix Removal", "Skin Grafting", "Cholecystectomy", "Arthroscopy", _
+        "Bone Marrow Transplant", "Cardioversion", "Dental Extraction", "Eye Exam", "Fertility Treatment", _
+        "Gallbladder Surgery", "Kidney Transplant", "Liver Biopsy", "Lumbar Puncture", "IV Cannulation", _
+        "Catheterization", "Circumcision", "Pacemaker Surgery", "Radiography (X-ray)", "Sinus Surgery", _
+        "Sleep Study (Polysomnography)", "Spinal Tap", "Stent Placement", "Valve Replacement Surgery", "Vein Ligation", _
+        "ERCP (Endoscopic Retrograde Cholangiopancreatography)", "Cervical Screening (Pap Smear)", "Skin Biopsy", _
+        "Dental Filling", "Colposcopy", "Coronary Angiography", "Electrophysiology Study", "Endometrial Biopsy", _
+        "Joint Injection", "Lumbar Decompression", "Mammography", "PET Scan", "Prostate Biopsy", "Thoracentesis", _
+        "Tracheostomy", "Ureteroscopy", "Ventriculoperitoneal Shunt", "Arteriogram", "Bunion Surgery", "Cleft Lip Repair", _
+        "Dental Cleaning", "Hysteroscopy", "Keratoplasty", "Liver Transplant", "Nephrectomy", "Oophorectomy", _
+        "Paracentesis", "Radical Prostatectomy", "Sinus Lift", "Thrombectomy", "Tympanoplasty", "Vasectomy Reversal", _
+        "Cardiac Ablation", "Endoscopic Sinus Surgery", "Joint Replacement", "Laminectomy", "Myomectomy", _
+        "Peritoneal Dialysis", "Spinal Cord Stimulation", "Angiography", "Arthroplasty", "Bronchoscopy", _
+        "Carotid Endarterectomy", "Cleft Palate Repair", "Coronary Angioplasty", "Cryotherapy", "Dental Crowns", _
+        "Endovascular Coiling", "ENT Examination", "Eye Surgery", "Fistula Repair", "Fracture Repair", "Gastric Bypass Surgery", _
+        "Heart Transplant", "Hysterectomy Laparoscopic", "Inguinal Hernia Surgery", "Intravenous Therapy (IV)", _
+        "Joint Arthroscopy", "Kidney Stone Removal", "Laser Eye Surgery", "Ligament Repair", "Liver Resection", _
+        "Lumbar Fusion", "Mole Removal", "Neck Discectomy", "Ophthalmic Surgery", "Orthopedic Surgery", "Pacemaker Check", _
+        "Pancreas Surgery", "Parathyroid Surgery", "Percutaneous Coronary Intervention (PCI)", "Peripheral Angioplasty", _
+        "Plastic Surgery", "Proctoscopy", "Pulmonary Function Test", "Rhinoplasty", "Scoliosis Surgery", _
+        "Sinus Endoscopy", "Skin Resurfacing", "Spinal Decompression", "Stem Cell Transplant", "Thyroid Surgery", _
+        "Tonsil & Adenoid Removal", "Transesophageal Echocardiogram", "Tracheal Surgery", "Urologic Surgery", _
+        "Vascular Surgery", "Abdominoplasty", "Achilles Tendon Repair", "ACL Reconstruction", "Amputation Surgery", _
+        "Arthrodesis", "Bariatric Surgery", "Bladder Surgery", "Breast Biopsy", "Breast Reconstruction", _
+        "Carpal Tunnel Surgery", "Cervical Spine Surgery", "Chiropractic Adjustment", "Colostomy", "Dental Implant", _
+        "Deep Brain Stimulation", "Endocrine Surgery", "Esophagectomy", "Fasciotomy", "Gastrostomy", _
+        "Hemodialysis", "Hernia Mesh Repair", "Hip Arthroscopy", "Intestinal Surgery", "Joint Aspiration", _
+        "Kidney Biopsy", "Laminectomy for Spinal Stenosis", "Laparoscopic Cholecystectomy", "Lumbar Disc Surgery", _
+        "Mandibular Surgery", "Mastectomy Radical", "Microdiscectomy", "Minimally Invasive Surgery", "Mitral Valve Repair", _
+        "Neck Surgery", "Neurosurgery", "Obstetric Surgery", "Ocular Surgery", "Osteotomy", "Pancreatectomy", _
+        "Parotidectomy", "Pelvic Surgery", "Pediatric Surgery", "Pericardiocentesis", "Peripheral Vascular Surgery", _
+        "Plastic Reconstructive Surgery", "Prostate Surgery", "Pulmonary Surgery", "Renal Surgery", "Retinal Surgery", _
+        "Rib Fracture Surgery", "Robotic Surgery", "Rotator Cuff Repair", "Sacral Nerve Stimulation", "Saphenous Vein Surgery", _
+        "Scleral Buckling", "Skin Flap Surgery", "Spinal Instrumentation", "Spinal Osteotomy", "Spleen Surgery", "Sternotomy", _
+        "Strabismus Surgery", "Thymectomy", "Thoracic Surgery", "Tibial Fracture Surgery", "Transplant Surgery", _
+        "Transurethral Resection of Prostate (TURP)", "Trigeminal Neuralgia Surgery", "Urethral Surgery", "Uterine Surgery", _
+        "Vagotomy", "Vascular Graft Surgery", "Ventricular Assist Device Implantation", "Vertebroplasty", "Vitrectomy", "Wrist Surgery", "Zygomatic Surgery" _
+    ))
+ 	Return RandListValue(procedures)
+End Sub
+
+
+Sub Rand_Medical_Bill_Status As String
+	Dim billingStatuses As List
+	billingStatuses.Initialize
+    
+	' --- General Billing Statuses ---
+	billingStatuses.Add("Pending")                ' Billing not yet processed
+	billingStatuses.Add("Submitted")              ' Claim submitted to insurance or patient
+	billingStatuses.Add("Approved")               ' Claim approved for payment
+	billingStatuses.Add("Denied")                 ' Claim denied by insurance or payer
+	billingStatuses.Add("Paid")                   ' Payment received
+	billingStatuses.Add("Partially Paid")         ' Partial payment received
+	billingStatuses.Add("Under Review")           ' Currently being reviewed
+	billingStatuses.Add("Cancelled")              ' Claim cancelled
+	billingStatuses.Add("On Hold")                ' Billing temporarily paused
+	billingStatuses.Add("Adjusted")               ' Amount adjusted after review
+	billingStatuses.Add("Refunded")               ' Payment refunded to payer or patient
+
+	' --- Insurance-Related Statuses ---
+	billingStatuses.Add("Awaiting Insurance")        ' Waiting for insurance verification
+	billingStatuses.Add("Insurance Pending")         ' Insurance claim not yet processed
+	billingStatuses.Add("Insurance Approved")        ' Insurance approved the claim
+	billingStatuses.Add("Insurance Denied")          ' Insurance denied the claim
+	billingStatuses.Add("Patient Responsibility")    ' Amount to be paid by patient
+	billingStatuses.Add("Coordination of Benefits")  ' Multiple insurances involved
+	billingStatuses.Add("Pre-Authorization Required") ' Needs prior insurance approval
+	billingStatuses.Add("Claim Re-Submission")       ' Claim needs resubmission
+	billingStatuses.Add("Insurance Audit")           ' Claim under insurance audit
+	billingStatuses.Add("Insurance Adjustment")      ' Adjustment made by insurance
+	billingStatuses.Add("Secondary Insurance Pending") ' Waiting for secondary insurance
+
+	' --- Payment/Collection Statuses ---
+	billingStatuses.Add("Collections")              ' Sent to collections
+	billingStatuses.Add("Payment Plan")             ' Payment scheduled in installments
+	billingStatuses.Add("Write-Off")                ' Amount written off by provider
+	billingStatuses.Add("Bad Debt")                 ' Uncollectible payment
+
+	' --- Special/Administrative Statuses ---
+	billingStatuses.Add("Duplicate Claim")          ' Duplicate billing entry detected
+	billingStatuses.Add("Coding Error")             ' Issue with medical coding
+	billingStatuses.Add("Documentation Required")   ' Missing documents for processing
+	billingStatuses.Add("Insurance Verification Failed") ' Insurance info invalid
+	billingStatuses.Add("Pending Review by Admin") ' Administrative review in progress
+	Return RandListValue(billingStatuses)
+End Sub
+
+Sub Rand_Medication_Status As String
+	Dim medicationStatuses As List
+	medicationStatuses.Initialize
+    
+	' --- Prescription/Order Statuses ---
+	medicationStatuses.Add("Prescribed")
+	medicationStatuses.Add("Ordered")
+	medicationStatuses.Add("Pending Approval")
+	medicationStatuses.Add("Verified")
+	medicationStatuses.Add("Approved")           ' Added to match your list
+	medicationStatuses.Add("Cancelled")
+    
+	' --- Dispensing Statuses ---
+	medicationStatuses.Add("Processing")         ' Added to match your list
+	medicationStatuses.Add("Ready for Pickup")
+	medicationStatuses.Add("Dispensed")
+	medicationStatuses.Add("Out of Stock")
+    
+	' --- Administration Statuses ---
+	medicationStatuses.Add("Administered")
+	medicationStatuses.Add("Missed Dose")
+	medicationStatuses.Add("Delayed")
+	medicationStatuses.Add("Refused")
+    
+	' --- Special/Tracking Statuses ---
+	medicationStatuses.Add("Expired")
+	medicationStatuses.Add("Returned")
+	medicationStatuses.Add("On Hold")
+	medicationStatuses.Add("Discontinued")
+    
+	' --- Refill Statuses ---
+	medicationStatuses.Add("Refill Needed")     ' Added
+	medicationStatuses.Add("Refill Approved")   ' Added
+    
+	Return RandListValue(medicationStatuses)
+End Sub
+
+
+Sub Rand_Medical_Document As String
+	Dim docs As List
+	docs.Initialize
+
+	docs.AddAll(Array As String( _
+        "Admission Form", _
+        "Advance Directive", _
+        "Allergy Assessment", _
+        "Ambulance Report", _
+        "Anesthesia Assessment", _
+        "Anesthesia Consent Form", _
+        "Anesthesia Record", _
+        "Audiology Assessment", _
+        "Biopsy Report", _
+        "Birth Certificate Medical Record", _
+        "Blood Culture Report", _
+        "Blood Gas Analysis Report", _
+        "Blood Glucose Log", _
+        "Blood Test Report", _
+        "Bone Density Scan Report", _
+        "Cancer Staging Report", _
+        "Care Plan", _
+        "Cardiac Catheterization Report", _
+        "Cardiac Stress Test Report", _
+        "Cardiology Consultation", _
+        "Cardiothoracic Surgery Report", _
+        "Case Management Note", _
+        "CBC Test Report", _
+        "Chemotherapy Cycle Report", _
+        "Chemotherapy Order Sheet", _
+        "Child Growth Chart", _
+        "Clinical Assessment", _
+        "Clinical Imaging Summary", _
+        "Clinical Note", _
+        "Clinical Procedure Report", _
+        "Clinical Progress Note", _
+        "Clinical Summary", _
+        "Colonoscopy Report", _
+        "Community Health Referral", _
+        "Consultation Report", _
+        "Consent Form", _
+        "Continence Assessment", _
+        "COPD Assessment Document", _
+        "CT Scan Report", _
+        "COVID-19 Antigen Result", _
+        "COVID-19 PCR Test Result", _
+        "COVID-19 Vaccination Card", _
+        "Critical Care Summary", _
+        "Daily Nursing Note", _
+        "Daily Progress Note", _
+        "Dental Chart", _
+        "Dental Examination Report", _
+        "Dental Referral Letter", _
+        "Dermatology Assessment", _
+        "Discharge Medication List", _
+        "Discharge Plan", _
+        "Discharge Summary", _
+        "Dietician Assessment", _
+        "Diabetic Foot Screening", _
+        "Diagnostic Imaging Request Form", _
+        "Diagnostic Imaging Report", _
+        "Diagnostic Test Order", _
+        "Dialysis Record", _
+        "Drug Allergy Alert", _
+        "Drug Administration Record", _
+        "Drug Chart", _
+        "Echocardiogram Report", _
+        "ECG Report", _
+        "EEG Report", _
+        "Emergency Admission Form", _
+        "Emergency Care Summary", _
+        "Emergency Department Chart", _
+        "Emergency Nursing Report", _
+        "Emergency Procedure Report", _
+        "Endocrinology Assessment", _
+        "Endoscopy Report", _
+        "ENT Assessment", _
+        "Environmental Health Assessment", _
+        "Epidemiology Case Record", _
+        "ER Intake Form", _
+        "ER Prescription", _
+        "ER Procedure Report", _
+        "ER Treatment Report", _
+        "Exercise Tolerance Test Report", _
+        "Family Medical History Form", _
+        "Fertility Assessment", _
+        "First Aid Report", _
+        "Follow-up Consultation Report", _
+        "Gastroenterology Consultation", _
+        "General Consultation Report", _
+        "General Medical Certificate", _
+        "Genetic Testing Report", _
+        "Geriatric Assessment", _
+        "Gynecology Examination Report", _
+        "Health Education Notes", _
+        "Health Insurance Authorization", _
+        "Health Risk Assessment", _
+        "Hematology Report", _
+        "Home Care Visit Record", _
+        "Hospital Invoice", _
+        "ICU Admission Report", _
+        "ICU Daily Report", _
+        "ICU Progress Note", _
+        "ICU Ventilation Log", _
+        "Immunization Certificate", _
+        "Immunization Record", _
+        "Imaging CD Index Sheet", _
+        "Imaging Comparison Report", _
+        "Imaging Summary", _
+        "Incident Report", _
+        "Informed Consent Document", _
+        "Insurance Claim Form", _
+        "Insurance Coverage Letter", _
+        "Insurance Payment Receipt", _
+        "Intake Assessment Form", _
+        "Intravenous Therapy Record", _
+        "Labor Progress Record", _
+        "Lab Order Form", _
+        "Lab Result Summary", _
+        "Lab Test Request", _
+        "Lab Test Result", _
+        "Lactation Consultant Report", _
+        "Laparoscopy Report", _
+        "Legal Medical Report", _
+        "Lifestyle Assessment", _
+        "Mammogram Report", _
+        "Maternity Care Record", _
+        "Medical Aid Claim Document", _
+        "Medical Certificate", _
+        "Medical Clearance Letter", _
+        "Medical Device Tracking Form", _
+        "Medical History Form", _
+        "Medical Invoice", _
+        "Medical Referral Letter", _
+        "Medical Report", _
+        "Medication Administration Record", _
+        "Medication Chart", _
+        "Medication Contraindication Warning", _
+        "Medication Reconciliation Form", _
+        "Medication Refill Request", _
+        "Mental Health Assessment", _
+        "Mental Health Progress Note", _
+        "Microbiology Report", _
+        "Midwife Delivery Summary", _
+        "MRI Report", _
+        "Neonatal Screening Report", _
+        "Nephrology Consultation", _
+        "Neurology Assessment", _
+        "Neurology Scan Report", _
+        "Nursing Assessment", _
+        "Nursing Care Plan", _
+        "Nursing Note", _
+        "Nutrition Assessment", _
+        "Obstetrics Ultrasound Report", _
+        "Occupational Therapy Assessment", _
+        "Oncology Progress Note", _
+        "Oncology Treatment Plan", _
+        "Ophthalmology Examination Report", _
+        "Optometry Vision Test", _
+        "Orthopedic Assessment", _
+        "Pain Management Plan", _
+        "Pediatric Consultation Report", _
+        "Pediatric Growth Record", _
+        "Perinatal Record", _
+        "Pharmacy Dispense Record", _
+        "Pharmacy Order Form", _
+        "Physical Therapy Assessment", _
+        "Physical Therapy Progress Note", _
+        "Physician Letter", _
+        "Physician Note", _
+        "Post-Op Follow-up Report", _
+        "Post-Operative Summary", _
+        "Postnatal Care Record", _
+        "Prenatal Care Record", _
+        "Prescription", _
+        "Prescription Audit Sheet", _
+        "Procedure Consent Form", _
+        "Procedure Report", _
+        "Prognosis Report", _
+        "Psychiatric Assessment", _
+        "Psychiatric Discharge Summary", _
+        "Psychiatric Progress Note", _
+        "Psychology Evaluation", _
+        "Pulmonology Assessment", _
+        "Radiation Therapy Plan", _
+        "Radiation Therapy Session Summary", _
+        "Radiology Comparison Letter", _
+        "Radiology Report", _
+        "Radiology Summary", _
+        "Rehabilitation Progress Report", _
+        "Release of Information Form", _
+        "Renal Function Report", _
+        "Respiratory Therapy Assessment", _
+        "Routine Health Screening", _
+        "Safety Audit Checklist", _
+        "School Health Record", _
+        "Screening Test Result", _
+        "Sedation Record", _
+        "Semen Analysis Report", _
+        "Social Worker Assessment", _
+        "Specialist Consultation Letter", _
+        "Speech Therapy Assessment", _
+        "Spirometry Report", _
+        "Stress Test ECG Report", _
+        "Surgical Consent Form", _
+        "Surgical Follow-up Report", _
+        "Surgical Report", _
+        "Telemedicine Consultation Note", _
+        "Trauma Assessment", _
+        "Treatment Authorization Request", _
+        "Treatment Plan", _
+        "Ultrasound Report", _
+        "Urine Test Report", _
+        "Vaccination Card", _
+        "Vaccination Record", _
+        "Ventilator Settings Chart", _
+        "Vital Signs Chart", _
+        "Vital Signs Sheet", _
+        "Ward Round Note", _
+        "Work Excuse Note", _
+        "Wound Care Assessment", _
+        "Wound Dressing Record" _
+    ))
+	Return RandListValue(docs)
+End Sub
+
+Sub Rand_Medical_BillingType As String
+	Dim lst As List
+	lst.Initialize
+
+	lst.AddAll(Array As String( _
+        "Inpatient", _
+        "Outpatient", _
+        "Emergency", _
+        "Surgery", _
+        "Pharmacy", _
+        "Laboratory", _
+        "Radiology", _
+        "Pathology", _
+        "Consultation", _
+        "Specialist", _
+        "ICU", _
+        "Procedure", _
+        "Maternity", _
+        "Dental", _
+        "Mental Health", _
+        "Rehabilitation", _
+        "Physical Therapy", _
+        "Occupational Therapy", _
+        "Speech Therapy", _
+        "Telemedicine", _
+        "Home Care", _
+        "Chronic Disease", _
+        "Preventive Care", _
+	"Insurance Claim", _
+        "Co-Payment", _
+        "Deductible", _
+        "Co-Insurance", _
+        "Self-Pay", _
+        "Medical Aid", _
+        "Third-Party", _
+        "Corporate Medical", _
+        "Workers Compensation", _
+        "Motor Vehicle Accident", _
+        "Pre-Authorization", _
+        "Denied Claim Rebilling", _
+	"DRG (Diagnosis Related Group)", _
+        "CPT Code", _
+        "ICD-10 Diagnosis", _
+        "HCPCS", _
+        "Fee-For-Service", _
+        "Capitation", _
+        "Bundled Payment", _
+        "Episode of Care", _
+        "Global Bill", _
+        "Split Bill", _
+        "Partial Bill", _
+	"Adhoc Item", _
+        "Room & Board", _
+        "Medical Supplies", _
+        "Medical Equipment Rental", _
+        "Ambulance Transport", _
+        "Blood Product", _
+        "Vaccination", _
+        "Anesthesia", _
+        "Operating Theatre", _
+        "Follow-up Visit" _
+    ))
+
+	Return RandListValue(lst)
+End Sub
+
+
+
+Sub Rand_Medical_Event_Type As String
+	Dim events As List
+	events.Initialize
+
+	events.AddAll(Array As String( _
+        "Doctor Visit", _
+        "ER Visit", _
+        "Scheduled Appointment", _
+        "Lab Test", _
+        "Doctor Call", _
+        "Insurance Meeting", _
+        "General Checkup", _
+        "Blood Test", _
+        "X-Ray Scan", _
+        "MRI Scan", _
+        "CT Scan", _
+        "Ultrasound", _
+        "Vaccination", _
+        "Prescription Issued", _
+        "Medication Refill", _
+        "Hospital Admission", _
+        "Surgery", _
+        "Follow-up Consultation", _
+        "Dentist Appointment", _
+        "Eye Examination", _
+        "Physical Therapy Session", _
+        "Mental Health Consultation", _
+        "Allergy Test", _
+        "COVID-19 Test", _
+        "COVID-19 Vaccination", _
+        "Prenatal Checkup", _
+        "Pediatric Consultation", _
+        "Specialist Referral", _
+        "Lab Test Result Received", _
+        "Discharge from Hospital", _
+        "Routine Health Screening", _
+        "Travel Health Clearance" _
+    ))
+	Return RandListValue(events)
+End Sub
+
+
+Sub Rand_Project_Status As String
+	Dim lst As List
+	lst.Initialize
+
+	lst.AddAll(Array As String( _
+        "Planned", _
+		"Not Started", _
+        "Proposed", _
+        "Requested", _
+        "Approved", _
+        "Pending", _
+        "On Hold", _
+        "In Progress", _
+        "Under Review", _
+        "Testing", _
+        "Awaiting Feedback", _
+        "Reopened", _
+        "Blocked", _
+        "Cancelled", _
+        "Deferred", _
+        "Completed", _
+        "Closed", _
+        "Archived", _
+        "Deployed", _
+        "Maintenance", _
+        "Retired" _
+    ))
+	Return RandListValue(lst)
+End Sub
+
+
+Sub Rand_Project_Name As String
+	Dim lst As List
+	lst.Initialize
+
+	' --- NATO alphabet phonetic names ---
+	Dim nato() As String = Array As String( _
+        "Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot", "Golf", _
+        "Hotel", "India", "Juliett", "Kilo", "Lima", "Mike", "November", _
+        "Oscar", "Papa", "Quebec", "Romeo", "Sierra", "Tango", "Uniform", _
+        "Victor", "Whiskey", "X-ray", "Yankee", "Zulu" _
+    )
+
+	' --- NATO numeric names (0–9) ---
+	Dim nums() As String = Array As String( _
+        "Zero", "One", "Two", "Tree", "Four", "Fife", "Six", "Seven", "Eight", "Niner" _
+    )
+
+	' --- Step 1: Add all individual alphabet projects ---
+	For Each n As String In nato
+		lst.Add("Project " & n)
+	Next
+
+	' --- Step 2: Add all individual numeric projects ---
+	For Each num As String In nums
+		lst.Add("Project " & num)
+	Next
+
+	' --- Step 3: Add all combinations (Letter + Number) ---
+	For Each n As String In nato
+		For Each num As String In nums
+			lst.Add($"Project ${n} ${num}"$)
+		Next
+	Next
+
+	' --- Step 4: Add your B4X identity projects ---
+	lst.AddAll(Array As String( _
+        "Project Bravo Four", _
+        "Project Bravo X-ray", _
+        "Project Four X-ray", _
+        "Project Bravo Four X-ray" _
+    ))
+	Return RandListValue(lst)
 End Sub
 
 Sub Rand_Vehicle_Type As String
@@ -2898,6 +3878,88 @@ Public Sub Rand_Human_Name As String
  
 End Sub
 
+Sub Rand_Medical_Condition As String
+	Dim medicalConditions As List
+	medicalConditions.Initialize
+
+	' --- Cardiovascular ---
+	medicalConditions.AddAll(Array As String( _
+        "Hypertension","Hypotension","Coronary Artery Disease","Heart Failure","Arrhythmia","Myocardial Infarction","Stroke","Peripheral Artery Disease","Aneurysm","Varicose Veins","Cardiomyopathy","Endocarditis","Pericarditis","Congenital Heart Disease","Atrial Fibrillation","Ventricular Tachycardia" _
+    ))
+
+	' --- Respiratory ---
+	medicalConditions.AddAll(Array As String( _
+        "Asthma","COPD","Pneumonia","Bronchitis","Tuberculosis","Sleep Apnea","Pulmonary Fibrosis","Emphysema","Lung Cancer","Cystic Fibrosis","Pleural Effusion","Pneumothorax","Bronchiectasis","Acute Respiratory Distress Syndrome","Pulmonary Hypertension" _
+    ))
+
+	' --- Metabolic & Endocrine ---
+	medicalConditions.AddAll(Array As String( _
+        "Diabetes Type 1","Diabetes Type 2","Hypothyroidism","Hyperthyroidism","Obesity","Hyperlipidemia","Metabolic Syndrome","Cushing's Syndrome","Addison's Disease","Polycystic Ovary Syndrome (PCOS)","Hyperparathyroidism","Hypoparathyroidism","Acromegaly","Gigantism","Hypoglycemia" _
+    ))
+
+	' --- Neurological ---
+	medicalConditions.AddAll(Array As String( _
+        "Epilepsy","Parkinson's Disease","Alzheimer's Disease","Multiple Sclerosis","Migraine","Peripheral Neuropathy","Amyotrophic Lateral Sclerosis (ALS)","Stroke Sequelae","Guillain-Barre Syndrome","Huntington's Disease","Bell's Palsy","Cerebral Palsy","Myasthenia Gravis","Trigeminal Neuralgia","Vertigo" _
+    ))
+
+	' --- Infectious Diseases ---
+	medicalConditions.AddAll(Array As String( _
+        "HIV/AIDS","Hepatitis A","Hepatitis B","Hepatitis C","Influenza","COVID-19","Malaria","Dengue Fever","Measles","Chickenpox","Mumps","Tetanus","Rabies","Ebola","Zika Virus","Lyme Disease","Sepsis","MRSA Infection" _
+    ))
+
+	' --- Gastrointestinal ---
+	medicalConditions.AddAll(Array As String( _
+        "GERD","Peptic Ulcer Disease","IBS","Crohn's Disease","Ulcerative Colitis","Hepatitis","Celiac Disease","Gallstones","Pancreatitis","Diverticulitis","Liver Cirrhosis","Hemorrhoids","Constipation","Diarrhea","Gastroenteritis","Appendicitis" _
+    ))
+
+	' --- Musculoskeletal ---
+	medicalConditions.AddAll(Array As String( _
+        "Osteoarthritis","Rheumatoid Arthritis","Osteoporosis","Gout","Fibromyalgia","Scoliosis","Muscle Strain","Tendonitis","Lupus","Ankylosing Spondylitis","Bursitis","Carpal Tunnel Syndrome","Fractures","Sprains","Paget's Disease" _
+    ))
+
+	' --- Mental Health ---
+	medicalConditions.AddAll(Array As String( _
+        "Depression","Anxiety Disorders","Bipolar Disorder","Schizophrenia","PTSD","OCD","ADHD","Panic Disorder","Eating Disorders","Autism Spectrum Disorder","Insomnia","Substance Use Disorder","Dementia","Personality Disorders" _
+    ))
+
+	' --- Dermatological ---
+	medicalConditions.AddAll(Array As String( _
+        "Psoriasis","Eczema","Acne","Skin Cancer","Melanoma","Dermatitis","Vitiligo","Rosacea","Fungal Infections","Warts","Alopecia","Hives","Scabies" _
+    ))
+
+	' --- Hematologic / Blood Disorders ---
+	medicalConditions.AddAll(Array As String( _
+        "Anemia","Leukemia","Lymphoma","Hemophilia","Sickle Cell Disease","Thalassemia","Polycythemia","Iron Deficiency","Vitamin B12 Deficiency","Coagulopathy" _
+    ))
+
+	' --- Renal / Urinary ---
+	medicalConditions.AddAll(Array As String( _
+        "Chronic Kidney Disease","Acute Kidney Injury","UTI","Kidney Stones","Glomerulonephritis","Polycystic Kidney Disease","Nephrotic Syndrome","Interstitial Nephritis" _
+    ))
+
+	' --- Reproductive / Gynecologic / Obstetric ---
+	medicalConditions.AddAll(Array As String( _
+        "Pregnancy Complications","Infertility","Endometriosis","Polycystic Ovary Syndrome","Menopause Symptoms","Ectopic Pregnancy","Pelvic Inflammatory Disease","Uterine Fibroids","Prostate Disorders" _
+    ))
+
+	' --- Immunologic / Autoimmune ---
+	medicalConditions.AddAll(Array As String( _
+        "Rheumatoid Arthritis","Lupus","Multiple Sclerosis","Type 1 Diabetes","Graves' Disease","Hashimoto's Thyroiditis","Psoriasis","Scleroderma","Vasculitis" _
+    ))
+
+	' --- Miscellaneous / Other Common Conditions ---
+	medicalConditions.AddAll(Array As String( _
+        "Allergies","Chronic Pain","Migraine","Obesity","Sleep Disorders","Vitamin Deficiencies","Dehydration","Sepsis","Shock","Trauma","Burns","Cancer","HIV/AIDS" _
+    ))
+
+	' --- General Symptoms ---
+	medicalConditions.AddAll(Array As String( _
+        "Headache","Fatigue","Back Pain","Nausea","Cough","Stomachache","Joint Pain","Dizziness","Cold Symptoms","Heart Palpitations","Skin Irritation","Shortness of Breath","Fever","Muscle Cramps","Vision Changes","Memory Lapses","Weight Gain" _
+    ))
+
+	Return RandListValue(medicalConditions)
+End Sub
+
 'Generates a random human full name
 Public Sub Rand_Full_Name As String
 	
@@ -2906,6 +3968,14 @@ Public Sub Rand_Full_Name As String
 End Sub
 
  #End Region
+
+public Sub Rand_Time_Frequency As String
+	Dim Genders As List
+	Genders.Initialize
+	Genders.AddAll(Array As String("Second(s)", "Minute(s)","Hour(s)","Day(s)", "Week(s)", "Month(s)", "Year(s)"))
+	Genders = BANano.Await(ExplodeList(Genders,7))
+	Return RandListValue(Genders)
+End Sub
 
 #Region Human Gender
 

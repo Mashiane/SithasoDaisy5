@@ -24,18 +24,14 @@ File28=iphonexr_splash.png
 File29=iphonexsmax_splash.png
 File3=api.php
 File30=maskable_icon.png
-File31=mdlsideview.bjl
-File32=mstile-150x150.png
-File33=prefsideview.bjl
-File34=provinces_report.xlsx
-File35=provincesview.bjl
-File36=safari.png
-File37=safari-pinned-tab.svg
-File38=SecureQueryController.php
-File39=tablemodalview.bjl
+File31=mstile-150x150.png
+File32=provinces_report.xlsx
+File33=provincesview.bjl
+File34=safari.png
+File35=safari-pinned-tab.svg
+File36=SecureQueryController.php
+File37=users-solid-full.svg
 File4=apple-touch-icon.png
-File40=tblview.bjl
-File41=users-solid-full.svg
 File5=arrows-rotate-solid-full.svg
 File6=banano.jpg
 File7=baselayout.bjl
@@ -65,18 +61,14 @@ FileGroup28=Default Group\Images
 FileGroup29=Default Group\Images
 FileGroup3=Default Group\PHP
 FileGroup30=Default Group\Images
-FileGroup31=Default Group\Layouts\Templates
-FileGroup32=Default Group\Images
-FileGroup33=Default Group\Layouts\Templates
-FileGroup34=Default Group\Reports
-FileGroup35=Default Group\Layouts
-FileGroup36=Default Group\Images
-FileGroup37=Default Group\Images
-FileGroup38=Default Group\PHP
-FileGroup39=Default Group\Layouts\Templates
+FileGroup31=Default Group\Images
+FileGroup32=Default Group\Reports
+FileGroup33=Default Group\Layouts
+FileGroup34=Default Group\Images
+FileGroup35=Default Group\Images
+FileGroup36=Default Group\PHP
+FileGroup37=Default Group\Icons
 FileGroup4=Default Group\Images
-FileGroup40=Default Group\Layouts\Templates
-FileGroup41=Default Group\Icons
 FileGroup5=Default Group\Icons
 FileGroup6=Default Group\Images
 FileGroup7=Default Group\Layouts
@@ -94,7 +86,7 @@ Module4=pgDashboard
 Module5=pgIndex
 Module6=pgProvinces
 Module7=|absolute|C:\b4j\shared\SDUI5FakeIT
-NumberOfFiles=41
+NumberOfFiles=37
 NumberOfLibraries=4
 NumberOfModules=7
 Version=10.3
@@ -114,11 +106,22 @@ Sub Process_Globals
 	Public AppTitle As String = "SithasoDaisy5 Low Code Address Book MySQLREST"
 	Public Publish As String = "C:\laragon\www"
 	Public Version As String = "0.01"
-	Public ServerIP As String = "http://127.0.0.1"
-	Public ServerURL As String = "http://127.0.0.1/sd5addressbook"
+	Public ServerIP As String = "http://localhost"
+	Public ServerURL As String = "http://localhost/sd5addressbook"
 	Public ApiKey As String = ""
 	Public AppVersion As String = "0.01"	
+	Public DBDriver As String = ""
+	Public DBUser As String = ""
+	Public DBPassWord As String = ""
+	Public DBPort As String = ""
+	Public DBName As String = ""
+	Public DBHost As String = ""
 End Sub
+
+#Macro: After Save, Sync Layouts, ide://run?File=%ADDITIONAL%\JsonLayouts.jar&Args=%PROJECT%&Args=%PROJECT_NAME%
+#Macro: Title, JsonLayouts folder, ide://run?File=%WINDIR%\explorer.exe&Args=%PROJECT%\JsonLayouts
+#Macro: Title, Code bundle, ide://run?File=%ADDITIONAL%\CodeBundle.jar&Args=%PROJECT_NAME%
+
 
 #Region ReadMe
 	'1. To run this WebApp you need BANano, SithasoDaisy5 and MySQL, you can use Laragon as a development webserver
@@ -258,6 +261,12 @@ Sub BANano_Ready
 	ServerIP = env.Get("ip")
 	AppVersion = env.Get("version")
 	ServerURL = env.Get("apiurl")
+	DBDriver = env.Get("driver")
+	DBUser = env.Get("user")
+	DBPassWord = env.Get("password")
+	DBPort = env.Get("port")
+	DBName = env.Get("dbname")
+	DBHost = env.Get("host")
 	'
 	'change the serverip to point to published server
 	'ServerIP = $"http://${BANano.Location.GetHost}"$
