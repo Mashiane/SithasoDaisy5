@@ -1356,7 +1356,8 @@ Sub AppStart (Form1 As Form, Args() As String)
 	BANano.Header.Language = "en"
 	BANano.Header.AddMeta($"<meta name="copyright" content="&copy; 2025 SithasoDaisy 5">"$)
 	BANano.Header.AddMeta($"<meta name="robots" content="ALL">"$)
-'	BANano.Header.AddMeta($"<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">"$)
+	BANano.header.AddMeta($"<meta name="google-adsense-account" content="ca-pub-3620968576660116">"$)
+	'BANano.Header.AddMeta($"<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">"$)
 '	BANano.Header.AddMeta($"<meta http-equiv="Pragma" content="no-cache">"$)
 '	BANano.Header.AddMeta($"<meta http-equiv="Expires" content="0">"$)
 	

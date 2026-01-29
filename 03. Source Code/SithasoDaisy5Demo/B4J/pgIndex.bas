@@ -17,11 +17,13 @@ Sub Process_Globals
 	Private draweruser As SDUI5DrawerUser	'ignore
 	Private bottomdrawer As SDUI5BottomDrawer	'ignore
 	Private rightdrawer As SDUI5Drawer			'ignore
-	Private cboTheme As SDUI5Select
+	Private cboTheme As SDUI5Select				'ignore
 End Sub
 
 Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
+	'add google adnsese
+'	App.AddGoogleAdSenseURL("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3620968576660116")
 	'load these universally
 	BANano.Await(App.UsesColorWheel)
 	BANano.Await(App.UsesDatePicker)
