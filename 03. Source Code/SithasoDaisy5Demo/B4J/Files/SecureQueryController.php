@@ -36,8 +36,8 @@ class SecureQueryController {
                 return $this->responder->error(400, 'QUERY_REQUIRED', 'Query parameter is required');
             }
             
-            // Optional: Parameters for prepared statement
-            $params = $body['params'] ?? [];
+            // Optional: Parameters for prepared statement, also allow the use of object params
+            $params = isset($body['params']) ? json_decode(json_encode($body['params']), true) : [];
             
             // Execute the query
             $pdo = $this->db->pdo();

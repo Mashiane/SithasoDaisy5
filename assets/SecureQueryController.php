@@ -37,7 +37,7 @@ class SecureQueryController {
             }
             
             // Optional: Parameters for prepared statement, also allow the use of object params
-            $params = json_decode(json_encode($body['params']), true) ?? [];
+            $params = isset($body['params']) ? json_decode(json_encode($body['params']), true) : [];
             
             // Execute the query
             $pdo = $this->db->pdo();
