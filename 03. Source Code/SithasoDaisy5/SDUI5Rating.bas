@@ -72,7 +72,7 @@ Sub Class_Globals
 	Private sValue As String = "2"
 	Private bRequired As Boolean = False
 	Private sInputType As String = "normal"
-	Private sRatingBackgroundColor As String = "none"
+	Private sRatingBackgroundColor As String = ""
 	Private items As List
 	Private sBackgroundColor As String = "base-200"
 	Private bBorder As Boolean = True
@@ -292,7 +292,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		sLegendColor = Props.GetDefault("LegendColor", "")
 		sLegendColor = UI.CStr(sLegendColor)
-		sRatingBackgroundColor = Props.GetDefault("RatingBackgroundColor", "none")
+		sRatingBackgroundColor = Props.GetDefault("RatingBackgroundColor", "")
 		sRatingBackgroundColor = UI.CStr(sRatingBackgroundColor)
 		If sRatingBackgroundColor = "none" Then sRatingBackgroundColor = ""
 		sColor = Props.GetDefault("Color", "primary")

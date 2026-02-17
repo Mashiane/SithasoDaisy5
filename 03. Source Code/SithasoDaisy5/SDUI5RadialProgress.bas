@@ -246,7 +246,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sProgressSize = UI.CStr(sProgressSize)
 		sProgressThickness = Props.GetDefault("ProgressThickness", "")
 		sProgressThickness = UI.CStr(sProgressThickness)
-		sValue = Props.GetDefault("Value", "")
+		sValue = Props.GetDefault("Value", "10")
 		sValue = UI.CStr(sValue)
 	End If
 	'

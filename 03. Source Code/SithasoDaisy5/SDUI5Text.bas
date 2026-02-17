@@ -155,7 +155,7 @@ Sub Class_Globals
 	Private sPlaceSelf As String = "none"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
-	Private sAlignSelf As String = ""
+	Private sAlignSelf As String = "none"
 	Private sHeight As String = ""
 	Private sWidth As String = ""
 	Private sBackgroundImage As String = ""
@@ -243,8 +243,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")

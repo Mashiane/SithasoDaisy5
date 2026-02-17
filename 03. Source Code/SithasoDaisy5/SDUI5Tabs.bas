@@ -16,7 +16,7 @@ Version=10
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: , Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
-#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Clear Contents
+#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Description: Clear Contents
 #DesignerProperty: Key: IconSize, DisplayName: Icon Size, FieldType: String, DefaultValue: 20px, Description: Icon Size
 #DesignerProperty: Key: BadgeColor, DisplayName: Badge Color, FieldType: String, DefaultValue: , Description: Badge Color
 #DesignerProperty: Key: BadgeSize, DisplayName: Badge Size, FieldType: String, DefaultValue: md, Description: Badge Size, List: lg|md|none|sm|xl|xs
@@ -68,7 +68,7 @@ Sub Class_Globals
 	Public CONST STYLE_LIFT As String = "lift"
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Private items As Map
-	Private sActive As String = ""
+	Private sActive As String = "btn1"
 	Private sIconSize As String = "20px"
 	Private sBadgeColor As String = ""
 	Private sBadgeSize As String = "md"
@@ -105,8 +105,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")

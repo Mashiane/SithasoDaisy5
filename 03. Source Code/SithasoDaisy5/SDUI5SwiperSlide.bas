@@ -55,7 +55,7 @@ Sub Class_Globals
 	Public CONST TEXTALIGN_NONE As String = "none"
 	Public CONST TEXTALIGN_RIGHT As String = "right"
 	Public CONST TEXTALIGN_START As String = "start"
-	Private sImage As String = ""
+	Private sImage As String = "./assets/600by600.jpg"
 	Private sImageAlt As String = ""
 	Private bImageCenter As Boolean = False
 	Private bImageCover As Boolean = True
@@ -82,8 +82,8 @@ Private Sub SetDefaults
 	CustProps.Put("RefreshSwiper", False)
 	CustProps.Put("TextAlign", "none")
 	CustProps.Put("Visible", True)
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")

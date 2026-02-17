@@ -289,6 +289,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCorrectLevel = UI.CStr(sCorrectLevel)
 		sSize = Props.GetDefault("Size", "200")
 		sSize = UI.CStr(sSize)
+		If sSize = "" Then sSize = "200"
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
@@ -305,7 +306,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bCenterFieldSet = UI.CBool(bCenterFieldSet)
 	End If
 	'
-	If sRounded <> "" Then UI.AddAttrDT("rounded", sRounded)
+	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	
@@ -327,7 +328,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 			<fieldset id="${mName}_control" class="${xclasses} fieldset" ${xattrs} style="${xstyles}">
 				<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
-				<div id="${mName}" class="bg-base-100 m-2"></div>
+				<div id="${mName}" class="m-auto flex flex-col text-center align-center justify-center bg-base-100 m-2"></div>
 			</fieldset>"$).Get("#" & mName)
 	End Select
 	setSize(sSize)
@@ -389,21 +390,30 @@ Sub Refresh
 			cl=2
 	End Select
 	'
+	Dim iSize As Int = UI.CInt(sSize)
 	Dim opt As Map = CreateMap()
 	opt.Put("text", sText)
-	opt.Put("width", sSize)
-	opt.Put("height", sSize)
+	opt.Put("width", iSize)
+	opt.Put("height", iSize)
 	opt.Put("colorDark", sColorDark)
 	opt.Put("colorLight", sColorLight)
 	opt.Put("colorLight", sColorLight)
 	opt.put("correctLevel", cl)
-	QRCode.Initialize2("QRCode", Array(mName, opt))
+	QRCode.Initialize2("QRCode", Array(mElement.ToObject, opt))
+	QRCode.RunMethod("makeCode", Array(sText))
 	Dim canvasE As BANanoElement
 	canvasE.Initialize($"#${mName} canvas"$)
 	If SubExists(mCallBack, $"${mName}_CodeSuccess"$) Then
 		Dim dataURL As Object = canvasE.RunMethod("toDataURL", Null).Result
 		BANano.CallSub(mCallBack, $"${mName}_CodeSuccess"$, Array(dataURL))
 	End If
+End Sub
+
+Sub MakeCode(s As String)
+	sText = s
+	CustProps.Put("Text", sText)
+	If mElement = Null Then Return
+	QRCode.RunMethod("makeCode", Array(sText))
 End Sub
 
 Sub Download(fileName As String)
@@ -431,6 +441,7 @@ End Sub
 
 'clear QR code
 Sub Clear
+	If mElement = Null Then Return
 	QRCode.RunMethod("clear", Null)
 End Sub
 
@@ -497,9 +508,10 @@ Sub setSize(s As String)				'ignoredeadcode
 	sSize = s
 	CustProps.put("Size", s)
 	If mElement = Null Then Return
-	UI.AddWidthDT($"${sSize}px"$)
-	UI.AddHeightDT($"${sSize}px"$)
+	UI.SetWidth(mElement, $"${sSize}px"$)
+	UI.SetHeight(mElement, $"${sSize}px"$)
 End Sub
+
 'get Color Dark
 Sub getColorDark As String
 	Return sColorDark

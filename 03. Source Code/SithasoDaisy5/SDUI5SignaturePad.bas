@@ -74,12 +74,12 @@ Sub Class_Globals
 	Private sHeight As String = "200"
 	Private sHint As String = "Please sign within the box area"
 	Private sImageType As String = "jpeg"
-	Private dMaxWidth As Double = 2.5
-	Private iMinDistance As Int = 5
-	Private dMinWidth As Double = 0.5
+	Private dMaxWidth As Double = "2.5"
+	Private iMinDistance As Int = "5"
+	Private dMinWidth As Double = "0.5"
 	Private sPenColor As String = "black"
-	Private iThrottle As Int = 16
-	Private dVelocityFilterWeight As Double = 0.7
+	Private iThrottle As Int = "16"
+	Private dVelocityFilterWeight As Double = "0.7"
 	Private sWidth As String = "400"
 	Public CONST IMAGETYPE_JPEG As String = "jpeg"
 	Public CONST IMAGETYPE_PNG As String = "png"
@@ -88,7 +88,7 @@ Sub Class_Globals
 	Private SignaturePad As BANanoObject
 	Private sSaveColor As String = "success"
 	Private sSaveTextColor As String = "none"
-	Private bCenterFieldSet As Boolean = True
+	Private bCenterFieldSet As Boolean = False
 	Private sSaveCaption As String = "Save"
 End Sub
 'initialize the custom view class
@@ -318,7 +318,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCaption = UI.CStr(sCaption)
 		sCaptionColor = Props.GetDefault("CaptionColor", "none")
 		sCaptionColor = UI.CStr(sCaptionColor)
-		dDotSize = Props.GetDefault("DotSize", 0)
+		dDotSize = Props.GetDefault("DotSize", "0")
 		dDotSize = UI.CDbl(dDotSize)
 		sErrorMessage = Props.GetDefault("ErrorMessage", "The signature is required")
 		sErrorMessage = UI.CStr(sErrorMessage)
@@ -328,17 +328,17 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHint = UI.CStr(sHint)
 		sImageType = Props.GetDefault("ImageType", "jpeg")
 		sImageType = UI.CStr(sImageType)
-		dMaxWidth = Props.GetDefault("MaxWidth", 2.5)
+		dMaxWidth = Props.GetDefault("MaxWidth", "2.5")
 		dMaxWidth = UI.cdbl(dMaxWidth)
-		iMinDistance = Props.GetDefault("MinDistance", 5)
+		iMinDistance = Props.GetDefault("MinDistance", "5")
 		iMinDistance = UI.cint(iMinDistance)
-		dMinWidth = Props.GetDefault("MinWidth", 0.5)
+		dMinWidth = Props.GetDefault("MinWidth", "0.5")
 		dMinWidth = UI.cdbl(dMinWidth)
 		sPenColor = Props.GetDefault("PenColor", "black")
 		sPenColor = UI.CStr(sPenColor)
-		iThrottle = Props.GetDefault("Throttle", 16)
+		iThrottle = Props.GetDefault("Throttle", "16")
 		iThrottle = UI.cint(iThrottle)
-		dVelocityFilterWeight = Props.GetDefault("VelocityFilterWeight", 0.7)
+		dVelocityFilterWeight = Props.GetDefault("VelocityFilterWeight", "0.7")
 		dVelocityFilterWeight = UI.cdbl(dVelocityFilterWeight)
 		sWidth = Props.GetDefault("Width", "400")
 		sWidth = UI.CStr(sWidth)
@@ -348,7 +348,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSaveColor = UI.CStr(sSaveColor)
 		sSaveTextColor = Props.GetDefault("SaveTextColor", "none")
 		sSaveTextColor = UI.CStr(sSaveTextColor)
-		bCenterFieldSet = Props.GetDefault("CenterFieldSet", True)
+		bCenterFieldSet = Props.GetDefault("CenterFieldSet", False)
 		bCenterFieldSet = UI.CBool(bCenterFieldSet)
 	End If
 	'

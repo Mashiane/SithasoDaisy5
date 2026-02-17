@@ -61,7 +61,7 @@ Sub Class_Globals
 	Private sExpiresMonth As String = "29"
 	Private sExpiresYear As String = "08"
 	Private sCardBrand As String = "❁"
-	Private sTextColor As String = "#FFFFFF"
+	Private sTextColor As String = "#FFFFFFFF"
 	Private sWidth As String = "100"
 	Private sHeight As String = ""
 	Private sRounded As String = "2xl"
@@ -91,7 +91,7 @@ Private Sub SetDefaults
 	CustProps.Put("ExpiresMonth", "29")
 	CustProps.Put("ExpiresYear", "08")
 	CustProps.Put("CardBrand", "❁")
-	CustProps.Put("TextColor", "#FFFFFF")
+	CustProps.Put("TextColor", "#FFFFFFFF")
 	CustProps.Put("Width", "100")
 	CustProps.Put("Height", "")
 	CustProps.Put("Rounded", "2xl")
@@ -107,8 +107,8 @@ Private Sub SetDefaults
 	CustProps.Put("RawAttributes", "")
 	CustProps.Put("GradientActive", True)                   'Boolean
 	CustProps.Put("Gradient", "bl_tr")                            'String (empty)
-	CustProps.Put("GradientColor1", "#f86194")               'Color
-	CustProps.Put("GradientColor2", "#968918")               'Color
+	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")               'Color
+	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")               'Color
 End Sub
 
 ' returns the element id
@@ -284,7 +284,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sExpiresYear = UI.CStr(sExpiresYear)
 		sCardBrand = Props.GetDefault("CardBrand", "❁")
 		sCardBrand = UI.CStr(sCardBrand)
-		sTextColor = Props.GetDefault("TextColor", "#FFFFFF")
+		sTextColor = Props.GetDefault("TextColor", "#FFFFFFFF")
 		sTextColor = UI.CStr(sTextColor)
 		sTextColor = UI.rgbaToHexAuto(sTextColor)
 		sWidth = Props.GetDefault("Width", "100")
@@ -300,10 +300,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", True)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "bl_tr")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If

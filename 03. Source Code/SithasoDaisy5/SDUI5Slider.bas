@@ -296,10 +296,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "900px")
 		sWidth = UI.CStr(sWidth)
-		sShadow = Props.GetDefault("Shadow", "")
+		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
-		sRounded = Props.GetDefault("Rounded", "")
+		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 	End If

@@ -60,7 +60,7 @@ Sub Class_Globals
 	Private sBackgroundColor As String = "base-200"
 	Private bBorder As Boolean = True
 	Private sBorderColor As String = "base-300"
-	Private sGroupName As String = ""
+	Private sGroupName As String = "group1"
 	Private sHeight As String = ""
 	Private sLabel As String = "Group Select"
 	Private sRawOptions As String = "b4a=b4a; b4i=b4i; b4j=b4j; b4r=b4r"
@@ -275,7 +275,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bBorder = UI.CBool(bBorder)
 		sBorderColor = Props.GetDefault("BorderColor", "base-300")
 		sBorderColor = UI.CStr(sBorderColor)
-		sGroupName = Props.GetDefault("GroupName", "")
+		sGroupName = Props.GetDefault("GroupName", "group1")
 		sGroupName = UI.CStr(sGroupName)
 		sHeight = Props.GetDefault("Height", "")
 		sHeight = UI.CStr(sHeight)

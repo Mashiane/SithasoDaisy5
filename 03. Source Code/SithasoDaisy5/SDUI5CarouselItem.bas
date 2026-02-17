@@ -60,7 +60,7 @@ Sub Class_Globals
 	Private sImageWidth As String = "80"
 	Private sImageRounded As String = "none"
 	Private bImageRoundedBox As Boolean = False
-	Private sImageShadow As String = "none"       
+	Private sImageShadow As String = "none"
 	Private bRefresh As Boolean = False
 End Sub
 'initialize the custom view class

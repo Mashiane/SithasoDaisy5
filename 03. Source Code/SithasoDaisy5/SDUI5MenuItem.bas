@@ -102,7 +102,7 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_NONE As String = "none"
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
-	Private sMenuName As String = ""
+	Private sMenuName As String = "menu1"
 	Private sIconSize As String = "20px"
 	Private bOpen As Boolean = False
 	Private Items As Map
@@ -474,7 +474,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
-		sMenuName = Props.GetDefault("MenuName", "")
+		sMenuName = Props.GetDefault("MenuName", "menu1")
 		sMenuName = UI.CStr(sMenuName)
 		sIconSize = Props.GetDefault("IconSize", "20px")
 		sIconSize = UI.CStr(sIconSize)

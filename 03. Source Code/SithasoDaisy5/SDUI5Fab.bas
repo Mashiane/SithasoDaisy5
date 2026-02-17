@@ -53,7 +53,7 @@ Sub Class_Globals
 	Private sOnIcon As String = "fas fa-times"
 	Private sOnTextColor As String = "none"
 	Private sSize As String = "lg"
-	Private sToastPlacement As String = ""
+	Private sToastPlacement As String = "bottom-end"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -255,7 +255,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sOnTextColor = "none" Then sOnTextColor = ""
 		sSize = Props.GetDefault("Size", "lg")
 		sSize = UI.CStr(sSize)
-		sToastPlacement = Props.GetDefault("ToastPlacement", "")
+		sToastPlacement = Props.GetDefault("ToastPlacement", "bottom-end")
 		sToastPlacement = UI.CStr(sToastPlacement)
 	End If
 	'

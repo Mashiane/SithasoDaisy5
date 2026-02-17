@@ -23,7 +23,7 @@ End Sub
 Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'add google adnsese
-'	App.AddGoogleAdSenseURL("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3620968576660116")
+	App.AddGoogleAdSenseURL("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3620968576660116")
 	'load these universally
 	BANano.Await(App.UsesColorWheel)
 	BANano.Await(App.UsesDatePicker)

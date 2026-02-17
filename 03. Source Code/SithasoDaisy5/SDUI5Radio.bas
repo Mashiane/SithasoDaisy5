@@ -60,10 +60,10 @@ Sub Class_Globals
 	Private sColor As String = "none"
 	Private sGroupName As String = ""
 	Private sHint As String = ""
-	Private sLabel As String = "Label"
+	Private sLabel As String = "Radio"
 	Private sSize As String = "none"
 	Private sValue As String = ""
-	Private sLegend As String = ""
+	Private sLegend As String = "Toggle"
 	Private sRadioType As String = "normal"
 	Private sLegendColor As String = ""
 	Private sLabelColor As String
@@ -289,14 +289,14 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGroupName = UI.CStr(sGroupName)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = UI.CStr(sHint)
-		sLabel = Props.GetDefault("Label", "Label")
+		sLabel = Props.GetDefault("Label", "Radio")
 		sLabel = UI.CStr(sLabel)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
 		sValue = Props.GetDefault("Value", "")
 		sValue = UI.CStr(sValue)
-		sLegend = Props.GetDefault("Legend", "")
+		sLegend = Props.GetDefault("Legend", "Toggle")
 		sLegend = UI.CStr(sLegend)
 		sRadioType = Props.GetDefault("RadioType", "normal")
 		sRadioType = UI.CStr(sRadioType)

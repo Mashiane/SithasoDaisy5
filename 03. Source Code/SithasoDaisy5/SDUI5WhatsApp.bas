@@ -32,7 +32,7 @@ Version=10.13
 #DesignerProperty: Key: RightAvatar, DisplayName: Right Avatar, FieldType: String, DefaultValue: ./assets/avatar.png, Description: Right Avatar
 #DesignerProperty: Key: RightName, DisplayName: Right Name, FieldType: String, DefaultValue: Anele Mbanga (Mashy), Description: Right Name
 #DesignerProperty: Key: RightStatus, DisplayName: Right Status, FieldType: String, DefaultValue: Online, Description: Right Status
-#DesignerProperty: Key: Attachments, DisplayName: Attachments, FieldType: Boolean, DefaultValue: True, Description: Attachments
+#DesignerProperty: Key: AllowAttachments, DisplayName: Allow Attachments, FieldType: Boolean, DefaultValue: True, Description: Attachments
 #DesignerProperty: Key: Camera, DisplayName: Camera, FieldType: Boolean, DefaultValue: True, Description: Camera
 #DesignerProperty: Key: Emojis, DisplayName: Emojis, FieldType: Boolean, DefaultValue: True, Description: Emojis
 #DesignerProperty: Key: Voice, DisplayName: Voice, FieldType: Boolean, DefaultValue: True, Description: Voice
@@ -92,7 +92,7 @@ Sub Class_Globals
 	Private sButtonSize As String = "md"
 	Public Attachments As SDUI5Menu
 	Public EmojiPicker As SDUI5EmojiMart
-	Private bAttachments As Boolean = True
+	Private bAllowAttachments As Boolean = True
 	Private bCamera As Boolean = True
 	Private bEmojis As Boolean = True
 	Private bVoice As Boolean = True
@@ -101,10 +101,10 @@ Sub Class_Globals
 	Private sFontSize As String = "14px"
 	Private sImageShape As String = "circle"
 	Private sImageSize As String = "12"
-	Private sIncomingBackgroundColor As String = "none"
+	Private sIncomingBackgroundColor As String = ""
 	Private sIncomingTextColor As String = ""
-	Private sOutgoingBackgroundColor As String = "none"
-	Private sOutgoingTextColor As String = "none"
+	Private sOutgoingBackgroundColor As String = ""
+	Private sOutgoingTextColor As String = ""
 	Private sLastMsgID As String = ""
 	Private sActiveImage As String = ""
 	Private sLastUser As String = ""
@@ -150,7 +150,7 @@ Private Sub SetDefaults
 	CustProps.Put("RightAvatar", "./assets/avatar.png")
 	CustProps.Put("RightName", "Anele Mbanga (Mashy)")
 	CustProps.Put("RightStatus", "Online")
-	CustProps.Put("Attachments", True)
+	CustProps.Put("AllowAttachments", True)
 	CustProps.Put("Camera", True)
 	CustProps.Put("Emojis", True)
 	CustProps.Put("Voice", True)
@@ -165,8 +165,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -375,8 +375,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bSideVisible = UI.CBool(bSideVisible)
 		sButtonSize = Props.GetDefault("ButtonSize", "md")
 		sButtonSize = UI.CStr(sButtonSize)
-		bAttachments = Props.GetDefault("Attachments", True)
-		bAttachments = UI.CBool(bAttachments)
+		bAllowAttachments = Props.GetDefault("AllowAttachments", True)
+		bAllowAttachments = UI.CBool(bAllowAttachments)
 		bCamera = Props.GetDefault("Camera", True)
 		bCamera = UI.CBool(bCamera)
 		bEmojis = Props.GetDefault("Emojis", True)
@@ -391,13 +391,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sImageShape = UI.CStr(sImageShape)
 		sImageSize = Props.GetDefault("ImageSize", "12")
 		sImageSize = UI.CStr(sImageSize)
-		sIncomingBackgroundColor = Props.GetDefault("IncomingBackgroundColor", "none")
+		sIncomingBackgroundColor = Props.GetDefault("IncomingBackgroundColor", "")
 		sIncomingBackgroundColor = UI.CStr(sIncomingBackgroundColor)
 		sIncomingTextColor = Props.GetDefault("IncomingTextColor", "")
 		sIncomingTextColor = UI.CStr(sIncomingTextColor)
-		sOutgoingBackgroundColor = Props.GetDefault("OutgoingBackgroundColor", "none")
+		sOutgoingBackgroundColor = Props.GetDefault("OutgoingBackgroundColor", "")
 		sOutgoingBackgroundColor = UI.CStr(sOutgoingBackgroundColor)
-		sOutgoingTextColor = Props.GetDefault("OutgoingTextColor", "none")
+		sOutgoingTextColor = Props.GetDefault("OutgoingTextColor", "")
 		sOutgoingTextColor = UI.CStr(sOutgoingTextColor)
 	End If
 	
@@ -502,7 +502,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setSideSearchVisible(bSideSearchVisible)
 	setSideVisible(bSideVisible)
 	setButtonSize(sButtonSize)
-	setAttachments(bAttachments)
+	setAllowAttachments(bAllowAttachments)
 	setCamera(bCamera)
 	setVoice(bVoice)
 	setSideBackVisible(bSideBackVisible)
@@ -696,9 +696,9 @@ Sub MessageFocus
 End Sub
 
 'set Attachments
-Sub setAttachments(b As Boolean)				'ignoredeadcode
-	bAttachments = b
-	CustProps.put("Attachments", b)
+Sub setAllowAttachments(b As Boolean)				'ignoredeadcode
+	bAllowAttachments = b
+	CustProps.put("AllowAttachments", b)
 	If mElement = Null Then Return
 	UI.SetVisibleByID($"${mName}_attach"$, b)
 End Sub
@@ -724,8 +724,8 @@ Sub setVoice(b As Boolean)						'ignoredeadcode
 End Sub
 
 'get Attachments
-Sub getAttachments As Boolean
-	Return bAttachments
+Sub getAllowAttachments As Boolean
+	Return bAllowAttachments
 End Sub
 
 'get Camera
@@ -1303,7 +1303,7 @@ Sub RefreshConversations
 	MessageType = "T"
 	SetTextPlaceholder("Type a message here.")
 	If bEmojis Then EnableEmoji(True)
-	If bAttachments Then EnableAttach(True)
+	If bAllowAttachments Then EnableAttach(True)
 	EnableSend(True)
 	UI.SetValueByID($"${mName}_filepick"$, Null)
 	'clear the existing messages
@@ -1535,7 +1535,7 @@ private Sub ChatClick(e As BANanoEvent)				'ignoredeadcode
 	MessageType = "T"
 	SetTextPlaceholder("Type a message here.")
 	If bEmojis Then EnableEmoji(True)
-	If bAttachments Then EnableAttach(True)
+	If bAllowAttachments Then EnableAttach(True)
 	EnableSend(True)
 '	CloseInternalModals
 	ClearRightHeader

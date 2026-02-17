@@ -59,7 +59,7 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sText As String = ""
+	Private sText As String = "JsBarCode"
 	Public Tag As Object
 	Private Options As Map
 	Private sBackground As String = "#ffffff"

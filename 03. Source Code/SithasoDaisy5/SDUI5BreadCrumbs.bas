@@ -42,7 +42,7 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sMaxWidth As String = ""
 	Private sTextSize As String = "none"
-	Private sRawOptions As String = "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r"
+	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
 	Public Children As Map
 End Sub
 'initialize the custom view class
@@ -59,7 +59,7 @@ End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")                            'String (empty by default)
-	CustProps.Put("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r") 'String
+	CustProps.Put("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r") 'String
 	CustProps.Put("MaxWidth", "")                            'String (empty)
 	CustProps.Put("TextSize", "none")                        'String
 	CustProps.Put("Visible", True)                           'Boolean

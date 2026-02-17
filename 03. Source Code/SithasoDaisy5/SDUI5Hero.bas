@@ -76,7 +76,7 @@ Sub Class_Globals
 	Private sXlContentFlexDirection As String = "none"
 	Private sXxlContentFlexDirection As String = "none"
 	Private sRounded As String = "none"
-	Private sShadow As String = "none"     
+	Private sShadow As String = "none"
 	Public Children As Map
 End Sub
 'initialize the custom view class

@@ -64,7 +64,7 @@ Sub Class_Globals
 	Private sHint As String = ""
 	Private sLabel As String = "CheckBox Group"
 	Private sSize As String = "none"
-	Private sRawOptions As String = "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r"
+	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
 	Private bColumnView As Boolean = False
 	Private sLabelPosition As String = "right"
 	Public CONST LABELPOSITION_LEFT As String = "left"
@@ -98,7 +98,7 @@ private Sub SetDefaults
 	CustProps.Put("TypeOf", "checkbox")
 	CustProps.Put("Label", "CheckBox Group")
 	CustProps.Put("LegendColor", "")
-	CustProps.Put("RawOptions", "b4a:b4a; b4i:b4i; b4j:b4j; b4r:b4r")
+	CustProps.Put("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 	CustProps.Put("Selected", "")
 	CustProps.Put("Color", "none")
 	CustProps.Put("CheckedColor", "")
@@ -288,7 +288,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sGroupName = UI.CStr(sGroupName)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = UI.CStr(sHint)
-		sLabel = Props.GetDefault("Label", "Label")
+		sLabel = Props.GetDefault("Label", "CheckBox Group")
 		sLabel = UI.CStr(sLabel)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)

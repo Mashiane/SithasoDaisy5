@@ -71,9 +71,9 @@ Sub Class_Globals
 	Private sMinHeight As String = ""
 	Private sMinWidth As String = ""
 	Private sPopOverTarget As String = ""
-	Private bCover As Boolean = False
-	Private bCenter As Boolean = False
-	Private bNoRepeat As Boolean = False
+	Private bCover As Boolean = True
+	Private bCenter As Boolean = True
+	Private bNoRepeat As Boolean = True
 	Private bLazy As Boolean = False
 	Private bGif As Boolean = False
 	Private sGifPoster As String = ""

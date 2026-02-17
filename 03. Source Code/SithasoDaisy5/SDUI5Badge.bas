@@ -88,7 +88,7 @@ Sub Class_Globals
 	Private sSize As String = "none"
 	Private bSoft As Boolean = False
 	Private sTextColor As String = ""
-	Private sTextSize As String = ""
+	Private sTextSize As String = "none"
 	Private bUseSpan As Boolean = False
 	Private sWidth As String = ""
 	Private sIndicatorPosition As String = "top-start"
@@ -97,7 +97,7 @@ Sub Class_Globals
 	Private sLeftImageSize As String = "16px"
 	Private sRightImage As String = ""
 	Private sRightImageSize As String = "16px"
-	Private sRounded As String = "none"
+	Private sRounded As String = "full"
 	Private sShadow As String = "none"
 	Private bHasLeftIcon As Boolean = True
 	Private bHasLeftImage As Boolean = True
@@ -347,7 +347,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
 		bSoft = UI.CBool(bSoft)
-		sTextSize = Props.GetDefault("TextSize", "")
+		sTextSize = Props.GetDefault("TextSize", "none")
 		sTextSize = UI.CStr(sTextSize)
 		bUseSpan = Props.GetDefault("UseSpan", False)
 		bUseSpan = UI.CBool(bUseSpan)
@@ -365,7 +365,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRightImage = UI.CStr(sRightImage)
 		sRightImageSize = Props.GetDefault("RightImageSize", "16px")
 		sRightImageSize = UI.CStr(sRightImageSize)
-		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = Props.GetDefault("Rounded", "full")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")

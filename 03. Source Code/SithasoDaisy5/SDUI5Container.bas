@@ -98,7 +98,7 @@ Sub Class_Globals
 	Public TheMatrix As Map
 	Public ShowGridDesign As Boolean = False
 	Private bCenterChildren As Boolean = False
-	Private bContainer As Boolean = False
+	Private bContainer As Boolean = True
 	Private sMaxHeight As String = ""
 	Private sMaxWidth As String = ""
 	Private sMinHeight As String = ""
@@ -153,8 +153,8 @@ private Sub SetDefaults
 	CustProps.Put("Visible", True)
 	CustProps.Put("GradientActive", False)
 	CustProps.Put("Gradient", "")
-	CustProps.Put("GradientColor1", "#f86194")
-	CustProps.Put("GradientColor2", "#968918")
+	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")
+	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
@@ -355,7 +355,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sTextAlign = "none" Then sTextAlign = ""
 		bCenterChildren = Props.GetDefault("CenterChildren", False)
 		bCenterChildren = UI.CBool(bCenterChildren)
-		bContainer = Props.GetDefault("Container", False)
+		bContainer = Props.GetDefault("Container", True)
 		bContainer = UI.CBool(bContainer)
 		sMaxHeight = Props.GetDefault("MaxHeight", "")
 		sMaxHeight = UI.CStr(sMaxHeight)
@@ -372,10 +372,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", False)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If

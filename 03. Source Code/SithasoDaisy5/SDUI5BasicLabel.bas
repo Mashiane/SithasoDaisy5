@@ -68,7 +68,7 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
-	Private sText As String = ""
+	Private sText As String = "Text"
 	Public Tag As Object
 	Private sAlignment As String = "center"
 	Private sBackgroundColor As String = "transparent"
@@ -180,8 +180,8 @@ private Sub SetDefaults
 	CustProps.Put("FontItalic", False)                       'Boolean
 	CustProps.Put("GradientActive", False)                   'Boolean
 	CustProps.Put("Gradient", "")                            'String (empty)
-	CustProps.Put("GradientColor1", "#f86194")               'Color
-	CustProps.Put("GradientColor2", "#968918")               'Color
+	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")               'Color
+	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")               'Color
 	CustProps.Put("MarginLeft", "")                          'String (empty)
 	CustProps.Put("MarginRight", "")                         'String (empty)
 	CustProps.Put("MarginTop", "")                           'String (empty)
@@ -358,7 +358,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bFontItalic = UI.CBool(bFontItalic)
 		sFontName = Props.GetDefault("FontName", "")
 		sFontName = UI.CStr(sFontName)
-		sFontSize = Props.GetDefault("FontSize", 15)
+		sFontSize = Props.GetDefault("FontSize", "15")
 		sFontSize = UI.CStr(sFontSize)
 		sHeight = Props.GetDefault("Height", "60px")
 		sHeight = UI.CStr(sHeight)
@@ -391,7 +391,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTagType = Props.GetDefault("TagType", "div")
 		sTagType = UI.CStr(sTagType)
 		If sTagType = "" Then sTagType = "div"
-		sText = Props.GetDefault("Text", "Label")
+		sText = Props.GetDefault("Text", "Text")
 		sText = UI.CStr(sText)
 		cTextColor = Props.GetDefault("TextColor", "#000000")
 		cTextColor = UI.CStr(cTextColor)
@@ -407,10 +407,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", False)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If

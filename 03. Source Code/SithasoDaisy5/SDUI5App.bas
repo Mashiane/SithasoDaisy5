@@ -3010,6 +3010,14 @@ Sub AddJavaScriptURL(urlLink As String, bAsync As Boolean)
 	Banano.GetElement("head").Append(tmpScriptElem)
 End Sub
 
+Sub AddGoogleAdSenseURL(urlLink As String)
+	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("script")
+	tmpScriptElem.SetAttr("crossorigin", "anonymous")
+	tmpScriptElem.SetAttr("src", urlLink)
+	tmpScriptElem.SetAttr("async", True)
+	Banano.GetElement("head").Append(tmpScriptElem)
+End Sub
+
 Sub AddCSSURL(urlLink As String, bAsync As Boolean)
 	Dim tmpScriptElem As BANanoElement = Banano.CreateElement("link")
 	tmpScriptElem.SetAttr("rel", "stylesheet")

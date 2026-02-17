@@ -75,16 +75,16 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sAreaColor As String = "#597BFC"
+	Private sAreaColor As String = ""
 	Private sAreaOpacity As String = "0"
-	Private sPointBorderColor As String = "#597BFC"
-	Private sPointInnerColor As String = "#597BFC"
+	Private sPointBorderColor As String = ""
+	Private sPointInnerColor As String = ""
 	Private sPointOpacity As String = "0"
 	Private sPointOpacityActive As String = "1"
 	Private sResidualColor As String = "black"
 	Private sResidualOpacity As String = "0"
 	Private sShapeColor As String = "#597BFC"
-	Private sShapeColorX As String = "#597BFC"
+	Private sShapeColorX As String = ""
 	Private sShapeOpacity As String = "1"
 	Private sShapeOpacityActive As String = "0.5"
 	Private sTooltipBackground As String = "black"
@@ -182,8 +182,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -340,13 +340,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sAreaColor = Props.GetDefault("AreaColor", "#597BFC")
+		sAreaColor = Props.GetDefault("AreaColor", "")
 		sAreaColor = UI.CStr(sAreaColor)
 		sAreaOpacity = Props.GetDefault("AreaOpacity", "0")
 		sAreaOpacity = UI.CStr(sAreaOpacity)
-		sPointBorderColor = Props.GetDefault("PointBorderColor", "#597BFC")
+		sPointBorderColor = Props.GetDefault("PointBorderColor", "")
 		sPointBorderColor = UI.CStr(sPointBorderColor)
-		sPointInnerColor = Props.GetDefault("PointInnerColor", "#597BFC")
+		sPointInnerColor = Props.GetDefault("PointInnerColor", "")
 		sPointInnerColor = UI.CStr(sPointInnerColor)
 		sPointOpacity = Props.GetDefault("PointOpacity", "0")
 		sPointOpacity = UI.CStr(sPointOpacity)
@@ -358,7 +358,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sResidualOpacity = UI.CStr(sResidualOpacity)
 		sShapeColor = Props.GetDefault("ShapeColor", "#597BFC")
 		sShapeColor = UI.CStr(sShapeColor)
-		sShapeColorX = Props.GetDefault("ShapeColorX", "#597BFC")
+		sShapeColorX = Props.GetDefault("ShapeColorX", "")
 		sShapeColorX = UI.CStr(sShapeColorX)
 		sShapeOpacity = Props.GetDefault("ShapeOpacity", "1")
 		sShapeOpacity = UI.CStr(sShapeOpacity)

@@ -75,7 +75,7 @@ Sub Class_Globals
 	Private sRoundedBottomLeft As String = ""
 	Private sRoundedBottomRight As String = ""
 	Private sRoundedTopLeft As String = ""
-	Private sRoundedTopRight As String = ""	
+	Private sRoundedTopRight As String = ""
 	Public Children As Map
 End Sub
 'initialize the custom view class

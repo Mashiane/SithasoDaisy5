@@ -140,7 +140,7 @@ Sub Class_Globals
 	Private sTag As String = "button"
 	Private sShape As String = "none"
 	Private sTooltip As String = ""
-	Private sTooltipColor As String = "primary"
+	Private sTooltipColor As String = "none"
 	Private bTooltipOpen As Boolean = False
 	Private sTooltipPosition As String = "none"
 	Public CONST TOOLTIPPOSITION_BOTTOM As String = "bottom"
@@ -149,15 +149,15 @@ Sub Class_Globals
 	Public CONST TOOLTIPPOSITION_TOP As String = "top"
 	Private sIconSize As String = "50"
 	Private sLeftIcon As String = ""
-	Private sLeftIconColor As String = "none"
+	Private sLeftIconColor As String = ""
 	Private sRightIcon As String = ""
-	Private sRightIconColor As String = "none"
+	Private sRightIconColor As String = ""
 	Private bLeftIconVisible As Boolean = False
 	Private bRightIconVisible As Boolean = False
 	Private sShadow As String = "md"
 	Private sPopOverTarget As String = ""
 	Private bTextVisible As Boolean = True
-	Private sTextSize As String = "none"
+	Private sTextSize As String = ""
 	Private sIndicatorColor As String = "error"
 	Private sIndicatorPosition As String = "top-end"
 	Private sIndicatorSize As String = "6"
@@ -554,12 +554,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sIconSize = UI.CStr(sIconSize)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
 		sLeftIcon = UI.CStr(sLeftIcon)
-		sLeftIconColor = Props.GetDefault("LeftIconColor", "none")
+		sLeftIconColor = Props.GetDefault("LeftIconColor", "")
 		sLeftIconColor = UI.CStr(sLeftIconColor)
 		If sLeftIconColor = "none" Then sLeftIconColor = ""
 		sRightIcon = Props.GetDefault("RightIcon", "")
 		sRightIcon = UI.CStr(sRightIcon)
-		sRightIconColor = Props.GetDefault("RightIconColor", "none")
+		sRightIconColor = Props.GetDefault("RightIconColor", "")
 		sRightIconColor = UI.CStr(sRightIconColor)
 		If sRightIconColor = "none" Then sRightIconColor = ""
 		sShadow = Props.GetDefault("Shadow", "md")
@@ -569,7 +569,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
 		bTextVisible = Props.GetDefault("TextVisible", True)
 		bTextVisible = UI.CBool(bTextVisible)
-		sTextSize = Props.GetDefault("TextSize", "none")
+		sTextSize = Props.GetDefault("TextSize", "")
 		sTextSize = UI.CStr(sTextSize)
 		sIndicatorColor = Props.GetDefault("IndicatorColor", "error")
 		sIndicatorColor = UI.CStr(sIndicatorColor)
@@ -1010,6 +1010,14 @@ Sub setIconSize(s As String)				'ignoredeadcode
 		If sRightIcon <> "" And s <> "" Then UI.SizeIconByID($"${mName}_righticon"$, s)
 	End If	
 End Sub
+
+Sub setResizeIconSize(b As Boolean)			'ignoredeadcode
+	bResizeIconSize = b
+	CustProps.put("ResizeIconSize", b)
+	If mElement = Null Then Return
+	If sIconSize = "" Then Return
+	setIconSize(sIconSize)
+End Sub
 'set Left Icon
 Sub setLeftIcon(s As String)				'ignoredeadcode
 	sLeftIcon = s
@@ -1054,6 +1062,10 @@ End Sub
 'get Icon Size
 Sub getIconSize As String
 	Return sIconSize
+End Sub
+
+Sub getResizeIconSize As Boolean
+	Return bResizeIconSize
 End Sub
 
 'get Left Icon
@@ -1275,6 +1287,19 @@ Sub setLeftImageWidth(s As String)					'ignoredeadcode
 	If sImage = "" Then Return
 	If s = "" Then Return
 	UI.SetWidthByID($"${mName}_leftimage"$, sImageWidth)
+End Sub
+
+'backward compatibility aliases
+Sub setImage(s As String)						'ignoredeadcode
+	setLeftImage(s)
+End Sub
+
+Sub setImageHeight(s As String)				'ignoredeadcode
+	setLeftImageHeight(s)
+End Sub
+
+Sub setImageWidth(s As String)					'ignoredeadcode
+	setLeftImageWidth(s)
 End Sub
 
 'set Link

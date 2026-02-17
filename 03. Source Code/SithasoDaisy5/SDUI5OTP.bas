@@ -232,7 +232,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		iMaxLen = UI.CInt(iMaxLen)
 		sTypeOf = Props.GetDefault("TypeOf", "text")
 		sTypeOf = UI.CStr(sTypeOf)
-		sValue = Props.GetDefault("Value", "")
+		sValue = Props.GetDefault("Value", "otp")
 		sValue = UI.CStr(sValue)
 	End If
 	

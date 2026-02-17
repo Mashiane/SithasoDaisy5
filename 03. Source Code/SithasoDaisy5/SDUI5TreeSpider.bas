@@ -73,8 +73,8 @@ Sub Class_Globals
 	Private sTreeLinkType As String = "none"
 	Private sVerticalSpace As String = "120px"
 	Private sWidth As String = "900px"
-	Private dZoomInDistance As Double = 1.5
-	Private dZoomOutDistance As Double = 0.5
+	Private dZoomInDistance As Double = "1.5"
+	Private dZoomOutDistance As Double = "0.5"
 	Public CONST BACKGROUNDPATTERN_BLURRY As String = "blurry"
 	Public CONST BACKGROUNDPATTERN_CHAOS As String = "chaos"
 	Public CONST BACKGROUNDPATTERN_DEFAULT As String = "default"
@@ -177,8 +177,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -372,9 +372,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sVerticalSpace = UI.CStr(sVerticalSpace)
 		sWidth = Props.GetDefault("Width", "900px")
 		sWidth = UI.CStr(sWidth)
-		dZoomInDistance = Props.GetDefault("ZoomInDistance", 1.5)
+		dZoomInDistance = Props.GetDefault("ZoomInDistance", "1.5")
 		dZoomInDistance = UI.CDbl(dZoomInDistance)
-		dZoomOutDistance = Props.GetDefault("ZoomOutDistance", 0.5)
+		dZoomOutDistance = Props.GetDefault("ZoomOutDistance", "0.5")
 		dZoomOutDistance = UI.CDbl(dZoomOutDistance)
 	End If
 	'

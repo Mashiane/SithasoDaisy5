@@ -86,7 +86,7 @@ Sub Class_Globals
 	Private sBackgroundColor As String = ""
 	Private sRounded As String = ""
 	Private bRoundedBox As Boolean = False
-	Private sShadow As String = ""
+	Private sShadow As String = "none"
 	Private sSize As String = "md"
 	Private sHeight As String = "full"
 	Private sWidth As String = "200px"
@@ -98,9 +98,9 @@ Sub Class_Globals
 	Private sItemHoverColor As String = ""
 	Private sCheckBoxActiveBorderColor As String = ""
 	Private sCheckBoxActiveColor As String = ""
-	Private sCheckBoxSize As String = ""
+	Private sCheckBoxSize As String = "md"
 	Private bReplace As Boolean = False
-	Private sTextBoxSize As String = ""
+	Private sTextBoxSize As String = "sm"
 	Private bUseLocalstorage As Boolean = True
 	Type TreeNode (nodeId As String, parentId As String, iconUrl As String, text As String, href As String, hasCheckbox As Boolean, expanded As Boolean)
 End Sub
@@ -161,8 +161,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -344,7 +344,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRounded = UI.CStr(sRounded)
 		bRoundedBox = Props.GetDefault("RoundedBox", False)
 		bRoundedBox = UI.CBool(bRoundedBox)
-		sShadow = Props.GetDefault("Shadow", "")
+		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		sSize = Props.GetDefault("Size", "md")
 		sSize = UI.CStr(sSize)
@@ -364,11 +364,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sCheckBoxActiveBorderColor = UI.CStr(sCheckBoxActiveBorderColor)
 		sCheckBoxActiveColor = Props.GetDefault("CheckBoxActiveColor", "")
 		sCheckBoxActiveColor = UI.CStr(sCheckBoxActiveColor)
-		sCheckBoxSize = Props.GetDefault("CheckBoxSize", "")
+		sCheckBoxSize = Props.GetDefault("CheckBoxSize", "md")
 		sCheckBoxSize = UI.CStr(sCheckBoxSize)
 		bReplace = Props.GetDefault("Replace", False)
 		bReplace = UI.CBool(bReplace)
-		sTextBoxSize = Props.GetDefault("TextBoxSize", "")
+		sTextBoxSize = Props.GetDefault("TextBoxSize", "sm")
 		sTextBoxSize = UI.CStr(sTextBoxSize)
 		bUseLocalstorage = Props.GetDefault("UseLocalstorage", True)
 		bUseLocalstorage = UI.CBool(bUseLocalstorage)
@@ -450,145 +450,194 @@ End Sub
 
 'get the tree structure as a map
 Sub GetTreeMap As Map
+	If bBuilt = False Then
+		Dim m0 As Map
+		m0.Initialize
+		Return m0
+	End If
 	Dim res As Map = tv.RunMethod("getTree", Null).Result
 	Return res
 End Sub
 
 'get the tree data as a list
 Sub GetTreeList As List
+	If bBuilt = False Then
+		Dim l0 As List
+		l0.Initialize
+		Return l0
+	End If
 	Dim res As List = tv.RunMethod("flattenTree", Null).Result
 	Return res
 End Sub
 
 'ONLY CALL when absolutely necessary.
 Sub Refresh
+	If bBuilt = False Then Return
 	tv.RunMethod("refresh", Null)
 End Sub
 
 Sub collapseAll
+	If bBuilt = False Then Return
 	tv.RunMethod("collapseAll", Null)
 End Sub
 
 Sub expandAll
+	If bBuilt = False Then Return
 	tv.RunMethod("expandAll", Null)
 End Sub
 
 Sub nodeMoveRight(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("nodeMoveRight", nodeId)
 End Sub
 
 Sub nodeMoveLeft(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("nodeMoveLeft", nodeId)
 End Sub
 
 Sub nodeMoveUp(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("nodeMoveUp", nodeId)
 End Sub
 
 Sub nodeMoveDown(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("nodeMoveDown", nodeId)
 End Sub
 
 Sub enableInlineEditing(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("enableInlineEditing", nodeId)
 End Sub
 
 Sub nodeExists(nodeID As String) As Boolean
+	If bBuilt = False Then Return False
 	Dim b As Boolean = tv.RunMethod("nodeExists", Array(nodeID)).Result
 	Return b
 End Sub
 
 Sub findNode(nodeID As String) As Map
+	If bBuilt = False Then
+		Dim m0 As Map
+		m0.Initialize
+		Return m0
+	End If
 	Dim n As Object = tv.RunMethod("findNode", Array(nodeID)).Result
 	Return n
 End Sub
 
 Sub addNode(parentId As String, nodeId As String, iconUrl As String, text As String, href As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("addNode", Array(parentId, nodeId, iconUrl, text, href))
 End Sub
 
 Sub addNodeBefore(targetId As String, nodeId As String, iconUrl As String, text As String, href As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("addNodeBefore", Array(targetId, nodeId, iconUrl, text, href))
 End Sub
 
 Sub addNodeAfter(targetId As String, nodeId As String, iconUrl As String, text As String, href As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("addNodeAfter", Array(targetId, nodeId, iconUrl, text, href))
 End Sub
 
 Sub checkNode(nodeId As String, b As Boolean)
+	If bBuilt = False Then Return
 	tv.RunMethod("checkNode", Array(nodeId, b))
 End Sub
 
 Sub removeNode(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("removeNodeRecursive", Array(nodeId))
 End Sub
 
 Sub expandNode(nodeId As String, state As Boolean)
+	If bBuilt = False Then Return
 	tv.RunMethod("expandNode", Array(nodeId, state))
 End Sub
 
 Sub enableNode(nodeId As String, state As Boolean)
+	If bBuilt = False Then Return
 	tv.RunMethod("enableNode", Array(nodeId, state))
 End Sub
 
 Sub Clear
+	If bBuilt = False Then Return
 	tv.RunMethod("clear", Null)
 	If mElement <> Null Then mElement.empty
 End Sub
 
 Sub clearSelected
+	If bBuilt = False Then Return
 	tv.RunMethod("clearSelected", Null)
 End Sub
 
 Sub clearChecked
+	If bBuilt = False Then Return
 	tv.RunMethod("clearChecked", Null)
 End Sub
 
 Sub getChildren(nodeId As String) As List
+	If bBuilt = False Then
+		Dim l0 As List
+		l0.Initialize
+		Return l0
+	End If
 	Dim l As Object = tv.RunMethod("getChildrenRecursive", Array(nodeId)).Result
 	Return l
 End Sub
 
 Sub removeChildren(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("removeChildren", Array(nodeId))
 End Sub
 
 Sub showNode(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("showNode", Array(nodeId))
 End Sub
 
 Sub hideNode(nodeId As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("hideNode", Array(nodeId))
 End Sub
 
 Sub updateNode(nodeId As String, iconUrl As String, text As String, href As String)
+	If bBuilt = False Then Return
 	tv.RunMethod("updateNode", Array(nodeId, iconUrl, text, href))
 End Sub
 
 Sub selectNode(nodeId As String, state As Boolean)
+	If bBuilt = False Then Return
 	tv.RunMethod("selectNode", Array(nodeId, state))
 End Sub
 
 Sub selectNodes(nodes As List)
+	If bBuilt = False Then Return
 	tv.RunMethod("selectNodes", nodes)
 End Sub
 
 Sub getSelectedNode(includeChildren As Boolean) As Object
+	If bBuilt = False Then Return Null
 	Dim l As Object = tv.RunMethod("getSelectedNode", includeChildren).result
 	Return l
 End Sub
 
 Sub getSelectedNodes As Object
+	If bBuilt = False Then Return Null
 	Dim l As Object = tv.RunMethod("getSelectedNodes", Null).Result
 	Return l
 End Sub
 
 Sub getCheckedNodes As Object
+	If bBuilt = False Then Return Null
 	Dim l As Object = tv.RunMethod("getCheckedNodes", Null)
 	Return l
 End Sub
 
 Sub checkNodes(nodes As List)
+	If bBuilt = False Then Return
 	tv.RunMethod("checkedNodes", nodes)
 End Sub
 
@@ -598,6 +647,7 @@ Sub setCheckBoxActiveBorderColor(s As String)
 	sCheckBoxActiveBorderColor = s
 	CustProps.put("CheckBoxActiveBorderColor", s)
 	Options.Put("checkBoxActiveBorderColor", s)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("checkBoxActiveBorderColor", s)
 End Sub
 'set Check Box Active Color
@@ -606,6 +656,7 @@ Sub setCheckBoxActiveColor(s As String)
 	sCheckBoxActiveColor = s
 	CustProps.put("CheckBoxActiveColor", s)
 	Options.Put("checkBoxActiveColor", s)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("checkBoxActiveColor", s)
 End Sub
 'set Check Box Size
@@ -614,6 +665,7 @@ Sub setCheckBoxSize(s As String)
 	sCheckBoxSize = s
 	CustProps.put("CheckBoxSize", s)
 	Options.Put("checkBoxSize", s)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("checkBoxSize", s)
 End Sub
 'set Replace
@@ -621,6 +673,7 @@ Sub setReplace(b As Boolean)
 	bReplace = b
 	CustProps.put("Replace", b)
 	Options.put("replace", b)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("replace", b)
 End Sub
 'set Text Box Size
@@ -629,6 +682,7 @@ Sub setTextBoxSize(s As String)
 	sTextBoxSize = s
 	CustProps.put("TextBoxSize", s)
 	Options.Put("textBoxSize", s)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("textBoxSize", S)
 End Sub
 'set Use Localstorage
@@ -636,6 +690,7 @@ Sub setUseLocalstorage(b As Boolean)
 	bUseLocalstorage = b
 	CustProps.put("UseLocalstorage", b)
 	Options.Put("useLocalstorage", b)
+	If bBuilt = False Then Return
 	tv.GetField("settings").SetField("useLocalstorage", b)
 End Sub
 'get Check Box Active Border Color

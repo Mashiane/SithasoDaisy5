@@ -63,16 +63,16 @@ Sub Class_Globals
 	Private sBackgroundColor As String = "base-100"
 	Private sButtonsShadow As String = "md"
 	Private sButtonsWidth As String = "22"
-	Private sHeight As String = "12"
-	Private sNextColor As String = "none"
+	Private sHeight As String = ""
+	Private sNextColor As String = ""
 	Private sNextText As String = "Next"
-	Private sNextTextColor As String = "none"
+	Private sNextTextColor As String = ""
 	Private sPreviousColor As String = ""
 	Private sPreviousText As String = "Previous"
 	Private sPreviousTextColor As String = ""
 	Private sRawSteps As String = "Register;Choose Plan;Purchase;Receive Product"
 	Private sShadow As String = "sm"
-	Private sStepsColor As String = "none"
+	Private sStepsColor As String = "primary"
 	Private sStepsTextSize As String = "sm"
 	Private sTitle As String = "Subscription"
 	Private bTitleVisible As Boolean = True
@@ -118,8 +118,8 @@ Private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -281,13 +281,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sButtonsShadow = UI.CStr(sButtonsShadow)
 		sButtonsWidth = Props.GetDefault("ButtonsWidth", "22")
 		sButtonsWidth = UI.CStr(sButtonsWidth)
-		sHeight = Props.GetDefault("Height", "12")
+		sHeight = Props.GetDefault("Height", "")
 		sHeight = UI.CStr(sHeight)
-		sNextColor = Props.GetDefault("NextColor", "none")
+		sNextColor = Props.GetDefault("NextColor", "")
 		sNextColor = UI.CStr(sNextColor)
 		sNextText = Props.GetDefault("NextText", "Next")
 		sNextText = UI.CStr(sNextText)
-		sNextTextColor = Props.GetDefault("NextTextColor", "none")
+		sNextTextColor = Props.GetDefault("NextTextColor", "")
 		sNextTextColor = UI.CStr(sNextTextColor)
 		sPreviousColor = Props.GetDefault("PreviousColor", "")
 		sPreviousColor = UI.CStr(sPreviousColor)

@@ -325,7 +325,7 @@ End Sub
 Sub SetURL(url As String)
 	vbaseURL = $"${obaseURL}${url}"$
 	If ShowLog Then
-		Log($"SDUI5Fetch: ${vbaseURL}"$)
+		Log($"SDUI5Fetch.SetURL(${vbaseURL})"$)
 	End If
 End Sub
 
@@ -374,7 +374,7 @@ Private Sub fetchit(method As String)
 		End Select
 	End If
 	If ShowLog Then
-		Log($"SDUI5Fetch-Data: ${BANano.ToJson(vdata)}"$)
+		Log($"SDUI5Fetch-Data Sent: ${BANano.ToJson(vdata)}"$)
 	End If
 	'set our own body
 	If Body <> "" Then fetchOptions.Body = Body
@@ -393,6 +393,9 @@ Private Sub fetchit(method As String)
 	If sReferrerPolicy <> "" Then
 		fetchOptions.ReferrerPolicy = sReferrerPolicy
 	End If
+	If ShowLog Then
+		Log($"SDUI5Fetch-Final URL: ${xbaseURL}"$)
+	End If
 	'use local variables
 	Dim bf As BANanoFetch = fetch
 	Dim bfr As BANanoFetchResponse = fetchResponse
@@ -405,6 +408,7 @@ Private Sub fetchit(method As String)
 		Status = bfr.status
 		StatusText = bfr.StatusText
 		If ShowLog Then
+			Log($"SDUI5Fetch-Status: ${Status}"$)
 			Log($"SDUI5Fetch-StatusText: ${StatusText}"$)
 		End If
 		OK = bfr.ok

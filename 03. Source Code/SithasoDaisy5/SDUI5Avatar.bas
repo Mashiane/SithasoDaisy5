@@ -350,7 +350,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPopOverTarget = UI.CleanID(sPopOverTarget)
 		bAvatarColor = Props.GetDefault("AvatarColor", False)
 		bAvatarColor = UI.CBool(bAvatarColor)
-		bHasBadge = Props.GetDefault("HasBadge", False)
+		bHasBadge = Props.GetDefault("HasBadge", True)
 		bHasBadge = UI.CBool(bHasBadge)
 	End If
 	'

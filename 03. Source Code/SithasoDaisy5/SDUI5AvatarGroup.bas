@@ -6,7 +6,7 @@ Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: RawImages, DisplayName: Images (JSON), FieldType: String, DefaultValue: "one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg", Description: Images (JSON)
+#DesignerProperty: Key: RawImages, DisplayName: Images (JSON), FieldType: String, DefaultValue: one=./assets/1.jpg; two=./assets/2.jpg; three=./assets/3.jpg; four=./assets/4.jpg; five=./assets/5.jpg, Description: Images (JSON)
 #DesignerProperty: Key: Mask, DisplayName: Mask, FieldType: String, DefaultValue: circle, Description: Mask, List: circle|decagon|diamond|heart|hexagon|hexagon-2|none|pentagon|square|squircle|star|star-2|triangle|triangle-2|triangle-3|triangle-4|rounded-2xl|rounded-3xl|rounded|rounded-lg|rounded-md|rounded-sm|rounded-xl
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: 6, Description: Width & Height
 #DesignerProperty: Key: Space, DisplayName: Space, FieldType: String, DefaultValue: 6, Description: Space

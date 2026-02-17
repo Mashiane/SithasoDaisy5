@@ -43,7 +43,7 @@ Sub Class_Globals
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
 	Public Tag As Object
-	Private sBackgroundColor As String = "none"
+	Private sBackgroundColor As String = ""
 	Private sConversationType As String = "T"
 	Private sFileMimeType As String = ""
 	Private sFileName As String = ""
@@ -187,7 +187,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sFileName = UI.CStr(sFileName)
 		sFilePreview = Props.GetDefault("FilePreview", "")
 		sFilePreview = UI.CStr(sFilePreview)
-		sFileSize = Props.GetDefault("FileSize", "")
+		sFileSize = Props.GetDefault("FileSize", "none")
 		sFileSize = UI.CStr(sFileSize)
 		sFileUrl = Props.GetDefault("FileUrl", "")
 		sFileUrl = UI.CStr(sFileUrl)
@@ -217,7 +217,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sChatId = UI.CStr(sChatId)
 		sImageShape = Props.GetDefault("ImageShape", "")
 		sImageShape = UI.CStr(sImageShape)
-		sImageSize = Props.GetDefault("ImageSize", "")
+		sImageSize = Props.GetDefault("ImageSize", "12")
 		sImageSize = UI.CStr(sImageSize)
 	End If
 	'

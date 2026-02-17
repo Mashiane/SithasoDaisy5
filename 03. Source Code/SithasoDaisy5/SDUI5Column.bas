@@ -72,7 +72,7 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Private sText As String = ""
 	Public Tag As Object
-	Private sAlignSelf As String = ""
+	Private sAlignSelf As String = "none"
 	Private sBackgroundColor As String = ""
 	Private sHeight As String = ""
 	Private sOffsetLg As String = ""

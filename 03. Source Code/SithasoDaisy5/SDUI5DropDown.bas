@@ -41,7 +41,7 @@ Sub Class_Globals
 	Public Tag As Object
 	Private bHover As Boolean = False
 	Private bOpen As Boolean = False
-	Private sPlacement As String = "bottom-start"
+	Private sPlacement As String = "bottom"
 	Public CONST PLACEMENT_BOTTOM As String = "bottom"
 	Public CONST PLACEMENT_BOTTOM_CENTER As String = "bottom-center"
 	Public CONST PLACEMENT_BOTTOM_END As String = "bottom-end"
@@ -237,7 +237,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bHover = UI.CBool(bHover)
 		bOpen = Props.GetDefault("Open", False)
 		bOpen = UI.CBool(bOpen)
-		sPlacement = Props.GetDefault("Placement", "bottom-start")
+		sPlacement = Props.GetDefault("Placement", "bottom")
 		sPlacement = UI.CStr(sPlacement)
 	End If
 	'

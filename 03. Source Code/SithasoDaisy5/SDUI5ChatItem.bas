@@ -58,9 +58,9 @@ Sub Class_Globals
 	Private sAvatarSize As String = "12"
 	Private sBackgroundColor As String = "none"
 	Private sDeliveryTime As String = "10:00 AM"
-	Private sFromAvatar As String = ""
+	Private sFromAvatar As String = "./assets/mashy.jpg"
 	Private sFromName As String = "From Name"
-	Private sHelpAvatar As String = ""
+	Private sHelpAvatar As String = "./assets/mashy.jpg"
 	Private bHelpVisible As Boolean = False
 	Private sMessage As String = "Message"
 	Private sRounded As String = "none"
@@ -273,7 +273,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sFromAvatar = UI.CStr(sFromAvatar)
 		sFromName = Props.GetDefault("FromName", "From Name")
 		sFromName = UI.CStr(sFromName)
-		sHelpAvatar = Props.GetDefault("HelpAvatar", "")
+		sHelpAvatar = Props.GetDefault("HelpAvatar", "./assets/mashy.jpg")
 		sHelpAvatar = UI.CStr(sHelpAvatar)
 		bHelpVisible = Props.GetDefault("HelpVisible", False)
 		bHelpVisible = UI.CBool(bHelpVisible)

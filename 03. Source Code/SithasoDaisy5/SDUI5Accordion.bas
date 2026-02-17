@@ -12,7 +12,7 @@ Version=10
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: full, Description: Width
 #DesignerProperty: Key: RawOptions, DisplayName: Options (JSON), FieldType: String, DefaultValue: btn1=Button 1; btn2=Button 2; btn3=Button 3, Description: Key Values
 #DesignerProperty: Key: Active, DisplayName: Active Item, FieldType: String, DefaultValue: btn1, Description: Active Item
-#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Clear Contents
+#DesignerProperty: Key: ClearContents, DisplayName: Clear Contents, FieldType: Boolean, DefaultValue: False, Description: Clear Contents
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: base-100, Description: Background Color
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: none, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
@@ -51,7 +51,7 @@ Sub Class_Globals
 	Private sShadow As String = "none"
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Private items As Map
-	Private sActive As String = ""
+	Private sActive As String = "btn1"
 	Public Children As Map
 	Private bClearContents As Boolean = False
 	Private sWidth As String = "full"
@@ -253,7 +253,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sRawOptions = UI.CStr(sRawOptions)
 		sActive = Props.GetDefault("Active", "btn1")
 		sActive = UI.CStr(sActive)
-		sWidth = Props.GetDefault("Width", "")
+		sWidth = Props.GetDefault("Width", "full")
 		sWidth = UI.CStr(sWidth)
 		bClearContents = Props.GetDefault("ClearContents", False)
 		bClearContents = UI.CBool(bClearContents)

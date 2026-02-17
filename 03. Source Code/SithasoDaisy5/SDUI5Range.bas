@@ -62,7 +62,7 @@ Sub Class_Globals
 	Private sRangeBackgroundColor As String = ""
 	Private sColor As String = "none"
 	Private sHint As String = ""
-	Private sLabel As String = ""
+	Private sLabel As String = "Range"
 	Private sMaxValue As String = "100"
 	Private bMeasure As Boolean = False
 	Private sMinValue As String = "0"
@@ -298,7 +298,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sColor = "none" Then sColor = ""
 		sHint = Props.GetDefault("Hint", "")
 		sHint = UI.CStr(sHint)
-		sLabel = Props.GetDefault("Label", "")
+		sLabel = Props.GetDefault("Label", "Range")
 		sLabel = UI.CStr(sLabel)
 		sMaxValue = Props.GetDefault("MaxValue", "100")
 		sMaxValue = UI.CStr(sMaxValue)

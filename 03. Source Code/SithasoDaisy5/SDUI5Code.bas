@@ -61,7 +61,7 @@ Sub Class_Globals
 	Private sContent As String = ""
 	Private sHeight As String = "800px"
 	Private sWidth As String = "full"
-	Private sTextSize As String = ""
+	Private sTextSize As String = "none"
 	Private Lines As List
 	Private Original As List
 	Public CODE_CSS As String = "css"
@@ -291,7 +291,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = UI.CStr(sHeight)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = UI.CStr(sWidth)
-		sTextSize = Props.GetDefault("TextSize", "")
+		sTextSize = Props.GetDefault("TextSize", "none")
 		sTextSize = UI.CStr(sTextSize)
 		sCaption = Props.GetDefault("Caption", "Source Code")
 		sCaption = UI.CStr(sCaption)
@@ -341,16 +341,18 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	Case "card"
 		mElement = mTarget.Append($"[BANCLEAN]
 			<div id="${mName}" class="card bg-base-100 flex flex-col ${xclasses}" ${xattrs} style="${xstyles}">
-	        	<div id="${mName}_card_actions" class="card-actions justify-between">
-	        		<h2 id="${mName}_card_title" class="p-4 card-title">${sCaption}</h2>
-	        		<div id="${mName}_buttons" class="flex items-center mt-3 mr-3 justify-end gap-2"></div>
-	        	</div>
-	        	<div id="${mName}_card_code" class="card-content p-4 flex-1 overflow-hidden">
-	        		<pre id="${mName}_pre" class="h-full overflow-y-auto whitespace-pre-wrap break-words break-all">
-	        			<code id="${mName}_code" class="col block w-full">${sContent}</code>
-	        		</pre>
-	        	</div>
-	        </div>"$).Get($"#${mName}"$)
+				<div id="${mName}_card_body" class="card-body p-0">
+					<div id="${mName}_card_actions" class="card-actions justify-between p-4">
+						<h2 id="${mName}_card_title" class="p-4 card-title">${sCaption}</h2>
+    					<div id="${mName}_buttons" class="flex items-center mt-3 mr-3 justify-end gap-2"></div>
+    				</div>
+    				<div id="${mName}_card_code" class="pt-0 px-4 pb-4 flex-1 overflow-hidden">
+						<pre id="${mName}_pre" class="h-full overflow-y-auto whitespace-pre-wrap break-words break-all">
+	    					<code id="${mName}_code" class="col block w-full">${sContent}</code>
+	    				</pre>
+					</div>
+				</div>
+    		</div>"$).Get($"#${mName}"$)
 		Case Else
 		mElement = mTarget.Append($"[BANCLEAN]
         <div id="${mName}" class="mockup-code ${xclasses} flex flex-col overflow-hidden" ${xattrs} style="${xstyles}">

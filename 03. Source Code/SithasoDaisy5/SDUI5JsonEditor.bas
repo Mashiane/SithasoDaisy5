@@ -122,8 +122,8 @@ private Sub SetDefaults
 	CustProps.Put("HasDownload", True)
 	CustProps.Put("HasRefresh", False)
 	CustProps.Put("HasBack", True)
-	CustProps.Put("Shadow", "none")
-	CustProps.Put("Rounded", "none")
+	CustProps.Put("Shadow", "lg")
+	CustProps.Put("Rounded", "lg")
 	CustProps.Put("Path", "")
 	CustProps.Put("HasUpload", True)
 	CustProps.Put("HasSave", True)
@@ -318,15 +318,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		sTitle = Props.GetDefault("Title", "")
 		sTitle = UI.CStr(sTitle)
-		sShadow = Props.GetDefault("Shadow", "none")
+		sShadow = Props.GetDefault("Shadow", "lg")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
-		sRounded = Props.GetDefault("Rounded", "none")
+		sRounded = Props.GetDefault("Rounded", "lg")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
-		bHasBack = Props.GetDefault("HasBack", False)
+		bHasBack = Props.GetDefault("HasBack", True)
 		bHasBack = UI.CBool(bHasBack)
-		bHasDownload = Props.GetDefault("HasDownload", False)
+		bHasDownload = Props.GetDefault("HasDownload", True)
 		bHasDownload = UI.CBool(bHasDownload)
 		bHasRefresh = Props.GetDefault("HasRefresh", False)
 		bHasRefresh = UI.CBool(bHasRefresh)
@@ -336,7 +336,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bButtonsOutlined = UI.CBool(bButtonsOutlined)
 		sPath = Props.GetDefault("Path", "")
 		sPath = UI.CStr(sPath)
-		bHasUpload = Props.GetDefault("HasUpload", False)
+		bHasUpload = Props.GetDefault("HasUpload", True)
 		bHasUpload = UI.CBool(bHasUpload)
 		bHasSave = Props.GetDefault("HasSave", True)
 		bHasSave = UI.CBool(bHasSave)
@@ -361,13 +361,15 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]
 	<div id="${mName}" class="card bg-base-100 flex flex-col ${xclasses}" ${xattrs} style="${xstyles}">
-		<div id="${mName}_card_actions" class="card-actions justify-between">
-			<h2 id="${mName}_card_title" class="p-4 card-title">${sTitle}</h2>
-    		<div id="${mName}_buttons" class="flex items-center mt-3 mr-3 justify-end gap-2"></div>
-    	</div>
-    	<div id="${mName}_card_content" class="card-content p-4 flex-1 overflow-hidden">
-			<div id="${mName}_content" class="w-full h-full"></div>
-    	</div>
+		<div id="${mName}_card_body" class="card-body p-0">
+			<div id="${mName}_card_actions" class="card-actions justify-between p-4">
+				<h2 id="${mName}_card_title" class="p-4 card-title">${sTitle}</h2>
+    			<div id="${mName}_buttons" class="flex items-center mt-3 mr-3 justify-end gap-2"></div>
+    		</div>
+    		<div id="${mName}_card_content" class="pt-0 px-4 pb-4 flex-1 overflow-hidden">
+				<div id="${mName}_content" class="w-full h-full"></div>
+    		</div>
+		</div>
 		<input id="${mName}_file" type="file" class="hidden"></input>
     </div>"$).Get($"#${mName}"$)
 	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_filechange"$)
@@ -423,6 +425,8 @@ Sub getTitle As String
 End Sub
 
 Sub Refresh
+	If mElement = Null Then Return
+	UI.ClearByID($"${mName}_content"$)
 	Dim err As Object
 	Dim cbError As BANanoObject = BANano.CallSub(mCallBack, mName & "_onerror", Array(err))
 	Dim cbonChange As BANanoObject = BANano.CallSub(mCallBack, mName & "_onchange", Array(err))
@@ -629,6 +633,7 @@ Sub SetToolbarButtonLoading(btn As String, b As Boolean)
 End Sub
 
 Sub setHasRefresh(b As Boolean)			'ignoredeadcode
+	bHasRefresh = b
 	CustProps.put("HasRefresh", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -669,6 +674,7 @@ End Sub
 'End Sub
 '</code>
 Sub setHasSave(b As Boolean)				'ignoredeadcode
+	bHasSave = b
 	CustProps.put("HasSave", b)
 	If b = False Then Return
 	If mElement = Null Then Return
@@ -684,6 +690,7 @@ End Sub
 'End Sub
 '</code>
 Sub setHasUpload(b As Boolean)				'ignoredeadcode
+	bHasUpload = b
 	CustProps.put("HasUpload", b)
 	If b = False Then Return
 	If mElement = Null Then Return

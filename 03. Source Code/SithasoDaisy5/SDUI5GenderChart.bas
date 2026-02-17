@@ -50,8 +50,8 @@ Sub Class_Globals
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sPaddingAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sParentID As String = ""
-	Private bVisible As Boolean = True	'ignore
-	Private bEnabled As Boolean = True	'ignore
+	Private bVisible As Boolean = True'ignore
+	Private bEnabled As Boolean = True'ignore
 	Private sDataType As String = "numbers"
 	Private sFemaleLabel As String = "Female"
 	Private sMaleLabel As String = "Male"

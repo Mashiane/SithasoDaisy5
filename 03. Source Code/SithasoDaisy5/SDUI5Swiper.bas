@@ -157,14 +157,14 @@ Sub Class_Globals
     Private iCoverFlowStretch As Int = 0
     Private bCubeEffectShadow As Boolean = True
     Private iCubeEffectShadowOffset As Int = 20
-    Private dCubeEffectShadowScale As Double = 0.94
+    Private dCubeEffectShadowScale As Double = "0.94"
     Private bCubeEffectSlideShadows As Boolean = True
 	Private sRawSlideImageStyle As String = "width=auto;max-width=100%;height=auto;max-height=100%;object-fit=cover"
 	Private sRawSlideStyle As String = "display=flex;position=relative;flex-direction=column;flex-shrink=0;align-items=center;justify-content=center;width=100%;height=100%;font-size=18px;text-align=center;box-sizing=border-box"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
 	Private bCssMode As Boolean = False
-	Private bKeyboardEnabled As Boolean = False
+	Private bKeyboardEnabled As Boolean = True
 	Private bMouseWheel As Boolean = False
 	Private sNextNavigation As String = ""
 	Private bOwnNavigation As Boolean = False
@@ -275,14 +275,14 @@ Private Sub SetDefaults
 	CustProps.Put("RawSlideImageStyle", "width=auto;max-width=100%;height=auto;max-height=100%;object-fit=cover")
 	CustProps.Put("RawSlideStyle", "display=flex;position=relative;flex-direction=column;flex-shrink=0;align-items=center;justify-content=center;width=100%;height=100%;font-size=18px;text-align=center;box-sizing=border-box")
 	CustProps.Put("Visible", True)
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
 	CustProps.Put("Rounded", "none")                 
 	CustProps.Put("Shadow", "none")
-	CustProps.Put("KeyboardEnabled", False)
+	CustProps.Put("KeyboardEnabled", True)
 	CustProps.Put("MouseWheel", False)
 	CustProps.Put("NextNavigation", "")
 	CustProps.Put("OwnNavigation", False)
@@ -561,7 +561,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         bCubeEffectShadow = UI.CBool(bCubeEffectShadow)
         iCubeEffectShadowOffset = Props.GetDefault("CubeEffectShadowOffset", 20)
         iCubeEffectShadowOffset = UI.CInt(iCubeEffectShadowOffset)
-        dCubeEffectShadowScale = Props.GetDefault("CubeEffectShadowScale", 0.94)
+        dCubeEffectShadowScale = Props.GetDefault("CubeEffectShadowScale", "0.94")
         dCubeEffectShadowScale = UI.CDbl(dCubeEffectShadowScale)
         bCubeEffectSlideShadows = Props.GetDefault("CubeEffectSlideShadows", True)
         bCubeEffectSlideShadows = UI.CBool(bCubeEffectSlideShadows)
@@ -577,7 +577,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		bCssMode = Props.GetDefault("CssMode", False)
 		bCssMode = UI.cbool(bCssMode)
-		bKeyboardEnabled = Props.GetDefault("KeyboardEnabled", False)
+		bKeyboardEnabled = Props.GetDefault("KeyboardEnabled", True)
 		bKeyboardEnabled = UI.CBool(bKeyboardEnabled)
 		bMouseWheel = Props.GetDefault("MouseWheel", False)
 		bMouseWheel = UI.CBool(bMouseWheel)

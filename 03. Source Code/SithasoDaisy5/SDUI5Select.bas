@@ -83,7 +83,7 @@ Sub Class_Globals
 	Private bValidator As Boolean = False
 	Private sValidatorHint As String = ""
 	Private sValue As String = ""
-	Private sRawOptions As String = "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r"
+	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
 	Private sAppendIcon As String = ""
 	Private bAppendVisible As Boolean = False
 	Private sPrependIcon As String = ""
@@ -123,7 +123,7 @@ private Sub SetDefaults
 	CustProps.Put("Label", "Select")
 	CustProps.Put("LegendColor", "")
 	CustProps.Put("Placeholder", "Select an element")
-	CustProps.Put("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
+	CustProps.Put("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 	CustProps.Put("Value", "")
 	CustProps.Put("ValuesAsIs", False)
 	CustProps.Put("Color", "none")

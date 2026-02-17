@@ -66,7 +66,7 @@ Sub Class_Globals
 	Private bOverflowXAuto As Boolean = False
 	Private sTextSize As String = "sm"
 	Private sRawSteps As String = "Register;Choose Plan;Purchase;Receive Product"
-	Private sStepsColor As String = "none"
+	Private sStepsColor As String = "primary"
 	Private items As List
 	Private sActiveStep As String = "1"
 	Private sHeight As String = ""
@@ -104,8 +104,8 @@ private Sub SetDefaults
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -289,7 +289,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTextSize = Props.GetDefault("TextSize", "sm")
 		sTextSize = UI.CStr(sTextSize)
 		If sTextSize = "none" Then sTextSize = ""
-		sActiveStep = Props.GetDefault("ActiveStep", "")
+		sActiveStep = Props.GetDefault("ActiveStep", "1")
 		sActiveStep = UI.CStr(sActiveStep)
 		sRawSteps = Props.GetDefault("RawSteps", "Register;Choose Plan;Purchase;Receive Product")
 		sRawSteps = UI.CStr(sRawSteps)

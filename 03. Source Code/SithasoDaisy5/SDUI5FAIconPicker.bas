@@ -84,7 +84,7 @@ Sub GetProperties As Map
 End Sub
 
 Private Sub SetDefaults
-	CustProps.Put("ParentID", "ParentID,String,")
+	CustProps.Put("ParentID", "")
 	CustProps.Put("DataUrl", "./assets/icons.min.json")
 	CustProps.Put("Height", "full")
 	CustProps.Put("IconsPerPage", "20")
@@ -246,7 +246,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "")
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
 		sBackgroundColor = UI.CStr(sBackgroundColor)
 		sDataUrl = Props.GetDefault("DataUrl", "./assets/icons.min.json")
 		sDataUrl = UI.CStr(sDataUrl)

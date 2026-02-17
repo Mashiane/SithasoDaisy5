@@ -61,7 +61,7 @@ Sub Class_Globals
 	Private sValue As String = ""
 	Private items As Map
 	Private sTypeOf As String = "default"
-	Private sLabel As String = "Filter"
+	Private sLabel As String = "CheckBox Group"
 	Private sBackgroundColor As String = "base-200"
 	Private bBorder As Boolean = True
 	Private sBorderColor As String = "base-300"
@@ -273,11 +273,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sLegendColor = UI.CStr(sLegendColor)
 		sRawOptions = Props.GetDefault("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 		sRawOptions = UI.CStr(sRawOptions)
-		sActiveColor = Props.GetDefault("ActiveColor", "none")
+		sActiveColor = Props.GetDefault("ActiveColor", "#00ff00")
 		sActiveColor = UI.CStr(sActiveColor)
 		sColor = Props.GetDefault("Color", "primary")
 		sColor = UI.CStr(sColor)
-		sShape = Props.GetDefault("Shape", "")
+		sShape = Props.GetDefault("Shape", "full")
 		sShape = UI.CStr(sShape)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)
@@ -286,7 +286,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sValue = UI.CStr(sValue)
 		sTypeOf = Props.GetDefault("TypeOf", "default")
 		sTypeOf = UI.CStr(sTypeOf)
-		sLabel = Props.GetDefault("Label", "Label")
+		sLabel = Props.GetDefault("Label", "CheckBox Group")
 		sLabel = UI.CStr(sLabel)
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")
 		sBackgroundColor = UI.CStr(sBackgroundColor)

@@ -82,7 +82,7 @@ Sub Class_Globals
 	Private sRawBorderRadius As String = "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?"	
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
-	Private sTextAlign As String = "none"	
+	Private sTextAlign As String = "none"
 	Private bCenterChildren As Boolean
 	Private sGap As String = "2"
 	Private sJustifyItems As String = "none"

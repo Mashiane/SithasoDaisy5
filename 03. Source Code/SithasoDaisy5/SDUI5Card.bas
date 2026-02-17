@@ -108,9 +108,9 @@ Sub Class_Globals
 	Private sShrink As String = "none"
 	Private bHoverGallery As Boolean = False
 	Private sTitleClasses As String
-	Private bImageCover As Boolean = False
-	Private bImageCenter As Boolean = False
-	Private bImageNoRepeat As Boolean = False
+	Private bImageCover As Boolean = True
+	Private bImageCenter As Boolean = True
+	Private bImageNoRepeat As Boolean = True
 	Public Children As Map
 End Sub
 'initialize the custom view class

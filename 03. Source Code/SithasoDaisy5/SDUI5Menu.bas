@@ -482,7 +482,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bCard = True Then UI.addclassdt("card")
 	If bPopOver = True Then 
-		UI.AddAttrDT("popover", "true")
+		UI.AddAttrDT("popover", "auto")
 		UI.addclassdt("card z-1")
 		sAnchorName = $"${mName}_anchor"$
 		UI.AddStyleDT("position-anchor", $"--${sAnchorName}"$)
@@ -500,22 +500,22 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	End If
 	If bRoundedItems = False Then UI.AddClassDT("[&_li>*]:rounded-none")
 	'If sBackgroundColor <> "" Then UI.AddBackgroundColorDT(sBackgroundColor)
-	If sDirection <> "" Then UI.AddClassDT("menu-" & sDirection)
+	If (bPopOver = False) And sDirection <> "" Then UI.AddClassDT("menu-" & sDirection)
 	If sHeight <> "" Then UI.AddHeightDT( sHeight)
-	If sLgDirection <> "" Then UI.AddClassDT("lg:menu-" & sLgDirection)
+	If (bPopOver = False) And sLgDirection <> "" Then UI.AddClassDT("lg:menu-" & sLgDirection)
 	If sMaxHeight <> "" Then UI.AddMaxHeightDT(sMaxHeight)
 	If sMaxWidth <> "" Then UI.AddMaxWidthDT(sMaxWidth)
-	If sMdDirection <> "" Then UI.AddClassDT("md:menu-" & sMdDirection)
+	If (bPopOver = False) And sMdDirection <> "" Then UI.AddClassDT("md:menu-" & sMdDirection)
 	If sMinHeight <> "" Then UI.AddMinHeightDT(sMinHeight)
 	If sMinWidth <> "" Then UI.AddMinWidthDT(sMinWidth)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	If sSize <> "" Then UI.AddSizeDT("menu", sSize)
-	If sSmDirection <> "" Then UI.AddClassDT("sm:menu-" & sSmDirection)
+	If (bPopOver = False) And sSmDirection <> "" Then UI.AddClassDT("sm:menu-" & sSmDirection)
 	'If sTextColor <> "" Then UI.AddTextColorDT(sTextColor)
 	If sWidth <> "" Then UI.AddWidthDT( sWidth)
-	If sXlDirection <> "" Then UI.AddClassDT("xl:menu-" & sXlDirection)
+	If (bPopOver = False) And sXlDirection <> "" Then UI.AddClassDT("xl:menu-" & sXlDirection)
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -747,7 +747,7 @@ Sub setPopOver(b As Boolean)
 	CustProps.put("PopOver", b)
 	If mElement = Null Then Return
 	If b = True Then
-		UI.AddAttr(mElement, "popover", b)
+		UI.AddAttr(mElement, "popover", "auto")
 		UI.AddClass(mElement, "card z-1")
 		sAnchorName = $"${mName}_anchor"$
 		UI.AddStyle(mElement, "position-anchor", $"--${sAnchorName}"$)
@@ -812,6 +812,7 @@ Sub setDirection(s As String)
 	sDirection = s
 	CustProps.put("Direction", s)
 	If mElement = Null Then Return
+	If bPopOver Then Return
 	If s <> "" Then UI.AddClass(mElement, "menu-" & s)
 End Sub
 'set Height
@@ -827,6 +828,7 @@ Sub setLgDirection(s As String)
 	sLgDirection = s
 	CustProps.put("LgDirection", s)
 	If mElement = Null Then Return
+	If bPopOver Then Return
 	If s <> "" Then UI.AddClass(mElement, "lg:menu-" & s)
 End Sub
 'set Max Height
@@ -849,6 +851,7 @@ Sub setMdDirection(s As String)
 	sMdDirection = s
 	CustProps.put("MdDirection", s)
 	If mElement = Null Then Return
+	If bPopOver Then Return
 	If s <> "" Then UI.AddClass(mElement, "md:menu-" & s)
 End Sub
 'set Min Height
@@ -903,6 +906,7 @@ Sub setSmDirection(s As String)
 	sSmDirection = s
 	CustProps.put("SmDirection", s)
 	If mElement = Null Then Return
+	If bPopOver Then Return
 	If s <> "" Then UI.AddClass(mElement, "sm:menu-" & s)
 End Sub
 'set Text Color
@@ -925,6 +929,7 @@ Sub setXlDirection(s As String)
 	sXlDirection = s
 	CustProps.put("XlDirection", s)
 	If mElement = Null Then Return
+	If bPopOver Then Return
 	If s <> "" Then UI.AddClass(mElement, "xl:menu-" & s)
 End Sub
 'get Background Color

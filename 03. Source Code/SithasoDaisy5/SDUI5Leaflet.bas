@@ -114,8 +114,8 @@ Sub Class_Globals
 	Private iMaxZoom As Int = 19
 	Private sWidth As String = "500px"
 	Private iZoom As Int = 5
-	Private dLat As Double = 0
-	Private dLng As Double = 0
+	Private dLat As Double = "0"
+	Private dLng As Double = "0"
 	Private markers As Map
 	Private circles As Map
 	Private polygons As Map
@@ -386,9 +386,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sWidth = UI.CStr(sWidth)
 		iZoom = Props.GetDefault("Zoom", 5)
 		iZoom = UI.CInt(iZoom)
-		dLat = Props.GetDefault("Lat", 0)
+		dLat = Props.GetDefault("Lat", "0")
 		dLat = UI.CDbl(dLat)
-		dLng = Props.GetDefault("Lng", 0)
+		dLng = Props.GetDefault("Lng", "0")
 		dLng = UI.CDbl(dLng)
 		sLayerType = Props.GetDefault("LayerType", "openstreetmap")
 		sLayerType = UI.CStr(sLayerType)

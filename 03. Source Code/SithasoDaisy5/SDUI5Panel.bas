@@ -115,7 +115,7 @@ Sub Class_Globals
 	Private sGridRows As String = ""
 	Private sHeight As String = ""
 	Private sJustifyContent As String = "none"
-	Private sJustifyItems As String = ""
+	Private sJustifyItems As String = "none"
 	Private sJustifySelf As String = "none"
 	Private sPlaceContent As String = "none"
 	Private sPlaceItems As String = "none"

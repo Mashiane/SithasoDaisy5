@@ -67,7 +67,7 @@ Sub Class_Globals
 	Public CONST DIFFTYPE_TEXT As String = "text"
 	Private sRounded As String = "none"
 	Private bRoundedBox As Boolean = False
-	Private sShadow As String = "none"        
+	Private sShadow As String = "none"
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)

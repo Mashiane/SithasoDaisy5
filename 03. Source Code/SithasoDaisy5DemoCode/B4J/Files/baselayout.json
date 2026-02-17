@@ -1,0 +1,1678 @@
+{
+    "MaterialIcons": false,
+    "Variants": [
+        {
+            "Scale": 1,
+            "Height": 600,
+            "Width": 600
+        }
+    ],
+    "LayoutHeader": {
+        "Version": 5,
+        "DesignerScript": [
+            "'All variants script\n",
+            "'Variant specific script: 600x600,scale=1\n"
+        ],
+        "GridSize": 10,
+        "ControlsHeaders": [
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "appdrawer"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "appnavbar"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "bottomdrawer"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "drawerbody"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "drawermenu"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "drawerNav"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "draweruser"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "lblName"
+            },
+            {
+                "JavaType": ".PaneWrapper$ConcretePaneWrapper",
+                "DesignerType": "Pane",
+                "Name": "Main"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "pageview"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "rightdrawer"
+            },
+            {
+                "JavaType": ".CustomViewWrapper",
+                "DesignerType": "CustomView",
+                "Name": "tglTheme"
+            }
+        ],
+        "Files": []
+    },
+    "Data": {
+        "parent": "",
+        "borderColor": {
+            "ValueType": 6,
+            "Value": "0xFF000000"
+        },
+        "drawable": {
+            "color": {
+                "ValueType": 6,
+                "Value": "0xFFF0F8FF"
+            },
+            "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+            "colorKey": "-fx-background-color",
+            "type": "ColorDrawable"
+        },
+        "orientation": "INHERIT",
+        "visible": true,
+        ":kids": {
+            "0": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Drawer",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 10,
+                    "left": 10,
+                    "hanchor": 0,
+                    "width": 580,
+                    "vanchor": 0,
+                    "height": 590
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 10,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "appdrawer",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 590,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5drawer",
+                "customProperties": {
+                    "ParentID": "",
+                    "Rounded": "none",
+                    "MinHeight": "screen",
+                    "LgOpen": false,
+                    "ReadMe": "Child Item '_content'",
+                    "RawClasses": "",
+                    "shortType": "SDUI5Drawer",
+                    "Shadow": "none",
+                    "RawStyles": "",
+                    "RoundedBottomRight": "",
+                    "RoundedTopRight": "",
+                    "type": "",
+                    "Open": false,
+                    "RoundedTopLeft": "",
+                    "Visible": true,
+                    "RightSide": false,
+                    "Height": "",
+                    "Overlay": true,
+                    "Width": "80",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "SmOpen": false,
+                    "RoundedBottomLeft": "",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "MdOpen": true,
+                    "PositionStyle": "none",
+                    "MinWidth": "",
+                    "customType": "b4j.example.sdui5drawer",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "BackgroundColor": "base-100",
+                    "XlOpen": false
+                },
+                "contextMenu": "",
+                "left": 10,
+                "materialIcons": "",
+                "name": "appdrawer",
+                "width": 580,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "1": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5NavBar",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 20,
+                    "left": 30,
+                    "hanchor": 0,
+                    "width": 260,
+                    "vanchor": 0,
+                    "height": 60
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 20,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "drawerNav",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 60,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5navbar",
+                "customProperties": {
+                    "ParentID": "appdrawer_sidecontent",
+                    "RawStyles": "",
+                    "type": "",
+                    "SearchSize": "md",
+                    "SearchWidth": "300px",
+                    "TextColor": "",
+                    "PaddingAXYTBLR": "a=2; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "HasSearch": false,
+                    "HideTitleOnLargeScreen": false,
+                    "HideTitle": false,
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "HasFile": false,
+                    "HideLogoOnLargeScreen": false,
+                    "Top": "0",
+                    "HideLogo": false,
+                    "HideHamburger": false,
+                    "GradientActive": false,
+                    "Sticky": true,
+                    "Rounded": "none",
+                    "LogoWidth": "10",
+                    "ButtonSize": "md",
+                    "ReadMe": "Child Items - _left\/_logo\/_burger\/_center\/_right",
+                    "GradientColor1": {
+                        "ValueType": 6,
+                        "Value": "0x00F86194"
+                    },
+                    "Glass": false,
+                    "GradientColor2": {
+                        "ValueType": 6,
+                        "Value": "0x00968918"
+                    },
+                    "RawClasses": "",
+                    "shortType": "SDUI5NavBar",
+                    "Shadow": "lg",
+                    "HasBackButton": false,
+                    "HasBurger": false,
+                    "LogoHeight": "10",
+                    "ZIndex": "30",
+                    "BackLabelVisible": false,
+                    "Visible": true,
+                    "Height": "16",
+                    "Width": "full",
+                    "BackLabel": "Back",
+                    "Gradient": "",
+                    "TitlePosition": "left",
+                    "LogoImage": ".\/assets\/mashy.jpg",
+                    "LogoMask": "squircle",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "Title": "SithasoDaisy 5 Beta 11",
+                    "PositionStyle": "none",
+                    "ButtonsOutlined": false,
+                    "customType": "b4j.example.sdui5navbar",
+                    "DrawerID": "",
+                    "HideHamburgerOnLargeScreen": false,
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "HasLogo": false,
+                    "BackgroundColor": "base-200"
+                },
+                "contextMenu": "",
+                "left": 30,
+                "materialIcons": "",
+                "name": "drawerNav",
+                "width": 260,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "2": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5NavBar",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 20,
+                    "left": 300,
+                    "hanchor": 0,
+                    "width": 180,
+                    "vanchor": 0,
+                    "height": 110
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 20,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "appnavbar",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 110,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5navbar",
+                "customProperties": {
+                    "ParentID": "appdrawer_content",
+                    "RawStyles": "",
+                    "type": "",
+                    "SearchSize": "md",
+                    "SearchWidth": "300px",
+                    "TextColor": "",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "HasSearch": false,
+                    "HideTitleOnLargeScreen": false,
+                    "HideTitle": false,
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "HasFile": false,
+                    "HideLogoOnLargeScreen": false,
+                    "Top": "0",
+                    "HideLogo": false,
+                    "HideHamburger": false,
+                    "GradientActive": false,
+                    "Sticky": true,
+                    "Rounded": "none",
+                    "LogoWidth": "40px",
+                    "ButtonSize": "md",
+                    "ReadMe": "Child Items - _left\/_logo\/_burger\/_center\/_right",
+                    "GradientColor1": {
+                        "ValueType": 6,
+                        "Value": "0x00F86194"
+                    },
+                    "Glass": false,
+                    "GradientColor2": {
+                        "ValueType": 6,
+                        "Value": "0x00968918"
+                    },
+                    "RawClasses": "",
+                    "shortType": "SDUI5NavBar",
+                    "Shadow": "lg",
+                    "HasBackButton": false,
+                    "HasBurger": true,
+                    "LogoHeight": "40px",
+                    "ZIndex": "30",
+                    "BackLabelVisible": false,
+                    "Visible": true,
+                    "Height": "16",
+                    "Width": "full",
+                    "BackLabel": "Back",
+                    "Gradient": "",
+                    "TitlePosition": "left",
+                    "LogoImage": ".\/assets\/mashy.jpg",
+                    "LogoMask": "squircle",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "Title": "Welcome to SithasoDaisy5 Beta 9",
+                    "PositionStyle": "none",
+                    "ButtonsOutlined": false,
+                    "customType": "b4j.example.sdui5navbar",
+                    "DrawerID": "",
+                    "HideHamburgerOnLargeScreen": true,
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "HasLogo": true,
+                    "BackgroundColor": "base-200"
+                },
+                "contextMenu": "",
+                "left": 300,
+                "materialIcons": "",
+                "name": "appnavbar",
+                "width": 180,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "3": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Container",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 445,
+                    "left": 15,
+                    "hanchor": 0,
+                    "width": 180,
+                    "vanchor": 0,
+                    "height": 350
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 90,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "pageview",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 350,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5container",
+                "customProperties": {
+                    "ParentID": "appdrawer_content",
+                    "Rounded": "none",
+                    "MinHeight": "",
+                    "GradientColor1": {
+                        "ValueType": 6,
+                        "Value": "0x00F86194"
+                    },
+                    "GradientColor2": {
+                        "ValueType": 6,
+                        "Value": "0x00968918"
+                    },
+                    "RawClasses": "",
+                    "RawBorderWidth": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "shortType": "SDUI5Container",
+                    "Shadow": "none",
+                    "ContainerFluid": false,
+                    "RawStyles": "",
+                    "type": "",
+                    "ContainerMd": false,
+                    "Container": false,
+                    "ContainerSm": false,
+                    "MaxWidth": "",
+                    "TextAlign": "none",
+                    "Visible": true,
+                    "Height": "",
+                    "RawBorderStyle": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "TextColor": "",
+                    "Width": "",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "PageView": false,
+                    "Gradient": "",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "RawBorderRadius": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "Text": "",
+                    "PositionStyle": "none",
+                    "RawBorderColor": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "MinWidth": "",
+                    "customType": "b4j.example.sdui5container",
+                    "BackgroundImage": "",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "ContainerLg": false,
+                    "ContainerXxl": false,
+                    "MaxHeight": "",
+                    "ContainerXl": false,
+                    "BackgroundColor": "",
+                    "CenterChildren": false,
+                    "GradientActive": false
+                },
+                "contextMenu": "",
+                "left": 300,
+                "materialIcons": "",
+                "name": "pageview",
+                "width": 180,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "4": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Panel",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 90,
+                    "left": 30,
+                    "hanchor": 0,
+                    "width": 260,
+                    "vanchor": 0,
+                    "height": 350
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 90,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "drawerbody",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 350,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5panel",
+                "customProperties": {
+                    "ParentID": "appdrawer_sidecontent",
+                    "PlaceContent": "none",
+                    "FlexBasis": "",
+                    "FlexGrow": "1",
+                    "RawBorderWidth": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "RawStyles": "",
+                    "LGGap": "",
+                    "type": "",
+                    "ColSpan": "",
+                    "GridRows": "",
+                    "AlignSelf": "none",
+                    "Flexbox": true,
+                    "RoundedBox": false,
+                    "PlaceSelf": "none",
+                    "FlexDirection": "col",
+                    "RawBorderStyle": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "JustifyItems": "none",
+                    "TextColor": "",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=4; b=?; l=?; r=?",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "ColSpanMd": "",
+                    "SMGap": "",
+                    "AlignItems": "none",
+                    "RawBorderColor": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "BackgroundImage": "",
+                    "Gap": "",
+                    "Flex": "none",
+                    "XLGap": "",
+                    "AlignContent": "none",
+                    "GridCols": "",
+                    "Rounded": "none",
+                    "GapY": "",
+                    "ColSpanLg": "",
+                    "ColSpanXs": "",
+                    "GapX": "",
+                    "FlexShrink": "none",
+                    "Grid": false,
+                    "JustifyContent": "none",
+                    "RawClasses": "",
+                    "shortType": "SDUI5Panel",
+                    "Shadow": "none",
+                    "FlexWrap": "none",
+                    "TextAlign": "none",
+                    "PlaceItems": "none",
+                    "Visible": true,
+                    "Height": "",
+                    "Width": "",
+                    "ColSpanSm": "",
+                    "MDGap": "",
+                    "JustifySelf": "none",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "RawBorderRadius": "a=?; t=?; r=?; b=?; l=?; tl=?; tr=?; bl=?; br=?; x=?; y=?",
+                    "Text": "",
+                    "PositionStyle": "none",
+                    "customType": "b4j.example.sdui5panel",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "ColSpanXl": "",
+                    "RowSpan": "",
+                    "GridFlow": "none",
+                    "BackgroundColor": "base-100",
+                    "CenterChildren": false
+                },
+                "contextMenu": "",
+                "left": 30,
+                "materialIcons": "",
+                "name": "drawerbody",
+                "width": 260,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "5": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Menu",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 100,
+                    "left": 40,
+                    "hanchor": 0,
+                    "width": 240,
+                    "vanchor": 0,
+                    "height": 330
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 100,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "drawermenu",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 330,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5menu",
+                "customProperties": {
+                    "ParentID": "drawerbody",
+                    "RoundedItems": false,
+                    "DropDownHover": false,
+                    "MinHeight": "",
+                    "MdDirection": "none",
+                    "Size": "none",
+                    "PopOver": false,
+                    "RawStyles": "",
+                    "type": "",
+                    "RoundedBox": false,
+                    "DropdownPlacement": "bottom",
+                    "TextColor": "base-content",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "ClosePopupOnClick": false,
+                    "LgDirection": "none",
+                    "Dropdown": false,
+                    "Card": false,
+                    "ItemColor": "",
+                    "ItemFocusColor": "",
+                    "Rounded": "none",
+                    "DropdownOpen": false,
+                    "RawClasses": "px-4 py-0",
+                    "shortType": "SDUI5Menu",
+                    "Shadow": "none",
+                    "DropdownContent": false,
+                    "Direction": "vertical",
+                    "CheckedColor": "success",
+                    "RawItemClasses": "",
+                    "ItemActiveColor": "",
+                    "MaxWidth": "",
+                    "RawItemStyles": "",
+                    "SmDirection": "none",
+                    "Visible": true,
+                    "Height": "",
+                    "Width": "full",
+                    "XlDirection": "none",
+                    "HasCheckBox": false,
+                    "ItemActiveTextColor": "",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "PositionStyle": "none",
+                    "MinWidth": "",
+                    "ItemHoverColor": "",
+                    "customType": "b4j.example.sdui5menu",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "MaxHeight": "",
+                    "BackgroundColor": "base-100"
+                },
+                "contextMenu": "",
+                "left": 40,
+                "materialIcons": "",
+                "name": "drawermenu",
+                "width": 240,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "6": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5DrawerUser",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 800,
+                    "left": 15,
+                    "hanchor": 0,
+                    "width": 260,
+                    "vanchor": 0,
+                    "height": 40
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 450,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "draweruser",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 40,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5draweruser",
+                "customProperties": {
+                    "ParentID": "appdrawer_sidecontent",
+                    "AvatarShape": "squircle",
+                    "UserName": "Anele Mbanga (Mashy)",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "RawClasses": "",
+                    "shortType": "SDUI5DrawerUser",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "RawStyles": "",
+                    "PositionStyle": "none",
+                    "type": "",
+                    "Avatar": ".\/assets\/mashy.jpg",
+                    "EmailAddress": "mbanga [dot] anele [at] ...",
+                    "customType": "b4j.example.sdui5draweruser",
+                    "AvatarSize": "8",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "Visible": true,
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
+                },
+                "contextMenu": "",
+                "left": 30,
+                "materialIcons": "",
+                "name": "draweruser",
+                "width": 260,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "7": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Drawer",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 20,
+                    "left": 520,
+                    "hanchor": 0,
+                    "width": 60,
+                    "vanchor": 0,
+                    "height": 470
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 20,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "rightdrawer",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 470,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5drawer",
+                "customProperties": {
+                    "ParentID": "appdrawer_content",
+                    "Rounded": "none",
+                    "MinHeight": "screen",
+                    "LgOpen": false,
+                    "ReadMe": "Child Items _content|_side|_sidecontent|actions",
+                    "RawClasses": "",
+                    "shortType": "SDUI5Drawer",
+                    "Shadow": "none",
+                    "RawStyles": "",
+                    "RoundedBottomRight": "",
+                    "RoundedTopRight": "",
+                    "type": "",
+                    "Open": false,
+                    "RoundedTopLeft": "xl",
+                    "Visible": true,
+                    "RightSide": true,
+                    "Height": "",
+                    "Overlay": true,
+                    "Width": "600px",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "SmOpen": false,
+                    "RoundedBottomLeft": "xl",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "MdOpen": false,
+                    "PositionStyle": "none",
+                    "MinWidth": "",
+                    "customType": "b4j.example.sdui5drawer",
+                    "MarginAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "BackgroundColor": "base-100",
+                    "XlOpen": false
+                },
+                "contextMenu": "",
+                "left": 520,
+                "materialIcons": "",
+                "name": "rightdrawer",
+                "width": 60,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "8": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5BottomDrawer",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 845,
+                    "left": 15,
+                    "hanchor": 0,
+                    "width": 570,
+                    "vanchor": 0,
+                    "height": 40
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 550,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "bottomdrawer",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 40,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5bottomdrawer",
+                "customProperties": {
+                    "ParentID": "appdrawer_content",
+                    "Breakpoints": "0;0.1;0.2;0.3;0.4;0.5;0.7;0.8;0.9;0.95;1",
+                    "InitialBreakpoint": "0.5",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "shortType": "SDUI5BottomDrawer",
+                    "Showbackdrop": true,
+                    "ShowHandle": true,
+                    "Duration": 300,
+                    "type": "",
+                    "HandleShadow": "md",
+                    "Open": false,
+                    "Backdropdismiss": true,
+                    "customType": "b4j.example.sdui5bottomdrawer",
+                    "HandleBg": "bg-base-300",
+                    "MaxWidth": "100%",
+                    "Width": "100%",
+                    "BackdropColor": "#00000052",
+                    "BackgroundColor": "bg-base-100"
+                },
+                "contextMenu": "",
+                "left": 10,
+                "materialIcons": "",
+                "name": "bottomdrawer",
+                "width": 570,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "9": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Text",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 30,
+                    "left": 420,
+                    "hanchor": 0,
+                    "width": 50,
+                    "vanchor": 0,
+                    "height": 40
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 30,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "lblName",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 40,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5text",
+                "customProperties": {
+                    "ParentID": "appnavbar_right",
+                    "Rounded": "none",
+                    "PlaceContent": "none",
+                    "JustifyContent": "none",
+                    "RawClasses": "",
+                    "shortType": "SDUI5Text",
+                    "Shadow": "none",
+                    "RawStyles": "",
+                    "type": "",
+                    "FontWeight": "none",
+                    "Overflow": "none",
+                    "WordBreak": "none",
+                    "AlignSelf": "none",
+                    "PlaceSelf": "none",
+                    "TextAlign": "none",
+                    "PlaceItems": "none",
+                    "Visible": true,
+                    "Height": "",
+                    "JustifyItems": "none",
+                    "Opacity": 100,
+                    "TextColor": "",
+                    "Width": "",
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "ApplyDefaults": false,
+                    "JustifySelf": "none",
+                    "LoremIpsum": false,
+                    "IconSize": "",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "TextSize": "none",
+                    "AlignItems": "none",
+                    "Text": "Created with love by Mashy",
+                    "PositionStyle": "none",
+                    "Decoration": "none",
+                    "FontVariant": "none",
+                    "customType": "b4j.example.sdui5text",
+                    "Italic": true,
+                    "ListCol": "none",
+                    "BackgroundImage": "",
+                    "MarginAXYTBLR": "a=?; x=2; y=?; t=?; b=?; l=?; r=?",
+                    "TextTag": "small",
+                    "AlignContent": "none",
+                    "Icon": "",
+                    "Transform": "none",
+                    "BackgroundColor": "",
+                    "CenterChildren": false
+                },
+                "contextMenu": "",
+                "left": 420,
+                "materialIcons": "",
+                "name": "lblName",
+                "width": 50,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            },
+            "10": {
+                "parent": "Main",
+                "borderColor": {
+                    "ValueType": 6,
+                    "Value": "0xFF000000"
+                },
+                "shadow": {
+                    "offsetX": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "offsetY": {
+                        "ValueType": 7,
+                        "Value": 0
+                    },
+                    "csType": "Dbasic.Designer.ShadowGrid",
+                    "stype": 0,
+                    "type": "",
+                    "radius": {
+                        "ValueType": 7,
+                        "Value": 10
+                    },
+                    "shadowColor": {
+                        "ValueType": 6,
+                        "Value": "0xFF000000"
+                    }
+                },
+                "shortType": "SDUI5Toggle",
+                "vanchor": 0,
+                "type": ".CustomViewWrapper",
+                "enabled": true,
+                "variant0": {
+                    "top": 30,
+                    "left": 310,
+                    "hanchor": 0,
+                    "width": 100,
+                    "vanchor": 0,
+                    "height": 40
+                },
+                "cornerRadius": {
+                    "ValueType": 7,
+                    "Value": 3
+                },
+                "top": 30,
+                "borderWidth": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "alpha": {
+                    "ValueType": 7,
+                    "Value": 1
+                },
+                "hanchor": 0,
+                "eventName": "tglTheme",
+                "tag": "",
+                "text": "",
+                "wrapText": false,
+                "height": 40,
+                "drawable": {
+                    "color": {
+                        "ValueType": 6,
+                        "Value": "0xFFF0F8FF"
+                    },
+                    "csType": "Dbasic.Designer.Drawable.ColorDrawable",
+                    "colorKey": "-fx-background-color",
+                    "type": "ColorDrawable"
+                },
+                "visible": true,
+                "csType": "Dbasic.Designer.MetaCustomView",
+                "fontAwesome": "",
+                "toolTip": "",
+                "textColor": {
+                    "ValueType": 6,
+                    "Value": "0xFFF0F8FF"
+                },
+                "javaType": ".CustomViewWrapper",
+                "customType": "b4j.example.sdui5toggle",
+                "customProperties": {
+                    "ParentID": "appnavbar_right",
+                    "Legend": "",
+                    "LegendColor": "",
+                    "Hint": "",
+                    "Size": "md",
+                    "Indeterminate": false,
+                    "RawClasses": "",
+                    "BorderColor": "",
+                    "Label": "Synthwave",
+                    "shortType": "SDUI5Toggle",
+                    "Shadow": "none",
+                    "RawStyles": "",
+                    "type": "",
+                    "ToggleType": "right-label",
+                    "CheckedColor": "",
+                    "Required": false,
+                    "RoundedBox": false,
+                    "Visible": true,
+                    "LabelColor": "",
+                    "ThemeController": true,
+                    "PaddingAXYTBLR": "a=?; x=?; y=?; t=?; b=?; l=?; r=?",
+                    "Position": "t=?; b=?; r=?; l=?",
+                    "csType": "Dbasic.Designer.MetaCustomView+CustomDataGrid",
+                    "Color": "primary",
+                    "Enabled": true,
+                    "RawAttributes": "",
+                    "PositionStyle": "none",
+                    "Checked": false,
+                    "customType": "b4j.example.sdui5toggle",
+                    "MarginAXYTBLR": "a=?; x=2; y=?; t=?; b=?; l=?; r=?",
+                    "ValidatorHint": "",
+                    "Value": "synthwave",
+                    "Border": false,
+                    "Validator": false,
+                    "BackgroundColor": ""
+                },
+                "contextMenu": "",
+                "left": 310,
+                "materialIcons": "",
+                "name": "tglTheme",
+                "width": 100,
+                "extraCss": "",
+                "alignment": "CENTER",
+                "font": {
+                    "fontName": "DEFAULT",
+                    "csType": "Dbasic.Designer.FontGrid",
+                    "fontSize": {
+                        "ValueType": 7,
+                        "Value": 15
+                    },
+                    "bold": false,
+                    "type": "B4IFontWrapper",
+                    "italic": false
+                }
+            }
+        },
+        "csType": "Dbasic.Designer.MetaMain",
+        "handleResizeEvent": true,
+        "type": ".PaneWrapper$ConcretePaneWrapper",
+        "title": "Form",
+        "enabled": true,
+        "variant0": {
+            "top": 0,
+            "left": 0,
+            "hanchor": 0,
+            "width": 200,
+            "vanchor": 0,
+            "height": 200
+        },
+        "cornerRadius": {
+            "ValueType": 7,
+            "Value": 0
+        },
+        "javaType": ".PaneWrapper$ConcretePaneWrapper",
+        "duration": 0,
+        "file": "",
+        "borderWidth": {
+            "ValueType": 7,
+            "Value": 0
+        },
+        "alpha": {
+            "ValueType": 7,
+            "Value": 1
+        },
+        "name": "Main",
+        "eventName": "MainForm",
+        "extraCss": "",
+        "tag": ""
+    },
+    "FontAwesome": false
+}

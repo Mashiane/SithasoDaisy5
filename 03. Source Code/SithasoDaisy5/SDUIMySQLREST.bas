@@ -658,14 +658,64 @@ Sub ShowDatabases As List
 	Return nl
 End Sub
 
+'this executes a ping to the database
 Sub DATABASE_EXISTS As Boolean
-	Dim tbls As List = BANano.Await(ShowDatabases)
-	Dim iPos As Int = tbls.IndexOf(sDbName)
-	If iPos = -1 Then
-		Return False
-	Else
-		Return True
+	If ShowLog Then
+		Log($"SDUIMySQLREST.DATABASE_EXISTS"$)
 	End If
+	If UseApiKey Then
+		If sApiKey = "" Then
+			BANano.Throw($"SDUIMySQLREST.DATABASE_EXISTS - The ApiKey has not been specified!"$)
+			Return False
+		End If
+	End If
+	Try
+		'this is a get
+		Dim fetch As SDUIFetch
+		fetch.Initialize(baseURL)
+		fetch.ShowLog = ShowLog
+		fetch.SetContentTypeApplicationJSON
+		fetch.NoCors = NoCORS
+		fetch.Redirect = Redirect
+		fetch.ReferrerPolicy = ReferrerPolicy
+		fetch.Mode = Mode
+		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
+		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		fetch.SetURL($"/assets/${ApiFile}.php/status/ping"$)
+		If UseBaseURL Then
+			fetch.SetURL($"/status/ping"$)
+		End If
+		If ShowLog Then
+			Log($"SDUIMySQLREST.DATABASE_EXISTS.${baseURL}/assets/${ApiFile}.php/status/ping"$)
+		End If
+		fetch.NoCache = NoCache
+		BANano.Await(fetch.GetWait)
+		If fetch.Success Then
+			Dim Response As Map = fetch.response
+			If Response.ContainsKey("db") Then
+				Return True
+			Else
+				Return False	
+			End If
+		Else
+			If ShowLog Then
+				Log($"SDUIMySQLREST.Fetch ErrorMessage.${fetch.ErrorMessage}"$)
+			End If
+			Log(fetch.ErrorMessage)
+		End If
+		Return False
+	Catch
+		If ShowLog Then
+			Log($"SDUIMySQLREST.Fetch LastException.${LastException.Message}"$)
+		End If
+		Log(LastException.Message)
+		Return False
+	End Try
 End Sub
 
 Sub DELETE_TABLE(stableName As String) As Boolean

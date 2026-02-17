@@ -63,11 +63,11 @@ Sub Class_Globals
 	Private sColumns As String = "3"
 	Private sHeight As String = ""
 	Private sLegendLabel As String = "Checkbox Group"
-	Private sRawOptions As String = ""
+	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
 	Private sRounded As String = "lg"
 	Private bRoundedBox As Boolean = False
 	Private sShadow As String = ""
-	Private sTypeOf As String = ""
+	Private sTypeOf As String = "checkbox"
 	Private sWidth As String = ""
 	Private sSelected As String = ""
 End Sub
@@ -93,7 +93,7 @@ private Sub SetDefaults
 	CustProps.Put("LegendLabel", "Checkbox Group")           'String
 	CustProps.Put("Color", "")                               'String (empty)
 	CustProps.Put("Columns", "3")                            'String
-	CustProps.Put("RawOptions", "")                          'String (empty)
+	CustProps.Put("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")                          'String (empty)
 	CustProps.Put("Selected", "")                            'String (empty)
 	CustProps.Put("ActiveBorderColor", "")                   'String (empty)
 	CustProps.Put("ActiveColor", "")                         'String (empty)
@@ -291,7 +291,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bRoundedBox = UI.CBool(bRoundedBox)
 		sShadow = Props.GetDefault("Shadow", "")
 		sShadow = UI.CStr(sShadow)
-		sTypeOf = Props.GetDefault("TypeOf", "")
+		sTypeOf = Props.GetDefault("TypeOf", "checkbox")
 		sTypeOf = UI.CStr(sTypeOf)
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)

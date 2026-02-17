@@ -55,12 +55,12 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
-	Private sLabel As String = ""
+	Private sLabel As String = "Label"
 	Private sColor As String = "none"
 	Private bFloatingLabel As Boolean = False
 	Private sInputType As String = "input"
 	Private sPlaceholder As String = ""
-	Private sRawOptions As String = "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r"
+	Private sRawOptions As String = "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r"
 	Private sSize As String = "none"
 	Private sSuffix As String = ""
 	Private bValidator As Boolean = False
@@ -94,7 +94,7 @@ private Sub SetDefaults
 	CustProps.Put("FloatingLabel", False)
 	CustProps.Put("LabelWidth", "")
 	CustProps.Put("Placeholder", "")
-	CustProps.Put("RawOptions", "b4a:b4a; b4j:b4j; b4i:b4i; b4r:b4r")
+	CustProps.Put("RawOptions", "b4a=b4a; b4j=b4j; b4i=b4i; b4r=b4r")
 	CustProps.Put("Value", "")
 	CustProps.Put("Width", "full")
 	CustProps.Put("MinLength", "")
@@ -265,7 +265,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sLabel = Props.GetDefault("Label", "")
+		sLabel = Props.GetDefault("Label", "Label")
 		sLabel = UI.CStr(sLabel)
 		sColor = Props.GetDefault("Color", "none")
 		sColor = UI.CStr(sColor)

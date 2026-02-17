@@ -118,7 +118,7 @@ Sub Class_Globals
 	Public BackButton As SDUI5Button
 	Private sSearchSize As String = "md"
 	Private sSearchWidth As String = "300px"
-	Private bHasSearch As Boolean = False	
+	Private bHasSearch As Boolean = False
 	Private sButtonSize As String = "md"
 	Private bButtonsOutlined As Boolean
 	Private bGradientActive As Boolean = False
@@ -181,8 +181,8 @@ private Sub SetDefaults
 	CustProps.Put("Shadow", "sm")
 	CustProps.Put("GradientActive", False)
 	CustProps.Put("Gradient", "")
-	CustProps.Put("GradientColor1", "#f86194")
-	CustProps.Put("GradientColor2", "#968918")
+	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")
+	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")
 	CustProps.Put("Visible", True)
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
@@ -338,7 +338,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
-		sBackgroundColor = Props.GetDefault("BackgroundColor", "transparent")
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-100")
 		sBackgroundColor = UI.CStr(sBackgroundColor)
 		bGlass = Props.GetDefault("Glass", False)
 		bGlass = UI.CBool(bGlass)
@@ -406,10 +406,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", False)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 		bHasFile = Props.GetDefault("HasFile", False)

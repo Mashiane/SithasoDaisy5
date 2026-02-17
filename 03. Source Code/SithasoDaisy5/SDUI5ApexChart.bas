@@ -76,10 +76,10 @@ Sub Class_Globals
 	Private sRawStyles As String = ""
 	Private sRawAttributes As String = ""
 	Private sMarginAXYTBLR As String = "a=?; x=?; y=?; t=?; b=?; l=?; r=?"
-	Private sPaddingAXYTBLR As String = "a=2; x=?; y=?; t=?; b=?; l=?; r=?"
+	Private sPaddingAXYTBLR As String = "a=4; x=?; y=?; t=?; b=?; l=?; r=?"
 	Private sParentID As String = ""
-	Private bVisible As Boolean = True	'ignore
-	Private bEnabled As Boolean = True	'ignore
+	Private bVisible As Boolean = True'ignore
+	Private bEnabled As Boolean = True'ignore
 	Private sTypeOf As String = "bar"
 	Private sHeight As String = "350px"
 	Private sWidth As String = "100%"
@@ -194,7 +194,7 @@ Private Sub SetDefaults
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
 	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
-	CustProps.Put("PaddingAXYTBLR", "a=2; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=4; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
@@ -350,7 +350,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sPosition = UI.CStr(sPosition)
 		sMarginAXYTBLR = Props.GetDefault("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 		sMarginAXYTBLR = UI.CStr(sMarginAXYTBLR)
-		sPaddingAXYTBLR = Props.GetDefault("PaddingAXYTBLR", "a=2; x=?; y=?; t=?; b=?; l=?; r=?")
+		sPaddingAXYTBLR = Props.GetDefault("PaddingAXYTBLR", "a=4; x=?; y=?; t=?; b=?; l=?; r=?")
 		sPaddingAXYTBLR = UI.CStr(sPaddingAXYTBLR)
 		sRawClasses = Props.GetDefault("RawClasses", "")
 		sRawClasses = UI.CStr(sRawClasses)

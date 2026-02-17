@@ -280,7 +280,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		UI.SetProps(Props)
 		'UI.ExcludeBackgroundColor = True
 		'UI.ExcludeTextColor = True
-		sAlignment = Props.GetDefault("Alignment", "")
+		sAlignment = Props.GetDefault("Alignment", "none")
 		sAlignment = UI.CStr(sAlignment)
 		If sAlignment = "none" Then sAlignment = ""
 		sColor = Props.GetDefault("Color", "none")
@@ -299,7 +299,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSize = "none" Then sSize = ""
 		bSoft = Props.GetDefault("Soft", False)
 		bSoft = UI.CBool(bSoft)
-		sTitle = Props.GetDefault("Title", "")
+		sTitle = Props.GetDefault("Title", "Alert Title")
 		sTitle = UI.CStr(sTitle)
 		sIconSize = Props.GetDefault("IconSize", "16px")
 		sIconSize = UI.CStr(sIconSize)

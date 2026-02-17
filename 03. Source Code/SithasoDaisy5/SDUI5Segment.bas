@@ -43,7 +43,7 @@ Sub Class_Globals
 	Private bVisible As Boolean = True	'ignore
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Public Tag As Object
-	Private sActive As String = ""
+	Private sActive As String = "btn1"
 	Private sDisabled As String = ""
 	Private sSize As String = "md"
 	Private sPosition As String = "t=?; b=?; r=?; l=?"

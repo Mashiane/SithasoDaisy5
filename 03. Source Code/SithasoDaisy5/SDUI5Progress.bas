@@ -79,7 +79,7 @@ Sub Class_Globals
 	Private iValue As Int = 0
 	Private sWidth As String = "full"
 	Private sProgressType As String = "normal"
-	Private sLabel As String = ""
+	Private sLabel As String = "Range"
 	Private sHint As String = ""
 	Private sSize As String = "md"
 	Private sBackgroundColor As String = "base-200"
@@ -349,13 +349,13 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		iValue = UI.Cint(iValue)
 		sWidth = Props.GetDefault("Width", "full")
 		sWidth = UI.CStr(sWidth)
-		sLabel = Props.GetDefault("Label", "")
+		sLabel = Props.GetDefault("Label", "Range")
 		sLabel = UI.CStr(sLabel)
 		sProgressType = Props.GetDefault("ProgressType", "normal")
 		sProgressType = UI.CStr(sProgressType)
 		sHint = Props.GetDefault("Hint", "")
 		sHint = UI.CStr(sHint)
-		sSize = Props.GetDefault("Size", "none")
+		sSize = Props.GetDefault("Size", "md")
 		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = "md"
 		sBackgroundColor = Props.GetDefault("BackgroundColor", "base-200")

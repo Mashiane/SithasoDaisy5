@@ -66,12 +66,12 @@ Sub Class_Globals
 	Private sMainButtonColor As String = ""
 	Private sMainButtonIcon As String = ""
 	Private sMainButtonText As String = ""
-	Private sMainButtonTextColor As String = ""
+	Private sMainButtonTextColor As String = "#ffffff"
 	Private sRawChildColors As String = ""
 	Private sRawChildIcons As String = ""
 	Private sRawChildKeys As String = ""
 	Private sRawChildText As String = ""
-	Private sRawChildTextColor As String = "#ffffff"
+	Private sRawChildTextColor As String = ""
 	Private sSize As String = "lg"
 	Private sTextColor As String = "#ffffff"
 	Private sTypeOf As String = "icon"
@@ -111,8 +111,8 @@ private Sub SetDefaults
 	CustProps.Put("RawChildTextColor", "")
 	CustProps.Put("PositionStyle", "none")
 	CustProps.Put("Position", "t=?; b=?; r=?; l=?")
-	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
-	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=? ")
+	CustProps.Put("MarginAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
+	CustProps.Put("PaddingAXYTBLR", "a=?; x=?; y=?; t=?; b=?; l=?; r=?")
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")

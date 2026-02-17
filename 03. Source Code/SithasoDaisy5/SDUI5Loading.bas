@@ -41,7 +41,7 @@ Sub Class_Globals
 	Public Tag As Object
 	'Public Root As SDUIElement
 	Private sColor As String = "none"
-	Private sSize As String = "none"
+	Private sSize As String = "md"
 	Private sTypeOf As String = "spinner"
 End Sub
 'initialize the custom view class

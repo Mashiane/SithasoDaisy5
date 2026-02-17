@@ -72,13 +72,13 @@ Sub Class_Globals
 	Private sDirection As String = "horizontal"
 	Private sHeight As String = "content"
 	Private sInActiveDates As String = ""
-	Private sInitialSelectedDate As String = ""
+	Private sInitialSelectedDate As String = "2025-01-01"
 	Private sItemWidth As String = "80px"
 	Private sItemHeight As String = "80px"
 	Private sMonthColor As String = "#000000"
 	Private sMonthFontSize As String = "11px"
 	Private sMonthFontWeight As String = "medium"
-	Private sSelectedTextColor As String = "none"
+	Private sSelectedTextColor As String = ""
 	Private sSelectionColor As String = "#30000000"
 	Private sWidth As String = "full"
 	Private dates As Map
@@ -301,7 +301,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sHeight = UI.CStr(sHeight)
 		sInActiveDates = Props.GetDefault("InActiveDates", "")
 		sInActiveDates = UI.CStr(sInActiveDates)
-		sInitialSelectedDate = Props.GetDefault("InitialSelectedDate", "")
+		sInitialSelectedDate = Props.GetDefault("InitialSelectedDate", "2025-01-01")
 		sInitialSelectedDate = UI.CStr(sInitialSelectedDate)
 		sItemWidth = Props.GetDefault("ItemWidth", "80px")
 		sItemWidth = UI.CStr(sItemWidth)
@@ -313,7 +313,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sMonthFontSize = UI.CStr(sMonthFontSize)
 		sMonthFontWeight = Props.GetDefault("MonthFontWeight", "medium")
 		sMonthFontWeight = UI.CStr(sMonthFontWeight)
-		sSelectedTextColor = Props.GetDefault("SelectedTextColor", "none")
+		sSelectedTextColor = Props.GetDefault("SelectedTextColor", "")
 		sSelectedTextColor = UI.CStr(sSelectedTextColor)
 		sSelectionColor = Props.GetDefault("SelectionColor", "#30000000")
 		sSelectionColor = UI.CStr(sSelectionColor)
