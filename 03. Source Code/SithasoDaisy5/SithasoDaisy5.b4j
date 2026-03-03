@@ -639,14 +639,14 @@ Module99=SDUI5RadioGroup
 NumberOfFiles=239
 NumberOfLibraries=3
 NumberOfModules=154
-Version=10.3
+Version=10.45
 @EndOfDesignText@
 #Region Project Attributes 
 	#MainFormWidth: 600
 	#MainFormHeight: 600 
 	#IgnoreWarnings: 16, 10, 14, 15, 12	
 	#LibraryAuthor: Anele Mbanga (Mashy)
-	#LibraryVersion: 55.88
+	#LibraryVersion: 55.89
 	#LibraryName: SithasoDaisy5
 #End Region
 
@@ -658,7 +658,7 @@ Version=10.3
 
 Sub Process_Globals
 	Private BANano As BANano 'ignore
-	Private LibVersion As String = "55.88"
+	Private LibVersion As String = "55.89"
 End Sub
 
 Sub AppStart (Form1 As Form, Args() As String)
