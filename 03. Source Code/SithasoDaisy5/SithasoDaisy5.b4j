@@ -639,7 +639,7 @@ Module99=SDUI5RadioGroup
 NumberOfFiles=239
 NumberOfLibraries=3
 NumberOfModules=154
-Version=10.45
+Version=10.5
 @EndOfDesignText@
 #Region Project Attributes 
 	#MainFormWidth: 600
