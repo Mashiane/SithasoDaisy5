@@ -1579,7 +1579,7 @@ Sub SELECT_ALL_ADMINS As List
 End Sub
 
 'get the data model for the current table
-Sub GetDataModel As Map
+Sub GetDataModel As Map				'ignoredeadcode
 	If ShowLog Then
 		Log($"SDUIPocketBase.GetDataModel"$)
 	End If
@@ -1605,7 +1605,7 @@ Sub GetDataModel As Map
 End Sub
 
 'get the data model for the current table
-Sub GetDataModelOfTable(tblName As String) As Map
+Sub GetDataModelOfTable(tblName As String) As Map			'ignoredeadcode
 	If ShowLog Then
 		Log($"SDUIPocketBase.GetDataModelOfTable"$)
 	End If
@@ -1714,7 +1714,7 @@ End Sub
 'Dim sid As String = pbComponents.GetString("id")
 'Loop
 '</code>
-Sub SELECT_COLLECTIONS() As List
+Sub SELECT_COLLECTIONS() As List						'ignoredeadcode
 	If ShowLog Then
 		Log($"SDUIPocketBase.SELECT_COLLECTIONS"$)
 	End If

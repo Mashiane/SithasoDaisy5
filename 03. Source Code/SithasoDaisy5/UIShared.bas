@@ -6028,7 +6028,7 @@ Sub MvSearch(searchvalues As String,strsearch As String,delim As String) As Int
 	Return -1
 End Sub
 
-Sub rgbaToHexAuto(rgba As String) As String
+Sub rgbaToHexAuto(rgba As String) As String			'ignoredeadcode
 	Dim sout As String = BANano.RunJavascriptMethod("rgbaToHexAuto", Array(rgba))
 	Return sout
 End Sub
