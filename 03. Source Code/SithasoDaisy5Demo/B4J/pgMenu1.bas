@@ -17,8 +17,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "menu1view")
 	pgIndex.UpdateTitle("SDUI5Menu")
 	solutions.AddMenuItem("design", "Design", False)

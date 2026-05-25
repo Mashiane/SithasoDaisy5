@@ -11,8 +11,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	app.PagePause
 	BANano.Await(app.UsesDevices)
 	BANano.LoadLayout(app.PageView, "devicesview")

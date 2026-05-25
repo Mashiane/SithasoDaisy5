@@ -16,8 +16,8 @@ Sub Process_Globals
 	Private SDUI5SpeedDial1 As SDUI5SpeedDial
 End Sub
 
-Sub Show(MainApp As SDUI5App)			'ignore
-	app = MainApp
+Sub Show			'ignore
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "fabview")
 	pgIndex.UpdateTitle(fabpage.title)
 	name = fabpage.ID

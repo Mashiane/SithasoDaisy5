@@ -11,8 +11,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesPivot)
 	BANano.LoadLayout(app.PageView, "pivotview")
 	pgIndex.UpdateTitle("SDUI5Browser")

@@ -10,8 +10,8 @@ Sub Process_Globals
 	Private app As SDUI5App			'ignore
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesBarCode)
 	BANano.LoadLayout(app.PageView, "barcodeview")
 	pgIndex.UpdateTitle("SDUI5BarCode")

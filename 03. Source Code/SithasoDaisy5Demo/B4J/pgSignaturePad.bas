@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	app = pgIndex.app
 	BANano.Await(app.UsesSignaturePad)	
 	BANano.LoadLayout(app.PageView, "signaturepadview")
 	pgIndex.UpdateTitle("SDUI5SignaturePad")

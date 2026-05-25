@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	app = pgIndex.app
 	BANano.LoadLayout(app.PageView, "speeddialview")
 	pgIndex.UpdateTitle("Speed Dial")
 	mainspeed.AddMenuItemIconColor("check", "./assets/plus-solid.svg", "16px", "#473bb0")

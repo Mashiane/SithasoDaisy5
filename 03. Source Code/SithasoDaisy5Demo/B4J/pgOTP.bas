@@ -14,8 +14,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "otpview")
 	pgIndex.UpdateTitle("SDUI5OTP")
 End Sub

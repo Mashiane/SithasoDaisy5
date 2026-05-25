@@ -11,8 +11,8 @@ Sub Process_Globals
 	Private SDUI5QuillEditor1 As SDUI5QuillEditor
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesJSONEditor)
 	BANano.LoadLayout(app.PageView, "quillview")
 	pgIndex.UpdateTitle("SDUI5QuillEditor")

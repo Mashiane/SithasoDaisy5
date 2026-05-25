@@ -17,8 +17,8 @@ End Sub
     }
 #End If
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesOfficeRibbon)
 	BANano.LoadLayout(app.PageView, "officeribbonview")
 	pgIndex.UpdateTitle("SDUI5OfficeRibbon")

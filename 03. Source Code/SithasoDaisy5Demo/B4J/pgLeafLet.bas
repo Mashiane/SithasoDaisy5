@@ -23,8 +23,8 @@ Sub Process_Globals
 	Private btnRemoveImage As SDUI5Button
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesLeaflet)
 	BANano.LoadLayout(app.PageView, "leafletview")
 	pgIndex.UpdateTitle("SDUI5LeafLet")

@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	app = pgIndex.app
 	BANano.LoadLayout(app.PageView, "stepsview")
 	pgIndex.UpdateTitle("SDUI5Steps")
 End Sub

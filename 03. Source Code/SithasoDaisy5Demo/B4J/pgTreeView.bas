@@ -13,8 +13,8 @@ Sub Process_Globals
 	Private cmenu1 As SDUI5ContextMenu
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesTreeView)
 	BANano.Await(app.UsesContextMenu)
 	BANano.LoadLayout(app.PageView, "treeview")

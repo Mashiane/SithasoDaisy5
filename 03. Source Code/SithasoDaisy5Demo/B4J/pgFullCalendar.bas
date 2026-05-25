@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesFullCalendar)
 	BANano.LoadLayout(app.PageView, "fullcalendarview")
 	pgIndex.UpdateTitle("SDUI5FullCalendar")

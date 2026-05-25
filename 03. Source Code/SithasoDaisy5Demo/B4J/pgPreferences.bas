@@ -13,8 +13,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "preferenceview")
 	pgIndex.UpdateTitle("SDUI5Preferences")
 	propbagx.Clear

@@ -11,8 +11,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "collapseview")
 	pgIndex.UpdateTitle("SDUI5Collapse")
 End Sub

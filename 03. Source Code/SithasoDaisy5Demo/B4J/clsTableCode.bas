@@ -145,7 +145,7 @@ End Sub
 
 'showializes the object. You can add parameters to this method if needed.
 Public Sub Initialize(MainApp As SDUI5App, tbl As Map)
-	app = MainApp
+	App = pgIndex.app
 	InputType.Initialize
 	ComponentNames.Initialize
 	DeclareForm.Initialize
@@ -306,7 +306,7 @@ Sub BuildPage
 		AddCode(sb, $"Private Sub tbl${properTable}_Back (e As BANanoEvent)"$)
 		AddCode(sb, $"e.preventdefault"$)
 		AddCode(sb, $"'show the dashboard"$)
-		AddCode(sb, $"pgDashboard.Show(app)"$)
+		AddCode(sb, $"pgDashboard.Show"$)
 		AddCode(sb, $"'Main.MyApp.ShowDashBoard"$)
 		AddCode(sb, $"End Sub"$)
 	End If
@@ -2438,7 +2438,7 @@ private Sub BuildDataModels
 	AddCode(sb, $"'****** Ensure you have created a code module named 'pg${app.UI.CamelCase(stablename)}' also with the source code."$)
 	
 	AddCode(sb, $"Case "${stablename.tolowercase}""$)
-	AddCode(sb, $"pg${app.UI.CamelCase(stablename)}.Show(App)"$)
+	AddCode(sb, $"pg${app.UI.CamelCase(stablename)}.Show"$)
 	'
 	AddCode(sb, $"'****** Open your database and execute this script to create your table"$)
 	AddCode(sb, mysql.CreateTable)
@@ -2960,8 +2960,8 @@ End Sub
 
 private Sub BuildShow
 	AddCode(sb, $"'executed when the page is shown"$)
-	AddCode(sb, $"Public Sub Show(MainApp As SDUI5App)"$)
-	AddCode(sb, $"app = MainApp"$)
+	AddCode(sb, $"Public Sub Show"$)
+	AddCode(sb, $"App = pgIndex.app"$)
 	AddCode(sb, $"app.PagePause"$)
 	AddCode(sb, $"'load the layout"$)
 	AddCode(sb, $"BANano.LoadLayout(app.PageView, "${properTable.tolowercase}view")"$)

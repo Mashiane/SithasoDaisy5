@@ -14,8 +14,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesCode)
 	BANano.LoadLayout(app.PageView, "gridbuilderview")
 	pgIndex.UpdateTitle("TailwindCSS Grid Builder")

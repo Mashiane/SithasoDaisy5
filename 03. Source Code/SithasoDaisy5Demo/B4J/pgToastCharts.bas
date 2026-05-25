@@ -34,8 +34,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesToastChart)
 	BANano.LoadLayout(app.PageView, "toastchartview")
 	pgIndex.UpdateTitle("SDUI5ToastChart")

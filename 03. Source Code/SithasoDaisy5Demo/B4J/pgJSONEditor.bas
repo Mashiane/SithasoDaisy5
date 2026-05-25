@@ -11,8 +11,8 @@ Sub Process_Globals
 	Private jEdit As SDUI5JsonEditor
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesJSONEditor)
 	BANano.LoadLayout(app.PageView, "jsoneditorview")
 	pgIndex.UpdateTitle("SDUI5JsonEditor")

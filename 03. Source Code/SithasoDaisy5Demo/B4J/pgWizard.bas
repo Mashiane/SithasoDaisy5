@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	pgIndex.UpdateTitle("SDUI5Wizard")
 	BANano.LoadLayout(app.PageView, "wizardview")	
 	BANano.LoadLayout(SDUI5Wizard1.ContentAt(1), "wizard1")

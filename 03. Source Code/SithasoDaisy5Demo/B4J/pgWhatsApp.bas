@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesWhatsApp)
 	'adjust the pageview to 92%
 	app.UI.SetHeightByID("pageview", "screen")

@@ -15,8 +15,8 @@ Sub Process_Globals
 End Sub
 
 'https://freesvgicons.com/
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	app = pgIndex.app
 	BANano.LoadLayout(app.PageView, "svgview")
 	pgIndex.UpdateTitle("SDUI5Svg")
 End Sub

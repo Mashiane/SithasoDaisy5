@@ -43,8 +43,8 @@ Sub Process_Globals
 	Private app As SDUI5App
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	app = pgIndex.app
 	BANano.LoadLayout(app.PageView, "buttonsview")
 	pgIndex.UpdateTitle("SDUI5Button")
 End Sub

@@ -24,9 +24,9 @@ Sub Process_Globals
 	Public color As String = "#000000"
 End Sub
 'executed when the page is shown
-Public Sub Show(MainApp As SDUI5App)
+Public Sub Show
 	'executed when the page is shown
-	App = MainApp
+	App = pgIndex.app
 	App.PagePause
 	pgIndex.PageViewPaddingTo10px
 	App.PageViewToFullScreenHeight(Array("appnavbar"))
@@ -131,7 +131,7 @@ Private Sub tblProvinces_Back (e As BANanoEvent)
 	'executed when the back button is clicked on the table
 	e.preventdefault
 	'show the dashboard or another page
-	'pgDashboard.Show(app)
+	'pgDashboard.Show
 	'Main.MyApp.ShowDashBoard
 End Sub
 'executed to prepare the preference dialog for adding a new record

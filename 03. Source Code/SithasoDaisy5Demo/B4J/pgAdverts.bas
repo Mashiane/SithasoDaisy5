@@ -1,0 +1,18 @@
+﻿B4J=true
+Group=Default Group
+ModulesStructureVersion=1
+Type=StaticCode
+Version=10.5
+@EndOfDesignText@
+'Static code module
+Sub Process_Globals
+	Private BANano As BANano		'ignore
+	Private app As SDUI5App			'ignore
+End Sub
+
+
+Sub Show
+	app = pgIndex.app
+	BANano.LoadLayout(app.PageView, "advertview")
+	pgIndex.UpdateTitle("SDUI5GoogleAdsense")
+End Sub

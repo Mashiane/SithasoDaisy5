@@ -14,8 +14,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "tableview")
 	pgIndex.UpdateTitle("SDUI5Table")
 	'
@@ -43,6 +43,13 @@ Sub Show(MainApp As SDUI5App)
 	table1.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
 	table1.AddColumnRating("rate", "Satisfaction", 3, "item.color", app.MASK_HEART)
 	table1.AddColumnToggle("on", "Off/On", app.COLOR_PRIMARY, False)
+	table1.AddColumnDropDownIcon("menu", "Menu", "./assets/ellipsis-vertical-solid-full.svg", "#3f51b5", _
+	CreateMap("edit":"Edit","delete":"Delete","clone":"Clone","print":"Print"), _
+	CreateMap("edit":"./assets/pencil-solid-full.svg", _
+	"delete":"./assets/trash-solid-full.svg", _
+	"clone":"./assets/clone-solid-full.svg", _
+	"print":"./assets/print-solid-full.svg"))
+	table1.SetColumnTextColor("menu", "#ffffff")
 		
 	'add columns for editing
 '	table1.AddDesignerColums
@@ -75,6 +82,12 @@ Sub Show(MainApp As SDUI5App)
 '	sRowCount = app.UI.Thousands(sRowCount)
 '	'set the first column to show the total
 '	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+End Sub
+
+
+private Sub table1_MenuItemRow (Row As Int, Action As String, item As Map)
+	Dim sjson As String = BANano.ToJson(item)
+	app.ShowSwalSuccess(sjson)
 End Sub
 
 Private Sub table1_AlphaClick (Item As String)

@@ -18,8 +18,8 @@ Sub Process_Globals
 	Private fileName As String
 End Sub
 
-Sub Show(MainApp As SDUI5App)			'ignore
-	app = MainApp
+Sub Show			'ignore
+	App = pgIndex.app
 	BANano.Await(app.UsesExcel)
 	BANano.LoadLayout(app.PageView, "importexcel")
 	pgIndex.UpdateTitle("Import Excel SpreadSheet")

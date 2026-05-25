@@ -31,9 +31,9 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
+Sub Show
 	UI.Initialize(Me)
-	app = MainApp
+	App = pgIndex.app
 	BANano.Await(app.UsesCode)
 	pgIndex.HideNavBar
 	BANano.LoadLayout(app.PageView, "prefbuilderview")
@@ -1315,7 +1315,7 @@ End Sub
 
 Private Sub tblDesign_Back (e As BANanoEvent)
 	pgIndex.ShowNavBar
-	pgTableBuilder.Show(app)
+	pgTableBuilder.Show
 End Sub
 
 Private Sub tblDesign_UpRow (Row As Int, item As Map)

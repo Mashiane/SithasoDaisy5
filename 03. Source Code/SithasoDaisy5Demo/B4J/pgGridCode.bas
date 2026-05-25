@@ -11,8 +11,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.ClearPageView)
 	pgIndex.UpdateTitle("SDUI5Grid")
 	'create a container for the page

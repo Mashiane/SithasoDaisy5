@@ -14,8 +14,8 @@ Sub Process_Globals
 	Public color As String = "#000000"
 End Sub
 
-Sub Show(MainApp As SDUI5App)			'ignore
-	app = MainApp	
+Sub Show			'ignore
+	App = pgIndex.app	
 	'BANano.LoadLayout(app.PageView, "buttonsview")
 	BANano.Await(BuildPage)
 End Sub

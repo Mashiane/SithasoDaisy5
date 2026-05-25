@@ -20,8 +20,8 @@ Sub Process_Globals
 	Private chkRememberMe As SDUI5CheckBox			'ignore
 End Sub
 
-Sub Show(MainApp As SDUI5App)			'ignore
-	app = MainApp
+Sub Show			'ignore
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "page1view")
 	pgIndex.UpdateTitle(page1.title)
 	name = page1.ID
@@ -96,7 +96,7 @@ Private Sub mdlLogin_No_Click (e As BANanoEvent)
 	mdlLogin.Close
 	pgIndex.ShowNavBar
 	pgIndex.OpenDrawer
-	pgHoverGallery.Show(app)
+	pgHoverGallery.Show
 End Sub
 
 Private Sub txtServer_Prepend (e As BANanoEvent)

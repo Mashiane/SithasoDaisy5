@@ -12,8 +12,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	banano.Await(app.UsesTreeSpider)
 	BANano.LoadLayout(app.PageView, "treespiderview")
 	pgIndex.UpdateTitle("SDUI5TreeSpider")

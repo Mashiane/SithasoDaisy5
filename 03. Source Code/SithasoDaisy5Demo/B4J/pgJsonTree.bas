@@ -11,8 +11,8 @@ Sub Process_Globals
 	Private jTree As SDUI5JsonTree
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesJSONTree)
 	BANano.LoadLayout(app.PageView, "jsontreeview")
 	pgIndex.UpdateTitle("SDUI5JsonTree")

@@ -11,8 +11,8 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	banano.Await(app.UsesQRCode)
 	BANano.LoadLayout(app.PageView, "qrcodeview")
 	pgIndex.UpdateTitle("SDUI5QRCode")

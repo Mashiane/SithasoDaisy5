@@ -17,9 +17,9 @@ Sub Process_Globals
 End Sub
 
 
-Sub Show(MainApp As SDUI5App)
+Sub Show
 	pgIndex.ShowNavBar
-	app = MainApp
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "tablebuilderview")
 	pgIndex.UpdateTitle("Table Builder")
 	lsDB.Initialize("tables", "id")
@@ -410,7 +410,7 @@ Private Sub tblDesign_fieldsRow (Row As Int, item As Map)
 	Dim stablename As String = item.Get("tablename")
 	BANano.SetLocalStorage2("table", stablename)
 	pgIndex.CloseDrawerByForce
-	pgPreferenceBuilder.Show(app)
+	pgPreferenceBuilder.Show
 End Sub
 
 Sub MountTables
@@ -493,7 +493,7 @@ Private Sub tblDesign_Refresh (e As BANanoEvent)
 End Sub
 
 Private Sub tblDesign_Back (e As BANanoEvent)
-	pgTypography.Show(app)
+	pgTypography.Show
 End Sub
 
 Private Sub tblDesign_DeleteAll (e As BANanoEvent)

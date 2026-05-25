@@ -16,8 +16,8 @@ Sub Process_Globals
 	Private SDUI5TrendChart6 As SDUI5TrendChart
 End Sub
 
-Sub Show(MainApp As SDUI5App)
-	app = MainApp
+Sub Show
+	App = pgIndex.app
 	BANano.Await(app.UsesTrendCharts)
 	BANano.LoadLayout(app.PageView, "trendview")
 	pgIndex.UpdateTitle("SDUI5TrendChart")

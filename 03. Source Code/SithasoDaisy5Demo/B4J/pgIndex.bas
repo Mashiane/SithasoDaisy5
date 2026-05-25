@@ -30,14 +30,16 @@ Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.UsesJSONQuery)
 	BANano.Await(App.UsesFontAwesome)
 	BANano.Await(App.UsesGenderChart)
-	BANano.Await(App.UsesApex)
 	BANano.Await(App.UsesQuill)
 	BANano.Await(App.UsesGifPlayer)
+	BANano.Await(App.UsesBottomNavigation)
+	BANano.Await(App.UsesNoUISlider)
+	BANano.Await(App.UsesKanBan)
 	'load the main layout to the body of the page
 	BANano.LoadLayoutAppend(App.Here, "baselayout")
 	drawerNav.Title = Main.AppTitle
 	cboTheme.SetThemes
-	BANano.Await(pgTypography.Show(App))
+	BANano.Await(pgAdverts.Show)
 	BANano.Await(AddDatabaseSchemas)
 	
 	'set the font of the app
@@ -95,10 +97,11 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-nouislider", "", "NoUI Slider")
+	drawermenu.AddItemChild("wnew", "pg-bottomnav", "", "Bottom Navigation")
 	drawermenu.AddItemChild("wnew", "pg-bankcard", "", "Hover 3D Card")
 	drawermenu.AddItemChild("wnew", "pg-themeselect", "", "Theme Controller")
 	drawermenu.AddItemChild("wnew", "pg-genderchart", "", "Gender Chart")
-	drawermenu.AddItemChild("wnew", "pg-apexcharts", "", "Apex Charts")
 	drawermenu.AddItemChild("wnew", "pg-devices", "", "Devices")
 	drawermenu.AddItemChild("wnew", "pg-quill", "", "Quill Editor")
 	drawermenu.AddItemChild("wnew", "pg-gifplayer", "", "GIF Player")
@@ -325,281 +328,283 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "nouislider"
+				pgNoUISlider.Show
+			Case "bottomnav"
+				pgBottomNavigation.Show
 			Case "gifplayer"
-				pgGifPlayer.Show(App)
+				pgGifPlayer.Show
 			Case "quill"
-				pgQuillEditor.Show(App)
-			Case "apexcharts"
-				pgApexCharts.Show(App)
+				pgQuillEditor.Show
 			Case "genderchart"
-				pgGenderChart.Show(App)
+				pgGenderChart.Show
 			Case "themeselect"
-				BANano.Await(pgThemeSelect.Show(App))		
+				BANano.Await(pgThemeSelect.Show)		
 			Case "bankcard"
-				pgBankCard.Show(App)
+				pgBankCard.Show
 			Case "categories"
-				pgCategories.Show(App)
+				pgCategories.Show
 			Case "provinces"
-				pgProvinces.Show(App)
+				pgProvinces.Show
 			Case "contacts"
-				pgContacts.Show(App)
+				pgContacts.Show
 			Case "tableexpand"
-				pgTableExpand.Show(App)
+				pgTableExpand.Show
 			Case "fab"
-				pgFAB.Show(App)
+				pgFAB.Show
 			Case "login"
 				'remove all padding on pageview
 				pageView.PaddingAXYTBLR = "a:0px"
 				appdrawer.ForceClose
 				appnavbar.Visible = False
-				pgGhostLogin.Show(App)
+				pgGhostLogin.Show
 				pgGhostLogin.ShowLogin
 			Case "hovergallery"
-				pgHoverGallery.show(App)
+				pgHoverGallery.Show
 			Case "fullcalendar"
-				pgFullCalendar.Show(App)
+				pgFullCalendar.Show
 			Case "phpsqlite"
-				pgPHPSQLite.Show(App)
+				pgPHPSQLite.Show
 			Case "phpmysql"
-				pgPHPMySQL.Show(App)
+				pgPHPMySQL.Show
 			Case "otp"
-				pgOTP.Show(App)
+				pgOTP.Show
 			Case "toastcharts"
-				pgToastCharts.Show(App)
+				pgToastCharts.Show
 			Case "leaflet"
-				pgLeafLet.Show(App)
+				pgLeafLet.Show
 			Case "exceltoapp"
-				pgExcelToApp.Show(App)			
+				pgExcelToApp.Show			
 			Case "officeribbon"
-				pgOfficeRibbon.Show(App)		
+				pgOfficeRibbon.Show		
 			Case "barcode"
-				pgBarCode.Show(App)	
+				pgBarCode.Show	
 			Case "advancedgroupselect"
-				pgAdvancedCheckGroup.Show(App)		
+				pgAdvancedCheckGroup.Show		
 			Case "treeview"
-				pgTreeView.Show(App)
+				pgTreeView.Show
 			Case "barcodereader"
-				pgBarcodeReader.Show(App)		
+				pgBarcodeReader.Show		
 			Case "qrcode"
-				pgQRCode.Show(App)
+				pgQRCode.Show
 			Case "pdfviewer"
-				pgPDFView.Show(App)
+				pgPDFView.Show
 			Case "videoplayer"
-				pgVideoPlayer.Show(App)
+				pgVideoPlayer.Show
 			Case "dropzone"
-				pgDropZone.show(App)
+				pgDropZone.Show
 			Case "modalhtml"
-				pgModalHTML.Show(App)		
+				pgModalHTML.Show		
 			Case "pivot"
-				pgPivot.Show(App)
+				pgPivot.Show
 			Case "lottieplayer"
-				pgLottiePlayer.Show(App)		
+				pgLottiePlayer.Show		
 			Case "menutree"
-				pgMenuTree.Show(App)
+				pgMenuTree.Show
 			Case "speeddial"
-				pgSpeedDial.Show(App)
+				pgSpeedDial.Show
 			Case "devices"
-				pgDevices.Show(App)
+				pgDevices.Show
 			Case "trendchart"
-				pgTrendCharts.Show(App)
+				pgTrendCharts.Show
 			Case "easymde"
-				pgEasyMDE.Show(App)
+				pgEasyMDE.Show
 			Case "jsoneditor"
-				pgJSONEditor.Show(App)		
+				pgJSONEditor.Show		
 			Case "treespider"
-				pgTreeSpider.Show(App)
+				pgTreeSpider.Show
 			Case "whatsapp"
-				pgWhatsApp.Show(App)
+				pgWhatsApp.Show
 				appnavbar.Visible = False
 			Case "infobox"
-				pgInfoBox.Show(App)
+				pgInfoBox.Show
 			Case "groupselect"
-				pgGroupSelect.Show(App)
+				pgGroupSelect.Show
 			Case "table2"
-				pgTable2.Show(App)
+				pgTable2.Show
 			Case "table3"
-				pgTable3.Show(App)
+				pgTable3.Show
 			Case "preferences"
-				pgPreferences.Show(App)
+				pgPreferences.Show
 			Case "gridbuilder"
-				pggridbuilder.show(App)
+				pggridbuilder.Show
 			Case "prefbuilder"
 				'ensure that the drawer is closed
 				appdrawer.ForceClose
-				pgPreferenceBuilder.Show(App)	
+				pgPreferenceBuilder.Show	
 			Case "tablebuilder"
 				appdrawer.ForceClose
-				pgTableBuilder.Show(App)		
+				pgTableBuilder.Show		
 			Case "wizard"	
-				pgWizard.show(App)
+				pgWizard.Show
 			Case "svg"
-				pgSVG.Show(App)		
+				pgSVG.Show		
 			Case "validator"
-				pgValidation.Show(App)
+				pgValidation.Show
 			Case "colorpicker"
-				pgColorPicker.Show(App)
+				pgColorPicker.Show
 			Case "signature"
-				pgSignaturePad.Show(App)
+				pgSignaturePad.Show
 			Case "jsontree"
-				pgJsonTree.Show(App)
+				pgJsonTree.Show
 			Case "jsonquery"
-				pgJSONQuery.Show(App)		
+				pgJSONQuery.Show		
 			End Select		
 		
 			Select Case ssuffix
 			Case "calendar"
 			Case "datetimeline"
-				pgdatetimeline.Show(App)
+				pgdatetimeline.Show
 			Case "checkbox"
-				pgCheckBox.Show(App)
+				pgCheckBox.Show
 			Case "fieldset"
-				pgFieldSet.Show(App)
+				pgFieldSet.Show
 			Case "fileinput"
-				pgFileInput.Show(App)
+				pgFileInput.Show
 			Case "filter"
-				pgFilter.Show(App)
+				pgFilter.Show
 			Case "label"
-				pgLabel.show(App)
+				pgLabel.Show
 			Case "radio"
-				pgRadio.Show(App)
+				pgRadio.Show
 			Case "range"
-				pgRange.Show(App)
+				pgRange.Show
 			Case "rating"
-				pgRating.Show(App)
+				pgRating.Show
 			Case "select"
-				pgSelect.Show(App)
+				pgSelect.Show
 			Case "input"
-				pgInput.Show(App)
+				pgInput.Show
 			Case "textarea"
-				pgTextArea.Show(App)
+				pgTextArea.Show
 			Case "toggle"
-				pgToggle.Show(App)
+				pgToggle.Show
 			Case "validator"
 		End Select
 		
 		'actions
 		Select Case ssuffix
 		Case "typography"
-			pgTypography.Show(App)
+			pgTypography.Show
 		Case "buttons"
-			pgButtons.Show(App)
+			pgButtons.Show
 		Case "dropdown"
-			pgDropDown.Show(App)
+			pgDropDown.Show
 		Case "modal"
-			pgModal.Show(App)
+			pgModal.Show
 		Case "swap"
-			pgSwap.Show(App)
+			pgSwap.Show
 		End Select
 		'
 		Select Case ssuffix
 		Case "grid"
-			pgGrid.Show(App)
+			pgGrid.Show
 		Case "gridcode"
-			pgGridCode.show(App)
+			pgGridCode.Show
 		Case "accordion"
-			pgAccordion.Show(App)
+			pgAccordion.Show
 		Case "avatar"
-			pgAvatar.Show(App)
+			pgAvatar.Show
 		Case "badge"
-			pgBadge.Show(App)
+			pgBadge.Show
 		Case "card"
-			pgCard.Show(App)
+			pgCard.Show
 		Case "carousel"
-			pgCarousel.Show(App)
+			pgCarousel.Show
 		Case "chatbubble"
-			pgChatBubble.Show(App)
+			pgChatBubble.Show
 		Case "collapse"
-			pgCollapse.Show(App)
+			pgCollapse.Show
 		Case "countdown"
-			pgCountdown.Show(App)
+			pgCountdown.Show
 		Case "diff"
-			pgDiff.Show(App)
+			pgDiff.Show
 		Case "kbd"
-			pgKbd.Show(App)
+			pgKbd.Show
 		Case "list"
-			pgList.Show(App)
+			pgList.Show
 		Case "stat"
-			pgStat.Show(App)
+			pgStat.Show
 		Case "status"
-			pgStatus.Show(App)
+			pgStatus.Show
 		Case "table"
-			pgTable.Show(App)
+			pgTable.Show
 		Case "timeline"
-			pgTimeline.Show(App)
+			pgTimeline.Show
 		End Select
 			'
 		Select Case ssuffix
 		Case "bottomdrawer"
-			pgBottomDrawer.Show(App)
+			pgBottomDrawer.Show
 		Case "breadcrumbs"
-			pgBreadCrumbs.Show(App)
+			pgBreadCrumbs.Show
 		Case "dock"
-			pgDock.Show(App)
+			pgDock.Show
 		Case "dockxs"
-			pgDockXS.Show(App)
+			pgDockXS.Show
 		Case "dockcolor"
-			pgDockColor.Show(App)
+			pgDockColor.Show
 		Case "link"
-		pgLink.Show(App)
+		pgLink.Show
 		Case "menu"
-		pgMenu.Show(App)
+		pgMenu.Show
 		Case "menu1"
-		pgMenu1.Show(App)	
+		pgMenu1.Show	
 		Case "navbar"
-		pgNavBar.Show(App)
+		pgNavBar.Show
 		Case "pagination"
-			pgPagination.Show(App)
+			pgPagination.Show
 		Case "steps"
-			pgSteps.Show(App)
+			pgSteps.Show
 		Case "tab"
-		pgTabs.Show(App)
+		pgTabs.Show
 		End Select
 	'
 			Select Case ssuffix
 				Case "alert"
-					pgAlert.Show(App)
+					pgAlert.Show
 				Case "loading"
-					pgLoading.Show(App)
+					pgLoading.Show
 				Case "progress"
-					pgProgress.Show(App)
+					pgProgress.Show
 				Case "radialprogress"
-					pgRadialProgress.Show(App)
+					pgRadialProgress.Show
 				Case "skeleton"
-					pgSkeleton.Show(App)
+					pgSkeleton.Show
 				Case "toast"
-					pgToast.Show(App)
+					pgToast.Show
 				Case "tooltip"
-					pgToolTip.Show(App)
+					pgToolTip.Show
 End Select
 '
 				Select Case ssuffix
 				Case "divider"
-					pgDivider.Show(App)
+					pgDivider.Show
 				Case "drawer"
 					App.ShowSwalInfo("Please see the 'baselayout' on how this App drawer is designed!")
 				Case "footer"
-					pgFooter.Show(App)
+					pgFooter.Show
 				Case "hero"
-					pgHero.Show(App)
+					pgHero.Show
 				Case "indicator"
-					pgIndicator.Show(App)
+					pgIndicator.Show
 				Case "join"
-					pgJoin.Show(App)
+					pgJoin.Show
 				Case "mask"
-					pgImage.Show(App)
+					pgImage.Show
 				Case "stack"
-					pgStack.Show(App)
+					pgStack.Show
 	End Select
 	'
 				Select Case ssuffix
 				Case "browser"
-					pgBrowser.Show(App)
+					pgBrowser.Show
 				Case "code"
-					pgCode.Show(App)
+					pgCode.Show
 				Case "window"
-					pgWindow.Show(App)
+					pgWindow.Show
 				Case "phone"
-					pgPhone.Show(App)
+					pgPhone.Show
 		End Select
 		
 	End Select
@@ -616,7 +621,7 @@ Private Sub btnLogOff_Click (e As BANanoEvent)
 '	'hide stuff, fix the height fist
 '	IsAuthenticated(False)
 '	'show login
-'	pgSignIn.Show(app)
+'	pgSignIn.Show
 End Sub
 
 'show/hide drawer

@@ -15,8 +15,8 @@ Sub Process_Globals
 	Private page3 As SDUI5Page						'ignore
 End Sub
 
-Sub Show(MainApp As SDUI5App)			'ignore
-	app = MainApp
+Sub Show			'ignore
+	App = pgIndex.app
 	BANano.LoadLayout(app.PageView, "hovergalleryview")
 	pgIndex.UpdateTitle(page3.title)
 	name = page3.ID
