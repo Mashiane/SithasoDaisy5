@@ -664,7 +664,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         AddSlideImageStyle(rsis)
     End If
     If sRawSlideStyle <> "" Then
-		Dim rss As Map = UI.GetKeyValues(sRawSlideImageStyle, True)
+		Dim rss As Map = UI.GetKeyValues(sRawSlideStyle, True)
         AddSlideStyle(rss)
     End If
     'On("activeIndexChange", Array("e"))

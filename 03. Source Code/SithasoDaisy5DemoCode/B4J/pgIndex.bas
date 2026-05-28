@@ -25,16 +25,17 @@ End Sub
 Sub Initialize					'ignoreDeadCode
 	BANano.Await(App.Initialize(Me))
 	'add google adnsese
-	App.AddGoogleAdSenseURL("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3620968576660116")
+	'App.AddGoogleAdSenseURL("https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3620968576660116")
 	'load these universally
 	BANano.Await(App.UsesColorWheel)
 	BANano.Await(App.UsesDatePicker)
 	BANano.Await(App.UsesJSONQuery)
 	BANano.Await(App.UsesFontAwesome)
 	BANano.Await(App.UsesGenderChart)
-	BANano.Await(App.UsesApex)
 	BANano.Await(App.UsesQuill)
 	BANano.Await(App.UsesGifPlayer)
+	BANano.Await(App.UsesBottomNavigation)
+	BANano.Await(App.UsesNoUISlider)
 	'load the main layout to the body of the page
 	appdrawer.Initialize(Me, "appdrawer", "appdrawer")
 	appdrawer.ParentID = App.Here
@@ -206,10 +207,12 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-swiper", "", "Swiper")
+	drawermenu.AddItemChild("wnew", "pg-nouislider", "", "NoUI Slider")
+	drawermenu.AddItemChild("wnew", "pg-bottomnav", "", "Bottom Navigation")
 	drawermenu.AddItemChild("wnew", "pg-bankcard", "", "Hover 3D Card")
 	drawermenu.AddItemChild("wnew", "pg-themeselect", "", "Theme Controller")
 	drawermenu.AddItemChild("wnew", "pg-genderchart", "", "Gender Chart")
-	drawermenu.AddItemChild("wnew", "pg-apexcharts", "", "Apex Charts")
 	drawermenu.AddItemChild("wnew", "pg-devices", "", "Devices")
 	drawermenu.AddItemChild("wnew", "pg-quill", "", "Quill Editor")
 	drawermenu.AddItemChild("wnew", "pg-gifplayer", "", "GIF Player")
@@ -435,12 +438,12 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "bottomnav"
+				pgBottomNav.Show
 			Case "gifplayer"
 				pgGifPlayer.Show
 			Case "quill"
 				pgQuillEditor.Show
-			Case "apexcharts"
-				pgApexCharts.Show
 			Case "genderchart"
 				pgGenderChart.Show
 			Case "themeselect"
@@ -574,6 +577,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgRadio.Show
 			Case "range"
 				pgRange.Show
+			Case "nouislider"
+				pgNoUISlider.Show
 			Case "rating"
 				pgRating.Show
 			Case "select"
@@ -616,6 +621,8 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgCard.Show
 		Case "carousel"
 			pgCarousel.Show
+		Case "swiper"
+			pgSwiper.Show
 		Case "chatbubble"
 			pgChatBubble.Show
 		Case "collapse"

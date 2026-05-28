@@ -96,10 +96,12 @@ Sub Show
 	countries.Add("Nigeria")
 	Dim options As Map = app.UI.ListToSelectOptions(countries)
 	'
+	'
 	table1.AddColumn("id", "#")
 	table1.AddColumnTextBox("email", "Email", False)
 	table1.AddColumnSelect("country", "Country", False, True, options)
 	table1.AddColumnTextARea("job", "Job Title", False, 5)
+	table1.SetColumnAlign("job", "center")
 	table1.AddColumnDatePicker("dob", "Date of Birth", False, "Y-m-d", "F j, Y", False, False, False, "en")
 	table1.AddColumnTimePicker("tob", "Time of Birth", False, "H:i", True)
 	table1.AddColumnDatePicker("dod", "Date of Death", False, "Y-m-d", "d/m/Y", False, False, False, "it")
@@ -108,13 +110,18 @@ Sub Show
 	table1.AddColumnCheckBox("active", "Active", app.COLOR_PRIMARY, False)
 	table1.AddColumnRating("rate", "Satisfaction", 3, "item.color", app.MASK_HEART)
 	table1.AddColumnToggle("on", "Off/On", app.COLOR_PRIMARY, False)
+	table1.AddColumnDropDownIcon("menu", "Menu", "./assets/ellipsis-vertical-solid-full.svg", "#3f51b5", _
+	CreateMap("edit":"Edit","delete":"Delete","clone":"Clone","print":"Print"), _
+	CreateMap("edit":"./assets/pencil-solid-full.svg", _
+	"delete":"./assets/trash-solid-full.svg", _
+	"clone":"./assets/clone-solid-full.svg", _
+	"print":"./assets/print-solid-full.svg"))
+	table1.SetColumnTextColor("menu", "#ffffff")
 		
 	'add columns for editing
 '	table1.AddDesignerColums
 '	table1.SetColumnChooser(True, "8", app.COLOR_PRIMARY)
 	table1.MoveBackButton
-	'
-	Log(Items)
 	BANano.Await(table1.SetItemsPaginate(Items))
 	'Allow filtering records by an alphabet from column
 	'table1.SetAlphaChooser(True, "8", "name")
@@ -140,6 +147,11 @@ Sub Show
 '	sRowCount = app.UI.Thousands(sRowCount)
 '	'set the first column to show the total
 '	table1.SetFooterColumn(table1.FirstColumnName, $"Total (${sRowCount})"$)
+End Sub
+
+private Sub table1_MenuItemRow (Row As Int, Action As String, item As Map)
+	Dim sjson As String = BANano.ToJson(item)
+	app.ShowSwalSuccess(sjson)
 End Sub
 
 Private Sub table1_AlphaClick (Item As String)
