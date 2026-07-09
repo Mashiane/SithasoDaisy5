@@ -889,7 +889,7 @@ End Sub
 'valid
 Sub UsesLeaflet
 	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", _
-	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js")))
+	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js", "leaflet-routing-machine.css", "leaflet-routing-machine.js")))
 End Sub
 
 'valid
