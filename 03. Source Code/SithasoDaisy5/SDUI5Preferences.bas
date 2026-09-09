@@ -58,6 +58,7 @@ Version=10
 #DesignerProperty: Key: PropertyPadding, DisplayName: Property Padding, FieldType: String, DefaultValue: py-1, Description: Property Padding
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: right, Description: Position, List: bottom|left|right|top
+#DesignerProperty: Key: TooltipAlignment, DisplayName: Tooltip Alignment, FieldType: String, DefaultValue: none, Description: Tooltip Alignment, List: start|center|end|none
 #DesignerProperty: Key: TopActionsVisible, DisplayName: Top Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Top Actions Visible
 #DesignerProperty: Key: WrapActions, DisplayName: Wrap Top Actions, FieldType: Boolean, DefaultValue: True, Description: Wrap Top Actions
 #DesignerProperty: Key: ActionsVisible, DisplayName: Bottom Actions Visible, FieldType: Boolean, DefaultValue: True, Description: Bottom Actions Visible
@@ -157,6 +158,7 @@ Private Sub Class_Globals
 	Public IsLive As Boolean = True
 	Private sShadow As String = "none"
 	Private sTooltipPosition As String = "right"
+	Private sTooltipAlignment As String = "none"
 	Private bActionsVisible As Boolean = True
 	Private bTopActionsVisible As Boolean = True
 	Private sActionType As String = "yes-no"
@@ -269,6 +271,7 @@ private Sub SetDefaults
 	CustProps.Put("PropertyPadding", "py-1")
 	CustProps.Put("TooltipColor", "none")
 	CustProps.Put("TooltipPosition", "right")
+	CustProps.Put("TooltipAlignment", "none")
 	CustProps.Put("TopActionsVisible", True)
 	CustProps.Put("WrapActions", True)
 	CustProps.Put("ActionsVisible", True)
@@ -579,6 +582,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sShadow = "none" Then sShadow = ""
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "right")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
+		sTooltipAlignment = Props.GetDefault("TooltipAlignment", "none")
+		sTooltipAlignment = UI.CStr(sTooltipAlignment)
 		bActionsVisible = Props.GetDefault("ActionsVisible", True)
 		bTopActionsVisible = Props.GetDefault("TopActionsVisible", True)
 		bTopActionsVisible = UI.CBool(bTopActionsVisible)
@@ -1480,6 +1485,16 @@ End Sub
 Sub setTooltipColor(s As String)
 	sTooltipColor = s
 	CustProps.put("TooltipColor", s)
+End Sub
+'set Tooltip Alignment
+'options: start|center|end|none
+Sub setTooltipAlignment(s As String)
+	sTooltipAlignment = s
+	CustProps.put("TooltipAlignment", s)
+End Sub
+'get Tooltip Alignment
+Sub getTooltipAlignment As String
+	Return sTooltipAlignment
 End Sub
 'set Wrap Actions
 Sub setWrapActions(b As Boolean)			'ignoredeadcode
@@ -4102,11 +4117,13 @@ End Sub
 Sub SetPropertyToolTip(Key As String, value As String)
 	Dim tColor As String = UI.FixColor("tooltip", sTooltipColor)
 	Dim tPos As String = $"tooltip-${sTooltipPosition}"$
+	Dim tAlign As String = ""
+	If sTooltipAlignment <> "" And sTooltipAlignment <> "none" Then tAlign = $"tooltip-${sTooltipAlignment}"$
 	If value = "" Then
-		RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		RemoveClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos} ${tAlign}"$.Trim)
 		BANano.GetElement($"#${mName}_${Key}_tooltip"$).RemoveAttr("data-tip")
 	Else
-		AddClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos}"$)
+		AddClassByID($"${mName}_${Key}_tooltip"$, $"tooltip ${tColor} ${tPos} ${tAlign}"$.Trim)
 		BANano.GetElement($"#${mName}_${Key}_tooltip"$).SetData("tip", value)
 	End If
 End Sub
@@ -6668,7 +6685,9 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	If tooltip = "" Then Return
 	Dim col As String = UI.FixColor("tooltip", color)
 	Dim pos As String = UI.FixSize("tooltip", position)
-	AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	Dim align As String = ""
+	If sTooltipAlignment <> "" And sTooltipAlignment <> "none" Then align = $"tooltip-${sTooltipAlignment}"$
+	AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col} ${align}"$.Trim)
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 

@@ -1068,6 +1068,27 @@ Sub UpdateGroupName(groupId As String, groupName As String) As Boolean
 	End If
 End Sub
 
+'https://console.green-api.com/app/api/updateGroupSettings
+'The method changes a group chat name 
+Sub UpdateGroupSettings(groupId As String, allowParticipantsEditGroupSettings As Boolean, allowParticipantsSendMessages As Boolean) As Boolean
+	fetch.Initialize($"${sapiUrl}/waInstance${thisIdInstance}/updateGroupSettings/${thisApiTokenInstance}"$)
+	fetch.SetContentTypeApplicationJSON
+	fetch.AddData("groupId", groupId)
+	fetch.AddData("allowParticipantsEditGroupSettings", allowParticipantsEditGroupSettings)
+	fetch.AddData("allowParticipantsSendMessages", allowParticipantsSendMessages)
+	fetch.SchemaAddBoolean(Array("allowParticipantsEditGroupSettings"))
+	fetch.SchemaAddBoolean(Array("allowParticipantsSendMessages"))
+	BANAno.Await(fetch.PostWait)
+	If fetch.Success Then
+		Dim Response As Map = fetch.response
+		Dim bupdateGroupName As Boolean = Response.GetDefault("updateGroupSettings", False)
+		Return bupdateGroupName
+	Else
+		Log(fetch.ErrorMessage)
+		Return False
+	End If
+End Sub
+
 'https://console.green-api.com/app/api/getGroupData
 'The method gets group chat data. 
 Sub GetGroupData(groupId As String) As GroupData

@@ -199,7 +199,12 @@ End Sub
 
 Sub AddFilter(fltr As String)
 	fltr = fltr.Trim
-	If fltr <> "" Then ownFilter.Add(fltr)
+	If fltr <> "" Then 
+		If ShowLog Then
+			Log($"SDUIPocketBase.AddFilter('${fltr}')"$)
+		End If
+		ownFilter.Add(fltr)
+	End If
 End Sub
 
 Sub ClearHeaders
@@ -427,6 +432,7 @@ Sub DELETE_ALL_REST(tableName As String) As Map
 	Dim finalURL As String = $"${baseURL}/api/deleteall"$
 	Dim FETCH As SDUIFetch
 	FETCH.Initialize(finalURL)
+	FETCH.ShowLog = ShowLog
 	FETCH.AddData("tablename", tableName)
 	FETCH.SetContentTypeApplicationJSON
 	FETCH.NoCache = True
@@ -441,6 +447,7 @@ Sub DELETE_ALL_RESTAUTH(tableName As String) As Map
 	Dim finalURL As String = $"${baseURL}/api/deleteallauth"$
 	Dim FETCH As SDUIFetch
 	FETCH.Initialize(finalURL)
+	FETCH.ShowLog = ShowLog
 	FETCH.AddData("tablename", tableName)
 	FETCH.SetContentTypeApplicationJSON
 	FETCH.NoCache = True
@@ -455,6 +462,7 @@ Sub SERVER_DATE_TIME As Map
 	Dim finalURL As String = $"${baseURL}/api/servertime"$
 	Dim fetch As SDUIFetch
 	fetch.Initialize(finalURL)
+	fetch.ShowLog = ShowLog
 	fetch.SetContentTypeApplicationJSON
 	fetch.NoCache = True
 	BANano.Await(fetch.PostWait)
@@ -471,6 +479,7 @@ Sub SEND_EMAIL_REST(toEmail As String, Subject As String, Message As String) As 
 		Dim finalURL As String = $"${baseURL}/api/sendemail"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddData("to", toEmail)
 		fetch.AddData("subject", Subject)
 		fetch.AddData("message", Message)
@@ -850,6 +859,7 @@ Sub SELECT_RAW(qry As String) As List
 		Dim finalURL As String = $"${baseURL}/api/rawselect"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddHeaders(headers)		
 		fetch.AddData("query", qry)
 		fetch.AddData("perPage", batchSize)
@@ -999,6 +1009,7 @@ Sub SELECT_ALL_FETCH As List
 			Dim finalURL As String = $"${baseURL}/api/getlist"$
 			Dim fetch As SDUIFetch
 			fetch.Initialize(finalURL)
+			fetch.ShowLog = ShowLog
 			fetch.AddHeaders(headers)
 			fetch.AddData("collection", sTableName)
 			fetch.AddData("perPage", batchSize)
@@ -1051,6 +1062,7 @@ Sub CREATE_FETCH As String
 		Dim finalURL As String = $"${baseURL}/api/rawinsert/${sTableName}/${newid}"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddHeaders(headers)
 		fetch.AddData("fields", qflds)
 		For Each k As String In Record.Keys
@@ -1101,6 +1113,7 @@ Sub UPDATE_FETCH As String
 		Dim finalURL As String = $"${baseURL}/api/rawupdate/${sTableName}"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddHeaders(headers)
 		fetch.AddData("fields", qflds)
 		fetch.AddData("filter", $"id='${newid}'"$)
@@ -1147,6 +1160,7 @@ Sub DELETE_FETCH(delID As String) As Boolean
 		Dim finalURL As String = $"${baseURL}/api/rawdelete/${sTableName}"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddHeaders(headers)
 		fetch.AddData("filter", $"id='${delID}'"$)
 		fetch.NoCache = True
@@ -1226,6 +1240,7 @@ Sub findWhereOrderByFetch(whereMap As Map, whereOps As List, orderByx As List) A
 			Dim finalURL As String = $"${baseURL}/api/getlist"$
 			Dim fetch As SDUIFetch
 			fetch.Initialize(finalURL)
+			fetch.ShowLog = ShowLog
 			fetch.AddHeaders(headers)
 			fetch.SchemaAddBoolean(Array("getFiles"))
 			fetch.AddData("collection", sTableName)
@@ -3168,6 +3183,27 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 	Return m
 End Sub
 
+Sub READ_ID_WHERE(whereIs As Map) As String
+	If Schema.Size = 0 Then
+		Log($"SDUIPocketBase.READ_ID_WHERE: '${sTableName}' schema is not set!"$)
+	End If
+	CLEAR_WHERE
+	For Each k As String In whereIs.keys
+		Dim v As String = whereIs.Get(k)
+		ADD_WHERE_STRING(k, "=", v)
+	Next
+	ADD_FIELD("id")
+	Dim res As List = BANano.Await(SELECT_WHERE_FETCH)
+	If res.size = 0 Then
+		Return ""
+	Else
+		Dim rec As Map = res.Get(0)
+		Dim sid As String = rec.GetDefault("id", "")
+		Return sid
+	End If
+End Sub
+
+
 '<code>
 'Dim result As Map = BANano.Await(pbComponents.READ_BY_STRING_FETCH("name", "xxx"))
 '</code>
@@ -4767,6 +4803,7 @@ Sub GetFirstListItemFetch(tableName As String) As Map
 		Dim finalURL As String = $"${baseURL}/api/getlist"$
 		Dim fetch As SDUIFetch
 		fetch.Initialize(finalURL)
+		fetch.ShowLog = ShowLog
 		fetch.AddHeaders(headers)
 		fetch.AddData("collection", tableName)
 		fetch.AddData("perPage", "1")

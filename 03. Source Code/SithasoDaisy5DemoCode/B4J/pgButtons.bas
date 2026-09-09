@@ -528,6 +528,9 @@ Sub Show
 	SDUI5Button8.RightIconColor = "none"
 	SDUI5Button8.Size = "none"
 	SDUI5Button8.Text = "Primary"
+	SDUI5Button8.Tooltip = "I am a tooltip at the top start"
+	SDUI5Button8.TooltipPosition = "top"
+	SDUI5Button8.TooltipAlignment = "start"
 	BANano.Await(SDUI5Button8.AddComponent)
 	'
 	SDUI5Button7.Initialize(Me, "SDUI5Button7", "SDUI5Button7")

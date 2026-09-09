@@ -408,7 +408,6 @@ End Sub
 'Log(records)
 '</code>
 Sub ReadFromArrayBuffer(data As Object)
-	BANano.DependsOnAsset("xlsx.full.min.js")
 	columns.Initialize
 	rows.Initialize
 	XLSX.initialize("XLSX")

@@ -96,6 +96,17 @@ Private Sub Class_Globals
 	Private uniqueIdxNames As Map
 End Sub
 
+Sub whereNotEqual(fldName As String, fldValue As Object) As SDUIMySQLREST
+	ADD_WHERE(fldName, "<>", fldValue)
+	Return Me
+End Sub
+
+Sub NewList As List
+	Dim lst As List
+	lst.Initialize
+	Return lst
+End Sub
+
 '<code>
 ''initialize the connection to mysql with a collection to access
 'Dim pb As SDUIMySQLREST
@@ -1394,6 +1405,7 @@ Sub DELETE(id As String) As Boolean
 		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
 		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
 		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		fetch.AddHeader("X-HTTP-Method-Override", "DELETE")
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If UseBaseURL Then
 			fetch.SetURL($"/records/${TableName}/${id}"$)
@@ -1401,7 +1413,8 @@ Sub DELETE(id As String) As Boolean
 		If ShowLog Then
 			Log($"SDUIMySQLREST.DELETE.${baseURL}/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		End If
-		BANano.Await(fetch.DeleteWait)
+		'BANano.Await(fetch.DeleteWait)
+		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			'Dim Response As Map = fetch.response
 			'output = Response
@@ -1485,6 +1498,7 @@ Sub UPDATE As String
 		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
 		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
 		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		fetch.AddHeader("X-HTTP-Method-Override", "PUT")
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 		If UseBaseURL Then
@@ -1495,7 +1509,8 @@ Sub UPDATE As String
 			Log(BANano.ToJson(Record))
 		End If
 		fetch.SetData(Record)
-		BANano.Await(fetch.PutWait)
+		'BANano.Await(fetch.PutWait)
+		BANano.Await(fetch.PostWait)
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			output = Response
@@ -1553,6 +1568,7 @@ Sub UPDATE_PER_FIELD As String
 		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
 		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
 		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		fetch.AddHeader("X-HTTP-Method-Override", "PUT")
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
 		If UseBaseURL Then
@@ -1563,7 +1579,8 @@ Sub UPDATE_PER_FIELD As String
 			Log(BANano.ToJson(Record))
 		End If
 		fetch.SetData(nrec)
-		BANano.Await(fetch.PutWait)
+		'BANano.Await(fetch.PutWait)
+		BANano.Await(fetch.PostWait)
 	Next
 	Return pkValue
 End Sub
@@ -1669,6 +1686,27 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 		Return m
 	End If
 End Sub
+
+Sub READ_ID_WHERE(whereIs As Map) As String
+	If Schema.Size = 0 Then
+		Log($"SDUIMySQLREST.READ_ID_WHERE: '${TableName}' schema is not set!"$)
+	End If
+	CLEAR_WHERE
+	For Each k As String In whereIs.keys
+		Dim v As String = whereIs.Get(k)
+		ADD_WHERE(k, "=", v)
+	Next
+	ADD_FIELD("id")
+	Dim res As List = BANano.Await(SELECT_WHERE)
+	If res.size = 0 Then
+		Return ""
+	Else
+		Dim rec As Map = res.Get(0)
+		Dim sid As String = rec.GetDefault("id", "")
+		Return sid
+	End If
+End Sub
+
 
 Sub READ_ID_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
@@ -2415,7 +2453,7 @@ End Sub
 'pbComponents.CLEAR_WHERE
 'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
 'pbComponents.ADD_ORDER_BY("attrname")
-'Dim result As List = BANano.Await(pbComponents.SELECT_WHERE1)
+'BANano.Await(pbComponents.SELECT_WHERE1)
 'Do While pbComponents.NextRow
 'Dim rec As Map = pbComponents.Record
 'Dim sid As String = pbComponents.GetString("id")

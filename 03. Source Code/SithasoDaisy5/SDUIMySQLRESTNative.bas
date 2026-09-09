@@ -83,6 +83,17 @@ Private Sub Class_Globals
 	Private uniqueIdxNames As Map
 End Sub
 
+Sub NewList As List
+	Dim lst As List
+	lst.Initialize
+	Return lst
+End Sub
+
+Sub whereNotEqual(fldName As String, fldValue As Object) As SDUIMySQLRESTNative
+	ADD_WHERE(fldName, "<>", fldValue)
+	Return Me
+End Sub
+
 '<code>
 ''initialize the connection to mysql with a collection to access
 'Dim pb As SDUIMySQLRESTNative
@@ -1027,6 +1038,26 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 	End If
 End Sub
 
+Sub READ_ID_WHERE(whereIs As Map) As String
+	If Schema.Size = 0 Then
+		Log($"SDUIMySQLRESTNative.READ_ID_WHERE: '${TableName}' schema is not set!"$)
+	End If
+	CLEAR_WHERE
+	For Each k As String In whereIs.keys
+		Dim v As String = whereIs.Get(k)
+		ADD_WHERE(k, "=", v)
+	Next
+	ADD_FIELD("id")
+	Dim res As List = BANano.Await(SELECT_WHERE)
+	If res.size = 0 Then
+		Return ""
+	Else
+		Dim rec As Map = res.Get(0)
+		Dim sid As String = rec.GetDefault("id", "")
+		Return sid
+	End If
+End Sub
+
 Sub READ_ID_BY_STRING(fldName As String, fldValue As String) As String
 	If ShowLog Then
 		Log($"SDUIMySQLRESTNative.${TableName}.READ_ID_BY_STRING(${fldName},${fldValue})"$)
@@ -1723,7 +1754,7 @@ End Sub
 'pbComponents.CLEAR_WHERE
 'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
 'pbComponents.ADD_ORDER_BY("attrname")
-'Dim result As List = BANano.Await(pbComponents.SELECT_WHERE1)
+'BANano.Await(pbComponents.SELECT_WHERE1)
 'Do While pbComponents.NextRow
 'Dim rec As Map = pbComponents.Record
 'Dim sid As String = pbComponents.GetString("id")

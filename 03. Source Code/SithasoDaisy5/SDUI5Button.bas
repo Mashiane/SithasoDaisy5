@@ -23,6 +23,7 @@ Version=10
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: none, Description: Tooltip Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: TooltipOpen, DisplayName: Tooltip Open, FieldType: Boolean, DefaultValue: False, Description: Tooltip Open
 #DesignerProperty: Key: TooltipPosition, DisplayName: Tooltip Position, FieldType: String, DefaultValue: none, Description: Tooltip Position, List: bottom|left|right|top|none
+#DesignerProperty: Key: TooltipAlignment, DisplayName: Tooltip Alignment, FieldType: String, DefaultValue: none, Description: Tooltip Alignment, List: start|center|end|none
 #DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: , Description: Background Color
 #DesignerProperty: Key: Shape, DisplayName: Shape/Rounded, FieldType: String, DefaultValue: none, Description: Shape/Rounded, List: square|circle|none|rounded|2xl|3xl|full|lg|md|sm|xl|0|rounded-full
 #DesignerProperty: Key: Block, DisplayName: Block, FieldType: Boolean, DefaultValue: False, Description: Block
@@ -143,6 +144,7 @@ Sub Class_Globals
 	Private sTooltipColor As String = "none"
 	Private bTooltipOpen As Boolean = False
 	Private sTooltipPosition As String = "none"
+	Private sTooltipAlignment As String = "none"
 	Public CONST TOOLTIPPOSITION_BOTTOM As String = "bottom"
 	Public CONST TOOLTIPPOSITION_LEFT As String = "left"
 	Public CONST TOOLTIPPOSITION_RIGHT As String = "right"
@@ -213,6 +215,7 @@ Private Sub SetDefaults
 	CustProps.Put("TooltipColor", "none")
 	CustProps.Put("TooltipOpen", False)
 	CustProps.Put("TooltipPosition", "none")
+	CustProps.Put("TooltipAlignment", "none")
 	CustProps.Put("BackgroundColor", "")
 	CustProps.Put("Shape", "none")
 	CustProps.Put("Block", False)
@@ -550,6 +553,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "none")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
 		If sTooltipPosition = "none" Then sTooltipPosition = ""
+		sTooltipAlignment = Props.GetDefault("TooltipAlignment", "none")
+		sTooltipAlignment = UI.CStr(sTooltipAlignment)
+		If sTooltipAlignment = "none" Then sTooltipAlignment = ""
 		sIconSize = Props.GetDefault("IconSize", "50")
 		sIconSize = UI.CStr(sIconSize)
 		sLeftIcon = Props.GetDefault("LeftIcon", "")
@@ -707,6 +713,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setTooltipColor(sTooltipColor)
 	setTooltipOpen(bTooltipOpen)
 	setTooltipPosition(sTooltipPosition)
+	setTooltipAlignment(sTooltipAlignment)
 '	setVisible(bVisible)
 	setLeftIcon(sLeftIcon)
 	setIconSize(sIconSize)
@@ -1128,7 +1135,16 @@ Sub setTooltipPosition(s As String)			'ignoredeadcode
 	CustProps.put("TooltipPosition", s)
 	If mElement = Null Then Return
 	If sTooltip = "" Then Return
-	If s <> "" Then UI.AddClass(mElement, "tooltip-" & s)
+	If s <> "" Then UI.UpdateClass(mElement, "tooltipposition", $"tooltip-${sTooltipPosition}"$)
+End Sub
+'set Tooltip Alignment
+'options: start|center|end|none
+Sub setTooltipAlignment(s As String)			'ignoredeadcode
+	sTooltipAlignment = s
+	CustProps.put("TooltipAlignment", s)
+	If mElement = Null Then Return
+	If sTooltip = "" Then Return
+	UI.UpdateClass(mElement, "tooltipalignment", $"tooltip-${sTooltipAlignment}"$)
 End Sub
 'get Tooltip
 Sub getTooltip As String
@@ -1145,6 +1161,10 @@ End Sub
 'get Tooltip Position
 Sub getTooltipPosition As String
 	Return sTooltipPosition
+End Sub
+'get Tooltip Alignment
+Sub getTooltipAlignment As String
+	Return sTooltipAlignment
 End Sub
 
 

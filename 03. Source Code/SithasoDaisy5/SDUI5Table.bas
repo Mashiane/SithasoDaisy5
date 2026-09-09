@@ -89,6 +89,7 @@ Version=10
 #DesignerProperty: Key: ComponentSize, DisplayName: Component Size, FieldType: String, DefaultValue: sm, Description: Button Size, List: lg|md|sm|xs|none
 #DesignerProperty: Key: ButtonsOutlined, DisplayName: Buttons Outlined, FieldType: Boolean, DefaultValue: False, Description: Buttons Outlined
 #DesignerProperty: Key: TooltipColor, DisplayName: Tooltip Color, FieldType: String, DefaultValue: primary, Description: Tooltip Color
+#DesignerProperty: Key: TooltipAlignment, DisplayName: Tooltip Alignment, FieldType: String, DefaultValue: none, Description: Tooltip Alignment, List: start|center|end|none
 #DesignerProperty: Key: Hover, DisplayName: Hover, FieldType: Boolean, DefaultValue: False, Description: Hover
 #DesignerProperty: Key: SelectAll, DisplayName: Select All, FieldType: Boolean, DefaultValue: False, Description: Select All
 #DesignerProperty: Key: HasSearch, DisplayName: Has Search, FieldType: Boolean, DefaultValue: False, Description: Has Search
@@ -258,6 +259,7 @@ Private Sub Class_Globals
 	Private sRefreshTooltip As String = ""
 	Private sSaveSingleTooltip As String = ""
 	Private sTooltipColor As String = "primary"
+	Private sTooltipAlignment As String = "none"
 	Private sUploadToolbarTooltip As String = ""
 	Private sUploadTooltip As String = ""
 	Private DPValue As Map
@@ -465,6 +467,7 @@ private Sub SetDefaults
 	CustProps.Put("ComponentSize", "sm")
 	CustProps.Put("ButtonsOutlined", False)
 	CustProps.Put("TooltipColor", "primary")
+	CustProps.Put("TooltipAlignment", "none")
 	CustProps.Put("Hover", False)
 	CustProps.Put("SelectAll", False)
 	CustProps.Put("HasSearch", False)
@@ -659,6 +662,8 @@ Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSaveSingleTooltip = UI.CStr(sSaveSingleTooltip)
 		sTooltipColor = Props.GetDefault("TooltipColor", "primary")
 		sTooltipColor = UI.CStr(sTooltipColor)
+		sTooltipAlignment = Props.GetDefault("TooltipAlignment", "none")
+		sTooltipAlignment = UI.CStr(sTooltipAlignment)
 		sUploadToolbarTooltip = Props.GetDefault("UploadToolbarTooltip", "")
 		sUploadToolbarTooltip = UI.CStr(sUploadToolbarTooltip)
 		sUploadTooltip = Props.GetDefault("UploadTooltip", "")
@@ -1179,6 +1184,16 @@ End Sub
 Sub setTooltipColor(s As String)
 	sTooltipColor = s
 	CustProps.put("TooltipColor", s)
+End Sub
+'set Tooltip Alignment
+'options: start|center|end|none
+Sub setTooltipAlignment(s As String)
+	sTooltipAlignment = s
+	CustProps.put("TooltipAlignment", s)
+End Sub
+'get Tooltip Alignment
+Sub getTooltipAlignment As String
+	Return sTooltipAlignment
 End Sub
 'set Upload Toolbar Tooltip
 Sub setUploadToolbarTooltip(s As String)
@@ -1809,7 +1824,9 @@ Sub SetToolbarButtonToolTip(btnID As String, tooltip As String, color As String,
 	btnID = UI.CleanID(btnID)
 	Dim col As String = UI.FixColor("tooltip", color)
 	Dim pos As String = UI.FixSize("tooltip", position)
-	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col}"$)
+	Dim align As String = ""
+	If sTooltipAlignment <> "" And sTooltipAlignment <> "none" Then align = $"tooltip-${sTooltipAlignment}"$
+	UI.AddClassByID($"${mName}_${btnID}"$, $"tooltip ${pos} ${col} ${align}"$.Trim)
 	UI.SetAttrByID($"${mName}_${btnID}"$, "data-tip", tooltip)
 End Sub
 
@@ -7593,6 +7610,8 @@ Private Sub BuildRowTimePicker(Module As Object, fldName As String, fldValu As S
 	'********
 	Return act
 End Sub
+'
+'
 Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String		'ignore
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then
@@ -7604,6 +7623,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		Dim subName1 As String = tc.ComputeColor
 		bColor = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
+	'
 	Dim btnColor As String = GetColorFromField("btn", bColor, rowdata)
 	'
 	Dim cClass As String = ""
@@ -7611,6 +7631,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		Dim subName1 As String = tc.ComputeClass
 		cClass = BANano.CallSub(Module, subName1, Array(rowdata))
 	End If
+	'
 	Dim subtitle As String = rowdata.GetDefault(tc.subtitle, "")
 	subtitle = UI.CStr(subtitle)
 	Dim subtitle1 As String = rowdata.GetDefault(tc.subtitle1, "")
@@ -7631,19 +7652,20 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		Dim v As String = options.Get(k)
 		Dim i As String = OptionIcons.GetDefault(k, "")
 		Select Case i
-			Case ""
-				Dim sItem As String = $"<li id="${mName}_${RowCnt}_${fldName}_${k}_li"><a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">${v}</a></li>"$
-				sbOptions.Append(sItem)
-			Case Else
-				Dim sItem As String = $"[BANCLEAN]
+		Case ""
+			Dim sItem As String = $"<li id="${mName}_${RowCnt}_${fldName}_${k}_li"><a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">${v}</a></li>"$
+			sbOptions.Append(sItem)
+		Case Else
+			Dim sItem As String = $"[BANCLEAN]
             <li id="${mName}_${RowCnt}_${fldName}_${k}_li">
-            <a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
-            <span class="flex-none">
-				<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" style="width:${iconSize};height:${sIconSize}"  data-js="enabled" fill="currentColor" data-src="${i}"></svg-renderer></span>
-            <span id="${mName}_${RowCnt}_${fldName}_${k}_text" class="flex-1">${v}</span>
-            </a>
+            	<a id="${mName}_${RowCnt}_${fldName}_${k}_a" class="flex items-center gap-2 w-auto whitespace-nowrap ${itemColor1} ${itemColor2} ${itemColor3} ${itemColor4}">
+            		<span class="flex-none">
+						<svg-renderer id="${mName}_${RowCnt}_${fldName}_${k}_i" style="width:${iconSize};height:${sIconSize}"  data-js="enabled" fill="currentColor" data-src="${i}"></svg-renderer>
+					</span>
+            		<span id="${mName}_${RowCnt}_${fldName}_${k}_text">${v}</span>
+            	</a>
             </li>"$
-				sbOptions.Append(sItem)
+			sbOptions.Append(sItem)
 		End Select
 	Next
 	'
@@ -7654,6 +7676,7 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		bgColor = UI.FixColor("bg", bgColor)
 	End If
 	'
+	'
 	Dim tcolor As String = UI.FixColor("text", tc.TextColor)
 	If tc.ComputeTextColor <> "" Then
 		Dim subName As String = tc.ComputeTextColor
@@ -7661,13 +7684,14 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 		tcolor = UI.FixColor("text", tcolor)
 	End If
 	'
+	'
 	Dim act As String = $"[BANCLEAN]
-    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor}" style="${BuildStyle(tc)}">
+    <td id="${mName}_${RowCnt}_${fldName}"  class="${BuildClasses(tc)} ${tcolor} ${bgColor} overflow-visible" style="${BuildStyle(tc)}">
     <div id="${mName}_${RowCnt}_${fldName}_menu" class="dropdown dropdown-left">
     <label id="${mName}_${RowCnt}_${fldName}_button" tabindex="0" class="${tcolor} btn btn-ghost btn-circle ${btnColor} ${btnsize} ${btnOutlined} ${cClass}">
     <svg-renderer id="${mName}_${RowCnt}_${fldName}_icon" data-js="enabled" style="${BuildIconColor(tcolor)};pointer-events:none;width:${iconSize};height:${iconSize};" data-src="${tc.icon}" fill="currentColor"></svg-renderer>
     </label>
-    <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black border menu-horizontal dropdown-content menu p-2 shadow bg-base-100 rounded-box">
+    <ul id="${mName}_${RowCnt}_${fldName}_items" tabindex="0" class="text-black menu menu-horizontal dropdown-content p-2 shadow bg-base-200 rounded-box w-max whitespace-nowrap">
     ${sbOptions.ToString}
     </ul>
     </div>
@@ -7676,6 +7700,8 @@ Private Sub BuildRowMenu(Module As Object, fldName As String, fldValu As String,
 	'********
 	Return act
 End Sub
+'
+'
 Private Sub BuildRowButton(Module As Object, fldName As String, fldValu As String, rowdata As Map, RowCnt As Int, tc As TableColumn) As String			'ignore
 	Dim bColor As String = tc.color
 	If tc.ComputeValue <> "" Then

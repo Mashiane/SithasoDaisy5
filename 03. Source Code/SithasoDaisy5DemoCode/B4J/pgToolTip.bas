@@ -62,7 +62,8 @@ Sub Show
 	SDUI5ToolTip1.HasContent = False
 	SDUI5ToolTip1.Open = False
 	SDUI5ToolTip1.Tip = "Hello"
-	'SDUI5ToolTip1.TooltipPosition = "right"
+	SDUI5ToolTip1.Position = "right"
+	SDUI5ToolTip1.Alignment = "start"
 	BANano.Await(SDUI5ToolTip1.AddComponent)
 	'
 	SDUI5Button1.Initialize(Me, "SDUI5Button1", "SDUI5Button1")
@@ -127,7 +128,8 @@ Sub Show
 	SDUI5ToolTip2.HasContent = False
 	SDUI5ToolTip2.Open = False
 	SDUI5ToolTip2.Tip = "I am at the bottom"
-	'SDUI5ToolTip2.TooltipPosition = "bottom"
+	SDUI5ToolTip2.Position = "bottom"
+	SDUI5ToolTip2.Alignment = "end"
 	BANano.Await(SDUI5ToolTip2.AddComponent)
 	'
 	SDUI5Button2.Initialize(Me, "SDUI5Button2", "SDUI5Button2")

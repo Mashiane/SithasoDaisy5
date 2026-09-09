@@ -12,6 +12,7 @@ Version=10
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|none|primary|secondary|success|warning
 #DesignerProperty: Key: Open, DisplayName: Open, FieldType: Boolean, DefaultValue: False, Description: Open
 #DesignerProperty: Key: TooltipPosition, DisplayName: Position, FieldType: String, DefaultValue: top, Description: Position, List: bottom|left|right|top
+#DesignerProperty: Key: TooltipAlignment, DisplayName: Alignment, FieldType: String, DefaultValue: none, Description: Alignment, List: start|center|end|none
 'global variables in this module
 Sub Class_Globals
 	Public UI As UIShared 'ignore
@@ -27,11 +28,16 @@ Sub Class_Globals
 	Private sColor As String = "none"
 	Private bOpen As Boolean = False
 	Private sTooltipPosition As String = "top"
+	Private sTooltipAlignment As String = "none"
 	Private sTip As String = "Tooltip"
 	Public CONST POSITION_BOTTOM As String = "bottom"
 	Public CONST POSITION_LEFT As String = "left"
 	Public CONST POSITION_RIGHT As String = "right"
 	Public CONST POSITION_TOP As String = "top"
+	Public CONST ALIGNMENT_CENTER As String = "center"
+	Public CONST ALIGNMENT_END As String = "end"
+	Public CONST ALIGNMENT_NONE As String = "none"
+	Public CONST ALIGNMENT_START As String = "start"
 	Private bHasContent As Boolean = False
 End Sub
 'initialize the custom view class
@@ -51,7 +57,8 @@ Private Sub SetDefaults
 	CustProps.Put("HasContent", False)
 	CustProps.Put("Color", "none")
 	CustProps.Put("Open", False)
-	CustProps.Put("TooltipPosition", "top")	
+	CustProps.Put("TooltipPosition", "top")
+	CustProps.Put("TooltipAlignment", "none")
 End Sub
 
 ' returns the element id
@@ -105,6 +112,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bOpen = UI.CBool(bOpen)
 		sTooltipPosition = Props.GetDefault("TooltipPosition", "top")
 		sTooltipPosition = UI.CStr(sTooltipPosition)
+		sTooltipAlignment = Props.GetDefault("TooltipAlignment", "none")
+		sTooltipAlignment = UI.CStr(sTooltipAlignment)
+		If sTooltipAlignment = "none" Then sTooltipAlignment = ""
 		sTip = Props.GetDefault("Tip", "Tooltip")
 		sTip = UI.CStr(sTip)
 		bHasContent = Props.GetDefault("HasContent", False)
@@ -122,7 +132,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	UI.AddClassDT("tooltip")
 	If sColor <> "" Then UI.AddColorDT("tooltip", sColor)
 	If bOpen Then UI.AddClassDT("tooltip-open")
-	UI.AddClassDT("tooltip-" & sTooltipPosition)
+	If sTooltipPosition <> "" Then UI.UpdateClassDT("position", "tooltip-" & sTooltipPosition)
+	If sTooltipAlignment <> "" Then UI.UpdateClassDT("alignment", "tooltip-" & sTooltipAlignment)
 	If sTip <> "" Then UI.AddAttrDT("data-tip", sTip)
 	
 	Dim xattrs As String = UI.BuildExAttributes
@@ -179,7 +190,19 @@ Sub setPosition(s As String)
 	sTooltipPosition = s
 	CustProps.put("TooltipPosition", s)
 	If mElement = Null Then Return
-    If s <> "" Then UI.AddClass(mElement, "tooltip-" & s)
+    If s <> "" Then UI.UpdateClass(mElement, "position", $"tooltip-${sTooltipPosition}"$)
+End Sub
+'set Alignment
+'options: start|center|end|none
+Sub setAlignment(s As String)
+	sTooltipAlignment = s
+	CustProps.put("TooltipAlignment", s)
+	If mElement = Null Then Return
+	UI.UpdateClass(mElement, "alignment", $"tooltip-${sTooltipAlignment}"$)
+End Sub
+'get Alignment
+Sub getAlignment As String
+	Return sTooltipAlignment
 End Sub
 'set Tip
 Sub setTip(s As String)

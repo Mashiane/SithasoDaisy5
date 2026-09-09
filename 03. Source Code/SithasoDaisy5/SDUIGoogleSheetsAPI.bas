@@ -175,6 +175,11 @@ Sub Connect(sSheetID As String, sClientID As String, sClientSecret As String, sR
 	End If
 End Sub
 
+Sub NewList As List
+	Dim lst As List
+	lst.Initialize
+	Return lst
+End Sub
 
 'put recursive object to a map
 private Sub PutRecursive(data As Map, path As String, value As Object)
@@ -1444,7 +1449,7 @@ End Sub
 'pbComponents.CLEAR_WHERE
 'pbComponents.ADD_WHERE_STRING("attractive", "=", "true")
 'pbComponents.ADD_ORDER_BY("attrname")
-'Dim result As List = BANano.Await(pbComponents.SELECT_WHERE1)
+'BANano.Await(pbComponents.SELECT_WHERE1)
 'Do While pbComponents.NextRow
 'Dim rec As Map = pbComponents.Record
 'Dim sid As String = pbComponents.GetString("id")

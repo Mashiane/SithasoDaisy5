@@ -38,6 +38,7 @@ Version=10
 #DesignerProperty: Key: YesTextColor, DisplayName: Yes Text Color, FieldType: String, DefaultValue: #ffffff, Description: Yes Text Color
 #DesignerProperty: Key: YesColor, DisplayName: Yes Color, FieldType: String, DefaultValue: success, Description: Yes Color
 #DesignerProperty: Key: YesLoading, DisplayName: Yes Loading, FieldType: Boolean, DefaultValue: False, Description: Yes Loading
+#DesignerProperty: Key: YesVisible, DisplayName: Yes Visible, FieldType: Boolean, DefaultValue: True, Description: Yes Visible
 #DesignerProperty: Key: NoCaption, DisplayName: No/Retry Caption, FieldType: String, DefaultValue: No, Description: No Caption
 #DesignerProperty: Key: NoTextColor, DisplayName: No Text Color, FieldType: String, DefaultValue: #ffffff, Description: No Text Color
 #DesignerProperty: Key: NoColor, DisplayName: No Color, FieldType: String, DefaultValue: error, Description: No Color
@@ -131,6 +132,9 @@ Sub Class_Globals
 	Public CONST ACTIONTYPE_YES As String = "yes"
 	Public CONST ACTIONTYPE_YES_NO As String = "yes-no"
 	Public CONST ACTIONTYPE_YES_NO_CANCEL As String = "yes-no-cancel"
+	Public CONST ACTIONTYPE_OK_CANCEL As String = "ok-cancel"
+	Public CONST ACTIONTYPE_RETRY_CANCEL As String = "retry-cancel"
+	Public CONST ACTIONTYPE_ABORT_RETRY_IGNORE As String = "abort-retry-ignore"
 	Public YesButton As SDUI5Button
 	Public NoButton As SDUI5Button
 	Public CancelButton As SDUI5Button
@@ -195,6 +199,7 @@ private Sub SetDefaults
 	CustProps.Put("YesTextColor", "#ffffff")
 	CustProps.Put("YesColor", "success")
 	CustProps.Put("YesLoading", False)
+	CustProps.Put("YesVisible", True)
 	CustProps.Put("NoCaption", "No")
 	CustProps.Put("NoTextColor", "#ffffff")
 	CustProps.Put("NoColor", "error")
@@ -387,6 +392,18 @@ Sub getIsCard As Boolean
 	Return bIsCard
 End Sub
 
+'set Size
+Sub setSize(s As String)
+	sSize = s
+	CustProps.put("Size", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.AddSizeDT("card", sSize)
+End Sub
+
+'get Size
+Sub getSize As String
+	Return sSize
+End Sub
 
 Sub getMarginAXYTBLR As String
 	Return sMarginAXYTBLR
@@ -647,6 +664,11 @@ Sub setShadow(s As String)
 	If s <> "" Then UI.SetShadow(mElement, sShadow)
 End Sub
 
+'get Shadow
+Sub getShadow As String
+	Return sShadow
+End Sub
+
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 Sub setRounded(s As String)
@@ -846,6 +868,11 @@ Sub setFullScreen(b As Boolean)		'ignoredeadcode
 	End If
 End Sub
 
+'get Full Screen
+Sub getFullScreen As Boolean
+	Return bFullScreen
+End Sub
+
 'set Raw Html
 Sub setHTML(s As String)				'ignoredeadcode
 	sRawHtml = s
@@ -942,6 +969,12 @@ private Sub AddCancelButton				'ignoredeadcode
 	CancelButton.RemoveRightIcon
 	CancelButton.RemoveLeftImage
 	CancelButton.RemoveRightImage
+End Sub
+
+'set Action Type
+Sub setActionType(s As String)
+	sActionType = s
+	CustProps.put("ActionType", s)
 End Sub
 
 'set Actions Visible
@@ -1126,6 +1159,10 @@ End Sub
 'get X l Move From
 Sub getXLMoveFrom As String
 	Return sXLMoveFrom
+End Sub
+'get Action Type
+Sub getActionType As String
+	Return sActionType
 End Sub
 
 'show the modal

@@ -841,16 +841,16 @@ Sub StartEruda
 	Eruda.RunMethod("init", Null)
 End Sub
 
-Sub UsesApex
-	Banano.Await(UI.LoadAssetsOnDemand("Apex", Array("https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.js", "https://cdn.jsdelivr.net/npm/apexcharts@5.3.6/dist/apexcharts.min.css", "SithasoApexChart.min.js")))
-End Sub
-
 Sub UsesGenderChart
 	Banano.Await(UI.LoadAssetsOnDemand("GenderChart", Array("SithasoGenderChart.min.js")))
 End Sub
 
 Sub UsesQuill
 	Banano.Await(UI.LoadAssetsOnDemand("Quill", Array("quill.snow.css", "highlight.min.css", "quill-custom.min.css", "highlight.min.js", "quill.min.js", "purify.min.js", "quill-custom.min.js")))
+End Sub
+
+Sub UsesBottomNavigation
+	Banano.Await(UI.LoadAssetsOnDemand("BotNav", Array("bottom-navigation.min.js")))
 End Sub
 
 Sub UsesGifPlayer
@@ -889,7 +889,7 @@ End Sub
 'valid
 Sub UsesLeaflet
 	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", _
-	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js")))
+	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js", "leaflet-routing-machine.css", "leaflet-routing-machine.js")))
 End Sub
 
 'valid
@@ -979,6 +979,10 @@ End Sub
 
 Sub UsesSlider
 	Banano.Await(UI.LoadAssetsOnDemand("Slider", Array("SithasoSlider.min.js")))
+End Sub
+
+Sub UsesNoUISlider
+	Banano.Await(UI.LoadAssetsOnDemand("NoUISlider", Array("nouislider.min.css", "SithasoNoUISlider.min.css", "nouislider.min.js", "SithasoNoUISlider.min.js", "wNumb.min.js")))
 End Sub
 
 '"material_blue.css",

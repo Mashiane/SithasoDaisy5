@@ -27,6 +27,79 @@ Sub CreateList As List
 	Return nl
 End Sub
 
+Public Sub RandomTimeBetween(StartTime As String, EndTime As String) As String
+	' Parse input times
+	Dim sh As Int = StartTime.SubString2(0, 2)
+	Dim sm As Int = StartTime.SubString2(3, 5)
+	Dim eh As Int = EndTime.SubString2(0, 2)
+	Dim em As Int = EndTime.SubString2(3, 5)
+	'
+	sh = CInt(sh)
+	sm = CInt(sm)
+	eh = CInt(eh)
+	em = CInt(em)
+    
+	' Convert to milliseconds from midnight
+	Dim startMs As Long = (sh * 60 + sm) * DateTime.TicksPerMinute
+	Dim endMs As Long = (eh * 60 + em) * DateTime.TicksPerMinute
+    
+	Dim lRnd As Long
+    
+	If endMs > startMs Then
+		' Normal same-day range
+		lRnd = Rnd(startMs, endMs)
+	Else If endMs < startMs Then
+		' Overnight range (wrap around midnight)
+		Dim dayMs As Long = 24 * 60 * DateTime.TicksPerMinute
+		Dim span As Long = (dayMs - startMs) + endMs
+		lRnd = (startMs + Rnd(0, span)) Mod dayMs
+	Else
+		' Same time → return exact time
+		lRnd = startMs
+	End If
+    
+	' Convert back to HH:mm
+	Dim totalMinutes As Int = lRnd / DateTime.TicksPerMinute
+	Dim h As Int = totalMinutes / 60
+	Dim m As Int = totalMinutes Mod 60
+    
+	Return NumberFormat(h, 2, 0) & ":" & NumberFormat(m, 2, 0)
+End Sub
+
+Public Sub DateIconv(InputDate As String) As Long
+	Try
+		DateTime.DateFormat = "yyyy-MM-dd"
+		Dim t As Long = DateTime.DateParse(InputDate)
+        
+		' Normalize to midnight (CRITICAL)
+		Dim normalized As Long = DateTime.Date(t)
+		normalized = DateTime.DateParse(normalized)
+        
+		' Pick epoch
+		Dim pickEpoch As Long = DateTime.DateParse("1967-12-31")
+        
+		' Integer division (no floating point)
+		Return Floor((normalized - pickEpoch) / DateTime.TicksPerDay)
+        
+	Catch
+		Return 0 ' Pick would return 0 or error depending on mode
+	End Try
+End Sub
+
+Public Sub DateOconv(PickDays As Long, OutputFormat As String) As String
+	Try
+		DateTime.DateFormat = "yyyy-MM-dd"
+		Dim pickEpoch As Long = DateTime.DateParse("1967-12-31")
+        
+		Dim ticks As Long = pickEpoch + (PickDays * DateTime.TicksPerDay)
+        
+		DateTime.DateFormat = OutputFormat
+		Return DateTime.Date(ticks)
+	Catch
+		Return ""
+	End Try
+End Sub
+
 Sub GetDeviceSizes(varOffsets As String) As Map
 	Dim mm As Map = CreateMap("xs":"", "sm":"", "md":"", "lg":"", "xl":"", "2xl":"")
 	varOffsets = CStr(varOffsets)
@@ -513,6 +586,8 @@ Sub FixColor(prefix As String, v As String) As String
 		If prefix = "badge" Then
 			res = res.Replace("badge-", "bg-")
 		End If
+	else if v.startswith($"${prefix}-"$) Then
+		res = v
 	Else
 		res = $"${prefix}-${v}"$
 	End If
