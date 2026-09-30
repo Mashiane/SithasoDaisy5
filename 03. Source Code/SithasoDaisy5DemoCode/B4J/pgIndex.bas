@@ -207,6 +207,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-textrotate", "", "TextRotate")
 	drawermenu.AddItemChild("wnew", "pg-aura", "", "Aura")
 	drawermenu.AddItemChild("wnew", "pg-swiper", "", "Swiper")
 	drawermenu.AddItemChild("wnew", "pg-nouislider", "", "NoUI Slider")
@@ -448,7 +449,9 @@ Private Sub drawermenu_ItemClick (item As String)
 			Case "genderchart"
 				pgGenderChart.Show
 			Case "themeselect"
-				BANano.Await(pgThemeSelect.Show)		
+				BANano.Await(pgThemeSelect.Show)
+			Case "textrotate"
+				pgTextrotate.Show
 			Case "bankcard"
 				pgBankCard.Show
 			Case "categories"

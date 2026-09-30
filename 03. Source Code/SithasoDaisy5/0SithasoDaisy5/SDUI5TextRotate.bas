@@ -5,10 +5,10 @@ Type=Class
 Version=10
 @EndOfDesignText@
 #IgnoreWarnings:12
-#Event: Click (e As BANanoEvent)
 
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
-#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Textrotate, Description: Text
+#DesignerProperty: Key: Text, DisplayName: Text, FieldType: String, DefaultValue: Text Rotate, Description: Text (comma-separated list for rotation)
+#DesignerProperty: Key: Duration, DisplayName: Duration, FieldType: String, DefaultValue: 10000, Description: The duration of the rotation (e.g., 3s).
 #DesignerProperty: Key: Color, DisplayName: Color, FieldType: String, DefaultValue: none, Description: Color, List: accent|error|info|neutral|primary|secondary|success|warning|none
 #DesignerProperty: Key: Size, DisplayName: Size, FieldType: String, DefaultValue: none, Description: Size, List: lg|md|none|sm|xl|xs
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: none, Description: Rounded, List: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
@@ -22,6 +22,7 @@ Version=10
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
 #DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
 #DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
+'
 'global variables in this module
 Sub Class_Globals
 	Public UI As UIShared 'ignore
@@ -46,9 +47,10 @@ Sub Class_Globals
 	Public Tag As Object
 	Private sColor As String = "none"
 	Private sSize As String = "none"
-	Private sVariant As String = "none"
 	Private sRounded As String = "none"
 	Private sShadow As String = "none"
+	Private sDuration As String = "10000"
+	Private tPos As Int = 0
 End Sub
 
 'initialize the custom view class
@@ -60,14 +62,14 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	mCallBack = Callback
 	CustProps.Initialize
 	SetDefaults
+	tPos = 0
 End Sub
 
 Private Sub SetDefaults
 	CustProps.Put("ParentID", "")
-	CustProps.Put("Text", "Textrotate")
+	CustProps.Put("Text", "Text Rotate")
 	CustProps.Put("Color", "none")
 	CustProps.Put("Size", "none")
-	CustProps.Put("Variant", "none")
 	CustProps.Put("Rounded", "none")
 	CustProps.Put("Shadow", "none")
 	CustProps.Put("Visible", True)
@@ -79,6 +81,7 @@ Private Sub SetDefaults
 	CustProps.Put("RawClasses", "")
 	CustProps.Put("RawStyles", "")
 	CustProps.Put("RawAttributes", "")
+	CustProps.Put("Duration", "10000")
 End Sub
 
 Public Sub getID() As String
@@ -132,21 +135,20 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sSize = Props.GetDefault("Size", "none")
 		sSize = UI.CStr(sSize)
 		If sSize = "none" Then sSize = ""
-		sVariant = Props.GetDefault("Variant", "none")
-		sVariant = UI.CStr(sVariant)
-		If sVariant = "none" Then sVariant = ""
 		sRounded = Props.GetDefault("Rounded", "none")
 		sRounded = UI.CStr(sRounded)
 		If sRounded = "none" Then sRounded = ""
 		sShadow = Props.GetDefault("Shadow", "none")
 		sShadow = UI.CStr(sShadow)
 		If sShadow = "none" Then sShadow = ""
+		sDuration = Props.GetDefault("Duration", "10000")
+		sDuration = UI.CStr(sDuration)
 	End If
 	'
-	UI.AddClassDT("textrotate")
-	If sColor <> "" Then UI.AddColorDT("textrotate", sColor)
-	If sSize <> "" Then UI.AddSizeDT("textrotate", sSize)
-	If sVariant <> "" Then UI.AddClassDT("textrotate-" & sVariant)
+	UI.AddClassDT("text-rotate")
+	If sDuration <> "" Then UI.UpdateClassDT("duration", "duration-" & sDuration)
+	If sColor <> "" Then UI.AddColorDT("text", sColor)
+	If sSize <> "" Then UI.AddSizeDT("text", sSize)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
 	Dim xattrs As String = UI.BuildExAttributes
@@ -159,18 +161,88 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">${sText}</div>"$).Get("#" & mName)
+	' Create outer span (to match DaisyUI examples that use span)
+	mElement = mTarget.Append($"[BANCLEAN]
+		<span id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}">
+			<span id="${mName}items"></span>
+		</span>"$).Get("#" & mName)
+	setText(sText)
 End Sub
 
-Sub setText(text As String)
-	sText = text
-	CustProps.Put("Text", text)
+
+Sub Clear
 	If mElement = Null Then Return
-	UI.SetText(mElement, text)
+	Dim itemx As BANanoElement = BANano.GetElement($"#${mName}items"$)
+	itemx.Empty
+	tPos = 0
+End Sub
+
+Sub AddItem(xText As String)
+	If mElement = Null Then Return
+	Dim itemx As BANanoElement = BANano.GetElement($"#${mName}items"$)
+	tPos = UI.Increment(tPos)
+	itemx.Append($"<span id="${mName}${tPos}">${xText}</span>"$)
+End Sub
+
+Sub setText(vText As String)				'ignoredeadcode
+	sText = vText
+	CustProps.Put("Text", sText)
+	If mElement = Null Then Return
+	' Clear and rebuild items
+	Dim itemx As BANanoElement = BANano.GetElement($"#${mName}items"$)
+	itemx.Empty
+	tPos = 0
+	Dim items As List = UI.StrParse(",", sText)
+	For Each item As String In items
+		tPos = UI.Increment(tPos)
+		itemx.Append($"<span id="${mName}${tPos}">${item}</span>"$)
+	Next
+End Sub
+
+'change the class of items
+Sub SetItemsClass(itemClass As String)
+	Dim iKey As String = $"${mName}items"$
+	iKey = UI.CleanID(iKey)
+	If BANano.Exists($"#${iKey}"$) = False Then Return
+	UI.AddClassByID(iKey, itemClass)
+End Sub
+
+'change the background color of an item
+Sub SetItemBackgroundColor(xPos As Int, bgColor As String)
+	Dim iKey As String = $"${mName}${xPos}"$
+	iKey = UI.CleanID(iKey)
+	If BANano.Exists($"#${iKey}"$) = False Then Return
+	UI.SetBackgroundColorByID(iKey, bgColor)
+End Sub
+
+'change the text color of an item
+Sub SetItemTextColor(xPos As Int, txtColor As String)
+	Dim iKey As String = $"${mName}${xPos}"$
+	iKey = UI.CleanID(iKey)
+	If BANano.Exists($"#${iKey}"$) = False Then Return
+	UI.SetTextColorByID(iKey, txtColor)
+End Sub
+
+'change the class of an item
+Sub SetItemClass(xPos As Int, itemClass As String)
+	Dim iKey As String = $"${mName}${xPos}"$
+	iKey = UI.CleanID(iKey)
+	If BANano.Exists($"#${iKey}"$) = False Then Return
+	UI.AddClassByID(iKey, itemClass)
+End Sub
+
+Sub setDuration(s As String)
+	sDuration = s
+	CustProps.Put("Duration", s)
+	If mElement = Null Then Return
+	UI.UpdateClass(mElement, "duration", "duration-" & sDuration)
+End Sub
+
+Sub getDuration As String
+	Return sDuration
 End Sub
 
 Sub getText As String
-	sText = UI.GetText(mElement)
 	Return sText
 End Sub
 
@@ -179,7 +251,7 @@ Sub setColor(s As String)
 	CustProps.Put("Color", s)
 	If mElement = Null Then Return
 	If s = "" Then s = "none"
-	UI.SetColor(mElement, "color", "textrotate", s)
+	UI.SetColor(mElement, "color", "text", s)
 End Sub
 
 Sub getColor As String
@@ -191,24 +263,11 @@ Sub setSize(s As String)
 	CustProps.Put("Size", s)
 	If mElement = Null Then Return
 	If s = "" Then s = "none"
-	UI.SetSize(mElement, "size", "textrotate", s)
+	UI.SetSize(mElement, "size", "text", s)
 End Sub
 
 Sub getSize As String
 	Return sSize
-End Sub
-
-Sub setVariant(s As String)
-	sVariant = s
-	CustProps.Put("Variant", s)
-	If mElement = Null Then Return
-	If s <> "" And s <> "none" Then
-		UI.AddClass(mElement, "textrotate-" & s)
-	End If
-End Sub
-
-Sub getVariant As String
-	Return sVariant
 End Sub
 
 Sub setVisible(b As Boolean)
