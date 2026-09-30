@@ -97,6 +97,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-aura", "", "Aura")
 	drawermenu.AddItemChild("wnew", "pg-nouislider", "", "NoUI Slider")
 	drawermenu.AddItemChild("wnew", "pg-bottomnav", "", "Bottom Navigation")
 	drawermenu.AddItemChild("wnew", "pg-bankcard", "", "Hover 3D Card")
@@ -503,6 +504,8 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgGridCode.Show
 		Case "accordion"
 			pgAccordion.Show
+		Case "aura"
+			pgAura.Show
 		Case "avatar"
 			pgAvatar.Show
 		Case "badge"

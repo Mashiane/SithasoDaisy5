@@ -12,7 +12,7 @@ End Sub
 
 
 Sub Show
-	App = pgIndex.app
+	app = pgIndex.app
 	BANano.Await(app.ClearPageView)
 	pgIndex.UpdateTitle("SDUI5Grid")
 	'create a container for the page
