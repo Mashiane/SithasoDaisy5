@@ -322,7 +322,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
         		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
         		<div id="${mName}_join" class="join">
           			<div id="${mName}" class="filter join-item w-full"></div>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           		</div>          

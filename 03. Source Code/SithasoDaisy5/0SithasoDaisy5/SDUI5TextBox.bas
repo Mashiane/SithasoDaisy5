@@ -559,7 +559,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 							<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 						</button>
 	          			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"/>
-	          			<div id="${mName}_required" class="indicator join-item hidden">
+	          			<div id="${mName}_required" class="indicator border-none hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">
@@ -591,7 +591,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" data-js="enabled" fill="currentColor" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<input id="${mName}" type="text" class="input join-item tlradius trradius blradius brradius w-full ${mName}"></input>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">
@@ -625,7 +625,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           				<span id="${mName}_legend" class="label">${sLabel}</span>
 						<input id="${mName}" type="text" class="tlradius ${mName}"></input>          				
         			</label>
-					<div id="${mName}_required" class="indicator join-item hidden">
+					<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius flex justify-center items-center">

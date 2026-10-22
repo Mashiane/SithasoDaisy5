@@ -755,6 +755,11 @@ End Sub
 ''	End If		
 'End Sub
 
+'update the document title
+Sub UpdateBrowserTitle(s As String)
+	BANano.Window.SetField("document.title", s)
+End Sub
+
 'update the title of the page
 Sub UpdateTitle(s As String)
 	appnavbar.Title = s

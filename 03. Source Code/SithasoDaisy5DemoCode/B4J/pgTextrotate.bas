@@ -11,12 +11,12 @@ Sub Process_Globals
 	Private SDUI5Container1 As SDUI5Container	'ignore
 	Private SDUI5Row1 As SDUI5Row		'ignore
 	Private SDUI5Column1 As SDUI5Column	'ignore
-	Private SDUI5Textrotate1 As SDUI5TextRotate	'ignore
-	Private SDUI5Textrotate2 As SDUI5TextRotate	'ignore
-	Private SDUI5Textrotate3 As SDUI5TextRotate	'ignore
-	Private SDUI5Textrotate4 As SDUI5TextRotate	'ignore
-	Private SDUI5Textrotate5 As SDUI5TextRotate	'ignore
-	Private SDUI5Textrotate6 As SDUI5TextRotate	'ignore
+	Private SDUI5Textrotate1 As SDUI5Textrotate	'ignore
+	Private SDUI5Textrotate2 As SDUI5Textrotate	'ignore
+	Private SDUI5Textrotate3 As SDUI5Textrotate	'ignore
+	Private SDUI5Textrotate4 As SDUI5Textrotate	'ignore
+	Private SDUI5Textrotate5 As SDUI5Textrotate	'ignore
+	Private SDUI5Textrotate6 As SDUI5Textrotate	'ignore
 	Private SDUI5Label1 As SDUI5Text		'ignore
 	Private SDUI5Label2 As SDUI5Text		'ignore
 	Private SDUI5Label3 As SDUI5Text		'ignore
@@ -175,5 +175,7 @@ Sub Show
 	SDUI5Textrotate6.AddItem("🌱 SCALE")
 	SDUI5Textrotate6.AddItem("🔧 MAINTAIN")
 	SDUI5Textrotate6.AddItem("♻️ REPEAT")
+
+	pgIndex.UpdateTitle("TextRotate Demo")
 
 End Sub

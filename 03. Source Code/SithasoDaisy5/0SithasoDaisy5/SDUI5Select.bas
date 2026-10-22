@@ -433,7 +433,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" disabled selected>${sPlaceholder}</option>	
 					</select>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
@@ -461,7 +461,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
           			<select id="${mName}" class="select join-item tlradius trradius blradius brradius w-full">
 						<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
 					</select>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
@@ -492,7 +492,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
             				<option id="${mName}_placeholder" value="" disabled selected>${sPlaceholder}</option>
             			</select>
         			</label>
-					<div id="${mName}_required" class="indicator join-item hidden">
+					<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
