@@ -156,6 +156,10 @@ Sub setVisible(b As Boolean)
 	CustProps.Put("Visible", b)
 	If mElement = Null Then Return
 	UI.SetVisible(mElement, b)
+	UI.SetVisibleByID($"${mName}_${sParentID}_label"$, b)
+	If b = False Then
+		UI.SetVisibleByID($"${mName}_${sParentID}_content"$, False)
+	End If
 End Sub
 'get Visible
 Sub getVisible As Boolean
@@ -275,9 +279,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
     	<input id="${mName}_${sParentID}" type="radio" name="${sParentID}" value="${mName}"/>
 		<svg-renderer id="${mName}_${sParentID}_icon" class="mr-1" width="${sIconSize}" height="${sIconSize}" style="pointer-events:none;" fill="currentColor" data-js="enabled"></svg-renderer>
 		<span id="${mName}_${sParentID}_text">${sText}</span>
-		<span id="${mName}_${sParentID}_badge" class="ml-1 badge absolute -top-2 -right-2 rounded-full w-6 h-6 flex items-center justify-center p-0 text-xs shadow-md">${sBadge}</div>
+		<span id="${mName}_${sParentID}_badge" class="ml-1 badge absolute -top-2 -right-2 rounded-full w-6 h-6 flex items-center justify-center p-0 text-xs shadow-md">${sBadge}</span>
   	</label>
-  	<div id="${mName}_${sParentID}_content" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
+  	<div id="${mName}_${sParentID}_content" role="tabpanel" class="tab-content bg-base-100 border-base-300 p-6">${sText} Content</div>"$).Get("#" & mName & "_" & sParentID)
 	setActive(bActive)
 	setTextColor(sTextColor)
 	setBackgroundColor(sBackgroundColor)
@@ -320,7 +324,7 @@ Sub setWidth(s As String)
 	sWidth = s
 	CustProps.Put("Width", s)
 	If mElement = Null Then Return
-	UI.SetWidth(mElement, sWidth)
+	UI.SetWidthByID($"${mName}_${sParentID}_label"$, sWidth)
 End Sub
 
 Sub getWidth As String
@@ -413,7 +417,7 @@ Sub setBackgroundColor(s As String)				'ignoredeadcode
 	If mElement = Null Then Return
 	If sBackgroundColor = "" Then Return
 	Dim thisColor As String = $"[--tab-bg:${sBackgroundColor}]"$
-	UI.UpdateClass(mElement, "bg", thisColor)
+	UI.UpdateClassByID($"${mName}_${sParentID}_label"$, "bg", thisColor)
 End Sub
 'set Badge
 Sub setBadge(s As String)				'ignoredeadcode
@@ -449,7 +453,7 @@ Sub setBorderColor(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If sBorderColor = "" Then Return
 	Dim thisColor As String = $"[--tab-border-color:${sBorderColor}]"$
-	UI.UpdateClass(mElement, "bc", thisColor)
+	UI.UpdateClassByID($"${mName}_${sParentID}_label"$, "bc", thisColor)
 End Sub
 
 'set Disabled
@@ -457,10 +461,11 @@ Sub setEnabled(b As Boolean)			'ignoredeadcode
 	bEnabled = b
 	CustProps.put("Enabled", b)
 	If mElement = Null Then Return
+	UI.SetEnabled(mElement, b)
 	If b = True Then
-		UI.RemoveClass(mElement, "tab-disabled")
+		UI.RemoveClassByID($"${mName}_${sParentID}_label"$, "tab-disabled")
 	Else
-		UI.AddClass(mElement, "tab-disabled")
+		UI.AddClassByID($"${mName}_${sParentID}_label"$, "tab-disabled")
 	End If
 End Sub
 'set Text Color
@@ -468,7 +473,7 @@ Sub setTextColor(s As String)			'ignoredeadcode
 	sTextColor = s
 	CustProps.put("TextColor", s)
 	If mElement = Null Then Return
-	If s <> "" Then UI.SetTextColor(mElement, sTextColor)
+	If s <> "" Then UI.SetTextColorByID($"${mName}_${sParentID}_label"$, sTextColor)
 End Sub
 
 Sub getEnabled As Boolean
@@ -503,3 +508,15 @@ End Sub
 Sub getTextColor As String
 	Return sTextColor
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Disabled
+Public Sub setDisabled(b As Boolean)
+	setEnabled(Not(b))
+End Sub
+
+'get Disabled
+Public Sub getDisabled As Boolean
+	Return Not(bEnabled)
+End Sub
+

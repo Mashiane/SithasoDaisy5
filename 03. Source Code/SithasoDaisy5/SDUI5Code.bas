@@ -366,6 +366,11 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	setHasDownload(bHasDownload)
 	setHasBack(bHasBack)
 	setHeight(sHeight)
+	If sContent <> "" Then
+		setContent(sContent)
+	Else If Lines.Size > 0 Then
+		Refresh
+	End If
 End Sub
 
 'set Rounded
@@ -683,7 +688,7 @@ End Sub
 Sub setCaption(l As String)
 	CustProps.put("Caption", l)
 	sCaption = l
-	If mElement = "" Then Return
+	If mElement = Null Then Return
 	UI.SetTextByID($"${mName}_card_title"$, l)
 End Sub
 
@@ -779,9 +784,13 @@ Sub RefreshRaw
 	BANano.GetElement($"#${mName}_code"$).Empty
 	BANano.GetElement($"#${mName}_code"$).SetText(nCode)
 	Dim codeE As BANanoElement = BANano.GetElement($"#${mName}_code"$)
-	Dim Prism As BANanoObject
-	Prism.Initialize("Prism")
-	Prism.RunMethod("highlightElement", codeE.toobject)
+	Try
+		Dim Prism As BANanoObject
+		Prism.Initialize("Prism")
+		Prism.RunMethod("highlightElement", codeE.toobject)
+	Catch
+		Log($"[SDUI5Code.${mName}.SetCode] Prism error: ${LastException.Message}"$)
+	End Try
 End Sub
 
 'update the code contents
@@ -796,9 +805,13 @@ Sub Refresh
 	BANano.GetElement($"#${mName}_code"$).Empty
 	BANano.GetElement($"#${mName}_code"$).SetText(nCode)
 	Dim codeE As BANanoElement = BANano.GetElement($"#${mName}_code"$)
-	Dim Prism As BANanoObject
-	Prism.Initialize("Prism")
-	Prism.RunMethod("highlightElement", codeE.toobject)
+	Try
+		Dim Prism As BANanoObject
+		Prism.Initialize("Prism")
+		Prism.RunMethod("highlightElement", codeE.toobject)
+	Catch
+		Log($"[SDUI5Code.${mName}.Refresh] Prism error: ${LastException.Message}"$)
+	End Try
 End Sub
 
 Sub Download(FileName As String)
@@ -844,7 +857,7 @@ private Sub BeautifySourceCode(sc As String) As String
 			Case "html"
 				Dim res As String = BANano.RunJavascriptMethod("html_beautify", Array(sc))
 			Case "php"
-				Return ""
+				Return sc
 				'Dim res As String = UI.BeautifyPHP(sc)
 			Case "vb"
 				Dim res As String = UI.BeautifyB4X(sc)

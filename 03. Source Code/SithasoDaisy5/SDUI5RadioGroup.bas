@@ -702,6 +702,12 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 End Sub
+
+'get Size
+Public Sub getSize As String
+	Return sSize
+End Sub
+
 'set Value
 Sub setValue(s As String)			'ignoredeadcode
 	sValue = s

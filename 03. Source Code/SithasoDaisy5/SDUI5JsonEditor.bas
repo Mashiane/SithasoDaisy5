@@ -833,3 +833,27 @@ Sub AddToolbarFileUpload(btnID As String, sIcon As String, btnColor As String, b
 	If bMultiple Then BANano.GetElement($"#${mName}_${btnID}_file"$).SetAttr("multiple", "multiple")
 	Return btn
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set ButtonSize
+Public Sub setButtonSize(s As String)
+	sButtonSize = s
+	CustProps.Put("ButtonSize", s)
+End Sub
+
+'get ButtonSize
+Public Sub getButtonSize As String
+	Return sButtonSize
+End Sub
+
+'set ButtonsOutlined
+Public Sub setButtonsOutlined(b As Boolean)
+	bButtonsOutlined = b
+	CustProps.Put("ButtonsOutlined", b)
+End Sub
+
+'get ButtonsOutlined
+Public Sub getButtonsOutlined As Boolean
+	Return bButtonsOutlined
+End Sub
+

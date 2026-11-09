@@ -419,6 +419,12 @@ Sub setOptions(s As String)			'ignoredeadcode
 	mElement.RunMethod("setOptionsMV", s)
 End Sub
 
+'get Options
+Public Sub getOptions As String
+	Return sRawOptions
+End Sub
+
+
 'set Rounded
 'options: none|rounded|2xl|3xl|full|lg|md|sm|xl|0
 Sub setRounded(s As String)

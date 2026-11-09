@@ -18,6 +18,7 @@ Public Sub Initialize
 		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesClient)' should be added!"$)
 		Return
 	End If
+	BANano.DependsOnAsset("client.base.min.js")
 	client.Initialize2("ClientJS", Null)
 End Sub
 

@@ -513,6 +513,12 @@ Sub setValueTextColor(s As String)			'ignoredeadcode
 	If s <> "" Then UI.SetTextColorbyid($"${mName}_value"$, s)
 End Sub
 
+'get ValueTextColor
+Public Sub getValueTextColor As String
+	Return sValueTextColor
+End Sub
+
+
 'get value
 Sub getValue As String
 	If mElement = Null Then Return ""

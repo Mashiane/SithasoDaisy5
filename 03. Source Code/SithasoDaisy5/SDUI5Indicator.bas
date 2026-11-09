@@ -279,3 +279,15 @@ End Sub
 Sub getTypeOf As String
 	Return sTypeOf
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Size
+Public Sub setSize(s As String)
+	setIndicatorSize(s)
+End Sub
+
+'get Size
+Public Sub getSize As String
+	Return sIndicatorSize
+End Sub
+

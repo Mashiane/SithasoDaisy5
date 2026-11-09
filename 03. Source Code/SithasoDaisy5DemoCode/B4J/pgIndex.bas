@@ -207,6 +207,28 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-officeribbon", "", "Office Ribbon")
+	'
+	'drawermenu.AddItemParent("wnew", "ribbon", "", "Ribbon")
+	'drawermenu.AddItemChild("ribbon", "pg-sdui5ribbonweb", "", "Showcase")
+	'drawermenu.AddItemChild("ribbon", "pg-sdui5ribbonworkspace", "", "Workspace")
+	'drawermenu.AddItemChild("ribbon", "pg-sdui5ribbonoffice", "", "Office (SDUI5)")
+	'drawermenu.AddItemChild("ribbon", "pg-sdui5ribbonmvvm", "", "MVVM")
+	'drawermenu.AddItemChild("ribbon", "pg-sdui5ribbonx", "", "RibbonX XML")
+	'
+	drawermenu.AddItemChild("wnew", "pg-aos", "", "AOS (Animate On Scroll)")
+	drawermenu.AddItemChild("wnew", "pg-enjoyhint", "", "Enjoy Hint")
+	drawermenu.AddItemChild("wnew", "pg-fullcalendar", "", "Full Calendar")
+	drawermenu.AddItemChild("wnew", "pg-evocalendar", "", "Evo Calendar")
+	drawermenu.AddItemChild("wnew", "pg-pivot", "", "Pivot")
+	drawermenu.AddItemChild("wnew", "pg-tooltip", "", "Tooltip")
+	drawermenu.AddItemChild("wnew", "pg-leaflet", "", "Leaflet Map")
+	drawermenu.AddItemChild("wnew", "pg-bottomdrawer", "", "Bottom Drawer")
+	drawermenu.AddItemChild("wnew", "pg-code", "", "Code")
+	drawermenu.AddItemChild("wnew", "pg-toastcharts", "", "Toast Charts")
+	drawermenu.AddItemChild("wnew", "pg-dock", "", "Dock")
+	drawermenu.AddItemChild("wnew", "pg-dockxs", "", "Dock (XS)")
+	drawermenu.AddItemChild("wnew", "pg-dockcolor", "", "Dock (Color)")
 	drawermenu.AddItemChild("wnew", "pg-textrotate", "", "TextRotate")
 	drawermenu.AddItemChild("wnew", "pg-aura", "", "Aura")
 	drawermenu.AddItemChild("wnew", "pg-swiper", "", "Swiper")
@@ -304,11 +326,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemParent("components", "navigation", "", "Navigation")
 	drawermenu.AddItemChild("navigation", "pg-breadcrumbs", "", "Breadcrumbs")
 	'
-	drawermenu.AddItemParent("navigation", "docks", "", "Dock")
-	drawermenu.AddItemChild("docks", "pg-dock", "", "Dock")
-	drawermenu.AddItemChild("docks", "pg-dockxs", "", "Dock (XS)")
-	drawermenu.AddItemChild("docks", "pg-dockcolor", "", "Dock (Color)")
-	drawermenu.AddItemChild("navigation", "pg-bottomdrawer", "", "Bottom Drawer")
 	drawermenu.AddItemChild("navigation", "pg-link", "", "Link")
 	drawermenu.AddItemChild("navigation", "pg-menu", "", "Menu")
 	drawermenu.AddItemChild("navigation", "pg-menu1", "", "Menu (More)")
@@ -326,7 +343,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("feedback", "pg-radialprogress", "", "Radial Progress")
 	drawermenu.AddItemChild("feedback", "pg-skeleton", "", "Skeleton")
 	drawermenu.AddItemChild("feedback", "pg-toast", "", "Toast")
-	drawermenu.AddItemChild("feedback", "pg-tooltip", "", "Tooltip")
 	'
 	drawermenu.AddItemParent("components", "dinput", "", "Data Input")
 	drawermenu.AddItemChild("dinput", "pg-datetimeline", "", "Calendars")
@@ -364,7 +380,6 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("mockup", "pg-phone", "", "Phone")
 	drawermenu.SetItemBadge("pg-phone", "bugs", "error")
 	drawermenu.AddItemChild("mockup", "pg-browser", "", "Browser")
-	drawermenu.AddItemChild("mockup", "pg-code", "", "Code")
 	drawermenu.AddItemChild("mockup", "pg-window", "", "Window")
 	'
 	drawermenu.AddItemParent("", "plugins", "./assets/gears-solid.svg", "Plugins")
@@ -397,17 +412,12 @@ Sub CreateDrawerMenu
 	drawermenu.AddItemChild("trees", "pg-treeview", "", "Tree View")
 	'
 	drawermenu.AddItemParent("plugins", "charts", "", "Charts")
-	drawermenu.AddItemChild("charts", "pg-toastcharts", "", "Toast Charts")
 	drawermenu.AddItemChild("charts", "pg-trendchart", "", "Trend Charts")
-	drawermenu.AddItemChild("charts", "pg-pivot", "", "Pivot")
 	drawermenu.AddItemChild("charts", "pg-infobox", "", "Infobox")
 	'
 	drawermenu.AddItemParent("plugins", "other", "", "Other")
 	drawermenu.AddItemChild("other", "pg-preferences", "", "Preferences")
 	drawermenu.AddItemChild("other", "pg-whatsapp", "", "WhatsApp")
-	drawermenu.AddItemChild("other", "pg-officeribbon", "", "Office Ribbon")
-	drawermenu.AddItemChild("other", "pg-leaflet", "", "Leaflet Map")
-	drawermenu.AddItemChild("other", "pg-fullcalendar", "", "Full Calendar")
 	
 
 End Sub
@@ -475,6 +485,8 @@ Private Sub drawermenu_ItemClick (item As String)
 				pgHoverGallery.show
 			Case "fullcalendar"
 				pgFullCalendar.Show
+			Case "evocalendar"
+				pgEvoCalendar.Show
 			Case "phpsqlite"
 				pgPHPSQLite.Show
 			Case "phpmysql"
@@ -637,6 +649,10 @@ Private Sub drawermenu_ItemClick (item As String)
 			pgCountdown.Show
 		Case "diff"
 			pgDiff.Show
+		Case "aos"
+			pgAOS.Show
+		Case "enjoyhint"
+			pgEnjoyHint.Show
 		Case "kbd"
 			pgKbd.Show
 		Case "list"

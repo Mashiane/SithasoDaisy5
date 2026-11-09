@@ -759,6 +759,12 @@ Sub setHasActions(b As Boolean)				'ignoredeadcode
 	End If
 End Sub
 
+'get HasActions
+Public Sub getHasActions As Boolean
+	Return bHasActions
+End Sub
+
+
 '<code>
 'Sub tblName_downloadtoolbar (e As BANanoEvent)
 'End Sub
@@ -792,7 +798,13 @@ Sub setHasUpload(b As Boolean)				'ignoredeadcode
 	BANano.GetElement($"#${mName}_upload"$).off("click")
 	BANano.GetElement($"#${mName}_upload"$).On("click", Me, "UploadHandler")
 	BANano.GetElement($"#${mName}_file"$).On("change", mCallBack, $"${mName}_FileChange"$)
-End Sub	
+End Sub
+
+'get HasUpload
+Public Sub getHasUpload As Boolean
+	Return bHasUpload
+End Sub
+	
 
 private Sub UploadHandler(e As BANanoEvent)			'ignoredeadcode
 	e.PreventDefault
@@ -873,6 +885,12 @@ Sub setHasRefresh(b As Boolean)			'ignoredeadcode
 	AddToolbarActionButtonIcon("refresh", "./assets/arrows-rotate-solid.svg", "#2196f3", "#ffffff")
 End Sub
 
+'get HasRefresh
+Public Sub getHasRefresh As Boolean
+	Return bHasRefresh
+End Sub
+
+
 '<code>
 'Sub tblName_back (e As BANanoEvent)
 'End Sub
@@ -885,6 +903,12 @@ Sub setHasBack(b As Boolean)				'ignoredeadcode
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("back", "./assets/arrow-right-from-bracket-solid.svg", "#3f51b5", "#ffffff")
 End Sub
+
+'get HasBack
+Public Sub getHasBack As Boolean
+	Return bHasBack
+End Sub
+
 
 'move the back button to the end
 Sub MoveBackButton							'ignoredeadcode
@@ -911,6 +935,12 @@ Sub setHasDelete(b As Boolean)				'ignoredeadcode
 	AddToolbarActionButtonIcon("delete", "./assets/trash-solid.svg", "#ff9900", "#ffffff")
 End Sub
 
+'get HasDelete
+Public Sub getHasDelete As Boolean
+	Return bHasDelete
+End Sub
+
+
 '<code>
 'Sub tblName_save (e As BANanoEvent)
 'End Sub
@@ -924,6 +954,12 @@ Sub setHasSave(b As Boolean)				'ignoredeadcode
 	AddToolbarActionButtonIcon("save", "./assets/floppy-disk-solid.svg", "#7289da", "#ffffff")
 End Sub
 
+'get HasSave
+Public Sub getHasSave As Boolean
+	Return bHasSave
+End Sub
+
+
 '<code>
 'Sub tblName_add (e As BANanoEvent)
 'End Sub
@@ -936,6 +972,12 @@ Sub setHasAddNew(b As Boolean)			'ignoredeadcode
 	If mElement = Null Then Return
 	AddToolbarActionButtonIcon("add", "./assets/plus-solid.svg", "#418448", "#ffffff")
 End Sub
+
+'get HasAddNew
+Public Sub getHasAddNew As Boolean
+	Return bHasAddNew
+End Sub
+
 
 
 'get Add New Tooltip
@@ -6884,3 +6926,33 @@ Sub PropertyBagFromJSON(fContents As String)
 	Dim pl As List = BANano.FromJson(fContents)
 	PropertyBagFromList(pl)
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set DownloadTooltip
+Public Sub setDownloadTooltip(s As String)
+	sDownloadTooltip = s
+	CustProps.Put("DownloadTooltip", s)
+End Sub
+
+'set TooltipPosition
+Public Sub setTooltipPosition(s As String)
+	sTooltipPosition = s
+	CustProps.Put("TooltipPosition", s)
+End Sub
+
+'get TooltipPosition
+Public Sub getTooltipPosition As String
+	Return sTooltipPosition
+End Sub
+
+'set ActionType
+Public Sub setActionType(s As String)
+	sActionType = s
+	CustProps.Put("ActionType", s)
+End Sub
+
+'get ActionType
+Public Sub getActionType As String
+	Return sActionType
+End Sub
+

@@ -23,24 +23,25 @@ Sub Show
 	bdrawer1.BackgroundColor = "base-300"
 	bdrawer1.Breakpoints = ""
 	bdrawer1.MaxWidth = "90%"
-	bdrawer1.Showbackdrop = False
+	bdrawer1.Showbackdrop = True
 	BANano.Await(bdrawer1.AddComponent)
 	'
 	chart1.Initialize(Me, "chart1", "chart1")
 	chart1.ParentID = "bdrawer1content"
-	chart1.Height = "400"
+	chart1.Height = "350px"
 	chart1.SeriesDataLabelsPieSeriesNameVisible = False
-	chart1.Width = "700"
+	chart1.Width = "100%"
 	BANano.Await(chart1.AddComponent)
 	pgIndex.UpdateTitle("SDUI5BottomDrawer")
 	bdrawer1.Open = True
+	BANano.Sleep(350)
 	BANano.Await(BuildChart)
 End Sub
 
 Sub BuildChart
 	chart1.Clear
-	chart1.Width = 300
-	chart1.Height = 300
+	chart1.Width = "100%"
+	chart1.Height = "350px"
 	chart1.ChartType = chart1.CHARTTYPE_GAUGE
 	chart1.AddSeries("Speed", Array(80))
 	chart1.TitleText = "Speedometer"
@@ -58,4 +59,3 @@ Sub BuildChart
 	chart1.SeriesDataLabelsOffsetY = -200
 	chart1.Refresh
 End Sub
-

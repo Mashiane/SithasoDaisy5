@@ -247,7 +247,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		End If
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
-	mElement = mTarget.Append($"[BANCLEAN]<doc id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></doc>"$).Get("#" & mName)
+	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
 '	setVisible(bVisible)
 End Sub
 

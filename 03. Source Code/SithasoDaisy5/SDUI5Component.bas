@@ -410,3 +410,18 @@ End Sub
 public Sub getParentID() As String
 	Return sParentID
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Text
+Public Sub setText(s As String)
+	sText = s
+	CustProps.Put("Text", s)
+	If mElement = Null Then Return
+	UI.SetText(mElement, s)
+End Sub
+
+'get Text
+Public Sub getText As String
+	Return sText
+End Sub
+

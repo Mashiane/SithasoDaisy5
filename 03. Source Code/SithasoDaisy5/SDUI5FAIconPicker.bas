@@ -64,6 +64,7 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 		Return
 	End If
 	BANano.DependsOnAsset("font-awesome-picker.min.js")
+	BANano.DependsOnAsset("jszip.min.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -409,3 +410,18 @@ End Sub
 Sub getWidth As String
 	Return sWidth
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set BackgroundColor
+Public Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.Put("BackgroundColor", s)
+	If mElement = Null Then Return
+	UI.SetBackgroundColor(mElement, s)
+End Sub
+
+'get BackgroundColor
+Public Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+

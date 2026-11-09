@@ -531,3 +531,15 @@ Sub AddStyle(k As String, v As String)
 	UI.AddStyle(mElement, k, v)
 End Sub
 
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set ListItem
+Public Sub setListItem(b As Boolean)
+	bListItem = b
+	CustProps.Put("ListItem", b)
+End Sub
+
+'get ListItem
+Public Sub getListItem As Boolean
+	Return bListItem
+End Sub
+

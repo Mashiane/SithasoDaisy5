@@ -1,0 +1,72 @@
+﻿AppType=JavaFX
+Build1=Default,b4j.example
+File1=fa-brands-400.ttf
+File10=fontawesome.min.css
+File2=fa-brands-400.woff2
+File3=FALICENSE.txt
+File4=fa-regular-400.ttf
+File5=fa-regular-400.woff2
+File6=fa-solid-900.ttf
+File7=fa-solid-900.woff2
+File8=fa-v4compatibility.ttf
+File9=fa-v4compatibility.woff2
+FileGroup1=Default Group
+FileGroup10=Default Group
+FileGroup2=Default Group
+FileGroup3=Default Group
+FileGroup4=Default Group
+FileGroup5=Default Group
+FileGroup6=Default Group
+FileGroup7=Default Group
+FileGroup8=Default Group
+FileGroup9=Default Group
+Group=Default Group
+Library1=jcore
+Library2=jfx
+Library3=banano
+Module1=BANanoFontAwesome
+NumberOfFiles=10
+NumberOfLibraries=3
+NumberOfModules=1
+Version=10.2
+@EndOfDesignText@
+#Region Project Attributes 
+	#MainFormWidth: 600
+	#MainFormHeight: 600 
+	#IgnoreWarnings: 16, 10, 14, 15	
+	#LibraryAuthor: Anele Mbanga (Mashy)
+	#LibraryVersion: 1.00
+#End Region
+
+Sub Process_Globals
+	Private BANano As BANano 'ignore
+	Private LibVersion As String = "1.00"
+End Sub
+
+Sub AppStart (Form1 As Form, Args() As String)	
+	' The name of your library. Strongly suggested to let it begin with BANano!
+	BANano.Initialize("BANano", "BANanoFontAwesome", DateTime.Now)
+	
+	' add any extra files you need for your library.  Files must be in the /Files folder of the project	
+	BANano.Header.AddCSSFile("fontawesome.min.css")
+	'BANano.Header.AddJavascriptFile("extra.min.js")
+			
+	' start the build
+	#if release
+		BANano.BuildAsB4Xlib(LibVersion) 'version
+	#else
+		BANano.Build(File.DirApp)
+	#end if
+	ExitApplication
+End Sub
+
+'Return true to allow the default exceptions handler to handle the uncaught exception.
+Sub Application_Error (Error As Exception, StackTrace As String) As Boolean
+	Return True
+End Sub
+
+' HERE STARTS YOUR APP
+' you can use the Main (only) to do some tests on your library
+Sub BANano_Ready()
+	
+End Sub

@@ -4,6 +4,7 @@ ModulesStructureVersion=1
 Type=Class
 Version=10.2
 @EndOfDesignText@
+'ribbon generator
 'https://crg.syncfusion.com/
 #IgnoreWarnings:12
 #Event: ColorChange (value As String)
@@ -78,6 +79,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
+	If BANano.AssetsIsDefined("OfficeRibbon") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesOfficeRibbon)' should be added for '${Name}'"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -1194,3 +1199,16 @@ End Sub
 Sub getWidth As String
 	Return sWidth
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set LicenseKey
+Public Sub setLicenseKey(s As String)
+	sLicenseKey = s
+	CustProps.Put("LicenseKey", s)
+End Sub
+
+'get LicenseKey
+Public Sub getLicenseKey As String
+	Return sLicenseKey
+End Sub
+

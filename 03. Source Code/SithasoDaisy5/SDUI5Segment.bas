@@ -41,6 +41,7 @@ Sub Class_Globals
 	Private BANano As BANano   'ignore
 	Private sParentID As String = ""
 	Private bVisible As Boolean = True	'ignore
+	Private bEnabled As Boolean = True	'ignore
 	Private sRawOptions As String = "btn1=Button 1; btn2=Button 2; btn3=Button 3"
 	Public Tag As Object
 	Private sActive As String = "btn1"
@@ -526,3 +527,18 @@ End Sub
 Sub getDisabled As String
 	Return sDisabled
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Enabled
+Public Sub setEnabled(b As Boolean)
+	bEnabled = b
+	CustProps.Put("Enabled", b)
+	If mElement = Null Then Return
+	UI.SetEnabled(mElement, b)
+End Sub
+
+'get Enabled
+Public Sub getEnabled As Boolean
+	Return bEnabled
+End Sub
+

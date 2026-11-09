@@ -223,6 +223,12 @@ Sub setNoWrap(b As Boolean)
 	End If
 End Sub
 
+'get NoWrap
+Public Sub getNoWrap As Boolean
+	Return bNoWrap
+End Sub
+
+
 'link to an existing element
 Sub LinkExisting			'ignoredeadcode
 	mElement = BANano.GetElement($"#${mName}"$)	

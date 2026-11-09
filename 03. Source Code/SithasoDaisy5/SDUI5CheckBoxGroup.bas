@@ -744,6 +744,12 @@ Sub setSize(s As String)
 	sSize = s
 	CustProps.put("Size", s)
 End Sub
+
+'get Size
+Public Sub getSize As String
+	Return sSize
+End Sub
+
 'get Btn
 'get Checked Color
 Sub getCheckedColor As String

@@ -18,8 +18,9 @@ Version=10.3
 #DesignerProperty: Key: TextColor, DisplayName: Text Color, FieldType: Color, DefaultValue: #FFFFFFFF, Description: Text Color
 #DesignerProperty: Key: GradientActive, DisplayName: GradientActive, FieldType: Boolean, DefaultValue: True, Description: Gradient should be set
 #DesignerProperty: Key: Gradient, DisplayName: Gradient, FieldType: String, DefaultValue: bl_tr, Description: Gradient, List: bl_tr|bottom_top|br_tl|left_right|right_left|tl_br|top_bottom|tr_bl
-#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Gradient Color 1.
-#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Gradient Color 2.
+#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Description: Gradient Color 1.
+#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Description: Gradient Color 2.
+#DesignerProperty: Key: BackgroundColor, DisplayName: Background Color, FieldType: String, DefaultValue: neutral, Description: Background Color
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 100, Description: Width in Tailwind units
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: , Description: Height CSS value
 #DesignerProperty: Key: Rounded, DisplayName: Rounded, FieldType: String, DefaultValue: 2xl, Description: Rounded, List: 0|2xl|3xl|full|lg|md|none|rounded|sm|xl
@@ -70,6 +71,7 @@ Sub Class_Globals
 	Private sGradient As String = "bl_tr"
 	Private sGradientColor1 As String
 	Private sGradientColor2 As String
+	Private sBackgroundColor As String = "neutral"
 End Sub
 
 'initialize the custom view class
@@ -107,8 +109,9 @@ Private Sub SetDefaults
 	CustProps.Put("RawAttributes", "")
 	CustProps.Put("GradientActive", True)                   'Boolean
 	CustProps.Put("Gradient", "bl_tr")                            'String (empty)
-	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")               'Color
-	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")               'Color
+	CustProps.Put("GradientColor1", "#f86194")               'Color
+	CustProps.Put("GradientColor2", "#968918")               'Color
+	CustProps.Put("BackgroundColor", "neutral")
 End Sub
 
 ' returns the element id
@@ -300,10 +303,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", True)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "bl_tr")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
+		sBackgroundColor = Props.GetDefault("BackgroundColor", "neutral")
+		sBackgroundColor = UI.CStr(sBackgroundColor)
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If
@@ -362,6 +367,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bGradientActive Then
 		Dim agradient As String = UI.GetActualGradient(sGradient)
 		UI.SetLinearGradientByID($"${mName}_card"$, agradient, sGradientColor1, sGradientColor2)
+	Else
+		If sBackgroundColor <> "" Then UI.SetBackgroundColorByID($"${mName}_card"$, sBackgroundColor)
 	End If
 	UI.OnEvent(mElement, "click", mCallBack, $"${mEventName}_click"$)
 End Sub
@@ -497,3 +504,87 @@ End Sub
 Sub getShadow As String
 	Return sShadow
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Background Color
+Public Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.Put("BackgroundColor", s)
+	If mElement = Null Then Return
+	If bGradientActive = False And s <> "" Then
+		UI.SetBackgroundColorByID($"${mName}_card"$, sBackgroundColor)
+	End If
+End Sub
+
+'get Background Color
+Public Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+
+'set GradientActive
+Public Sub setGradientActive(b As Boolean)
+	bGradientActive = b
+	CustProps.Put("GradientActive", b)
+	If mElement = Null Then Return
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradientByID($"${mName}_card"$, agradient, sGradientColor1, sGradientColor2)
+	Else
+		UI.SetStyleByID($"${mName}_card"$, "background-image", "")
+		If sBackgroundColor <> "" Then UI.SetBackgroundColorByID($"${mName}_card"$, sBackgroundColor)
+	End If
+End Sub
+
+'get GradientActive
+Public Sub getGradientActive As Boolean
+	Return bGradientActive
+End Sub
+
+'set Gradient
+Public Sub setGradient(s As String)
+	sGradient = s
+	CustProps.Put("Gradient", s)
+	If mElement = Null Then Return
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradientByID($"${mName}_card"$, agradient, sGradientColor1, sGradientColor2)
+	End If
+End Sub
+
+'get Gradient
+Public Sub getGradient As String
+	Return sGradient
+End Sub
+
+'set GradientColor1
+Public Sub setGradientColor1(s As String)
+	sGradientColor1 = UI.rgbaToHexAuto(s)
+	CustProps.Put("GradientColor1", sGradientColor1)
+	If mElement = Null Then Return
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradientByID($"${mName}_card"$, agradient, sGradientColor1, sGradientColor2)
+	End If
+End Sub
+
+'get GradientColor1
+Public Sub getGradientColor1 As String
+	Return sGradientColor1
+End Sub
+
+'set GradientColor2
+Public Sub setGradientColor2(s As String)
+	sGradientColor2 = UI.rgbaToHexAuto(s)
+	CustProps.Put("GradientColor2", sGradientColor2)
+	If mElement = Null Then Return
+	If bGradientActive Then
+		Dim agradient As String = UI.GetActualGradient(sGradient)
+		UI.SetLinearGradientByID($"${mName}_card"$, agradient, sGradientColor1, sGradientColor2)
+	End If
+End Sub
+
+'get GradientColor2
+Public Sub getGradientColor2 As String
+	Return sGradientColor2
+End Sub
+

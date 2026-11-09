@@ -403,8 +403,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sShadow = UI.CStr(sShadow)
 	End If
 	'
-	UI.AddStyleDT("width", sWidth)
-	UI.AddStyleDT("height", sHeight)
+	Dim sFixW As String = sWidth
+	If BANano.IsNumber(sFixW) Then sFixW = sFixW & "px"
+	Dim sFixH As String = sHeight
+	If BANano.IsNumber(sFixH) Then sFixH = sFixH & "px"
+	UI.AddStyleDT("width", sFixW)
+	UI.AddStyleDT("height", sFixH)
 	If sRounded <> "" Then UI.AddRoundedDT(sRounded)
 	If bRoundedBox = True Then UI.AddClassDT("rounded-box")
 	If sShadow <> "" Then UI.AddShadowDT(sShadow)
@@ -495,6 +499,7 @@ Sub setHeight(s As String)
 	CustProps.put("Height", s)
 	If mElement = Null Then Return
 	If sHeight = "" Then Return
+	If BANano.IsNumber(sHeight) Then sHeight = sHeight & "px"
 	UI.SetStyle(mElement, "height", sHeight)
 End Sub
 
@@ -644,8 +649,8 @@ Sub setWidth(s As String)
 	CustProps.put("Width", s)
 	If mElement = Null Then Return
 	If sWidth = "" Then Return
-'	If BANano.IsNumber(sWidth) Then sWidth = sWidth & "px"
-	UI.SetWidth(mElement, sWidth)
+	If BANano.IsNumber(sWidth) Then sWidth = sWidth & "px"
+	UI.SetStyle(mElement, "width", sWidth)
 End Sub
 
 'set X axis Date Format

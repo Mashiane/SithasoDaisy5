@@ -382,7 +382,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	        		<legend id="${mName}_legend" class="fieldset-legend">${sLabel}</legend>
 	        		<div id="${mName}_join" class="join">
 	          			<input id="${mName}" type="file" class="file-input file-input-bordered join-item tlradius trradius blradius brradius w-full"/>
-	          			<div id="${mName}_required" class="indicator join-item hidden">
+	          			<div id="${mName}_required" class="indicator border-none hidden">
 	            			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
 	          			</div>
 	          		</div>          
@@ -398,7 +398,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mElement = mTarget.Append($"[BANCLEAN]
 				<div id="${mName}_control" class="join ${xclasses}" ${xattrs} style="${xstyles}">
           			<input id="${mName}" type="file" class="file-input file-input-bordered join-item tlradius trradius blradius brradius w-full"></input>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
         		</div>"$).Get("#" & mName)

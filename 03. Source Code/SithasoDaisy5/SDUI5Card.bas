@@ -559,6 +559,12 @@ Sub setHoverGallery(b As Boolean)				'ignoredeadcode
 	End If
 End Sub
 
+'get HoverGallery
+Public Sub getHoverGallery As Boolean
+	Return bHoverGallery
+End Sub
+
+
 
 'set Shrink
 'options: 0|1|none

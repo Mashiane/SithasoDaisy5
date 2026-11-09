@@ -28,9 +28,9 @@ Sub Show
 	SDUI5Button1.ParentID = "SDUI5Dock1"
 	SDUI5Button1.DockItem = True
 	SDUI5Button1.IconSize = "none"
-	'SDUI5Button1.Image = "./assets/home.svg"
-	'SDUI5Button1.ImageHeight = "24px"
-	'SDUI5Button1.ImageWidth = "24px"
+	SDUI5Button1.Image = "./assets/home.svg"
+	SDUI5Button1.ImageHeight = "24px"
+	SDUI5Button1.ImageWidth = "24px"
 	SDUI5Button1.Size = "none"
 	SDUI5Button1.Text = "Home"
 	BANano.Await(SDUI5Button1.AddComponent)
@@ -40,9 +40,9 @@ Sub Show
 	SDUI5Button2.Active = True
 	SDUI5Button2.DockItem = True
 	SDUI5Button2.IconSize = "none"
-	'SDUI5Button2.Image = "./assets/inboxcolor.svg"
-	'SDUI5Button2.ImageHeight = "24px"
-	'SDUI5Button2.ImageWidth = "24px"
+	SDUI5Button2.Image = "./assets/inboxcolor.svg"
+	SDUI5Button2.ImageHeight = "24px"
+	SDUI5Button2.ImageWidth = "24px"
 	SDUI5Button2.Size = "none"
 	SDUI5Button2.Text = "Inbox"
 	BANano.Await(SDUI5Button2.AddComponent)
@@ -51,9 +51,9 @@ Sub Show
 	SDUI5Button3.ParentID = "SDUI5Dock1"
 	SDUI5Button3.DockItem = True
 	SDUI5Button3.IconSize = "none"
-	'SDUI5Button3.Image = "./assets/gearcolor.svg"
-	'SDUI5Button3.ImageHeight = "24px"
-	'SDUI5Button3.ImageWidth = "24px"
+	SDUI5Button3.Image = "./assets/gearcolor.svg"
+	SDUI5Button3.ImageHeight = "24px"
+	SDUI5Button3.ImageWidth = "24px"
 	SDUI5Button3.Size = "none"
 	SDUI5Button3.Text = "Settings"
 	BANano.Await(SDUI5Button3.AddComponent)

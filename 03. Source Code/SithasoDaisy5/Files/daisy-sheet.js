@@ -265,6 +265,10 @@ class DaisySheetModal extends HTMLElement {
     }
 
     hide() {
+        if (this._backdrop) {
+            this._backdrop.style.opacity = '0';
+            this._backdrop.style.pointerEvents = 'none';
+        }
         if (this._modal) {
             const duration = parseInt(this.duration, 10) || 300;
             this._modal.style.transition = `transform ${duration}ms cubic-bezier(0.4,0,0.2,1), height 0.7s cubic-bezier(0.4,0,0.2,1)`;
@@ -276,8 +280,21 @@ class DaisySheetModal extends HTMLElement {
     _toggleBackdrop() {
         const backdrop = this.querySelector(`#${this.id}bc`);
         if (!backdrop) return;
-        if (this.open && this.showBackdrop) { backdrop.style.opacity = '1'; backdrop.style.pointerEvents = 'auto'; }
-        else { backdrop.style.opacity = '0'; backdrop.style.pointerEvents = 'none'; }
+        if (this.open) {
+            if (this.showBackdrop) {
+                backdrop.style.opacity = '1';
+                backdrop.style.pointerEvents = 'auto';
+            } else if (this.backdropDismiss) {
+                backdrop.style.opacity = '0';
+                backdrop.style.pointerEvents = 'auto';
+            } else {
+                backdrop.style.opacity = '0';
+                backdrop.style.pointerEvents = 'none';
+            }
+        } else {
+            backdrop.style.opacity = '0';
+            backdrop.style.pointerEvents = 'none';
+        }
     }
 
     _attachBackdropEvents() {

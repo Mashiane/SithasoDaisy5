@@ -524,7 +524,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden"></svg-renderer>
 					</button>
           			<daisy-multiselect id="${mName}" class="join-item tlradius trradius blradius brradius w-full"></daisy-multiselect>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">
@@ -550,7 +550,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 						<svg-renderer id="${mName}_prepend_icon" style="pointer-events:none;" fill="currentColor" data-js="enabled" data-src="${sPrependIcon}" class="hidden ${sPrependIcon}"></svg-renderer>
 					</button>
           			<daisy-multiselect id="${mName}" class="join-item tlradius trradius blradius brradius w-full"></daisy-multiselect>
-          			<div id="${mName}_required" class="indicator join-item hidden">
+          			<div id="${mName}_required" class="indicator border-none hidden">
             			<span id="${mName}_badge" class="indicator-item badge badge-error size-2 p-0 hidden"></span>
           			</div>
           			<button id="${mName}_append" class="btn join-item hidden trradius brradius">

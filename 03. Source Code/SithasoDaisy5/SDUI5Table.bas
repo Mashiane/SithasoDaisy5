@@ -11748,3 +11748,38 @@ Sub FirstColumnVisible
 	BANano.Await(SetColumnVisible(sName, True))
 	BANano.Await(SetColumnVisibleOnColumnChooser(sName, True))
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set TrapRowClick
+Public Sub setTrapRowClick(b As Boolean)
+	bTrapRowClick = b
+	CustProps.Put("TrapRowClick", b)
+End Sub
+
+'get TrapRowClick
+Public Sub getTrapRowClick As Boolean
+	Return bTrapRowClick
+End Sub
+
+'set DownloadToolbarTooltip
+Public Sub setDownloadToolbarTooltip(s As String)
+	sDownloadToolbarTooltip = s
+	CustProps.Put("DownloadToolbarTooltip", s)
+End Sub
+
+'get DownloadToolbarTooltip
+Public Sub getDownloadToolbarTooltip As String
+	Return sDownloadToolbarTooltip
+End Sub
+
+'set ExportToCsv
+Public Sub setExportToCsv(b As Boolean)
+	bExportToCsv = b
+	CustProps.Put("ExportToCsv", b)
+End Sub
+
+'get ExportToCsv
+Public Sub getExportToCsv As Boolean
+	Return bExportToCsv
+End Sub
+

@@ -38,8 +38,8 @@ Version=10.3
 #DesignerProperty: Key: FontItalic, DisplayName: Font Italic, FieldType: Boolean, DefaultValue: False, Description: Font Italic
 #DesignerProperty: Key: GradientActive, DisplayName: GradientActive, FieldType: Boolean, DefaultValue: false, Description: Gradient should be set
 #DesignerProperty: Key: Gradient, DisplayName: Gradient, FieldType: String, DefaultValue: , Description: Gradient, List: bl_tr|bottom_top|br_tl|left_right|right_left|tl_br|top_bottom|tr_bl
-#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Gradient Color 1.
-#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Gradient Color 2.
+#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Description: Gradient Color 1.
+#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Description: Gradient Color 2.
 #DesignerProperty: Key: MarginLeft, DisplayName: Margin Left, FieldType: String, DefaultValue: , Description: Margin Left
 #DesignerProperty: Key: MarginRight, DisplayName: Margin Right, FieldType: String, DefaultValue: , Description: Margin Right
 #DesignerProperty: Key: MarginTop, DisplayName: Margin Top, FieldType: String, DefaultValue: , Description: Margin Top
@@ -180,8 +180,8 @@ private Sub SetDefaults
 	CustProps.Put("FontItalic", False)                       'Boolean
 	CustProps.Put("GradientActive", False)                   'Boolean
 	CustProps.Put("Gradient", "")                            'String (empty)
-	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")               'Color
-	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")               'Color
+	CustProps.Put("GradientColor1", "#f86194")               'Color
+	CustProps.Put("GradientColor2", "#968918")               'Color
 	CustProps.Put("MarginLeft", "")                          'String (empty)
 	CustProps.Put("MarginRight", "")                         'String (empty)
 	CustProps.Put("MarginTop", "")                           'String (empty)
@@ -407,10 +407,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", False)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 	End If
@@ -841,3 +841,49 @@ End Sub
 Sub getWrapText As Boolean
 	Return bWrapText
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set FontAwesomeIcon
+Public Sub setFontAwesomeIcon(s As String)
+	sFontAwesomeIcon = s
+	CustProps.Put("FontAwesomeIcon", s)
+End Sub
+
+'get FontAwesomeIcon
+Public Sub getFontAwesomeIcon As String
+	Return sFontAwesomeIcon
+End Sub
+
+'set MaterialIcon
+Public Sub setMaterialIcon(s As String)
+	sMaterialIcon = s
+	CustProps.Put("MaterialIcon", s)
+End Sub
+
+'get MaterialIcon
+Public Sub getMaterialIcon As String
+	Return sMaterialIcon
+End Sub
+
+'set GradientActive
+Public Sub setGradientActive(b As Boolean)
+	bGradientActive = b
+	CustProps.Put("GradientActive", b)
+End Sub
+
+'get GradientActive
+Public Sub getGradientActive As Boolean
+	Return bGradientActive
+End Sub
+
+'set Gradient
+Public Sub setGradient(s As String)
+	sGradient = s
+	CustProps.Put("Gradient", s)
+End Sub
+
+'get Gradient
+Public Sub getGradient As String
+	Return sGradient
+End Sub
+

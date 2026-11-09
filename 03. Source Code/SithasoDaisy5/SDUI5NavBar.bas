@@ -54,8 +54,8 @@ Version=10
 #DesignerProperty: Key: Shadow, DisplayName: Shadow, FieldType: String, DefaultValue: sm, Description: Shadow, List: 2xl|inner|lg|md|none|shadow|sm|xl
 #DesignerProperty: Key: GradientActive, DisplayName: GradientActive, FieldType: Boolean, DefaultValue: false, Description: Gradient should be set
 #DesignerProperty: Key: Gradient, DisplayName: Gradient, FieldType: String, DefaultValue: , Description: Gradient, List: bl_tr|bottom_top|br_tl|left_right|right_left|tl_br|top_bottom|tr_bl
-#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Gradient Color 1.
-#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Gradient Color 2.
+#DesignerProperty: Key: GradientColor1, DisplayName: GradientColor1, FieldType: Color, DefaultValue: #f86194, Description: Gradient Color 1.
+#DesignerProperty: Key: GradientColor2, DisplayName: GradientColor2, FieldType: Color, DefaultValue: #968918, Description: Gradient Color 2.
 #DesignerProperty: Key: Visible, DisplayName: Visible, FieldType: Boolean, DefaultValue: True, Description: If visible.
 #DesignerProperty: Key: Enabled, DisplayName: Enabled, FieldType: Boolean, DefaultValue: True, Description: If enabled.
 #DesignerProperty: Key: PositionStyle, DisplayName: Position Style, FieldType: String, DefaultValue: none, Description: Position, List: absolute|fixed|none|relative|static|sticky
@@ -181,8 +181,8 @@ private Sub SetDefaults
 	CustProps.Put("Shadow", "sm")
 	CustProps.Put("GradientActive", False)
 	CustProps.Put("Gradient", "")
-	CustProps.Put("GradientColor1", "#f86194, Gradient Color 1.")
-	CustProps.Put("GradientColor2", "#968918, Gradient Color 2.")
+	CustProps.Put("GradientColor1", "#f86194")
+	CustProps.Put("GradientColor2", "#968918")
 	CustProps.Put("Visible", True)
 	CustProps.Put("Enabled", True)
 	CustProps.Put("PositionStyle", "none")
@@ -406,10 +406,10 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		bGradientActive = Props.GetDefault("GradientActive", False)
 		bGradientActive = UI.CBool(bGradientActive)
 		sGradient = Props.GetDefault("Gradient", "")
-		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194, Gradient Color 1.")
+		sGradientColor1 = Props.GetDefault("GradientColor1", "#f86194")
 		sGradientColor1 = UI.CStr(sGradientColor1)
 		sGradientColor1 = UI.rgbaToHexAuto(sGradientColor1)
-		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918, Gradient Color 2.")
+		sGradientColor2 = Props.GetDefault("GradientColor2", "#968918")
 		sGradientColor2 = UI.CStr(sGradientColor2)
 		sGradientColor2 = UI.rgbaToHexAuto(sGradientColor2)
 		bHasFile = Props.GetDefault("HasFile", False)
@@ -1443,3 +1443,27 @@ End Sub
 Sub getButtonSize As String
 	Return sButtonSize
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set GradientActive
+Public Sub setGradientActive(b As Boolean)
+	bGradientActive = b
+	CustProps.Put("GradientActive", b)
+End Sub
+
+'get GradientActive
+Public Sub getGradientActive As Boolean
+	Return bGradientActive
+End Sub
+
+'set Gradient
+Public Sub setGradient(s As String)
+	sGradient = s
+	CustProps.Put("Gradient", s)
+End Sub
+
+'get Gradient
+Public Sub getGradient As String
+	Return sGradient
+End Sub
+

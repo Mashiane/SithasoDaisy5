@@ -47,6 +47,7 @@ Sub Class_Globals
 	Private sHeight As String = "600"
 	Private bToolbar As Boolean = True
 	Private sWidth As String = "100%"
+	Public Pivot As BANanoObject
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -251,11 +252,23 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	'
 	Options.Initialize 
 	Options.put("container", $"#${mName}"$)
-	'Options.put("dataSourceData", sDataSourceData)
-	'Options.put("dataSourceFileName", sDataSourceFileName)
 	Options.put("height", sHeight)
 	Options.put("toolbar", bToolbar)
 	Options.put("width", sWidth)
+	If sDataSourceFileName <> "" Then
+		Dim ds As Map = CreateMap("dataSourceType": "json", "filename": sDataSourceFileName)
+		Dim rep As Map = CreateMap("dataSource": ds)
+		Options.Put("report", rep)
+	Else If sDataSourceData <> "" Then
+		Try
+			Dim dataObj As Object = BANano.FromJson(sDataSourceData)
+			Dim ds As Map = CreateMap("dataSourceType": "json", "data": dataObj)
+			Dim rep As Map = CreateMap("dataSource": ds)
+			Options.Put("report", rep)
+		Catch
+			Log($"[SDUI5Pivot.${mName}] Invalid JSON in DataSourceData: ${LastException.Message}"$)
+		End Try
+	End If
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
 	Dim xclasses As String = UI.BuildExClass
@@ -268,8 +281,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		mTarget.Initialize($"#${sParentID}"$)
 	End If
 	mElement = mTarget.Append($"[BANCLEAN]<div id="${mName}" class="${xclasses}" ${xattrs} style="${xstyles}"></div>"$).Get("#" & mName)
-	Dim bPivot As BANanoObject
-	bPivot.Initialize2("WebDataRocks", Options)
+	Pivot.Initialize2("WebDataRocks", Options)
 End Sub
 
 'set Data Source Data
@@ -277,14 +289,14 @@ Sub setDataSourceData(s As String)
 	sDataSourceData = s
 	CustProps.put("DataSourceData", s)
 	If mElement = Null Then Return
-	Options.put("dataSourceData", s)
+	SetJSON(s)
 End Sub
 'set Data Source File Name
 Sub setDataSourceFileName(s As String)
 	sDataSourceFileName = s
 	CustProps.put("DataSourceFileName", s)
 	If mElement = Null Then Return
-	Options.put("dataSourceFileName", s)
+	SetFileName(s)
 End Sub
 'set Height
 Sub setHeight(s As String)
@@ -326,4 +338,104 @@ End Sub
 'get Width
 Sub getWidth As String
 	Return sWidth
+End Sub
+
+'get the underlying WebDataRocks instance
+Public Sub getPivot As BANanoObject
+	Return Pivot
+End Sub
+
+'update data using a json file path or url
+Public Sub SetFileName(fileName As String)
+	sDataSourceFileName = fileName
+	CustProps.Put("DataSourceFileName", fileName)
+	If mElement = Null Then Return
+	Dim ds As Map = CreateMap("dataSourceType": "json", "filename": fileName)
+	Pivot.RunMethod("updateData", Array(ds))
+End Sub
+
+'update data using a list of maps / records
+Public Sub SetData(records As List)
+	If mElement = Null Then Return
+	Dim ds As Map = CreateMap("dataSourceType": "json", "data": records)
+	Pivot.RunMethod("updateData", Array(ds))
+End Sub
+
+'update data using a raw JSON string
+Public Sub SetJSON(jsonString As String)
+	sDataSourceData = jsonString
+	CustProps.Put("DataSourceData", jsonString)
+	If mElement = Null Then Return
+	Dim dataObj As Object = BANano.FromJson(jsonString)
+	Dim ds As Map = CreateMap("dataSourceType": "json", "data": dataObj)
+	Pivot.RunMethod("updateData", Array(ds))
+End Sub
+
+'set full report configuration (accepts Map or JSON string)
+Public Sub SetReport(report As Object)
+	If mElement = Null Then Return
+	Pivot.RunMethod("setReport", Array(report))
+End Sub
+
+'set full report configuration from a raw JSON string
+Public Sub SetReportJSON(jsonString As String)
+	If mElement = Null Then Return
+	Pivot.RunMethod("setReport", Array(jsonString))
+End Sub
+
+'set options for the pivot table
+Public Sub SetOptions(xOptions As Map)
+	If mElement = Null Then Return
+	Pivot.RunMethod("setOptions", Array(xOptions))
+End Sub
+
+'set grid form layout type: classic | compact | flat
+Public Sub SetGridType(gridType As String)
+	If mElement = Null Then Return
+	Dim gridOpt As Map = CreateMap("type": gridType)
+	Dim opt As Map = CreateMap("grid": gridOpt)
+	SetOptions(opt)
+End Sub
+
+'load report configuration from file or URL
+Public Sub LoadReport(url As String)
+	If mElement = Null Then Return
+	Pivot.RunMethod("load", Array(url))
+End Sub
+
+'get report configuration
+Public Sub GetReport As Map
+	If mElement = Null Then Return Null
+	Return Pivot.RunMethod("getReport", Null).Result
+End Sub
+
+'expand all data
+Public Sub ExpandAllData
+	If mElement = Null Then Return
+	Pivot.RunMethod("expandAllData", Null)
+End Sub
+
+'collapse all data
+Public Sub CollapseAllData
+	If mElement = Null Then Return
+	Pivot.RunMethod("collapseAllData", Null)
+End Sub
+
+'refresh the pivot table
+Public Sub Refresh
+	If mElement = Null Then Return
+	Pivot.RunMethod("refresh", Null)
+End Sub
+
+'clear data and report
+Public Sub Clear
+	If mElement = Null Then Return
+	Pivot.RunMethod("clear", Null)
+End Sub
+
+'export to html, excel, or pdf
+Public Sub ExportTo(exportType As String, fileName As String)
+	If mElement = Null Then Return
+	Dim opt As Map = CreateMap("filename": fileName)
+	Pivot.RunMethod("exportTo", Array(exportType, opt))
 End Sub

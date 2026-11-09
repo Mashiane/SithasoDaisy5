@@ -1070,3 +1070,42 @@ Sub AddStyle(k As String, v As String)
 	If mElement = Null Then Return
 	UI.AddStyle(mElement, k, v)
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set LoremIpsum
+Public Sub setLoremIpsum(b As Boolean)
+	bLoremIpsum = b
+	CustProps.Put("LoremIpsum", b)
+End Sub
+
+'get LoremIpsum
+Public Sub getLoremIpsum As Boolean
+	Return bLoremIpsum
+End Sub
+
+'set Rounded
+Public Sub setRounded(s As String)
+	sRounded = s
+	CustProps.Put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, s)
+End Sub
+
+'get Rounded
+Public Sub getRounded As String
+	Return sRounded
+End Sub
+
+'set Shadow
+Public Sub setShadow(s As String)
+	sShadow = s
+	CustProps.Put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, s)
+End Sub
+
+'get Shadow
+Public Sub getShadow As String
+	Return sShadow
+End Sub
+

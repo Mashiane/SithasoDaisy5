@@ -5167,6 +5167,10 @@ Sub CREATE_COLLECTION(nameOf As String, colType As String, colSchema As List) As
 		End If
 		If qflds <> "" Then opt.Put("fields", qflds)
 		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"Schema_CreateCollection: Collection - ${BANano.ToJson(col)}"$)
+			Log($"Schema_CreateCollection: Options - ${BANano.ToJson(opt)}"$)
+		End If
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
@@ -5220,23 +5224,23 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 		col.Put("updateRule", UpdateRule)
 		col.Put("deleteRule", DeleteRule)
 		Select Case colType
-			Case "view"
-				col.Put("createRule", Null)
-				col.Put("updateRule", Null)
-				col.Put("deleteRule", Null)
+		Case "view"
+			col.Put("createRule", Null)
+			col.Put("updateRule", Null)
+			col.Put("deleteRule", Null)
 		End Select
 		If BANano.IsNull(options) = False Then col.Put("options", options)
 		Dim idxList As List
 		idxList.Initialize
 		For Each idx As String In uniqueIdxNames.Keys
-			Dim idxName As String = idx.Replace(",", "")
+			Dim idxName As String = idx.Replace(",", "").Replace(" ", "")
 			Dim joinIdx As String = JoinIndexNames(idx)
-			idxList.Add($""CREATE UNIQUE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})""$)
+			idxList.Add($"CREATE UNIQUE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})"$)
 		Next
 		For Each idx As String In idxNames.Keys
-			Dim idxName As String = idx.Replace(",", "")
+			Dim idxName As String = idx.Replace(",", "").Replace(" ", "")
 			Dim joinIdx As String = JoinIndexNames(idx)
-			idxList.Add($""CREATE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})""$)
+			idxList.Add($"CREATE INDEX `${nameOf}_${idxName}` ON `${nameOf}` (${joinIdx})"$)
 		Next
 		If idxList.Size > 0 Then
 			col.put("indexes", idxList)
@@ -5252,6 +5256,10 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 		End If
 		If qflds <> "" Then opt.Put("fields", qflds)
 		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"Schema_CreateCollection: Collection - ${BANano.ToJson(col)}"$)
+			Log($"Schema_CreateCollection: Options - ${BANano.ToJson(opt)}"$)
+		End If
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
@@ -5260,18 +5268,18 @@ Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map)
 	End Try			' ignore
 End Sub
 
-private Sub JoinIndexNames(idx As String) As String
-	Dim lst As List = StrParse(",", idx)
-	Dim lTot As Int = lst.Size - 1
-	Dim lCnt As Int
-	For lCnt = 0 To lTot
-		Dim lItem As String = lst.Get(lCnt)
-		lItem = lItem.Replace("`", "")
-		lItem = $"`${lItem}`"$
-		lst.Set(lCnt, lItem)
-	Next
-	Dim sout As String = Join(",", lst)
-	Return sout
+Private Sub JoinIndexNames(idx As String) As String
+    Dim lst As List = StrParse(",", idx)
+    Dim lTot As Int = lst.Size - 1
+    Dim lCnt As Int
+    For lCnt = 0 To lTot
+        Dim lItem As String = lst.Get(lCnt)
+        lItem = lItem.Replace("`", "").Trim
+        lItem = $"`${lItem}`"$
+        lst.Set(lCnt, lItem)
+    Next
+    Dim sout As String = Join(",", lst)
+    Return sout
 End Sub
 
 '<code>
@@ -5304,6 +5312,10 @@ Sub CREATE_COLLECTION1(nameOf As String, colSchema As List, screateRule As Strin
 		End If
 		If qflds <> "" Then opt.Put("fields", qflds)
 		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"CREATE_COLLECTION1: Collection - ${BANano.ToJson(col)}"$)
+			Log($"CREATE_COLLECTION1: Options - ${BANano.ToJson(opt)}"$)
+		End If
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col, opt)))
 		Return res
 	Catch
@@ -5341,6 +5353,10 @@ Sub CREATE_COLLECTION2(nameOf As String, typeOf As String, colSchema As List, sc
 		If qflds <> "" Then opt.Put("fields", qflds)
 		If qexpand <> "" Then opt.Put("expand", qexpand)
 		'create the record
+		If ShowLog Then
+			Log($"CREATE_COLLECTION2: Collection - ${BANano.ToJson(col)}"$)
+			Log($"CREATE_COLLECTION2: Options - ${BANano.ToJson(opt)}"$)
+		End If
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col,opt)))
 		Return res
 	Catch
@@ -5366,6 +5382,10 @@ Sub CREATE_COLLECTION_ORIGINAL(col As Map) As Map
 		End If
 		If qflds <> "" Then opt.Put("fields", qflds)
 		If qexpand <> "" Then opt.Put("expand", qexpand)
+		If ShowLog Then
+			Log($"CREATE_COLLECTION_ORIGINAL: Collection - ${BANano.ToJson(col)}"$)
+			Log($"CREATE_COLLECTION_ORIGINAL: Options - ${BANano.ToJson(opt)}"$)
+		End If
 		Dim res As Map = BANano.Await(client.GetField("collections").RunMethod("create", Array(col,opt)))
 		Return res
 	Catch

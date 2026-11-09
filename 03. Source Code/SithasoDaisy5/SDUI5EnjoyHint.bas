@@ -9,6 +9,7 @@ Version=10.3
 #Event: EnjoyStarted (e As BANanoEvent)
 #Event: EnjoyEnded (e As BANanoEvent)
 #Event: EnjoySkip (e As BANanoEvent)
+#Event: EnjoyNext (e As BANanoEvent)
 
 Sub Class_Globals
 	Private BANano As BANano 'ignore
@@ -17,15 +18,42 @@ Sub Class_Globals
 	Private mEvent As String	'ignore
 	Private count As Int
 	Public Unique As Boolean
+	Private easySteps_instance As BANanoObject
+	Private mDir As String
 End Sub
 
 'Initializes the object. You can add parameters to this method if needed.
 Public Sub Initialize(Module As Object, EventName As String, bUnique As Boolean)
+	If BANano.AssetsIsDefined("EnjoyHint") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesEnjoyHint)' should be added!"$)
+		Return
+	End If
+	BANano.DependsOnAsset("enjoyhint.min.js")
+	BANano.DependsOnAsset("enjoyhint.min.css")
 	stepsm.Initialize
 	mback = Module
 	mEvent = CleanID(EventName)
 	count = 0
 	Unique = bUnique
+	easySteps_instance = Null
+	mDir = "ltr"
+End Sub
+
+'set direction (ltr or rtl)
+Sub SetDirection(dir As String)
+	mDir = dir.ToLowerCase
+End Sub
+
+'add a targetless intro or full-screen card step
+Sub AddIntroStep(sDescription As String) As String
+	count = BANano.parseInt(count) + 1
+	Dim nkey As String = $"intro_${count}"$
+	Dim eachstep As Map = CreateMap()
+	eachstep.Put("event", "next")
+	eachstep.Put("event_type", "next")
+	eachstep.Put("description", sDescription)
+	stepsm.Put(nkey, eachstep)
+	Return nkey
 End Sub
 
 private Sub CStr(o As Object) As String
@@ -395,21 +423,74 @@ Sub Run(Module As Object)
 		enjoyhint_script_steps.Add(stepm)
 	Next
 	'create the object
-	Dim easySteps_instance As BANanoObject
 	Dim opt As Map = CreateMap()
+	If mDir <> "" And mDir <> "ltr" Then
+		opt.Put("dir", mDir)
+	End If
 	If SubExists(Module, $"${mEvent}_EnjoyStarted"$) Then
 		Dim cb As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoyStarted"$, Null)
 		opt.Put("onStart", cb)
 	End If
-	If SubExists(Module, "EnjoyStarted") Then
+	If SubExists(Module, $"${mEvent}_EnjoyEnded"$) Then
 		Dim cb1 As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoyEnded"$, Null)
 		opt.Put("onEnd", cb1)
 	End If
-	If SubExists(Module, "EnjoySkip") Then
+	If SubExists(Module, $"${mEvent}_EnjoySkip"$) Then
 		Dim cb2 As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoySkip"$, Null)
-		opt.Put("onSkip ", cb2)
+		opt.Put("onSkip", cb2)
+	End If
+	If SubExists(Module, $"${mEvent}_EnjoyNext"$) Then
+		Dim cb3 As BANanoObject = BANano.CallBack(Module, $"${mEvent}_EnjoyNext"$, Null)
+		opt.Put("onNext", cb3)
 	End If
 	easySteps_instance.Initialize2("EnjoyHint", opt)
-	easySteps_instance.RunMethod("set",Array(enjoyhint_script_steps))
-	easySteps_instance.RunMethod("run",Null)
+	easySteps_instance.RunMethod("set", Array(enjoyhint_script_steps))
+	easySteps_instance.RunMethod("run", Null)
+End Sub
+
+'resume the hints
+Sub ResumeTour
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("resume", Null)
+End Sub
+
+'move to the next step
+Sub NextStep
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("next", Null)
+End Sub
+
+'move to the previous step
+Sub PreviousStep
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("previous", Null)
+End Sub
+
+'stop the hints
+Sub StopTour
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("stop", Null)
+End Sub
+
+'destroy the hints overlay
+Sub Destroy
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("destroy", Null)
+End Sub
+
+'get current step index
+Sub getCurrentStep As Int
+	If easySteps_instance = Null Then Return -1
+	Return easySteps_instance.RunMethod("getCurrentStep", Null).Result
+End Sub
+
+'trigger a custom step event
+Sub Trigger(eventName As String)
+	If easySteps_instance = Null Then Return
+	easySteps_instance.RunMethod("trigger", Array(eventName))
+End Sub
+
+'get underlying EnjoyHint BANanoObject instance
+Sub getInstance As BANanoObject
+	Return easySteps_instance
 End Sub

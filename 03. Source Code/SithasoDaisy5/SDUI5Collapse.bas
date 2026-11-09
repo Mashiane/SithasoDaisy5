@@ -676,3 +676,22 @@ End Sub
 Sub getTitleTextColor As String
 	Return sTitleTextColor
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Border
+Public Sub setBorder(b As Boolean)
+	bBorder = b
+	CustProps.Put("Border", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "border")
+	Else
+		UI.RemoveClass(mElement, "border")
+	End If
+End Sub
+
+'get Border
+Public Sub getBorder As Boolean
+	Return bBorder
+End Sub
+

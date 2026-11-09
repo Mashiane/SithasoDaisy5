@@ -568,7 +568,7 @@ Sub SetOptionsFromMap(m As Map)					'ignoredeadcode
 		k = UI.CleanID(k)
 		sb.Append($"<option id="${k}_${mName}" value="${k}">${v}</option>"$)
 	Next
-	UI.AppendByID($"${mName}_input)"$, sb.ToString)
+	UI.AppendByID($"${mName}_input"$, sb.ToString)
 End Sub
 
 'load the items from a list
@@ -698,3 +698,18 @@ End Sub
 Sub getValidatorHint As String
 	Return sValidatorHint
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Value
+Public Sub setValue(s As String)
+	sValue = s
+	CustProps.Put("Value", s)
+	If mElement = Null Then Return
+	UI.SetValueByID(mName, s)
+End Sub
+
+'get Value
+Public Sub getValue As String
+	Return sValue
+End Sub
+

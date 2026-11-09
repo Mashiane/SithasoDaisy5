@@ -17,6 +17,10 @@ Version=10.2
 #Event: PrevYear (e As BANanoEvent)
 #Event: DateRangeChange (startDate As String, endDate As String, lastView As string)
 #DesignerProperty: Key: ParentID, DisplayName: ParentID, FieldType: String, DefaultValue: , Description: The ParentID of this component
+#DesignerProperty: Key: ThemeName, DisplayName: Theme, FieldType: String, DefaultValue: classic, Description: Calendar Theme, List: classic|material|monarch|breezy|forma|pulse
+#DesignerProperty: Key: Palette, DisplayName: Theme Palette, FieldType: String, DefaultValue: default, Description: Theme Color Palette, List: default|purple|blue|green|red|yellow|amber|emerald|indigo|rose
+#DesignerProperty: Key: DaisyUITheming, DisplayName: DaisyUI Theming, FieldType: Boolean, DefaultValue: False, Description: If true adapts DaisyUI theme colors. If false uses authentic upstream source colors.
+#DesignerProperty: Key: ColorScheme, DisplayName: Color Scheme, FieldType: String, DefaultValue: auto, Description: Color Scheme (Dark Mode), List: auto|dark|light|none
 #DesignerProperty: Key: InitialDate, DisplayName: Initial Date, FieldType: String, DefaultValue: now, Description: Initial Date
 #DesignerProperty: Key: InitialView, DisplayName: Initial View, FieldType: String, DefaultValue: dayGridMonth, Description: Initial View, List: dayGridMonth|dayGridWeek|listMonth|listWeek|timeGridDay|timeGridWeek|multiMonthYear
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: auto, Description: Height
@@ -70,6 +74,16 @@ Sub Class_Globals
 	Private mName As String 'ignore
 	Private BANano As BANano   'ignore
 	Private sPosition As String = "t=?; b=?; r=?; l=?"
+	Private sThemeName As String = "classic"
+	Private sPalette As String = "default"
+	Private bDaisyUITheming As Boolean = False
+	Private sColorScheme As String = "auto"
+	Public CONST THEME_CLASSIC As String = "classic"
+	Public CONST THEME_MATERIAL As String = "material"
+	Public CONST THEME_BREEZY As String = "breezy"
+	Public CONST THEME_MONARCH As String = "monarch"
+	Public CONST THEME_FORMA As String = "forma"
+	Public CONST THEME_PULSE As String = "pulse"
 	Private sPositionStyle As String = "none"
 	Private sRawClasses As String = ""
 	Private sRawStyles As String = ""
@@ -148,6 +162,10 @@ End Sub
 
 private Sub SetDefaults
 	CustProps.Put("ParentID", "")
+	CustProps.Put("ThemeName", "classic")
+	CustProps.Put("Palette", "default")
+	CustProps.Put("DaisyUITheming", False)
+	CustProps.Put("ColorScheme", "auto")
 	CustProps.Put("InitialDate", "now")
 	CustProps.Put("InitialView", "dayGridMonth")
 	CustProps.Put("Height", "auto")
@@ -343,6 +361,9 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeTextColor = True
 		'UI.ExcludeVisible = True
 		'UI.ExcludeEnabled = True
+		sThemeName = Props.GetDefault("ThemeName", "classic")
+		sThemeName = UI.CStr(sThemeName).ToLowerCase
+		If sThemeName = "" Then sThemeName = "classic"
 		sAspectRatio = Props.GetDefault("AspectRatio", "3")
 		sAspectRatio = UI.CStr(sAspectRatio)
 		bBusinessHours = Props.GetDefault("BusinessHours", False)
@@ -503,12 +524,16 @@ Sub Refresh				'ignoredeadcode
 		cbBack = BANano.CallBack(Me, "prevmonth", Array(e))
 		UI.PutRecursive(Options, "customButtons.cprev.icon", "chevron-left")
 		UI.PutRecursive(Options, "customButtons.cprev.click", cbBack)
+		UI.PutRecursive(Options, "buttons.cprev.iconClass", "chevron-left")
+		UI.PutRecursive(Options, "buttons.cprev.click", cbBack)
 		'
 		sHeaderToolbarLeft = sHeaderToolbarLeft.Replace("prevYear,", "cprevYear,")
 		Dim cbBackY As BANanoObject
 		cbBackY = BANano.CallBack(Me, "prevyear", Array(e))
 		UI.PutRecursive(Options, "customButtons.cprevYear.icon", "chevrons-left")
 		UI.PutRecursive(Options, "customButtons.cprevYear.click", cbBackY)
+		UI.PutRecursive(Options, "buttons.cprevYear.iconClass", "chevrons-left")
+		UI.PutRecursive(Options, "buttons.cprevYear.click", cbBackY)
 	End If
 	'
 	If bNextClickOn Then
@@ -517,12 +542,16 @@ Sub Refresh				'ignoredeadcode
 		cbNext = BANano.CallBack(Me, "nextmonth", Array(e))
 		UI.PutRecursive(Options, "customButtons.cnext.icon", "chevron-right")
 		UI.PutRecursive(Options, "customButtons.cnext.click", cbNext)
+		UI.PutRecursive(Options, "buttons.cnext.iconClass", "chevron-right")
+		UI.PutRecursive(Options, "buttons.cnext.click", cbNext)
 		'
 		sHeaderToolbarLeft = sHeaderToolbarLeft.Replace("nextYear", "cnextYear")
 		Dim cbNextY As BANanoObject
 		cbNextY = BANano.CallBack(Me, "nextyear", Array(e))
 		UI.PutRecursive(Options, "customButtons.cnextYear.icon", "chevrons-right")
 		UI.PutRecursive(Options, "customButtons.cnextYear.click", cbNextY)
+		UI.PutRecursive(Options, "buttons.cnextYear.iconClass", "chevrons-right")
+		UI.PutRecursive(Options, "buttons.cnextYear.click", cbNextY)
 	End If
 	If SubExists(mCallBack, $"${mName}_DateRangeChange"$) Then
 		Dim info As Map
@@ -563,11 +592,26 @@ Sub Refresh				'ignoredeadcode
 		UI.PutRecursive(Options, "headerToolbar.right", sHeaderToolbarRight)
 	End If
 	If sLocale = "" Then
-		If sToDayText <> "" Then UI.PutRecursive(Options, "buttonText.today", sToDayText)
-		If sMonthText <> "" Then UI.PutRecursive(Options, "buttonText.month", sMonthText)
-		If sWeekText <> "" Then UI.PutRecursive(Options, "buttonText.week", sWeekText)
-		If sDayText <> "" Then UI.PutRecursive(Options, "buttonText.day", sDayText)
-		If sListText <> "" Then UI.PutRecursive(Options, "buttonText.list", sListText)
+		If sToDayText <> "" Then
+			UI.PutRecursive(Options, "buttonText.today", sToDayText)
+			Options.Put("todayText", sToDayText)
+		End If
+		If sMonthText <> "" Then
+			UI.PutRecursive(Options, "buttonText.month", sMonthText)
+			Options.Put("monthText", sMonthText)
+		End If
+		If sWeekText <> "" Then
+			UI.PutRecursive(Options, "buttonText.week", sWeekText)
+			Options.Put("weekText", sWeekText)
+		End If
+		If sDayText <> "" Then
+			UI.PutRecursive(Options, "buttonText.day", sDayText)
+			Options.Put("dayText", sDayText)
+		End If
+		If sListText <> "" Then
+			UI.PutRecursive(Options, "buttonText.list", sListText)
+			Options.Put("listText", sListText)
+		End If
 	End If
 	'
 	If SubExists(mCallBack, $"${mName}_eventClick"$) Then
@@ -580,10 +624,162 @@ Sub Refresh				'ignoredeadcode
 	UI.PutRecursive(Options, "eventTimeFormat.minute", "2-digit")
 	UI.PutRecursive(Options, "eventTimeFormat.hour12", False)
 	'
+	Dim sTheme As String = CustProps.GetDefault("ThemeName", sThemeName)
+	sTheme = UI.CStr(sTheme).ToLowerCase
+	If sTheme = "" Then sTheme = "classic"
+	If sTheme = "material" Then sTheme = "monarch"
+	Dim win As BANanoObject = BANano.Window
+	Dim fcObj As BANanoObject = win.GetField("FullCalendar")
+	Dim themesObj As BANanoObject = fcObj.GetField("Themes")
+	Dim oThemes As BANanoObject = themesObj.GetField(sTheme)
+	If oThemes <> Null And BANano.IsNull(oThemes) = False And BANano.IsUndefined(oThemes) = False Then
+		Options.Put("plugins", Array(oThemes))
+	Else
+		Dim oDefTheme As BANanoObject = themesObj.GetField("classic")
+		Options.Put("plugins", Array(oDefTheme))
+	End If
+	'
+	Dim sPal As String = CustProps.GetDefault("Palette", sPalette)
+	sPal = UI.CStr(sPal).ToLowerCase
+	If sPal <> "" And sPal <> "default" Then
+		mElement.SetAttr("data-fc-palette", sPal)
+	Else
+		mElement.RemoveAttr("data-fc-palette")
+	End If
+	'
+	Dim bDaisy As Boolean = CustProps.GetDefault("DaisyUITheming", bDaisyUITheming)
+	bDaisy = UI.CBool(bDaisy)
+	If bDaisy Then
+		UI.AddClass(mElement, "fc-theme-daisyui")
+	Else
+		UI.RemoveClass(mElement, "fc-theme-daisyui")
+	End If
+	'
+	Dim sColorSch As String = CustProps.GetDefault("ColorScheme", sColorScheme)
+	sColorSch = UI.CStr(sColorSch).ToLowerCase
+	If sColorSch = "auto" Then
+		Dim sHtmlTheme As String = UI.CStr(BANano.GetElement("html").GetAttr("data-theme")).ToLowerCase
+		If sHtmlTheme.IndexOf("dark") > -1 Or sHtmlTheme = "black" Or sHtmlTheme = "luxury" Or sHtmlTheme = "dracula" Or sHtmlTheme = "night" Or sHtmlTheme = "dim" Or sHtmlTheme = "sunset" Or sHtmlTheme = "abyss" Then
+			Options.Put("colorScheme", "dark")
+		Else
+			Options.Put("colorScheme", "light")
+		End If
+	Else If sColorSch = "dark" Or sColorSch = "light" Then
+		Options.Put("colorScheme", sColorSch)
+	End If
+	'
+	If fc <> Null Then
+		If BANano.IsNull(fc) = False And BANano.IsUndefined(fc) = False Then
+			fc.RunMethod("destroy", Null)
+		End If
+	End If
 	Dim el As BANanoObject = mElement.ToObject
 	fc.Initialize2("FullCalendar.Calendar", Array(el, Options))
 	fc.RunMethod("render", Null)
+	If sColorSch = "auto" Then
+		Dim sHtmlTheme As String = UI.CStr(BANano.GetElement("html").GetAttr("data-theme")).ToLowerCase
+		If sHtmlTheme.IndexOf("dark") > -1 Or sHtmlTheme = "black" Or sHtmlTheme = "luxury" Or sHtmlTheme = "dracula" Or sHtmlTheme = "night" Or sHtmlTheme = "dim" Or sHtmlTheme = "sunset" Or sHtmlTheme = "abyss" Then
+			Options.Put("colorScheme", "dark")
+		Else
+			Options.Put("colorScheme", "light")
+		End If
+	Else If sColorSch = "dark" Or sColorSch = "light" Then
+		fc.RunMethod("setColorScheme", Array(sColorSch))
+	End If
 End Sub
+
+'set Theme Name
+'options: classic|breezy|monarch|forma|pulse
+Sub setThemeName(s As String)
+	s = UI.CStr(s).ToLowerCase
+	If s = "" Then s = "classic"
+	sThemeName = s
+	CustProps.Put("ThemeName", sThemeName)
+End Sub
+
+Sub getThemeName As String
+	Return sThemeName
+End Sub
+
+Sub setTheme(s As String)
+	setThemeName(s)
+End Sub
+
+Sub getTheme As String
+	Return getThemeName
+End Sub
+
+'change theme at runtime and re-render calendar
+Sub ChangeTheme(sTheme As String)
+	setThemeName(sTheme)
+	Refresh
+End Sub
+
+'set Palette
+'options: default|purple|blue|green|red|yellow|amber|emerald|indigo|rose
+Sub setPalette(s As String)
+	s = UI.CStr(s).ToLowerCase
+	If s = "" Then s = "default"
+	sPalette = s
+	CustProps.Put("Palette", sPalette)
+	If mElement = Null Then Return
+	If sPalette = "default" Then
+		mElement.RemoveAttr("data-fc-palette")
+	Else
+		mElement.SetAttr("data-fc-palette", sPalette)
+	End If
+End Sub
+
+Sub getPalette As String
+	Return sPalette
+End Sub
+
+'change palette at runtime
+Sub ChangePalette(sPal As String)
+	setPalette(sPal)
+End Sub
+
+'set DaisyUI Theming (optional developer choice)
+'If true, adapts DaisyUI theme tokens. If false, uses exact authentic upstream FullCalendar colors.
+Sub setDaisyUITheming(b As Boolean)
+	bDaisyUITheming = b
+	CustProps.Put("DaisyUITheming", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "fc-theme-daisyui")
+	Else
+		UI.RemoveClass(mElement, "fc-theme-daisyui")
+	End If
+End Sub
+
+Sub getDaisyUITheming As Boolean
+	Return bDaisyUITheming
+End Sub
+
+'set Color Scheme (dark mode support)
+'options: auto|dark|light|none
+Sub setColorScheme(s As String)
+	s = UI.CStr(s).ToLowerCase
+	If s = "" Then s = "auto"
+	sColorScheme = s
+	CustProps.Put("ColorScheme", sColorScheme)
+	If BANano.IsNull(fc) Or BANano.IsUndefined(fc) Then Return
+	If s = "auto" Then
+		Dim sHtmlTheme As String = UI.CStr(BANano.GetElement("html").GetAttr("data-theme")).ToLowerCase
+		If sHtmlTheme.IndexOf("dark") > -1 Or sHtmlTheme = "black" Or sHtmlTheme = "luxury" Or sHtmlTheme = "dracula" Or sHtmlTheme = "night" Or sHtmlTheme = "dim" Or sHtmlTheme = "sunset" Or sHtmlTheme = "abyss" Then
+			fc.RunMethod("setColorScheme", Array("dark"))
+		Else
+			fc.RunMethod("setColorScheme", Array("light"))
+		End If
+	Else If s = "dark" Or s = "light" Then
+		fc.RunMethod("setColorScheme", Array(s))
+	End If
+End Sub
+
+Sub getColorScheme As String
+	Return sColorScheme
+End Sub
+
 
 'set Aspect Ratio
 Sub setAspectRatio(s As String)

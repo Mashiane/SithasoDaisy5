@@ -270,6 +270,12 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		If sSize = "none" Then sSize = ""
 		sStyle = Props.GetDefault("Style", "lift")
 		sStyle = UI.CStr(sStyle)
+		sStyle = sStyle.ToLowerCase
+		Select Case sStyle
+		Case "lifted": sStyle = "lift"
+		Case "boxed": sStyle = "box"
+		Case "bordered": sStyle = "border"
+		End Select
 		sWidth = Props.GetDefault("Width", "")
 		sWidth = UI.CStr(sWidth)
 		sRawOptions = Props.GetDefault("RawOptions", "btn1=Button 1; btn2=Button 2; btn3=Button 3")
@@ -477,6 +483,11 @@ End Sub
 'options: border|box|lift
 Sub setStyle(s As String)
 	s = s.ToLowerCase
+	Select Case s
+	Case "lifted": s = "lift"
+	Case "boxed": s = "box"
+	Case "bordered": s = "border"
+	End Select
 	sStyle = s
 	CustProps.put("Style", s)
 	If mElement = Null Then Return

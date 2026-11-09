@@ -499,3 +499,48 @@ End Sub
 Sub getWidth As String
 	Return sWidth
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Rounded
+Public Sub setRounded(s As String)
+	sRounded = s
+	CustProps.Put("Rounded", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetRounded(mElement, s)
+End Sub
+
+'get Rounded
+Public Sub getRounded As String
+	Return sRounded
+End Sub
+
+'set RoundedBox
+Public Sub setRoundedBox(b As Boolean)
+	bRoundedBox = b
+	CustProps.Put("RoundedBox", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClass(mElement, "rounded-box")
+	Else
+		UI.RemoveClass(mElement, "rounded-box")
+	End If
+End Sub
+
+'get RoundedBox
+Public Sub getRoundedBox As Boolean
+	Return bRoundedBox
+End Sub
+
+'set Shadow
+Public Sub setShadow(s As String)
+	sShadow = s
+	CustProps.Put("Shadow", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetShadow(mElement, s)
+End Sub
+
+'get Shadow
+Public Sub getShadow As String
+	Return sShadow
+End Sub
+

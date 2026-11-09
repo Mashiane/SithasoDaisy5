@@ -83,6 +83,7 @@ Sub Initialize (CallBack As Object, cName As String, EventName As String)
 	End If
 	BANano.DependsOnAsset("jkanban.min.js")
 	BANano.DependsOnAsset("jkanban.min.css")
+	BANano.DependsOnAsset("dragula.min.js")
 	UI.Initialize(Me)
 	mName = UI.CleanID(cName)
 	mback = CallBack

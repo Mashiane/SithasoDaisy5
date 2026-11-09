@@ -1298,6 +1298,7 @@ Sub setLeftImageHeight(s As String)				'ignoredeadcode
 	If s = "" Then Return
 	If sImage = "" Then Return
 	UI.SetHeightByID($"${mName}_leftimage"$, sImageHeight)
+	UI.SetStyleByID($"${mName}_leftimage"$, "height", sImageHeight)
 End Sub
 'set Image Width
 Sub setLeftImageWidth(s As String)					'ignoredeadcode
@@ -1307,6 +1308,7 @@ Sub setLeftImageWidth(s As String)					'ignoredeadcode
 	If sImage = "" Then Return
 	If s = "" Then Return
 	UI.SetWidthByID($"${mName}_leftimage"$, sImageWidth)
+	UI.SetStyleByID($"${mName}_leftimage"$, "width", sImageWidth)
 End Sub
 
 'backward compatibility aliases
@@ -1572,6 +1574,7 @@ Sub setRightImageHeight(s As String)			'ignoredeadcode
 	If s = "" Then Return
 	If sRightImage = "" Then Return
 	UI.SetHeightByID($"${mName}_rightimage"$, sRightImageHeight)
+	UI.SetStyleByID($"${mName}_rightimage"$, "height", sRightImageHeight)
 End Sub
 'set Right Image Width
 Sub setRightImageWidth(s As String)			'ignoredeadcode
@@ -1580,7 +1583,8 @@ Sub setRightImageWidth(s As String)			'ignoredeadcode
 	If mElement = Null Then Return
 	If s = "" Then Return
 	If sRightImage = "" Then Return
-	UI.SetWidthByID($"${mName}_rightimage"$, s)
+	UI.SetWidthByID($"${mName}_rightimage"$, sRightImageWidth)
+	UI.SetStyleByID($"${mName}_rightimage"$, "width", sRightImageWidth)
 End Sub
 
 'get Right Image Height

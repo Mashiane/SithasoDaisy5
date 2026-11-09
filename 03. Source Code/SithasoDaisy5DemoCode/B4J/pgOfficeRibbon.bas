@@ -31,7 +31,7 @@ Sub Show
 	SDUI5OfficeRibbon1.Initialize(Me, "SDUI5OfficeRibbon1", "SDUI5OfficeRibbon1")
 	SDUI5OfficeRibbon1.ParentID = "SDUI5Container1"
 	SDUI5OfficeRibbon1.ActiveLayout = "Classic"
-	'SDUI5OfficeRibbon1.LicenseKey = "Ngo9BigBOggjHTQxAR8/V1JFaF5cX2JCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWXZdcHVdRWleVUdzXURWYEg="
+'	SDUI5OfficeRibbon1.LicenseKey = "Ngo9BigBOggjHTQxAR8/V1JFaF5cX2JCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWXZdcHVdRWleVUdzXURWYEg="
 	BANano.Await(SDUI5OfficeRibbon1.AddComponent)
 	pgIndex.UpdateTitle("SDUI5OfficeRibbon")
 	

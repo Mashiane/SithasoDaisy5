@@ -39,6 +39,8 @@ Sub Class_Globals
 	Public CONST ALIGNMENT_NONE As String = "none"
 	Public CONST ALIGNMENT_START As String = "start"
 	Private bHasContent As Boolean = False
+	Private sRawClasses As String = ""
+	Private sRawStyles As String = ""
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
@@ -59,6 +61,8 @@ Private Sub SetDefaults
 	CustProps.Put("Open", False)
 	CustProps.Put("TooltipPosition", "top")
 	CustProps.Put("TooltipAlignment", "none")
+	CustProps.Put("Classes", "")
+	CustProps.Put("Styles", "")
 End Sub
 
 ' returns the element id
@@ -134,7 +138,7 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 	If bOpen Then UI.AddClassDT("tooltip-open")
 	If sTooltipPosition <> "" Then UI.UpdateClassDT("position", "tooltip-" & sTooltipPosition)
 	If sTooltipAlignment <> "" Then UI.UpdateClassDT("alignment", "tooltip-" & sTooltipAlignment)
-	If sTip <> "" Then UI.AddAttrDT("data-tip", sTip)
+	If bHasContent = False And sTip <> "" Then UI.AddAttrDT("data-tip", sTip)
 	
 	Dim xattrs As String = UI.BuildExAttributes
 	Dim xstyles As String = UI.BuildExStyle
@@ -154,8 +158,10 @@ Sub setHasContent(b As Boolean)			'ignoredeadcode
 	CustProps.put("HasContent", b)
 	If mElement = Null Then Return
 	If b Then
+		UI.RemoveAttr(mElement, "data-tip")
 		UI.SetVisibleByID($"${mName}_content"$, True)
 	Else
+		If sTip <> "" Then UI.SetAttr(mElement, "data-tip", sTip)
 		UI.SetVisibleByID($"${mName}_content"$, False)
 	End If
 End Sub
@@ -209,7 +215,7 @@ Sub setTip(s As String)
     sTip = s
     CustProps.put("Tip", s)
 	If mElement = Null Then Return
-    If s <> "" Then UI.SetAttr(mElement, "data-tip", s)
+    If bHasContent = False And s <> "" Then UI.SetAttr(mElement, "data-tip", s)
 End Sub
 'get Color
 Sub getColor As String
@@ -231,3 +237,55 @@ End Sub
 public Sub getParentID() As String
 	Return sParentID
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set TooltipPosition
+Public Sub setTooltipPosition(s As String)
+	setPosition(s)
+End Sub
+
+'get TooltipPosition
+Public Sub getTooltipPosition As String
+	Return getPosition
+End Sub
+
+'set TooltipAlignment
+Public Sub setTooltipAlignment(s As String)
+	setAlignment(s)
+End Sub
+
+'get TooltipAlignment
+Public Sub getTooltipAlignment As String
+	Return getAlignment
+End Sub
+
+Public Sub getContent As BANanoElement
+	Return BANano.GetElement($"#${mName}_content"$)
+End Sub
+
+Public Sub SetContent(html As String)
+	UI.SetHTMLByID($"${mName}_content"$, html)
+End Sub
+
+Sub setClasses(s As String)
+	sRawClasses = s
+	CustProps.put("Classes", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetClasses(mElement, s)
+End Sub
+
+Sub getClasses As String
+	Return sRawClasses
+End Sub
+
+Sub setStyles(s As String)
+	sRawStyles = s
+	CustProps.put("Styles", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetStyles(mElement, s)
+End Sub
+
+Sub getStyles As String
+	Return sRawStyles
+End Sub
+

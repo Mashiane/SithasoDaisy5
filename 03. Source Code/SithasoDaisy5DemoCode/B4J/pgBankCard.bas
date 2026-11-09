@@ -52,10 +52,10 @@ Sub Show
 	SDUI5BankCard1.Initialize(Me, "SDUI5BankCard1", "SDUI5BankCard1")
 	SDUI5BankCard1.ParentID = "SDUI5Column1"
 	SDUI5BankCard1.CardHolder = "SITHASO HOLDINGS"
-	'SDUI5BankCard1.Gradient = "bl_tr"
-	'SDUI5BankCard1.GradientActive = True
-	'SDUI5BankCard1.GradientColor1 = "#FF00FF"
-	'SDUI5BankCard1.GradientColor2 = "#0006FF"
+	SDUI5BankCard1.Gradient = "bl_tr"
+	SDUI5BankCard1.GradientActive = True
+	SDUI5BankCard1.GradientColor1 = "#FF00FF"
+	SDUI5BankCard1.GradientColor2 = "#0006FF"
 	SDUI5BankCard1.MarginAXYTBLR = "a=6; x=?; y=?; t=?; b=?; l=?; r=?"
 	SDUI5BankCard1.TextColor = "#FFFFFF"
 	SDUI5BankCard1.Width = "96"

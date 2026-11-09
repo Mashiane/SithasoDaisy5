@@ -889,7 +889,38 @@ End Sub
 'valid
 Sub UsesLeaflet
 	Banano.Await(UI.LoadAssetsOnDemand("Leaflet", Array("leaflet.css", _
-	"leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js", "leaflet-routing-machine.css", "leaflet-routing-machine.js")))
+	"MarkerCluster.css", "MarkerCluster.Default.css", "leaflet.js", "leaflet.rotatedMarker.js", "Leaflet.Coordinates-0.1.5.css", "Leaflet.Coordinates-0.1.5.min.js", "leaflet-routing-machine.css", "leaflet-routing-machine.js", "leaflet.markercluster.js")))
+End Sub
+
+
+'valid
+Sub UsesAOS
+	Banano.Await(UI.LoadAssetsOnDemand("AOS", Array("aos.css", "aos.js")))
+End Sub
+
+'initialize AOS
+Sub InitAOS(options As Map)
+	Dim bAOS As BANanoObject
+	bAOS.Initialize("AOS")
+	If options = Null Then
+		bAOS.RunMethod("init", Null)
+	Else
+		bAOS.RunMethod("init", Array(options))
+	End If
+End Sub
+
+'refresh AOS
+Sub RefreshAOS
+	Dim bAOS As BANanoObject
+	bAOS.Initialize("AOS")
+	bAOS.RunMethod("refresh", Null)
+End Sub
+
+'refresh AOS hard
+Sub RefreshHardAOS
+	Dim bAOS As BANanoObject
+	bAOS.Initialize("AOS")
+	bAOS.RunMethod("refreshHard", Null)
 End Sub
 
 'valid
@@ -897,8 +928,12 @@ Sub UsesTreeSpider
 	Banano.Await(UI.LoadAssetsOnDemand("TreeSpider", Array("treeSpider.bundle.min.js", "treeSpider.css")))
 End Sub
 
-Sub UseAnime
+Sub UsesAnime
 	Banano.Await(UI.LoadAssetsOnDemand("Anime", Array("anime.min.js")))
+End Sub
+
+Sub UseAnime
+	Banano.Await(UsesAnime)
 End Sub
 
 'valid
@@ -985,26 +1020,21 @@ Sub UsesNoUISlider
 	Banano.Await(UI.LoadAssetsOnDemand("NoUISlider", Array("nouislider.min.css", "SithasoNoUISlider.min.css", "nouislider.min.js", "SithasoNoUISlider.min.js", "wNumb.min.js")))
 End Sub
 
-'"material_blue.css",
-
-Sub UsesJQuery
-	Banano.Await(UI.LoadAssetsOnDemand("JQuery", Array("jquery-3.7.1.min.js")))
-End Sub
-
 Sub UsesEnjoyHint
-	Banano.Await(UI.LoadAssetsOnDemand("EnjoyHint", Array("kinetic.min.js", "jquery.scrollTo.min.js", "enjoyhint.min.js", "enjoyhint.min.css")))
+	Banano.Await(UI.LoadAssetsOnDemand("EnjoyHint", Array("enjoyhint.min.js", "enjoyhint.min.css")))
 End Sub
 
 Sub UsesOfficeRibbon
 	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("sfribbon.min.css", "sfribbon.min.js")))
-	
-'	Banano.Await(UI.LoadAssetsOnDemand("OfficeRibbon", Array("ejbasetailwind.css","ejbuttonstailwind.css", "ejpopuptailwind.css", _
-'	"ejsplitbuttontailwind.css", "ejinputstailwind.css", "ejliststailwind.css", "ejdropdownstailwind.css", "ejnavigationtailwind.css", "ejribbontailwind.css", "ej2-base.min.js", "ej2-data.min.js", "ej2-buttons.min.js", _
-'	"ej2-popups.min.js", "ej2-splitbuttons.min.js", "ej2-inputs.min.js", "ej2-lists.min.js", "ej2-dropdowns.min.js", _
-'	"ej2-navigations.min.js", "ej2-ribbon.min.js", "syncfusion-helper.js", "ejsfontawesome.css")))
 End Sub
 
+
+'Sub UsesRibbonWeb
+'	Banano.Await(UI.LoadAssetsOnDemand("SDUI5RibbonWeb", Array("sdui5-ribbonweb.min.js")))
+'End Sub
+
 Sub UsesFontAwesome
+	Banano.DependsOnAsset("fontawesome.min.css")
 	Banano.Await(UI.LoadAssetsOnDemand("FontAwesome", Array("fontawesome.min.css")))
 End Sub
 
@@ -1683,6 +1713,7 @@ Sub ParseHTML(sinput As String) As List
 		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesHTMLParser)' should be added!"$)
 		Return Null
 	End If
+	Banano.DependsOnAsset("htmlParser.min.js")
 	treeSchema.Initialize
 	Dim res As Map = Banano.RunJavascriptMethod("htmlParser", Array(sinput))
 	ParseTree(res)
@@ -1778,6 +1809,11 @@ Sub FuzzySearch(lst As List, searchFor As String) As List
 End Sub
 
 Sub LZCompressString(source As String) As Object
+	If Banano.AssetsIsDefined("LZString") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesLZCompressString)' should be added!"$)
+		Return ""
+	End If
+	Banano.DependsOnAsset("lz-string.min.js")
 	Dim LZString As BANanoObject
 	LZString.Initialize("LZString")
 	Dim compressed As String = LZString.RunMethod("compress", source).result
@@ -1785,6 +1821,11 @@ Sub LZCompressString(source As String) As Object
 End Sub
 
 Sub LZDeCompressString(source As String) As Object
+	If Banano.AssetsIsDefined("LZString") = False Then
+		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesLZCompressString)' should be added!"$)
+		Return ""
+	End If
+	Banano.DependsOnAsset("lz-string.min.js")
 	Dim LZString As BANanoObject
 	LZString.Initialize("LZString")
 	Dim str As String = LZString.RunMethod("decompress", source).result
@@ -2214,6 +2255,11 @@ Sub UsesBarCode
 End Sub
 
 'valid
+Sub UsesEvoCalendar
+	Banano.Await(UI.LoadAssetsOnDemand("EvoCalendar", Array("evo-calendar.min.js", "evo-calendar.min.css", "evo-calendar.midnight-blue.min.css", "evo-calendar.orange-coral.min.css", "evo-calendar.royal-navy.min.css")))
+End Sub
+
+'valid
 Sub UsesFullCalendar
 	Banano.Await(UI.LoadAssetsOnDemand("FullCalendar", Array("fc.min.css",  "fullcalendar.css", "fc.min.js", "fclocales.min.js")))
 End Sub
@@ -2225,7 +2271,9 @@ End Sub
 
 'valid
 Sub UsesEncryption
-	Banano.Await(UI.LoadAssetsOnDemand("Encryption", Array("encryption.min.js")))
+	Banano.DependsOnAsset("crypto-js.min.js")
+	Banano.DependsOnAsset("encryption.min.js")
+	Banano.Await(UI.LoadAssetsOnDemand("Encryption", Array("crypto-js.min.js", "encryption.min.js")))
 End Sub
 
 'valid
@@ -2275,6 +2323,7 @@ End Sub
 
 'valid
 Sub UsesMath
+	Banano.DependsOnAsset("math.min.js")
 	Banano.Await(UI.LoadAssetsOnDemand("Math", Array("math.min.js")))
 End Sub
 
@@ -3054,6 +3103,7 @@ Sub ImportCSV(Module As Object, event As String, content As String, delimiter As
 		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesCSVParser)' should be added!"$)
 		Return
 	End If
+	Banano.DependsOnAsset("papaparse.min.js")
 	event = event.tolowercase
 	Dim config As Map = CreateMap()
 	config.Put("delimiter", delimiter)
@@ -3104,6 +3154,7 @@ Sub DownloadGoogleSheet(Module As Object, event As String, urlLink As String, ha
 		Banano.Throw($"Uses Error: 'BANano.Await(app.UsesCSVParser)' should be added!"$)
 		Return
 	End If
+	Banano.DependsOnAsset("papaparse.min.js")
 	event = event.tolowercase
 	Dim config As Map = CreateMap()
 	config.Put("download", True)

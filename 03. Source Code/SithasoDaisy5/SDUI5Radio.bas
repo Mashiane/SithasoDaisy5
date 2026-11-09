@@ -516,6 +516,12 @@ Sub setSize(s As String)				'ignoredeadcode
 	If s = "" Then sSize = "md"
 	UI.SetSize(mElement, "size", "radio", sSize)
 End Sub
+
+'get Size
+Public Sub getSize As String
+	Return sSize
+End Sub
+
 'set Value
 Sub setValue(s As String)				'ignoredeadcode
 	sValue = s

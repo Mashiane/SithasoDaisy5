@@ -880,3 +880,16 @@ End Sub
 Sub SaveEnabled(b As Boolean)
 	UI.SetEnabledByID($"${mName}_save"$, b)
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set BackgroundColor
+Public Sub setBackgroundColor(s As String)
+	sBackgroundColor = s
+	CustProps.Put("BackgroundColor", s)
+End Sub
+
+'get BackgroundColor
+Public Sub getBackgroundColor As String
+	Return sBackgroundColor
+End Sub
+

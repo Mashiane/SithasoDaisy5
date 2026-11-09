@@ -925,3 +925,49 @@ End Sub
 Sub getWidth As String
 	Return sWidth
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set ItemColor
+Public Sub setItemColor(s As String)
+	sItemColor = s
+	CustProps.Put("ItemColor", s)
+End Sub
+
+'get ItemColor
+Public Sub getItemColor As String
+	Return sItemColor
+End Sub
+
+'set ItemActiveColor
+Public Sub setItemActiveColor(s As String)
+	sItemActiveColor = s
+	CustProps.Put("ItemActiveColor", s)
+End Sub
+
+'get ItemActiveColor
+Public Sub getItemActiveColor As String
+	Return sItemActiveColor
+End Sub
+
+'set ItemFocusColor
+Public Sub setItemFocusColor(s As String)
+	sItemFocusColor = s
+	CustProps.Put("ItemFocusColor", s)
+End Sub
+
+'get ItemFocusColor
+Public Sub getItemFocusColor As String
+	Return sItemFocusColor
+End Sub
+
+'set ItemHoverColor
+Public Sub setItemHoverColor(s As String)
+	sItemHoverColor = s
+	CustProps.Put("ItemHoverColor", s)
+End Sub
+
+'get ItemHoverColor
+Public Sub getItemHoverColor As String
+	Return sItemHoverColor
+End Sub
+

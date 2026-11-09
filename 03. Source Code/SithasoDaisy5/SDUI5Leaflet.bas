@@ -62,6 +62,7 @@ Version=10.2
 #DesignerProperty: Key: Label, DisplayName: Label, FieldType: String, DefaultValue: , Description: Label
 #DesignerProperty: Key: LayerType, DisplayName: Layer Type, FieldType: String, DefaultValue: openstreetmap, Description: Layer Type, List: openstreetmap|google-roadmap|google-satellite|google-hybrid|google-terrain|other
 #DesignerProperty: Key: Geonames, DisplayName: Geonames, FieldType: Boolean, DefaultValue: False, Description: Geonames
+#DesignerProperty: Key: ClusterMarkers, DisplayName: Cluster Markers, FieldType: Boolean, DefaultValue: False, Description: Cluster Markers
 #DesignerProperty: Key: Height, DisplayName: Height, FieldType: String, DefaultValue: 500px, Description: Height
 #DesignerProperty: Key: Width, DisplayName: Width, FieldType: String, DefaultValue: 500px, Description: Width
 #DesignerProperty: Key: Lat, DisplayName: Lat, FieldType: String, DefaultValue: 0, Description: Lat
@@ -86,6 +87,7 @@ Version=10.2
 #DesignerProperty: Key: PaddingAXYTBLR, DisplayName: Paddings, FieldType: String, DefaultValue: a=?; x=?; y=?; t=?; b=?; l=?; r=? , Description: Paddings A(all)-X(LR)-Y(TB)-T-B-L-R
 #DesignerProperty: Key: RawClasses, DisplayName: Classes (;), FieldType: String, DefaultValue: , Description: Classes added to the HTML tag.
 #DesignerProperty: Key: RawStyles, DisplayName: Styles (JSON), FieldType: String, DefaultValue: , Description: Styles added to the HTML tag. Must be a json String use = and ;
+#DesignerProperty: Key: ShowCoordinates, DisplayName: Show Coordinates, FieldType: Boolean, DefaultValue: False, Description: Show Coordinates
 #DesignerProperty: Key: RawAttributes, DisplayName: Attributes (JSON), FieldType: String, DefaultValue: , Description: Attributes added to the HTML tag. Must be a json String use = and ;
 
 'global variables in this module
@@ -110,6 +112,7 @@ Sub Class_Globals
 	Private bEnabled As Boolean = True	'ignore
 	Public Tag As Object
 	Private bGeonames As Boolean = False
+	Private bShowCoordinates As Boolean = False
 	Private sHeight As String = "500px"
 	Private iMaxZoom As Int = 19
 	Private sWidth As String = "500px"
@@ -153,6 +156,10 @@ Sub Class_Globals
 '	Private Const TileLayerType_Custom As Int = 6
 	Private icons As Map
 	Private images As Map
+	Private bClusterMarkers As Boolean = False
+	Private clusterGroups As Map
+	Private circleMarkers As Map
+'	Private defaultClusterGroup As BANanoObject
 End Sub
 
 'initialize the custom view class
@@ -166,6 +173,11 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	BANano.DependsOnAsset("leaflet.rotatedMarker.js")
 	BANano.DependsOnAsset("Leaflet.Coordinates-0.1.5.css")
 	BANano.DependsOnAsset("leaflet.css")
+	BANano.DependsOnAsset("leaflet.markercluster.js")
+	BANano.DependsOnAsset("MarkerCluster.css")
+	BANano.DependsOnAsset("MarkerCluster.Default.css")
+	BANano.DependsOnAsset("leaflet-routing-machine.css")
+	BANano.DependsOnAsset("leaflet-routing-machine.js")
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -182,6 +194,8 @@ Public Sub Initialize (Callback As Object, Name As String, EventName As String)
 	rectangles.Initialize 
 	icons.Initialize 
 	images.Initialize
+	clusterGroups.Initialize
+	circleMarkers.Initialize
 	SetDefaults
 End Sub
 
@@ -201,6 +215,8 @@ private Sub SetDefaults
 	CustProps.Put("TypeOf", "normal")
 	CustProps.Put("LayerType", "openstreetmap")
 	CustProps.Put("Geonames", False)
+	CustProps.Put("ShowCoordinates", False)
+	CustProps.Put("ClusterMarkers", False)
 	CustProps.Put("Height", "500px")
 	CustProps.Put("Width", "500px")
 	CustProps.Put("Lat", "0")
@@ -378,6 +394,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		'UI.ExcludeEnabled = True
 		bGeonames = Props.GetDefault("Geonames", False)
 		bGeonames = UI.CBool(bGeonames)
+		bClusterMarkers = Props.GetDefault("ClusterMarkers", False)
+		bClusterMarkers = UI.CBool(bClusterMarkers)
 		sHeight = Props.GetDefault("Height", "500px")
 		sHeight = UI.CStr(sHeight)
 		iMaxZoom = Props.GetDefault("MaxZoom", 19)
@@ -416,6 +434,8 @@ Public Sub DesignerCreateView (Target As BANanoElement, Props As Map)
 		sStopTrackingColor = UI.CStr(sStopTrackingColor)
 		sStopTrackingTextColor = Props.GetDefault("StopTrackingTextColor", "white")
 		sStopTrackingTextColor = UI.CStr(sStopTrackingTextColor)
+		bShowCoordinates = Props.GetDefault("ShowCoordinates", False)
+		bShowCoordinates = UI.CBool(bShowCoordinates)
 	End If
 	'
 	If sHeight <> "" Then UI.AddStyleDT("height", sHeight)
@@ -523,7 +543,18 @@ private Sub GetCurrentPosition(e As BANanoEvent)
 		PanTo(pos.Latitude, pos.Longitude)
 		InvalidateSize
 	Catch
-	End Try			'ignore
+		Log($"[SDUI5Leaflet.${mName}.GetCurrentPosition] ${LastException.Message}"$)
+	End Try
+End Sub
+
+'set Show Coordinates
+Sub setShowCoordinates(b As Boolean)
+	bShowCoordinates = b
+	CustProps.put("ShowCoordinates", b)
+End Sub
+
+Sub getShowCoordinates As Boolean
+	Return bShowCoordinates
 End Sub
 
 
@@ -645,24 +676,26 @@ Sub Refresh
 	MapObject = L.RunMethod("map", mElement.ToObject)
 	mElement.GetField("extraData").SetField("storedMap", MapObject)
 	'
-	Dim coOpt As Map = CreateMap()
-	coOpt.Put("position", "bottomleft")
-	coOpt.Put("decimals", 2)
-	coOpt.Put("decimalSeperator", ",")
-	coOpt.Put("labelTemplateLat",  $"Latitude: {y}"$)
-	coOpt.Put("labelTemplateLng", $"Longitude: {x}"$)
-	'
-	Dim coordinates As BANanoObject = L.GetField("control").RunMethod("coordinates", coOpt)
-	coordinates.RunMethod("addTo", MapObject)
-	'
-	Dim copt1 As Map = CreateMap()
-	copt1.Put("position", "topright")
-	copt1.Put("useDMS", True)
-	copt1.Put("labelTemplateLat",  $"N {y}"$)
-	copt1.Put("labelTemplateLng", $"E {x}"$)
-	copt1.Put("useLatLngOrder", True)
-	Dim coordinates1 As BANanoObject = L.GetField("control").RunMethod("coordinates", copt1)
-	coordinates1.RunMethod("addTo", MapObject)
+	If bShowCoordinates Then
+		Dim coOpt As Map = CreateMap()
+		coOpt.Put("position", "bottomleft")
+		coOpt.Put("decimals", 2)
+		coOpt.Put("decimalSeperator", ",")
+		coOpt.Put("labelTemplateLat",  $"Latitude: {y}"$)
+		coOpt.Put("labelTemplateLng", $"Longitude: {x}"$)
+		'
+		Dim coordinates As BANanoObject = L.GetField("control").RunMethod("coordinates", coOpt)
+		coordinates.RunMethod("addTo", MapObject)
+		'
+		Dim copt1 As Map = CreateMap()
+		copt1.Put("position", "topright")
+		copt1.Put("useDMS", True)
+		copt1.Put("labelTemplateLat",  $"N {y}"$)
+		copt1.Put("labelTemplateLng", $"E {x}"$)
+		copt1.Put("useLatLngOrder", True)
+		Dim coordinates1 As BANanoObject = L.GetField("control").RunMethod("coordinates", copt1)
+		coordinates1.RunMethod("addTo", MapObject)
+	End If
 	
 	'add map events
 	BindEvent("baselayerchange", Me, "LeafletMapEvent")
@@ -817,7 +850,29 @@ End Sub
 
 'remove markers
 Sub RemoveMarkers 
+	For Each markerObj As BANanoObject In markers.Values
+		Try
+			MapObject.RunMethod("removeLayer", Array(markerObj))
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemoveMarkers] marker: ${LastException.Message}"$)
+		End Try
+	Next
+	For Each cmObj As BANanoObject In circleMarkers.Values
+		Try
+			MapObject.RunMethod("removeLayer", Array(cmObj))
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemoveMarkers] circleMarker: ${LastException.Message}"$)
+		End Try
+	Next
+	For Each cg As BANanoObject In clusterGroups.Values
+		Try
+			cg.RunMethod("clearLayers", Null)
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemoveMarkers] clusterGroup: ${LastException.Message}"$)
+		End Try
+	Next
 	markers.Initialize
+	circleMarkers.Initialize
 End Sub
 
 'remove shapefiles
@@ -835,16 +890,37 @@ End Sub
 
 'remove circles
 Sub RemoveCircles 
+	For Each circleObj As BANanoObject In circles.Values
+		Try
+			MapObject.RunMethod("removeLayer", Array(circleObj))
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemoveCircles] ${LastException.Message}"$)
+		End Try
+	Next
 	circles.Initialize
 End Sub
 
 'remove polylines
 Sub RemovePolyLines 
+	For Each polyObj As BANanoObject In polylines.Values
+		Try
+			MapObject.RunMethod("removeLayer", Array(polyObj))
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemovePolyLines] ${LastException.Message}"$)
+		End Try
+	Next
 	polylines.Initialize
 End Sub
 
 'remove polygons
 Sub RemovePolyGons 
+	For Each polyObj As BANanoObject In polygons.Values
+		Try
+			MapObject.RunMethod("removeLayer", Array(polyObj))
+		Catch
+			Log($"[SDUI5Leaflet.${mName}.RemovePolyGons] ${LastException.Message}"$)
+		End Try
+	Next
 	polygons.Initialize
 End Sub
 
@@ -1020,7 +1096,12 @@ Sub AddMarker(markerID As String, markerLat As Double, markerLng As Double) As B
 	MarkerObject = L.RunMethod("marker", Array(Array(markerLat, markerLng)))
 	MarkerObject.SetField("id", markerID)
 	markers.Put(markerID, MarkerObject)
-	MarkerObject.RunMethod("addTo", MapObject)
+	If bClusterMarkers Then
+		Dim defCg As BANanoObject = GetOrCreateDefaultCluster
+		defCg.RunMethod("addLayer", Array(MarkerObject))
+	Else
+		MarkerObject.RunMethod("addTo", MapObject)
+	End If
 	'
 	BindMarkerEvent(MarkerObject, "dragstart", Me, "MarkerEvent")
 	' BindMarkerEvent(MarkerObject,("movestart", Me, "MarkerEvent") ' similar to dragstart
@@ -1488,4 +1569,176 @@ End Sub
 'stop geo location
 Sub StopLocate
 	MapObject.RunMethod("stopLocate", Null)
+End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Lat
+Public Sub setLat(s As String)
+	dLat = s
+	CustProps.Put("Lat", s)
+End Sub
+
+'get Lat
+Public Sub getLat As String
+	Return dLat
+End Sub
+
+'set Lng
+Public Sub setLng(s As String)
+	dLng = s
+	CustProps.Put("Lng", s)
+End Sub
+
+'get Lng
+Public Sub getLng As String
+	Return dLng
+End Sub
+
+
+'set cluster markers
+Sub setClusterMarkers(b As Boolean)
+	bClusterMarkers = b
+	CustProps.Put("ClusterMarkers", b)
+End Sub
+
+'get cluster markers
+Sub getClusterMarkers As Boolean
+	Return bClusterMarkers
+End Sub
+
+'enable or disable automatic marker clustering
+Public Sub EnableClustering(b As Boolean)
+	bClusterMarkers = b
+End Sub
+
+'get or create the default cluster group
+Private Sub GetOrCreateDefaultCluster As BANanoObject
+	If clusterGroups.ContainsKey("default") Then
+		Return clusterGroups.Get("default")
+	End If
+	Return CreateClusterGroup("default", Null)
+End Sub
+
+'get an existing cluster group by ID
+Public Sub GetClusterGroup(clusterID As String) As BANanoObject
+	clusterID = UI.CleanID(clusterID)
+	If clusterGroups.ContainsKey(clusterID) Then
+		Return clusterGroups.Get(clusterID)
+	End If
+	Return Null
+End Sub
+
+'create a marker cluster group with standard or custom options
+Public Sub CreateClusterGroup(clusterID As String, options As Map) As BANanoObject
+	clusterID = UI.CleanID(clusterID)
+	If clusterGroups.ContainsKey(clusterID) Then
+		Return clusterGroups.Get(clusterID)
+	End If
+	Dim cg As BANanoObject
+	If options = Null Or options.IsInitialized = False Then
+		cg = L.RunMethod("markerClusterGroup", Null)
+	Else
+		cg = L.RunMethod("markerClusterGroup", Array(options))
+	End If
+	cg.SetField("id", clusterID)
+	clusterGroups.Put(clusterID, cg)
+	MapObject.RunMethod("addLayer", Array(cg))
+	Return cg
+End Sub
+
+
+'add a circle marker (fixed pixel radius, ideal for data points and clustering)
+Public Sub AddCircleMarker(markerID As String, markerLat As Double, markerLng As Double, Radius As Int, Color As String, fillColor As String, fillOpacity As Double, Weight As Int) As BANanoObject
+	markerID = UI.CleanID(markerID)
+	Dim MarkerObject As BANanoObject
+	If circleMarkers.ContainsKey(markerID) Then
+		MarkerObject = circleMarkers.Get(markerID)
+		Return MarkerObject
+	End If
+	Dim obj As Map = CreateMap()
+	If Radius > 0 Then obj.Put("radius", Radius)
+	If Color <> "" Then obj.Put("color", Color)
+	If fillColor <> "" Then obj.Put("fillColor", fillColor)
+	If fillOpacity > 0 Then obj.Put("fillOpacity", fillOpacity)
+	If Weight > 0 Then obj.Put("weight", Weight)
+	obj.Put("opacity", 1)
+	MarkerObject = L.RunMethod("circleMarker", Array(Array(markerLat, markerLng), obj))
+	MarkerObject.SetField("id", markerID)
+	circleMarkers.Put(markerID, MarkerObject)
+	
+	If bClusterMarkers Then
+		Dim defCg As BANanoObject = GetOrCreateDefaultCluster
+		defCg.RunMethod("addLayer", Array(MarkerObject))
+	Else
+		MarkerObject.RunMethod("addTo", MapObject)
+	End If
+	
+	BindMarkerEvent(MarkerObject, "click", Me, "MarkerEvent")
+	BindMarkerEvent(MarkerObject, "mouseover", Me, "MarkerEvent")
+	BindMarkerEvent(MarkerObject, "mouseout", Me, "MarkerEvent")
+	Return MarkerObject
+End Sub
+
+'add a marker directly to a specific cluster group
+Public Sub AddMarkerToCluster(clusterID As String, markerID As String, markerLat As Double, markerLng As Double) As BANanoObject
+	clusterID = UI.CleanID(clusterID)
+	markerID = UI.CleanID(markerID)
+	Dim cg As BANanoObject
+	If clusterGroups.ContainsKey(clusterID) Then
+		cg = clusterGroups.Get(clusterID)
+	Else
+		cg = CreateClusterGroup(clusterID, Null)
+	End If
+	Dim MarkerObject As BANanoObject = L.RunMethod("marker", Array(Array(markerLat, markerLng)))
+	MarkerObject.SetField("id", markerID)
+	markers.Put(markerID, MarkerObject)
+	cg.RunMethod("addLayer", Array(MarkerObject))
+	BindMarkerEvent(MarkerObject, "click", Me, "MarkerEvent")
+	Return MarkerObject
+End Sub
+
+'add a circle marker directly to a specific cluster group
+Public Sub AddCircleMarkerToCluster(clusterID As String, markerID As String, markerLat As Double, markerLng As Double, Radius As Int, Color As String, fillColor As String, fillOpacity As Double, Weight As Int) As BANanoObject
+	clusterID = UI.CleanID(clusterID)
+	markerID = UI.CleanID(markerID)
+	Dim cg As BANanoObject
+	If clusterGroups.ContainsKey(clusterID) Then
+		cg = clusterGroups.Get(clusterID)
+	Else
+		cg = CreateClusterGroup(clusterID, Null)
+	End If
+	Dim obj As Map = CreateMap()
+	If Radius > 0 Then obj.Put("radius", Radius)
+	If Color <> "" Then obj.Put("color", Color)
+	If fillColor <> "" Then obj.Put("fillColor", fillColor)
+	If fillOpacity > 0 Then obj.Put("fillOpacity", fillOpacity)
+	If Weight > 0 Then obj.Put("weight", Weight)
+	obj.Put("opacity", 1)
+	Dim MarkerObject As BANanoObject = L.RunMethod("circleMarker", Array(Array(markerLat, markerLng), obj))
+	MarkerObject.SetField("id", markerID)
+	circleMarkers.Put(markerID, MarkerObject)
+	cg.RunMethod("addLayer", Array(MarkerObject))
+	BindMarkerEvent(MarkerObject, "click", Me, "MarkerEvent")
+	BindMarkerEvent(MarkerObject, "mouseover", Me, "MarkerEvent")
+	BindMarkerEvent(MarkerObject, "mouseout", Me, "MarkerEvent")
+	Return MarkerObject
+End Sub
+
+'clear markers in a specific cluster group
+Public Sub ClearCluster(clusterID As String)
+	clusterID = UI.CleanID(clusterID)
+	If clusterGroups.ContainsKey(clusterID) Then
+		Dim cg As BANanoObject = clusterGroups.Get(clusterID)
+		cg.RunMethod("clearLayers", Null)
+	End If
+End Sub
+
+'remove a cluster group from map
+Public Sub RemoveCluster(clusterID As String)
+	clusterID = UI.CleanID(clusterID)
+	If clusterGroups.ContainsKey(clusterID) Then
+		Dim cg As BANanoObject = clusterGroups.Get(clusterID)
+		MapObject.RunMethod("removeLayer", Array(cg))
+		clusterGroups.Remove(clusterID)
+	End If
 End Sub

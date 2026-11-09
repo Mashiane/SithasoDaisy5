@@ -560,3 +560,33 @@ End Sub
 Sub getXLDirection As String
 	Return sXLDirection
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set StepsColor
+Public Sub setStepsColor(s As String)
+	sStepsColor = s
+	CustProps.Put("StepsColor", s)
+End Sub
+
+'get StepsColor
+Public Sub getStepsColor As String
+	Return sStepsColor
+End Sub
+
+'set OverflowXAuto
+Public Sub setOverflowXAuto(b As Boolean)
+	bOverflowXAuto = b
+	CustProps.Put("OverflowXAuto", b)
+	If mElement = Null Then Return
+	If b Then
+		UI.AddClassByID($"${mName}_host"$, "overflow-x-auto")
+	Else
+		UI.RemoveClassByID($"${mName}_host"$, "overflow-x-auto")
+	End If
+End Sub
+
+'get OverflowXAuto
+Public Sub getOverflowXAuto As Boolean
+	Return bOverflowXAuto
+End Sub
+

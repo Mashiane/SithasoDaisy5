@@ -1242,3 +1242,19 @@ Sub SetItemActive(itemKey As String)
 		End If
 	Next
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Tooltip
+Public Sub setTooltip(s As String)
+	sTooltip = s
+	CustProps.Put("Tooltip", s)
+	If mElement = Null Then Return
+	If s <> "" Then UI.SetToolTip(mElement, s, sTooltipPosition)
+End Sub
+
+'set TooltipPosition
+Public Sub setTooltipPosition(s As String)
+	sTooltipPosition = s
+	CustProps.Put("TooltipPosition", s)
+End Sub
+

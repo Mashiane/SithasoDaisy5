@@ -746,3 +746,11 @@ Sub ResetValidation
 		
 	End Try		'ignore
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set RatingBackgroundColor
+Public Sub setRatingBackgroundColor(s As String)
+	sRatingBackgroundColor = s
+	CustProps.Put("RatingBackgroundColor", s)
+End Sub
+

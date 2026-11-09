@@ -123,10 +123,10 @@ Sub Class_Globals
 End Sub
 'initialize the custom view class
 Public Sub Initialize (Callback As Object, Name As String, EventName As String)
-'	If BANano.AssetsIsDefined("TrendCharts") = False Then
-'		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesTrendCharts)' should be added!"$)
-'		Return
-'	End If
+	If BANano.AssetsIsDefined("TrendCharts") = False Then
+		BANano.Throw($"Uses Error: 'BANano.Await(app.UsesTrendCharts)' should be added!"$)
+		Return
+	End If
 	UI.Initialize(Me)
 	mElement = Null
 	mEventName = UI.CleanID(EventName)
@@ -934,3 +934,31 @@ End Sub
 Sub getWeight As String
 	Return sWeight
 End Sub
+
+' === AUTO-GENERATED MISSING SETTERS AND GETTERS ===
+'set Height
+Public Sub setHeight(s As String)
+	sHeight = s
+	CustProps.Put("Height", s)
+	If mElement = Null Then Return
+	UI.SetHeight(mElement, s)
+End Sub
+
+'get Height
+Public Sub getHeight As String
+	Return sHeight
+End Sub
+
+'set Width
+Public Sub setWidth(s As String)
+	sWidth = s
+	CustProps.Put("Width", s)
+	If mElement = Null Then Return
+	UI.SetWidth(mElement, s)
+End Sub
+
+'get Width
+Public Sub getWidth As String
+	Return sWidth
+End Sub
+

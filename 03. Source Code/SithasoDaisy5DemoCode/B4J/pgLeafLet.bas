@@ -21,6 +21,10 @@ Sub Process_Globals
 	Private btnStopLocate As SDUI5Button		'ignore
 	Private btnAddImage As SDUI5Button		'ignore
 	Private btnRemoveImage As SDUI5Button		'ignore
+	Private btnAddCluster As SDUI5Button		'ignore
+	Private btnClearClusters As SDUI5Button		'ignore
+	Private SDUI5Column15 As SDUI5Column		'ignore
+	Private SDUI5Column17 As SDUI5Column		'ignore
 	Private SDUI5Container1 As SDUI5Container		'ignore
 	Private SDUI5Row1 As SDUI5Row		'ignore
 	Private SDUI5Column1 As SDUI5Column		'ignore
@@ -63,13 +67,14 @@ Sub Show
 	llmap.Initialize(Me, "llmap", "llmap")
 	llmap.ParentID = "SDUI5Column1"
 	'llmap.AutoScale = False
-	llmap.Height = "800px"
-	'llmap.Lat = "-33.01529000"
-	'llmap.Lng = "27.91162000"
+	llmap.Height = "600px"
+	llmap.Lat = "-33.01529000"
+	llmap.Lng = "27.91162000"
 	'llmap.MapType = "streets"
-	llmap.Width = "800px"
+	llmap.Width = "100%"
 	llmap.Zoom = 13
 	BANano.Await(llmap.AddComponent)
+	llmap.InvalidateSize
 	'
 	SDUI5Column6.Initialize(Me, "SDUI5Column6", "SDUI5Column6")
 	SDUI5Column6.ParentID = "SDUI5Row1"
@@ -285,6 +290,30 @@ Sub Show
 	btnRemoveImage.Size = "none"
 	btnRemoveImage.Text = "Remove Image"
 	BANano.Await(btnRemoveImage.AddComponent)
+	'
+	SDUI5Column15.Initialize(Me, "SDUI5Column15", "SDUI5Column15")
+	SDUI5Column15.ParentID = "SDUI5Row2"
+	SDUI5Column15.Size = "6"
+	BANano.Await(SDUI5Column15.AddComponent)
+	'
+	btnAddCluster.Initialize(Me, "btnAddCluster", "btnAddCluster")
+	btnAddCluster.ParentID = "SDUI5Column15"
+	btnAddCluster.Block = True
+	btnAddCluster.Color = "primary"
+	btnAddCluster.Text = "Add Clustered Markers (100)"
+	BANano.Await(btnAddCluster.AddComponent)
+	'
+	SDUI5Column17.Initialize(Me, "SDUI5Column17", "SDUI5Column17")
+	SDUI5Column17.ParentID = "SDUI5Row2"
+	SDUI5Column17.Size = "6"
+	BANano.Await(SDUI5Column17.AddComponent)
+	'
+	btnClearClusters.Initialize(Me, "btnClearClusters", "btnClearClusters")
+	btnClearClusters.ParentID = "SDUI5Column17"
+	btnClearClusters.Block = True
+	btnClearClusters.Color = "error"
+	btnClearClusters.Text = "Clear Clusters"
+	BANano.Await(btnClearClusters.AddComponent)
 	pgIndex.UpdateTitle("SDUI5LeafLet")
 	'
 	'add unique icon
@@ -424,3 +453,18 @@ Private Sub btnAddImage_Click (e As BANanoEvent)
 	llmap.SetView(51.49, -0.12, llmap.Zoom)
 End Sub
 
+
+Private Sub btnAddCluster_Click (e As BANanoEvent)
+	llmap.ClearCluster("standard")
+	For i = 1 To 100
+		Dim rLat As Double = -33.015 + ((Rnd(0, 150) - 75) / 1000.0)
+		Dim rLng As Double = 27.911 + ((Rnd(0, 150) - 75) / 1000.0)
+		llmap.AddMarkerToCluster("standard", "std_" & i, rLat, rLng)
+	Next
+	app.ShowToastSuccess("Added 100 clustered markers (Leaflet.markercluster)")
+End Sub
+
+Private Sub btnClearClusters_Click (e As BANanoEvent)
+	llmap.ClearCluster("standard")
+	app.ShowToast("Clusters cleared")
+End Sub
