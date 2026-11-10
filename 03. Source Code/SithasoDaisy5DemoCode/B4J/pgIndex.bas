@@ -207,6 +207,7 @@ End Sub
 'define the menu items fo dawe
 Sub CreateDrawerMenu
 	drawermenu.AddItemParent("", "wnew", "", "What's New")
+	drawermenu.AddItemChild("wnew", "pg-frappegantt", "", "Frappe Gantt")
 	drawermenu.AddItemChild("wnew", "pg-officeribbon", "", "Office Ribbon")
 	'
 	'drawermenu.AddItemParent("wnew", "ribbon", "", "Ribbon")
@@ -450,6 +451,8 @@ Private Sub drawermenu_ItemClick (item As String)
 		'only mark this item as active
 		BANano.Await(drawermenu.SetItemActive(item))
 			Select Case ssuffix
+			Case "frappegantt"
+				pgFrappeGantt.Show
 			Case "bottomnav"
 				pgBottomNav.Show
 			Case "gifplayer"

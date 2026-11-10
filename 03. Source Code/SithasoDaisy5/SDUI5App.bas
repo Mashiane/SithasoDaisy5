@@ -877,6 +877,11 @@ Sub UsesPivot
 End Sub
 
 'valid
+Sub UsesFrappeGantt
+	BANano.Await(UI.LoadAssetsOnDemand("FrappeGantt", Array("frappe-gantt.min.css", "frappe-gantt.min.js")))
+End Sub
+
+'valid
 Sub UsesColorWheel
 	Banano.Await(UI.LoadAssetsOnDemand("ColorWheel", Array("reinvented-color-wheel.min.css", "reinvented-color-wheel.min.js")))
 End Sub
