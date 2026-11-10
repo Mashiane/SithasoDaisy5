@@ -1,4 +1,11 @@
-:root {
+/* SithasoDaisy5 Optional DaisyUI Theme Adapter */
+/* When developer sets DaisyUITheming = True (or adds .fc-theme-daisyui),
+   these tokens adapt FullCalendar to active DaisyUI theme colors.
+   By default (DaisyUITheming = False), authentic upstream FullCalendar
+   theming and source palettes are preserved untouched. */
+
+.fc-theme-daisyui,
+.sdui5-fc-daisyui {
   --fc-page-bg-color: var(--color-base-100);
   --fc-neutral-bg-color: color-mix(in oklab, var(--color-neutral) 30%, transparent);
   --fc-neutral-text-color: var(--color-neutral-content);
@@ -32,185 +39,127 @@
   --fc-highlight-color: color-mix(in oklab, var(--color-secondary) 16%, transparent);
   --fc-today-bg-color: color-mix(in oklab, var(--color-base-300) 35%, transparent);
   --fc-now-indicator-color: var(--color-warning);
+
+  /* FullCalendar Classic Theme Tokens */
+  --fc-classic-background: var(--color-base-100);
+  --fc-classic-foreground: var(--color-base-content);
+  --fc-classic-faint: color-mix(in oklab, var(--color-base-content) 5%, transparent);
+  --fc-classic-muted: color-mix(in oklab, var(--color-base-content) 10%, transparent);
+  --fc-classic-strong: color-mix(in oklab, var(--color-base-content) 15%, transparent);
+  --fc-classic-faint-foreground: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  --fc-classic-muted-foreground: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  --fc-classic-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-classic-strong-border: color-mix(in oklab, var(--color-base-content) 35%, transparent);
+
+  --fc-classic-button: color-mix(in oklab, var(--color-primary) 16%, transparent);
+  --fc-classic-button-border: color-mix(in oklab, var(--color-primary) 16%, transparent);
+  --fc-classic-button-strong: var(--color-primary);
+  --fc-classic-button-strong-border: var(--color-primary);
+  --fc-classic-button-outline: color-mix(in oklab, var(--color-primary) 50%, transparent);
+  --fc-classic-button-foreground: var(--color-primary);
+
+  --fc-classic-primary: var(--color-primary);
+  --fc-classic-primary-foreground: var(--color-primary-content);
+
+  --fc-classic-event: var(--color-primary);
+  --fc-classic-event-contrast: var(--color-primary-content);
+  --fc-classic-background-event: var(--color-secondary);
+  --fc-classic-background-event-opacity: 20%;
+  --fc-classic-highlight: color-mix(in oklab, var(--color-secondary) 16%, transparent);
+  --fc-classic-today: color-mix(in oklab, var(--color-base-300) 35%, transparent);
+  --fc-classic-now: var(--color-warning);
+
+  /* FullCalendar Breezy Theme Tokens */
+  --fc-breezy-primary: var(--color-primary);
+  --fc-breezy-primary-over: color-mix(in oklab, var(--color-primary) 85%, white);
+  --fc-breezy-primary-foreground: var(--color-primary-content);
+  --fc-breezy-secondary: var(--color-base-100);
+  --fc-breezy-secondary-over: var(--color-base-200);
+  --fc-breezy-secondary-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-breezy-secondary-foreground: var(--color-base-content);
+  --fc-breezy-event: var(--color-primary);
+  --fc-breezy-event-contrast: var(--color-primary-content);
+  --fc-breezy-background-event: var(--color-secondary);
+  --fc-breezy-highlight: color-mix(in oklab, var(--color-secondary) 16%, transparent);
+  --fc-breezy-now: var(--color-warning);
+  --fc-breezy-background: var(--color-base-100);
+  --fc-breezy-foreground: var(--color-base-content);
+  --fc-breezy-faint-foreground: color-mix(in oklab, var(--color-base-content) 50%, transparent);
+  --fc-breezy-muted-foreground: color-mix(in oklab, var(--color-base-content) 70%, transparent);
+  --fc-breezy-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-breezy-strong-border: color-mix(in oklab, var(--color-base-content) 35%, transparent);
+
+  /* FullCalendar Monarch / Material Design 3 Tokens */
+  --fc-monarch-primary: var(--color-primary);
+  --fc-monarch-primary-foreground: var(--color-primary-content);
+  --fc-monarch-secondary: var(--color-secondary);
+  --fc-monarch-secondary-foreground: var(--color-secondary-content);
+  --fc-monarch-event: var(--color-primary);
+  --fc-monarch-event-contrast: var(--color-primary-content);
+  --fc-monarch-background: var(--color-base-100);
+  --fc-monarch-foreground: var(--color-base-content);
+  --fc-monarch-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-monarch-now: var(--color-warning);
+
+  /* FullCalendar Forma Tokens */
+  --fc-forma-primary: var(--color-primary);
+  --fc-forma-primary-foreground: var(--color-primary-content);
+  --fc-forma-event: var(--color-primary);
+  --fc-forma-event-contrast: var(--color-primary-content);
+  --fc-forma-background: var(--color-base-100);
+  --fc-forma-foreground: var(--color-base-content);
+  --fc-forma-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-forma-now: var(--color-warning);
+
+  /* FullCalendar Pulse Tokens */
+  --fc-pulse-primary: var(--color-primary);
+  --fc-pulse-primary-foreground: var(--color-primary-content);
+  --fc-pulse-event: var(--color-primary);
+  --fc-pulse-event-contrast: var(--color-primary-content);
+  --fc-pulse-background: var(--color-base-100);
+  --fc-pulse-foreground: var(--color-base-content);
+  --fc-pulse-border: color-mix(in oklab, var(--color-base-content) 20%, transparent);
+  --fc-pulse-now: var(--color-warning);
 }
 
-.fc {
-  .fc-button-primary:not(:disabled).fc-button-active:focus,
-  .fc .fc-button-primary:not(:disabled):active:focus,
-  .fc-button-primary:focus,
-  .fc-button:focus {
-    @apply !shadow-none;
-  }
-
-  .fc-button-primary,
-  .fc-button-primary:not(:disabled).fc-button-active,
-  .fc-button-primary:hover,
-  .fc-button-primary:not(:disabled):active,
-  .fc-button-primary:disabled {
-    @apply border-transparent;
-  }
-
-  .fc-toolbar .fc-button:not(.fc-next-button):not(.fc-prev-button) {
-    @apply px-3.5 py-1.5;
-  }
-
-  .fc-toolbar .fc-toolbar-chunk {
-    @apply flex items-center;
-  }
-
-  .fc-toolbar h2 {
-    @apply text-lg;
-  }
-
-  .fc-toolbar .fc-prev-button,
-  .fc-toolbar .fc-next-button {
-    @apply !text-base-content/80 hover:!text-base-content bg-transparent px-2 py-0 hover:bg-transparent;
-
-    .fc-icon {
-      @apply -mt-0.5 hover:scale-110;
-    }
-  }
-
-  .fc-view-harness .fc-event {
-    @apply px-1.5 py-0.5 text-sm font-medium;
-  }
-
-  .fc-view-harness .fc-event .fc-daygrid-event-dot {
-    @apply hidden;
-  }
-
-  .fc-view-harness .fc-event .fc-event-title {
-    @apply font-medium;
-  }
-
-  .fc-daygrid-event .fc-event-time {
-    @apply text-xs font-semibold;
-  }
-
-  .fc-event-primary {
-    --fc-event-text-color: var(--color-primary);
-    --fc-event-border-color: var(--color-primary);
-    @apply bg-primary/20 text-primary;
-  }
-
-  .fc-event-secondary {
-    --fc-event-text-color: var(--color-secondary);
-    --fc-event-border-color: var(--color-secondary);
-    @apply bg-secondary/20 text-secondary;
-  }
-
-  .fc-event-error {
-    --fc-event-text-color: var(--color-error);
-    --fc-event-border-color: var(--color-error);
-    @apply bg-error/20 text-error;
-  }
-
-  .fc-event-warning {
-    --fc-event-text-color: var(--color-warning);
-    --fc-event-border-color: var(--color-warning);
-    @apply bg-warning/20 text-warning;
-  }
-
-  .fc-event-success {
-    --fc-event-text-color: var(--color-success);
-    --fc-event-border-color: var(--color-success);
-    @apply bg-success/20 text-success;
-  }
-
-  .fc-event-info {
-    --fc-event-text-color: var(--color-info);
-    --fc-event-border-color: var(--color-info);
-    @apply bg-info/20 text-info;
-  }
-
-  .fc-daygrid-event-harness + .fc-daygrid-event-harness .fc-daygrid-event {
-    @apply mt-1.5;
-  }
-
-  .fc-h-event,
-  .fc-v-event {
-    @apply border-none;
-  }
-
-  .fc-daygrid-day-bottom {
-    @apply text-base-content/50 text-xs font-medium;
-  }
-
-  .fc-daygrid-more-link {
-    @apply mt-[3px];
-  }
-
-  .fc-popover .fc-popover-header {
-    @apply bg-base-200/50 rounded-t-field p-2;
-  }
-
-  .fc-popover {
-    @apply rounded-field !border-none;
-  }
-
-  .fc-more-popover .fc-popover-body {
-    @apply !min-w-44;
-  }
-
-  .fc-daygrid-dot-event {
-    @apply mt-1.5;
-  }
-
-  .fc-daygrid-block-event .fc-event-title {
-    @apply p-0;
-  }
-
-  th {
-    @apply text-base-content/80 font-medium;
-  }
-
-  .fc-view-harness .fc-daygrid-body .fc-daygrid-day .fc-daygrid-day-top {
-    @apply flex-row;
-  }
-
-  .fc-scroller {
-    @apply overflow-x-hidden overflow-y-auto;
-  }
-
-  .fc-timegrid-divider {
-    @apply hidden;
-  }
-
-  .fc-daygrid-body-natural .fc-daygrid-day-events {
-    @apply !mt-2 !mb-[0.3rem];
-  }
-
-  .fc-timegrid-col-events {
-    @apply !m-px;
-  }
-
-  .fc-timegrid-slot-label {
-    @apply !border-r-0 !border-l-0;
-  }
-
-  .fc-timegrid-slot-lane {
-    @apply !border-r-0 !border-l-0;
-  }
-
-  .fc-list-day-cushion,
-  .fc-cell-shaded,
-  .fc-day-disabled {
-    @apply !bg-base-200/50 text-sm;
-  }
-
-  .fc-list-table {
-    .fc-event-primary,
-    .fc-event-secondary,
-    .fc-event-error,
-    .fc-event-warning,
-    .fc-event-success,
-    .fc-event-info {
-      --fc-event-bg-color: var(--color-base-100);
-      @apply !bg-base-100;
-    }
-  }
+/* Event color category helper utilities */
+.fc-event-primary {
+  --fc-event-text-color: var(--color-primary);
+  --fc-event-border-color: var(--color-primary);
+  @apply bg-primary/20 text-primary;
 }
 
+.fc-event-secondary {
+  --fc-event-text-color: var(--color-secondary);
+  --fc-event-border-color: var(--color-secondary);
+  @apply bg-secondary/20 text-secondary;
+}
+
+.fc-event-error {
+  --fc-event-text-color: var(--color-error);
+  --fc-event-border-color: var(--color-error);
+  @apply bg-error/20 text-error;
+}
+
+.fc-event-warning {
+  --fc-event-text-color: var(--color-warning);
+  --fc-event-border-color: var(--color-warning);
+  @apply bg-warning/20 text-warning;
+}
+
+.fc-event-success {
+  --fc-event-text-color: var(--color-success);
+  --fc-event-border-color: var(--color-success);
+  @apply bg-success/20 text-success;
+}
+
+.fc-event-info {
+  --fc-event-text-color: var(--color-info);
+  --fc-event-border-color: var(--color-info);
+  @apply bg-info/20 text-info;
+}
+
+/* Responsive Toolbar Wrappers */
 .fc-direction-rtl .fc-toolbar-ltr {
   @apply !flex-row;
 }
