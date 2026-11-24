@@ -94,6 +94,29 @@ Private Sub Class_Globals
 	Public LowerCaseFields As Boolean = True
 	Private idxNames As Map
 	Private uniqueIdxNames As Map
+	' PocketBase-compatible state
+	Public AffectedRows As Int
+	Public LastAffectedID As String
+	Public skipTotal As Boolean
+	Public CountRecords As Boolean
+	Private expandL As List
+	Private headers As Map
+	Private grpBy As List
+	Private fileFields As Map
+	Private mFormFields As Map
+	Private mFormFiles As List
+	Public GetFiles As Boolean
+	Public GetUrls As Boolean
+	' PocketBase-compatible auth state
+	Public UserProfile As profileType
+	Public UserRecord As Map
+	Public UserToken As String
+	Public UserModel As Map
+	Public UserValid As Boolean
+	Public BearerToken As String
+	Public UsersCollectionName As String
+	Private mBatch As List
+	Private mBatchActive As Boolean
 End Sub
 
 Sub whereNotEqual(fldName As String, fldValue As Object) As SDUIMySQLREST
@@ -115,46 +138,19 @@ End Sub
 'pb.PrimaryKey = "id"
 'pb.AutoIncrement = "id"
 '</code>
-Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String)
-	TableName = sTableName
-	mCallBack = Module
-	whereField.Initialize
-	ops.Initialize
-	orderByL.Initialize
-	flds.Initialize
-	Record.Initialize
-	lastPosition = -1
-	result.Initialize
-	mEvent = eventName
-	PrimaryKey = "id"
-	AutoIncrement = ""
-	Schema.Initialize
-	combineL.Initialize
-	ShowLog = False
-	baseURL = url
-	sApiKey = ""
-	SchemaAddText1(PrimaryKey)
-	sSize = ""
-	joinL.Initialize 
-	UseApiKey = True
-	escapeCharStart = "`"
-	escapeCharEnd = "`"
-	MatchSchema = True
-	UseBaseURL = False
-	If url.EndsWith(".php") Then 
-		UseBaseURL = True
-	End If
-	NoCORS = False
-	Redirect = ""
-	NoCache = True
-	ReferrerPolicy = ""
-	Mode = ""
-	LowerCaseFields = True
-	idxNames.Initialize
-	uniqueIdxNames.Initialize
+Public Sub Initialize(Module As Object, eventName As String, url As String, sTableName As String) As SDUIMySQLREST
+	InitCommon(Module, eventName, url, sTableName)
+	Return Me
 End Sub
 
-Public Sub InitializeApiKey(Module As Object, eventName As String, url As String, sTableName As String, xApiKey As String)
+Public Sub InitializeApiKey(Module As Object, eventName As String, url As String, sTableName As String, xApiKey As String) As SDUIMySQLREST
+	InitCommon(Module, eventName, url, sTableName)
+	SetDBApiKey(xApiKey)
+	Return Me
+End Sub
+
+' Shared initialization body used by all initializers.
+Private Sub InitCommon(Module As Object, eventName As String, url As String, sTableName As String)
 	TableName = sTableName
 	mCallBack = Module
 	whereField.Initialize
@@ -191,7 +187,70 @@ Public Sub InitializeApiKey(Module As Object, eventName As String, url As String
 	LowerCaseFields = True
 	idxNames.Initialize
 	uniqueIdxNames.Initialize
-	SetDBApiKey(xApiKey) 
+	expandL.Initialize
+	headers.Initialize
+	grpBy.Initialize
+	fileFields.Initialize
+	mFormFields.Initialize
+	mFormFiles.Initialize
+	GetFiles = False
+	GetUrls = False
+	UserProfile.Initialize
+	UserProfile.size = 0
+	UserRecord.Initialize
+	UserToken = ""
+	UserModel.Initialize
+	UserValid = False
+	BearerToken = ""
+	UsersCollectionName = "users"
+	mBatch.Initialize
+	mBatchActive = False
+	AffectedRows = 0
+	LastAffectedID = ""
+	skipTotal = True
+	CountRecords = False
+End Sub
+
+' PocketBase-compatible shared connection initializer.
+Public Sub InitializeOnConnection(Module As Object, connection As Object, eventName As String, url As String, sTableName As String) As SDUIMySQLREST
+	InitCommon(Module, eventName, url, sTableName)
+	If connection <> Null Then
+		If connection Is SDUIMySQLREST Then
+			Dim c As SDUIMySQLREST = connection
+			If c.baseURL <> "" Then baseURL = c.baseURL
+			If c.sApiKey <> "" Then sApiKey = c.sApiKey
+			sHost = c.sHost
+			sUser = c.sUser
+			sPassword = c.sPassword
+			sDbName = c.sDbName
+			sDriver = c.sDriver
+			sPort = c.sPort
+			UseApiKey = c.UseApiKey
+			UseBaseURL = c.UseBaseURL
+			ApiFile = c.ApiFile
+			NoCORS = c.NoCORS
+			Redirect = c.Redirect
+			NoCache = c.NoCache
+			ReferrerPolicy = c.ReferrerPolicy
+			Mode = c.Mode
+			ShowLog = c.ShowLog
+			If c.headers <> Null Then headers = c.headers
+		Else If connection Is Map Then
+			Dim cm As Map = connection
+			baseURL = cm.GetDefault("baseURL", baseURL)
+			sApiKey = cm.GetDefault("apiKey", sApiKey)
+			sHost = cm.GetDefault("host", sHost)
+			sUser = cm.GetDefault("user", sUser)
+			sPassword = cm.GetDefault("password", sPassword)
+			sDbName = cm.GetDefault("dbname", sDbName)
+			sDriver = cm.GetDefault("driver", sDriver)
+			sPort = cm.GetDefault("port", sPort)
+			UseApiKey = cm.GetDefault("useApiKey", UseApiKey)
+			UseBaseURL = cm.GetDefault("useBaseURL", UseBaseURL)
+			ApiFile = cm.GetDefault("apiFile", ApiFile)
+		End If
+	End If
+	Return Me
 End Sub
 
 Sub SetMySQLConnection(xHost As String, xUser As String, xPassword As String, xDbName As String, xPort As String)
@@ -293,24 +352,27 @@ Sub SetSQLiteConnectionApiKey(sPath As String, xApiKey As String)
 	End If
 End Sub
 
-Sub SchemaAddIndex(idxName As String, bUnique As Boolean)
+Sub SchemaAddIndex(idxName As String, bUnique As Boolean) As SDUIMySQLREST
 	If bUnique Then
 		uniqueIdxNames.Put(idxName, idxName)
 	Else
 		idxNames.Put(idxName, idxName)
 	End If
+	Return Me
 End Sub
 
-Sub SchemaAddIndexes(idxNames1 As List)
+Sub SchemaAddIndexes(idxNames1 As List) As SDUIMySQLREST
 	For Each k As String In idxNames1
 		SchemaAddIndex(k, False)
 	Next
+	Return Me
 End Sub
 
-Sub SchemaAddUniqueIndexes(idxNames1 As List)
+Sub SchemaAddUniqueIndexes(idxNames1 As List) As SDUIMySQLREST
 	For Each k As String In idxNames1
 		SchemaAddIndex(k, True)
 	Next
+	Return Me
 End Sub
 
 Public Sub EscapeField(f As String) As String
@@ -690,13 +752,7 @@ Sub DATABASE_EXISTS As Boolean
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.SetURL($"/assets/${ApiFile}.php/status/ping"$)
 		If UseBaseURL Then
 			fetch.SetURL($"/status/ping"$)
@@ -787,7 +843,7 @@ End Sub
 'For Each rec As Map in Res
 'Next
 '</code>
-Sub SelectDistinctWhere(tblfields As List, tblWhere As Map, operators As List, orderBy As List) As List
+Sub SelectDistinctWhere(tblfields As List, tblWhere As Map, operators As List, orderByList As List) As List
 	If Schema.Size = 0 Then
 		Log($"SDUIMySQLREST.SelectDistinctWhere: '${TableName}' schema is not set!"$)
 	End If
@@ -825,9 +881,9 @@ Sub SelectDistinctWhere(tblfields As List, tblWhere As Map, operators As List, o
 			sb.Append($" ${oper} ${sval}"$)
 		End Select
 	Next
-	If orderBy.IsInitialized And orderBy.Size > 0 Then
+	If orderByList.IsInitialized And orderByList.Size > 0 Then
 		'order by
-		Dim stro As String = JoinFields(",", orderBy)
+		Dim stro As String = JoinFields(",", orderByList)
 		If stro.Length > 0 Then
 			sb.Append(" ORDER BY ").Append(stro)
 		End If
@@ -993,13 +1049,7 @@ Sub SELECT_RAW(query As String) As List
 	fetch.Redirect = Redirect
 	fetch.ReferrerPolicy = ReferrerPolicy
 	fetch.Mode = Mode
-	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	ApplyHeaders(fetch, "")
 	fetch.NoCache = NoCache
 	fetch.SetURL($"/assets/${ApiFile}.php/query"$)
 	If UseBaseURL Then
@@ -1073,13 +1123,7 @@ Sub SELECT_ALL As List
 	fetch.Redirect = Redirect
 	fetch.ReferrerPolicy = ReferrerPolicy
 	fetch.Mode = Mode 
-	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	ApplyHeaders(fetch, "")
 	fetch.NoCache = NoCache
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
@@ -1107,6 +1151,11 @@ Sub SELECT_ALL As List
 	Else
 		Log(fetch.ErrorMessage)	
 	End If
+	EnsureFileFields
+	For Each row As Map In result
+		EnrichFileUrls(row)
+		If GetFiles Then BANano.Await(EnrichFileData(row))
+	Next
 	lastPosition = -1
 	RowCount = result.size
 	Return result
@@ -1164,13 +1213,7 @@ Sub CREATE As String
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If UseBaseURL Then
 			fetch.SetURL($"/records/${TableName}"$)
@@ -1398,13 +1441,7 @@ Sub DELETE(id As String) As Boolean
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.AddHeader("X-HTTP-Method-Override", "DELETE")
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If UseBaseURL Then
@@ -1491,13 +1528,7 @@ Sub UPDATE As String
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.AddHeader("X-HTTP-Method-Override", "PUT")
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
@@ -1523,7 +1554,9 @@ Sub UPDATE As String
 				Log($"SDUIMySQLREST.${TableName}.UPDATE ERROR.${fetch.ErrorMessage}"$)
 			End If
 		End If
-		Return CInt(output)
+		If output <> Null Then AffectedRows = CInt(output)
+		LastAffectedID = pkValue
+		Return pkValue
 	Catch
 		Log(LastException.Message)
 		Return ""
@@ -1561,13 +1594,7 @@ Sub UPDATE_PER_FIELD As String
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.AddHeader("X-HTTP-Method-Override", "PUT")
 		'this is a post
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${pkValue}"$)
@@ -1586,9 +1613,10 @@ Sub UPDATE_PER_FIELD As String
 End Sub
 
 'ensure the query only return the id only
-Sub GetAffectedID
+Sub GetAffectedID As SDUIMySQLREST
 	flds.Initialize
 	flds.Add("id")
+	Return Me
 End Sub
 
 'get a value using key
@@ -1622,13 +1650,7 @@ Sub READ(id As String) As Map
 		fetch.Redirect = Redirect
 		fetch.ReferrerPolicy = ReferrerPolicy
 		fetch.Mode = Mode
-		If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-		If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-		If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-		If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-		If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-		If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-		If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+		ApplyHeaders(fetch, "")
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}/${id}"$)
 		If UseBaseURL Then
 			fetch.SetURL($"/records/${TableName}/${id}"$)
@@ -1641,6 +1663,9 @@ Sub READ(id As String) As Map
 		If fetch.Success Then
 			Dim Response As Map = fetch.response
 			Record = Response
+			EnsureFileFields
+			EnrichFileUrls(Record)
+			If GetFiles Then BANano.Await(EnrichFileData(Record))
 		Else
 			Log(fetch.ErrorMessage)	
 		End If
@@ -1667,6 +1692,7 @@ Sub READ_BY(fldName As String, fldValue As Object) As Map
 		Return m
 	Else
 		m = res.Get(0)
+		Record = m
 		Return m
 	End If
 End Sub
@@ -1683,6 +1709,7 @@ Sub READ_BY_STRING(fldName As String, fldValue As Object) As Map
 		Return m
 	Else
 		m = res.Get(0)
+		Record = m
 		Return m
 	End If
 End Sub
@@ -2146,7 +2173,13 @@ Sub CLEAR_WHERE As SDUIMySQLREST
 	orderByL.Initialize
 	flds.Initialize
 	combineL.Initialize
-	joinL.Initialize 
+	joinL.Initialize
+	expandL.Initialize
+	headers.Initialize
+	grpBy.Initialize
+	fileFields.Initialize
+	skipTotal = True
+	CountRecords = False
 	Return Me
 End Sub
 
@@ -2176,8 +2209,26 @@ Sub Reset As SDUIMySQLREST
 	AutoIncrement = ""
 	SchemaAddText1("id")
 	joinL.Initialize
-	sSize = "" 
+	expandL.Initialize
+	headers.Initialize
+	grpBy.Initialize
+	fileFields.Initialize
+	mFormFields.Initialize
+	UserProfile.Initialize
+	UserProfile.size = 0
+	UserRecord.Initialize
+	UserToken = ""
+	UserModel.Initialize
+	UserValid = False
+	BearerToken = ""
+	mBatch.Initialize
+	mBatchActive = False
+	sSize = ""
 	LowerCaseFields = True
+	AffectedRows = 0
+	LastAffectedID = ""
+	skipTotal = True
+	CountRecords = False
 	Return Me
 End Sub
 
@@ -2343,27 +2394,27 @@ Sub SetRecord(rec As Map)
 End Sub
 
 
-Sub DELETE_BY(fldName As String, fldValue As String)
+Sub DELETE_BY(fldName As String, fldValue As String) As Boolean
 	If ShowLog Then
 		Log($"SDUIMySQLREST.${TableName}DELETE_BY(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
 	ADD_WHERE(fldName, "=", fldValue)
-	BANano.Await(deleteWhere(PrimaryKey, whereField, ops))
+	Return BANano.Await(deleteWhere(PrimaryKey, whereField, ops))
 End Sub
 
 '<code>
 'BANano.Await(pb.DELETE_BY_STRING("a"))
 '</code>
-Sub DELETE_BY_STRING(fldName As String, fldValue As String)
+Sub DELETE_BY_STRING(fldName As String, fldValue As String) As Boolean
 	If ShowLog Then
 		Log($"SDUIMySQLREST.${TableName}.DELETE_BY_STRING(${fldName},${fldValue})"$)
 	End If
 	CLEAR_WHERE
 	ADD_FIELD(fldName)
 	ADD_WHERE(fldName, "=", fldValue)
-	BANano.Await(deleteWhere(PrimaryKey, whereField, ops))
+	Return BANano.Await(deleteWhere(PrimaryKey, whereField, ops))
 End Sub
 
 Sub DELETE_WHERE
@@ -2664,9 +2715,9 @@ End Sub
 '<code>
 'Dim WhereRecords As List = BANano.Await(pb.findWhereOrderBy(m, array("="), orderBy)
 '</code>
-Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
+Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderByList As List) As List
 	If ShowLog Then
-		Log($"SDUIMySQLREST.${TableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderBy})"$)
+		Log($"SDUIMySQLREST.${TableName}.findWhereOrderBy(${BANano.ToJson(whereMap)},${whereOps},${orderByList})"$)
 	End If
 	If Schema.Size = 0 Then
 		BANano.Throw($"SDUIMySQLREST.findWhereOrderBy. Please execute SchemaAdd?? first to define your table schema!"$)
@@ -2699,8 +2750,8 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	qfilter = afilter.Trim
 	'
 	Dim qsort As String = ""
-	If BANano.IsNull(orderBy) = False Then
-		qsort = Join("&", orderBy)
+	If BANano.IsNull(orderByList) = False Then
+		qsort = Join("&", orderByList)
 		qsort = RemDelim(qsort, "&")
 	End If
 	'
@@ -2734,13 +2785,7 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	fetch.Redirect = Redirect
 	fetch.ReferrerPolicy = ReferrerPolicy
 	fetch.Mode = Mode
-	If UseApiKey Then fetch.AddHeader("X-API-Key", sApiKey)
-	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
-	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
-	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
-	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
-	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
-	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	ApplyHeaders(fetch, "")
 	If scommand = "" Then
 		fetch.SetURL($"/assets/${ApiFile}.php/records/${TableName}"$)
 		If UseBaseURL Then
@@ -2768,6 +2813,11 @@ Sub findWhereOrderBy(whereMap As Map, whereOps As List, orderBy As List) As List
 	Else
 		Log(fetch.ErrorMessage)	
 	End If
+	EnsureFileFields
+	For Each row As Map In nresult
+		EnrichFileUrls(row)
+		If GetFiles Then BANano.Await(EnrichFileData(row))
+	Next
 	Return nresult
 End Sub
 
@@ -2937,7 +2987,7 @@ private Sub GetMapValues(sourceMap As Map) As List
 	Return listOfValues
 End Sub
 
-Sub SelectDistinct(tblfields As List, orderBy As List) As List
+Sub SelectDistinct(tblfields As List, orderByList As List) As List
 	'are we selecting all fields or just some
 	If tblfields.Size = 0 Then tblfields.Add("*")
 	Dim fld1 As String = tblfields.Get(0)
@@ -2951,13 +3001,1845 @@ Sub SelectDistinct(tblfields As List, orderBy As List) As List
 	Dim sb As StringBuilder
 	sb.Initialize
 	sb.Append($"SELECT DISTINCT ${selFIelds} FROM ${EscapeField(TableName)}"$)
-	If orderBy.IsInitialized And orderBy.Size > 0 Then
+	If orderByList.IsInitialized And orderByList.Size > 0 Then
 		'order by
-		Dim stro As String = JoinFields(",", orderBy)
+		Dim stro As String = JoinFields(",", orderByList)
 		If stro.Length > 0 Then
 			sb.Append(" ORDER BY ").Append(stro)
 		End If
 	End If
 	Dim lst As List = BANano.Await(SELECT_RAW(sb.ToString))
 	Return lst
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 1)
+' ===========================================================================
+
+' Adds a header to every subsequent request in this helper set.
+Sub AddHeader(prop As String, value As String)
+	headers.Put(prop, value)
+End Sub
+
+' Clears helper headers.
+Sub ClearHeaders
+	headers.Initialize
+End Sub
+
+' Adds a relation field to the schema.
+Sub SchemaAddRelation(bools As List) As SDUIMySQLREST
+	For Each b As String In bools
+		SchemaAddRelation1(b)
+	Next
+	Return Me
+End Sub
+
+' Adds one relation field to the schema.
+Sub SchemaAddRelation1(b As String) As SDUIMySQLREST
+	Schema.Put(b, "RELATION")
+	Return Me
+End Sub
+
+' Adds JSON fields to the schema.
+Sub SchemaAddJson(bools As List) As SDUIMySQLREST
+	For Each b As String In bools
+		SchemaAddJson1(b)
+	Next
+	Return Me
+End Sub
+
+' Adds one JSON field to the schema.
+Sub SchemaAddJson1(b As String) As SDUIMySQLREST
+	Schema.Put(b, "JSON")
+	Return Me
+End Sub
+
+' Adds the field list from a data model to the current select.
+Sub SetFieldsFromDataModel(models As Map)
+	SetFieldsFromDataModel1(TableName, models)
+End Sub
+
+' Adds the field list for a named table from a data model to the current select.
+Sub SetFieldsFromDataModel1(tblName As String, models As Map)
+	If models = Null Or models.ContainsKey(tblName) = False Then Return
+	Dim tm As Map = models.Get(tblName)
+	flds.Initialize
+	If tm.ContainsKey("fields") = False Then Return
+	Dim fldsx As List = tm.Get("fields")
+	For Each fm As Map In fldsx
+		ADD_FIELD(fm.GetDefault("name", ""))
+	Next
+End Sub
+
+' Removes field names from the current select.
+Sub RemoveFields(themFields As List)
+	If themFields = Null Then Return
+	For Each fldName As String In themFields
+		Dim fldPos As Int = flds.IndexOf(fldName)
+		If fldPos <> -1 Then flds.RemoveAt(fldPos)
+	Next
+End Sub
+
+' Converts the current schema to a PocketBase-style field list.
+Sub SchemaToPocketBase As Map
+	Dim out As Map = CreateMap()
+	For Each k As String In Schema.Keys
+		Dim v As String = Schema.Get(k)
+		Dim pbType As String = "text"
+		Select Case v
+			Case DB_BOOL
+				pbType = "bool"
+			Case DB_INT, DB_INTEGER, DB_NUMBER, DB_REAL, DB_FLOAT, DB_DOUBLE
+				pbType = "number"
+			Case DB_FILE, DB_BLOB
+				pbType = "file"
+			Case "RELATION"
+				pbType = "relation"
+			Case "JSON"
+				pbType = "json"
+			Case DB_DATE
+				pbType = "date"
+		End Select
+		out.Put(k, pbType)
+	Next
+	Return out
+End Sub
+
+' Applies the shared API/DB headers to a fetch.
+Private Sub ApplyHeaders(fetch As SDUIFetch, bearer As String)
+	If UseApiKey And sApiKey <> "" Then fetch.AddHeader("X-API-Key", sApiKey)
+	If bearer = "" Then bearer = BearerToken
+	If bearer <> "" Then fetch.AddHeader("Authorization", "Bearer " & bearer)
+	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	If headers <> Null And headers.Size > 0 Then
+		For Each h As String In headers.Keys
+			fetch.AddHeader(h, headers.Get(h))
+		Next
+	End If
+End Sub
+
+' Returns the PocketBase data-model shape: Map(table -> Map(field -> PB type)).
+Sub GetDataModelsPB(e As String, p As String) As Map
+	Dim models As Map = CreateMap()
+	Dim bearer As String = ""
+	If e <> "" Or p <> "" Then
+		Dim authFetch As SDUIFetch
+		authFetch.Initialize(baseURL)
+		authFetch.ShowLog = ShowLog
+		authFetch.SetContentTypeApplicationJSON
+		authFetch.NoCors = NoCORS
+		authFetch.NoCache = True
+		authFetch.SetURL("/admins/auth-with-password")
+		If UseBaseURL = False Then authFetch.SetURL($"/assets/${ApiFile}.php/admins/auth-with-password"$)
+		ApplyHeaders(authFetch, "")
+		authFetch.SetData(CreateMap("identity": e, "password": p))
+		BANano.Await(authFetch.PostWait)
+		If authFetch.Success Then
+			Dim ar As Map = authFetch.response
+			If ar <> Null And ar.ContainsKey("token") Then bearer = ar.Get("token")
+		End If
+	End If
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL("/collections")
+	If UseBaseURL = False Then fetch.SetURL($"/assets/${ApiFile}.php/collections"$)
+	ApplyHeaders(fetch, bearer)
+	BANano.Await(fetch.GetWait)
+	If fetch.Success Then
+		Dim resp As Map = fetch.response
+		If resp <> Null And resp.ContainsKey("items") Then
+			Dim items As List = resp.Get("items")
+			For Each col As Map In items
+				AddCollectionModel(models, col)
+			Next
+		End If
+	End If
+	If models.ContainsKey("users") = False Then AddAuthCollectionModel(models, "users", bearer)
+	If models.ContainsKey("admins") = False Then AddAuthCollectionModel(models, "admins", bearer)
+	Return models
+End Sub
+
+' Adds one collection map from /collections to the model map.
+Private Sub AddCollectionModel(models As Map, col As Map)
+	If col = Null Then Return
+	Dim nm As String = col.GetDefault("name", "")
+	If nm = "" Then Return
+	Dim xf As Map = CreateMap()
+	If col.ContainsKey("schema") Then
+		Dim schemaList As List = col.Get("schema")
+		For Each f As Map In schemaList
+			xf.Put(f.GetDefault("name", ""), f.GetDefault("type", ""))
+		Next
+	End If
+	xf.Put("id", "text")
+	xf.Put("created", "text")
+	xf.Put("updated", "text")
+	models.Put(nm, xf)
+End Sub
+
+' Fetches one protected auth collection when /collections omits it.
+Private Sub AddAuthCollectionModel(models As Map, nm As String, bearer As String)
+	If models.ContainsKey(nm) Then Return
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL($"/collections/${nm}"$)
+	If UseBaseURL = False Then fetch.SetURL($"/assets/${ApiFile}.php/collections/${nm}"$)
+	ApplyHeaders(fetch, bearer)
+	BANano.Await(fetch.GetWait)
+	If fetch.Success Then
+		Dim col As Map = fetch.response
+		AddCollectionModel(models, col)
+	End If
+End Sub
+
+' PocketBase SELECT_ALL_FETCH alias.
+Sub SELECT_ALL_FETCH As List
+	Return BANano.Await(SELECT_ALL)
+End Sub
+
+' PocketBase SELECT_WHERE_FETCH alias.
+Sub SELECT_WHERE_FETCH As List
+	Return BANano.Await(SELECT_WHERE)
+End Sub
+
+' PocketBase SELECT_WHERE1_FETCH alias.
+Sub SELECT_WHERE1_FETCH As List
+	Return BANano.Await(SELECT_WHERE1)
+End Sub
+
+' PocketBase findWhereFetch alias.
+Sub findWhereFetch(whereMap As Map, whereOps As List) As List
+	Return BANano.Await(findWhere(whereMap, whereOps))
+End Sub
+
+' PocketBase findWhereOrderByFetch alias.
+Sub findWhereOrderByFetch(whereMap As Map, whereOps As List, orderByx As List) As List
+	Return BANano.Await(findWhereOrderBy(whereMap, whereOps, orderByx))
+End Sub
+
+' PocketBase CREATE_FETCH alias.
+Sub CREATE_FETCH As String
+	Return BANano.Await(CREATE)
+End Sub
+
+' PocketBase UPDATE_FETCH alias.
+Sub UPDATE_FETCH As String
+	Return BANano.Await(UPDATE)
+End Sub
+
+' PocketBase DELETE_FETCH alias.
+Sub DELETE_FETCH(delID As String) As Boolean
+	Return BANano.Await(DELETE(delID))
+End Sub
+
+' PocketBase READ_FETCH alias.
+Sub READ_FETCH(id As String) As Map
+	Return BANano.Await(READ(id))
+End Sub
+
+' PocketBase READ_BY_FETCH alias.
+Sub READ_BY_FETCH(fldName As String, fldValue As Object) As Map
+	Return BANano.Await(READ_BY(fldName, fldValue))
+End Sub
+
+' PocketBase READ_BY_STRING_FETCH alias.
+Sub READ_BY_STRING_FETCH(fldName As String, fldValue As Object) As Map
+	Return BANano.Await(READ_BY_STRING(fldName, fldValue))
+End Sub
+
+' Reads by primary key and returns only the requested fields.
+Sub READ_FIELDS(fldValue As Object, theseFlds As List) As Map
+	Dim m As Map = CreateMap()
+	CLEAR_WHERE
+	If theseFlds <> Null Then ADD_FIELDS(theseFlds)
+	ADD_WHERE(PrimaryKey, "=", fldValue)
+	Dim lst As List = BANano.Await(SELECT_WHERE)
+	If lst.Size > 0 Then
+		m = lst.Get(0)
+		Record = m
+	End If
+	Return m
+End Sub
+
+' PocketBase READ_FIELDS_FETCH alias.
+Sub READ_FIELDS_FETCH(fldValue As Object, theseFlds As List) As Map
+	Return READ_FIELDS(fldValue, theseFlds)
+End Sub
+
+' Reads by a field and returns only the requested fields.
+Sub READ_BY_STRING_FIELDS_FETCH(fldName As String, fldValue As Object, theseFlds As List) As Map
+	Dim m As Map = CreateMap()
+	CLEAR_WHERE
+	If theseFlds <> Null Then ADD_FIELDS(theseFlds)
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim lst As List = BANano.Await(SELECT_WHERE)
+	If lst.Size > 0 Then
+		m = lst.Get(0)
+		Record = m
+	End If
+	Return m
+End Sub
+
+' PocketBase READ_BY_FIELDS_FETCH alias.
+Sub READ_BY_FIELDS_FETCH(fldName As String, fldValue As Object, theseFlds As List) As Map
+	Return READ_BY_STRING_FIELDS_FETCH(fldName, fldValue, theseFlds)
+End Sub
+
+' PocketBase READ_BY_STRING_FIELDS alias.
+Sub READ_BY_STRING_FIELDS(fldName As String, fldValue As Object, theseFlds As List) As Map
+	Return READ_BY_STRING_FIELDS_FETCH(fldName, fldValue, theseFlds)
+End Sub
+
+' PocketBase READ_BY_FIELDS alias.
+Sub READ_BY_FIELDS(fldName As String, fldValue As Object, theseFlds As List) As Map
+	Return READ_BY_STRING_FIELDS_FETCH(fldName, fldValue, theseFlds)
+End Sub
+
+' Reads by a field using the current field selection.
+Sub READ_BY_STRING_FIELDS1(fldName As String, fldValue As Object) As Map
+	Dim cf As List = BANano.DeepClone(flds)
+	Dim m As Map = CreateMap()
+	CLEAR_WHERE
+	ADD_FIELDS(cf)
+	ADD_WHERE_STRING(fldName, "=", fldValue)
+	Dim lst As List = BANano.Await(SELECT_WHERE)
+	If lst.Size > 0 Then
+		m = lst.Get(0)
+		Record = m
+	End If
+	Return m
+End Sub
+
+' PocketBase GET_ID_BY_FIELD_FETCH alias.
+Sub GET_ID_BY_FIELD_FETCH(fldName As String, fldValue As String) As String
+	Return BANano.Await(GET_ID_BY_FIELD(fldName, fldValue))
+End Sub
+
+' PocketBase READ_ID_BY_FETCH alias.
+Sub READ_ID_BY_FETCH(fldName As String, fldValue As String) As String
+	Return BANano.Await(READ_ID_BY(fldName, fldValue))
+End Sub
+
+' PocketBase READ_ID_BY_STRING_FETCH alias.
+Sub READ_ID_BY_STRING_FETCH(fldName As String, fldValue As String) As String
+	Return BANano.Await(READ_ID_BY_STRING(fldName, fldValue))
+End Sub
+
+' PocketBase ContainsKeyFetch alias.
+Sub ContainsKeyFetch(id As String) As Boolean
+	Return BANano.Await(ContainsKey(id))
+End Sub
+
+' PocketBase ContainsFieldFetch alias.
+Sub ContainsFieldFetch(fldName As String, id As String) As Boolean
+	Return BANano.Await(ContainsField(fldName, id))
+End Sub
+
+' PocketBase ExistsFetch alias.
+Sub ExistsFetch(fldName As String, fldValue As Object) As Boolean
+	Return BANano.Await(Exists(fldName, fldValue))
+End Sub
+
+' PocketBase ExistsByStringFetch alias.
+Sub ExistsByStringFetch(fldName As String, fldValue As Object) As Boolean
+	Return BANano.Await(ExistsByString(fldName, fldValue))
+End Sub
+
+' PocketBase ExistsWhereFetch alias.
+Sub ExistsWhereFetch(where As Map) As Boolean
+	Return BANano.Await(ExistsWhere(where))
+End Sub
+
+' PocketBase GetFirstListItem alias.
+Sub GetFirstListItem(tblName As String) As Map
+	Dim m As Map = CreateMap()
+	Dim lst As List = BANano.Await(SELECT_WHERE)
+	If lst.Size > 0 Then
+		m = lst.Get(0)
+		Record = m
+	End If
+	Return m
+End Sub
+
+' PocketBase GetFirstListItemFetch alias.
+Sub GetFirstListItemFetch(tblName As String) As Map
+	Return GetFirstListItem(tblName)
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 2: files and forms)
+' ===========================================================================
+
+' Returns the API base used for file and form routes.
+Private Sub FileBase As String
+	If UseBaseURL Then Return baseURL
+	Return baseURL & $"/assets/${ApiFile}.php"$
+End Sub
+
+' Registers a file field and the field that will receive its URL.
+Sub FILE_FIELD(fld As String, fldUrl As String) As SDUIMySQLREST
+	If fld <> "" Then fileFields.Put(fld, fldUrl)
+	Return Me
+End Sub
+
+' PocketBase ADD_FILE_FIELD alias.
+Sub ADD_FILE_FIELD(fld As String, fldURL As String) As SDUIMySQLREST
+	Return FILE_FIELD(fld, fldURL)
+End Sub
+
+' Auto-registers schema file fields as FILE_FIELD(fld, fld & "url").
+Private Sub EnsureFileFields
+	For Each fld As String In Schema.Keys
+		If Schema.Get(fld) = DB_FILE Then
+			If fileFields.ContainsKey(fld) = False Then fileFields.Put(fld, fld & "url")
+		End If
+	Next
+End Sub
+
+' Builds the public URL for one stored file.
+Sub BuildFileURL(id As String, fileName As String) As String
+	If fileName = "" Then Return ""
+	Return FileBase & $"/files/${TableName}/${id}/${fileName}"$
+End Sub
+
+' Builds the public thumbnail URL for one stored file.
+Sub BuildFileThumbNailURL(id As String, fileName As String, width As String, height As String) As String
+	Return BuildFileURL(id, fileName) & "?thumb=" & width & "x" & height
+End Sub
+
+' Returns the first non-empty file name from a string or list value.
+Private Sub FirstFileName(Value As Object) As String
+	If Value = Null Then Return ""
+	If Value Is List Then
+		Dim lst As List = Value
+		For Each item As Object In lst
+			Dim s As String = CStr(item).Trim
+			If s <> "" Then Return s
+		Next
+		Return ""
+	End If
+	Return CStr(Value).Trim
+End Sub
+
+' Returns the first file URL from a record.
+Sub getFileURL(rec As Map, filesFieldName As String) As String
+	If rec = Null Then Return ""
+	Dim fileName As String = FirstFileName(rec.GetDefault(filesFieldName, ""))
+	If fileName = "" Then Return ""
+	Return BuildFileURL(CStr(rec.GetDefault(PrimaryKey, "")), fileName)
+End Sub
+
+' Returns the file URL for a field on the current Record.
+Sub GetURLLink(filesFieldName As String) As String
+	Return getFileURL(Record, filesFieldName)
+End Sub
+
+' Returns the file URL for a field on a specific record and table.
+Sub GetRecordURLLink(rec As Map, tblName As String, filesFieldName As String) As String
+	Dim savedTable As String = TableName
+	TableName = tblName
+	Dim url As String = getFileURL(rec, filesFieldName)
+	TableName = savedTable
+	Return url
+End Sub
+
+' Adds <field>url entries to one row and, when GetFiles, merges base64 data.
+' Adds <field>url entries to one row.
+Private Sub EnrichFileUrls(row As Map)
+	EnsureFileFields
+	If row = Null Then Return
+	Dim id As String = row.GetDefault(PrimaryKey, "")
+	For Each fld As String In fileFields.Keys
+		Dim urlFld As String = fileFields.Get(fld)
+		Dim fileName As String = FirstFileName(row.GetDefault(fld, ""))
+		If fileName = "" Then
+			row.Put(urlFld, "")
+		Else
+			row.Put(urlFld, BuildFileURL(id, fileName))
+		End If
+	Next
+End Sub
+
+' Joins plain strings without SQL identifier quoting.
+Private Sub JoinPlain(delim As String, items As List) As String
+	If items = Null Or items.Size = 0 Then Return ""
+	Dim sb As StringBuilder
+	sb.Initialize
+	For i = 0 To items.Size - 1
+		If i > 0 Then sb.Append(delim)
+		sb.Append(items.Get(i))
+	Next
+	Return sb.ToString
+End Sub
+
+' Merges base64 file data from the backend forms endpoint.
+Private Sub EnrichFileData(row As Map)
+	If GetFiles = False Or fileFields.Size = 0 Then Return
+	Dim id As String = row.GetDefault(PrimaryKey, "")
+	If id = "" Then Return
+	Dim ff As String = JoinPlain(",", fileFields.Keys)
+	Dim route As String = $"/forms/${TableName}/${id}?getfiles=true&filefields=${ff}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	BANano.Await(fetch.GetWait)
+	If fetch.Success Then
+		Dim resp As Map = fetch.response
+		If resp <> Null Then
+			For Each k As String In resp.Keys
+				row.Put(k, resp.Get(k))
+			Next
+		End If
+	End If
+End Sub
+
+' Adds file URL fields to every row in result.
+Sub EstablishFileUrl(fileField As String, urlField As String)
+	FILE_FIELD(fileField, urlField)
+	For Each row As Map In result
+		EnrichFileUrls(row)
+	Next
+End Sub
+
+' Adds a file URL field to one record.
+Sub EstablishFileUrl1(rec As Map, fileField As String, urlField As String)
+	FILE_FIELD(fileField, urlField)
+	EnrichFileUrls(rec)
+End Sub
+
+' Returns the download URL for a file field on the current record.
+Sub GetDocumentURL(fileField As String) As String
+	Return GetURLLink(fileField)
+End Sub
+
+' Adds the file URL for one record into the requested output field.
+Sub getFileURLTo(rec As Map, fileField As String, urlField As String)
+	FILE_FIELD(fileField, urlField)
+	EnrichFileUrls(rec)
+End Sub
+
+' PocketBase PrepareForm: resets query/record state and form buffers.
+Sub PrepareForm
+	CLEAR_WHERE
+	Record.Initialize
+	mFormFields.Initialize
+	mFormFiles.Initialize
+End Sub
+
+' True when a JS value is a browser File or Blob object.
+Private Sub IsBrowserFileOrBlob(v As Object) As Boolean
+	If v = Null Or BANano.IsUndefined(v) Then Return False
+	Dim obj As BANanoObject = BANano.Window.GetField("Object")
+	Dim jsTag As String = obj.GetField("prototype").GetField("toString").RunMethod("call", Array(v)).Result
+	Return (jsTag = "[object File]" Or jsTag = "[object Blob]")
+End Sub
+
+' Sets all form fields from a Map.
+Sub SetForm(m As Map)
+	If m = Null Then Return
+	For Each k As String In m.Keys
+		SetFormField(k, m.Get(k))
+	Next
+End Sub
+
+' Sets one form field. Browser File/Blob objects are appended as multipart files.
+Sub SetFormField(fldName As String, fldValue As Object) As SDUIMySQLREST
+	If IsBrowserFileOrBlob(fldValue) Then
+		Return SetFormFile(fldName, fldValue)
+	End If
+	mFormFields.Put(fldName, fldValue)
+	Return Me
+End Sub
+
+' Appends one or more browser File/Blob objects for a form field without overwriting duplicates.
+Sub SetFormFile(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Dim clean As String = CStr(fldName).Trim
+	If clean = "" Or fldValue = Null Or BANano.IsUndefined(fldValue) Then Return Me
+	If fldValue Is List Then
+		Dim lst As List = fldValue
+		For Each item As Object In lst
+			If item <> Null Then mFormFiles.Add(CreateMap("field": clean, "file": item))
+		Next
+	Else If BANano.IsArray(fldValue) Then
+		Dim objArr() As Object = fldValue
+		For Each item As Object In objArr
+			If item <> Null Then mFormFiles.Add(CreateMap("field": clean, "file": item))
+		Next
+	Else
+		mFormFiles.Add(CreateMap("field": clean, "file": fldValue))
+	End If
+	Return Me
+End Sub
+
+' Populates FormData fields and files into an SDUIFetch instance, appending [] for multi-file fields.
+Private Sub PopulateFormDataFetch(fetch As SDUIFetch, fieldsMap As Map, filesList As List)
+	fetch.NewFormData
+	If fieldsMap <> Null Then
+		For Each k As String In fieldsMap.Keys
+			Dim v As Object = fieldsMap.Get(k)
+			If IsBrowserFileOrBlob(v) Then
+				fetch.AddFormDataAppend(k, v)
+			Else If v Is List Or BANano.IsArray(v) Then
+				fetch.AddFormData(k, BANano.ToJson(v))
+			Else
+				fetch.AddFormData(k, v)
+			End If
+		Next
+	End If
+	If filesList <> Null And filesList.Size > 0 Then
+		Dim counts As Map = CreateMap()
+		For Each entry As Map In filesList
+			Dim fn As String = CStr(entry.GetDefault("field", "")).Trim
+			If fn <> "" Then
+				Dim prev As Int = counts.GetDefault(fn, 0)
+				counts.Put(fn, prev + 1)
+			End If
+		Next
+		For Each entry As Map In filesList
+			Dim fn As String = CStr(entry.GetDefault("field", "")).Trim
+			Dim fobj As Object = entry.Get("file")
+			If fn = "" Or fobj = Null Then Continue
+			Dim cnt As Int = counts.GetDefault(fn, 1)
+			If cnt > 1 And fn.EndsWith("[]") = False And fn.EndsWith("-") = False Then
+				fn = fn & "[]"
+			End If
+			If fn.EndsWith("[]") Or cnt > 1 Then
+				fetch.AddFormDataAppend(fn, fobj)
+			Else
+				fetch.AddFormData(fn, fobj)
+			End If
+		Next
+	End If
+End Sub
+
+' Builds a multipart fetch for the current form fields and files.
+Private Sub BuildFormFetch(route As String) As SDUIFetch
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.Redirect = Redirect
+	fetch.ReferrerPolicy = ReferrerPolicy
+	fetch.Mode = Mode
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	PopulateFormDataFetch(fetch, mFormFields, mFormFiles)
+	Return fetch
+End Sub
+
+' Builds the getfiles/geturls/filefields query string for /forms/* reads.
+Private Sub BuildFormQuery(IncludeFiles As Boolean, fldsParam As String) As String
+	Dim parts As List
+	parts.Initialize
+	If IncludeFiles Then parts.Add("getfiles=true")
+	If GetUrls Then parts.Add("geturls=true")
+	Dim ff As String = CStr(fldsParam).Trim
+	If ff <> "" Then parts.Add("filefields=" & ff)
+	Return JoinPlain("&", parts)
+End Sub
+
+' Reads a single record through FormDataController (/forms/{table}/{id}).
+Sub FORMS_READ(Id As String, IncludeFiles As Boolean, fldsParam As String) As Map
+	Dim out As Map = CreateMap()
+	If Id = "" Then Return out
+	Dim route As String = $"/forms/${TableName}/${Id}"$
+	Dim qs As String = BuildFormQuery(IncludeFiles, fldsParam)
+	If qs <> "" Then route = route & "?" & qs
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	BANano.Await(fetch.GetWait)
+	If fetch.Success And fetch.response <> Null Then
+		Record = fetch.response
+		Return Record
+	End If
+	Return out
+End Sub
+
+' Lists records through FormDataController (/forms/{table}).
+Sub FORMS_LIST(IncludeFiles As Boolean, fldsParam As String) As List
+	Dim out As List
+	out.Initialize
+	Dim route As String = $"/forms/${TableName}"$
+	Dim qs As String = BuildFormQuery(IncludeFiles, fldsParam)
+	If qs <> "" Then route = route & "?" & qs
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	BANano.Await(fetch.GetWait)
+	If fetch.Success And fetch.response <> Null Then
+		Dim resp As Map = fetch.response
+		If resp.ContainsKey("records") And resp.Get("records") Is List Then
+			out = resp.Get("records")
+			result = out
+			RowCount = result.Size
+		End If
+	End If
+	Return out
+End Sub
+
+' Fetches base64 file data and URLs from /forms/{table}/{id}/getfiles.
+Sub FORMS_GET_FILES(Id As String, fldsParam As String) As Map
+	Dim out As Map = CreateMap()
+	If Id = "" Or fldsParam = "" Then Return out
+	Dim route As String = $"/forms/${TableName}/${Id}/getfiles?filefields=${fldsParam}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	BANano.Await(fetch.GetWait)
+	If fetch.Success And fetch.response <> Null Then
+		Return fetch.response
+	End If
+	Return out
+End Sub
+
+' Sends multipart PATCH via POST + X-HTTP-Method-Override to /forms/{table}/{id}.
+Sub FORMS_PATCH_FILES(Id As String) As Map
+	Dim out As Map = CreateMap()
+	If Id = "" Then Return out
+	Dim route As String = $"/forms/${TableName}/${Id}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch = BuildFormFetch(route)
+	fetch.AddHeader("X-HTTP-Method-Override", "PATCH")
+	BANano.Await(fetch.PostWait)
+	If fetch.Success And fetch.response <> Null Then
+		LastAffectedID = Id
+		Return fetch.response
+	End If
+	Return out
+End Sub
+
+' Deletes a record and its uploaded directory via DELETE /forms/{table}/{id}.
+Sub FORMS_DELETE(Id As String) As Boolean
+	If Id = "" Then Return False
+	Dim route As String = $"/forms/${TableName}/${Id}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(route)
+	ApplyHeaders(fetch, "")
+	BANano.Await(fetch.DeleteWait)
+	If fetch.Success Then
+		Dim fResp As Map = fetch.response
+		If fResp <> Null Then
+			AffectedRows = CInt(fResp.GetDefault("affected_rows", 1))
+		End If
+		Return True
+	End If
+	Return False
+End Sub
+
+' PocketBase CREATE_FORM: multipart create, returns the created record Map.
+Sub CREATE_FORM As Map
+	Dim out As Map = CreateMap()
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIMySQLREST.CREATE_FORM: ${TableName} - please execute SchemaAdd?? first!"$)
+		Return out
+	End If
+	If UseApiKey Then
+		If sApiKey = "" Then
+			BANano.Throw($"SDUIMySQLREST.CREATE_FORM - The ApiKey has not been specified!"$)
+			Return out
+		End If
+	End If
+	EnsureFileFields
+	Dim route As String = $"/forms/${TableName}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch = BuildFormFetch(route)
+	BANano.Await(fetch.PostWait)
+	If fetch.Success Then
+		Dim rec As Map = fetch.response
+		If rec <> Null Then
+			Dim newId As String = CStr(rec.GetDefault("id", ""))
+			If newId <> "" Then
+				LastAffectedID = newId
+				Record = BANano.Await(READ(newId))
+				EnrichFileUrls(Record)
+				If GetFiles Then BANano.Await(EnrichFileData(Record))
+				Return Record
+			End If
+			If rec.ContainsKey("record") And rec.Get("record") Is Map Then
+				Record = rec.Get("record")
+				EnrichFileUrls(Record)
+				If GetFiles Then BANano.Await(EnrichFileData(Record))
+				Return Record
+			End If
+			Record = rec
+			EnrichFileUrls(Record)
+			If GetFiles Then BANano.Await(EnrichFileData(Record))
+			Return Record
+		End If
+	End If
+	Return out
+End Sub
+
+' PocketBase CREATE_FORMDATA: create and register the file field URL.
+Sub CREATE_FORMDATA(fileField As String) As Map
+	If fileField <> "" Then fileFields.Put(fileField, fileField & "url")
+	Return BANano.Await(CREATE_FORM)
+End Sub
+
+' PocketBase UPDATE_FORM: multipart update, returns the updated record Map.
+Sub UPDATE_FORM(sID As String) As Map
+	Dim out As Map = CreateMap()
+	If sID = "" Then Return out
+	If Schema.Size = 0 Then
+		BANano.Throw($"SDUIMySQLREST.UPDATE_FORM: ${TableName} - please execute SchemaAdd?? first!"$)
+		Return out
+	End If
+	EnsureFileFields
+	Dim route As String = $"/forms/${TableName}/${sID}"$
+	If UseBaseURL = False Then route = $"/assets/${ApiFile}.php${route}"$
+	Dim fetch As SDUIFetch = BuildFormFetch(route)
+	BANano.Await(fetch.PostWait)
+	If fetch.Success Then
+		Dim rec As Map = fetch.response
+		If rec <> Null Then
+			LastAffectedID = sID
+			Dim updated As Map = BANano.Await(READ(sID))
+			If updated <> Null And updated.Size > 0 Then
+				Record = updated
+				EnrichFileUrls(Record)
+				If GetFiles Then BANano.Await(EnrichFileData(Record))
+				Return Record
+			End If
+			Record = rec
+			EnrichFileUrls(Record)
+			If GetFiles Then BANano.Await(EnrichFileData(Record))
+			Return Record
+		End If
+	End If
+	Return out
+End Sub
+
+' PocketBase UPDATE_FORMDATA: multipart update, returns the record id.
+Sub UPDATE_FORMDATA(sID As String) As String
+	Dim rec As Map = BANano.Await(UPDATE_FORM(sID))
+	Dim sid As String = rec.GetDefault(PrimaryKey, "")
+	If sid = "" Then sid = sID
+	If sid <> "" Then LastAffectedID = sid
+	Return sid
+End Sub
+
+' PocketBase UPDATE_FILE: multipart update of one file field, returns the id.
+Sub UPDATE_FILE(sid As String, fileField As String, fileObj As Object) As String
+	Dim savedFields As Map = mFormFields
+	Dim savedFiles As List = mFormFiles
+	mFormFields.Initialize
+	mFormFiles.Initialize
+	SetFormFile(fileField, fileObj)
+	Dim rec As Map = BANano.Await(UPDATE_FORM(sid))
+	mFormFields = savedFields
+	mFormFiles = savedFiles
+	If sid <> "" Then LastAffectedID = sid
+	Return sid
+End Sub
+
+' PocketBase CREATE_OR_UPDATE_FORM: create when absent, update otherwise.
+Sub CREATE_OR_UPDATE_FORM(sID As String) As String
+	If sID <> "" Then
+		Dim bThere As Boolean = BANano.Await(ContainsKey(sID))
+		If bThere Then
+			Dim rec As Map = BANano.Await(UPDATE_FORM(sID))
+			Dim sid As String = rec.GetDefault(PrimaryKey, "")
+			If sid = "" Then sid = sID
+			LastAffectedID = sid
+			Return sid
+		End If
+	End If
+	Dim created As Map = BANano.Await(CREATE_FORM)
+	Dim newId As String = created.GetDefault(PrimaryKey, "")
+	If newId <> "" Then LastAffectedID = newId
+	Return newId
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 3: authentication)
+' ===========================================================================
+
+' Sets the bearer token used by subsequent requests.
+Sub SetAuthorizationBearerToken(sToken As String)
+	BearerToken = sToken
+	UserToken = sToken
+	UserValid = (sToken <> "")
+	IsAuthenticated = UserValid
+End Sub
+
+' Clears all PocketBase-compatible auth state.
+Private Sub ClearAuthState
+	UserProfile.Initialize
+	UserProfile.size = 0
+	UserRecord.Initialize
+	UserModel.Initialize
+	UserToken = ""
+	BearerToken = ""
+	UserValid = False
+	IsAuthenticated = False
+End Sub
+
+' Resolves an auth route against the configured base URL.
+Private Sub AuthRoute(route As String) As String
+	If UseBaseURL Then Return route
+	Return $"/assets/${ApiFile}.php${route}"$
+End Sub
+
+' Applies API/DB headers and optionally the current bearer token.
+Private Sub ApplyAuthHeaders(fetch As SDUIFetch, includeBearer As Boolean)
+	If UseApiKey And sApiKey <> "" Then fetch.AddHeader("X-API-Key", sApiKey)
+	If includeBearer And BearerToken <> "" Then fetch.AddHeader("Authorization", "Bearer " & BearerToken)
+	If sHost <> "" Then fetch.AddHeader("X-Host", sHost)
+	If sUser <> "" Then fetch.AddHeader("X-User", sUser)
+	If sPassword <> "" Then fetch.AddHeader("X-Password", sPassword)
+	If sDbName <> "" Then fetch.AddHeader("X-DBName", sDbName)
+	If sDriver <> "" Then fetch.AddHeader("X-Driver", sDriver)
+	If sPort <> "" Then fetch.AddHeader("X-Port", sPort)
+	If headers <> Null And headers.Size > 0 Then
+		For Each h As String In headers.Keys
+			fetch.AddHeader(h, headers.Get(h))
+		Next
+	End If
+End Sub
+
+' Generic auth request. Stores a returned token when requested.
+Private Sub AuthSend(Method As String, route As String, body As Map, storeToken As Boolean, includeBearer As Boolean) As Map
+	Dim out As Map = CreateMap()
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(AuthRoute(route))
+	ApplyAuthHeaders(fetch, includeBearer)
+	If body <> Null Then fetch.SetData(body)
+	Select Case Method.ToUpperCase
+		Case "POST"
+			BANano.Await(fetch.PostWait)
+		Case "PUT"
+			BANano.Await(fetch.PutWait)
+		Case "PATCH"
+			BANano.Await(fetch.PatchWait)
+		Case "DELETE"
+			BANano.Await(fetch.DeleteWait)
+		Case Else
+			BANano.Await(fetch.GetWait)
+	End Select
+	If fetch.Success Then
+		Dim resp As Map = fetch.response
+		If resp <> Null Then
+			out = resp
+			If storeToken And resp.ContainsKey("token") Then
+				BearerToken = CStr(resp.Get("token"))
+				UserToken = BearerToken
+				UserValid = (BearerToken <> "")
+				IsAuthenticated = UserValid
+			End If
+		End If
+	Else
+		ErrorMessage = fetch.ErrorMessage
+	End If
+	Return out
+End Sub
+
+' Fills UserProfile/UserRecord/UserToken/UserModel from an auth response.
+Private Sub ApplyAuthProfile(resp As Map)
+	If resp = Null Or resp.Size = 0 Then
+		ClearAuthState
+		Return
+	End If
+	Dim rec As Map = CreateMap()
+	If resp.ContainsKey("record") And resp.Get("record") Is Map Then
+		rec = resp.Get("record")
+	Else
+		rec = resp
+	End If
+	If rec.ContainsKey("id") = False Then Return
+	UserRecord = rec
+	UserModel = rec
+	UserProfile.Initialize
+	UserProfile.id = CStr(rec.GetDefault("id", ""))
+	UserProfile.email = CStr(rec.GetDefault("email", ""))
+	UserProfile.name = CStr(rec.GetDefault("name", ""))
+	UserProfile.verified = CBool(rec.GetDefault("verified", False))
+	UserProfile.avatar = CStr(rec.GetDefault("avatar", ""))
+	UserProfile.UserName = CStr(rec.GetDefault("username", ""))
+	UserProfile.idnumber = CStr(rec.GetDefault("idnumber", ""))
+	UserProfile.token = BearerToken
+	UserProfile.size = 7
+	UserToken = BearerToken
+	UserValid = (BearerToken <> "")
+	IsAuthenticated = UserValid
+	RaiseAuthChange
+End Sub
+
+' Raises the PocketBase-style AuthChange event.
+Private Sub RaiseAuthChange
+	If mCallBack <> Null And mEvent <> "" Then
+		BANano.CallSub(mCallBack, mEvent & "_AuthChange", Array(UserToken, UserModel))
+	End If
+End Sub
+
+' PocketBase USER_AUTH_WITH_PASSWORD.
+Sub USER_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
+	ClearAuthState
+	Dim res As Map = BANano.Await(AuthSend("POST", UsersAuthPrefix & "/auth-with-password", CreateMap("identity": email, "password": pwd), True, False))
+	ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase USER_AUTH_REFRESH.
+Sub USER_AUTH_REFRESH As Map
+	Dim res As Map = BANano.Await(AuthSend("POST", "/users/auth-refresh", Null, True, True))
+	ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase ADMIN_AUTH_WITH_PASSWORD.
+Sub ADMIN_AUTH_WITH_PASSWORD(email As String, pwd As String) As Map
+	ClearAuthState
+	Dim res As Map = BANano.Await(AuthSend("POST", "/admins/auth-with-password", CreateMap("identity": email, "password": pwd), True, False))
+	ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase ADMIN_AUTH_REFRESH.
+Sub ADMIN_AUTH_REFRESH As Map
+	Dim res As Map = BANano.Await(AuthSend("POST", "/admins/auth-refresh", Null, True, True))
+	ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase USER_SIGNOUT.
+Sub USER_SIGNOUT
+	ClearAuthState
+End Sub
+
+' PocketBase USER_TOKEN property.
+Sub USER_TOKEN As String
+	Return BearerToken
+End Sub
+
+' PocketBase USER_MODEL property (JSON string).
+Sub USER_MODEL As String
+	If UserModel = Null Then Return ""
+	Return BANano.ToJson(UserModel)
+End Sub
+
+' PocketBase USER_ISVALID property.
+Sub USER_ISVALID As Boolean
+	Return UserValid And BearerToken <> ""
+End Sub
+
+' PocketBase USER_REQUEST_VERIFICATION.
+Sub USER_REQUEST_VERIFICATION(email As String) As Map
+	Return AuthSend("POST", "/users/request-verification", CreateMap("email": email), False, False)
+End Sub
+
+' PocketBase USER_CONFIRM_VERIFICATION.
+Sub USER_CONFIRM_VERIFICATION(token As String) As Map
+	Return AuthSend("POST", "/users/confirm-verification", CreateMap("token": token), False, False)
+End Sub
+
+' PocketBase USER_REQUEST_PASSWORD_RESET.
+Sub USER_REQUEST_PASSWORD_RESET(email As String) As Boolean
+	Dim res As Map = AuthSend("POST", "/users/request-password-reset", CreateMap("email": email), False, False)
+	Return CBool(res.GetDefault("success", False))
+End Sub
+
+' PocketBase USER_CONFIRM_PASSWORD_RESET.
+Sub USER_CONFIRM_PASSWORD_RESET(token As String, password As String, passwordConfirm As String) As Map
+	Return AuthSend("POST", "/users/confirm-password-reset", _
+		CreateMap("token": token, "password": password, "passwordConfirm": passwordConfirm), False, False)
+End Sub
+
+' PocketBase USER_REQUEST_EMAIL_CHANGE.
+Sub USER_REQUEST_EMAIL_CHANGE(newEmail As String) As Map
+	Return AuthSend("POST", "/users/request-email-change", CreateMap("newEmail": newEmail), False, True)
+End Sub
+
+' PocketBase USER_CONFIRM_EMAIL_CHANGE. The second argument is the account password.
+Sub USER_CONFIRM_EMAIL_CHANGE(token As String, password As String) As Map
+	Return AuthSend("POST", "/users/confirm-email-change", CreateMap("token": token, "password": password), False, False)
+End Sub
+
+' PocketBase ADMIN_REQUEST_PASSWORD_RESET.
+Sub ADMIN_REQUEST_PASSWORD_RESET(email As String) As Boolean
+	Dim res As Map = AuthSend("POST", "/admins/request-password-reset", CreateMap("email": email), False, False)
+	Return CBool(res.GetDefault("success", False))
+End Sub
+
+' PocketBase ADMIN_CONFIRM_PASSWORD_RESET.
+Sub ADMIN_CONFIRM_PASSWORD_RESET(token As String, password As String, passwordConfirm As String) As Map
+	Return AuthSend("POST", "/admins/confirm-password-reset", _
+		CreateMap("token": token, "password": password, "passwordConfirm": passwordConfirm), False, False)
+End Sub
+
+' Returns /users or /auth-records/{UsersCollectionName} for user endpoints.
+Private Sub UsersAuthPrefix As String
+	Dim col As String = CStr(UsersCollectionName).Trim
+	If col <> "" And col.ToLowerCase <> "users" Then Return $"/auth-records/${col}"$
+	Return "/users"
+End Sub
+
+' Shared multipart helper for CREATE_USER_FORM and UPDATE_USER_FORM.
+Private Sub ExecuteAuthForm(Method As String, route As String, storeToken As Boolean) As Map
+	Dim out As Map = CreateMap()
+	Dim fieldsCopy As Map = CreateMap()
+	For Each k As String In mFormFields.Keys
+		fieldsCopy.Put(k, mFormFields.Get(k))
+	Next
+	If Method = "POST" And fieldsCopy.ContainsKey("password") And fieldsCopy.ContainsKey("passwordConfirm") = False Then
+		fieldsCopy.Put("passwordConfirm", fieldsCopy.Get("password"))
+	End If
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.NoCors = NoCORS
+	fetch.NoCache = True
+	fetch.SetURL(AuthRoute(route))
+	ApplyAuthHeaders(fetch, True)
+	PopulateFormDataFetch(fetch, fieldsCopy, mFormFiles)
+	If Method = "PATCH" Or Method = "PUT" Then
+		fetch.AddHeader("X-HTTP-Method-Override", Method)
+	End If
+	BANano.Await(fetch.PostWait)
+	If fetch.Success And fetch.response <> Null Then
+		Dim resp As Map = fetch.response
+		out = resp
+		If storeToken And resp.ContainsKey("token") Then
+			BearerToken = CStr(resp.Get("token"))
+			UserToken = BearerToken
+			UserValid = (BearerToken <> "")
+			IsAuthenticated = UserValid
+		End If
+		ApplyAuthProfile(resp)
+	End If
+	Return out
+End Sub
+
+' PocketBase CREATE_USER. Returns the created auth record.
+Sub CREATE_USER(profile As Map) As Map
+	Dim res As Map = BANano.Await(AuthSend("POST", UsersAuthPrefix, profile, True, True))
+	Dim rec As Map = CreateMap()
+	If res.ContainsKey("record") And res.Get("record") Is Map Then
+		rec = res.Get("record")
+	Else
+		rec = res
+	End If
+	If rec.ContainsKey("id") Then ApplyAuthProfile(res)
+	Return rec
+End Sub
+
+' PocketBase CREATE_USER_FORM.
+Sub CREATE_USER_FORM As Map
+	If mFormFiles <> Null And mFormFiles.Size > 0 Then
+		Dim res As Map = BANano.Await(ExecuteAuthForm("POST", UsersAuthPrefix, True))
+		If res.ContainsKey("record") And res.Get("record") Is Map Then
+			Return res.Get("record")
+		End If
+		Return res
+	End If
+	Dim profile As Map = CreateMap()
+	For Each k As String In mFormFields.Keys
+		profile.Put(k, mFormFields.Get(k))
+	Next
+	Return BANano.Await(CREATE_USER(profile))
+End Sub
+
+' PocketBase UPDATE_USER.
+Sub UPDATE_USER(Id As String, profile As Map) As Map
+	Dim res As Map = BANano.Await(AuthSend("PATCH", $"${UsersAuthPrefix}/${Id}"$, profile, False, True))
+	If res.ContainsKey("id") Then ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase UPDATE_USER_FORM.
+Sub UPDATE_USER_FORM(Id As String) As Map
+	If mFormFiles <> Null And mFormFiles.Size > 0 Then
+		Dim res As Map = BANano.Await(ExecuteAuthForm("PATCH", $"${UsersAuthPrefix}/${Id}"$, False))
+		If res.ContainsKey("record") And res.Get("record") Is Map Then
+			Return res.Get("record")
+		End If
+		Return res
+	End If
+	Dim profile As Map = CreateMap()
+	For Each k As String In mFormFields.Keys
+		profile.Put(k, mFormFields.Get(k))
+	Next
+	Return BANano.Await(UPDATE_USER(Id, profile))
+End Sub
+
+' PocketBase DELETE_USER.
+Sub DELETE_USER(Id As String) As Boolean
+	Dim res As Map = BANano.Await(AuthSend("DELETE", $"${UsersAuthPrefix}/${Id}"$, Null, False, True))
+	Return CBool(res.GetDefault("success", False))
+End Sub
+
+' PocketBase CREATE_ADMIN.
+Sub CREATE_ADMIN(profile As Map) As Map
+	Dim res As Map = BANano.Await(AuthSend("POST", "/admins", profile, True, True))
+	Dim rec As Map = CreateMap()
+	If res.ContainsKey("record") And res.Get("record") Is Map Then
+		rec = res.Get("record")
+	Else
+		rec = res
+	End If
+	If rec.ContainsKey("id") Then ApplyAuthProfile(res)
+	Return rec
+End Sub
+
+' PocketBase UPDATE_ADMIN.
+Sub UPDATE_ADMIN(Id As String, profile As Map) As Map
+	Dim res As Map = BANano.Await(AuthSend("PATCH", $"/admins/${Id}"$, profile, False, True))
+	If res.ContainsKey("id") Then ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase DELETE_ADMIN.
+Sub DELETE_ADMIN(Id As String) As Boolean
+	Dim res As Map = BANano.Await(AuthSend("DELETE", $"/admins/${Id}"$, Null, False, True))
+	Return CBool(res.GetDefault("success", False))
+End Sub
+
+' PocketBase CHANGE_USER_PASSWORD.
+Sub CHANGE_USER_PASSWORD(uEmail As String, newPassword As String, confirmPassword As String) As Map
+	Dim res As Map = BANano.Await(AuthSend("POST", "/users/change-password", _
+		CreateMap("email": uEmail, "password": newPassword, "passwordConfirm": confirmPassword), True, True))
+	ApplyAuthProfile(res)
+	Return res
+End Sub
+
+' PocketBase USER_AUTH_WITH_GOOGLE: unsupported by this backend.
+Sub USER_AUTH_WITH_GOOGLE As profileType
+	ClearAuthState
+	ErrorMessage = "Not supported by SithasoBase"
+	If ShowLog Then Log(ErrorMessage)
+	Return UserProfile
+End Sub
+
+' PocketBase USER_REVOKE_GOOGLE_TOKEN: no-op.
+Sub USER_REVOKE_GOOGLE_TOKEN
+	If ShowLog Then Log($"SDUIMySQLREST.${TableName}.USER_REVOKE_GOOGLE_TOKEN: not supported"$)
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 4: dashboard helpers)
+' ===========================================================================
+
+' PocketBase SERVER_DATE_TIME: POST /servertime.
+Sub SERVER_DATE_TIME As Map
+	Return AuthSend("POST", "/servertime", Null, False, False)
+End Sub
+
+' PocketBase SEND_EMAIL_REST: POST /sendemail.
+Sub SEND_EMAIL_REST(toEmail As String, Subject As String, Message As String) As Map
+	Dim msg As String = CStr(Message).Replace("</br>", "<br/>").Replace(CRLF, "<br/>")
+	Return AuthSend("POST", "/sendemail", CreateMap("to": toEmail, "subject": Subject, "message": msg), False, False)
+End Sub
+
+' Returns SQL view names. SQLite and MySQL are handled separately.
+Sub GetViews(e As String, p As String) As List
+	Dim names As List
+	names.Initialize
+	Dim qry As String = "SELECT name FROM sqlite_master WHERE type='view' ORDER BY name"
+	If sDriver.ToLowerCase = "mysql" Then
+		qry = "SELECT TABLE_NAME as name FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME"
+	End If
+	Dim rows As List = BANano.Await(SELECT_RAW(qry))
+	For Each r As Map In rows
+		names.Add(r.GetDefault("name", ""))
+	Next
+	Return names
+End Sub
+
+' PocketBase CREATE_VIEW: POST /views with {name, definition}.
+Sub CREATE_VIEW(nameOf As String, qry As String) As Map
+	Return AuthSend("POST", "/views", CreateMap("name": nameOf, "definition": qry), False, True)
+End Sub
+
+' PocketBase SELECT_VIEW: reads all rows from a SQL view into result.
+Sub SELECT_VIEW(viewName As String)
+	Dim sql As String = $"SELECT * FROM ${EscapeField(viewName)}"$
+	Dim rows As List = BANano.Await(SELECT_RAW(sql))
+	result = rows
+	RowCount = result.Size
+	lastPosition = -1
+End Sub
+
+' PocketBase DELETE_ALL_REST: client-side delete loop (no backend /deleteall route).
+Sub DELETE_ALL_REST(tblName As String) As Map
+	Dim saved As String = TableName
+	TableName = tblName
+	Dim rows As List = BANano.Await(SELECT_ALL)
+	Dim deleted As Int = 0
+	For Each rec As Map In rows
+		Dim id As String = rec.GetDefault(PrimaryKey, "")
+		If id <> "" Then
+			Dim ok As Boolean = BANano.Await(DELETE(id))
+			If ok Then deleted = deleted + 1
+		End If
+	Next
+	TableName = saved
+	Return CreateMap("success": True, "deleted": deleted)
+End Sub
+
+' PocketBase DELETE_ALL_RESTAUTH: client-side delete loop for users/admins.
+Sub DELETE_ALL_RESTAUTH(tblName As String) As Map
+	Dim prefix As String = "/users"
+	If tblName.ToLowerCase = "admins" Then prefix = "/admins"
+	Dim listing As Map = AuthSend("GET", prefix, Null, False, True)
+	Dim items As List = listing.GetDefault("items", Null)
+	Dim deleted As Int = 0
+	If items <> Null Then
+		For Each rec As Map In items
+			Dim id As String = rec.GetDefault("id", "")
+			If id <> "" Then
+				Dim del As Map = AuthSend("DELETE", prefix & "/" & id, Null, False, True)
+				If CBool(del.GetDefault("success", False)) Then deleted = deleted + 1
+			End If
+		Next
+	End If
+	Return CreateMap("success": True, "deleted": deleted)
+End Sub
+
+' Reads one user record.
+Sub READ_USER(id As String) As Map
+	Return AuthSend("GET", $"/users/${id}"$, Null, False, True)
+End Sub
+
+' Reads one admin record.
+Sub READ_ADMIN(id As String) As Map
+	Return AuthSend("GET", $"/admins/${id}"$, Null, False, True)
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 5: query/config conveniences)
+' ===========================================================================
+
+' PocketBase ADD_EXPAND. php-crud-api expresses expansion as a join.
+Sub ADD_EXPAND(sexpand As String) As SDUIMySQLREST
+	Dim clean As String = CStr(sexpand).Trim
+	If clean <> "" Then
+		expandL.Add(clean)
+		joinL.Add($"join=${clean}"$)
+	End If
+	Return Me
+End Sub
+
+' PocketBase ADD_GROUP_BY.
+Sub ADD_GROUP_BY(grpBys As List) As SDUIMySQLREST
+	If grpBys <> Null Then
+		For Each g As String In grpBys
+			grpBy.Add(g)
+		Next
+	End If
+	Return Me
+End Sub
+
+' PocketBase ADD_OR_WHERE.
+Sub ADD_OR_WHERE(fld As String, operator As String, value As Object) As SDUIMySQLREST
+	ADD_WHERE(fld, operator, value)
+	If whereField.Size > 0 Then WHERE_OR(whereField.Size - 1)
+	Return Me
+End Sub
+
+' PocketBase ADD_OR_WHERE_STRING.
+Sub ADD_OR_WHERE_STRING(fld As String, operator As String, value As Object) As SDUIMySQLREST
+	ADD_WHERE_STRING(fld, operator, value)
+	If whereField.Size > 0 Then WHERE_OR(whereField.Size - 1)
+	Return Me
+End Sub
+
+' Returns the current field selection.
+Sub getFields As List
+	Return flds
+End Sub
+
+' Replaces the current field selection.
+Sub setFields(tflds As List)
+	flds.Initialize
+	If tflds <> Null Then
+		For Each f As String In tflds
+			ADD_FIELD(f)
+		Next
+	End If
+End Sub
+
+' PocketBase orderBy.
+Sub orderBy(fldNames As List) As SDUIMySQLREST
+	If fldNames <> Null Then
+		For Each f As String In fldNames
+			ADD_ORDER_BY(f)
+		Next
+	End If
+	Return Me
+End Sub
+
+' PocketBase orderByDesc.
+Sub orderByDesc(fldNames As List) As SDUIMySQLREST
+	If fldNames <> Null Then
+		For Each f As String In fldNames
+			ADD_ORDER_BY_DESC(f)
+		Next
+	End If
+	Return Me
+End Sub
+
+' PocketBase groupBy.
+Sub groupBy(fldNames As List) As SDUIMySQLREST
+	Return ADD_GROUP_BY(fldNames)
+End Sub
+
+' PocketBase selectFields.
+Sub selectFields(fldNames As List) As SDUIMySQLREST
+	setFields(fldNames)
+	Return Me
+End Sub
+
+' PocketBase whereEqual.
+Sub whereEqual(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, "=", fldValue)
+End Sub
+
+' PocketBase OrWhereEqual.
+Sub OrWhereEqual(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "=", fldValue)
+End Sub
+
+' PocketBase whereGreaterThan.
+Sub whereGreaterThan(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, ">", fldValue)
+End Sub
+
+' PocketBase OrWhereGreaterThan.
+Sub OrWhereGreaterThan(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, ">", fldValue)
+End Sub
+
+' PocketBase whereGreaterThanEqualTo.
+Sub whereGreaterThanEqualTo(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, ">=", fldValue)
+End Sub
+
+' PocketBase OrWhereGreaterThanEqualTo.
+Sub OrWhereGreaterThanEqualTo(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, ">=", fldValue)
+End Sub
+
+' PocketBase whereLike.
+Sub whereLike(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, "like", fldValue)
+End Sub
+
+' PocketBase OrWhereLike.
+Sub OrWhereLike(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "like", fldValue)
+End Sub
+
+' PocketBase whereNotLike.
+Sub whereNotLike(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, "not like", fldValue)
+End Sub
+
+' PocketBase OrWhereNotLike.
+Sub OrWhereNotLike(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "not like", fldValue)
+End Sub
+
+' PocketBase whereLessThanEqualTo.
+Sub whereLessThanEqualTo(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, "<=", fldValue)
+End Sub
+
+' PocketBase OrWhereLessThanEqualTo.
+Sub OrWhereLessThanEqualTo(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "<=", fldValue)
+End Sub
+
+' PocketBase whereLessThan.
+Sub whereLessThan(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_WHERE(fldName, "<", fldValue)
+End Sub
+
+' PocketBase OrWhereLessThan.
+Sub OrWhereLessThan(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "<", fldValue)
+End Sub
+
+' PocketBase whereBetween: two inclusive comparisons.
+Sub whereBetween(fldName As String, fldStart As Object, fldEnd As Object) As SDUIMySQLREST
+	ADD_WHERE(fldName, ">=", fldStart)
+	ADD_WHERE(fldName, "<=", fldEnd)
+	Return Me
+End Sub
+
+' PocketBase OrWhereNotEqual.
+Sub OrWhereNotEqual(fldName As String, fldValue As Object) As SDUIMySQLREST
+	Return ADD_OR_WHERE(fldName, "<>", fldValue)
+End Sub
+
+' PocketBase no-op auto-cancellation toggle.
+Sub SetAutoCancellation(b As Boolean)
+	If ShowLog Then Log($"SDUIMySQLREST.${TableName}.SetAutoCancellation(${b})"$)
+End Sub
+
+' PocketBase no-op request cancellation.
+Sub CancelAllRequests
+	If ShowLog Then Log($"SDUIMySQLREST.${TableName}.CancelAllRequests"$)
+End Sub
+
+' PocketBase no-op request cancellation.
+Sub CancelRequest(reqKey As String)
+	If ShowLog Then Log($"SDUIMySQLREST.${TableName}.CancelRequest(${reqKey})"$)
+End Sub
+
+' PocketBase no-cache toggle.
+Sub setNoCache(b As Boolean)
+	NoCache = b
+End Sub
+
+' PocketBase no-cache getter.
+Sub getNoCache As Boolean
+	Return NoCache
+End Sub
+
+' PocketBase table-name setter.
+Sub setTableName(s As String)
+	TableName = s
+End Sub
+
+' PocketBase dot-path writer.
+Sub PutRecursive(data As Map, path As String, value As Object)
+	Try
+		If BANano.IsNull(path) Or BANano.IsUndefined(path) Then path = ""
+		If path = "" Then Return
+		Dim prevObj As BANanoObject = data
+		If path.IndexOf(".") = -1 Then
+			prevObj.SetField(path, value)
+		Else
+			Dim items As List = BANano.Split(".", path)
+			Dim iTot As Int = items.Size
+			Dim litem As String = items.Get(iTot - 1)
+			For iCnt = 1 To iTot - 1
+				Dim strprev As String = items.Get(iCnt - 1)
+				Dim prtObj As BANanoObject = prevObj.GetField(strprev)
+				If BANano.IsUndefined(prtObj) Then
+					Dim no As Object
+					prevObj.SetField(strprev, no)
+					prevObj = prevObj.GetField(strprev)
+				Else
+					prevObj = prtObj
+				End If
+			Next
+			prevObj.SetField(litem, value)
+		End If
+	Catch
+		Log(LastException.Message)
+	End Try
+End Sub
+
+' PocketBase next-id helper: generate an id and put it into Record.
+Sub SetNextID
+	Dim nid As String = NextID
+	SetField("id", nid)
+End Sub
+
+' Replaces the current result list.
+Sub SetRecords(lst As List)
+	result = lst
+	RowCount = result.Size
+	lastPosition = -1
+End Sub
+
+' Replaces one row in the result list.
+Sub SetRecordAt(pos As Int, rec As Map)
+	result.Set(pos, rec)
+End Sub
+
+' ===========================================================================
+' SDUIPocketBase compatibility surface (Phase 6: batch, collections, stubs)
+' ===========================================================================
+
+' Opens a sequential client-side batch.
+Sub BATCH_CREATE
+	mBatch.Initialize
+	mBatchActive = True
+End Sub
+
+' Adds a create operation for the current Record.
+Sub BATCH_ADD_CREATE
+	If mBatchActive = False Then BATCH_CREATE
+	mBatch.Add(CreateMap("op": "create", "table": TableName, "record": BANano.DeepClone(Record)))
+End Sub
+
+' Adds an upsert operation for the current Record.
+Sub BATCH_ADD_UPSERT
+	If mBatchActive = False Then BATCH_CREATE
+	mBatch.Add(CreateMap("op": "upsert", "table": TableName, "record": BANano.DeepClone(Record)))
+End Sub
+
+' Adds an update operation for the current Record.
+Sub BATCH_ADD_UPDATE
+	If mBatchActive = False Then BATCH_CREATE
+	mBatch.Add(CreateMap("op": "update", "table": TableName, "record": BANano.DeepClone(Record)))
+End Sub
+
+' Adds a delete operation for the current Record's primary key.
+Sub BATCH_ADD_DELETE
+	If mBatchActive = False Then BATCH_CREATE
+	mBatch.Add(CreateMap("op": "delete", "table": TableName, "record": BANano.DeepClone(Record)))
+End Sub
+
+' Executes all queued operations sequentially and returns per-op results.
+Sub BATCH_SEND As Object
+	Dim out As List
+	out.Initialize
+	Dim savedTable As String = TableName
+	For Each op As Map In mBatch
+		TableName = op.GetDefault("table", savedTable)
+		Dim rec As Object = op.GetDefault("record", Null)
+		If rec Is Map Then
+			Record = rec
+		End If
+		Dim opName As String = op.GetDefault("op", "")
+		Dim idRes As String = ""
+		Dim okRes As Boolean = False
+		Select Case opName
+			Case "create"
+				idRes = BANano.Await(CREATE)
+				okRes = (idRes <> "")
+			Case "upsert"
+				idRes = BANano.Await(CREATE_OR_UPDATE)
+				okRes = (idRes <> "")
+			Case "update"
+				idRes = BANano.Await(UPDATE)
+				okRes = (idRes <> "")
+			Case "delete"
+				Dim delId As String = Record.GetDefault(PrimaryKey, "")
+				okRes = BANano.Await(DELETE(delId))
+		End Select
+		out.Add(CreateMap("success": okRes, "result": idRes, "error": ErrorMessage))
+	Next
+	TableName = savedTable
+	mBatchActive = False
+	Return out
+End Sub
+
+' Lists collection metadata through GET /collections.
+Sub SELECT_COLLECTIONS As List
+	Dim res As Map = BANano.Await(AuthSend("GET", "/collections", Null, False, True))
+	Dim items As List = res.GetDefault("items", Null)
+	result.Initialize
+	If items <> Null Then result = items
+	RowCount = result.Size
+	lastPosition = -1
+	Return result
+End Sub
+
+' Lists collections, optionally authenticating as an admin first.
+Sub SELECT_ALL_COLLECTIONS(e As String, p As String) As List
+	If e <> "" Or p <> "" Then
+		Dim ar As Map = BANano.Await(ADMIN_AUTH_WITH_PASSWORD(e, p))
+	End If
+	Return BANano.Await(SELECT_COLLECTIONS)
+End Sub
+
+' Returns only collection names.
+Sub SELECT_ALL_COLLECTIONS_NAMES(e As String, p As String) As List
+	Dim cols As List = BANano.Await(SELECT_ALL_COLLECTIONS(e, p))
+	Dim names As List
+	names.Initialize
+	For Each col As Map In cols
+		names.Add(col.GetDefault("name", ""))
+	Next
+	Return names
+End Sub
+
+' Reads one collection by id or name.
+Sub READ_COLLECTION(id As String) As Map
+	Return BANano.Await(AuthSend("GET", $"/collections/${id}"$, Null, False, True))
+End Sub
+
+' Creates a collection.
+Sub CREATE_COLLECTION(nameOf As String, colType As String, colSchema As List) As Map
+	Return BANano.Await(AuthSend("POST", "/collections", CreateMap("name": nameOf, "type": colType, "schema": colSchema), False, True))
+End Sub
+
+' Updates a collection.
+Sub UPDATE_COLLECTION(colName As String, colSchema As Map) As Map
+	Return BANano.Await(AuthSend("PATCH", $"/collections/${colName}"$, colSchema, False, True))
+End Sub
+
+' Deletes a collection.
+Sub DELETE_COLLECTION(colName As String) As Boolean
+	Dim res As Map = BANano.Await(AuthSend("DELETE", $"/collections/${colName}"$, Null, False, True))
+	Return CBool(res.GetDefault("success", False))
+End Sub
+
+' Creates a collection from a name, type, and options map.
+Sub Schema_CreateCollection(nameOf As String, colType As String, options As Map) As Map
+	Dim body As Map = CreateMap()
+	If options <> Null Then
+		For Each k As String In options.Keys
+			body.Put(k, options.Get(k))
+		Next
+	End If
+	body.Put("name", nameOf)
+	body.Put("type", colType)
+	Return AuthSend("POST", "/collections", body, False, True)
+End Sub
+
+' Lists users.
+Sub SELECT_ALL_USERS As List
+	Dim res As Map = AuthSend("GET", "/users", Null, False, True)
+	Dim items As List = res.GetDefault("items", Null)
+	If items = Null Then items = NewList
+	Return items
+End Sub
+
+' Lists admins.
+Sub SELECT_ALL_ADMINS As List
+	Dim res As Map = AuthSend("GET", "/admins", Null, False, True)
+	Dim items As List = res.GetDefault("items", Null)
+	If items = Null Then items = NewList
+	Return items
+End Sub
+
+' Returns the current schema in PocketBase shape.
+Sub GetDataModel As Map
+	Return SchemaToPocketBase
+End Sub
+
+' Returns one table's data model from the backend collections map.
+Sub GetDataModelOfTable(tblName As String) As Map
+	If tblName = TableName Then Return SchemaToPocketBase
+	Dim models As Map = GetDataModelsPB("", "")
+	If models.ContainsKey(tblName) Then Return models.Get(tblName)
+	Return CreateMap()
+End Sub
+
+' PocketBase generic send. Returns the response Map (not a BANanoPromise).
+Sub SEND(EndPoint As String, options As Map) As Map
+	Dim method As String = "POST"
+	Dim body As Map = Null
+	Dim hdrs As Map = Null
+	If options <> Null Then
+		method = options.GetDefault("method", "POST")
+		Dim hObj As Object = options.GetDefault("headers", Null)
+		If hObj <> Null And hObj Is Map Then
+			hdrs = hObj
+		End If
+		Dim bObj As Object = options.GetDefault("body", Null)
+		If bObj <> Null And bObj Is Map Then
+			body = bObj
+		End If
+		If body = Null Then
+			Dim dObj As Object = options.GetDefault("data", Null)
+			If dObj <> Null And dObj Is Map Then
+				body = dObj
+			End If
+		End If
+	End If
+	Dim fetch As SDUIFetch
+	fetch.Initialize(baseURL)
+	fetch.ShowLog = ShowLog
+	fetch.SetContentTypeApplicationJSON
+	fetch.NoCors = NoCORS
+	fetch.NoCache = NoCache
+	If EndPoint.ToLowerCase.StartsWith("http") Then
+		fetch.SetURL(EndPoint)
+	Else
+		fetch.SetURL(AuthRoute(EndPoint))
+	End If
+	ApplyHeaders(fetch, "")
+	If hdrs <> Null Then
+		For Each k As String In hdrs.Keys
+			fetch.AddHeader(k, hdrs.Get(k))
+		Next
+	End If
+	If body <> Null Then fetch.SetData(body)
+	Select Case method.ToUpperCase
+		Case "POST"
+			BANano.Await(fetch.PostWait)
+		Case "PUT"
+			BANano.Await(fetch.PutWait)
+		Case "PATCH"
+			BANano.Await(fetch.PatchWait)
+		Case "DELETE"
+			BANano.Await(fetch.DeleteWait)
+		Case Else
+			BANano.Await(fetch.GetWait)
+	End Select
+	If fetch.Success Then Return fetch.response
+	Return CreateMap()
+End Sub
+
+' Realtime is not implemented in SDUIMySQLREST; these stubs fail loudly.
+Sub Subscribe(Module As Object, Topic As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub SubscribeToRecord(Module As Object, Topic As String, id As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub UnSubscribe(Topic As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub UnSubscribeToRecord(Topic As String, id As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub RealtimeSubscribe(Module As Object, topicName As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub RealtimeUnSubscribe(topicName As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub RealtimeUnSubscribeByPrefix(topicName As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
+End Sub
+
+Sub RealtimePublish(Module As Object, topicName As String, value As String)
+	ErrorMessage = "Realtime is not implemented in SDUIMySQLREST"
 End Sub

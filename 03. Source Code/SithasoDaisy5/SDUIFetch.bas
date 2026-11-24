@@ -202,6 +202,11 @@ Sub AddFormData(fldName As String, fldValue As Object)
 	bHasFormData = True
 End Sub
 
+Sub AddFormDataAppend(fldName As String, fldValue As Object)
+	formData.RunMethod("append", Array(fldName, fldValue))
+	bHasFormData = True
+End Sub
+
 Sub AddData(k As String, v As String)
 	If schema.ContainsKey(k) Then
 		Dim dt As String = schema.Get(k)
@@ -413,7 +418,10 @@ Private Sub fetchit(method As String)
 		End If
 		OK = bfr.ok
 		Success = bfr.OK
-		If bfr.Status = 200 Then
+		If bfr.Status = 204 Then
+			Dim okMap As Map = CreateMap("success": True)
+			BANano.ReturnThen(okMap)
+		Else If bfr.Status >= 200 And bfr.Status < 300 Then
 			BANano.ReturnThen(bfr.Json)
 		Else
 			Dim m As Map = CreateMap()
